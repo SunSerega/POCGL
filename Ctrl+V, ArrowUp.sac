@@ -1,0 +1,17 @@
+
+
+
+GetKey 113 kF2
+CallIf kF2 = 1 "#DoThing" null
+Sleep 50
+Jump "#"
+
+#DoThing
+KeyD KeyCode("LCtrl")
+KeyP KeyCode("V")
+KeyU KeyCode("LCtrl")
+KeyP KeyCode("ArrowUp")
+Sleep 150
+Return
+
+

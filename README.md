@@ -1,2 +1,2 @@
 # POCGL
-Pascal Open[C,G]L (modules)
+pascal wrapers of OpenCL and OpenGL
