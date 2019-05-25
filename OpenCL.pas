@@ -42,7 +42,7 @@ type
   
   {$region case Result of}
   
-  //R
+  //SR
   ErrorCode = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -113,7 +113,6 @@ type
   //R
   BuildStatus = record
     public val: Int32;
-    public constructor(val: Int32) := self.val := val;
     
     public const SUCCESS =      -0;
     public const NONE =         -1;
