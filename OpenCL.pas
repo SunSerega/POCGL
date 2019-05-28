@@ -1,9 +1,25 @@
-﻿///
-///Код переведён отсюда:
-///https://github.com/KhronosGroup/OpenCL-Headers/tree/master/CL
+﻿
+(************************************************************************************)
+// Copyright (©) Cergey Latchenko ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// This code is distributed under the Unlicense
+// For details see LICENSE file or this:
+// https://github.com/SunSerega/POCGL/blob/master/LICENSE
+(************************************************************************************)
+// Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// Этот код распространяется под Unlicense
+// Для деталей смотрите в файл LICENSE или это:
+// https://github.com/SunSerega/POCGL/blob/master/LICENSE
+(************************************************************************************)
+
 ///
-///Справка:
-///www.khronos.org/registry/OpenCL/specs/2.2/html/OpenCL_API.html
+/// Код переведён отсюда:
+/// https://github.com/KhronosGroup/OpenCL-Headers/tree/master/CL
+///
+/// Справка:
+/// www.khronos.org/registry/OpenCL/specs/2.2/html/OpenCL_API.html
+///
+/// Если чего то не хватает - писать сюда:
+/// https://github.com/SunSerega/POCGL/issues
 ///
 unit OpenCL;
 
@@ -1234,6 +1250,9 @@ type
     static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfoType; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: ^UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     
+    static function UnloadPlatformCompiler(platform: cl_platform_id): ErrorCode;
+    external 'opencl.dll' name 'clUnloadPlatformCompiler';
+    
     {$endregion Platform}
     
     {$region Device}
@@ -1637,6 +1656,10 @@ type
     
     static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; [MarshalAs(UnmanagedType.LPArray)] lengths: array of UIntPtr; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] binaries: array of array of byte; [MarshalAs(UnmanagedType.LPArray)] binary_status: array of ErrorCode; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
+    static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; lengths: ^UIntPtr; binaries: ^^byte; binary_status: ^ErrorCode; errcode_ret: ^ErrorCode): cl_program;
+    external 'opencl.dll' name 'clCreateProgramWithBinary';
+    static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; device_list: ^cl_device_id; [MarshalAs(UnmanagedType.LPArray)] lengths: array of UIntPtr; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] binaries: array of array of byte; [MarshalAs(UnmanagedType.LPArray)] binary_status: array of ErrorCode; var errcode_ret: ErrorCode): cl_program;
+    external 'opencl.dll' name 'clCreateProgramWithBinary';
     static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; device_list: ^cl_device_id; lengths: ^UIntPtr; binaries: ^^byte; binary_status: ^ErrorCode; errcode_ret: ^ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     
@@ -1679,9 +1702,6 @@ type
     external 'opencl.dll' name 'clLinkProgram';
     static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: ^cl_device_id; options: ^char; num_input_programs: UInt32; input_programs: ^cl_program; pfn_notify: Program_Callback; user_data: pointer; errcode_ret: ^ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
-    
-    static function UnloadPlatformCompiler(platform: cl_platform_id): ErrorCode;
-    external 'opencl.dll' name 'clUnloadPlatformCompiler';
     
     static function GetProgramInfo(&program: cl_program; param_name: ProgramInfoType; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramInfo';

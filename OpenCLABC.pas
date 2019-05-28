@@ -1,22 +1,66 @@
-﻿unit OpenCLABC;
+﻿
+(************************************************************************************)
+// Copyright (©) Cergey Latchenko ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// This code is distributed under the Unlicense
+// For details see LICENSE file or this:
+// https://github.com/SunSerega/POCGL/blob/master/LICENSE
+(************************************************************************************)
+// Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// Этот код распространяется под Unlicense
+// Для деталей смотрите в файл LICENSE или это:
+// https://github.com/SunSerega/POCGL/blob/master/LICENSE
+(************************************************************************************)
+
+///
+/// Выскокоуровневая оболочка для модуля OpenCL
+/// OpenCL и OpenCLABC можно использовать одновременно
+/// Но контактировать они в основном не будут
+///
+/// Если чего то не хватает - писать как и для модуля OpenCL, сюда:
+/// https://github.com/SunSerega/POCGL/issues
+///
+unit OpenCLABC;
 
 interface
 
 uses OpenCL;
 uses System;
 uses System.Threading.Tasks;
+uses System.Runtime.InteropServices;
 
 //ToDo RaiseIfError в тасках - не хорошо. Надо передавать ErrorCode потоку, вызвавшему Invoke
+// - но это не точно, Task.Wait снова вызывает все исключения
+// - надо только чтоб все внутренние таски тоже получали Wait
+// - возможно, заставить Invoke возвращать yield sequence of Task?
+
+//ToDo ...(.., 1, @prev.ev) - все проверить, обязательно
+// - если эвент Zero - получаем вылет
+
+//ToDo лямбды захватывающие параметры и переменные - #1881
+
+//ToDo вычислять параметры асинхронно
+// - возможность вставлять свою .Println - работает по другому
+// - и от этого страдает производительность, ради которой всё это и задумано
 
 //ToDo issue компилятора:
+// - #1881
 // - #1947
 // - #1952
 // - #1957
 // - #1958
 
 type
+  
+  {$region class pre def}
+  
   Context = class;
   KernelArg = class;
+  Kernel = class;
+  ProgramCode = class;
+  
+  {$endregion class pre def}
+  
+  {$region CommandQueue}
   
   CommandQueueBase = abstract class
     protected ev: cl_event;
@@ -24,9 +68,6 @@ type
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); abstract;
     
     protected function GetRes: object; abstract;
-    
-    public procedure Finalize; override :=
-    cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   CommandQueue<T> = abstract class(CommandQueueBase)
@@ -42,28 +83,47 @@ type
     
   end;
   
-  
   CommandQueueHostFunc<T> = sealed class(CommandQueue<T>)
     private f: ()->T;
     
     public constructor(f: ()->T) :=
     self.f := f;
     
-    public constructor(o: T) :=
-    self.f := ()->o;
+    private костыль_поле_o: T;
+    
+    //ToDo #1881
+//    public constructor(o: T) :=
+//    self.f := ()->o;
+    public constructor(o: T);
+    begin
+      self.костыль_поле_o := o;
+      self.f := ()->self.костыль_поле_o;
+    end;
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     
+    public procedure Finalize; override :=
+    cl.ReleaseEvent(self.ev).RaiseIfError;
+    
   end;
   
+  {$endregion CommandQueue}
+  
+  {$region KernelArg}
   
   KernelArgCommandQueue = abstract class(CommandQueue<KernelArg>)
     protected org: KernelArg;
     protected prev: KernelArgCommandQueue;
     
-    protected constructor(org: KernelArg; prev: KernelArgCommandQueue);
+    protected constructor(org: KernelArg);
     begin
       self.org := org;
+      self.prev := nil;
+    end;
+    
+    protected constructor(prev: KernelArgCommandQueue);
+    begin
+      self.org := prev.org;
       self.prev := prev;
     end;
     
@@ -97,6 +157,13 @@ type
     public function ReadData(ptr: pointer) := ReadData(IntPtr(ptr));
     public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>) := ReadData(IntPtr(ptr), offset, len);
     
+    
+    
+    public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): KernelArgCommandQueue; where TRecord: record;
+    begin
+      Result := WriteData(@val, offset, Marshal.SizeOf&<TRecord>);
+    end;
+    
   end;
   
   KernelArg = sealed class
@@ -105,7 +172,7 @@ type
     
     {$region constructor's}
     
-    private constructor := exit;
+    private constructor := raise new System.NotSupportedException;
     
     public constructor(size: UIntPtr) :=
     self.sz := size;
@@ -120,13 +187,78 @@ type
     
     {$region Queue's}
     
-    public function ToQueue :=
+    public function NewQueue :=
     KernelArgCommandQueue.Wrap(self);
+    
+    public static function ValueQueue<TRecord>(val: TRecord): KernelArgCommandQueue; where TRecord: record;
+    begin
+      Result := 
+        KernelArg.Create(Marshal.SizeOf&<TRecord>)
+        .NewQueue.WriteData(@val, offset, Marshal.SizeOf&<TRecord>);
+    end;
     
     {$endregion Queue's}
     
   end;
   
+  {$endregion KernelArg}
+  
+  {$region Kernel}
+  
+  KernelCommandQueue = abstract class(CommandQueue<Kernel>)
+    protected org: Kernel;
+    protected prev: KernelCommandQueue;
+    
+    protected constructor(org: Kernel);
+    begin
+      self.org := org;
+      self.prev := nil;
+    end;
+    
+    protected constructor(prev: KernelCommandQueue);
+    begin
+      self.org := prev.org;
+      self.prev := prev;
+    end;
+    
+    public static function Wrap(arg: Kernel): KernelCommandQueue;
+    
+    
+    
+    public function Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
+    
+    public function Exec(work_szs: array of integer; params args: array of CommandQueue<KernelArg>) :=
+    Exec(work_szs.ConvertAll(sz->new UIntPtr(sz)), args);
+    
+    public function Exec(work_sz1: integer; params args: array of CommandQueue<KernelArg>) := Exec(new integer[](work_sz1), args);
+    public function Exec(work_sz1, work_sz2: integer; params args: array of CommandQueue<KernelArg>) := Exec(new integer[](work_sz1, work_sz2), args);
+    public function Exec(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<KernelArg>) := Exec(new integer[](work_sz1, work_sz2, work_sz3), args);
+    
+  end;
+  
+  Kernel = sealed class
+    private _kernel: cl_kernel;
+    
+    {$region constructor's}
+    
+    private constructor := raise new System.NotSupportedException;
+    
+    public constructor(prog: ProgramCode; name: string);
+    
+    {$endregion constructor's}
+    
+    {$region Queue's}
+    
+    public function NewQueue :=
+    KernelCommandQueue.Wrap(self);
+    
+    {$endregion Queue's}
+    
+  end;
+  
+  {$endregion Kernel}
+  
+  {$region Context}
   
   Context = sealed class
     private static _platform: cl_platform_id;
@@ -134,17 +266,6 @@ type
     private _context: cl_context;
     
     public constructor := Create(DeviceTypeFlags.GPU);
-    
-    public constructor(dt: DeviceTypeFlags);
-    begin
-      var ec: ErrorCode;
-      
-      cl.GetDeviceIDs(_platform, dt, 1, @_device, nil).RaiseIfError;
-      
-      _context := cl.CreateContext(nil, 1, @_device, nil, nil, @ec);
-      ec.RaiseIfError;
-      
-    end;
     
     static constructor;
     begin
@@ -156,6 +277,17 @@ type
         System.Windows.MessageBox.Show($'Название ошибки:{#10}{ec}', 'Не удалось инициализировать OpenCL');
         Halt;
       end;
+      
+    end;
+    
+    public constructor(dt: DeviceTypeFlags);
+    begin
+      var ec: ErrorCode;
+      
+      cl.GetDeviceIDs(_platform, dt, 1, @_device, nil).RaiseIfError;
+      
+      _context := cl.CreateContext(nil, 1, @_device, nil, nil, @ec);
+      ec.RaiseIfError;
       
     end;
     
@@ -178,21 +310,118 @@ type
 //      Result.Start;
 //    end;
     
-    public procedure Finalize; override;
-    begin
-      cl.ReleaseContext(_context);
-    end;
+    public procedure Finalize; override :=
+    cl.ReleaseContext(_context).RaiseIfError;
     
   end;
+  
+  {$endregion Context}
+  
+  {$region ProgramCode}
+  
+  ProgramCode = sealed class
+    private _program: cl_program;
+    private cntxt: Context;
+    
+    private constructor := exit;
+    
+    public constructor(c: Context; params files: array of string);
+    begin
+      var ec: ErrorCode;
+      self.cntxt := c;
+      
+      self._program := cl.CreateProgramWithSource(c._context, files.Length, files, files.ConvertAll(s->new UIntPtr(s.Length)), ec);
+      ec.RaiseIfError;
+      
+      cl.BuildProgram(self._program, 1, @c._device, nil,nil,nil).RaiseIfError;
+      
+    end;
+    
+    public property KernelByName[kname: string]: Kernel read new Kernel(self, kname); default;
+    
+    public function GetAllKernels: Dictionary<string, Kernel>;
+    begin
+      
+      var names_char_len: UIntPtr;
+      cl.GetProgramInfo(_program, ProgramInfoType.NUM_KERNELS, new UIntPtr(UIntPtr.Size), @names_char_len, nil).RaiseIfError;
+      
+      var names_ptr := Marshal.AllocHGlobal(IntPtr(pointer(names_char_len))+1);
+      cl.GetProgramInfo(_program, ProgramInfoType.KERNEL_NAMES, names_char_len, pointer(names_ptr), nil).RaiseIfError;
+      
+      var names := Marshal.PtrToStringAnsi(names_ptr).Split(';');
+      Marshal.FreeHGlobal(names_ptr);
+      
+      Result := new Dictionary<string, Kernel>(names.Length);
+      foreach var kname in names do
+        Result[kname] := self[kname];
+      
+    end;
+    
+    public function Serialize: array of byte;
+    begin
+      var bytes_count: UIntPtr;
+      cl.GetProgramInfo(_program, ProgramInfoType.BINARY_SIZES, new UIntPtr(UIntPtr.Size), @bytes_count, nil).RaiseIfError;
+      
+      var bytes_mem := Marshal.AllocHGlobal(IntPtr(pointer(bytes_count)));
+      cl.GetProgramInfo(_program, ProgramInfoType.BINARIES, bytes_count, @bytes_mem, nil).RaiseIfError;
+      
+      Result := new byte[bytes_count.ToUInt64()];
+      Marshal.Copy(bytes_mem,Result, 0,Result.Length);
+      Marshal.FreeHGlobal(bytes_mem);
+      
+    end;
+    
+    public procedure SerializeTo(bw: System.IO.BinaryWriter);
+    begin
+      var bts := Serialize;
+      bw.Write(bts.Length);
+      bw.Write(bts);
+    end;
+    
+    public procedure SerializeTo(str: System.IO.Stream) := SerializeTo(new System.IO.BinaryWriter(str));
+    
+    public static function Deserialize(c: Context; bin: array of byte): ProgramCode;
+    begin
+      var ec: ErrorCode;
+      
+      Result := new ProgramCode;
+      Result.cntxt := c;
+      
+      var gchnd := GCHandle.Alloc(bin);
+      var bin_mem: ^byte := pointer(gchnd.AddrOfPinnedObject);
+      var bin_len := new UIntPtr(bin.Length);
+      
+      Result._program := cl.CreateProgramWithBinary(c._context,1,@c._device, @bin_len, @bin_mem, nil, @ec);
+      ec.RaiseIfError;
+      gchnd.Free;
+      
+    end;
+    
+    public static function DeserializeFrom(c: Context; br: System.IO.BinaryReader): ProgramCode;
+    begin
+      var bin_len := br.ReadInt32;
+      var bin_arr := br.ReadBytes(bin_len);
+      if bin_arr.Length<bin_len then raise new System.IO.EndOfStreamException;
+      Result := Deserialize(c, bin_arr);
+    end;
+    
+    public static function DeserializeFrom(c: Context; str: System.IO.Stream) :=
+    DeserializeFrom(c, new System.IO.BinaryReader(str));
+    
+  end;
+  
+  {$endregion ProgramCode}
+  
+///HostFuncQueue
+///Создаёт новую CommandQueueHostFunc
+function HFQ<T>(f: ()->T): CommandQueueHostFunc<T>;
 
 implementation
 
-uses System.Runtime.InteropServices;
-
-{$region Костыль#1947}
+{$region Костыль #1947, #1952}
 
 type
-  КостыльType1<T> = auto class // ToDo #1947
+  КостыльType1<T> = auto class // ToDo любая из: #1947, #1952
     
     this_par: Context;
     par1: CommandQueue<T>;
@@ -206,7 +435,7 @@ type
 
 function Context.BeginInvoke<T>(q: CommandQueue<T>): Task<T>;
 begin
-  var k := new КостыльType1<T>(self,q);
+  var k := new КостыльType1<T>(self,q); //лишнее предупреждение это #1948
   Result := new Task<T>(k.lambda1);
   Result.Start;
 end;
@@ -221,23 +450,15 @@ procedure CommandQueueHostFunc<T>.Invoke(c: Context; cq: cl_command_queue; prev_
 begin
   var ec: ErrorCode;
   
-  if prev_ev=cl_event.Zero then
+  self.ev := cl.CreateUserEvent(c._context, ec);
+  ec.RaiseIfError;
+  
+  Task.Run(()->
   begin
-    self.res := self.f();
-    self.ev := cl_event.Zero;
-  end else
-  begin
-    self.ev := cl.CreateUserEvent(c._context, ec);
-    ec.RaiseIfError;
-    
-    System.Threading.Tasks.Task.Run(()->
-    begin
-      if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
-      self.res := f();
-      cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-    end);
-    
-  end;
+    if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+    self.res := f();
+    cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+  end);
   
 end;
 
@@ -265,7 +486,7 @@ type
         prev_ev := sq.ev;
       end;
       
-      System.Threading.Tasks.Task.Run(()->
+      Task.Run(()->
       begin
         if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
         self.res := T(lst[lst.Count-1].GetRes);
@@ -273,6 +494,9 @@ type
       end);
       
     end;
+    
+    public procedure Finalize; override :=
+    cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
 
@@ -318,9 +542,12 @@ type
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end;
       
-      System.Threading.Tasks.Task.Run(p);
+      Task.Run(p);
       
     end;
+    
+    public procedure Finalize; override :=
+    cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
 
@@ -352,23 +579,13 @@ type
     
     public constructor(arg: KernelArg);
     begin
-      inherited Create(arg, nil);
+      inherited Create(arg);
+      self.res := org;
     end;
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
-      var ec: ErrorCode;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      System.Threading.Tasks.Task.Run(()->
-      begin
-        if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
-        self.res := org;
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
-      
+      self.ev := prev_ev;
     end;
     
   end;
@@ -387,7 +604,7 @@ type
     
     public constructor(arg: KernelArgCommandQueue; ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
     begin
-      inherited Create(arg.org, arg);
+      inherited Create(arg);
       self.ptr := ptr;
       self.offset := offset;
       self.len := len;
@@ -395,13 +612,17 @@ type
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
-      prev  .Invoke(c, cq, prev_ev);
+      var ev_lst := new List<cl_event>;
       
-      ptr   .Invoke(c, cq, cl_event.Zero); if ptr    .ev<>cl_event.Zero then cl.WaitForEvents(1,@ptr.ev);
-      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev);
-      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev);
+      prev  .Invoke(c, cq, prev_ev      ); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
       
-      cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@self.ev).RaiseIfError;
+      ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
+      offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      if ev_lst.Count=0 then
+        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@self.ev).RaiseIfError;
+        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,ev_lst.ToArray,self.ev).RaiseIfError;
       
     end;
     
@@ -412,7 +633,7 @@ type
     
     public constructor(arg: KernelArgCommandQueue; a: CommandQueue<&Array>; offset, len: CommandQueue<integer>);
     begin
-      inherited Create(arg.org, arg);
+      inherited Create(arg);
       self.a := a;
       self.offset := offset;
       self.len := len;
@@ -420,22 +641,37 @@ type
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
-      prev  .Invoke(c, cq, prev_ev);
+      var ev_lst := new List<cl_event>;
+      var ec: ErrorCode;
       
-      a     .Invoke(c, cq, cl_event.Zero); if a      .ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev);
-      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev);
-      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev);
+      prev  .Invoke(c, cq,       prev_ev); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
       
-      var gchnd := GCHandle.Alloc(a.res);
-      cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@self.ev).RaiseIfError;
+      a     .Invoke(c, cq, cl_event.Zero);
+      offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      System.Threading.Tasks.Task.Run(()->
+      self.ev := cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
+      
+      Task.Run(()->
       begin
-        cl.WaitForEvents(1,@self.ev).RaiseIfError;
+        if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
+        var gchnd := GCHandle.Alloc(a.res);
+        
+        var buff_ev: cl_event;
+        if ev_lst.Count=0 then
+          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,ev_lst.ToArray,buff_ev).RaiseIfError;
+        cl.WaitForEvents(1,@buff_ev).RaiseIfError;
+        
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
         gchnd.Free;
       end);
       
     end;
+    
+    public procedure Finalize; override :=
+    cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   
@@ -459,7 +695,7 @@ type
     
     public constructor(arg: KernelArgCommandQueue; ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
     begin
-      inherited Create(arg.org, arg);
+      inherited Create(arg);
       self.ptr := ptr;
       self.offset := offset;
       self.len := len;
@@ -469,9 +705,9 @@ type
     begin
       prev  .Invoke(c, cq, prev_ev);
       
-      ptr   .Invoke(c, cq, cl_event.Zero); if ptr    .ev<>cl_event.Zero then cl.WaitForEvents(1,@ptr.ev);
-      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev);
-      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev);
+      ptr   .Invoke(c, cq, cl_event.Zero); if ptr    .ev<>cl_event.Zero then cl.WaitForEvents(1,@ptr.ev).RaiseIfError;
+      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev).RaiseIfError;
+      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev).RaiseIfError;
       
       cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@self.ev).RaiseIfError;
       
@@ -484,7 +720,7 @@ type
     
     public constructor(arg: KernelArgCommandQueue; a: CommandQueue<&Array>; offset, len: CommandQueue<integer>);
     begin
-      inherited Create(arg.org, arg);
+      inherited Create(arg);
       self.a := a;
       self.offset := offset;
       self.len := len;
@@ -494,14 +730,14 @@ type
     begin
       prev  .Invoke(c, cq, prev_ev);
       
-      a     .Invoke(c, cq, cl_event.Zero); if a      .ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev);
-      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev);
-      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev);
+      a     .Invoke(c, cq, cl_event.Zero); if a      .ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
+      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev).RaiseIfError;
+      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev).RaiseIfError;
       
       var gchnd := GCHandle.Alloc(a.res);
       cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@self.ev).RaiseIfError;
       
-      System.Threading.Tasks.Task.Run(()->
+      Task.Run(()->
       begin
         cl.WaitForEvents(1,@self.ev).RaiseIfError;
         gchnd.Free;
@@ -524,6 +760,88 @@ function KernelArgCommandQueue.ReadData(a: CommandQueue<&Array>) := ReadData(a, 
 
 {$endregion KernelArg}
 
+{$region Kernel}
+
+{$region Base}
+
+type
+  KernelQueueWrap = sealed class(KernelCommandQueue)
+    
+    public constructor(arg: Kernel);
+    begin
+      inherited Create(arg);
+      self.res := org;
+    end;
+    
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
+    begin
+      self.ev := prev_ev;
+    end;
+    
+  end;
+  
+static function KernelCommandQueue.Wrap(arg: Kernel) :=
+new KernelQueueWrap(arg);
+
+{$endregion Base}
+
+{$region Exec}
+
+type
+  KernelQueueExec = sealed class(KernelCommandQueue)
+    public args_q: array of CommandQueue<KernelArg>;
+    public work_szs: array of UIntPtr;
+    
+    public constructor(k: KernelCommandQueue; work_szs: array of UIntPtr; args: array of CommandQueue<KernelArg>);
+    begin
+      inherited Create(k);
+      self.work_szs := work_szs;
+      self.args_q := args;
+    end;
+    
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
+    begin
+      prev.Invoke(c, cq, prev_ev);
+      
+      var args := args_q.ConvertAll(arg_q->
+      begin
+        arg_q.Invoke(c, cq, cl_event.Zero);
+        cl.WaitForEvents(1,@arg_q.ev).RaiseIfError;
+        Result := arg_q.res;
+      end);
+      
+      for var i := 0 to args.Length-1 do
+        cl.SetKernelArg(org._kernel, i, args[i].sz, args[i].memobj).RaiseIfError;
+      
+      cl.EnqueueNDRangeKernel(cq, org._kernel, work_szs.Length, nil,work_szs,nil, 1,@prev.ev,@self.ev).RaiseIfError;
+      
+    end;
+    
+  end;
+  
+function KernelCommandQueue.Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<KernelArg>) :=
+new KernelQueueExec(self, work_szs, args);
+
+{$endregion Exec}
+
+{$endregion Kernel}
+
 {$endregion CommandQueue}
+
+{$region Misc implementation}
+
+constructor Kernel.Create(prog: ProgramCode; name: string);
+begin
+  var ec: ErrorCode;
+  
+  self._kernel := cl.CreateKernel(prog._program, name, ec);
+  ec.RaiseIfError;
+  
+end;
+
+function HFQ<T>(f: ()->T) :=
+new CommandQueueHostFunc<T>(f);
+
+{$endregion Misc implementation}
 
 end.
