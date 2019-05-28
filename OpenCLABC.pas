@@ -33,12 +33,6 @@ uses System.Runtime.InteropServices;
 // - надо только чтоб все внутренние таски тоже получали Wait
 // - возможно, заставить Invoke возвращать yield sequence of Task?
 
-//ToDo лямбды захватывающие параметры - #1881
-
-//ToDo вычислять параметры асинхронно
-// - возможность вставлять свою .Println - работает по другому
-// - и от этого страдает производительность, ради которой всё это и задумано
-
 //ToDo issue компилятора:
 // - #1881
 // - #1947
@@ -583,6 +577,14 @@ type
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
       self.ev := prev_ev;
+      
+      if org.memobj=cl_mem.Zero then
+      begin
+        var ec: ErrorCode;
+        org.memobj := cl.CreateBuffer(c._context, MemoryFlags.READ_WRITE, org.sz, IntPtr.Zero, ec);
+        ec.RaiseIfError;
+      end;
+      
     end;
     
   end;
@@ -609,17 +611,30 @@ type
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
+      var ec: ErrorCode;
+      
+      prev  .Invoke(c, cq, prev_ev);
+      
       var ev_lst := new List<cl_event>;
-      
-      prev  .Invoke(c, cq, prev_ev      ); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
-      
       ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      if ev_lst.Count=0 then
-        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@self.ev).RaiseIfError;
-        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,ev_lst.ToArray,self.ev).RaiseIfError;
+      self.ev := cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
+      
+      Task.Run(()->
+      begin
+        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        
+        var buff_ev: cl_event;
+        if prev.ev=cl_event.Zero then
+          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
+        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
+        
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
+      end);
       
     end;
     
@@ -641,7 +656,7 @@ type
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
       
-      prev  .Invoke(c, cq,       prev_ev); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
+      prev  .Invoke(c, cq,       prev_ev);
       
       a     .Invoke(c, cq, cl_event.Zero);
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
@@ -655,10 +670,12 @@ type
         if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
         var gchnd := GCHandle.Alloc(a.res);
         
+        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        
         var buff_ev: cl_event;
-        if ev_lst.Count=0 then
+        if prev.ev=cl_event.Zero then
           cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
-          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,ev_lst.ToArray,buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1,@buff_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
@@ -700,17 +717,30 @@ type
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
+      var ec: ErrorCode;
+      
+      prev  .Invoke(c, cq, prev_ev);
+      
       var ev_lst := new List<cl_event>;
-      
-      prev  .Invoke(c, cq, prev_ev      ); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
-      
       ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      if ev_lst.Count=0 then
-        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@self.ev).RaiseIfError;
-        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,ev_lst.ToArray,self.ev).RaiseIfError;
+      self.ev := cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
+      
+      Task.Run(()->
+      begin
+        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        
+        var buff_ev: cl_event;
+        if prev.ev=cl_event.Zero then
+          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
+        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
+        
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
+      end);
       
     end;
     
@@ -732,7 +762,7 @@ type
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
       
-      prev  .Invoke(c, cq,       prev_ev); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
+      prev  .Invoke(c, cq,       prev_ev); if prev  .ev<>cl_event.Zero then
       
       a     .Invoke(c, cq, cl_event.Zero);
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
@@ -746,10 +776,12 @@ type
         if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
         var gchnd := GCHandle.Alloc(a.res);
         
+        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        
         var buff_ev: cl_event;
-        if ev_lst.Count=0 then
-          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
-          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,ev_lst.ToArray,buff_ev).RaiseIfError;
+        if prev.ev=cl_event.Zero then
+          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1,@buff_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
