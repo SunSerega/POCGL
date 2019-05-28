@@ -57,4 +57,10 @@ begin
     ) as CommandQueue<Kernel>
   );
   
+  var Cm := new real[MatrW,MatrW];
+  cont.SyncInvoke(
+    C.NewQueue.ReadData(Cm) as CommandQueue<KernelArg>
+  );
+  Cm.Println;
+  
 end.

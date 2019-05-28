@@ -33,7 +33,7 @@ uses System.Runtime.InteropServices;
 // - надо только чтоб все внутренние таски тоже получали Wait
 // - возможно, заставить Invoke возвращать yield sequence of Task?
 
-//ToDo лямбды захватывающие параметры и переменные - #1881
+//ToDo лямбды захватывающие параметры - #1881
 
 //ToDo вычислять параметры асинхронно
 // - возможность вставлять свою .Println - работает по другому
@@ -303,7 +303,7 @@ type
     
     public function BeginInvoke<T>(q: CommandQueue<T>): Task<T>;
 //    begin ToDo #1947
-//      Result := new Task<T>(()->self.SyncInvoke(q)); // ToDo #1952
+//      Result := new Task<T>(()->self.SyncInvoke(q)); // ToDo #1952 //ToDo #1881
 //      Result.Start;
 //    end;
     
