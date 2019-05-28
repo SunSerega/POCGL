@@ -841,8 +841,9 @@ type
         for var i := 0 to args_q.Length-1 do
           cl.SetKernelArg(org._kernel, i, args_q[i].res.sz, args_q[i].res.memobj).RaiseIfError;
         
-        cl.EnqueueNDRangeKernel(cq, org._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@self.ev).RaiseIfError;
-        cl.WaitForEvents(1,@self.ev).RaiseIfError;
+        var kernel_ev: cl_event;
+        cl.EnqueueNDRangeKernel(cq, org._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@kernel_ev).RaiseIfError;
+        cl.WaitForEvents(1,@kernel_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
       end);
