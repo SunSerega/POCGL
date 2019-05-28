@@ -33,9 +33,6 @@ uses System.Runtime.InteropServices;
 // - надо только чтоб все внутренние таски тоже получали Wait
 // - возможно, заставить Invoke возвращать yield sequence of Task?
 
-//ToDo ...(.., 1, @prev.ev) - все проверить, обязательно
-// - если эвент Zero - получаем вылет
-
 //ToDo лямбды захватывающие параметры и переменные - #1881
 
 //ToDo вычислять параметры асинхронно
@@ -194,7 +191,7 @@ type
     begin
       Result := 
         KernelArg.Create(Marshal.SizeOf&<TRecord>)
-        .NewQueue.WriteData(@val, offset, Marshal.SizeOf&<TRecord>);
+        .NewQueue.WriteData(@val, 0, Marshal.SizeOf&<TRecord>);
     end;
     
     {$endregion Queue's}
@@ -703,13 +700,17 @@ type
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
-      prev  .Invoke(c, cq, prev_ev);
+      var ev_lst := new List<cl_event>;
       
-      ptr   .Invoke(c, cq, cl_event.Zero); if ptr    .ev<>cl_event.Zero then cl.WaitForEvents(1,@ptr.ev).RaiseIfError;
-      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev).RaiseIfError;
-      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev).RaiseIfError;
+      prev  .Invoke(c, cq, prev_ev      ); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
       
-      cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@self.ev).RaiseIfError;
+      ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
+      offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      if ev_lst.Count=0 then
+        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@self.ev).RaiseIfError;
+        cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,ev_lst.ToArray,self.ev).RaiseIfError;
       
     end;
     
@@ -728,22 +729,37 @@ type
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
-      prev  .Invoke(c, cq, prev_ev);
+      var ev_lst := new List<cl_event>;
+      var ec: ErrorCode;
       
-      a     .Invoke(c, cq, cl_event.Zero); if a      .ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
-      offset.Invoke(c, cq, cl_event.Zero); if offset .ev<>cl_event.Zero then cl.WaitForEvents(1,@offset.ev).RaiseIfError;
-      len   .Invoke(c, cq, cl_event.Zero); if len    .ev<>cl_event.Zero then cl.WaitForEvents(1,@len.ev).RaiseIfError;
+      prev  .Invoke(c, cq,       prev_ev); if prev  .ev<>cl_event.Zero then ev_lst += prev.ev;
       
-      var gchnd := GCHandle.Alloc(a.res);
-      cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@self.ev).RaiseIfError;
+      a     .Invoke(c, cq, cl_event.Zero);
+      offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      self.ev := cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
       
       Task.Run(()->
       begin
-        cl.WaitForEvents(1,@self.ev).RaiseIfError;
+        if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
+        var gchnd := GCHandle.Alloc(a.res);
+        
+        var buff_ev: cl_event;
+        if ev_lst.Count=0 then
+          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,ev_lst.ToArray,buff_ev).RaiseIfError;
+        cl.WaitForEvents(1,@buff_ev).RaiseIfError;
+        
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
         gchnd.Free;
       end);
       
     end;
+    
+    public procedure Finalize; override :=
+    cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   
@@ -801,21 +817,40 @@ type
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
-      prev.Invoke(c, cq, prev_ev);
+      var ev_lst := new List<cl_event>;
+      var ec: ErrorCode;
       
-      var args := args_q.ConvertAll(arg_q->
+      prev.Invoke(c, cq, prev_ev);
+      if prev.ev<>cl_event.Zero then
+        ev_lst += prev.ev;
+      
+      foreach var arg_q in args_q do
       begin
         arg_q.Invoke(c, cq, cl_event.Zero);
-        cl.WaitForEvents(1,@arg_q.ev).RaiseIfError;
-        Result := arg_q.res;
+        if arg_q.ev<>cl_event.Zero then
+          ev_lst += arg_q.ev;
+      end;
+      
+      cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
+      
+      Task.Run(()->
+      begin
+        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
+        
+        for var i := 0 to args_q.Length-1 do
+          cl.SetKernelArg(org._kernel, i, args_q[i].res.sz, args_q[i].res.memobj).RaiseIfError;
+        
+        cl.EnqueueNDRangeKernel(cq, org._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@self.ev).RaiseIfError;
+        cl.WaitForEvents(1,@self.ev).RaiseIfError;
+        
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
       end);
       
-      for var i := 0 to args.Length-1 do
-        cl.SetKernelArg(org._kernel, i, args[i].sz, args[i].memobj).RaiseIfError;
-      
-      cl.EnqueueNDRangeKernel(cq, org._kernel, work_szs.Length, nil,work_szs,nil, 1,@prev.ev,@self.ev).RaiseIfError;
-      
     end;
+    
+    public procedure Finalize; override :=
+    cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   
