@@ -437,6 +437,8 @@ end;
 
 {$region HostFunc}
 
+var костыль_для_CommandQueueHostFunc_prev_ev: cl_event; // ToDo #1881
+
 procedure CommandQueueHostFunc<T>.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event);
 begin
   var ec: ErrorCode;
@@ -444,9 +446,10 @@ begin
   self.ev := cl.CreateUserEvent(c._context, ec);
   ec.RaiseIfError;
   
+  костыль_для_CommandQueueHostFunc_prev_ev := prev_ev;
   Task.Run(()->
   begin
-    if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+    if костыль_для_CommandQueueHostFunc_prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@костыль_для_CommandQueueHostFunc_prev_ev).RaiseIfError;
     self.res := f();
     cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
   end);
@@ -464,6 +467,8 @@ type
   CommandQueueSyncList<T> = sealed class(CommandQueue<T>)
     public lst: List<CommandQueueBase>;
     
+    private костыль_для_prev_ev: cl_event; // ToDo #1881
+    
     public procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
       var ec: ErrorCode;
@@ -477,9 +482,10 @@ type
         prev_ev := sq.ev;
       end;
       
+      костыль_для_prev_ev := prev_ev;
       Task.Run(()->
       begin
-        if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+        if костыль_для_prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@костыль_для_prev_ev).RaiseIfError;
         self.res := T(lst[lst.Count-1].GetRes);
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
@@ -609,6 +615,8 @@ type
       self.len := len;
     end;
     
+    private костыль_для_cq: cl_event; // ToDo #1881
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
       var ec: ErrorCode;
@@ -623,14 +631,15 @@ type
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
+      костыль_для_cq := cq;
       Task.Run(()->
       begin
         if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
-          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError;
-          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1, @buff_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
@@ -651,6 +660,8 @@ type
       self.len := len;
     end;
     
+    private костыль_для_cq: cl_event; // ToDo #1881
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
       var ev_lst := new List<cl_event>;
@@ -665,6 +676,7 @@ type
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
+      костыль_для_cq := cq;
       Task.Run(()->
       begin
         if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
@@ -674,8 +686,8 @@ type
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
-          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
-          cl.EnqueueWriteBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueWriteBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1,@buff_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
@@ -715,6 +727,8 @@ type
       self.len := len;
     end;
     
+    private костыль_для_cq: cl_event; // ToDo #1881
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
       var ec: ErrorCode;
@@ -729,14 +743,15 @@ type
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
+      костыль_для_cq := cq;
       Task.Run(()->
       begin
         if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
-          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError;
-          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
+          cl.EnqueueReadBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueReadBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1, @buff_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
@@ -757,6 +772,8 @@ type
       self.len := len;
     end;
     
+    private костыль_для_cq: cl_event; // ToDo #1881
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
       var ev_lst := new List<cl_event>;
@@ -771,6 +788,7 @@ type
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
+      костыль_для_cq := cq;
       Task.Run(()->
       begin
         if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
@@ -780,8 +798,8 @@ type
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
-          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
-          cl.EnqueueReadBuffer(cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@buff_ev).RaiseIfError;
+          cl.EnqueueReadBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError;
+          cl.EnqueueReadBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1,@buff_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
@@ -847,6 +865,8 @@ type
       self.args_q := args;
     end;
     
+    private костыль_для_cq: cl_event; // ToDo #1881
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
       var ev_lst := new List<cl_event>;
@@ -866,6 +886,7 @@ type
       cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
+      костыль_для_cq := cq;
       Task.Run(()->
       begin
         if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
@@ -874,7 +895,7 @@ type
           cl.SetKernelArg(org._kernel, i, args_q[i].res.sz, args_q[i].res.memobj).RaiseIfError;
         
         var kernel_ev: cl_event;
-        cl.EnqueueNDRangeKernel(cq, org._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@kernel_ev).RaiseIfError;
+        cl.EnqueueNDRangeKernel(костыль_для_cq, org._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@kernel_ev).RaiseIfError;
         cl.WaitForEvents(1,@kernel_ev).RaiseIfError;
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
