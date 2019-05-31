@@ -265,7 +265,8 @@ type
     public static property REFERENCE_COUNT:                         DeviceInfoType read new DeviceInfoType($1047);
     public static property PREFERRED_INTEROP_USER_SYNC:             DeviceInfoType read new DeviceInfoType($1048);
     public static property PRINTF_BUFFER_SIZE:                      DeviceInfoType read new DeviceInfoType($1049);
-    public static property IMAGE_PITCH_ALIGNMENT2030NMENT:          DeviceInfoType read new DeviceInfoType($104B);
+    public static property IMAGE_PITCH_ALIGNMENT:                   DeviceInfoType read new DeviceInfoType($104A);
+    public static property IMAGE_BASE_ADDRESS_ALIGNMENT:            DeviceInfoType read new DeviceInfoType($104B);
     public static property MAX_READ_WRITE_IMAGE_ARGS:               DeviceInfoType read new DeviceInfoType($104C);
     public static property MAX_GLOBAL_VARIABLE_SIZE:                DeviceInfoType read new DeviceInfoType($104D);
     public static property QUEUE_ON_DEVICE_PROPERTIES:              DeviceInfoType read new DeviceInfoType($104E);
@@ -330,8 +331,8 @@ type
     public static property PROPERTIES:      CommandQueueInfoType read new CommandQueueInfoType($1093);
     public static property SIZE:            CommandQueueInfoType read new CommandQueueInfoType($1094);
     public static property DEVICE_DEFAULT:  CommandQueueInfoType read new CommandQueueInfoType($1095);
-    public static property PRIORITY_KHR:    CommandQueueInfoType read new CommandQueueInfoType($1096);
-    public static property THROTTLE_KHR:    CommandQueueInfoType read new CommandQueueInfoType($1097);
+    public static property PRIORITY_KHR:    CommandQueueInfoType read new CommandQueueInfoType($1096); // cl_ext
+    public static property THROTTLE_KHR:    CommandQueueInfoType read new CommandQueueInfoType($1097); // cl_ext
     
   end;
   
@@ -389,7 +390,7 @@ type
     public static property ASSOCIATED_MEMOBJECT:  MemInfoType read new MemInfoType($1107);
     public static property OFFSET:                MemInfoType read new MemInfoType($1108);
     public static property USES_SVM_POINTER:      MemInfoType read new MemInfoType($1109);
-    public static property USES_SVM_POINTER_ARM:  MemInfoType read new MemInfoType($40B7);
+    public static property USES_SVM_POINTER_ARM:  MemInfoType read new MemInfoType($40B7); // cl_ext
     
   end;
   
