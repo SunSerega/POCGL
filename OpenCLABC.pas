@@ -33,6 +33,9 @@ uses System.Runtime.InteropServices;
 // - надо только чтоб все внутренние таски тоже получали Wait
 // - возможно, заставить Invoke возвращать yield sequence of Task?
 
+//ToDo юзер-эвенты надо удалять только если они не Zero, и так же удалять перед пересозданием
+// - на случай, если очередь не выполняется или выполняется несколько раз
+
 //ToDo issue компилятора:
 // - #1881
 // - #1947
@@ -889,6 +892,8 @@ type
       костыль_для_cq := cq;
       Task.Run(()->
       begin
+        if ev_lst=nil then System.Console.Beep;
+        halt;
         if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
         
         for var i := 0 to args_q.Length-1 do

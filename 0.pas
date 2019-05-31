@@ -1,5 +1,7 @@
 ﻿uses OpenCLABC;
 {$resource Samples\OpenCL\MatrMlt.cl}
+//ToDo строка 892 - не захватывает локальную переменную, а тупо создаёт новую
+// - сделать issue
 
 const
   MatrW = 4; // можно поменять на любое положительное значение
