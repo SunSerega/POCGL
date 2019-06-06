@@ -1,15 +1,15 @@
 ﻿
-(************************************************************************************)
+//*****************************************************************************************************\\
 // Copyright (©) Cergey Latchenko ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // This code is distributed under the Unlicense
 // For details see LICENSE file or this:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
-(************************************************************************************)
+//*****************************************************************************************************\\
 // Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // Этот код распространяется под Unlicense
 // Для деталей смотрите в файл LICENSE или это:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
-(************************************************************************************)
+//*****************************************************************************************************\\
 
 ///
 /// Выскокоуровневая оболочка для модуля OpenCL
@@ -37,10 +37,10 @@ uses System.Runtime.InteropServices;
 // - на случай, если очередь не выполняется или выполняется несколько раз
 
 //ToDo issue компилятора:
+// - #1880
 // - #1881
 // - #1947
 // - #1952
-// - #1957
 // - #1958
 
 type
@@ -97,7 +97,7 @@ type
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     
     public procedure Finalize; override :=
-    cl.ReleaseEvent(self.ev).RaiseIfError;
+    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   
@@ -247,6 +247,9 @@ type
     KernelCommandQueue.Wrap(self);
     
     {$endregion Queue's}
+    
+    public procedure Finalize; override :=
+    cl.ReleaseKernel(self._kernel).RaiseIfError;
     
   end;
   
@@ -460,7 +463,7 @@ begin
 end;
 
 static function CommandQueue<T>.operator implicit(o: T): CommandQueue<T> :=
-new CommandQueueHostFunc<T>(o) as CommandQueue<T>; //ToDo #1957
+new CommandQueueHostFunc<T>(o);
 
 {$endregion HostFunc}
 
@@ -496,7 +499,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    cl.ReleaseEvent(self.ev).RaiseIfError;
+    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
 
@@ -514,7 +517,7 @@ begin
     res.lst.InsertRange(0, psl.lst) else
     res.lst.Insert(0, q1);
   
-  Result := res as CommandQueue<T2>; //ToDo #1957
+  Result := res;
 end;
 
 {$endregion SyncList}
@@ -547,7 +550,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    cl.ReleaseEvent(self.ev).RaiseIfError;
+    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
 
@@ -565,7 +568,7 @@ begin
     res.lst.InsertRange(0, pasl.lst) else
     res.lst.Insert(0, q1);
   
-  Result := res as CommandQueue<T2>; //ToDo #1957
+  Result := res;
 end;
 
 {$endregion AsyncList}
@@ -619,6 +622,7 @@ type
     end;
     
     private костыль_для_cq: cl_event; // ToDo #1881
+    private костыль_для_ev_lst: List<cl_event>; //ToDo #1880
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
@@ -635,9 +639,10 @@ type
       ec.RaiseIfError;
       
       костыль_для_cq := cq;
+      костыль_для_ev_lst := ev_lst;
       Task.Run(()->
       begin
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        if костыль_для_ev_lst.Count<>0 then cl.WaitForEvents(костыль_для_ev_lst.Count, костыль_для_ev_lst.ToArray).RaiseIfError;
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
@@ -664,6 +669,7 @@ type
     end;
     
     private костыль_для_cq: cl_event; // ToDo #1881
+    private костыль_для_ev_lst: List<cl_event>; //ToDo #1880
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
@@ -680,12 +686,13 @@ type
       ec.RaiseIfError;
       
       костыль_для_cq := cq;
+      костыль_для_ev_lst := ev_lst;
       Task.Run(()->
       begin
         if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
         var gchnd := GCHandle.Alloc(a.res);
         
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        if костыль_для_ev_lst.Count<>0 then cl.WaitForEvents(костыль_для_ev_lst.Count, костыль_для_ev_lst.ToArray).RaiseIfError;
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
@@ -700,7 +707,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    cl.ReleaseEvent(self.ev).RaiseIfError;
+    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   
@@ -731,6 +738,7 @@ type
     end;
     
     private костыль_для_cq: cl_event; // ToDo #1881
+    private костыль_для_ev_lst: List<cl_event>; //ToDo #1880
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
@@ -747,9 +755,10 @@ type
       ec.RaiseIfError;
       
       костыль_для_cq := cq;
+      костыль_для_ev_lst := ev_lst;
       Task.Run(()->
       begin
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        if костыль_для_ev_lst.Count<>0 then cl.WaitForEvents(костыль_для_ev_lst.Count, костыль_для_ev_lst.ToArray).RaiseIfError;
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
@@ -776,6 +785,7 @@ type
     end;
     
     private костыль_для_cq: cl_event; // ToDo #1881
+    private костыль_для_ev_lst: List<cl_event>; //ToDo #1880
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
@@ -792,12 +802,13 @@ type
       ec.RaiseIfError;
       
       костыль_для_cq := cq;
+      костыль_для_ev_lst := ev_lst;
       Task.Run(()->
       begin
         if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
         var gchnd := GCHandle.Alloc(a.res);
         
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
+        if костыль_для_ev_lst.Count<>0 then cl.WaitForEvents(костыль_для_ev_lst.Count, костыль_для_ev_lst.ToArray).RaiseIfError;
         
         var buff_ev: cl_event;
         if prev.ev=cl_event.Zero then
@@ -812,7 +823,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    cl.ReleaseEvent(self.ev).RaiseIfError;
+    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   
@@ -868,7 +879,8 @@ type
       self.args_q := args;
     end;
     
-    private костыль_для_cq: cl_event; // ToDo #1881
+    private костыль_для_cq: cl_event; //ToDo #1881
+    private костыль_для_ev_lst: List<cl_event>; //ToDo #1880
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
@@ -890,11 +902,10 @@ type
       ec.RaiseIfError;
       
       костыль_для_cq := cq;
+      костыль_для_ev_lst := ev_lst;
       Task.Run(()->
       begin
-        if ev_lst=nil then System.Console.Beep;
-        halt;
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
+        if костыль_для_ev_lst.Count<>0 then cl.WaitForEvents(костыль_для_ev_lst.Count,костыль_для_ev_lst.ToArray);
         
         for var i := 0 to args_q.Length-1 do
           cl.SetKernelArg(org._kernel, i, args_q[i].res.sz, args_q[i].res.memobj).RaiseIfError;
@@ -909,7 +920,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    cl.ReleaseEvent(self.ev).RaiseIfError;
+    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
   end;
   

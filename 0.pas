@@ -1,5 +1,4 @@
 ﻿uses OpenCLABC;
-{$resource Samples\OpenCL\MatrMlt.cl}
 //ToDo строка 892 - не захватывает локальную переменную, а тупо создаёт новую
 // - сделать issue
 
@@ -16,6 +15,7 @@ const
 begin
   var cont := new Context;
   
+  {$resource Samples\OpenCL\MatrMlt.cl}
   var code := new ProgramCode(cont,
     System.IO.StreamReader.Create(GetResourceStream('MatrMlt.cl')).ReadToEnd
   );
@@ -59,10 +59,10 @@ begin
     ) as CommandQueue<Kernel>
   );
   
-  var Cm := new real[MatrW,MatrW];
-  cont.SyncInvoke(
-    C.NewQueue.ReadData(Cm) as CommandQueue<KernelArg>
-  );
-  Cm.Println;
+//  var Cm := new real[MatrW,MatrW];
+//  cont.SyncInvoke(
+//    C.NewQueue.ReadData(Cm) as CommandQueue<KernelArg>
+//  );
+//  Cm.Println;
   
 end.
