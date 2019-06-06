@@ -24,6 +24,7 @@ begin
 end;
 
 begin
+  Randomize(0);
   var ec: ErrorCode;
   
   // Инициализация

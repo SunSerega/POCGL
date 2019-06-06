@@ -33,7 +33,7 @@ uses System.Runtime.InteropServices;
 // - надо только чтоб все внутренние таски тоже получали Wait
 // - возможно, заставить Invoke возвращать yield sequence of Task?
 
-//ToDo CommandQueueHostFunc при создании из o: T - заполнять сразу Result, а функция пусть будет nil
+//ToDo CommandQueueHostFunc при создании из o: T - заполнять сразу res, а функция пусть будет nil
 // - сразу минус костыли и + скорость выполнения
 
 //ToDo issue компилятора:
@@ -509,7 +509,7 @@ new CommandQueueHostFunc<T>(o);
 
 type
   CommandQueueSyncList<T> = sealed class(CommandQueue<T>)
-    public lst: List<CommandQueueBase>;
+    public lst := new List<CommandQueueBase>;
     
     private костыль_для_prev_ev: cl_event; //ToDo #1881
     
@@ -565,7 +565,7 @@ end;
 
 type
   CommandQueueAsyncList<T> = sealed class(CommandQueue<T>)
-    public lst: List<CommandQueueBase>;
+    public lst := new List<CommandQueueBase>;
     
     public procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     begin
