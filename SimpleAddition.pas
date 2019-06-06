@@ -3,6 +3,9 @@
 //Описания всех подпрограмм найдёте в справке по OpenCL:
 //www.khronos.org/registry/OpenCL/specs/2.2/html/OpenCL_API.html
 
+//ToDo issue компилятора:
+// - #1981
+
 begin
   
   // Чтение и компиляция .cl файла

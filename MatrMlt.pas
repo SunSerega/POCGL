@@ -8,7 +8,7 @@ const
   MatrByteSize = MatrL*8;
   
 //ToDo issue компилятора:
-// - #1533
+// - #1981
 
 begin
   Randomize(0);

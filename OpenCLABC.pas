@@ -43,6 +43,7 @@ uses System.Runtime.InteropServices;
 // - #1952
 // - #1958
 // - #1980
+// - #1981
 
 type
   
@@ -1008,7 +1009,7 @@ function KernelArg.GetValue<TRecord>: TRecord;
 begin
   Context.Default.SyncInvoke(
     self.NewQueue
-    .ReadValue(Result) as CommandQueue<KernelArg> //ToDo #???? - лишний as
+    .ReadValue(Result) as CommandQueue<KernelArg> //ToDo #1981
   );
 end;
 
@@ -1021,7 +1022,7 @@ begin
   
   Context.Default.SyncInvoke(
     self.NewQueue
-    .ReadData(Result) as CommandQueue<KernelArg> //ToDo #???? - лишний as
+    .ReadData(Result) as CommandQueue<KernelArg> //ToDo #1981
   );
   
 end;
