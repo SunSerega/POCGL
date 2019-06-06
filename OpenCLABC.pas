@@ -33,9 +33,6 @@ uses System.Runtime.InteropServices;
 // - надо только чтоб все внутренние таски тоже получали Wait
 // - возможно, заставить Invoke возвращать yield sequence of Task?
 
-//ToDo юзер-эвенты надо удалять только если они не Zero, и так же удалять перед пересозданием
-// - на случай, если очередь не выполняется или выполняется несколько раз
-
 //ToDo issue компилятора:
 // - #1880
 // - #1881
@@ -58,6 +55,9 @@ type
   
   CommandQueueBase = abstract class
     protected ev: cl_event;
+    
+    protected procedure ClearEvent :=
+    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); abstract;
     
@@ -97,7 +97,7 @@ type
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event); override;
     
     public procedure Finalize; override :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    ClearEvent;
     
   end;
   
@@ -449,6 +449,7 @@ procedure CommandQueueHostFunc<T>.Invoke(c: Context; cq: cl_command_queue; prev_
 begin
   var ec: ErrorCode;
   
+  ClearEvent;
   self.ev := cl.CreateUserEvent(c._context, ec);
   ec.RaiseIfError;
   
@@ -479,6 +480,7 @@ type
     begin
       var ec: ErrorCode;
       
+      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
@@ -499,7 +501,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    ClearEvent;
     
   end;
 
@@ -532,6 +534,7 @@ type
     begin
       var ec: ErrorCode;
       
+      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
@@ -550,7 +553,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    ClearEvent;
     
   end;
 
@@ -635,6 +638,7 @@ type
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
+      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
@@ -654,6 +658,9 @@ type
       end);
       
     end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   KernelArgQueueWriteArray = sealed class(KernelArgCommandQueue)
@@ -682,6 +689,7 @@ type
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
+      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
@@ -707,7 +715,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    ClearEvent;
     
   end;
   
@@ -751,6 +759,7 @@ type
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
+      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
@@ -770,6 +779,9 @@ type
       end);
       
     end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   KernelArgQueueReadArray = sealed class(KernelArgCommandQueue)
@@ -798,6 +810,7 @@ type
       offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
+      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
@@ -823,7 +836,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    ClearEvent;
     
   end;
   
@@ -898,6 +911,7 @@ type
           ev_lst += arg_q.ev;
       end;
       
+      ClearEvent;
       cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
@@ -920,7 +934,7 @@ type
     end;
     
     public procedure Finalize; override :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    ClearEvent;
     
   end;
   
