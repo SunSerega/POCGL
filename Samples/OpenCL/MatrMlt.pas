@@ -5,7 +5,7 @@ uses System.Runtime.InteropServices;
 const
   MatrW = 4; // можно поменять на любое положительное значение
   
-  VecByteSize = VecByteSize;
+  VecByteSize = MatrW*8;
   MatrL = MatrW*MatrW;
   MatrByteSize = MatrL*8;
 

@@ -384,21 +384,21 @@ type
   end;
   
   //S
-  MemInfoType = record
+  MemObjInfoType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property &TYPE:                 MemInfoType read new MemInfoType($1100);
-    public static property FLAGS:                 MemInfoType read new MemInfoType($1101);
-    public static property SIZE:                  MemInfoType read new MemInfoType($1102);
-    public static property HOST_PTR:              MemInfoType read new MemInfoType($1103);
-    public static property MAP_COUNT:             MemInfoType read new MemInfoType($1104);
-    public static property REFERENCE_COUNT:       MemInfoType read new MemInfoType($1105);
-    public static property CONTEXT:               MemInfoType read new MemInfoType($1106);
-    public static property ASSOCIATED_MEMOBJECT:  MemInfoType read new MemInfoType($1107);
-    public static property OFFSET:                MemInfoType read new MemInfoType($1108);
-    public static property USES_SVM_POINTER:      MemInfoType read new MemInfoType($1109);
-    public static property USES_SVM_POINTER_ARM:  MemInfoType read new MemInfoType($40B7); // cl_ext
+    public static property &TYPE:                 MemObjInfoType read new MemObjInfoType($1100);
+    public static property FLAGS:                 MemObjInfoType read new MemObjInfoType($1101);
+    public static property SIZE:                  MemObjInfoType read new MemObjInfoType($1102);
+    public static property HOST_PTR:              MemObjInfoType read new MemObjInfoType($1103);
+    public static property MAP_COUNT:             MemObjInfoType read new MemObjInfoType($1104);
+    public static property REFERENCE_COUNT:       MemObjInfoType read new MemObjInfoType($1105);
+    public static property CONTEXT:               MemObjInfoType read new MemObjInfoType($1106);
+    public static property ASSOCIATED_MEMOBJECT:  MemObjInfoType read new MemObjInfoType($1107);
+    public static property OFFSET:                MemObjInfoType read new MemObjInfoType($1108);
+    public static property USES_SVM_POINTER:      MemObjInfoType read new MemObjInfoType($1109);
+    public static property USES_SVM_POINTER_ARM:  MemObjInfoType read new MemObjInfoType($40B7); // cl_ext
     
   end;
   
@@ -1751,9 +1751,9 @@ type
     static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: ^cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     
-    static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfoType; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    static function GetMemObjectInfo(memobj: cl_mem; param_name: MemObjInfoType; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
-    static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfoType; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: ^UIntPtr): ErrorCode;
+    static function GetMemObjectInfo(memobj: cl_mem; param_name: MemObjInfoType; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: ^UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     {$endregion Общее}

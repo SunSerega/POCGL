@@ -13,10 +13,9 @@ const
 // - #1533
 
 begin
-  var cont := new Context;
   
-  {$resource Samples\OpenCL\MatrMlt.cl}
-  var code := new ProgramCode(cont,
+  {$resource MatrMlt.cl}
+  var code := new ProgramCode(Context.Default,
     System.IO.StreamReader.Create(GetResourceStream('MatrMlt.cl')).ReadToEnd
   );
   
@@ -27,7 +26,10 @@ begin
   var V1 := new KernelArg(VecByteSize);
   var V2 := new KernelArg(VecByteSize);
   
-  cont.SyncInvoke(
+  Context.Default.SyncInvoke(
+    
+    
+    
     code['MatrMltMatr'].NewQueue.Exec(MatrW, MatrW,
       
       A.NewQueue.WriteData(HFQ&<System.Array>(
@@ -36,7 +38,9 @@ begin
         begin
           System.Threading.Monitor.Enter(output); //ToDo #1533 // то же самое что lock, только ручками
           'Матрица A:'.Println;
-          Result := MatrRandomReal(MatrW,MatrW,0,1).Println;
+          Result := MatrRandomReal(MatrW,MatrW,0,1)
+          .Println
+          ;
           System.Threading.Monitor.Exit(output); //ToDo #1533
         end
       )) as CommandQueue<KernelArg>,
@@ -47,7 +51,9 @@ begin
         begin
           System.Threading.Monitor.Enter(output); //ToDo #1533 // то же самое что lock, только ручками
           'Матрица B:'.Println;
-          Result := MatrRandomReal(MatrW,MatrW,0,1).Println;
+          Result := MatrRandomReal(MatrW,MatrW,0,1)
+          .Println
+          ;
           System.Threading.Monitor.Exit(output); //ToDo #1533
         end
       )) as CommandQueue<KernelArg>,
@@ -57,12 +63,25 @@ begin
       KernelArg.ValueQueue(MatrW) as CommandQueue<KernelArg>
       
     ) as CommandQueue<Kernel>
+    
+    
+    
+//    + (
+//      
+//      
+//      
+//    )
+    
+    
+    
   );
   
 //  var Cm := new real[MatrW,MatrW];
 //  cont.SyncInvoke(
 //    C.NewQueue.ReadData(Cm) as CommandQueue<KernelArg>
+////    A.NewQueue.ReadData(Cm) as CommandQueue<KernelArg>
 //  );
+//  'Матрица C:'.Println;
 //  Cm.Println;
   
 end.
