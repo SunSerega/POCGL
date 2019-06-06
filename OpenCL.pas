@@ -1,15 +1,15 @@
 ﻿
-(************************************************************************************)
+//*****************************************************************************************************\\
 // Copyright (©) Cergey Latchenko ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // This code is distributed under the Unlicense
 // For details see LICENSE file or this:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
-(************************************************************************************)
+//*****************************************************************************************************\\
 // Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // Этот код распространяется под Unlicense
 // Для деталей смотрите в файл LICENSE или это:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
-(************************************************************************************)
+//*****************************************************************************************************\\
 
 ///
 /// Код переведён отсюда:
@@ -24,13 +24,21 @@
 unit OpenCL;
 
 //ToDo расширения с котороми я не знаю что делать:
+//
 // - cl_ext.h
-//   - cl_qcom_ext_host_ptr
-//   - cl_qcom_ext_host_ptr_iocoherent
-//   - cl_qcom_ion_host_ptr
-//   - cl_qcom_android_native_buffer_host_ptr
-//   - cl_img_yuv_image
-//ToDo кто знает что они делают - напишите в issue, пожалуйста
+// -- cl_qcom_ext_host_ptr
+// -- cl_qcom_ext_host_ptr_iocoherent
+// -- cl_qcom_ion_host_ptr
+// -- cl_qcom_android_native_buffer_host_ptr
+// -- cl_img_yuv_image
+//
+// - cl_d3d11.h
+// -- там нет функций, есть только энумы и коды ошибок. Но в чём смысл если возвращать и принимать их нечему?
+//
+// - cl_platform.h
+// -- есть только описание типов и констант, которые нигде не используются. Где они нужны?
+//
+//ToDo кто что то знает - напишите в issue, пожалуйста
 
 uses System;
 uses System.Runtime.InteropServices;
@@ -2125,6 +2133,12 @@ type
     external 'opencl.dll' name 'clSetKernelArgSVMPointerARM';
     
     {$endregion ARM}
+    
+  end;
+  
+  cl_gl = static class
+    
+    
     
   end;
   
