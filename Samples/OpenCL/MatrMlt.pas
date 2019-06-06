@@ -80,13 +80,13 @@ begin
   var BmemObj := cl.CreateBuffer(context, MemoryFlags.READ_WRITE or MemoryFlags.USE_HOST_PTR, new UIntPtr(MatrByteSize), Bmem, ec);
   ec.RaiseIfError;
   
-  writeln('Вектор V:');
-  var V := ArrRandomReal(MatrW);
-  V.Println;
+  writeln('Вектор V1:');
+  var V1 := ArrRandomReal(MatrW);
+  V1.Println;
   writeln;
-  var Vmem := Marshal.AllocHGlobal(VecByteSize);
-  Marshal.Copy(V,0, Vmem,MatrW);
-  var VmemObj := cl.CreateBuffer(context, MemoryFlags.READ_WRITE or MemoryFlags.USE_HOST_PTR, new UIntPtr(VecByteSize), Vmem, ec);
+  var V1mem := Marshal.AllocHGlobal(VecByteSize);
+  Marshal.Copy(V1,0, V1mem,MatrW);
+  var V1memObj := cl.CreateBuffer(context, MemoryFlags.READ_WRITE or MemoryFlags.USE_HOST_PTR, new UIntPtr(VecByteSize), V1mem, ec);
   ec.RaiseIfError;
   
   var CmemObj := cl.CreateBuffer(context, MemoryFlags.READ_WRITE, new UIntPtr(MatrByteSize), nil, @ec);
@@ -111,7 +111,7 @@ begin
   // Выполнение V2 := C*V
   
   cl.SetKernelArg(MatrMltVecKernel, 0, new UIntPtr(UIntPtr.Size), CmemObj).RaiseIfError;
-  cl.SetKernelArg(MatrMltVecKernel, 1, new UIntPtr(UIntPtr.Size), VmemObj).RaiseIfError;
+  cl.SetKernelArg(MatrMltVecKernel, 1, new UIntPtr(UIntPtr.Size), V1memObj).RaiseIfError;
   cl.SetKernelArg(MatrMltVecKernel, 2, new UIntPtr(UIntPtr.Size), V2memobj).RaiseIfError;
   cl.SetKernelArg(MatrMltVecKernel, 3, new UIntPtr(UIntPtr.Size), WmemObj).RaiseIfError;
   
@@ -120,7 +120,7 @@ begin
   // Чтение и вывод результата
   
   cl.EnqueueReadBuffer(command_queue, CmemObj,  0, new UIntPtr(0), new UIntPtr(MatrByteSize), Amem, 0,nil,nil).RaiseIfError;
-  cl.EnqueueReadBuffer(command_queue, V2memObj, 0, new UIntPtr(0), new UIntPtr(VecByteSize),  Vmem, 0,nil,nil).RaiseIfError;
+  cl.EnqueueReadBuffer(command_queue, V2memObj, 0, new UIntPtr(0), new UIntPtr(VecByteSize),  V1mem, 0,nil,nil).RaiseIfError;
   
   cl.Finish(command_queue).RaiseIfError;
   
@@ -129,8 +129,8 @@ begin
   A.Println;
   writeln;
   
-  writeln('Вектор V2 = C*V:');
-  Marshal.Copy(Vmem,V,0,MatrW);
-  V.Println;
+  writeln('Вектор V2 = C*V1:');
+  Marshal.Copy(V1mem,V1,0,MatrW);
+  V1.Println;
   
 end.
