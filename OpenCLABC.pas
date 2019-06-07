@@ -32,6 +32,9 @@ uses System.Runtime.InteropServices;
 // - сразу минус костыли и + скорость выполнения
 
 //ToDo клонирование очередей
+// - для паралельного выполнения из разных потоков
+
+//ToDo синхронные дубли всего из KernelArgCommandQueue в KernelArg
 
 //ToDo issue компилятора:
 // - #1880
@@ -221,6 +224,9 @@ type
     public function CopyFrom(arg: CommandQueue<KernelArg>; from, &to, len: CommandQueue<integer>): KernelArgCommandQueue;
     public function CopyTo  (arg: CommandQueue<KernelArg>; from, &to, len: CommandQueue<integer>): KernelArgCommandQueue;
     
+    public function CopyFrom(arg: CommandQueue<KernelArg>): KernelArgCommandQueue;
+    public function CopyTo  (arg: CommandQueue<KernelArg>): KernelArgCommandQueue;
+    
     {$endregion Copy}
     
     public procedure Finalize; override :=
@@ -270,15 +276,101 @@ type
     
     {$endregion Queue's}
     
-    {$region Non-Queue IO}
+    {$region Write}
     
-    public function GetValue<TRecord>: TRecord;
-    where TRecord: record;
+    public function WriteData(ptr: CommandQueue<IntPtr>): KernelArg;
+    public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): KernelArg;
     
-    public function GetArray<TArray>(params szs: array of integer): TArray;
-    where TArray: &Array;
+    public function WriteData(ptr: pointer) := WriteData(IntPtr(ptr));
+    public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>) := WriteData(IntPtr(ptr), offset, len);
     
-    {$endregion Non-Queue IO}
+    public function WriteData(a: CommandQueue<&Array>): KernelArg;
+    public function WriteData(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): KernelArg;
+    
+    public function WriteData(a: &Array) := WriteData(new CommandQueueHostFunc<&Array>(a));
+    public function WriteData(a: &Array; offset, len: CommandQueue<integer>) := WriteData(new CommandQueueHostFunc<&Array>(a), offset,len);
+    
+    public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): KernelArg; where TRecord: record;
+    begin
+      Result := WriteData(@val, offset, Marshal.SizeOf&<TRecord>);
+    end;
+    
+    {$endregion Write}
+    
+    {$region Read}
+    
+    public function ReadData(ptr: CommandQueue<IntPtr>): KernelArg;
+    public function ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): KernelArg;
+    
+    public function ReadData(ptr: pointer) := ReadData(IntPtr(ptr));
+    public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>) := ReadData(IntPtr(ptr), offset, len);
+    
+    public function ReadData(a: CommandQueue<&Array>): KernelArg;
+    public function ReadData(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): KernelArg;
+    
+    public function ReadData(a: &Array) := ReadData(new CommandQueueHostFunc<&Array>(a));
+    public function ReadData(a: &Array; offset, len: CommandQueue<integer>) := ReadData(new CommandQueueHostFunc<&Array>(a), offset,len);
+    
+    public function ReadValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): KernelArg; where TRecord: record;
+    begin
+      Result := ReadData(@val, offset, Marshal.SizeOf&<TRecord>);
+    end;
+    
+    {$endregion Read}
+    
+    {$region Get}
+    
+    public function GetData(offset, len: CommandQueue<integer>): IntPtr;
+    public function GetData := GetData(0,integer(self.Size32));
+    
+    public function GetArrayAt<TArray>(offset: CommandQueue<integer>; szs: CommandQueue<array of integer>): TArray; where TArray: &Array;
+    public function GetArray<TArray>(szs: CommandQueue<array of integer>): TArray; where TArray: &Array; begin Result := GetArrayAt&<TArray>(0, szs); end;
+    
+    public function GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of integer): TArray; where TArray: &Array;
+    begin Result := GetArrayAt&<TArray>(offset, new CommandQueueHostFunc<array of integer>(szs)); end;
+    public function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
+    begin Result := GetArrayAt&<TArray>(0, new CommandQueueHostFunc<array of integer>(szs)); end;
+    
+    public function GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord; where TRecord: record;
+    public function GetValue<TRecord>: TRecord; where TRecord: record; begin Result := GetValueAt&<TRecord>(0); end;
+    
+    {$endregion Get}
+    
+    {$region Fill}
+    
+    public function PatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): KernelArg;
+    public function PatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): KernelArg;
+    
+    public function PatternFill(ptr: pointer; pattern_len: CommandQueue<integer>) := PatternFill(IntPtr(ptr), pattern_len);
+    public function PatternFill(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := PatternFill(IntPtr(ptr), pattern_len, offset, len);
+    
+    public function PatternFill(a: CommandQueue<&Array>): KernelArg;
+    public function PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): KernelArg;
+    
+    public function PatternFill(a: &Array) := PatternFill(new CommandQueueHostFunc<&Array>(a));
+    public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(new CommandQueueHostFunc<&Array>(a), offset,len);
+    
+    public function PatternFill<TRecord>(val: TRecord): KernelArg; where TRecord: record;
+    begin
+      Result := PatternFill(@val, Marshal.SizeOf&<TRecord>);
+    end;
+    
+    public function PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): KernelArg; where TRecord: record;
+    begin
+      Result := PatternFill(@val, Marshal.SizeOf&<TRecord>, offset,len);
+    end;
+    
+    {$endregion Fill}
+    
+    {$region Copy}
+    
+    public function CopyFrom(arg: KernelArg; from, &to, len: CommandQueue<integer>): KernelArg;
+    public function CopyTo  (arg: KernelArg; from, &to, len: CommandQueue<integer>): KernelArg;
+    
+    public function CopyFrom(arg: KernelArg): KernelArg;
+    public function CopyTo  (arg: KernelArg): KernelArg;
+    
+    {$endregion Copy}
     
     public procedure Finalize; override :=
     if self.memobj<>cl_mem.Zero then cl.ReleaseMemObject(self.memobj);
@@ -507,9 +599,17 @@ type
   
   {$endregion ProgramCode}
   
+{$region Сахарные подпрограммы}
+
 ///HostFuncQueue
 ///Создаёт новую CommandQueueHostFunc
 function HFQ<T>(f: ()->T): CommandQueueHostFunc<T>;
+
+///HostFuncQueue
+///Создаёт новую CommandQueueHostFunc
+function HFQ(p: ()->()): CommandQueueHostFunc<object>;
+
+{$endregion Сахарные подпрограммы}
 
 implementation
 
@@ -1150,6 +1250,9 @@ new KernelArgQueueCopy(self, arg,self as CommandQueue<KernelArg>, from,&to, len)
 function KernelArgCommandQueue.CopyTo(arg: CommandQueue<KernelArg>; from, &to, len: CommandQueue<integer>) :=
 new KernelArgQueueCopy(self, self as CommandQueue<KernelArg>,arg, &to,from, len); //ToDo #1981
 
+function KernelArgCommandQueue.CopyFrom(arg: CommandQueue<KernelArg>) := CopyFrom(arg, 0,0, integer(self.org.Size32));
+function KernelArgCommandQueue.CopyTo(arg: CommandQueue<KernelArg>) := CopyTo(arg, 0,0, integer(self.org.Size32));
+
 {$endregion Copy}
 
 {$endregion KernelArg}
@@ -1256,6 +1359,26 @@ new KernelQueueExec(self, work_szs, args);
 
 {$region Misc implementation}
 
+{$region Сахарные подпрограммы}
+
+function HFQ<T>(f: ()->T) :=
+new CommandQueueHostFunc<T>(f);
+
+function HFQ(p: ()->()) :=
+HFQ&<object>(
+  ()->
+  begin
+    p();
+    Result := nil;
+  end
+);
+
+{$endregion Сахарные подпрограммы}
+
+{$region KernelArg}
+
+{$region constructor's}
+
 procedure KernelArg.Init(c: Context);
 begin
   var ec: ErrorCode;
@@ -1281,28 +1404,6 @@ begin
   
 end;
 
-function KernelArg.GetValue<TRecord>: TRecord;
-begin
-  Context.Default.SyncInvoke(
-    self.NewQueue
-    .ReadValue(Result) as CommandQueue<KernelArg> //ToDo #1981
-  );
-end;
-
-function KernelArg.GetArray<TArray>(params szs: array of integer): TArray;
-begin
-  Result := TArray(System.Array.CreateInstance(
-    typeof(TArray).GetElementType,
-    szs
-  ));
-  
-  Context.Default.SyncInvoke(
-    self.NewQueue
-    .ReadData(Result) as CommandQueue<KernelArg> //ToDo #1981
-  );
-  
-end;
-
 constructor Kernel.Create(prog: ProgramCode; name: string);
 begin
   var ec: ErrorCode;
@@ -1312,8 +1413,104 @@ begin
   
 end;
 
-function HFQ<T>(f: ()->T) :=
-new CommandQueueHostFunc<T>(f);
+{$endregion constructor's}
+
+{$region Write}
+
+function KernelArg.WriteData(ptr: CommandQueue<IntPtr>) :=
+Context.Default.SyncInvoke(self.NewQueue.WriteData(ptr) as CommandQueue<KernelArg>);
+
+function KernelArg.WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(self.NewQueue.WriteData(ptr, offset,len) as CommandQueue<KernelArg>);
+
+function KernelArg.WriteData(a: CommandQueue<&Array>) :=
+Context.Default.SyncInvoke(self.NewQueue.WriteData(a) as CommandQueue<KernelArg>);
+
+function KernelArg.WriteData(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(self.NewQueue.WriteData(a, offset,len) as CommandQueue<KernelArg>);
+
+{$endregion Write}
+
+{$region Read}
+
+function KernelArg.ReadData(ptr: CommandQueue<IntPtr>) :=
+Context.Default.SyncInvoke(self.NewQueue.ReadData(ptr) as CommandQueue<KernelArg>);
+
+function KernelArg.ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(self.NewQueue.ReadData(ptr, offset,len) as CommandQueue<KernelArg>);
+
+function KernelArg.ReadData(a: CommandQueue<&Array>) :=
+Context.Default.SyncInvoke(self.NewQueue.ReadData(a) as CommandQueue<KernelArg>);
+
+function KernelArg.ReadData(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(self.NewQueue.ReadData(a, offset,len) as CommandQueue<KernelArg>);
+
+{$endregion Read}
+
+{$region Get}
+
+function KernelArg.GetData(offset, len: CommandQueue<integer>): IntPtr;
+begin
+  var len_val := Context.Default.SyncInvoke(len);
+  Result := Marshal.AllocHGlobal(len_val);
+  Context.Default.SyncInvoke(
+    self.NewQueue.ReadData(Result, offset,len_val) as CommandQueue<KernelArg>
+  );
+end;
+
+function KernelArg.GetArrayAt<TArray>(offset: CommandQueue<integer>; szs: CommandQueue<array of integer>): TArray;
+begin
+  var el_t := typeof(TArray).GetElementType;
+  
+  Result := TArray(System.Array.CreateInstance(
+    el_t,
+    Context.Default.SyncInvoke(szs)
+  ));
+  
+  Context.Default.SyncInvoke(
+    self.NewQueue
+    .ReadData(Result, offset, Marshal.SizeOf(el_t) * Result.Length) as CommandQueue<KernelArg> //ToDo #1981
+  );
+  
+end;
+
+function KernelArg.GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord;
+begin
+  Context.Default.SyncInvoke(
+    self.NewQueue
+    .ReadValue(Result, offset) as CommandQueue<KernelArg> //ToDo #1981
+  );
+end;
+
+{$endregion Get}
+
+{$region Fill}
+
+function KernelArg.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(self.NewQueue.PatternFill(ptr,pattern_len) as CommandQueue<KernelArg>);
+
+function KernelArg.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(self.NewQueue.PatternFill(ptr,pattern_len, offset,len) as CommandQueue<KernelArg>);
+
+function KernelArg.PatternFill(a: CommandQueue<&Array>) :=
+Context.Default.SyncInvoke(self.NewQueue.PatternFill(a) as CommandQueue<KernelArg>);
+
+function KernelArg.PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(self.NewQueue.PatternFill(a, offset,len) as CommandQueue<KernelArg>);
+
+{$endregion Fill}
+
+{$region Copy}
+
+function KernelArg.CopyFrom(arg: KernelArg; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.CopyFrom(arg, from,&to, len) as CommandQueue<KernelArg>);
+function KernelArg.CopyTo  (arg: KernelArg; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.CopyTo  (arg, from,&to, len) as CommandQueue<KernelArg>);
+
+function KernelArg.CopyFrom(arg: KernelArg) := Context.Default.SyncInvoke(self.NewQueue.CopyFrom(arg) as CommandQueue<KernelArg>);
+function KernelArg.CopyTo  (arg: KernelArg) := Context.Default.SyncInvoke(self.NewQueue.CopyTo  (arg) as CommandQueue<KernelArg>);
+
+{$endregion Copy}
+
+{$endregion KernelArg}
 
 {$endregion Misc implementation}
 
