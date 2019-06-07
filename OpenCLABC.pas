@@ -34,8 +34,6 @@ uses System.Runtime.InteropServices;
 //ToDo клонирование очередей
 // - для паралельного выполнения из разных потоков
 
-//ToDo синхронные дубли всего из KernelArgCommandQueue в KernelArg
-
 //ToDo issue компилятора:
 // - #1880
 // - #1881
@@ -427,6 +425,15 @@ type
     
     public function NewQueue :=
     KernelCommandQueue.Wrap(self);
+    
+    public function Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<KernelArg>): Kernel;
+    
+    public function Exec(work_szs: array of integer; params args: array of CommandQueue<KernelArg>) :=
+    Exec(work_szs.ConvertAll(sz->new UIntPtr(sz)), args);
+    
+    public function Exec(work_sz1: integer; params args: array of CommandQueue<KernelArg>) := Exec(new integer[](work_sz1), args);
+    public function Exec(work_sz1, work_sz2: integer; params args: array of CommandQueue<KernelArg>) := Exec(new integer[](work_sz1, work_sz2), args);
+    public function Exec(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<KernelArg>) := Exec(new integer[](work_sz1, work_sz2, work_sz3), args);
     
     {$endregion Queue's}
     
@@ -1511,6 +1518,13 @@ function KernelArg.CopyTo  (arg: KernelArg) := Context.Default.SyncInvoke(self.N
 {$endregion Copy}
 
 {$endregion KernelArg}
+
+{$region Kernel}
+
+function Kernel.Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<KernelArg>) :=
+Context.Default.SyncInvoke(self.NewQueue.Exec(work_szs, args) as CommandQueue<Kernel>);
+
+{$endregion Kernel}
 
 {$endregion Misc implementation}
 
