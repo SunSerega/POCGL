@@ -31,7 +31,7 @@ uses System.Runtime.InteropServices;
 //ToDo CommandQueueHostFunc при создании из o: T - заполнять сразу res, а функция пусть будет nil
 // - сразу минус костыли и + скорость выполнения
 
-//ToDo копирование буферов
+//ToDo клонирование очередей
 
 //ToDo issue компилятора:
 // - #1880
@@ -216,9 +216,12 @@ type
     
     {$endregion Fill}
     
-    {$region }
+    {$region Copy}
     
-    {$endregion }
+    public function CopyFrom(arg: CommandQueue<KernelArg>; from, &to, len: CommandQueue<integer>): KernelArgCommandQueue;
+    public function CopyTo  (arg: CommandQueue<KernelArg>; from, &to, len: CommandQueue<integer>): KernelArgCommandQueue;
+    
+    {$endregion Copy}
     
     public procedure Finalize; override :=
     if self.val_ptr<>IntPtr.Zero then Marshal.FreeHGlobal(val_ptr);
@@ -233,15 +236,9 @@ type
     {$region constructor's}
     
     private constructor := raise new System.NotSupportedException;
-    
-    public constructor(size: UIntPtr) :=
-    self.sz := size;
-    
-    public constructor(size: integer) :=
-    Create(new UIntPtr(size));
-    
-    public constructor(size: int64) :=
-    Create(new UIntPtr(size));
+    public constructor(size: UIntPtr) := self.sz := size;
+    public constructor(size: integer) := Create(new UIntPtr(size));
+    public constructor(size: int64)   := Create(new UIntPtr(size));
     
     public function SubBuff(offset, size: integer): KernelArg; 
     
@@ -746,7 +743,7 @@ type
           cl.EnqueueWriteBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1, @buff_ev).RaiseIfError;
         
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
       
     end;
@@ -873,7 +870,7 @@ type
           cl.EnqueueReadBuffer(костыль_для_cq, org.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1, @buff_ev).RaiseIfError;
         
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
       
     end;
@@ -1002,7 +999,7 @@ type
           cl.EnqueueFillBuffer(костыль_для_cq, org.memobj, ptr.res,new UIntPtr(pattern_len.res), new UIntPtr(offset.res),new UIntPtr(len.res), 1,@prev.ev,@buff_ev).RaiseIfError;
         cl.WaitForEvents(1, @buff_ev).RaiseIfError;
         
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
       
     end;
@@ -1084,6 +1081,76 @@ function KernelArgCommandQueue.PatternFill(ptr: CommandQueue<IntPtr>; pattern_le
 function KernelArgCommandQueue.PatternFill(a: CommandQueue<&Array>) := PatternFill(a, 0,integer(org.sz.ToUInt32));
 
 {$endregion PatternFill}
+
+{$region Copy}
+
+type
+  KernelArgQueueCopy = sealed class(KernelArgCommandQueue)
+    public f_arg, t_arg: CommandQueue<KernelArg>;
+    public f_pos, t_pos, len: CommandQueue<integer>;
+    
+    public constructor(otp: KernelArgCommandQueue; f_arg, t_arg: CommandQueue<KernelArg>; f_pos, t_pos, len: CommandQueue<integer>);
+    begin
+      inherited Create(otp);
+      self.f_arg := f_arg;
+      self.t_arg := t_arg;
+      self.f_pos := f_pos;
+      self.t_pos := t_pos;
+      self.len := len;
+    end;
+    
+    private костыль_для_cq: cl_event; //ToDo #1881
+    private костыль_для_ev_lst: List<cl_event>; //ToDo #1880
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      
+      yield sequence prev  .Invoke(c, cq, prev_ev);
+      
+      var ev_lst := new List<cl_event>;
+      yield sequence f_arg.Invoke(c, cq, cl_event.Zero); if f_arg.ev<>cl_event.Zero then ev_lst += f_arg.ev;
+      yield sequence t_arg.Invoke(c, cq, cl_event.Zero); if t_arg.ev<>cl_event.Zero then ev_lst += t_arg.ev;
+      yield sequence f_pos.Invoke(c, cq, cl_event.Zero); if f_pos.ev<>cl_event.Zero then ev_lst += f_pos.ev;
+      yield sequence t_pos.Invoke(c, cq, cl_event.Zero); if t_pos.ev<>cl_event.Zero then ev_lst += t_pos.ev;
+      yield sequence len  .Invoke(c, cq, cl_event.Zero); if len  .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      ClearEvent;
+      self.ev := cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
+      
+      костыль_для_cq := cq;
+      костыль_для_ev_lst := ev_lst;
+      yield Task.Run(()->
+      begin
+        if костыль_для_ev_lst.Count<>0 then cl.WaitForEvents(костыль_для_ev_lst.Count, костыль_для_ev_lst.ToArray).RaiseIfError;
+        
+        var buff_ev: cl_event;
+        if prev.ev=cl_event.Zero then
+          cl.EnqueueCopyBuffer(костыль_для_cq, f_arg.res.memobj,t_arg.res.memobj, new UIntPtr(f_pos.res),new UIntPtr(t_pos.res), new UIntPtr(len.res), 0,nil,@buff_ev).RaiseIfError else
+          cl.EnqueueCopyBuffer(костыль_для_cq, f_arg.res.memobj,t_arg.res.memobj, new UIntPtr(f_pos.res),new UIntPtr(t_pos.res), new UIntPtr(len.res), 1,@prev.ev,@buff_ev).RaiseIfError;
+        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
+        
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+      end);
+      
+    end;
+    
+    public procedure Finalize; override;
+    begin
+      inherited Finalize;
+      ClearEvent;
+    end;
+    
+  end;
+
+function KernelArgCommandQueue.CopyFrom(arg: CommandQueue<KernelArg>; from, &to, len: CommandQueue<integer>) :=
+new KernelArgQueueCopy(self, arg,self as CommandQueue<KernelArg>, from,&to, len); //ToDo #1981
+
+function KernelArgCommandQueue.CopyTo(arg: CommandQueue<KernelArg>; from, &to, len: CommandQueue<integer>) :=
+new KernelArgQueueCopy(self, self as CommandQueue<KernelArg>,arg, &to,from, len); //ToDo #1981
+
+{$endregion Copy}
 
 {$endregion KernelArg}
 
@@ -1168,7 +1235,7 @@ type
         cl.EnqueueNDRangeKernel(костыль_для_cq, org._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@kernel_ev).RaiseIfError; // prev.ev уже в ev_lst, тут проверять не надо
         cl.WaitForEvents(1,@kernel_ev).RaiseIfError;
         
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE);
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
       
     end;
