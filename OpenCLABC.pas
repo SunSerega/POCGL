@@ -32,7 +32,6 @@ uses System.Runtime.InteropServices;
 // - сразу минус костыли и + скорость выполнения
 
 //ToDo копирование буферов
-//ToDo создание под-буфера
 
 //ToDo issue компилятора:
 // - #1880
@@ -229,6 +228,7 @@ type
   KernelArg = sealed class
     private memobj: cl_mem;
     private sz: UIntPtr;
+    private _parent: KernelArg;
     
     {$region constructor's}
     
@@ -243,7 +243,9 @@ type
     public constructor(size: int64) :=
     Create(new UIntPtr(size));
     
-    protected procedure Init(c: Context);
+    public function SubBuff(offset, size: integer): KernelArg; 
+    
+    public procedure Init(c: Context);
     
     {$endregion constructor's}
     
@@ -252,6 +254,8 @@ type
     public property Size: UIntPtr read sz;
     public property Size32: UInt32 read sz.ToUInt32;
     public property Size64: UInt64 read sz.ToUInt64;
+    
+    public property Parent: KernelArg read _parent;
     
     {$endregion property's}
     
@@ -278,6 +282,9 @@ type
     where TArray: &Array;
     
     {$endregion Non-Queue IO}
+    
+    public procedure Finalize; override :=
+    if self.memobj<>cl_mem.Zero then cl.ReleaseMemObject(self.memobj);
     
   end;
   
@@ -1185,8 +1192,26 @@ new KernelQueueExec(self, work_szs, args);
 procedure KernelArg.Init(c: Context);
 begin
   var ec: ErrorCode;
+  if self.memobj<>cl_mem.Zero then cl.ReleaseMemObject(self.memobj);
   self.memobj := cl.CreateBuffer(c._context, MemoryFlags.READ_WRITE, self.sz, IntPtr.Zero, ec);
   ec.RaiseIfError;
+end;
+
+function KernelArg.SubBuff(offset, size: integer): KernelArg;
+begin
+  if self.memobj=cl_mem.Zero then Init(Context.Default);
+  
+  Result := new KernelArg(size);
+  Result._parent := self;
+  
+  var ec: ErrorCode;
+  var reg := new cl_buffer_region(
+    new UIntPtr( offset ),
+    new UIntPtr( size )
+  );
+  Result.memobj := cl.CreateSubBuffer(self.memobj, MemoryFlags.READ_WRITE, BufferCreateType.REGION, pointer(@reg), ec);
+  ec.RaiseIfError;
+  
 end;
 
 function KernelArg.GetValue<TRecord>: TRecord;
