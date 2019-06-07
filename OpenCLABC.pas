@@ -388,7 +388,7 @@ type
       var cq := cl.CreateCommandQueue(_context, _device, CommandQueuePropertyFlags.QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, ec);
       ec.RaiseIfError;
       
-      foreach var t in q.Invoke(self, cq, cl_event.Zero).ToList do t.Wait;
+      foreach var tsk in q.Invoke(self, cq, cl_event.Zero).ToList do tsk.Wait;
       if q.ev<>cl_event.Zero then cl.WaitForEvents(1, @q.ev).RaiseIfError;
       
       cl.ReleaseCommandQueue(cq).RaiseIfError;
