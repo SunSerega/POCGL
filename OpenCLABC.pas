@@ -41,6 +41,7 @@ uses System.Runtime.InteropServices;
 // - #1952
 // - #1958
 // - #1981
+// - #1986
 
 type
   
@@ -614,7 +615,7 @@ function HFQ<T>(f: ()->T): CommandQueueHostFunc<T>;
 
 ///HostFuncQueue
 ///Создаёт новую CommandQueueHostFunc
-function HFQ(p: ()->()): CommandQueueHostFunc<object>;
+function HPQ(p: ()->()): CommandQueueHostFunc<object>;
 
 {$endregion Сахарные подпрограммы}
 
@@ -1371,7 +1372,7 @@ new KernelQueueExec(self, work_szs, args);
 function HFQ<T>(f: ()->T) :=
 new CommandQueueHostFunc<T>(f);
 
-function HFQ(p: ()->()) :=
+function HPQ(p: ()->()) :=
 HFQ&<object>(
   ()->
   begin
@@ -1469,14 +1470,19 @@ function KernelArg.GetArrayAt<TArray>(offset: CommandQueue<integer>; szs: Comman
 begin
   var el_t := typeof(TArray).GetElementType;
   
+  var szs_val: array of integer := Context.Default.SyncInvoke(szs);
   Result := TArray(System.Array.CreateInstance(
     el_t,
-    Context.Default.SyncInvoke(szs)
+    szs_val
   ));
+  
+  //ToDo #1986
+//  var res_len := Result.Length;
+  var res_len := szs_val.Aggregate((i1,i2)->i1*i2);
   
   Context.Default.SyncInvoke(
     self.NewQueue
-    .ReadData(Result, offset, Marshal.SizeOf(el_t) * Result.Length) as CommandQueue<KernelArg> //ToDo #1981
+    .ReadData(Result, offset, Marshal.SizeOf(el_t) * res_len) as CommandQueue<KernelArg> //ToDo #1981
   );
   
 end;
