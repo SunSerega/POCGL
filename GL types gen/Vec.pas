@@ -1,0 +1,165 @@
+﻿program prog;
+{$apptype windows}
+{$reference System.Windows.Forms.dll}
+
+function gl_to_pas_t(self: string): string; extensionmethod;
+begin
+  case self of
+    ''+'b':     Result := 'SByte';
+    ''+'ub':    Result :=  'Byte';
+    ''+'s':     Result :=  'Int16';
+    ''+'us':    Result := 'UInt16';
+    ''+'i':     Result :=  'Int32';
+    ''+'ui':    Result := 'UInt32';
+    ''+'i64':   Result :=  'Int64';
+    ''+'ui64':  Result := 'UInt64';
+    ''+'f':     Result := 'single';
+    ''+'d':     Result := 'real';
+  end;
+end;
+
+type t_descr = (integer, string, string);
+
+function GetName(self: t_descr); extensionmethod :=
+$'Vec{self[0]}{self[1]}';
+
+function IsFloat(self: t_descr); extensionmethod :=
+  self[1].Contains('f') or
+  self[1].Contains('d')
+;
+
+procedure AddVecType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
+begin
+  res += $'  '+#10;
+  res += $'  {t.GetName} = record'+#10;
+  
+  
+  
+  for var i := 0 to t[0]-1 do
+    res += $'    public val{i}: {t[2]};'+#10;
+  res += $'    '+#10;
+  
+  
+  
+  res += $'    public constructor(';
+  res += Range(0,t[0]-1).Select(i->$'val{i}').JoinIntoString(', ');
+  res += $': {t[2]});'+#10;
+  
+  res += $'    begin'+#10;
+  
+  for var i := 0 to t[0]-1 do
+    res += $'      self.val{i} := val{i};'+#10;
+  
+  res += $'    end;'+#10;
+  res += $'    '+#10;
+  
+  
+  
+  if not t[1].Contains('u') then
+  begin
+    res += $'    public static function operator-(v: {t.GetName}): {t.GetName} := new {t.GetName}(';
+    res += Range(0,t[0]-1).Select(i->$'-v.val{i}').JoinIntoString(', ');
+    res += $');'+#10;
+  end;
+  
+  res += $'    public static function operator+(v1, v2: {t.GetName}): {t.GetName} := new {t.GetName}(';
+  res += Range(0,t[0]-1).Select(i->$'v1.val{i}+v2.val{i}').JoinIntoString(', ');
+  res += $');'+#10;
+  
+  res += $'    public static function operator-(v1, v2: {t.GetName}): {t.GetName} := new {t.GetName}(';
+  res += Range(0,t[0]-1).Select(i->$'v1.val{i}-v2.val{i}').JoinIntoString(', ');
+  res += $');'+#10;
+  
+  res += $'    '+#10;
+  
+  
+  
+  var get_val_str: integer->string := i->$'v.val{i}';
+  var get_conv_val_str_templ: (integer,t_descr)->string := (i,t2)->$'Convert.To{t2[2]}(v.val{i})';
+  
+  foreach var t2 in prev_tps do
+  begin
+    var get_conv_val_str:   integer->string := i->get_conv_val_str_templ(i,t);
+    var get_conv2_val_str:  integer->string := i->get_conv_val_str_templ(i,t2);
+    
+    res += $'    public static function operator implicit(v: {t2.GetName}): {t.GetName} := new {t.GetName}(';
+    res += Range(0,t[0]-1).Select(
+      t2.IsFloat and not t.IsFloat?
+        get_conv_val_str:
+        get_val_str
+    ).Select((s,i)->
+      i<t2[0]?
+      s:'0'
+    ).JoinIntoString(', ');
+    res += $');'+#10;
+    
+    res += $'    public static function operator implicit(v: {t.GetName}): {t2.GetName} := new {t2.GetName}(';
+    res += Range(0,t2[0]-1).Select(
+      t.IsFloat and not t2.IsFloat?
+        get_conv2_val_str:
+        get_val_str
+    ).Select((s,i)->
+      i<t[0]?
+      s:'0'
+    ).JoinIntoString(', ');
+    res += $');'+#10;
+    
+    res += $'    '+#10;
+  end;
+  
+  
+  
+  res += $'  end;'+#10;
+end;
+
+begin
+  try
+    var res := new StringBuilder;
+    
+    res += #10;
+    res += '  {$region Vec}'#10;
+    res += '  '#10;
+    res += '  {$region Vec1}'#10;
+    
+    var t_table :=
+      Range(1,4)
+      .SelectMany(sz->Arr&<string>(
+        'b',    'ub',
+        's',    'us',
+        'i',    'ui',
+        'i64',  'ui64',
+        'f',    'd'
+      ).Select(t->(sz,t,t.gl_to_pas_t)))
+      .ToArray;
+    
+    var last_t: t_descr;
+    foreach var t in t_table.Numerate(0) do
+    begin
+      if last_t<>nil then
+        if last_t[0]<t[1][0] then
+        begin
+          res += '  {$endregion Vec' + last_t[0] + '}'#10;
+          res += '  '#10;
+          res += '  {$region Vec' + t[1][0] + '}'#10;
+        end;
+      
+      AddVecType(res, t[1], t_table.Take(t[0]));
+      
+      last_t := t[1];
+    end;
+    
+    res += '  '#10;
+    res += '  {$endregion Vec4}'#10;
+    res += '  '#10;
+    res += '  {$endregion Vec}'#10;
+    
+    System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
+    System.Console.Beep;
+  except
+    on e: Exception do
+    begin
+      writeln(e);
+      readln;
+    end;
+  end;
+end.
