@@ -1,19 +1,16 @@
 
 
 
-__kernel void GetNext(__global int* message)
+__kernel void MatrMltVec(__global double* M, __global double* V1, __global double* V2, __global int* gV1W)
 {
+	int i = get_global_id(0);
+	int V1W = *gV1W;
 	
-}
-
-__kernel void GetOtp(__global int* message)
-{
+	double sum = 0.0;
+	for (int j=0; j<V1W; j++)
+		sum += M[j + i*V1W] * V1[j];
 	
-}
-
-__kernel void BackProp(__global int* message)
-{
-	
+	V2[i] = sum;
 }
 
 

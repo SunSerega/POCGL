@@ -12,18 +12,15 @@ begin
     table.Add(key,val);
   end;
   
-  var training_data: array of System.IntPtr := ArrGen(br.ReadInt32,
+  var training_data: array of array of byte := ArrGen(br.ReadInt32,
     i1->
     begin
       var bts := new byte[br.ReadInt32*2];
+      
       if db.Read(bts,0,bts.Length) <> bts.Length then
         raise new System.IO.EndOfStreamException;
       
-      Result :=
-        System.Runtime.InteropServices.GCHandle.Alloc(bts,
-          System.Runtime.InteropServices.GCHandleType.Pinned
-        ).AddrOfPinnedObject;
-      
+      Result := bts;
     end
   );
   

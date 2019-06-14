@@ -1,5 +1,8 @@
 ﻿unit RNNData;
 
+//ToDo issue компилятора:
+// - #1988
+
 uses OpenCLABC;
 
 type
@@ -66,41 +69,85 @@ type
     
     {$region work}
     
-    public procedure TrainOn(training_data: array of System.IntPtr; after_work: AI->()) :=
+    public procedure TrainOn(training_data: array of array of byte; after_work: AI->()) :=
     try
+      
+      var vec_hl := new KernelArg( sz_hl );
+      var vec_ol := new KernelArg( sz_ol );
       
       var bb_matr_hth := new KernelArg( matr_hth.Size );
       var bb_matr_hto := new KernelArg( matr_hto.Size );
+      var bb_vec_hl := new KernelArg( sz_hl );
       
-      
+      var training_args := new KernelArg[training_data.Length];
+      var next_arg_indexes: array of integer;
       
       var Q_CopyToBack :=
         (matr_hth.NewQueue.CopyTo(bb_matr_hth) as CommandQueue<KernelArg>) *
         (matr_hto.NewQueue.CopyTo(bb_matr_hto) as CommandQueue<KernelArg>);
       
+      var Q_InitTrainArgs :=
+        HPQ(
+          ()->
+          begin
+            var костыль_для_training_args := training_args; //ToDo #1988
+            next_arg_indexes := SeqGen(100,i->Random(training_args.Length)).Distinct.ToArray;
+            
+            Context.Default.SyncInvoke(
+              next_arg_indexes
+              
+              .Where(i->training_args[i]=nil)
+              .Select(
+                i->
+                HPQ(()->
+                begin
+                  костыль_для_training_args[i] :=
+                    KernelArg.Create(training_data[i].Length)
+                    .WriteData(training_data[i]);
+                end) as CommandQueue<object>
+              )
+              
+              .Aggregate(
+                (q1,q2) ->
+                q1*q2
+              )
+              
+            );
+            
+          end
+        ) as CommandQueue<object>;
+      
       var Q_AfterWork :=
-        HFQ(()->after_work(self)) as CommandQueue<object>;
+        HPQ(()->after_work(self)) as CommandQueue<object>;
       
       var Q_Learn :=
-        prog[''].NewQueue.Exec(1 // ToDo
+        prog['MatrMltVec'].NewQueue.Exec(1 // ToDo
           
         ) as CommandQueue<Kernel>;
       
       
       
       Context.Default.SyncInvoke(
-        Q_CopyToBack +
+        //Q_CopyToBack +
         Q_Learn
       );
       
       while true do
+      begin
+        Swap(matr_hth, bb_matr_hth);
+        Swap(matr_hto, bb_matr_hto);
+        Swap(vec_hl, bb_vec_hl);
+        
         Context.Default.SyncInvoke(
           Q_AfterWork *
           (
             Q_CopyToBack +
-            Q_Learn
+            Q_Learn 
           )
         );
+        
+      end;
+      
     except
       on e: Exception do
       begin
@@ -145,8 +192,10 @@ type
       var hto_buff := br.ReadBytes( Result.sz_hl*Result.sz_ol * 4 );
       if hto_buff.Length <> Result.sz_hl*Result.sz_ol * 4 then raise new System.IO.EndOfStreamException;
       
-      Result.matr_hth.WriteData( hth_buff );
-      Result.matr_hto.WriteData( hto_buff );
+      Context.Default.SyncInvoke(
+        (Result.matr_hth.NewQueue.WriteData( hth_buff ) as CommandQueue<KernelArg>) *
+        (Result.matr_hto.NewQueue.WriteData( hto_buff ) as CommandQueue<KernelArg>)
+      );
       
     end;
     
