@@ -1,18 +1,10 @@
-﻿uses OpenCLABC;
+﻿uses OpenGL;
+
+//ToDo посмотреть версию
+//ToDo попробовать получить серию ошибок, сколько ошибок максимально помещается за 1 раз
 
 begin
-  try
-    Context.Default.SyncInvoke(
-      HFQ(
-        ()->
-        begin
-          Result := 0;
-          raise new Exception;
-        end
-      )
-    );
-  except
-    on e: Exception do
-      writeln(e);
-  end;
+  gl.GetError.ToString.Println;
+  gl.GetError.ToString.Println;
+  gl.GetError.ToString.Println;
 end.
