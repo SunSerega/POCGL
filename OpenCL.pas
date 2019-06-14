@@ -40,6 +40,12 @@ unit OpenCL;
 //
 //ToDo кто что то знает - напишите в issue, пожалуйста
 
+//ToDo .h файлы которые осталось перевести:
+// - cl_egl
+// - cl_ext_intel
+// - cl_va_api_media_sharing_intel
+// - cl_dx9_media_sharing_intel
+
 uses System;
 uses System.Runtime.InteropServices;
 
@@ -1146,6 +1152,9 @@ type
     public property SVM_MEMFILL_ARM:              boolean read self.val = $40BC;
     public property SVM_MAP_ARM:                  boolean read self.val = $40BD;
     public property SVM_UNMAP_ARM:                boolean read self.val = $40BE;
+    
+    // cl_gl_ext
+    public property GL_FENCE_SYNC_OBJECT_KHR      boolean read self.val = $200D;
     
     public function ToString: string; override;
     begin
@@ -2283,6 +2292,11 @@ type
     external 'opencl.dll' name 'clGetGLObjectInfo';
     static function GetGLObjectInfo(memobj: cl_mem; gl_object_type: ^GLObjectType; gl_object_name: ^UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetGLObjectInfo';
+    
+    static function CreateEventFromGLsyncKHR(context: cl_context; cl_GLsync: IntPtr; var errcode_ret: ErrorCode): cl_event;
+    external 'opencl.dll' name 'clCreateEventFromGLsyncKHR';
+    static function CreateEventFromGLsyncKHR(context: cl_context; cl_GLsync: IntPtr; errcode_ret: ^ErrorCode): cl_event;
+    external 'opencl.dll' name 'clCreateEventFromGLsyncKHR';
     
     {$endregion Общее}
     
