@@ -41,7 +41,6 @@ unit OpenCL;
 //ToDo кто что то знает - напишите в issue, пожалуйста
 
 //ToDo .h файлы которые осталось перевести:
-// - cl_egl
 // - cl_ext_intel
 // - cl_va_api_media_sharing_intel
 // - cl_dx9_media_sharing_intel
@@ -139,11 +138,15 @@ type
     // cl_gl
     public const INVALID_GL_SHAREGROUP_REFERENCE_KHR =  -1001;
     
-    // cl_ext 
+    // cl_ext
     public const PLATFORM_NOT_FOUND_KHR =               -1001;
     public const DEVICE_PARTITION_FAILED_EXT =          -1057;
     public const INVALID_PARTITION_COUNT_EXT =          -1058;
     public const INVALID_PARTITION_NAME_EXT =           -1059;
+    
+    // cl_egl
+    public const INVALID_EGL_OBJECT_KHR =               -1093;
+    public const EGL_RESOURCE_NOT_ACQUIRED_KHR =        -1092;
     
     public function ToString: string; override;
     begin
@@ -1154,7 +1157,12 @@ type
     public property SVM_UNMAP_ARM:                boolean read self.val = $40BE;
     
     // cl_gl_ext
-    public property GL_FENCE_SYNC_OBJECT_KHR      boolean read self.val = $200D;
+    public property GL_FENCE_SYNC_OBJECT_KHR:     boolean read self.val = $200D;
+    
+    // cl_egl
+    public property EGL_FENCE_SYNC_OBJECT_KHR:    boolean read self.val = $202F;
+    public property ACQUIRE_EGL_OBJECTS_KHR:      boolean read self.val = $202D;
+    public property RELEASE_EGL_OBJECTS_KHR:      boolean read self.val = $202E;
     
     public function ToString: string; override;
     begin
@@ -2299,6 +2307,42 @@ type
     external 'opencl.dll' name 'clCreateEventFromGLsyncKHR';
     
     {$endregion Общее}
+    
+  end;
+  
+  cl_egl = static class
+    
+    {$region Разное}
+    
+    static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemoryFlags; [MarshalAs(UnmanagedType.LPArray)] properties: array of IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
+    static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemoryFlags; properties: ^IntPtr; errcode_ret: ^ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
+    
+    static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
+    static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
+    static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
+    static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
+    
+    static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
+    static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
+    static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
+    static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
+    
+    static function CreateEventFromEGLSyncKHR(context: cl_context; sync: IntPtr; display: IntPtr; var errcode_ret: ErrorCode): cl_event;
+    external 'opencl.dll' name 'clCreateEventFromEGLSyncKHR';
+    static function CreateEventFromEGLSyncKHR(context: cl_context; sync: IntPtr; display: IntPtr; errcode_ret: ^ErrorCode): cl_event;
+    external 'opencl.dll' name 'clCreateEventFromEGLSyncKHR';
+    
+    {$endregion Разное}
     
   end;
   
