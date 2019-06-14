@@ -80,61 +80,64 @@ type
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
     
-    public const SUCCESS =                          -0;
+    public const SUCCESS =                                 -0;
     
-    public const DEVICE_NOT_FOUND =                 -1;
-    public const DEVICE_NOT_AVAILABLE =             -2;
-    public const COMPILER_NOT_AVAILABLE =           -3;
-    public const MEM_OBJECT_ALLOCATION_FAILURE =    -4;
-    public const OUT_OF_RESOURCES =                 -5;
-    public const OUT_OF_HOST_MEMORY =               -6;
-    public const PROFILING_INFO_NOT_AVAILABLE =     -7;
-    public const MEM_COPY_OVERLAP =                 -8;
-    public const IMAGE_FORMAT_MISMATCH =            -9;
-    public const IMAGE_FORMAT_NOT_SUPPORTED =      -10;
-    public const BUILD_PROGRAM_FAILURE =           -11;
-    public const MAP_FAILURE =                     -12;
+    public const DEVICE_NOT_FOUND =                        -1;
+    public const DEVICE_NOT_AVAILABLE =                    -2;
+    public const COMPILER_NOT_AVAILABLE =                  -3;
+    public const MEM_OBJECT_ALLOCATION_FAILURE =           -4;
+    public const OUT_OF_RESOURCES =                        -5;
+    public const OUT_OF_HOST_MEMORY =                      -6;
+    public const PROFILING_INFO_NOT_AVAILABLE =            -7;
+    public const MEM_COPY_OVERLAP =                        -8;
+    public const IMAGE_FORMAT_MISMATCH =                   -9;
+    public const IMAGE_FORMAT_NOT_SUPPORTED =             -10;
+    public const BUILD_PROGRAM_FAILURE =                  -11;
+    public const MAP_FAILURE =                            -12;
     
-    public const INVALID_VALUE =                   -30;
-    public const INVALID_DEVICE_TYPE =             -31;
-    public const INVALID_PLATFORM =                -32;
-    public const INVALID_DEVICE =                  -33;
-    public const INVALID_CONTEXT =                 -34;
-    public const INVALID_QUEUE_PROPERTIES =        -35;
-    public const INVALID_COMMAND_QUEUE =           -36;
-    public const INVALID_HOST_PTR =                -37;
-    public const INVALID_MEM_OBJECT =              -38;
-    public const INVALID_IMAGE_FORMAT_DESCRIPTOR = -39;
-    public const INVALID_IMAGE_SIZE =              -40;
-    public const INVALID_SAMPLER =                 -41;
-    public const INVALID_BINARY =                  -42;
-    public const INVALID_BUILD_OPTIONS =           -43;
-    public const INVALID_PROGRAM =                 -44;
-    public const INVALID_PROGRAM_EXECUTABLE =      -45;
-    public const INVALID_KERNEL_NAME =             -46;
-    public const INVALID_KERNEL_DEFINITION =       -47;
-    public const INVALID_KERNEL =                  -48;
-    public const INVALID_ARG_INDEX =               -49;
-    public const INVALID_ARG_VALUE =               -50;
-    public const INVALID_ARG_SIZE =                -51;
-    public const INVALID_KERNEL_ARGS =             -52;
-    public const INVALID_WORK_DIMENSION =          -53;
-    public const INVALID_WORK_GROUP_SIZE =         -54;
-    public const INVALID_WORK_ITEM_SIZE =          -55;
-    public const INVALID_GLOBAL_OFFSET =           -56;
-    public const INVALID_EVENT_WAIT_LIST =         -57;
-    public const INVALID_EVENT =                   -58;
-    public const INVALID_OPERATION =               -59;
-    public const INVALID_GL_OBJECT =               -60;
-    public const INVALID_BUFFER_SIZE =             -61;
-    public const INVALID_MIP_LEVEL =               -62;
-    public const INVALID_GLOBAL_WORK_SIZE =        -63;
+    public const INVALID_VALUE =                          -30;
+    public const INVALID_DEVICE_TYPE =                    -31;
+    public const INVALID_PLATFORM =                       -32;
+    public const INVALID_DEVICE =                         -33;
+    public const INVALID_CONTEXT =                        -34;
+    public const INVALID_QUEUE_PROPERTIES =               -35;
+    public const INVALID_COMMAND_QUEUE =                  -36;
+    public const INVALID_HOST_PTR =                       -37;
+    public const INVALID_MEM_OBJECT =                     -38;
+    public const INVALID_IMAGE_FORMAT_DESCRIPTOR =        -39;
+    public const INVALID_IMAGE_SIZE =                     -40;
+    public const INVALID_SAMPLER =                        -41;
+    public const INVALID_BINARY =                         -42;
+    public const INVALID_BUILD_OPTIONS =                  -43;
+    public const INVALID_PROGRAM =                        -44;
+    public const INVALID_PROGRAM_EXECUTABLE =             -45;
+    public const INVALID_KERNEL_NAME =                    -46;
+    public const INVALID_KERNEL_DEFINITION =              -47;
+    public const INVALID_KERNEL =                         -48;
+    public const INVALID_ARG_INDEX =                      -49;
+    public const INVALID_ARG_VALUE =                      -50;
+    public const INVALID_ARG_SIZE =                       -51;
+    public const INVALID_KERNEL_ARGS =                    -52;
+    public const INVALID_WORK_DIMENSION =                 -53;
+    public const INVALID_WORK_GROUP_SIZE =                -54;
+    public const INVALID_WORK_ITEM_SIZE =                 -55;
+    public const INVALID_GLOBAL_OFFSET =                  -56;
+    public const INVALID_EVENT_WAIT_LIST =                -57;
+    public const INVALID_EVENT =                          -58;
+    public const INVALID_OPERATION =                      -59;
+    public const INVALID_GL_OBJECT =                      -60;
+    public const INVALID_BUFFER_SIZE =                    -61;
+    public const INVALID_MIP_LEVEL =                      -62;
+    public const INVALID_GLOBAL_WORK_SIZE =               -63;
+    
+    // cl_gl
+    public const INVALID_GL_SHAREGROUP_REFERENCE_KHR =  -1001;
     
     // cl_ext 
-    public const PLATFORM_NOT_FOUND_KHR =        -1001;
-    public const DEVICE_PARTITION_FAILED_EXT =   -1057;
-    public const INVALID_PARTITION_COUNT_EXT =   -1058;
-    public const INVALID_PARTITION_NAME_EXT =    -1059;
+    public const PLATFORM_NOT_FOUND_KHR =               -1001;
+    public const DEVICE_PARTITION_FAILED_EXT =          -1057;
+    public const INVALID_PARTITION_COUNT_EXT =          -1058;
+    public const INVALID_PARTITION_NAME_EXT =           -1059;
     
     public function ToString: string; override;
     begin
@@ -568,6 +571,15 @@ type
     
   end;
   
+  GLContextInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property CURRENT_DEVICE_FOR_GL_CONTEXT_KHR: GLContextInfoType read new GLContextInfoType($2006);
+    public static property DEVICES_FOR_GL_CONTEXT_KHR:        GLContextInfoType read new GLContextInfoType($2007);
+    
+  end;
+  
   {$endregion ...InfoType}
   
   //S
@@ -639,17 +651,40 @@ type
     public constructor(val: IntPtr) := self.val := val;
     public constructor(val: int64) := self.val := new IntPtr(val);
     
+    
+    
     public static property PLATFORM:              ContextProperties read new ContextProperties($1084);
     public static property INTEROP_USER_SYNC:     ContextProperties read new ContextProperties($1085);
-    public static property TERMINATE_KHR:         ContextProperties read new ContextProperties($2032); // cl_ext
-    public static property PRINTF_CALLBACK_ARM:   ContextProperties read new ContextProperties($40B0); // cl_ext
-    public static property PRINTF_BUFFERSIZE_ARM: ContextProperties read new ContextProperties($40B1); // cl_ext
+    
+    // cl_ext
+    public static property TERMINATE_KHR:         ContextProperties read new ContextProperties($2032);
+    public static property PRINTF_CALLBACK_ARM:   ContextProperties read new ContextProperties($40B0);
+    public static property PRINTF_BUFFERSIZE_ARM: ContextProperties read new ContextProperties($40B1);
+    
+    // cl_gl
+    public static property GL_CONTEXT_KHR:        ContextProperties read new ContextProperties($2008);
+    public static property EGL_DISPLAY_KHR:       ContextProperties read new ContextProperties($2009);
+    public static property GLX_DISPLAY_KHR:       ContextProperties read new ContextProperties($200A);
+    public static property WGL_HDC_KHR:           ContextProperties read new ContextProperties($200B);
+    public static property CGL_SHAREGROUP_KHR:    ContextProperties read new ContextProperties($200C);
+    
     
     public property IS_PLATFORM:              boolean read self = ContextProperties.PLATFORM;
     public property IS_INTEROP_USER_SYNC:     boolean read self = ContextProperties.INTEROP_USER_SYNC;
+    
+    // cl_ext
     public property IS_TERMINATE_KHR:         boolean read self = ContextProperties.TERMINATE_KHR;
     public property IS_PRINTF_CALLBACK_ARM:   boolean read self = ContextProperties.PRINTF_CALLBACK_ARM;
     public property IS_PRINTF_BUFFERSIZE_ARM: boolean read self = ContextProperties.PRINTF_BUFFERSIZE_ARM;
+    
+    // cl_gl
+    public property IS_GL_CONTEXT_KHR:        boolean read self = ContextProperties.GL_CONTEXT_KHR; 
+    public property IS_EGL_DISPLAY_KHR:       boolean read self = ContextProperties.EGL_DISPLAY_KHR;
+    public property IS_GLX_DISPLAY_KHR:       boolean read self = ContextProperties.GLX_DISPLAY_KHR;
+    public property IS_WGL_HDC_KHR:           boolean read self = ContextProperties.WGL_HDC_KHR;
+    public property IS_CGL_SHAREGROUP_KHR:    boolean read self = ContextProperties.CGL_SHAREGROUP_KHR;
+    
+    
     
     public function ToString: string; override;
     begin
@@ -2220,6 +2255,11 @@ type
     {$endregion Texture}
     
     {$region Общее}
+    
+    static function GetGLContextInfoKHR([MarshalAs(UnmanagedType.LPArray)] properties: array of ContextProperties; param_name: GLContextInfoType; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetGLContextInfoKHR';
+    static function GetGLContextInfoKHR(properties: ^ContextProperties; param_name: GLContextInfoType; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: ^UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetGLContextInfoKHR';
     
     static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
