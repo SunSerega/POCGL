@@ -1365,8 +1365,6 @@ new KernelQueueExec(self, work_szs, args);
 
 {$endregion CommandQueue}
 
-{$region Misc implementation}
-
 {$region Сахарные подпрограммы}
 
 function HFQ<T>(f: ()->T) :=
@@ -1408,15 +1406,6 @@ begin
     new UIntPtr( size )
   );
   Result.memobj := cl.CreateSubBuffer(self.memobj, MemoryFlags.READ_WRITE, BufferCreateType.REGION, pointer(@reg), ec);
-  ec.RaiseIfError;
-  
-end;
-
-constructor Kernel.Create(prog: ProgramCode; name: string);
-begin
-  var ec: ErrorCode;
-  
-  self._kernel := cl.CreateKernel(prog._program, name, ec);
   ec.RaiseIfError;
   
 end;
@@ -1527,11 +1516,18 @@ function KernelArg.CopyTo  (arg: KernelArg) := Context.Default.SyncInvoke(self.N
 
 {$region Kernel}
 
+constructor Kernel.Create(prog: ProgramCode; name: string);
+begin
+  var ec: ErrorCode;
+  
+  self._kernel := cl.CreateKernel(prog._program, name, ec);
+  ec.RaiseIfError;
+  
+end;
+
 function Kernel.Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<KernelArg>) :=
 Context.Default.SyncInvoke(self.NewQueue.Exec(work_szs, args) as CommandQueue<Kernel>);
 
 {$endregion Kernel}
-
-{$endregion Misc implementation}
 
 end.

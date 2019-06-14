@@ -136,7 +136,7 @@ type
     public const INVALID_GLOBAL_WORK_SIZE =               -63;
     
     // cl_gl
-    public const INVALID_GL_SHAREGROUP_REFERENCE_KHR =  -1001;
+    public const INVALID_GL_SHAREGROUP_REFERENCE_KHR =  -1000;
     
     // cl_ext
     public const PLATFORM_NOT_FOUND_KHR =               -1001;
@@ -145,8 +145,8 @@ type
     public const INVALID_PARTITION_NAME_EXT =           -1059;
     
     // cl_egl
-    public const INVALID_EGL_OBJECT_KHR =               -1093;
     public const EGL_RESOURCE_NOT_ACQUIRED_KHR =        -1092;
+    public const INVALID_EGL_OBJECT_KHR =               -1093;
     
     public function ToString: string; override;
     begin
