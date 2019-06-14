@@ -30,10 +30,17 @@ uses System.Runtime.InteropServices;
 
 type
   
-  GLsync = IntPtr;
+  GLsync                        = IntPtr;
+  GLeglImageOES                 = IntPtr;
   
   ///0=false, остальное=true
   GLboolean                     = UInt32;
+  
+  // типы для совместимости с OpenCL
+  ///--
+  cl_context                    = IntPtr;
+  ///--
+  cl_event                      = IntPtr;
   
 type
   OpenGLException = class(Exception)
@@ -83,8 +90,22 @@ type
 
 type
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  GLDEBUGPROC = procedure(source, &type, id, severity: UInt32; length: Int32; message_text: IntPtr; userParam: pointer);
+  
+  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  GLVULKANPROCNV = procedure;
   
 {$endregion Делегаты}
+
+{$region Записи} type
+  
+  Vec2ui32 = record
+    
+    //ToDo
+    
+  end;
+  
+{$endregion Записи}
 
 type
   gl = static class
@@ -2114,16 +2135,16 @@ type
     static function IsImageHandleResidentARB(handle: UInt64): GLboolean;
     external 'opengl32.dll' name 'glIsImageHandleResidentARB';
     
-    static procedure VertexAttribL1ui64ARB(index: UInt32; x: UInt64EXT);
+    static procedure VertexAttribL1ui64ARB(index: UInt32; x: UInt64);
     external 'opengl32.dll' name 'glVertexAttribL1ui64ARB';
     
-    static procedure VertexAttribL1ui64vARB(index: UInt32; v: ^UInt64EXT);
+    static procedure VertexAttribL1ui64vARB(index: UInt32; v: ^UInt64);
     external 'opengl32.dll' name 'glVertexAttribL1ui64vARB';
     
-    static procedure GetVertexAttribLui64vARB(index: UInt32; pname: UInt32; &params: ^UInt64EXT);
+    static procedure GetVertexAttribLui64vARB(index: UInt32; pname: UInt32; &params: ^UInt64);
     external 'opengl32.dll' name 'glGetVertexAttribLui64vARB';
     
-    static function CreateSyncFromCLeventARB(context: ^struct_cl_context; &event: ^struct_cl_event; flags: UInt32): GLsync;
+    static function CreateSyncFromCLeventARB(context: cl_context; &event: cl_event; flags: UInt32): GLsync;
     external 'opengl32.dll' name 'glCreateSyncFromCLeventARB';
     
     static procedure DispatchComputeGroupSizeARB(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32; group_size_x: UInt32; group_size_y: UInt32; group_size_z: UInt32);
@@ -2135,7 +2156,7 @@ type
     static procedure DebugMessageInsertARB(source: UInt32; &type: UInt32; id: UInt32; severity: UInt32; length: Int32; buf: ^SByte);
     external 'opengl32.dll' name 'glDebugMessageInsertARB';
     
-    static procedure DebugMessageCallbackARB(callback: GLDEBUGPROCARB; userParam: pointer);
+    static procedure DebugMessageCallbackARB(callback: GLDEBUGPROC; userParam: pointer);
     external 'opengl32.dll' name 'glDebugMessageCallbackARB';
     
     static function GetDebugMessageLogARB(count: UInt32; bufSize: Int32; sources: ^UInt32; types: ^UInt32; ids: ^UInt32; severities: ^UInt32; lengths: ^Int32; messageLog: ^SByte): UInt32;
@@ -2336,7 +2357,7 @@ type
     static procedure DeleteNamedStringARB(namelen: Int32; name: ^SByte);
     external 'opengl32.dll' name 'glDeleteNamedStringARB';
     
-    static procedure CompileShaderIncludeARB(shader: UInt32; count: Int32; path: ^^SByteconst; length: ^Int32);
+    static procedure CompileShaderIncludeARB(shader: UInt32; count: Int32; path: ^IntPtr; length: ^Int32);
     external 'opengl32.dll' name 'glCompileShaderIncludeARB';
     
     static function IsNamedStringARB(namelen: Int32; name: ^SByte): GLboolean;
@@ -2543,7 +2564,7 @@ type
     static procedure BindMultiTextureEXT(texunit: UInt32; target: UInt32; texture: UInt32);
     external 'opengl32.dll' name 'glBindMultiTextureEXT';
     
-    static procedure MultiTexCoordPointerEXT(texunit: UInt32; size: Int32; &type: UInt32; stride: Int32; pointer: pointer);
+    static procedure MultiTexCoordPointerEXT(texunit: UInt32; size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
     external 'opengl32.dll' name 'glMultiTexCoordPointerEXT';
     
     static procedure MultiTexEnvfEXT(texunit: UInt32; target: UInt32; pname: UInt32; param: single);
@@ -3410,103 +3431,103 @@ type
     static procedure RenderbufferStorageMultisampleCoverageNV(target: UInt32; coverageSamples: Int32; colorSamples: Int32; internalformat: UInt32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glRenderbufferStorageMultisampleCoverageNV';
     
-    static procedure Uniform1i64NV(location: Int32; x: Int64EXT);
+    static procedure Uniform1i64NV(location: Int32; x: Int64);
     external 'opengl32.dll' name 'glUniform1i64NV';
     
-    static procedure Uniform2i64NV(location: Int32; x: Int64EXT; y: Int64EXT);
+    static procedure Uniform2i64NV(location: Int32; x: Int64; y: Int64);
     external 'opengl32.dll' name 'glUniform2i64NV';
     
-    static procedure Uniform3i64NV(location: Int32; x: Int64EXT; y: Int64EXT; z: Int64EXT);
+    static procedure Uniform3i64NV(location: Int32; x: Int64; y: Int64; z: Int64);
     external 'opengl32.dll' name 'glUniform3i64NV';
     
-    static procedure Uniform4i64NV(location: Int32; x: Int64EXT; y: Int64EXT; z: Int64EXT; w: Int64EXT);
+    static procedure Uniform4i64NV(location: Int32; x: Int64; y: Int64; z: Int64; w: Int64);
     external 'opengl32.dll' name 'glUniform4i64NV';
     
-    static procedure Uniform1i64vNV(location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure Uniform1i64vNV(location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glUniform1i64vNV';
     
-    static procedure Uniform2i64vNV(location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure Uniform2i64vNV(location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glUniform2i64vNV';
     
-    static procedure Uniform3i64vNV(location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure Uniform3i64vNV(location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glUniform3i64vNV';
     
-    static procedure Uniform4i64vNV(location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure Uniform4i64vNV(location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glUniform4i64vNV';
     
-    static procedure Uniform1ui64NV(location: Int32; x: UInt64EXT);
+    static procedure Uniform1ui64NV(location: Int32; x: UInt64);
     external 'opengl32.dll' name 'glUniform1ui64NV';
     
-    static procedure Uniform2ui64NV(location: Int32; x: UInt64EXT; y: UInt64EXT);
+    static procedure Uniform2ui64NV(location: Int32; x: UInt64; y: UInt64);
     external 'opengl32.dll' name 'glUniform2ui64NV';
     
-    static procedure Uniform3ui64NV(location: Int32; x: UInt64EXT; y: UInt64EXT; z: UInt64EXT);
+    static procedure Uniform3ui64NV(location: Int32; x: UInt64; y: UInt64; z: UInt64);
     external 'opengl32.dll' name 'glUniform3ui64NV';
     
-    static procedure Uniform4ui64NV(location: Int32; x: UInt64EXT; y: UInt64EXT; z: UInt64EXT; w: UInt64EXT);
+    static procedure Uniform4ui64NV(location: Int32; x: UInt64; y: UInt64; z: UInt64; w: UInt64);
     external 'opengl32.dll' name 'glUniform4ui64NV';
     
-    static procedure Uniform1ui64vNV(location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure Uniform1ui64vNV(location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glUniform1ui64vNV';
     
-    static procedure Uniform2ui64vNV(location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure Uniform2ui64vNV(location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glUniform2ui64vNV';
     
-    static procedure Uniform3ui64vNV(location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure Uniform3ui64vNV(location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glUniform3ui64vNV';
     
-    static procedure Uniform4ui64vNV(location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure Uniform4ui64vNV(location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glUniform4ui64vNV';
     
-    static procedure GetUniformi64vNV(&program: UInt32; location: Int32; &params: ^Int64EXT);
+    static procedure GetUniformi64vNV(&program: UInt32; location: Int32; &params: ^Int64);
     external 'opengl32.dll' name 'glGetUniformi64vNV';
     
-    static procedure ProgramUniform1i64NV(&program: UInt32; location: Int32; x: Int64EXT);
+    static procedure ProgramUniform1i64NV(&program: UInt32; location: Int32; x: Int64);
     external 'opengl32.dll' name 'glProgramUniform1i64NV';
     
-    static procedure ProgramUniform2i64NV(&program: UInt32; location: Int32; x: Int64EXT; y: Int64EXT);
+    static procedure ProgramUniform2i64NV(&program: UInt32; location: Int32; x: Int64; y: Int64);
     external 'opengl32.dll' name 'glProgramUniform2i64NV';
     
-    static procedure ProgramUniform3i64NV(&program: UInt32; location: Int32; x: Int64EXT; y: Int64EXT; z: Int64EXT);
+    static procedure ProgramUniform3i64NV(&program: UInt32; location: Int32; x: Int64; y: Int64; z: Int64);
     external 'opengl32.dll' name 'glProgramUniform3i64NV';
     
-    static procedure ProgramUniform4i64NV(&program: UInt32; location: Int32; x: Int64EXT; y: Int64EXT; z: Int64EXT; w: Int64EXT);
+    static procedure ProgramUniform4i64NV(&program: UInt32; location: Int32; x: Int64; y: Int64; z: Int64; w: Int64);
     external 'opengl32.dll' name 'glProgramUniform4i64NV';
     
-    static procedure ProgramUniform1i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure ProgramUniform1i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glProgramUniform1i64vNV';
     
-    static procedure ProgramUniform2i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure ProgramUniform2i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glProgramUniform2i64vNV';
     
-    static procedure ProgramUniform3i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure ProgramUniform3i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glProgramUniform3i64vNV';
     
-    static procedure ProgramUniform4i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64EXT);
+    static procedure ProgramUniform4i64vNV(&program: UInt32; location: Int32; count: Int32; value: ^Int64);
     external 'opengl32.dll' name 'glProgramUniform4i64vNV';
     
-    static procedure ProgramUniform1ui64NV(&program: UInt32; location: Int32; x: UInt64EXT);
+    static procedure ProgramUniform1ui64NV(&program: UInt32; location: Int32; x: UInt64);
     external 'opengl32.dll' name 'glProgramUniform1ui64NV';
     
-    static procedure ProgramUniform2ui64NV(&program: UInt32; location: Int32; x: UInt64EXT; y: UInt64EXT);
+    static procedure ProgramUniform2ui64NV(&program: UInt32; location: Int32; x: UInt64; y: UInt64);
     external 'opengl32.dll' name 'glProgramUniform2ui64NV';
     
-    static procedure ProgramUniform3ui64NV(&program: UInt32; location: Int32; x: UInt64EXT; y: UInt64EXT; z: UInt64EXT);
+    static procedure ProgramUniform3ui64NV(&program: UInt32; location: Int32; x: UInt64; y: UInt64; z: UInt64);
     external 'opengl32.dll' name 'glProgramUniform3ui64NV';
     
-    static procedure ProgramUniform4ui64NV(&program: UInt32; location: Int32; x: UInt64EXT; y: UInt64EXT; z: UInt64EXT; w: UInt64EXT);
+    static procedure ProgramUniform4ui64NV(&program: UInt32; location: Int32; x: UInt64; y: UInt64; z: UInt64; w: UInt64);
     external 'opengl32.dll' name 'glProgramUniform4ui64NV';
     
-    static procedure ProgramUniform1ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure ProgramUniform1ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glProgramUniform1ui64vNV';
     
-    static procedure ProgramUniform2ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure ProgramUniform2ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glProgramUniform2ui64vNV';
     
-    static procedure ProgramUniform3ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure ProgramUniform3ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glProgramUniform3ui64vNV';
     
-    static procedure ProgramUniform4ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure ProgramUniform4ui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glProgramUniform4ui64vNV';
     
     static procedure GetInternalformatSampleivNV(target: UInt32; internalformat: UInt32; samples: Int32; pname: UInt32; bufSize: Int32; &params: ^Int32);
@@ -3746,28 +3767,28 @@ type
     static function IsNamedBufferResidentNV(buffer: UInt32): GLboolean;
     external 'opengl32.dll' name 'glIsNamedBufferResidentNV';
     
-    static procedure GetBufferParameterui64vNV(target: UInt32; pname: UInt32; &params: ^UInt64EXT);
+    static procedure GetBufferParameterui64vNV(target: UInt32; pname: UInt32; &params: ^UInt64);
     external 'opengl32.dll' name 'glGetBufferParameterui64vNV';
     
-    static procedure GetNamedBufferParameterui64vNV(buffer: UInt32; pname: UInt32; &params: ^UInt64EXT);
+    static procedure GetNamedBufferParameterui64vNV(buffer: UInt32; pname: UInt32; &params: ^UInt64);
     external 'opengl32.dll' name 'glGetNamedBufferParameterui64vNV';
     
-    static procedure GetIntegerui64vNV(value: UInt32; result: ^UInt64EXT);
+    static procedure GetIntegerui64vNV(value: UInt32; result: ^UInt64);
     external 'opengl32.dll' name 'glGetIntegerui64vNV';
     
-    static procedure Uniformui64NV(location: Int32; value: UInt64EXT);
+    static procedure Uniformui64NV(location: Int32; value: UInt64);
     external 'opengl32.dll' name 'glUniformui64NV';
     
-    static procedure Uniformui64vNV(location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure Uniformui64vNV(location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glUniformui64vNV';
     
-    static procedure GetUniformui64vNV(&program: UInt32; location: Int32; &params: ^UInt64EXT);
+    static procedure GetUniformui64vNV(&program: UInt32; location: Int32; &params: ^UInt64);
     external 'opengl32.dll' name 'glGetUniformui64vNV';
     
-    static procedure ProgramUniformui64NV(&program: UInt32; location: Int32; value: UInt64EXT);
+    static procedure ProgramUniformui64NV(&program: UInt32; location: Int32; value: UInt64);
     external 'opengl32.dll' name 'glProgramUniformui64NV';
     
-    static procedure ProgramUniformui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64EXT);
+    static procedure ProgramUniformui64vNV(&program: UInt32; location: Int32; count: Int32; value: ^UInt64);
     external 'opengl32.dll' name 'glProgramUniformui64vNV';
     
     static procedure BindShadingRateImageNV(texture: UInt32);
@@ -3794,64 +3815,64 @@ type
     static procedure TextureBarrierNV;
     external 'opengl32.dll' name 'glTextureBarrierNV';
     
-    static procedure VertexAttribL1i64NV(index: UInt32; x: Int64EXT);
+    static procedure VertexAttribL1i64NV(index: UInt32; x: Int64);
     external 'opengl32.dll' name 'glVertexAttribL1i64NV';
     
-    static procedure VertexAttribL2i64NV(index: UInt32; x: Int64EXT; y: Int64EXT);
+    static procedure VertexAttribL2i64NV(index: UInt32; x: Int64; y: Int64);
     external 'opengl32.dll' name 'glVertexAttribL2i64NV';
     
-    static procedure VertexAttribL3i64NV(index: UInt32; x: Int64EXT; y: Int64EXT; z: Int64EXT);
+    static procedure VertexAttribL3i64NV(index: UInt32; x: Int64; y: Int64; z: Int64);
     external 'opengl32.dll' name 'glVertexAttribL3i64NV';
     
-    static procedure VertexAttribL4i64NV(index: UInt32; x: Int64EXT; y: Int64EXT; z: Int64EXT; w: Int64EXT);
+    static procedure VertexAttribL4i64NV(index: UInt32; x: Int64; y: Int64; z: Int64; w: Int64);
     external 'opengl32.dll' name 'glVertexAttribL4i64NV';
     
-    static procedure VertexAttribL1i64vNV(index: UInt32; v: ^Int64EXT);
+    static procedure VertexAttribL1i64vNV(index: UInt32; v: ^Int64);
     external 'opengl32.dll' name 'glVertexAttribL1i64vNV';
     
-    static procedure VertexAttribL2i64vNV(index: UInt32; v: ^Int64EXT);
+    static procedure VertexAttribL2i64vNV(index: UInt32; v: ^Int64);
     external 'opengl32.dll' name 'glVertexAttribL2i64vNV';
     
-    static procedure VertexAttribL3i64vNV(index: UInt32; v: ^Int64EXT);
+    static procedure VertexAttribL3i64vNV(index: UInt32; v: ^Int64);
     external 'opengl32.dll' name 'glVertexAttribL3i64vNV';
     
-    static procedure VertexAttribL4i64vNV(index: UInt32; v: ^Int64EXT);
+    static procedure VertexAttribL4i64vNV(index: UInt32; v: ^Int64);
     external 'opengl32.dll' name 'glVertexAttribL4i64vNV';
     
-    static procedure VertexAttribL1ui64NV(index: UInt32; x: UInt64EXT);
+    static procedure VertexAttribL1ui64NV(index: UInt32; x: UInt64);
     external 'opengl32.dll' name 'glVertexAttribL1ui64NV';
     
-    static procedure VertexAttribL2ui64NV(index: UInt32; x: UInt64EXT; y: UInt64EXT);
+    static procedure VertexAttribL2ui64NV(index: UInt32; x: UInt64; y: UInt64);
     external 'opengl32.dll' name 'glVertexAttribL2ui64NV';
     
-    static procedure VertexAttribL3ui64NV(index: UInt32; x: UInt64EXT; y: UInt64EXT; z: UInt64EXT);
+    static procedure VertexAttribL3ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64);
     external 'opengl32.dll' name 'glVertexAttribL3ui64NV';
     
-    static procedure VertexAttribL4ui64NV(index: UInt32; x: UInt64EXT; y: UInt64EXT; z: UInt64EXT; w: UInt64EXT);
+    static procedure VertexAttribL4ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64; w: UInt64);
     external 'opengl32.dll' name 'glVertexAttribL4ui64NV';
     
-    static procedure VertexAttribL1ui64vNV(index: UInt32; v: ^UInt64EXT);
+    static procedure VertexAttribL1ui64vNV(index: UInt32; v: ^UInt64);
     external 'opengl32.dll' name 'glVertexAttribL1ui64vNV';
     
-    static procedure VertexAttribL2ui64vNV(index: UInt32; v: ^UInt64EXT);
+    static procedure VertexAttribL2ui64vNV(index: UInt32; v: ^UInt64);
     external 'opengl32.dll' name 'glVertexAttribL2ui64vNV';
     
-    static procedure VertexAttribL3ui64vNV(index: UInt32; v: ^UInt64EXT);
+    static procedure VertexAttribL3ui64vNV(index: UInt32; v: ^UInt64);
     external 'opengl32.dll' name 'glVertexAttribL3ui64vNV';
     
-    static procedure VertexAttribL4ui64vNV(index: UInt32; v: ^UInt64EXT);
+    static procedure VertexAttribL4ui64vNV(index: UInt32; v: ^UInt64);
     external 'opengl32.dll' name 'glVertexAttribL4ui64vNV';
     
-    static procedure GetVertexAttribLi64vNV(index: UInt32; pname: UInt32; &params: ^Int64EXT);
+    static procedure GetVertexAttribLi64vNV(index: UInt32; pname: UInt32; &params: ^Int64);
     external 'opengl32.dll' name 'glGetVertexAttribLi64vNV';
     
-    static procedure GetVertexAttribLui64vNV(index: UInt32; pname: UInt32; &params: ^UInt64EXT);
+    static procedure GetVertexAttribLui64vNV(index: UInt32; pname: UInt32; &params: ^UInt64);
     external 'opengl32.dll' name 'glGetVertexAttribLui64vNV';
     
     static procedure VertexAttribLFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
     external 'opengl32.dll' name 'glVertexAttribLFormatNV';
     
-    static procedure BufferAddressRangeNV(pname: UInt32; index: UInt32; address: UInt64EXT; length: UIntPtr);
+    static procedure BufferAddressRangeNV(pname: UInt32; index: UInt32; address: UInt64; length: UIntPtr);
     external 'opengl32.dll' name 'glBufferAddressRangeNV';
     
     static procedure VertexFormatNV(size: Int32; &type: UInt32; stride: Int32);
@@ -3884,7 +3905,7 @@ type
     static procedure VertexAttribIFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
     external 'opengl32.dll' name 'glVertexAttribIFormatNV';
     
-    static procedure GetIntegerui64i_vNV(value: UInt32; index: UInt32; result: ^UInt64EXT);
+    static procedure GetIntegerui64i_vNV(value: UInt32; index: UInt32; result: ^UInt64);
     external 'opengl32.dll' name 'glGetIntegerui64i_vNV';
     
     static procedure ViewportSwizzleNV(index: UInt32; swizzlex: UInt32; swizzley: UInt32; swizzlez: UInt32; swizzlew: UInt32);
