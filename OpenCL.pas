@@ -557,6 +557,17 @@ type
     
   end;
   
+  //S
+  GLTextureInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property TEXTURE_TARGET:  GLTextureInfoType read new GLTextureInfoType($2004);
+    public static property MIPMAP_LEVEL:    GLTextureInfoType read new GLTextureInfoType($2005);
+    public static property NUM_SAMPLES:     GLTextureInfoType read new GLTextureInfoType($2012);
+    
+  end;
+  
   {$endregion ...InfoType}
   
   //S
@@ -1106,6 +1117,30 @@ type
       var res := typeof(CommandType).GetProperties.Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
       Result := res=nil?
         $'CommandType[{self.val}]':
+        res[0];
+    end;
+    
+  end;
+  
+  //R
+  GLObjectType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public property BUFFER:          boolean read self.val = $2000;
+    public property TEXTURE2D:       boolean read self.val = $2001;
+    public property TEXTURE3D:       boolean read self.val = $2002;
+    public property RENDERBUFFER:    boolean read self.val = $2003;
+    public property TEXTURE2D_ARRAY: boolean read self.val = $200E;
+    public property TEXTURE1D:       boolean read self.val = $200F;
+    public property TEXTURE1D_ARRAY: boolean read self.val = $2010;
+    public property TEXTURE_BUFFER:  boolean read self.val = $2011;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(GLObjectType).GetProperties.Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'GLObjectType[{self.val}]':
         res[0];
     end;
     
@@ -2142,7 +2177,74 @@ type
   
   cl_gl = static class
     
+    {$region Buffer}
     
+    static function CreateFromGLBuffer(context: cl_context; flags: MemoryFlags; bufobj: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLBuffer';
+    static function CreateFromGLBuffer(context: cl_context; flags: MemoryFlags; bufobj: UInt32; errcode_ret: ^ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLBuffer';
+    
+    {$endregion Buffer}
+    
+    {$region RenderBuffer}
+    
+    static function CreateFromGLRenderbuffer(context: cl_context; flags: MemoryFlags; renderbuffer: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLRenderbuffer';
+    static function CreateFromGLRenderbuffer(context: cl_context; flags: MemoryFlags; renderbuffer: UInt32; errcode_ret: ^ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLRenderbuffer';
+    
+    {$endregion RenderBuffer}
+    
+    {$region Texture}
+    
+    static function CreateFromGLTexture(context: cl_context; flags: MemoryFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLTexture';
+    static function CreateFromGLTexture(context: cl_context; flags: MemoryFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: ^ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLTexture';
+    
+    static function CreateFromGLTexture2D(context: cl_context; flags: MemoryFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLTexture2D';
+    static function CreateFromGLTexture2D(context: cl_context; flags: MemoryFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: ^ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLTexture2D';
+    
+    static function CreateFromGLTexture3D(context: cl_context; flags: MemoryFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLTexture3D';
+    static function CreateFromGLTexture3D(context: cl_context; flags: MemoryFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: ^ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateFromGLTexture3D';
+    
+    static function GetGLTextureInfo(memobj: cl_mem; param_name: GLTextureInfoType; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetGLTextureInfo';
+    static function GetGLTextureInfo(memobj: cl_mem; param_name: GLTextureInfoType; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: ^UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetGLTextureInfo';
+    
+    {$endregion Texture}
+    
+    {$region Общее}
+    
+    static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
+    static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
+    static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
+    static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
+    
+    static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
+    static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; [MarshalAs(UnmanagedType.LPArray)] mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
+    static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; [MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
+    static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: ^cl_mem; num_events_in_wait_list: UInt32; event_wait_list: ^cl_event; &event: ^cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
+    
+    static function GetGLObjectInfo(memobj: cl_mem; var gl_object_type: GLObjectType; var gl_object_name: UInt32): ErrorCode;
+    external 'opencl.dll' name 'clGetGLObjectInfo';
+    static function GetGLObjectInfo(memobj: cl_mem; gl_object_type: ^GLObjectType; gl_object_name: ^UInt32): ErrorCode;
+    external 'opencl.dll' name 'clGetGLObjectInfo';
+    
+    {$endregion Общее}
     
   end;
   

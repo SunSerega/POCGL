@@ -87,6 +87,11 @@ begin
     res += '    '#10;
     
     foreach var l in lns do
+      res += $'    public property {l[0]}boolean read self.val = {l[1]};{#10}';
+    
+    res += '    '#10;
+    
+    foreach var l in lns do
       res += $'    public property {l[0]}boolean read self and ({l[1]}) <> 0;{#10}';
     
     res += '    '#10;

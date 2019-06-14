@@ -100,27 +100,33 @@ begin
   var rc := s.Count(ch->ch='*');
   s := s.Remove('const ', ' ', '*', #13, #10);
   
-  case s of
+  case s.ToLower of
     
-    'cl_char':    s := 'SByte';
-    'cl_uchar':   s := 'Byte';
+    'cl_char':      s := 'SByte';
+    'cl_uchar':     s := 'Byte';
     
-    'cl_short':   s := 'Int16';
-    'cl_ushort':  s := 'UInt16';
+    'cl_short':     s := 'Int16';
+    'cl_ushort':    s := 'UInt16';
     
-    'cl_int':     s := 'ErrorCode';
-    'cl_uint':    s := 'UInt32';
+    'cl_int':       s := 'ErrorCode';
+    'cl_uint':      s := 'UInt32';
     
-    'cl_long':    s := 'Int64';
-    'cl_ulong':   s := 'UInt64';
+    'cl_glint':     s := 'Int32';
+    'cl_gluint':    s := 'UInt32';
     
-    'cl_float':   s := 'single';
-    'cl_double':  s := 'real';
+    'cl_long':      s := 'Int64';
+    'cl_ulong':     s := 'UInt64';
     
-    'cl_half':    s := 'UInt16';
+    'cl_float':     s := 'single';
+    'cl_double':    s := 'real';
     
-    'intptr_t':   s := 'IntPtr';
-    'size_t':     s := 'UIntPtr';
+    'cl_half':      s := 'UInt16';
+    
+    'intptr_t':     s := 'IntPtr';
+    'size_t':       s := 'UIntPtr';
+    
+    'cl_glenum':    s := 'UInt32';
+    'cl_mem_flags': s := 'MemoryFlags';
     
     'void':
     if rc<>0 then
@@ -163,11 +169,14 @@ type
       begin
         var ind := p.LastIndexOf(' ');
         
-        par += (
+        var cpar := (
           p.Substring(ind+1),
           GetTypeDefString(p.Remove(ind))
         );
         
+        if cpar[0].ToLower = 'event' then cpar := ('&'+cpar[0], cpar[1]);
+        
+        par += cpar;
       end;
       
     end;
@@ -201,6 +210,21 @@ type
       
       sb.AppendLine;
       Result := sb.ToString;
+      
+      if Result.Contains('event_wait_list: ^cl_event; &event: ^cl_event') then
+        Result :=
+          Result.Replace(
+          'event_wait_list: ^cl_event; &event: ^cl_event',
+          '[MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event'
+          ) + Result;
+      
+      if Result.Contains('errcode_ret: ^ErrorCode') then
+        Result :=
+          Result.Replace(
+            'errcode_ret: ^ErrorCode',
+            'var errcode_ret: ErrorCode'
+          ) + Result;
+      
     end;
     
   end;
@@ -213,7 +237,7 @@ begin
       .SkipCharsFromTo('/*', '*/')
       .TakeCharsFromTo('extern', ';')
       .Select(a->FuncDef.Create(a).ToString)
-      .JoinIntoString(#10);
+      .JoinIntoString('    '#10);
     
     text += '    ';
     
