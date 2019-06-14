@@ -580,6 +580,7 @@ type
     
   end;
   
+  //S
   GLContextInfoType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
