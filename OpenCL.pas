@@ -15,7 +15,7 @@
 /// Код переведён отсюда:
 /// https://github.com/KhronosGroup/OpenCL-Headers/tree/master/CL
 ///
-/// Справка:
+/// Спецификация (что то типа справки):
 /// www.khronos.org/registry/OpenCL/specs/2.2/html/OpenCL_API.html
 ///
 /// Если чего то не хватает - писать сюда:

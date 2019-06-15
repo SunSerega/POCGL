@@ -25,21 +25,21 @@ begin
     end).ToArray;
     
     var same_letters_sb := new StringBuilder;
-    for var _i := 0 to lns.Max(l->l[0].Length)-1 do
-    begin
-      var i := _i;
-      
-      var m :=
-        lns.Select(t->t[0]).Select(l->i<l.Length?l[i+1]:#0)
-        .GroupBy( ch->ch, ch->ch, (ch,sq)->(ch,sq.Count) )
-        .MaxBy(t->t[1]);
-      
-      if m[1] / lns.Length < 0.8 then break else
-        same_letters_sb += m[0];
-    end;
+    if lns.Length>1 then
+      for var _i := 0 to lns.Max(l->l[0].Length)-1 do
+      begin
+        var i := _i;
+        
+        var m :=
+          lns.Select(t->t[0]).Select(l->i<l.Length?l[i+1]:#0)
+          .GroupBy( ch->ch, ch->ch, (ch,sq)->(ch,sq.Count) )
+          .MaxBy(t->t[1]);
+        
+        if m[1] / lns.Length < 0.8 then break else
+          same_letters_sb += m[0];
+      end;
     var same_letters := same_letters_sb.ToString;
     lns := lns.ConvertAll(l->( l[0].StartsWith(same_letters)?l[0].Substring(same_letters.Length):l[0], l[1], '' ));
-    
     
     
     var max_name_l := lns.Max(l->l[0].Length);
@@ -58,14 +58,14 @@ begin
       res += '  Flags = record'#10;
       t_name := 'cl_bitfield';
     end else
-    if all_lns[0].ToLower.Contains('info') then
+    if all_lns[0].ToLower.Contains('mode') then
     begin
-      res += '  InfoType = record'#10;
+      res += '  Mode = record'#10;
       t_name := 'UInt32';
     end else
     begin
       res += '  _____ = record'#10;
-      t_name := 'IntPtr';
+      t_name := 'UInt32';
     end;
     
     res += $'    public val: {t_name};{#10}';
@@ -124,7 +124,7 @@ begin
     res += '  end;'#10;
     res += '  ';
     
-    System.Windows.Forms.Clipboard.SetText(res.ToString);
+    System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
     System.Console.Beep;
   except
     on e: Exception do

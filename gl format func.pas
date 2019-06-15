@@ -105,6 +105,7 @@ begin
     'glbyte':       s := 'SByte';
     'glubyte':      s := 'Byte';
     'glchar':       s := 'Byte';
+    'glboolean':    s := 'Byte';
     
     'glshort':      s := 'Int16';
     'glushort':     s := 'UInt16';
@@ -119,6 +120,7 @@ begin
     'gluint64ext':  s := 'UInt64';
     
     'glfloat':      s := 'single';
+    'glclampf':      s := 'single';
     'gldouble':     s := 'real';
     
     'glintptr':     s := 'IntPtr';
@@ -126,6 +128,7 @@ begin
     
     'glenum':       s := 'UInt32';
     
+    'glvoid',
     'void':
     if rc<>0 then
     begin
