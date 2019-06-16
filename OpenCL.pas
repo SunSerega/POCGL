@@ -1979,15 +1979,27 @@ type
     
     static function BuildProgram(&program: cl_program; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; [MarshalAs(UnmanagedType.LPStr)] options: string; pfn_notify: Program_Callback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clBuildProgram';
+    static function BuildProgram(&program: cl_program; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; [MarshalAs(UnmanagedType.LPStr)] options: IntPtr; pfn_notify: Program_Callback; user_data: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clBuildProgram';
+    static function BuildProgram(&program: cl_program; num_devices: UInt32; device_list: ^cl_device_id; options: string; pfn_notify: Program_Callback; user_data: pointer): ErrorCode;
+    external 'opencl.dll' name 'clBuildProgram';
     static function BuildProgram(&program: cl_program; num_devices: UInt32; device_list: ^cl_device_id; options: IntPtr; pfn_notify: Program_Callback; user_data: pointer): ErrorCode;
     external 'opencl.dll' name 'clBuildProgram';
     
     static function CompileProgram(&program: cl_program; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; [MarshalAs(UnmanagedType.LPStr)] options: string; num_input_headers: UInt32; [MarshalAs(UnmanagedType.LPArray)] input_headers: array of cl_program; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] header_include_names: array of string; pfn_notify: Program_Callback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCompileProgram';
+    static function CompileProgram(&program: cl_program; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; [MarshalAs(UnmanagedType.LPStr)] options: IntPtr; num_input_headers: UInt32; [MarshalAs(UnmanagedType.LPArray)] input_headers: array of cl_program; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] header_include_names: array of string; pfn_notify: Program_Callback; user_data: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCompileProgram';
+    static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: ^cl_device_id; options: string; num_input_headers: UInt32; input_headers: ^cl_program; header_include_names: ^IntPtr; pfn_notify: Program_Callback; user_data: pointer): ErrorCode;
+    external 'opencl.dll' name 'clCompileProgram';
     static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: ^cl_device_id; options: IntPtr; num_input_headers: UInt32; input_headers: ^cl_program; header_include_names: ^IntPtr; pfn_notify: Program_Callback; user_data: pointer): ErrorCode;
     external 'opencl.dll' name 'clCompileProgram';
 
     static function LinkProgram(context: cl_context; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; [MarshalAs(UnmanagedType.LPStr)] options: string; num_input_programs: UInt32; [MarshalAs(UnmanagedType.LPArray)] input_programs: array of cl_program; pfn_notify: Program_Callback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    external 'opencl.dll' name 'clLinkProgram';
+    static function LinkProgram(context: cl_context; num_devices: UInt32; [MarshalAs(UnmanagedType.LPArray)] device_list: array of cl_device_id; [MarshalAs(UnmanagedType.LPStr)] options: IntPtr; num_input_programs: UInt32; [MarshalAs(UnmanagedType.LPArray)] input_programs: array of cl_program; pfn_notify: Program_Callback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    external 'opencl.dll' name 'clLinkProgram';
+    static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: ^cl_device_id; options: string; num_input_programs: UInt32; input_programs: ^cl_program; pfn_notify: Program_Callback; user_data: pointer; errcode_ret: ^ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
     static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: ^cl_device_id; options: IntPtr; num_input_programs: UInt32; input_programs: ^cl_program; pfn_notify: Program_Callback; user_data: pointer; errcode_ret: ^ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';

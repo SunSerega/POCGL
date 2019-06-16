@@ -33,7 +33,8 @@ type
   GLsync                        = IntPtr;
   GLeglImageOES                 = IntPtr;
   
-  QueryName                    = UInt32;
+  QueryName                     = UInt32;
+  HGLRC                         = UInt32;
   
   // типы для совместимости с OpenCL
   ///--
@@ -7132,6 +7133,198 @@ type
     
     static procedure FramebufferTextureMultiviewOVR(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32; baseViewIndex: Int32; numViews: Int32);
     external 'opengl32.dll' name 'glFramebufferTextureMultiviewOVR';
+    
+    static procedure AlphaFunc(func: UInt32; ref: single);
+    external 'opengl32.dll' name 'glAlphaFunc';
+    
+    static procedure &Begin(mode: UInt32);
+    external 'opengl32.dll' name 'glBegin';
+    
+    static procedure Bitmap(width: Int32; height: Int32; xorig: single; yorig: single; xmove: single; ymove: single; bitmap: ^Byte);
+    external 'opengl32.dll' name 'glBitmap';
+    
+    static procedure CallLists(n: Int32; &type: UInt32; lists: pointer);
+    external 'opengl32.dll' name 'glCallLists';
+    
+    static procedure ClientActiveTexture(texture: UInt32);
+    external 'opengl32.dll' name 'glClientActiveTexture';
+    
+    static procedure Color4f(red: single; green: single; blue: single; alpha: single);
+    external 'opengl32.dll' name 'glColor4f';
+    
+    static procedure Color4fv(v: ^single);
+    external 'opengl32.dll' name 'glColor4fv';
+    
+    static procedure Color4ub(red: Byte; green: Byte; blue: Byte; alpha: Byte);
+    external 'opengl32.dll' name 'glColor4ub';
+    
+    static procedure ColorMask(red: Byte; green: Byte; blue: Byte; alpha: Byte);
+    external 'opengl32.dll' name 'glColorMask';
+    
+    static procedure ColorPointer(size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
+    external 'opengl32.dll' name 'glColorPointer';
+    
+    static procedure ColorSubTableEXT(target: UInt32; start: Int32; count: Int32; format: UInt32; &type: UInt32; table: pointer);
+    external 'opengl32.dll' name 'glColorSubTableEXT';
+    
+    static procedure ColorTableEXT(target: UInt32; internalformat: UInt32; width: Int32; format: UInt32; &type: UInt32; table: pointer);
+    external 'opengl32.dll' name 'glColorTableEXT';
+    
+    static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
+    external 'opengl32.dll' name 'glCopyPixels';
+    
+    static procedure DepthMask(flag: Byte);
+    external 'opengl32.dll' name 'glDepthMask';
+    
+    static procedure DisableClientState(&array: UInt32);
+    external 'opengl32.dll' name 'glDisableClientState';
+    
+    static procedure DrawPixels(width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    external 'opengl32.dll' name 'glDrawPixels';
+    
+    static procedure EnableClientState(&array: UInt32);
+    external 'opengl32.dll' name 'glEnableClientState';
+    
+    static procedure &End;
+    external 'opengl32.dll' name 'glEnd';
+    
+    static procedure EndList;
+    external 'opengl32.dll' name 'glEndList';
+    
+    static procedure Frustumf(left: single; right: single; bottom: single; top: single; zNear: single; zFar: single);
+    external 'opengl32.dll' name 'glFrustumf';
+    
+    static function GenLists(range: Int32): UInt32;
+    external 'opengl32.dll' name 'glGenLists';
+    
+    static procedure GetBooleanv(pname: UInt32; &params: ^Byte);
+    external 'opengl32.dll' name 'glGetBooleanv';
+    
+    static procedure GetColorTableEXT(target: UInt32; format: UInt32; &type: UInt32; table: pointer);
+    external 'opengl32.dll' name 'glGetColorTableEXT';
+    
+    static procedure GetColorTableParameterivEXT(target: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetColorTableParameterivEXT';
+    
+    static procedure GetIntegerv(pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetIntegerv';
+    
+    static procedure GetLightfv(light: UInt32; pname: UInt32; &params: ^single);
+    external 'opengl32.dll' name 'glGetLightfv';
+    
+    static procedure GetMaterialfv(face: UInt32; pname: UInt32; &params: ^single);
+    external 'opengl32.dll' name 'glGetMaterialfv';
+    
+    static procedure GetPointerv(pname: UInt32; &params: ^pointer);
+    external 'opengl32.dll' name 'glGetPointerv';
+    
+    static procedure GetPolygonStipple(mask: ^Byte);
+    external 'opengl32.dll' name 'glGetPolygonStipple';
+    
+    static procedure GetTexEnvfv(target: UInt32; pname: UInt32; &params: ^single);
+    external 'opengl32.dll' name 'glGetTexEnvfv';
+    
+    static procedure GetTexEnviv(target: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetTexEnviv';
+    
+    static procedure Lightfv(light: UInt32; pname: UInt32; &params: ^single);
+    external 'opengl32.dll' name 'glLightfv';
+    
+    static procedure LightModelfv(pname: UInt32; &params: ^single);
+    external 'opengl32.dll' name 'glLightModelfv';
+    
+    static procedure LineStipple(factor: Int32; pattern: UInt16);
+    external 'opengl32.dll' name 'glLineStipple';
+    
+    static procedure ListBase(base: UInt32);
+    external 'opengl32.dll' name 'glListBase';
+    
+    static procedure LoadIdentity;
+    external 'opengl32.dll' name 'glLoadIdentity';
+    
+    static procedure LoadMatrixf(m: ^single);
+    external 'opengl32.dll' name 'glLoadMatrixf';
+    
+    static procedure Materialf(face: UInt32; pname: UInt32; param: single);
+    external 'opengl32.dll' name 'glMaterialf';
+    
+    static procedure Materialfv(face: UInt32; pname: UInt32; &params: ^single);
+    external 'opengl32.dll' name 'glMaterialfv';
+    
+    static procedure MatrixMode(mode: UInt32);
+    external 'opengl32.dll' name 'glMatrixMode';
+    
+    static procedure MultMatrixf(m: ^single);
+    external 'opengl32.dll' name 'glMultMatrixf';
+    
+    static procedure MultiTexCoord2f(target: UInt32; s: single; t: single);
+    external 'opengl32.dll' name 'glMultiTexCoord2f';
+    
+    static procedure MultiTexCoord2fv(target: UInt32; v: ^single);
+    external 'opengl32.dll' name 'glMultiTexCoord2fv';
+    
+    static procedure NewList(list: UInt32; mode: UInt32);
+    external 'opengl32.dll' name 'glNewList';
+    
+    static procedure Normal3f(nx: single; ny: single; nz: single);
+    external 'opengl32.dll' name 'glNormal3f';
+    
+    static procedure Normal3fv(v: ^single);
+    external 'opengl32.dll' name 'glNormal3fv';
+    
+    static procedure NormalPointer(&type: UInt32; stride: Int32; _pointer: pointer);
+    external 'opengl32.dll' name 'glNormalPointer';
+    
+    static procedure Orthof(left: single; right: single; bottom: single; top: single; zNear: single; zFar: single);
+    external 'opengl32.dll' name 'glOrthof';
+    
+    static procedure PolygonStipple(mask: ^Byte);
+    external 'opengl32.dll' name 'glPolygonStipple';
+    
+    static procedure PopMatrix;
+    external 'opengl32.dll' name 'glPopMatrix';
+    
+    static procedure PushMatrix;
+    external 'opengl32.dll' name 'glPushMatrix';
+    
+    static procedure RasterPos3f(x: single; y: single; z: single);
+    external 'opengl32.dll' name 'glRasterPos3f';
+    
+    static procedure Rotatef(angle: single; x: single; y: single; z: single);
+    external 'opengl32.dll' name 'glRotatef';
+    
+    static procedure Scalef(x: single; y: single; z: single);
+    external 'opengl32.dll' name 'glScalef';
+    
+    static procedure ShadeModel(mode: UInt32);
+    external 'opengl32.dll' name 'glShadeModel';
+    
+    static procedure TexCoordPointer(size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
+    external 'opengl32.dll' name 'glTexCoordPointer';
+    
+    static procedure TexEnvfv(target: UInt32; pname: UInt32; &params: ^single);
+    external 'opengl32.dll' name 'glTexEnvfv';
+    
+    static procedure TexEnvi(target: UInt32; pname: UInt32; param: Int32);
+    external 'opengl32.dll' name 'glTexEnvi';
+    
+    static procedure Translatef(x: single; y: single; z: single);
+    external 'opengl32.dll' name 'glTranslatef';
+    
+    static procedure Vertex2f(x: single; y: single);
+    external 'opengl32.dll' name 'glVertex2f';
+    
+    static procedure Vertex2fv(v: ^single);
+    external 'opengl32.dll' name 'glVertex2fv';
+    
+    static procedure Vertex3f(x: single; y: single; z: single);
+    external 'opengl32.dll' name 'glVertex3f';
+    
+    static procedure Vertex3fv(v: ^single);
+    external 'opengl32.dll' name 'glVertex3fv';
+    
+    static procedure VertexPointer(size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
+    external 'opengl32.dll' name 'glVertexPointer';
     
     {$endregion unsorted}
     
