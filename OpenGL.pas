@@ -16,7 +16,7 @@
 /// https://github.com/KhronosGroup/OpenGL-Registry
 ///
 /// Спецификация (что то типа справки):
-/// https://www.khronos.org/registry/OpenGL/specs/gl/glspec44.core.pdf
+/// https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf
 ///
 /// Если чего то не хватает - писать сюда:
 /// https://github.com/SunSerega/POCGL/issues
@@ -34,7 +34,9 @@ type
   GLeglImageOES                 = IntPtr;
   
   QueryName                     = UInt32;
-  HGLRC                         = UInt32;
+  BufferName                    = UInt32;
+  
+  HGLRC                         = UInt32; //ToDo вроде это что то для связки с GDI... если в конце окажется не нужно - удалить
   
   // типы для совместимости с OpenCL
   ///--
@@ -163,6 +165,24 @@ type
     
   end;
   
+  //S
+  BufferInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property SIZE:              BufferInfoType read new BufferInfoType($8764);
+    public static property USAGE:             BufferInfoType read new BufferInfoType($8765);
+    public static property ACCESS:            BufferInfoType read new BufferInfoType($88BB);
+    public static property ACCESS_FLAGS:      BufferInfoType read new BufferInfoType($911F);
+    public static property IMMUTABLE_STORAGE: BufferInfoType read new BufferInfoType($821F);
+    public static property MAPPED:            BufferInfoType read new BufferInfoType($88BC);
+    public static property MAP_LENGTH:        BufferInfoType read new BufferInfoType($9120);
+    public static property MAP_OFFSET:        BufferInfoType read new BufferInfoType($9121);
+    public static property STORAGE_FLAGS:     BufferInfoType read new BufferInfoType($8220);
+    public static property MAP_POINTER:       BufferInfoType read new BufferInfoType($88BD);
+    
+  end;
+  
   {$endregion ...InfoType}
   
   //S
@@ -171,6 +191,166 @@ type
     public constructor(val: UInt32) := self.val := val;
     
     public static property GL_SYNC_GPU_COMMANDS_COMPLETE: FenceCondition read new FenceCondition($9117);
+    
+  end;
+  
+  //S
+  BufferBindType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ARRAY_BUFFER:              BufferBindType read new BufferBindType($8892);
+    public static property ATOMIC_COUNTER_BUFFER:     BufferBindType read new BufferBindType($92C0);
+    public static property COPY_READ_BUFFER:          BufferBindType read new BufferBindType($8F36);
+    public static property COPY_WRITE_BUFFER:         BufferBindType read new BufferBindType($8F37);
+    public static property DISPATCH_INDIRECT_BUFFER:  BufferBindType read new BufferBindType($90EE);
+    public static property DRAW_INDIRECT_BUFFER:      BufferBindType read new BufferBindType($8F3F);
+    public static property ELEMENT_ARRAY_BUFFER:      BufferBindType read new BufferBindType($8893);
+    public static property PIXEL_PACK_BUFFER:         BufferBindType read new BufferBindType($88EB);
+    public static property PIXEL_UNPACK_BUFFER:       BufferBindType read new BufferBindType($88EC);
+    public static property QUERY_BUFFER:              BufferBindType read new BufferBindType($9192);
+    public static property SHADER_STORAGE_BUFFER:     BufferBindType read new BufferBindType($90D2);
+    public static property TEXTURE_BUFFER:            BufferBindType read new BufferBindType($8C2A);
+    public static property TRANSFORM_FEEDBACK_BUFFER: BufferBindType read new BufferBindType($8C8E);
+    public static property UNIFORM_BUFFER:            BufferBindType read new BufferBindType($8A11);
+    
+  end;
+  
+  //S
+  BufferDataUsage = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property STREAM_DRAW:   BufferDataUsage read new BufferDataUsage($88E0);
+    public static property STREAM_READ:   BufferDataUsage read new BufferDataUsage($88E1);
+    public static property STREAM_COPY:   BufferDataUsage read new BufferDataUsage($88E2);
+    public static property STATIC_DRAW:   BufferDataUsage read new BufferDataUsage($88E4);
+    public static property STATIC_READ:   BufferDataUsage read new BufferDataUsage($88E5);
+    public static property STATIC_COPY:   BufferDataUsage read new BufferDataUsage($88E6);
+    public static property DYNAMIC_DRAW:  BufferDataUsage read new BufferDataUsage($88E8);
+    public static property DYNAMIC_READ:  BufferDataUsage read new BufferDataUsage($88E9);
+    public static property DYNAMIC_COPY:  BufferDataUsage read new BufferDataUsage($88EA);
+    
+  end;
+  
+  //S
+  InternalDataFormat = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property R8:        InternalDataFormat read new InternalDataFormat($8229);
+    public static property R8I:       InternalDataFormat read new InternalDataFormat($8231);
+    public static property R8UI:      InternalDataFormat read new InternalDataFormat($8232);
+    public static property R16:       InternalDataFormat read new InternalDataFormat($822A);
+    public static property R16I:      InternalDataFormat read new InternalDataFormat($8233);
+    public static property R16UI:     InternalDataFormat read new InternalDataFormat($8234);
+    public static property R16F:      InternalDataFormat read new InternalDataFormat($822D);
+    public static property R32I:      InternalDataFormat read new InternalDataFormat($8235);
+    public static property R32UI:     InternalDataFormat read new InternalDataFormat($8236);
+    public static property R32F:      InternalDataFormat read new InternalDataFormat($822E);
+    
+    public static property RG8:       InternalDataFormat read new InternalDataFormat($822B);
+    public static property RG8I:      InternalDataFormat read new InternalDataFormat($8237);
+    public static property RG8UI:     InternalDataFormat read new InternalDataFormat($8238);
+    public static property RG16:      InternalDataFormat read new InternalDataFormat($822C);
+    public static property RG16I:     InternalDataFormat read new InternalDataFormat($8239);
+    public static property RG16UI:    InternalDataFormat read new InternalDataFormat($823A);
+    public static property RG16F:     InternalDataFormat read new InternalDataFormat($822F);
+    public static property RG32I:     InternalDataFormat read new InternalDataFormat($823B);
+    public static property RG32UI:    InternalDataFormat read new InternalDataFormat($823C);
+    public static property RG32F:     InternalDataFormat read new InternalDataFormat($8230);
+    
+    public static property RGB8:      InternalDataFormat read new InternalDataFormat($8051);
+    public static property RGB8I:     InternalDataFormat read new InternalDataFormat($8D8F);
+    public static property RGB8UI:    InternalDataFormat read new InternalDataFormat($8D7D);
+    public static property RGB16:     InternalDataFormat read new InternalDataFormat($8054);
+    public static property RGB16I:    InternalDataFormat read new InternalDataFormat($8D89);
+    public static property RGB16UI:   InternalDataFormat read new InternalDataFormat($8D77);
+    public static property RGB16F:    InternalDataFormat read new InternalDataFormat($881B);
+    public static property RGB32I:    InternalDataFormat read new InternalDataFormat($8D83);
+    public static property RGB32UI:   InternalDataFormat read new InternalDataFormat($8D71);
+    public static property RGB32F:    InternalDataFormat read new InternalDataFormat($8815);
+    
+    public static property RGBA8:     InternalDataFormat read new InternalDataFormat($8058);
+    public static property RGBA16:    InternalDataFormat read new InternalDataFormat($805B);
+    public static property RGBA16F:   InternalDataFormat read new InternalDataFormat($881A);
+    public static property RGBA32F:   InternalDataFormat read new InternalDataFormat($8814);
+    public static property RGBA8I:    InternalDataFormat read new InternalDataFormat($8D8E);
+    public static property RGBA16I:   InternalDataFormat read new InternalDataFormat($8D88);
+    public static property RGBA32I:   InternalDataFormat read new InternalDataFormat($8D82);
+    public static property RGBA8UI:   InternalDataFormat read new InternalDataFormat($8D7C);
+    public static property RGBA16UI:  InternalDataFormat read new InternalDataFormat($8D76);
+    public static property RGBA32UI:  InternalDataFormat read new InternalDataFormat($8D70);
+    
+    public static property RGB4:      InternalDataFormat read new InternalDataFormat($804F);
+    public static property RGB5:      InternalDataFormat read new InternalDataFormat($8050);
+    public static property RGB8:      InternalDataFormat read new InternalDataFormat($8051);
+    public static property RGB10:     InternalDataFormat read new InternalDataFormat($8052);
+    public static property RGB12:     InternalDataFormat read new InternalDataFormat($8053);
+    public static property RGB16:     InternalDataFormat read new InternalDataFormat($8054);
+    public static property RGB5_A1:   InternalDataFormat read new InternalDataFormat($8057);
+    public static property RGB10_A2:  InternalDataFormat read new InternalDataFormat($8059);
+    
+    public static property RGBA2:     InternalDataFormat read new InternalDataFormat($8055);
+    public static property RGBA4:     InternalDataFormat read new InternalDataFormat($8056);
+    public static property RGBA8:     InternalDataFormat read new InternalDataFormat($8058);
+    public static property RGBA12:    InternalDataFormat read new InternalDataFormat($805A);
+    public static property RGBA16:    InternalDataFormat read new InternalDataFormat($805B);
+    
+  end;
+  
+  //
+  DataFormat = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property RED:             DataFormat read new DataFormat($1903);
+    public static property GREEN:           DataFormat read new DataFormat($1904);
+    public static property BLUE:            DataFormat read new DataFormat($1905);
+    public static property RG:              DataFormat read new DataFormat($8227);
+    public static property RGB:             DataFormat read new DataFormat($1907);
+    public static property BGR:             DataFormat read new DataFormat($80E0);
+    public static property RGBA:            DataFormat read new DataFormat($1908);
+    public static property BGRA:            DataFormat read new DataFormat($80E1);
+    public static property RED_INTEGER:     DataFormat read new DataFormat($8D94);
+    public static property GREEN_INTEGER:   DataFormat read new DataFormat($8D95);
+    public static property BLUE_INTEGER:    DataFormat read new DataFormat($8D96);
+    public static property RGB_INTEGER:     DataFormat read new DataFormat($8D98);
+    public static property RGBA_INTEGER:    DataFormat read new DataFormat($8D99);
+    public static property BGR_INTEGER:     DataFormat read new DataFormat($8D9A);
+    public static property BGRA_INTEGER:    DataFormat read new DataFormat($8D9B);
+    public static property RG_INTEGER:      DataFormat read new DataFormat($8228);
+    public static property STENCIL_INDEX:   DataFormat read new DataFormat($1901);
+    public static property DEPTH_COMPONENT: DataFormat read new DataFormat($1902);
+    public static property DEPTH_STENCIL:   DataFormat read new DataFormat($84F9);
+    
+  end;
+  
+  //S
+  DataType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property BYTE:                        DataType read new DataType($1400);
+    public static property UNSIGNED_BYTE:               DataType read new DataType($1401);
+    public static property SHORT:                       DataType read new DataType($1402);
+    public static property UNSIGNED_SHORT:              DataType read new DataType($1403);
+    public static property INT:                         DataType read new DataType($1404);
+    public static property UNSIGNED_INT:                DataType read new DataType($1405);
+    public static property FLOAT:                       DataType read new DataType($1406);
+    public static property HALF_FLOAT:                  DataType read new DataType($140B);
+    public static property UNSIGNED_BYTE_3_3_2:         DataType read new DataType($8032);
+    public static property UNSIGNED_SHORT_5_6_5:        DataType read new DataType($8363);
+    public static property UNSIGNED_SHORT_4_4_4_4:      DataType read new DataType($8033);
+    public static property UNSIGNED_SHORT_5_5_5_1:      DataType read new DataType($8034);
+    public static property UNSIGNED_INT_8_8_8_8:        DataType read new DataType($8035);
+    public static property UNSIGNED_INT_10_10_10_2:     DataType read new DataType($8036);
+    public static property UNSIGNED_BYTE_2_3_3_REV:     DataType read new DataType($8362);
+    public static property UNSIGNED_SHORT_5_6_5_REV:    DataType read new DataType($8364);
+    public static property UNSIGNED_SHORT_4_4_4_4_REV:  DataType read new DataType($8365);
+    public static property UNSIGNED_SHORT_1_5_5_5_REV:  DataType read new DataType($8366);
+    public static property UNSIGNED_INT_8_8_8_8_REV:    DataType read new DataType($8367);
+    public static property UNSIGNED_INT_2_10_10_10_REV: DataType read new DataType($8368);
     
   end;
   
@@ -212,6 +392,34 @@ type
     public constructor(val: UInt32) := self.val := val;
     
     public static property SYNC_FLUSH_COMMANDS:  CommandFlushingBehaviorFlags read new CommandFlushingBehaviorFlags($00000001);
+    
+  end;
+  
+  //S
+  BufferMapFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property READ_BIT:              BufferMapFlags read new BufferMapFlags($0001);
+    public static property WRITE_BIT:             BufferMapFlags read new BufferMapFlags($0002);
+    public static property INVALIDATE_RANGE_BIT:  BufferMapFlags read new BufferMapFlags($0004);
+    public static property INVALIDATE_BUFFER_BIT: BufferMapFlags read new BufferMapFlags($0008);
+    public static property FLUSH_EXPLICIT_BIT:    BufferMapFlags read new BufferMapFlags($0010);
+    public static property UNSYNCHRONIZED_BIT:    BufferMapFlags read new BufferMapFlags($0020);
+    public static property PERSISTENT_BIT:        BufferMapFlags read new BufferMapFlags($0040);
+    public static property COHERENT_BIT:          BufferMapFlags read new BufferMapFlags($0080);
+    
+  end;
+  
+  //S
+  BufferStorageFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property DYNAMIC_STORAGE_BIT: BufferStorageFlags read new BufferStorageFlags($0100);
+    public static property CLIENT_STORAGE_BIT:  BufferStorageFlags read new BufferStorageFlags($0200);
+    
+    public static function operator implicit(f: BufferMapFlags): BufferStorageFlags := new BufferStorageFlags(f.val);
     
   end;
   
@@ -3281,6 +3489,20 @@ type
     static procedure GetInteger64v(pname: QueryInfoType; var data: Int64);
     external 'opengl32.dll' name 'glGetInteger64v';
     
+    static procedure GetIntegeri_v(target: UInt32; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
+    static procedure GetIntegeri_v(target: UInt32; index: UInt32; var data: Int32);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
+    static procedure GetIntegeri_v(target: BufferBindType; index: UInt32; var data: BufferName);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
+    
+    static procedure GetInteger64i_v(target: UInt32; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+    static procedure GetInteger64i_v(target: UInt32; index: UInt32; var data: Int64);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+    static procedure GetInteger64i_v(target: BufferBindType; index: UInt32; var data: Vec2i64);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+    
     {$endregion Get[Type]}
     
     {$region 4.0 - Event Model}
@@ -3315,10 +3537,17 @@ type
     
     {$region 4.2 - Query Objects and Asynchronous Queries}
     
+    // 4.2.2
+    
     static procedure GenQueries(n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of QueryName);
     external 'opengl32.dll' name 'glGenQueries';
     static procedure GenQueries(n: Int32; ids: ^QueryName);
     external 'opengl32.dll' name 'glGenQueries';
+    
+    static procedure CreateQueries(target: QueryInfoType; n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of QueryName);
+    external 'opengl32.dll' name 'glCreateQueries';
+    static procedure CreateQueries(target: QueryInfoType; n: Int32; ids: ^QueryName);
+    external 'opengl32.dll' name 'glCreateQueries';
     
     static procedure DeleteQueries(n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of QueryName);
     external 'opengl32.dll' name 'glDeleteQueries';
@@ -3335,7 +3564,7 @@ type
     static procedure EndQuery(target: QueryInfoType);
     external 'opengl32.dll' name 'glEndQuery';
     
-    // 4.2.1
+    // 4.2.3
     
     static function IsQuery(id: QueryName): boolean;
     external 'opengl32.dll' name 'glIsQuery';
@@ -3382,6 +3611,18 @@ type
     static procedure GetQueryObjectui64v(id: QueryName; pname: GetQueryObjectInfoName; &params: pointer);
     external 'opengl32.dll' name 'glGetQueryObjectui64v';
     
+    static procedure GetQueryBufferObjectiv(id: QueryName; buffer: BufferName; pname: GetQueryObjectInfoName; offset: IntPtr);
+    external 'opengl32.dll' name 'glGetQueryBufferObjectiv';
+    
+    static procedure GetQueryBufferObjectuiv(id: QueryName; buffer: BufferName; pname: GetQueryObjectInfoName; offset: IntPtr);
+    external 'opengl32.dll' name 'glGetQueryBufferObjectuiv';
+    
+    static procedure GetQueryBufferObjecti64v(id: QueryName; buffer: BufferName; pname: GetQueryObjectInfoName; offset: IntPtr);
+    external 'opengl32.dll' name 'glGetQueryBufferObjecti64v';
+    
+    static procedure GetQueryBufferObjectui64v(id: QueryName; buffer: BufferName; pname: GetQueryObjectInfoName; offset: IntPtr);
+    external 'opengl32.dll' name 'glGetQueryBufferObjectui64v';
+    
     {$endregion 4.2 - Query Objects and Asynchronous Queries}
     
     {$region 4.3 - Time Queries}
@@ -3393,11 +3634,212 @@ type
     
     {$endregion 4.0 - Event Model}
     
-    {$region 5.0 - Shared Objects and Multiple Contexts}
+    {$region 6.0 - Buffer Objects}
     
-    //ToDo
+    static procedure GenBuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName);
+    external 'opengl32.dll' name 'glGenBuffers';
+    static procedure GenBuffers(n: Int32; buffers: ^BufferName);
+    external 'opengl32.dll' name 'glGenBuffers';
     
-    {$endregion 5.0 - Shared Objects and Multiple Contexts}
+    static procedure CreateBuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName);
+    external 'opengl32.dll' name 'glCreateBuffers';
+    static procedure CreateBuffers(n: Int32; buffers: ^UInt32);
+    external 'opengl32.dll' name 'glCreateBuffers';
+    
+    static procedure DeleteBuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName);
+    external 'opengl32.dll' name 'glDeleteBuffers';
+    static procedure DeleteBuffers(n: Int32; buffers: ^BufferName);
+    external 'opengl32.dll' name 'glDeleteBuffers';
+    
+    static function IsBuffer(buffer: BufferName): boolean;
+    external 'opengl32.dll' name 'glIsBuffer';
+    
+    {$region 6.1 - Creating and Binding Buffer Objects}
+    
+    static procedure BindBuffer(target: BufferBindType; buffer: BufferName);
+    external 'opengl32.dll' name 'glBindBuffer';
+    
+    // 6.1.1
+    
+    static procedure BindBufferRange(target: BufferBindType; index: UInt32; buffer: BufferName; offset: IntPtr; size: UIntPtr);
+    external 'opengl32.dll' name 'glBindBufferRange';
+    
+    static procedure BindBufferBase(target: BufferBindType; index: UInt32; buffer: BufferName);
+    external 'opengl32.dll' name 'glBindBufferBase';
+    
+    static procedure BindBuffersBase(target: BufferBindType; first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName);
+    external 'opengl32.dll' name 'glBindBuffersBase';
+    static procedure BindBuffersBase(target: BufferBindType; first: UInt32; count: Int32; buffers: ^BufferName);
+    external 'opengl32.dll' name 'glBindBuffersBase';
+    
+    static procedure BindBuffersRange(target: BufferBindType; first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] sizes: array of UIntPtr);
+    external 'opengl32.dll' name 'glBindBuffersRange';
+    static procedure BindBuffersRange(target: BufferBindType; first: UInt32; count: Int32; buffers: ^BufferName; offsets: ^IntPtr; sizes: ^UIntPtr);
+    external 'opengl32.dll' name 'glBindBuffersRange';
+    
+    {$endregion 6.1 - Creating and Binding Buffer Objects}
+    
+    {$region 6.2 - Creating and Modifying Buffer Object Data Stores}
+    
+    // BufferMapFlags автоматически преобразовывается в BufferStorageFlags
+    static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: IntPtr; flags: BufferStorageFlags);
+    external 'opengl32.dll' name 'glBufferStorage';
+    static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: pointer; flags: BufferStorageFlags);
+    external 'opengl32.dll' name 'glBufferStorage';
+    
+    static procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: IntPtr; flags: BufferStorageFlags);
+    external 'opengl32.dll' name 'glNamedBufferStorage';
+    static procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferStorageFlags);
+    external 'opengl32.dll' name 'glNamedBufferStorage';
+    
+    static procedure BufferData(target: BufferBindType; size: UIntPtr; data: IntPtr; usage: BufferDataUsage);
+    external 'opengl32.dll' name 'glBufferData';
+    static procedure BufferData(target: BufferBindType; size: UIntPtr; data: pointer; usage: BufferDataUsage);
+    external 'opengl32.dll' name 'glBufferData';
+    
+    static procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: IntPtr; usage: UInt32);
+    external 'opengl32.dll' name 'glNamedBufferData';
+    static procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: pointer; usage: UInt32);
+    external 'opengl32.dll' name 'glNamedBufferData';
+    
+    static procedure BufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: IntPtr);
+    external 'opengl32.dll' name 'glBufferSubData';
+    static procedure BufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer);
+    external 'opengl32.dll' name 'glBufferSubData';
+    
+    static procedure NamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: IntPtr);
+    external 'opengl32.dll' name 'glNamedBufferSubData';
+    static procedure NamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer);
+    external 'opengl32.dll' name 'glNamedBufferSubData';
+    
+    static procedure ClearBufferSubData(target: BufferBindType; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: IntPtr);
+    external 'opengl32.dll' name 'glClearBufferSubData';
+    static procedure ClearBufferSubData(target: BufferBindType; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer);
+    external 'opengl32.dll' name 'glClearBufferSubData';
+    
+    static procedure ClearNamedBufferSubData(buffer: BufferName; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: IntPtr);
+    external 'opengl32.dll' name 'glClearNamedBufferSubData';
+    static procedure ClearNamedBufferSubData(buffer: BufferName; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer);
+    external 'opengl32.dll' name 'glClearNamedBufferSubData';
+    
+    static procedure ClearBufferData(target: BufferBindType; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: IntPtr);
+    external 'opengl32.dll' name 'glClearBufferData';
+    static procedure ClearBufferData(target: BufferBindType; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer);
+    external 'opengl32.dll' name 'glClearBufferData';
+    
+    static procedure ClearNamedBufferData(buffer: BufferName; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: IntPtr);
+    external 'opengl32.dll' name 'glClearNamedBufferData';
+    static procedure ClearNamedBufferData(buffer: BufferName; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer);
+    external 'opengl32.dll' name 'glClearNamedBufferData';
+    
+    {$endregion 6.2 - Creating and Modifying Buffer Object Data Stores}
+    
+    {$region 6.3 - Mapping and Unmapping Buffer Data}
+    
+    static function MapBufferRange(target: BufferBindType; offset: IntPtr; length: UIntPtr; access: BufferMapFlags): IntPtr;
+    external 'opengl32.dll' name 'glMapBufferRange';
+    static function MapNamedBufferRange(buffer: BufferName; offset: IntPtr; length: UIntPtr; access: BufferMapFlags): IntPtr;
+    external 'opengl32.dll' name 'glMapNamedBufferRange';
+    
+    static function MapBuffer(target: BufferBindType; access: BufferMapFlags): IntPtr;
+    external 'opengl32.dll' name 'glMapBuffer';
+    static function MapNamedBuffer(buffer: BufferName; access: BufferMapFlags): IntPtr;
+    external 'opengl32.dll' name 'glMapNamedBuffer';
+    
+    static procedure FlushMappedBufferRange(target: BufferBindType; offset: IntPtr; length: UIntPtr);
+    external 'opengl32.dll' name 'glFlushMappedBufferRange';
+    static procedure FlushMappedNamedBufferRange(buffer: BufferName; offset: IntPtr; length: UIntPtr);
+    external 'opengl32.dll' name 'glFlushMappedNamedBufferRange';
+    
+    // 6.3.1
+    
+    static function UnmapBuffer(target: BufferBindType): boolean;
+    external 'opengl32.dll' name 'glUnmapBuffer';
+    static function UnmapNamedBuffer(buffer: BufferName): boolean;
+    external 'opengl32.dll' name 'glUnmapNamedBuffer';
+    
+    {$endregion 6.3 - Mapping and Unmapping Buffer Data}
+    
+    {$region 6.5 - Invalidating Buffer Data}
+    
+    static procedure InvalidateBufferSubData(buffer: BufferName; offset: IntPtr; length: UIntPtr);
+    external 'opengl32.dll' name 'glInvalidateBufferSubData';
+    
+    static procedure InvalidateBufferData(buffer: BufferName);
+    external 'opengl32.dll' name 'glInvalidateBufferData';
+    
+    {$endregion 6.5 - Invalidating Buffer Data}
+    
+    {$region 6.6 - Copying Between Buffers}
+    
+    static procedure CopyBufferSubData(readTarget, writeTarget: BufferBindType; readOffset, writeOffset: IntPtr; size: UIntPtr);
+    external 'opengl32.dll' name 'glCopyBufferSubData';
+    static procedure CopyNamedBufferSubData(readBuffer, writeBuffer: BufferName; readOffset, writeOffset: IntPtr; size: UIntPtr);
+    external 'opengl32.dll' name 'glCopyNamedBufferSubData';
+    
+    {$endregion 6.6 - Copying Between Buffers}
+    
+    {$region 6.7 - Buffer Object Queries}
+    
+    static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetBufferParameteriv';
+    static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetBufferParameteriv';
+    static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetBufferParameteriv';
+    
+    static procedure GetBufferParameteri64v(target: BufferBindType; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
+    external 'opengl32.dll' name 'glGetBufferParameteri64v';
+    static procedure GetBufferParameteri64v(target: BufferBindType; pname: BufferInfoType; var &params: Int64);
+    external 'opengl32.dll' name 'glGetBufferParameteri64v';
+    static procedure GetBufferParameteri64v(target: BufferBindType; pname: BufferInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetBufferParameteri64v';
+    
+    static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
+    static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
+    static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
+    
+    static procedure GetNamedBufferParameteri64v(target: BufferName; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteri64v';
+    static procedure GetNamedBufferParameteri64v(target: BufferName; pname: BufferInfoType; var &params: Int64);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteri64v';
+    static procedure GetNamedBufferParameteri64v(target: BufferName; pname: BufferInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteri64v';
+    
+    static procedure GetBufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: IntPtr);
+    external 'opengl32.dll' name 'glGetBufferSubData';
+    static procedure GetBufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer);
+    external 'opengl32.dll' name 'glGetBufferSubData';
+    
+    static procedure GetNamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: IntPtr);
+    external 'opengl32.dll' name 'glGetNamedBufferSubData';
+    static procedure GetNamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer);
+    external 'opengl32.dll' name 'glGetNamedBufferSubData';
+    
+    static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; var &params: IntPtr);
+    external 'opengl32.dll' name 'glGetBufferPointerv';
+    static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; &params: ^IntPtr);
+    external 'opengl32.dll' name 'glGetBufferPointerv';
+    static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; var &params: pointer);
+    external 'opengl32.dll' name 'glGetBufferPointerv';
+    static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; &params: ^pointer);
+    external 'opengl32.dll' name 'glGetBufferPointerv';
+    
+    static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; var &params: IntPtr);
+    external 'opengl32.dll' name 'glGetNamedBufferPointerv';
+    static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; &params: ^IntPtr);
+    external 'opengl32.dll' name 'glGetNamedBufferPointerv';
+    static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; var &params: pointer);
+    external 'opengl32.dll' name 'glGetNamedBufferPointerv';
+    static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; &params: ^pointer);
+    external 'opengl32.dll' name 'glGetNamedBufferPointerv';
+    
+    {$endregion 6.7 - Buffer Object Queries}
+    
+    {$endregion 6.0 - Buffer Objects}
     
     
     
@@ -3405,7 +3847,7 @@ type
     
     {$endregion }
     
-    {$region общие настройки}
+    {$region unsorted}
     
     static procedure Hint(target: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glHint';
@@ -3421,10 +3863,6 @@ type
     
     static procedure PointSize(size: single);
     external 'opengl32.dll' name 'glPointSize';
-    
-    {$endregion общие настройки}
-    
-    {$region unsorted}
     
     static procedure PolygonMode(face: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glPolygonMode';
@@ -3656,39 +4094,6 @@ type
     
     static procedure BlendEquation(mode: UInt32);
     external 'opengl32.dll' name 'glBlendEquation';
-    
-    static procedure BindBuffer(target: UInt32; buffer: UInt32);
-    external 'opengl32.dll' name 'glBindBuffer';
-    
-    static procedure DeleteBuffers(n: Int32; buffers: ^UInt32);
-    external 'opengl32.dll' name 'glDeleteBuffers';
-    
-    static procedure GenBuffers(n: Int32; buffers: ^UInt32);
-    external 'opengl32.dll' name 'glGenBuffers';
-    
-    static function IsBuffer(buffer: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsBuffer';
-    
-    static procedure BufferData(target: UInt32; size: UIntPtr; data: pointer; usage: UInt32);
-    external 'opengl32.dll' name 'glBufferData';
-    
-    static procedure BufferSubData(target: UInt32; offset: IntPtr; size: UIntPtr; data: pointer);
-    external 'opengl32.dll' name 'glBufferSubData';
-    
-    static procedure GetBufferSubData(target: UInt32; offset: IntPtr; size: UIntPtr; data: pointer);
-    external 'opengl32.dll' name 'glGetBufferSubData';
-    
-    static function MapBuffer(target: UInt32; access: UInt32): pointer;
-    external 'opengl32.dll' name 'glMapBuffer';
-    
-    static function UnmapBuffer(target: UInt32): boolean;
-    external 'opengl32.dll' name 'glUnmapBuffer';
-    
-    static procedure GetBufferParameteriv(target: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetBufferParameteriv';
-    
-    static procedure GetBufferPointerv(target: UInt32; pname: UInt32; &params: ^IntPtr);
-    external 'opengl32.dll' name 'glGetBufferPointerv';
     
     static procedure BlendEquationSeparate(modeRGB: UInt32; modeAlpha: UInt32);
     external 'opengl32.dll' name 'glBlendEquationSeparate';
@@ -3993,9 +4398,6 @@ type
     static procedure GetBooleani_v(target: UInt32; index: UInt32; data: ^boolean);
     external 'opengl32.dll' name 'glGetBooleani_v';
     
-    static procedure GetIntegeri_v(target: UInt32; index: UInt32; data: ^Int32);
-    external 'opengl32.dll' name 'glGetIntegeri_v';
-    
     static procedure Enablei(target: UInt32; index: UInt32);
     external 'opengl32.dll' name 'glEnablei';
     
@@ -4010,12 +4412,6 @@ type
     
     static procedure EndTransformFeedback;
     external 'opengl32.dll' name 'glEndTransformFeedback';
-    
-    static procedure BindBufferRange(target: UInt32; index: UInt32; buffer: UInt32; offset: IntPtr; size: UIntPtr);
-    external 'opengl32.dll' name 'glBindBufferRange';
-    
-    static procedure BindBufferBase(target: UInt32; index: UInt32; buffer: UInt32);
-    external 'opengl32.dll' name 'glBindBufferBase';
     
     static procedure TransformFeedbackVaryings(&program: UInt32; count: Int32; varyings: ^^SByte; bufferMode: UInt32);
     external 'opengl32.dll' name 'glTransformFeedbackVaryings';
@@ -4221,12 +4617,6 @@ type
     static procedure FramebufferTextureLayer(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32; layer: Int32);
     external 'opengl32.dll' name 'glFramebufferTextureLayer';
     
-    static function MapBufferRange(target: UInt32; offset: IntPtr; length: UIntPtr; access: UInt32): pointer;
-    external 'opengl32.dll' name 'glMapBufferRange';
-    
-    static procedure FlushMappedBufferRange(target: UInt32; offset: IntPtr; length: UIntPtr);
-    external 'opengl32.dll' name 'glFlushMappedBufferRange';
-    
     static procedure BindVertexArray(&array: UInt32);
     external 'opengl32.dll' name 'glBindVertexArray';
     
@@ -4250,9 +4640,6 @@ type
     
     static procedure PrimitiveRestartIndex(index: UInt32);
     external 'opengl32.dll' name 'glPrimitiveRestartIndex';
-    
-    static procedure CopyBufferSubData(readTarget: UInt32; writeTarget: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr);
-    external 'opengl32.dll' name 'glCopyBufferSubData';
     
     static procedure GetUniformIndices(&program: UInt32; uniformCount: Int32; uniformNames: ^^SByte; uniformIndices: ^UInt32);
     external 'opengl32.dll' name 'glGetUniformIndices';
@@ -4289,12 +4676,6 @@ type
     
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
-    
-    static procedure GetInteger64i_v(target: UInt32; index: UInt32; data: ^Int64);
-    external 'opengl32.dll' name 'glGetInteger64i_v';
-    
-    static procedure GetBufferParameteri64v(target: UInt32; pname: UInt32; &params: ^Int64);
-    external 'opengl32.dll' name 'glGetBufferParameteri64v';
     
     static procedure FramebufferTexture(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32);
     external 'opengl32.dll' name 'glFramebufferTexture';
@@ -4815,12 +5196,6 @@ type
     static procedure DrawTransformFeedbackStreamInstanced(mode: UInt32; id: UInt32; stream: UInt32; instancecount: Int32);
     external 'opengl32.dll' name 'glDrawTransformFeedbackStreamInstanced';
     
-    static procedure ClearBufferData(target: UInt32; internalformat: UInt32; format: UInt32; &type: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glClearBufferData';
-    
-    static procedure ClearBufferSubData(target: UInt32; internalformat: UInt32; offset: IntPtr; size: UIntPtr; format: UInt32; &type: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glClearBufferSubData';
-    
     static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
     external 'opengl32.dll' name 'glDispatchCompute';
     
@@ -4844,12 +5219,6 @@ type
     
     static procedure InvalidateTexImage(texture: UInt32; level: Int32);
     external 'opengl32.dll' name 'glInvalidateTexImage';
-    
-    static procedure InvalidateBufferSubData(buffer: UInt32; offset: IntPtr; length: UIntPtr);
-    external 'opengl32.dll' name 'glInvalidateBufferSubData';
-    
-    static procedure InvalidateBufferData(buffer: UInt32);
-    external 'opengl32.dll' name 'glInvalidateBufferData';
     
     static procedure InvalidateFramebuffer(target: UInt32; numAttachments: Int32; attachments: ^UInt32);
     external 'opengl32.dll' name 'glInvalidateFramebuffer';
@@ -4944,20 +5313,11 @@ type
     static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; &label: ^SByte);
     external 'opengl32.dll' name 'glGetObjectPtrLabel';
     
-    static procedure BufferStorage(target: UInt32; size: UIntPtr; data: pointer; flags: UInt32);
-    external 'opengl32.dll' name 'glBufferStorage';
-    
     static procedure ClearTexImage(texture: UInt32; level: Int32; format: UInt32; &type: UInt32; data: pointer);
     external 'opengl32.dll' name 'glClearTexImage';
     
     static procedure ClearTexSubImage(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; &type: UInt32; data: pointer);
     external 'opengl32.dll' name 'glClearTexSubImage';
-    
-    static procedure BindBuffersBase(target: UInt32; first: UInt32; count: Int32; buffers: ^UInt32);
-    external 'opengl32.dll' name 'glBindBuffersBase';
-    
-    static procedure BindBuffersRange(target: UInt32; first: UInt32; count: Int32; buffers: ^UInt32; offsets: ^IntPtr; sizes: ^UIntPtr);
-    external 'opengl32.dll' name 'glBindBuffersRange';
     
     static procedure BindTextures(first: UInt32; count: Int32; textures: ^UInt32);
     external 'opengl32.dll' name 'glBindTextures';
@@ -4991,51 +5351,6 @@ type
     
     static procedure GetTransformFeedbacki64_v(xfb: UInt32; pname: UInt32; index: UInt32; param: ^Int64);
     external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
-    
-    static procedure CreateBuffers(n: Int32; buffers: ^UInt32);
-    external 'opengl32.dll' name 'glCreateBuffers';
-    
-    static procedure NamedBufferStorage(buffer: UInt32; size: UIntPtr; data: pointer; flags: UInt32);
-    external 'opengl32.dll' name 'glNamedBufferStorage';
-    
-    static procedure NamedBufferData(buffer: UInt32; size: UIntPtr; data: pointer; usage: UInt32);
-    external 'opengl32.dll' name 'glNamedBufferData';
-    
-    static procedure NamedBufferSubData(buffer: UInt32; offset: IntPtr; size: UIntPtr; data: pointer);
-    external 'opengl32.dll' name 'glNamedBufferSubData';
-    
-    static procedure CopyNamedBufferSubData(readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr);
-    external 'opengl32.dll' name 'glCopyNamedBufferSubData';
-    
-    static procedure ClearNamedBufferData(buffer: UInt32; internalformat: UInt32; format: UInt32; &type: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glClearNamedBufferData';
-    
-    static procedure ClearNamedBufferSubData(buffer: UInt32; internalformat: UInt32; offset: IntPtr; size: UIntPtr; format: UInt32; &type: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glClearNamedBufferSubData';
-    
-    static function MapNamedBuffer(buffer: UInt32; access: UInt32): pointer;
-    external 'opengl32.dll' name 'glMapNamedBuffer';
-    
-    static function MapNamedBufferRange(buffer: UInt32; offset: IntPtr; length: UIntPtr; access: UInt32): pointer;
-    external 'opengl32.dll' name 'glMapNamedBufferRange';
-    
-    static function UnmapNamedBuffer(buffer: UInt32): boolean;
-    external 'opengl32.dll' name 'glUnmapNamedBuffer';
-    
-    static procedure FlushMappedNamedBufferRange(buffer: UInt32; offset: IntPtr; length: UIntPtr);
-    external 'opengl32.dll' name 'glFlushMappedNamedBufferRange';
-    
-    static procedure GetNamedBufferParameteriv(buffer: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
-    
-    static procedure GetNamedBufferParameteri64v(buffer: UInt32; pname: UInt32; &params: ^Int64);
-    external 'opengl32.dll' name 'glGetNamedBufferParameteri64v';
-    
-    static procedure GetNamedBufferPointerv(buffer: UInt32; pname: UInt32; &params: ^IntPtr);
-    external 'opengl32.dll' name 'glGetNamedBufferPointerv';
-    
-    static procedure GetNamedBufferSubData(buffer: UInt32; offset: IntPtr; size: UIntPtr; data: pointer);
-    external 'opengl32.dll' name 'glGetNamedBufferSubData';
     
     static procedure CreateFramebuffers(n: Int32; framebuffers: ^UInt32);
     external 'opengl32.dll' name 'glCreateFramebuffers';
@@ -5249,21 +5564,6 @@ type
     
     static procedure CreateProgramPipelines(n: Int32; pipelines: ^UInt32);
     external 'opengl32.dll' name 'glCreateProgramPipelines';
-    
-    static procedure CreateQueries(target: UInt32; n: Int32; ids: ^UInt32);
-    external 'opengl32.dll' name 'glCreateQueries';
-    
-    static procedure GetQueryBufferObjecti64v(id: UInt32; buffer: UInt32; pname: UInt32; offset: IntPtr);
-    external 'opengl32.dll' name 'glGetQueryBufferObjecti64v';
-    
-    static procedure GetQueryBufferObjectiv(id: UInt32; buffer: UInt32; pname: UInt32; offset: IntPtr);
-    external 'opengl32.dll' name 'glGetQueryBufferObjectiv';
-    
-    static procedure GetQueryBufferObjectui64v(id: UInt32; buffer: UInt32; pname: UInt32; offset: IntPtr);
-    external 'opengl32.dll' name 'glGetQueryBufferObjectui64v';
-    
-    static procedure GetQueryBufferObjectuiv(id: UInt32; buffer: UInt32; pname: UInt32; offset: IntPtr);
-    external 'opengl32.dll' name 'glGetQueryBufferObjectuiv';
     
     static procedure MemoryBarrierByRegion(barriers: UInt32);
     external 'opengl32.dll' name 'glMemoryBarrierByRegion';
