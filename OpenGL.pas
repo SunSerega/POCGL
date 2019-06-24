@@ -35,6 +35,7 @@ type
   
   QueryName                     = UInt32;
   BufferName                    = UInt32;
+  ShaderName                    = UInt32;
   
   HGLRC                         = UInt32; //ToDo вроде это что то для связки с GDI... если в конце окажется не нужно - удалить
   
@@ -3841,6 +3842,558 @@ type
     
     {$endregion 6.0 - Buffer Objects}
     
+    {$region 7.0 - Programs and Shaders}
+    
+    
+    
+    {$region unsorted}
+    
+    static function CreateShader(&type: UInt32): UInt32;
+    external 'opengl32.dll' name 'glCreateShader';
+    
+    static procedure ShaderSource(shader: UInt32; count: Int32; string: ^^SByte; length: ^Int32);
+    external 'opengl32.dll' name 'glShaderSource';
+    
+    static procedure CompileShader(shader: UInt32);
+    external 'opengl32.dll' name 'glCompileShader';
+    
+    static procedure ReleaseShaderCompiler;
+    external 'opengl32.dll' name 'glReleaseShaderCompiler';
+    
+    static procedure DeleteShader(shader: UInt32);
+    external 'opengl32.dll' name 'glDeleteShader';
+    
+    static function IsShader(shader: UInt32): boolean;
+    external 'opengl32.dll' name 'glIsShader';
+    
+    static procedure ShaderBinary(count: Int32; shaders: ^UInt32; binaryformat: UInt32; binary: pointer; length: Int32);
+    external 'opengl32.dll' name 'glShaderBinary';
+    
+    static procedure SpecializeShader(shader: UInt32; pEntryPoint: ^SByte; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^UInt32);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    
+    static function CreateProgram: UInt32;
+    external 'opengl32.dll' name 'glCreateProgram';
+    
+    static procedure AttachShader(&program: UInt32; shader: UInt32);
+    external 'opengl32.dll' name 'glAttachShader';
+    
+    static procedure DetachShader(&program: UInt32; shader: UInt32);
+    external 'opengl32.dll' name 'glDetachShader';
+    
+    static procedure LinkProgram(&program: UInt32);
+    external 'opengl32.dll' name 'glLinkProgram';
+    
+    static procedure UseProgram(&program: UInt32);
+    external 'opengl32.dll' name 'glUseProgram';
+    
+    static procedure ProgramParameteri(&program: UInt32; pname: UInt32; value: Int32);
+    external 'opengl32.dll' name 'glProgramParameteri';
+    
+    static procedure DeleteProgram(&program: UInt32);
+    external 'opengl32.dll' name 'glDeleteProgram';
+    
+    static function IsProgram(&program: UInt32): boolean;
+    external 'opengl32.dll' name 'glIsProgram';
+    
+    static function CreateShaderProgramv(&type: UInt32; count: Int32; strings: ^^SByte): UInt32;
+    external 'opengl32.dll' name 'glCreateShaderProgramv';
+    
+    static procedure GetProgramInterfaceiv(&program: UInt32; programInterface: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetProgramInterfaceiv';
+    
+    static function GetProgramResourceIndex(&program: UInt32; programInterface: UInt32; name: ^SByte): UInt32;
+    external 'opengl32.dll' name 'glGetProgramResourceIndex';
+    
+    static procedure GetProgramResourceName(&program: UInt32; programInterface: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; name: ^SByte);
+    external 'opengl32.dll' name 'glGetProgramResourceName';
+    
+    static procedure GetProgramResourceiv(&program: UInt32; programInterface: UInt32; index: UInt32; propCount: Int32; props: ^UInt32; bufSize: Int32; length: ^Int32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetProgramResourceiv';
+    
+    static function GetProgramResourceLocation(&program: UInt32; programInterface: UInt32; name: ^SByte): Int32;
+    external 'opengl32.dll' name 'glGetProgramResourceLocation';
+    
+    static function GetProgramResourceLocationIndex(&program: UInt32; programInterface: UInt32; name: ^SByte): Int32;
+    external 'opengl32.dll' name 'glGetProgramResourceLocationIndex';
+    
+    static procedure GenProgramPipelines(n: Int32; pipelines: ^UInt32);
+    external 'opengl32.dll' name 'glGenProgramPipelines';
+    
+    static procedure DeleteProgramPipelines(n: Int32; pipelines: ^UInt32);
+    external 'opengl32.dll' name 'glDeleteProgramPipelines';
+    
+    static function IsProgramPipeline(pipeline: UInt32): boolean;
+    external 'opengl32.dll' name 'glIsProgramPipeline';
+    
+    static procedure BindProgramPipeline(pipeline: UInt32);
+    external 'opengl32.dll' name 'glBindProgramPipeline';
+    
+    static procedure CreateProgramPipelines(n: Int32; pipelines: ^UInt32);
+    external 'opengl32.dll' name 'glCreateProgramPipelines';
+    
+    static procedure UseProgramStages(pipeline: UInt32; stages: UInt32; &program: UInt32);
+    external 'opengl32.dll' name 'glUseProgramStages';
+    
+    static procedure ActiveShaderProgram(pipeline: UInt32; &program: UInt32);
+    external 'opengl32.dll' name 'glActiveShaderProgram';
+    
+    static procedure GetProgramBinary(&program: UInt32; bufSize: Int32; length: ^Int32; binaryFormat: ^UInt32; binary: pointer);
+    external 'opengl32.dll' name 'glGetProgramBinary';
+    
+    static procedure ProgramBinary(&program: UInt32; binaryFormat: UInt32; binary: pointer; length: Int32);
+    external 'opengl32.dll' name 'glProgramBinary';
+    
+    static function GetUniformLocation(&program: UInt32; name: ^SByte): Int32;
+    external 'opengl32.dll' name 'glGetUniformLocation';
+    
+    static procedure GetActiveUniformName(&program: UInt32; uniformIndex: UInt32; bufSize: Int32; length: ^Int32; uniformName: ^SByte);
+    external 'opengl32.dll' name 'glGetActiveUniformName';
+    
+    static procedure GetUniformIndices(&program: UInt32; uniformCount: Int32; uniformNames: ^^SByte; uniformIndices: ^UInt32);
+    external 'opengl32.dll' name 'glGetUniformIndices';
+    
+    static procedure GetActiveUniform(&program: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: ^UInt32; name: ^SByte);
+    external 'opengl32.dll' name 'glGetActiveUniform';
+    
+    static procedure GetActiveUniformsiv(&program: UInt32; uniformCount: Int32; uniformIndices: ^UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetActiveUniformsiv';
+    
+    static function GetUniformBlockIndex(&program: UInt32; uniformBlockName: ^SByte): UInt32;
+    external 'opengl32.dll' name 'glGetUniformBlockIndex';
+    
+    static procedure GetActiveUniformBlockName(&program: UInt32; uniformBlockIndex: UInt32; bufSize: Int32; length: ^Int32; uniformBlockName: ^SByte);
+    external 'opengl32.dll' name 'glGetActiveUniformBlockName';
+    
+    static procedure GetActiveUniformBlockiv(&program: UInt32; uniformBlockIndex: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetActiveUniformBlockiv';
+    
+    static procedure GetActiveAtomicCounterBufferiv(&program: UInt32; bufferIndex: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetActiveAtomicCounterBufferiv';
+    
+    {$region Uniform[1,2,3,4][i,f,d,ui]}
+    
+    static procedure Uniform1i(location: Int32; v0: Int32);
+    external 'opengl32.dll' name 'glUniform1i';
+    
+    static procedure Uniform2i(location: Int32; v0: Int32; v1: Int32);
+    external 'opengl32.dll' name 'glUniform2i';
+    
+    static procedure Uniform3i(location: Int32; v0: Int32; v1: Int32; v2: Int32);
+    external 'opengl32.dll' name 'glUniform3i';
+    
+    static procedure Uniform4i(location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32);
+    external 'opengl32.dll' name 'glUniform4i';
+    
+    static procedure Uniform1f(location: Int32; v0: single);
+    external 'opengl32.dll' name 'glUniform1f';
+    
+    static procedure Uniform2f(location: Int32; v0: single; v1: single);
+    external 'opengl32.dll' name 'glUniform2f';
+    
+    static procedure Uniform3f(location: Int32; v0: single; v1: single; v2: single);
+    external 'opengl32.dll' name 'glUniform3f';
+    
+    static procedure Uniform4f(location: Int32; v0: single; v1: single; v2: single; v3: single);
+    external 'opengl32.dll' name 'glUniform4f';
+    
+    static procedure Uniform1d(location: Int32; x: real);
+    external 'opengl32.dll' name 'glUniform1d';
+    
+    static procedure Uniform2d(location: Int32; x: real; y: real);
+    external 'opengl32.dll' name 'glUniform2d';
+    
+    static procedure Uniform3d(location: Int32; x: real; y: real; z: real);
+    external 'opengl32.dll' name 'glUniform3d';
+    
+    static procedure Uniform4d(location: Int32; x: real; y: real; z: real; w: real);
+    external 'opengl32.dll' name 'glUniform4d';
+    
+    static procedure Uniform1ui(location: Int32; v0: UInt32);
+    external 'opengl32.dll' name 'glUniform1ui';
+    
+    static procedure Uniform2ui(location: Int32; v0: UInt32; v1: UInt32);
+    external 'opengl32.dll' name 'glUniform2ui';
+    
+    static procedure Uniform3ui(location: Int32; v0: UInt32; v1: UInt32; v2: UInt32);
+    external 'opengl32.dll' name 'glUniform3ui';
+    
+    static procedure Uniform4ui(location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32);
+    external 'opengl32.dll' name 'glUniform4ui';
+    
+    {$endregion Uniform[1,2,3,4][i,f,d,ui]}
+    
+    {$region Uniform[1,2,3,4][i,f,d,ui]v}
+    
+    static procedure Uniform1iv(location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glUniform1iv';
+    
+    static procedure Uniform2iv(location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glUniform2iv';
+    
+    static procedure Uniform3iv(location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glUniform3iv';
+    
+    static procedure Uniform4iv(location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glUniform4iv';
+    
+    static procedure Uniform1fv(location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glUniform1fv';
+    
+    static procedure Uniform2fv(location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glUniform2fv';
+    
+    static procedure Uniform3fv(location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glUniform3fv';
+    
+    static procedure Uniform4fv(location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glUniform4fv';
+    
+    static procedure Uniform1dv(location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glUniform1dv';
+    
+    static procedure Uniform2dv(location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glUniform2dv';
+    
+    static procedure Uniform3dv(location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glUniform3dv';
+    
+    static procedure Uniform4dv(location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glUniform4dv';
+    
+    static procedure Uniform1uiv(location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glUniform1uiv';
+    
+    static procedure Uniform2uiv(location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glUniform2uiv';
+    
+    static procedure Uniform3uiv(location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glUniform3uiv';
+    
+    static procedure Uniform4uiv(location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glUniform4uiv';
+    
+    {$endregion Uniform[1,2,3,4][i,f,d,ui]v}
+    
+    {$region UniformMatrix[2,3,4][f,d]v}
+    
+    static procedure UniformMatrix2fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix2fv';
+    
+    static procedure UniformMatrix3fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix3fv';
+    
+    static procedure UniformMatrix4fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix4fv';
+    
+    static procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix2dv';
+    
+    static procedure UniformMatrix3dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix3dv';
+    
+    static procedure UniformMatrix4dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix4dv';
+    
+    {$endregion UniformMatrix[2,3,4][f,d]v}
+    
+    {$region UniformMatrix[2x3,3x2,2x4,4x2,3x4,4x3][f,d]v}
+    
+    static procedure UniformMatrix2x3fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix2x3fv';
+    
+    static procedure UniformMatrix3x2fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix3x2fv';
+    
+    static procedure UniformMatrix2x4fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix2x4fv';
+    
+    static procedure UniformMatrix4x2fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix4x2fv';
+    
+    static procedure UniformMatrix3x4fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix3x4fv';
+    
+    static procedure UniformMatrix4x3fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glUniformMatrix4x3fv';
+    
+    static procedure UniformMatrix2x3dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix2x3dv';
+    
+    static procedure UniformMatrix3x2dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix3x2dv';
+    
+    static procedure UniformMatrix2x4dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix2x4dv';
+    
+    static procedure UniformMatrix4x2dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix4x2dv';
+    
+    static procedure UniformMatrix3x4dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix3x4dv';
+    
+    static procedure UniformMatrix4x3dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glUniformMatrix4x3dv';
+    
+    {$endregion UniformMatrix[2x3,3x2,2x4,4x2,3x4,4x3][f,d]v}
+    
+    {$region ProgramUniform[1,2,3,4][i,f,d,ui]}
+    
+    static procedure ProgramUniform1i(&program: UInt32; location: Int32; v0: Int32);
+    external 'opengl32.dll' name 'glProgramUniform1i';
+    
+    static procedure ProgramUniform2i(&program: UInt32; location: Int32; v0: Int32; v1: Int32);
+    external 'opengl32.dll' name 'glProgramUniform2i';
+    
+    static procedure ProgramUniform3i(&program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32);
+    external 'opengl32.dll' name 'glProgramUniform3i';
+    
+    static procedure ProgramUniform4i(&program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32);
+    external 'opengl32.dll' name 'glProgramUniform4i';
+    
+    static procedure ProgramUniform1f(&program: UInt32; location: Int32; v0: single);
+    external 'opengl32.dll' name 'glProgramUniform1f';
+    
+    static procedure ProgramUniform2f(&program: UInt32; location: Int32; v0: single; v1: single);
+    external 'opengl32.dll' name 'glProgramUniform2f';
+    
+    static procedure ProgramUniform3f(&program: UInt32; location: Int32; v0: single; v1: single; v2: single);
+    external 'opengl32.dll' name 'glProgramUniform3f';
+    
+    static procedure ProgramUniform4f(&program: UInt32; location: Int32; v0: single; v1: single; v2: single; v3: single);
+    external 'opengl32.dll' name 'glProgramUniform4f';
+    
+    static procedure ProgramUniform1d(&program: UInt32; location: Int32; v0: real);
+    external 'opengl32.dll' name 'glProgramUniform1d';
+    
+    static procedure ProgramUniform2d(&program: UInt32; location: Int32; v0: real; v1: real);
+    external 'opengl32.dll' name 'glProgramUniform2d';
+    
+    static procedure ProgramUniform3d(&program: UInt32; location: Int32; v0: real; v1: real; v2: real);
+    external 'opengl32.dll' name 'glProgramUniform3d';
+    
+    static procedure ProgramUniform4d(&program: UInt32; location: Int32; v0: real; v1: real; v2: real; v3: real);
+    external 'opengl32.dll' name 'glProgramUniform4d';
+    
+    static procedure ProgramUniform1ui(&program: UInt32; location: Int32; v0: UInt32);
+    external 'opengl32.dll' name 'glProgramUniform1ui';
+    
+    static procedure ProgramUniform2ui(&program: UInt32; location: Int32; v0: UInt32; v1: UInt32);
+    external 'opengl32.dll' name 'glProgramUniform2ui';
+    
+    static procedure ProgramUniform3ui(&program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32);
+    external 'opengl32.dll' name 'glProgramUniform3ui';
+    
+    static procedure ProgramUniform4ui(&program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32);
+    external 'opengl32.dll' name 'glProgramUniform4ui';
+    
+    {$endregion ProgramUniform[1,2,3,4][i,f,d,ui]}
+    
+    {$region ProgramUniform[1,2,3,4][i,f,d,ui]v}
+    
+    static procedure ProgramUniform1iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glProgramUniform1iv';
+    
+    static procedure ProgramUniform2iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glProgramUniform2iv';
+    
+    static procedure ProgramUniform3iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glProgramUniform3iv';
+    
+    static procedure ProgramUniform4iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
+    external 'opengl32.dll' name 'glProgramUniform4iv';
+    
+    static procedure ProgramUniform1fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniform1fv';
+    
+    static procedure ProgramUniform2fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniform2fv';
+    
+    static procedure ProgramUniform3fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniform3fv';
+    
+    static procedure ProgramUniform4fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniform4fv';
+    
+    static procedure ProgramUniform1dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniform1dv';
+    
+    static procedure ProgramUniform2dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniform2dv';
+    
+    static procedure ProgramUniform3dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniform3dv';
+    
+    static procedure ProgramUniform4dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniform4dv';
+    
+    static procedure ProgramUniform1uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glProgramUniform1uiv';
+    
+    static procedure ProgramUniform2uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glProgramUniform2uiv';
+    
+    static procedure ProgramUniform3uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glProgramUniform3uiv';
+    
+    static procedure ProgramUniform4uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
+    external 'opengl32.dll' name 'glProgramUniform4uiv';
+    
+    {$endregion ProgramUniform[1,2,3,4][i,f,d,ui]v}
+    
+    {$region ProgramUniformMatrix[2,3,4][f,d]v}
+    
+    static procedure ProgramUniformMatrix2fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix2fv';
+    
+    static procedure ProgramUniformMatrix3fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix3fv';
+    
+    static procedure ProgramUniformMatrix4fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix4fv';
+    
+    static procedure ProgramUniformMatrix2dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix2dv';
+    
+    static procedure ProgramUniformMatrix3dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix3dv';
+    
+    static procedure ProgramUniformMatrix4dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix4dv';
+    
+    {$endregion ProgramUniformMatrix[2,3,4][f,d]v}
+    
+    {$region ProgramUniformMatrix[2x3,3x2,2x4,4x2,3x4,4x3][f,d]v}
+    
+    static procedure ProgramUniformMatrix2x3fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix2x3fv';
+    
+    static procedure ProgramUniformMatrix3x2fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix3x2fv';
+    
+    static procedure ProgramUniformMatrix2x4fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix2x4fv';
+    
+    static procedure ProgramUniformMatrix4x2fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix4x2fv';
+    
+    static procedure ProgramUniformMatrix3x4fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix3x4fv';
+    
+    static procedure ProgramUniformMatrix4x3fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
+    external 'opengl32.dll' name 'glProgramUniformMatrix4x3fv';
+    
+    static procedure ProgramUniformMatrix2x3dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix2x3dv';
+    
+    static procedure ProgramUniformMatrix3x2dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix3x2dv';
+    
+    static procedure ProgramUniformMatrix2x4dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix2x4dv';
+    
+    static procedure ProgramUniformMatrix4x2dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix4x2dv';
+    
+    static procedure ProgramUniformMatrix3x4dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix3x4dv';
+    
+    static procedure ProgramUniformMatrix4x3dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
+    external 'opengl32.dll' name 'glProgramUniformMatrix4x3dv';
+    
+    {$endregion ProgramUniformMatrix[2x3,3x2,2x4,4x2,3x4,4x3][f,d]v}
+    
+    static procedure UniformBlockBinding(&program: UInt32; uniformBlockIndex: UInt32; uniformBlockBinding: UInt32);
+    external 'opengl32.dll' name 'glUniformBlockBinding';
+    
+    static procedure ShaderStorageBlockBinding(&program: UInt32; storageBlockIndex: UInt32; storageBlockBinding: UInt32);
+    external 'opengl32.dll' name 'glShaderStorageBlockBinding';
+    
+    static function GetSubroutineIndex(&program: UInt32; shadertype: UInt32; name: ^SByte): UInt32;
+    external 'opengl32.dll' name 'glGetSubroutineIndex';
+    
+    static procedure GetActiveSubroutineName(&program: UInt32; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
+    external 'opengl32.dll' name 'glGetActiveSubroutineName';
+    
+    static function GetSubroutineUniformLocation(&program: UInt32; shadertype: UInt32; name: ^SByte): Int32;
+    external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
+    
+    static procedure GetActiveSubroutineUniformName(&program: UInt32; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
+    
+    static procedure GetActiveSubroutineUniformiv(&program: UInt32; shadertype: UInt32; index: UInt32; pname: UInt32; values: ^Int32);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
+    
+    static procedure UniformSubroutinesuiv(shadertype: UInt32; count: Int32; indices: ^UInt32);
+    external 'opengl32.dll' name 'glUniformSubroutinesuiv';
+    
+    static procedure MemoryBarrier(barriers: UInt32);
+    external 'opengl32.dll' name 'glMemoryBarrier';
+    
+    static procedure MemoryBarrierByRegion(barriers: UInt32);
+    external 'opengl32.dll' name 'glMemoryBarrierByRegion';
+    
+    static procedure GetShaderiv(shader: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetShaderiv';
+    
+    static procedure GetProgramiv(&program: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetProgramiv';
+    
+    static procedure GetProgramPipelineiv(pipeline: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetProgramPipelineiv';
+    
+    static procedure GetAttachedShaders(&program: UInt32; maxCount: Int32; count: ^Int32; shaders: ^UInt32);
+    external 'opengl32.dll' name 'glGetAttachedShaders';
+    
+    static procedure GetShaderInfoLog(shader: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
+    external 'opengl32.dll' name 'glGetShaderInfoLog';
+    
+    static procedure GetProgramInfoLog(&program: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
+    external 'opengl32.dll' name 'glGetProgramInfoLog';
+    
+    static procedure GetProgramPipelineInfoLog(pipeline: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
+    external 'opengl32.dll' name 'glGetProgramPipelineInfoLog';
+    
+    static procedure GetShaderSource(shader: UInt32; bufSize: Int32; length: ^Int32; source: ^SByte);
+    external 'opengl32.dll' name 'glGetShaderSource';
+    
+    static procedure GetShaderPrecisionFormat(shadertype: UInt32; precisiontype: UInt32; range: ^Int32; precision: ^Int32);
+    external 'opengl32.dll' name 'glGetShaderPrecisionFormat';
+    
+    static procedure GetUniformfv(&program: UInt32; location: Int32; &params: ^single);
+    external 'opengl32.dll' name 'glGetUniformfv';
+    
+    static procedure GetUniformdv(&program: UInt32; location: Int32; &params: ^real);
+    external 'opengl32.dll' name 'glGetUniformdv';
+    
+    static procedure GetUniformiv(&program: UInt32; location: Int32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetUniformiv';
+    
+    static procedure GetUniformuiv(&program: UInt32; location: Int32; &params: ^UInt32);
+    external 'opengl32.dll' name 'glGetUniformuiv';
+    
+    static procedure GetnUniformfv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^single);
+    external 'opengl32.dll' name 'glGetnUniformfv';
+    
+    static procedure GetnUniformdv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^real);
+    external 'opengl32.dll' name 'glGetnUniformdv';
+    
+    static procedure GetnUniformiv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetnUniformiv';
+    
+    static procedure GetnUniformuiv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^UInt32);
+    external 'opengl32.dll' name 'glGetnUniformuiv';
+    
+    static procedure GetUniformSubroutineuiv(shadertype: UInt32; location: Int32; &params: ^UInt32);
+    external 'opengl32.dll' name 'glGetUniformSubroutineuiv';
+    
+    static procedure GetProgramStageiv(&program: UInt32; shadertype: UInt32; pname: UInt32; values: ^Int32);
+    external 'opengl32.dll' name 'glGetProgramStageiv';
+    
+    {$endregion unsorted}
+    
+    {$endregion 7.0 - Programs and Shaders}
+    
     
     
     {$region }
@@ -3848,6 +4401,12 @@ type
     {$endregion }
     
     {$region unsorted}
+    
+    static procedure ValidateProgram(&program: UInt32);
+    external 'opengl32.dll' name 'glValidateProgram';
+    
+    static procedure ValidateProgramPipeline(pipeline: UInt32);
+    external 'opengl32.dll' name 'glValidateProgramPipeline';
     
     static procedure Hint(target: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glHint';
@@ -4110,29 +4669,8 @@ type
     static procedure StencilMaskSeparate(face: UInt32; mask: UInt32);
     external 'opengl32.dll' name 'glStencilMaskSeparate';
     
-    static procedure AttachShader(&program: UInt32; shader: UInt32);
-    external 'opengl32.dll' name 'glAttachShader';
-    
     static procedure BindAttribLocation(&program: UInt32; index: UInt32; name: ^SByte);
     external 'opengl32.dll' name 'glBindAttribLocation';
-    
-    static procedure CompileShader(shader: UInt32);
-    external 'opengl32.dll' name 'glCompileShader';
-    
-    static function CreateProgram: UInt32;
-    external 'opengl32.dll' name 'glCreateProgram';
-    
-    static function CreateShader(&type: UInt32): UInt32;
-    external 'opengl32.dll' name 'glCreateShader';
-    
-    static procedure DeleteProgram(&program: UInt32);
-    external 'opengl32.dll' name 'glDeleteProgram';
-    
-    static procedure DeleteShader(shader: UInt32);
-    external 'opengl32.dll' name 'glDeleteShader';
-    
-    static procedure DetachShader(&program: UInt32; shader: UInt32);
-    external 'opengl32.dll' name 'glDetachShader';
     
     static procedure DisableVertexAttribArray(index: UInt32);
     external 'opengl32.dll' name 'glDisableVertexAttribArray';
@@ -4143,38 +4681,8 @@ type
     static procedure GetActiveAttrib(&program: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: ^UInt32; name: ^SByte);
     external 'opengl32.dll' name 'glGetActiveAttrib';
     
-    static procedure GetActiveUniform(&program: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: ^UInt32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveUniform';
-    
-    static procedure GetAttachedShaders(&program: UInt32; maxCount: Int32; count: ^Int32; shaders: ^UInt32);
-    external 'opengl32.dll' name 'glGetAttachedShaders';
-    
     static function GetAttribLocation(&program: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetAttribLocation';
-    
-    static procedure GetProgramiv(&program: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetProgramiv';
-    
-    static procedure GetProgramInfoLog(&program: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
-    external 'opengl32.dll' name 'glGetProgramInfoLog';
-    
-    static procedure GetShaderiv(shader: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetShaderiv';
-    
-    static procedure GetShaderInfoLog(shader: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
-    external 'opengl32.dll' name 'glGetShaderInfoLog';
-    
-    static procedure GetShaderSource(shader: UInt32; bufSize: Int32; length: ^Int32; source: ^SByte);
-    external 'opengl32.dll' name 'glGetShaderSource';
-    
-    static function GetUniformLocation(&program: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetUniformLocation';
-    
-    static procedure GetUniformfv(&program: UInt32; location: Int32; &params: ^single);
-    external 'opengl32.dll' name 'glGetUniformfv';
-    
-    static procedure GetUniformiv(&program: UInt32; location: Int32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetUniformiv';
     
     static procedure GetVertexAttribdv(index: UInt32; pname: UInt32; &params: ^real);
     external 'opengl32.dll' name 'glGetVertexAttribdv';
@@ -4187,81 +4695,6 @@ type
     
     static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; pointer: ^IntPtr);
     external 'opengl32.dll' name 'glGetVertexAttribPointerv';
-    
-    static function IsProgram(&program: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsProgram';
-    
-    static function IsShader(shader: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsShader';
-    
-    static procedure LinkProgram(&program: UInt32);
-    external 'opengl32.dll' name 'glLinkProgram';
-    
-    static procedure ShaderSource(shader: UInt32; count: Int32; string: ^^SByte; length: ^Int32);
-    external 'opengl32.dll' name 'glShaderSource';
-    
-    static procedure UseProgram(&program: UInt32);
-    external 'opengl32.dll' name 'glUseProgram';
-    
-    static procedure Uniform1f(location: Int32; v0: single);
-    external 'opengl32.dll' name 'glUniform1f';
-    
-    static procedure Uniform2f(location: Int32; v0: single; v1: single);
-    external 'opengl32.dll' name 'glUniform2f';
-    
-    static procedure Uniform3f(location: Int32; v0: single; v1: single; v2: single);
-    external 'opengl32.dll' name 'glUniform3f';
-    
-    static procedure Uniform4f(location: Int32; v0: single; v1: single; v2: single; v3: single);
-    external 'opengl32.dll' name 'glUniform4f';
-    
-    static procedure Uniform1i(location: Int32; v0: Int32);
-    external 'opengl32.dll' name 'glUniform1i';
-    
-    static procedure Uniform2i(location: Int32; v0: Int32; v1: Int32);
-    external 'opengl32.dll' name 'glUniform2i';
-    
-    static procedure Uniform3i(location: Int32; v0: Int32; v1: Int32; v2: Int32);
-    external 'opengl32.dll' name 'glUniform3i';
-    
-    static procedure Uniform4i(location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32);
-    external 'opengl32.dll' name 'glUniform4i';
-    
-    static procedure Uniform1fv(location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glUniform1fv';
-    
-    static procedure Uniform2fv(location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glUniform2fv';
-    
-    static procedure Uniform3fv(location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glUniform3fv';
-    
-    static procedure Uniform4fv(location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glUniform4fv';
-    
-    static procedure Uniform1iv(location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glUniform1iv';
-    
-    static procedure Uniform2iv(location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glUniform2iv';
-    
-    static procedure Uniform3iv(location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glUniform3iv';
-    
-    static procedure Uniform4iv(location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glUniform4iv';
-    
-    static procedure UniformMatrix2fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix2fv';
-    
-    static procedure UniformMatrix3fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix3fv';
-    
-    static procedure UniformMatrix4fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix4fv';
-    
-    static procedure ValidateProgram(&program: UInt32);
-    external 'opengl32.dll' name 'glValidateProgram';
     
     static procedure VertexAttrib1d(index: UInt32; x: real);
     external 'opengl32.dll' name 'glVertexAttrib1d';
@@ -4374,24 +4807,6 @@ type
     static procedure VertexAttribPointer(index: UInt32; size: Int32; &type: UInt32; normalized: boolean; stride: Int32; _pointer: pointer);
     external 'opengl32.dll' name 'glVertexAttribPointer';
     
-    static procedure UniformMatrix2x3fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix2x3fv';
-    
-    static procedure UniformMatrix3x2fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix3x2fv';
-    
-    static procedure UniformMatrix2x4fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix2x4fv';
-    
-    static procedure UniformMatrix4x2fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix4x2fv';
-    
-    static procedure UniformMatrix3x4fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix3x4fv';
-    
-    static procedure UniformMatrix4x3fv(location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glUniformMatrix4x3fv';
-    
     static procedure ColorMaski(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean);
     external 'opengl32.dll' name 'glColorMaski';
     
@@ -4497,38 +4912,11 @@ type
     static procedure VertexAttribI4usv(index: UInt32; v: ^UInt16);
     external 'opengl32.dll' name 'glVertexAttribI4usv';
     
-    static procedure GetUniformuiv(&program: UInt32; location: Int32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glGetUniformuiv';
-    
     static procedure BindFragDataLocation(&program: UInt32; color: UInt32; name: ^SByte);
     external 'opengl32.dll' name 'glBindFragDataLocation';
     
     static function GetFragDataLocation(&program: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetFragDataLocation';
-    
-    static procedure Uniform1ui(location: Int32; v0: UInt32);
-    external 'opengl32.dll' name 'glUniform1ui';
-    
-    static procedure Uniform2ui(location: Int32; v0: UInt32; v1: UInt32);
-    external 'opengl32.dll' name 'glUniform2ui';
-    
-    static procedure Uniform3ui(location: Int32; v0: UInt32; v1: UInt32; v2: UInt32);
-    external 'opengl32.dll' name 'glUniform3ui';
-    
-    static procedure Uniform4ui(location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32);
-    external 'opengl32.dll' name 'glUniform4ui';
-    
-    static procedure Uniform1uiv(location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glUniform1uiv';
-    
-    static procedure Uniform2uiv(location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glUniform2uiv';
-    
-    static procedure Uniform3uiv(location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glUniform3uiv';
-    
-    static procedure Uniform4uiv(location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glUniform4uiv';
     
     static procedure TexParameterIiv(target: UInt32; pname: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glTexParameterIiv';
@@ -4640,27 +5028,6 @@ type
     
     static procedure PrimitiveRestartIndex(index: UInt32);
     external 'opengl32.dll' name 'glPrimitiveRestartIndex';
-    
-    static procedure GetUniformIndices(&program: UInt32; uniformCount: Int32; uniformNames: ^^SByte; uniformIndices: ^UInt32);
-    external 'opengl32.dll' name 'glGetUniformIndices';
-    
-    static procedure GetActiveUniformsiv(&program: UInt32; uniformCount: Int32; uniformIndices: ^UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetActiveUniformsiv';
-    
-    static procedure GetActiveUniformName(&program: UInt32; uniformIndex: UInt32; bufSize: Int32; length: ^Int32; uniformName: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveUniformName';
-    
-    static function GetUniformBlockIndex(&program: UInt32; uniformBlockName: ^SByte): UInt32;
-    external 'opengl32.dll' name 'glGetUniformBlockIndex';
-    
-    static procedure GetActiveUniformBlockiv(&program: UInt32; uniformBlockIndex: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetActiveUniformBlockiv';
-    
-    static procedure GetActiveUniformBlockName(&program: UInt32; uniformBlockIndex: UInt32; bufSize: Int32; length: ^Int32; uniformBlockName: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveUniformBlockName';
-    
-    static procedure UniformBlockBinding(&program: UInt32; uniformBlockIndex: UInt32; uniformBlockBinding: UInt32);
-    external 'opengl32.dll' name 'glUniformBlockBinding';
     
     static procedure DrawElementsBaseVertex(mode: UInt32; count: Int32; &type: UInt32; indices: pointer; basevertex: Int32);
     external 'opengl32.dll' name 'glDrawElementsBaseVertex';
@@ -4788,84 +5155,6 @@ type
     static procedure DrawElementsIndirect(mode: UInt32; &type: UInt32; indirect: pointer);
     external 'opengl32.dll' name 'glDrawElementsIndirect';
     
-    static procedure Uniform1d(location: Int32; x: real);
-    external 'opengl32.dll' name 'glUniform1d';
-    
-    static procedure Uniform2d(location: Int32; x: real; y: real);
-    external 'opengl32.dll' name 'glUniform2d';
-    
-    static procedure Uniform3d(location: Int32; x: real; y: real; z: real);
-    external 'opengl32.dll' name 'glUniform3d';
-    
-    static procedure Uniform4d(location: Int32; x: real; y: real; z: real; w: real);
-    external 'opengl32.dll' name 'glUniform4d';
-    
-    static procedure Uniform1dv(location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glUniform1dv';
-    
-    static procedure Uniform2dv(location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glUniform2dv';
-    
-    static procedure Uniform3dv(location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glUniform3dv';
-    
-    static procedure Uniform4dv(location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glUniform4dv';
-    
-    static procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix2dv';
-    
-    static procedure UniformMatrix3dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix3dv';
-    
-    static procedure UniformMatrix4dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix4dv';
-    
-    static procedure UniformMatrix2x3dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix2x3dv';
-    
-    static procedure UniformMatrix2x4dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix2x4dv';
-    
-    static procedure UniformMatrix3x2dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix3x2dv';
-    
-    static procedure UniformMatrix3x4dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix3x4dv';
-    
-    static procedure UniformMatrix4x2dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix4x2dv';
-    
-    static procedure UniformMatrix4x3dv(location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glUniformMatrix4x3dv';
-    
-    static procedure GetUniformdv(&program: UInt32; location: Int32; &params: ^real);
-    external 'opengl32.dll' name 'glGetUniformdv';
-    
-    static function GetSubroutineUniformLocation(&program: UInt32; shadertype: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
-    
-    static function GetSubroutineIndex(&program: UInt32; shadertype: UInt32; name: ^SByte): UInt32;
-    external 'opengl32.dll' name 'glGetSubroutineIndex';
-    
-    static procedure GetActiveSubroutineUniformiv(&program: UInt32; shadertype: UInt32; index: UInt32; pname: UInt32; values: ^Int32);
-    external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
-    
-    static procedure GetActiveSubroutineUniformName(&program: UInt32; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
-    
-    static procedure GetActiveSubroutineName(&program: UInt32; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveSubroutineName';
-    
-    static procedure UniformSubroutinesuiv(shadertype: UInt32; count: Int32; indices: ^UInt32);
-    external 'opengl32.dll' name 'glUniformSubroutinesuiv';
-    
-    static procedure GetUniformSubroutineuiv(shadertype: UInt32; location: Int32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glGetUniformSubroutineuiv';
-    
-    static procedure GetProgramStageiv(&program: UInt32; shadertype: UInt32; pname: UInt32; values: ^Int32);
-    external 'opengl32.dll' name 'glGetProgramStageiv';
-    
     static procedure PatchParameteri(pname: UInt32; value: Int32);
     external 'opengl32.dll' name 'glPatchParameteri';
     
@@ -4896,209 +5185,11 @@ type
     static procedure DrawTransformFeedbackStream(mode: UInt32; id: UInt32; stream: UInt32);
     external 'opengl32.dll' name 'glDrawTransformFeedbackStream';
     
-    static procedure ReleaseShaderCompiler;
-    external 'opengl32.dll' name 'glReleaseShaderCompiler';
-    
-    static procedure ShaderBinary(count: Int32; shaders: ^UInt32; binaryformat: UInt32; binary: pointer; length: Int32);
-    external 'opengl32.dll' name 'glShaderBinary';
-    
-    static procedure GetShaderPrecisionFormat(shadertype: UInt32; precisiontype: UInt32; range: ^Int32; precision: ^Int32);
-    external 'opengl32.dll' name 'glGetShaderPrecisionFormat';
-    
     static procedure DepthRangef(n: single; f: single);
     external 'opengl32.dll' name 'glDepthRangef';
     
     static procedure ClearDepthf(d: single);
     external 'opengl32.dll' name 'glClearDepthf';
-    
-    static procedure GetProgramBinary(&program: UInt32; bufSize: Int32; length: ^Int32; binaryFormat: ^UInt32; binary: pointer);
-    external 'opengl32.dll' name 'glGetProgramBinary';
-    
-    static procedure ProgramBinary(&program: UInt32; binaryFormat: UInt32; binary: pointer; length: Int32);
-    external 'opengl32.dll' name 'glProgramBinary';
-    
-    static procedure ProgramParameteri(&program: UInt32; pname: UInt32; value: Int32);
-    external 'opengl32.dll' name 'glProgramParameteri';
-    
-    static procedure UseProgramStages(pipeline: UInt32; stages: UInt32; &program: UInt32);
-    external 'opengl32.dll' name 'glUseProgramStages';
-    
-    static procedure ActiveShaderProgram(pipeline: UInt32; &program: UInt32);
-    external 'opengl32.dll' name 'glActiveShaderProgram';
-    
-    static function CreateShaderProgramv(&type: UInt32; count: Int32; strings: ^^SByte): UInt32;
-    external 'opengl32.dll' name 'glCreateShaderProgramv';
-    
-    static procedure BindProgramPipeline(pipeline: UInt32);
-    external 'opengl32.dll' name 'glBindProgramPipeline';
-    
-    static procedure DeleteProgramPipelines(n: Int32; pipelines: ^UInt32);
-    external 'opengl32.dll' name 'glDeleteProgramPipelines';
-    
-    static procedure GenProgramPipelines(n: Int32; pipelines: ^UInt32);
-    external 'opengl32.dll' name 'glGenProgramPipelines';
-    
-    static function IsProgramPipeline(pipeline: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsProgramPipeline';
-    
-    static procedure GetProgramPipelineiv(pipeline: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetProgramPipelineiv';
-    
-    static procedure ProgramUniform1i(&program: UInt32; location: Int32; v0: Int32);
-    external 'opengl32.dll' name 'glProgramUniform1i';
-    
-    static procedure ProgramUniform1iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glProgramUniform1iv';
-    
-    static procedure ProgramUniform1f(&program: UInt32; location: Int32; v0: single);
-    external 'opengl32.dll' name 'glProgramUniform1f';
-    
-    static procedure ProgramUniform1fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniform1fv';
-    
-    static procedure ProgramUniform1d(&program: UInt32; location: Int32; v0: real);
-    external 'opengl32.dll' name 'glProgramUniform1d';
-    
-    static procedure ProgramUniform1dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniform1dv';
-    
-    static procedure ProgramUniform1ui(&program: UInt32; location: Int32; v0: UInt32);
-    external 'opengl32.dll' name 'glProgramUniform1ui';
-    
-    static procedure ProgramUniform1uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glProgramUniform1uiv';
-    
-    static procedure ProgramUniform2i(&program: UInt32; location: Int32; v0: Int32; v1: Int32);
-    external 'opengl32.dll' name 'glProgramUniform2i';
-    
-    static procedure ProgramUniform2iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glProgramUniform2iv';
-    
-    static procedure ProgramUniform2f(&program: UInt32; location: Int32; v0: single; v1: single);
-    external 'opengl32.dll' name 'glProgramUniform2f';
-    
-    static procedure ProgramUniform2fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniform2fv';
-    
-    static procedure ProgramUniform2d(&program: UInt32; location: Int32; v0: real; v1: real);
-    external 'opengl32.dll' name 'glProgramUniform2d';
-    
-    static procedure ProgramUniform2dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniform2dv';
-    
-    static procedure ProgramUniform2ui(&program: UInt32; location: Int32; v0: UInt32; v1: UInt32);
-    external 'opengl32.dll' name 'glProgramUniform2ui';
-    
-    static procedure ProgramUniform2uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glProgramUniform2uiv';
-    
-    static procedure ProgramUniform3i(&program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32);
-    external 'opengl32.dll' name 'glProgramUniform3i';
-    
-    static procedure ProgramUniform3iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glProgramUniform3iv';
-    
-    static procedure ProgramUniform3f(&program: UInt32; location: Int32; v0: single; v1: single; v2: single);
-    external 'opengl32.dll' name 'glProgramUniform3f';
-    
-    static procedure ProgramUniform3fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniform3fv';
-    
-    static procedure ProgramUniform3d(&program: UInt32; location: Int32; v0: real; v1: real; v2: real);
-    external 'opengl32.dll' name 'glProgramUniform3d';
-    
-    static procedure ProgramUniform3dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniform3dv';
-    
-    static procedure ProgramUniform3ui(&program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32);
-    external 'opengl32.dll' name 'glProgramUniform3ui';
-    
-    static procedure ProgramUniform3uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glProgramUniform3uiv';
-    
-    static procedure ProgramUniform4i(&program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32);
-    external 'opengl32.dll' name 'glProgramUniform4i';
-    
-    static procedure ProgramUniform4iv(&program: UInt32; location: Int32; count: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glProgramUniform4iv';
-    
-    static procedure ProgramUniform4f(&program: UInt32; location: Int32; v0: single; v1: single; v2: single; v3: single);
-    external 'opengl32.dll' name 'glProgramUniform4f';
-    
-    static procedure ProgramUniform4fv(&program: UInt32; location: Int32; count: Int32; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniform4fv';
-    
-    static procedure ProgramUniform4d(&program: UInt32; location: Int32; v0: real; v1: real; v2: real; v3: real);
-    external 'opengl32.dll' name 'glProgramUniform4d';
-    
-    static procedure ProgramUniform4dv(&program: UInt32; location: Int32; count: Int32; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniform4dv';
-    
-    static procedure ProgramUniform4ui(&program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32);
-    external 'opengl32.dll' name 'glProgramUniform4ui';
-    
-    static procedure ProgramUniform4uiv(&program: UInt32; location: Int32; count: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glProgramUniform4uiv';
-    
-    static procedure ProgramUniformMatrix2fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix2fv';
-    
-    static procedure ProgramUniformMatrix3fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix3fv';
-    
-    static procedure ProgramUniformMatrix4fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix4fv';
-    
-    static procedure ProgramUniformMatrix2dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix2dv';
-    
-    static procedure ProgramUniformMatrix3dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix3dv';
-    
-    static procedure ProgramUniformMatrix4dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix4dv';
-    
-    static procedure ProgramUniformMatrix2x3fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix2x3fv';
-    
-    static procedure ProgramUniformMatrix3x2fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix3x2fv';
-    
-    static procedure ProgramUniformMatrix2x4fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix2x4fv';
-    
-    static procedure ProgramUniformMatrix4x2fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix4x2fv';
-    
-    static procedure ProgramUniformMatrix3x4fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix3x4fv';
-    
-    static procedure ProgramUniformMatrix4x3fv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^single);
-    external 'opengl32.dll' name 'glProgramUniformMatrix4x3fv';
-    
-    static procedure ProgramUniformMatrix2x3dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix2x3dv';
-    
-    static procedure ProgramUniformMatrix3x2dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix3x2dv';
-    
-    static procedure ProgramUniformMatrix2x4dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix2x4dv';
-    
-    static procedure ProgramUniformMatrix4x2dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix4x2dv';
-    
-    static procedure ProgramUniformMatrix3x4dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix3x4dv';
-    
-    static procedure ProgramUniformMatrix4x3dv(&program: UInt32; location: Int32; count: Int32; transpose: boolean; value: ^real);
-    external 'opengl32.dll' name 'glProgramUniformMatrix4x3dv';
-    
-    static procedure ValidateProgramPipeline(pipeline: UInt32);
-    external 'opengl32.dll' name 'glValidateProgramPipeline';
-    
-    static procedure GetProgramPipelineInfoLog(pipeline: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
-    external 'opengl32.dll' name 'glGetProgramPipelineInfoLog';
     
     static procedure VertexAttribL1d(index: UInt32; x: real);
     external 'opengl32.dll' name 'glVertexAttribL1d';
@@ -5172,14 +5263,8 @@ type
     static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetInternalformativ';
     
-    static procedure GetActiveAtomicCounterBufferiv(&program: UInt32; bufferIndex: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetActiveAtomicCounterBufferiv';
-    
     static procedure BindImageTexture(&unit: UInt32; texture: UInt32; level: Int32; layered: boolean; layer: Int32; access: UInt32; format: UInt32);
     external 'opengl32.dll' name 'glBindImageTexture';
-    
-    static procedure MemoryBarrier(barriers: UInt32);
-    external 'opengl32.dll' name 'glMemoryBarrier';
     
     static procedure TexStorage1D(target: UInt32; levels: Int32; internalformat: UInt32; width: Int32);
     external 'opengl32.dll' name 'glTexStorage1D';
@@ -5231,27 +5316,6 @@ type
     
     static procedure MultiDrawElementsIndirect(mode: UInt32; &type: UInt32; indirect: pointer; drawcount: Int32; stride: Int32);
     external 'opengl32.dll' name 'glMultiDrawElementsIndirect';
-    
-    static procedure GetProgramInterfaceiv(&program: UInt32; programInterface: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetProgramInterfaceiv';
-    
-    static function GetProgramResourceIndex(&program: UInt32; programInterface: UInt32; name: ^SByte): UInt32;
-    external 'opengl32.dll' name 'glGetProgramResourceIndex';
-    
-    static procedure GetProgramResourceName(&program: UInt32; programInterface: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetProgramResourceName';
-    
-    static procedure GetProgramResourceiv(&program: UInt32; programInterface: UInt32; index: UInt32; propCount: Int32; props: ^UInt32; bufSize: Int32; length: ^Int32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetProgramResourceiv';
-    
-    static function GetProgramResourceLocation(&program: UInt32; programInterface: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetProgramResourceLocation';
-    
-    static function GetProgramResourceLocationIndex(&program: UInt32; programInterface: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetProgramResourceLocationIndex';
-    
-    static procedure ShaderStorageBlockBinding(&program: UInt32; storageBlockIndex: UInt32; storageBlockBinding: UInt32);
-    external 'opengl32.dll' name 'glShaderStorageBlockBinding';
     
     static procedure TexBufferRange(target: UInt32; internalformat: UInt32; buffer: UInt32; offset: IntPtr; size: UIntPtr);
     external 'opengl32.dll' name 'glTexBufferRange';
@@ -5562,12 +5626,6 @@ type
     static procedure CreateSamplers(n: Int32; samplers: ^UInt32);
     external 'opengl32.dll' name 'glCreateSamplers';
     
-    static procedure CreateProgramPipelines(n: Int32; pipelines: ^UInt32);
-    external 'opengl32.dll' name 'glCreateProgramPipelines';
-    
-    static procedure MemoryBarrierByRegion(barriers: UInt32);
-    external 'opengl32.dll' name 'glMemoryBarrierByRegion';
-    
     static procedure GetTextureSubImage(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; &type: UInt32; bufSize: Int32; pixels: pointer);
     external 'opengl32.dll' name 'glGetTextureSubImage';
     
@@ -5583,26 +5641,11 @@ type
     static procedure GetnTexImage(target: UInt32; level: Int32; format: UInt32; &type: UInt32; bufSize: Int32; pixels: pointer);
     external 'opengl32.dll' name 'glGetnTexImage';
     
-    static procedure GetnUniformdv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^real);
-    external 'opengl32.dll' name 'glGetnUniformdv';
-    
-    static procedure GetnUniformfv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^single);
-    external 'opengl32.dll' name 'glGetnUniformfv';
-    
-    static procedure GetnUniformiv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetnUniformiv';
-    
-    static procedure GetnUniformuiv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glGetnUniformuiv';
-    
     static procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; bufSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glReadnPixels';
     
     static procedure TextureBarrier;
     external 'opengl32.dll' name 'glTextureBarrier';
-    
-    static procedure SpecializeShader(shader: UInt32; pEntryPoint: ^SByte; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^UInt32);
-    external 'opengl32.dll' name 'glSpecializeShader';
     
     static procedure MultiDrawArraysIndirectCount(mode: UInt32; indirect: pointer; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
     external 'opengl32.dll' name 'glMultiDrawArraysIndirectCount';

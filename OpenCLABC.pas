@@ -32,9 +32,9 @@ uses System.Runtime.InteropServices;
 // - для паралельного выполнения из разных потоков
 
 //ToDo issue компилятора:
+// - #1952
 // - #1958
 // - #1981
-// - #1999
 
 type
   
@@ -481,7 +481,7 @@ type
       
       var tasks := q.Invoke(self, cq, cl_event.Zero).ToArray;
       
-      var костыль_для_Result: ()->T := ()-> //ToDo #1999
+      var костыль_для_Result: ()->T := ()-> //ToDo #1952
       begin
         Task.WaitAll(tasks);
         if q.ev<>cl_event.Zero then cl.WaitForEvents(1, @q.ev).RaiseIfError;
