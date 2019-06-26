@@ -8443,31 +8443,51 @@ type
     
     {$region 7.10 - Subroutine Uniform Variables}
     
+    static function GetSubroutineIndex(&program: ProgramName; shadertype: ShaderType; [MarshalAs(UnmanagedType.LPStr)] name: string): UInt32;
+    external 'opengl32.dll' name 'glGetSubroutineIndex';
+    static function GetSubroutineIndex(&program: ProgramName; shadertype: ShaderType; name: IntPtr): UInt32;
+    external 'opengl32.dll' name 'glGetSubroutineIndex';
     
+    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveSubroutineName';
+    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveSubroutineName';
+    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveSubroutineName';
+    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveSubroutineName';
+    
+    static function GetSubroutineUniformLocation(&program: ProgramName; shadertype: ShaderType; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
+    external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
+    static function GetSubroutineUniformLocation(&program: ProgramName; shadertype: ShaderType; name: IntPtr): Int32;
+    external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
+    
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
+    
+    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; [MarshalAs(UnmanagedType.LPArray)] values: array of Int32);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
+    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; var values: Int32);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
+    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; values: pointer);
+    external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
+    
+    static procedure UniformSubroutinesuiv(shadertype: ShaderType; count: Int32; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32);
+    external 'opengl32.dll' name 'glUniformSubroutinesuiv';
+    static procedure UniformSubroutinesuiv(shadertype: ShaderType; count: Int32; indices: ^UInt32);
+    external 'opengl32.dll' name 'glUniformSubroutinesuiv';
     
     {$endregion 7.10 - Subroutine Uniform Variables}
     
     
     
     {$region unsorted}
-    
-    static function GetSubroutineIndex(&program: ProgramName; shadertype: UInt32; name: ^SByte): UInt32;
-    external 'opengl32.dll' name 'glGetSubroutineIndex';
-    
-    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveSubroutineName';
-    
-    static function GetSubroutineUniformLocation(&program: ProgramName; shadertype: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
-    
-    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
-    
-    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: UInt32; index: UInt32; pname: UInt32; values: ^Int32);
-    external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
-    
-    static procedure UniformSubroutinesuiv(shadertype: UInt32; count: Int32; indices: ^UInt32);
-    external 'opengl32.dll' name 'glUniformSubroutinesuiv';
     
     static procedure MemoryBarrier(barriers: UInt32);
     external 'opengl32.dll' name 'glMemoryBarrier';
