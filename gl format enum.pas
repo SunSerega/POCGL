@@ -24,6 +24,9 @@ begin
       );
     end).ToArray;
     
+    var TName := all_lns.SingleOrDefault(l->l.StartsWith('%'));
+    TName := TName=nil?'_____':TName.Substring(1);
+    
     var same_letters_sb := new StringBuilder;
     if lns.Length>1 then
       for var _i := 0 to lns.Max(l->l[0].Length)-1 do
@@ -51,38 +54,27 @@ begin
     
     
     
-    var t_name: string;
+    var val_t_name: string;
     
-    if all_lns.Any(l->l.Contains('<<')) then
-    begin
-      res += '  Flags = record'#10;
-      t_name := 'cl_bitfield';
-    end else
-    if all_lns[0].ToLower.Contains('mode') then
-    begin
-      res += '  Mode = record'#10;
-      t_name := 'UInt32';
-    end else
-    begin
-      res += '  _____ = record'#10;
-      t_name := 'UInt32';
-    end;
+    res += $'  //S'+#10;
+    res += $'  {TName} = record'+#10;
+    val_t_name := 'UInt32';
     
-    res += $'    public val: {t_name};{#10}';
-    res += $'    public constructor(val: {t_name}) := self.val := val;{#10}';
-    res += $'    public constructor(val: int64) := self.val := val;{#10}';
+    res += $'    public val: {val_t_name};{#10}';
+    res += $'    public constructor(val: {val_t_name}) := self.val := val;{#10}';
+//    res += $'    public constructor(val: int64) := self.val := val;{#10}';
     
     res += '    '#10;
     
     
     
     foreach var l in lns do
-      res += $'    public static property {l[0]} read new ({l[1]});{#10}';
+      res += $'    public static property {l[0]}{TName} read new {TName}({l[1]});{#10}';
     
     res += '    '#10;
     
     foreach var l in lns do
-      res += $'    public property IS_{l[0]}boolean read self = .{l[2]};{#10}';
+      res += $'    public property IS_{l[0]}boolean read self = {TName}.{l[2]};{#10}';
     
     res += '    '#10;
     
@@ -101,9 +93,9 @@ begin
     res += '    // IS_'#10;
     res += '    public function ToString: string; override;'#10;
     res += '    begin'#10;
-    res += '      var res := typeof(_____).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);'#10;
+    res += '      var res := typeof({TName}).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);'#10;
     res += '      Result := res=nil?'#10;
-    res += '        $''_____[{self.val}]'':'#10;
+    res += '        $''{TName}[{self.val}]'':'#10;
     res += '        res[0].Substring(3);'#10;
     res += '    end;'#10;
     
@@ -112,9 +104,9 @@ begin
     res += '    // Flags'#10;
     res += '    public function ToString: string; override;'#10;
     res += '    begin'#10;
-    res += '      var res := typeof(_____).GetProperties.Select(prop->(prop.Name,boolean(prop.GetValue(self)))).Where(t->t[1]).Select(t->t[0]).ToArray;'#10;
+    res += '      var res := typeof({TName}).GetProperties.Select(prop->(prop.Name,boolean(prop.GetValue(self)))).Where(t->t[1]).Select(t->t[0]).ToArray;'#10;
     res += '      Result := res.Length=0?'#10;
-    res += '        $''_____[{self.val}]'':'#10;
+    res += '        $''{TName}[{self.val}]'':'#10;
     res += '        res.JoinIntoString(''+'');'#10;
     res += '    end;'#10;
     

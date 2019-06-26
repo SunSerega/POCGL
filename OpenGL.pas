@@ -128,6 +128,79 @@ type
   {$region ...InfoType}
   
   //S
+  ActiveSubroutineInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property UNIFORMS:              ActiveSubroutineInfoType read new ActiveSubroutineInfoType($8DE6);
+    public static property UNIFORM_LOCATIONS:     ActiveSubroutineInfoType read new ActiveSubroutineInfoType($8E47);
+    public static property GL_ACTIVE_SUBROUTINES: ActiveSubroutineInfoType read new ActiveSubroutineInfoType($8DE5);
+    public static property UNIFORM_MAX_LENGTH:    ActiveSubroutineInfoType read new ActiveSubroutineInfoType($8E49);
+    public static property MAX_LENGTH:            ActiveSubroutineInfoType read new ActiveSubroutineInfoType($8E48);
+    
+  end;
+  
+  //S
+  ProgramPipelineInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ACTIVE_PROGRAM:  ProgramPipelineInfoType read new ProgramPipelineInfoType($8259);
+    public static property VALIDATE_STATUS: ProgramPipelineInfoType read new ProgramPipelineInfoType($8B83);
+    public static property INFO_LOG_LENGTH: ProgramPipelineInfoType read new ProgramPipelineInfoType($8B84);
+    
+  end;
+  
+  //S
+  ProgramInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property DELETE_STATUS:                         ProgramInfoType read new ProgramInfoType($8B80);
+    public static property LINK_STATUS:                           ProgramInfoType read new ProgramInfoType($8B82);
+    public static property VALIDATE_STATUS:                       ProgramInfoType read new ProgramInfoType($8B83);
+    public static property INFO_LOG_LENGTH:                       ProgramInfoType read new ProgramInfoType($8B84);
+    public static property ATTACHED_SHADERS:                      ProgramInfoType read new ProgramInfoType($8B85);
+    public static property ACTIVE_ATTRIBUTES:                     ProgramInfoType read new ProgramInfoType($8B89);
+    public static property ACTIVE_ATTRIBUTE_MAX_LENGTH:           ProgramInfoType read new ProgramInfoType($8B8A);
+    public static property ACTIVE_UNIFORMS:                       ProgramInfoType read new ProgramInfoType($8B86);
+    public static property ACTIVE_UNIFORM_MAX_LENGTH:             ProgramInfoType read new ProgramInfoType($8B87);
+    public static property TRANSFORM_FEEDBACK_BUFFER_MODE:        ProgramInfoType read new ProgramInfoType($8C7F);
+    public static property TRANSFORM_FEEDBACK_VARYINGS:           ProgramInfoType read new ProgramInfoType($8C83);
+    public static property TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH: ProgramInfoType read new ProgramInfoType($8C76);
+    public static property ACTIVE_UNIFORM_BLOCKS:                 ProgramInfoType read new ProgramInfoType($8A36);
+    public static property ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH:  ProgramInfoType read new ProgramInfoType($8A35);
+    public static property GEOMETRY_VERTICES_OUT:                 ProgramInfoType read new ProgramInfoType($8916);
+    public static property GEOMETRY_INPUT_TYPE:                   ProgramInfoType read new ProgramInfoType($8917);
+    public static property GEOMETRY_OUTPUT_TYPE:                  ProgramInfoType read new ProgramInfoType($8918);
+    public static property GEOMETRY_SHADER_INVOCATIONS:           ProgramInfoType read new ProgramInfoType($887F);
+    public static property TESS_CONTROL_OUTPUT_VERTICES:          ProgramInfoType read new ProgramInfoType($8E75);
+    public static property TESS_GEN_MODE:                         ProgramInfoType read new ProgramInfoType($8E76);
+    public static property TESS_GEN_SPACING:                      ProgramInfoType read new ProgramInfoType($8E77);
+    public static property TESS_GEN_VERTEX_ORDER:                 ProgramInfoType read new ProgramInfoType($8E78);
+    public static property TESS_GEN_POINT_MODE:                   ProgramInfoType read new ProgramInfoType($8E79);
+    public static property COMPUTE_WORK_GROUP_SIZE:               ProgramInfoType read new ProgramInfoType($8267);
+    public static property PROGRAM_SEPARABLE:                     ProgramInfoType read new ProgramInfoType($8258);
+    public static property PROGRAM_BINARY_RETRIEVABLE_HINT:       ProgramInfoType read new ProgramInfoType($8257);
+    public static property ACTIVE_ATOMIC_COUNTER_BUFFERS:         ProgramInfoType read new ProgramInfoType($92D9);
+    
+  end;
+  
+  //S
+  ShaderInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property SHADER_TYPE:           ShaderInfoType read new ShaderInfoType($8B4F);
+    public static property DELETE_STATUS:         ShaderInfoType read new ShaderInfoType($8B80);
+    public static property COMPILE_STATUS:        ShaderInfoType read new ShaderInfoType($8B81);
+    public static property INFO_LOG_LENGTH:       ShaderInfoType read new ShaderInfoType($8B84);
+    public static property SHADER_SOURCE_LENGTH:  ShaderInfoType read new ShaderInfoType($8B88);
+    public static property SPIR_V_BINARY:         ShaderInfoType read new ShaderInfoType($9552);
+    
+  end;
+  
+  //S
   SyncObjInfoType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -193,6 +266,126 @@ type
   end;
   
   {$endregion ...InfoType}
+  
+  //S
+  ShaderPrecisionFormatType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property LOW_FLOAT:     ShaderPrecisionFormatType read new ShaderPrecisionFormatType($8DF0);
+    public static property MEDIUM_FLOAT:  ShaderPrecisionFormatType read new ShaderPrecisionFormatType($8DF1);
+    public static property HIGH_FLOAT:    ShaderPrecisionFormatType read new ShaderPrecisionFormatType($8DF2);
+    public static property LOW_INT:       ShaderPrecisionFormatType read new ShaderPrecisionFormatType($8DF3);
+    public static property MEDIUM_INT:    ShaderPrecisionFormatType read new ShaderPrecisionFormatType($8DF4);
+    public static property HIGH_INT:      ShaderPrecisionFormatType read new ShaderPrecisionFormatType($8DF5);
+    
+  end;
+  
+  //S
+  ProgramInterfaceProperty = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ACTIVE_VARIABLES:                      ProgramInterfaceProperty read new ProgramInterfaceProperty($9305);
+    public static property BUFFER_BINDING:                        ProgramInterfaceProperty read new ProgramInterfaceProperty($9302);
+    public static property NUM_ACTIVE_VARIABLES:                  ProgramInterfaceProperty read new ProgramInterfaceProperty($9304);
+    public static property ARRAY_SIZE:                            ProgramInterfaceProperty read new ProgramInterfaceProperty($92FB);
+    public static property ARRAY_STRIDE:                          ProgramInterfaceProperty read new ProgramInterfaceProperty($92FE);
+    public static property BLOCK_INDEX:                           ProgramInterfaceProperty read new ProgramInterfaceProperty($92FD);
+    public static property IS_ROW_MAJOR:                          ProgramInterfaceProperty read new ProgramInterfaceProperty($9300);
+    public static property MATRIX_STRIDE:                         ProgramInterfaceProperty read new ProgramInterfaceProperty($92FF);
+    public static property ATOMIC_COUNTER_BUFFER_INDEX:           ProgramInterfaceProperty read new ProgramInterfaceProperty($9301);
+    public static property BUFFER_DATA_SIZE:                      ProgramInterfaceProperty read new ProgramInterfaceProperty($9303);
+    public static property NUM_COMPATIBLE_SUBROUTINES:            ProgramInterfaceProperty read new ProgramInterfaceProperty($8E4A);
+    public static property COMPATIBLE_SUBROUTINES:                ProgramInterfaceProperty read new ProgramInterfaceProperty($8E4B);
+    public static property IS_PER_PATCH:                          ProgramInterfaceProperty read new ProgramInterfaceProperty($92E7);
+    public static property LOCATION:                              ProgramInterfaceProperty read new ProgramInterfaceProperty($930E);
+    public static property LOCATION_COMPONENT:                    ProgramInterfaceProperty read new ProgramInterfaceProperty($934A);
+    public static property LOCATION_INDEX:                        ProgramInterfaceProperty read new ProgramInterfaceProperty($930F);
+    public static property NAME_LENGTH:                           ProgramInterfaceProperty read new ProgramInterfaceProperty($92F9);
+    public static property OFFSET:                                ProgramInterfaceProperty read new ProgramInterfaceProperty($92FC);
+    public static property REFERENCED_BY_VERTEX_SHADER:           ProgramInterfaceProperty read new ProgramInterfaceProperty($9306);
+    public static property REFERENCED_BY_TESS_CONTROL_SHADER:     ProgramInterfaceProperty read new ProgramInterfaceProperty($9307);
+    public static property REFERENCED_BY_TESS_EVALUATION_SHADER:  ProgramInterfaceProperty read new ProgramInterfaceProperty($9308);
+    public static property REFERENCED_BY_GEOMETRY_SHADER:         ProgramInterfaceProperty read new ProgramInterfaceProperty($9309);
+    public static property REFERENCED_BY_FRAGMENT_SHADER:         ProgramInterfaceProperty read new ProgramInterfaceProperty($930A);
+    public static property REFERENCED_BY_COMPUTE_SHADER:          ProgramInterfaceProperty read new ProgramInterfaceProperty($930B);
+    public static property TRANSFORM_FEEDBACK_BUFFER_INDEX:       ProgramInterfaceProperty read new ProgramInterfaceProperty($934B);
+    public static property TRANSFORM_FEEDBACK_BUFFER_STRIDE:      ProgramInterfaceProperty read new ProgramInterfaceProperty($934C);
+    public static property TOP_LEVEL_ARRAY_SIZE:                  ProgramInterfaceProperty read new ProgramInterfaceProperty($930C);
+    public static property TOP_LEVEL_ARRAY_STRIDE:                ProgramInterfaceProperty read new ProgramInterfaceProperty($930D);
+    public static property &TYPE:                                 ProgramInterfaceProperty read new ProgramInterfaceProperty($92FA);
+    
+//    public static property TEXTURE_BUFFER:                         read new ProgramInterfaceProperty($8C2A); // типа существует, но это не точно
+    
+  end;
+  
+  //S
+  ProgramInterfaceInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ACTIVE_RESOURCES:                ProgramInterfaceInfoType read new ProgramInterfaceInfoType($92F5);
+    public static property MAX_NAME_LENGTH:                 ProgramInterfaceInfoType read new ProgramInterfaceInfoType($92F6);
+    public static property MAX_NUM_ACTIVE_VARIABLES:        ProgramInterfaceInfoType read new ProgramInterfaceInfoType($92F7);
+    public static property MAX_NUM_COMPATIBLE_SUBROUTINES:  ProgramInterfaceInfoType read new ProgramInterfaceInfoType($92F8);
+    
+  end;
+  
+  //S
+  ProgramInterfaceType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property UNIFORM:                             ProgramInterfaceType read new ProgramInterfaceType($92E1);
+    public static property UNIFORM_BLOCK:                       ProgramInterfaceType read new ProgramInterfaceType($92E2);
+    public static property ATOMIC_COUNTER_BUFFER:               ProgramInterfaceType read new ProgramInterfaceType($92C0);
+    public static property PROGRAM_INPUT:                       ProgramInterfaceType read new ProgramInterfaceType($92E3);
+    public static property PROGRAM_OUTPUT:                      ProgramInterfaceType read new ProgramInterfaceType($92E4);
+    public static property VERTEX_SUBROUTINE:                   ProgramInterfaceType read new ProgramInterfaceType($92E8);
+    public static property TESS_CONTROL_SUBROUTINE:             ProgramInterfaceType read new ProgramInterfaceType($92E9);
+    public static property TESS_EVALUATION_SUBROUTINE:          ProgramInterfaceType read new ProgramInterfaceType($92EA);
+    public static property GEOMETRY_SUBROUTINE:                 ProgramInterfaceType read new ProgramInterfaceType($92EB);
+    public static property FRAGMENT_SUBROUTINE:                 ProgramInterfaceType read new ProgramInterfaceType($92EC);
+    public static property COMPUTE_SUBROUTINE:                  ProgramInterfaceType read new ProgramInterfaceType($92ED);
+    public static property VERTEX_SUBROUTINE_UNIFORM:           ProgramInterfaceType read new ProgramInterfaceType($92EE);
+    public static property TESS_CONTROL_SUBROUTINE_UNIFORM:     ProgramInterfaceType read new ProgramInterfaceType($92EF);
+    public static property TESS_EVALUATION_SUBROUTINE_UNIFORM:  ProgramInterfaceType read new ProgramInterfaceType($92F0);
+    public static property GEOMETRY_SUBROUTINE_UNIFORM:         ProgramInterfaceType read new ProgramInterfaceType($92F1);
+    public static property FRAGMENT_SUBROUTINE_UNIFORM:         ProgramInterfaceType read new ProgramInterfaceType($92F2);
+    public static property COMPUTE_SUBROUTINE_UNIFORM:          ProgramInterfaceType read new ProgramInterfaceType($92F3);
+    public static property TRANSFORM_FEEDBACK_VARYING:          ProgramInterfaceType read new ProgramInterfaceType($92F4);
+    public static property BUFFER_VARIABLE:                     ProgramInterfaceType read new ProgramInterfaceType($92E5);
+    public static property SHADER_STORAGE_BLOCK:                ProgramInterfaceType read new ProgramInterfaceType($92E6);
+    public static property TRANSFORM_FEEDBACK_BUFFER:           ProgramInterfaceType read new ProgramInterfaceType($8C8E);
+    
+  end;
+  
+  //S
+  ProgramParameterType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property SEPARABLE:               ProgramParameterType read new ProgramParameterType($8258);
+    public static property BINARY_RETRIEVABLE_HINT: ProgramParameterType read new ProgramParameterType($8257);
+    
+  end;
+  
+  //S
+  ShaderType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property VERTEX_SHADER:           ShaderType read new ShaderType($8B31);
+    public static property TESS_CONTROL_SHADER:     ShaderType read new ShaderType($8E88);
+    public static property TESS_EVALUATION_SHADER:  ShaderType read new ShaderType($8E87);
+    public static property GEOMETRY_SHADER:         ShaderType read new ShaderType($8DD9);
+    public static property FRAGMENT_SHADER:         ShaderType read new ShaderType($8B30);
+    public static property COMPUTE_SHADER:          ShaderType read new ShaderType($91B9);
+    
+    public static function operator implicit(st: ShaderType): ProgramPipelineInfoType := new ProgramPipelineInfoType(st.val);
+    
+  end;
   
   //S
   FenceCondition = record
@@ -304,7 +497,7 @@ type
     
   end;
   
-  //
+  //S
   DataFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -378,9 +571,167 @@ type
     
   end;
   
+  //R
+  ShadingLanguageTypeToken = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public property FLOAT:                                     boolean read self.val = $1406;
+    public property FLOAT_VEC2:                                boolean read self.val = $8B50;
+    public property FLOAT_VEC3:                                boolean read self.val = $8B51;
+    public property FLOAT_VEC4:                                boolean read self.val = $8B52;
+    public property DOUBLE:                                    boolean read self.val = $140A;
+    public property DOUBLE_VEC2:                               boolean read self.val = $8FFC;
+    public property DOUBLE_VEC3:                               boolean read self.val = $8FFD;
+    public property DOUBLE_VEC4:                               boolean read self.val = $8FFE;
+    public property INT:                                       boolean read self.val = $1404;
+    public property INT_VEC2:                                  boolean read self.val = $8B53;
+    public property INT_VEC3:                                  boolean read self.val = $8B54;
+    public property INT_VEC4:                                  boolean read self.val = $8B55;
+    public property UNSIGNED_INT:                              boolean read self.val = $1405;
+    public property UNSIGNED_INT_VEC2:                         boolean read self.val = $8DC6;
+    public property UNSIGNED_INT_VEC3:                         boolean read self.val = $8DC7;
+    public property UNSIGNED_INT_VEC4:                         boolean read self.val = $8DC8;
+    public property BOOL:                                      boolean read self.val = $8B56;
+    public property BOOL_VEC2:                                 boolean read self.val = $8B57;
+    public property BOOL_VEC3:                                 boolean read self.val = $8B58;
+    public property BOOL_VEC4:                                 boolean read self.val = $8B59;
+    public property FLOAT_MAT2:                                boolean read self.val = $8B5A;
+    public property FLOAT_MAT3:                                boolean read self.val = $8B5B;
+    public property FLOAT_MAT4:                                boolean read self.val = $8B5C;
+    public property FLOAT_MAT2x3:                              boolean read self.val = $8B65;
+    public property FLOAT_MAT2x4:                              boolean read self.val = $8B66;
+    public property FLOAT_MAT3x2:                              boolean read self.val = $8B67;
+    public property FLOAT_MAT3x4:                              boolean read self.val = $8B68;
+    public property FLOAT_MAT4x2:                              boolean read self.val = $8B69;
+    public property FLOAT_MAT4x3:                              boolean read self.val = $8B6A;
+    public property DOUBLE_MAT2:                               boolean read self.val = $8F46;
+    public property DOUBLE_MAT3:                               boolean read self.val = $8F47;
+    public property DOUBLE_MAT4:                               boolean read self.val = $8F48;
+    public property DOUBLE_MAT2x3:                             boolean read self.val = $8F49;
+    public property DOUBLE_MAT2x4:                             boolean read self.val = $8F4A;
+    public property DOUBLE_MAT3x2:                             boolean read self.val = $8F4B;
+    public property DOUBLE_MAT3x4:                             boolean read self.val = $8F4C;
+    public property DOUBLE_MAT4x2:                             boolean read self.val = $8F4D;
+    public property DOUBLE_MAT4x3:                             boolean read self.val = $8F4E;
+    public property SAMPLER_1D:                                boolean read self.val = $8B5D;
+    public property SAMPLER_2D:                                boolean read self.val = $8B5E;
+    public property SAMPLER_3D:                                boolean read self.val = $8B5F;
+    public property SAMPLER_CUBE:                              boolean read self.val = $8B60;
+    public property SAMPLER_1D_SHADOW:                         boolean read self.val = $8B61;
+    public property SAMPLER_2D_SHADOW:                         boolean read self.val = $8B62;
+    public property SAMPLER_1D_ARRAY:                          boolean read self.val = $8DC0;
+    public property SAMPLER_2D_ARRAY:                          boolean read self.val = $8DC1;
+    public property SAMPLER_CUBE_MAP_ARRAY:                    boolean read self.val = $900C;
+    public property SAMPLER_1D_ARRAY_SHADOW:                   boolean read self.val = $8DC3;
+    public property SAMPLER_2D_ARRAY_SHADOW:                   boolean read self.val = $8DC4;
+    public property SAMPLER_2D_MULTISAMPLE:                    boolean read self.val = $9108;
+    public property SAMPLER_2D_MULTISAMPLE_ARRAY:              boolean read self.val = $910B;
+    public property SAMPLER_CUBE_SHADOW:                       boolean read self.val = $8DC5;
+    public property SAMPLER_CUBE_MAP_ARRAY_SHADOW:             boolean read self.val = $900D;
+    public property SAMPLER_BUFFER:                            boolean read self.val = $8DC2;
+    public property SAMPLER_2D_RECT:                           boolean read self.val = $8B63;
+    public property SAMPLER_2D_RECT_SHADOW:                    boolean read self.val = $8B64;
+    public property INT_SAMPLER_1D:                            boolean read self.val = $8DC9;
+    public property INT_SAMPLER_2D:                            boolean read self.val = $8DCA;
+    public property INT_SAMPLER_3D:                            boolean read self.val = $8DCB;
+    public property INT_SAMPLER_CUBE:                          boolean read self.val = $8DCC;
+    public property INT_SAMPLER_1D_ARRAY:                      boolean read self.val = $8DCE;
+    public property INT_SAMPLER_2D_ARRAY:                      boolean read self.val = $8DCF;
+    public property INT_SAMPLER_CUBE_MAP_ARRAY:                boolean read self.val = $900E;
+    public property INT_SAMPLER_2D_MULTISAMPLE:                boolean read self.val = $9109;
+    public property INT_SAMPLER_2D_MULTISAMPLE_ARRAY:          boolean read self.val = $910C;
+    public property INT_SAMPLER_BUFFER:                        boolean read self.val = $8DD0;
+    public property INT_SAMPLER_2D_RECT:                       boolean read self.val = $8DCD;
+    public property UNSIGNED_INT_SAMPLER_1D:                   boolean read self.val = $8DD1;
+    public property UNSIGNED_INT_SAMPLER_2D:                   boolean read self.val = $8DD2;
+    public property UNSIGNED_INT_SAMPLER_3D:                   boolean read self.val = $8DD3;
+    public property UNSIGNED_INT_SAMPLER_CUBE:                 boolean read self.val = $8DD4;
+    public property UNSIGNED_INT_SAMPLER_1D_ARRAY:             boolean read self.val = $8DD6;
+    public property UNSIGNED_INT_SAMPLER_2D_ARRAY:             boolean read self.val = $8DD7;
+    public property UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:       boolean read self.val = $900F;
+    public property UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:       boolean read self.val = $910A;
+    public property UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: boolean read self.val = $910D;
+    public property UNSIGNED_INT_SAMPLER_BUFFER:               boolean read self.val = $8DD8;
+    public property UNSIGNED_INT_SAMPLER_2D_RECT:              boolean read self.val = $8DD5;
+    public property IMAGE_1D:                                  boolean read self.val = $904C;
+    public property IMAGE_2D:                                  boolean read self.val = $904D;
+    public property IMAGE_3D:                                  boolean read self.val = $904E;
+    public property IMAGE_2D_RECT:                             boolean read self.val = $904F;
+    public property IMAGE_CUBE:                                boolean read self.val = $9050;
+    public property IMAGE_BUFFER:                              boolean read self.val = $9051;
+    public property IMAGE_1D_ARRAY:                            boolean read self.val = $9052;
+    public property IMAGE_2D_ARRAY:                            boolean read self.val = $9053;
+    public property IMAGE_CUBE_MAP_ARRAY:                      boolean read self.val = $9054;
+    public property IMAGE_2D_MULTISAMPLE:                      boolean read self.val = $9055;
+    public property IMAGE_2D_MULTISAMPLE_ARRAY:                boolean read self.val = $9056;
+    public property INT_IMAGE_1D:                              boolean read self.val = $9057;
+    public property INT_IMAGE_2D:                              boolean read self.val = $9058;
+    public property INT_IMAGE_3D:                              boolean read self.val = $9059;
+    public property INT_IMAGE_2D_RECT:                         boolean read self.val = $905A;
+    public property INT_IMAGE_CUBE:                            boolean read self.val = $905B;
+    public property INT_IMAGE_BUFFER:                          boolean read self.val = $905C;
+    public property INT_IMAGE_1D_ARRAY:                        boolean read self.val = $905D;
+    public property INT_IMAGE_2D_ARRAY:                        boolean read self.val = $905E;
+    public property INT_IMAGE_CUBE_MAP_ARRAY:                  boolean read self.val = $905F;
+    public property INT_IMAGE_2D_MULTISAMPLE:                  boolean read self.val = $9060;
+    public property INT_IMAGE_2D_MULTISAMPLE_ARRAY:            boolean read self.val = $9061;
+    public property UNSIGNED_INT_IMAGE_1D:                     boolean read self.val = $9062;
+    public property UNSIGNED_INT_IMAGE_2D:                     boolean read self.val = $9063;
+    public property UNSIGNED_INT_IMAGE_3D:                     boolean read self.val = $9064;
+    public property UNSIGNED_INT_IMAGE_2D_RECT:                boolean read self.val = $9065;
+    public property UNSIGNED_INT_IMAGE_CUBE:                   boolean read self.val = $9066;
+    public property UNSIGNED_INT_IMAGE_BUFFER:                 boolean read self.val = $9067;
+    public property UNSIGNED_INT_IMAGE_1D_ARRAY:               boolean read self.val = $9068;
+    public property UNSIGNED_INT_IMAGE_2D_ARRAY:               boolean read self.val = $9069;
+    public property UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY:         boolean read self.val = $906A;
+    public property UNSIGNED_INT_IMAGE_2D_MULTISAMPLE:         boolean read self.val = $906B;
+    public property UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:   boolean read self.val = $906C;
+    public property UNSIGNED_INT_ATOMIC_COUNTER:               boolean read self.val = $92DB;
+    
+  end;
+  
   {$endregion 1 значение}
   
   {$region Флаги}
+  
+  //S
+  MemoryBarrierTypeFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property VERTEX_ATTRIB_ARRAY_BARRIER_BIT: MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000001);
+    public static property ELEMENT_ARRAY_BARRIER_BIT:       MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000002);
+    public static property UNIFORM_BARRIER_BIT:             MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000004);
+    public static property TEXTURE_FETCH_BARRIER_BIT:       MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000008);
+    public static property SHADER_IMAGE_ACCESS_BARRIER_BIT: MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000020);
+    public static property COMMAND_BARRIER_BIT:             MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000040);
+    public static property PIXEL_BUFFER_BARRIER_BIT:        MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000080);
+    public static property TEXTURE_UPDATE_BARRIER_BIT:      MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000100);
+    public static property BUFFER_UPDATE_BARRIER_BIT:       MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000200);
+    public static property FRAMEBUFFER_BARRIER_BIT:         MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000400);
+    public static property TRANSFORM_FEEDBACK_BARRIER_BIT:  MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00000800);
+    public static property ATOMIC_COUNTER_BARRIER_BIT:      MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00001000);
+    public static property SHADER_STORAGE_BARRIER_BIT:      MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00002000);
+    public static property QUERY_BUFFER_BARRIER_BIT:        MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00008000);
+    public static property ALL_BARRIER_BITS:                MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($FFFFFFFF);
+    
+  end;
+  
+  //S
+  ProgramStagesFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property VERTEX_SHADER_BIT:           ProgramStagesFlags read new ProgramStagesFlags($00000001);
+    public static property FRAGMENT_SHADER_BIT:         ProgramStagesFlags read new ProgramStagesFlags($00000002);
+    public static property GEOMETRY_SHADER_BIT:         ProgramStagesFlags read new ProgramStagesFlags($00000004);
+    public static property TESS_CONTROL_SHADER_BIT:     ProgramStagesFlags read new ProgramStagesFlags($00000008);
+    public static property TESS_EVALUATION_SHADER_BIT:  ProgramStagesFlags read new ProgramStagesFlags($00000010);
+    public static property COMPUTE_SHADER_BIT:          ProgramStagesFlags read new ProgramStagesFlags($00000020);
+    public static property ALL_SHADER_BITS:             ProgramStagesFlags read new ProgramStagesFlags($FFFFFFFF);
+    
+  end;
   
   //S
   ReservedFlags = record
@@ -7047,6 +7398,20 @@ type
   
   {$endregion MtrTranspose}
   
+  {$region Misc} type
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  IntFloatUnion = record
+    public [FieldOffset(0)] i: integer;
+    public [FieldOffset(0)] f: single;
+    
+    public constructor(i: integer) := self.i := i;
+    public constructor(f: single) := self.f := f;
+    
+  end;
+  
+  {$endregion Misc}
+  
 {$endregion Записи}
 
 type
@@ -7476,13 +7841,13 @@ type
     
     // 7.2.1
     
-    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of SPIR_V_ConstantValue);
+    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of IntFloatUnion);
     external 'opengl32.dll' name 'glSpecializeShader';
-    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^SPIR_V_ConstantValue);
+    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^IntFloatUnion);
     external 'opengl32.dll' name 'glSpecializeShader';
-    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of SPIR_V_ConstantValue);
+    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of IntFloatUnion);
     external 'opengl32.dll' name 'glSpecializeShader';
-    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^SPIR_V_ConstantValue);
+    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^IntFloatUnion);
     external 'opengl32.dll' name 'glSpecializeShader';
     
     {$endregion 7.2 - Shader Binaries}
