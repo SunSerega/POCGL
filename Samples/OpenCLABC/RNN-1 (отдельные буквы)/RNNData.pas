@@ -1,8 +1,5 @@
 ﻿unit RNNData;
 
-//ToDo issue компилятора:
-// - #1988
-
 uses OpenCLABC;
 
 type
@@ -90,7 +87,6 @@ type
         HPQ(
           ()->
           begin
-            var костыль_для_training_args := training_args; //ToDo #1988
             next_arg_indexes := SeqGen(100,i->Random(training_args.Length)).Distinct.ToArray;
             
             Context.Default.SyncInvoke(
@@ -101,7 +97,7 @@ type
                 i->
                 HPQ(()->
                 begin
-                  костыль_для_training_args[i] :=
+                  training_args[i] :=
                     KernelArg.Create(training_data[i].Length)
                     .WriteData(training_data[i]);
                 end) as CommandQueue<object>

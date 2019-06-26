@@ -33,7 +33,6 @@ uses System.Runtime.InteropServices;
 
 //ToDo issue компилятора:
 // - #1952
-// - #1958
 // - #1981
 
 type
@@ -728,15 +727,13 @@ type
       
       foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
       
-      var p: Action0 := ()-> //ToDo #1958
+      yield Task.Run(()->
       begin
         var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToArray;
         if evs.Length<>0 then cl.WaitForEvents(evs.Length,evs).RaiseIfError;
         self.res := T(lst[lst.Count-1].GetRes);
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end;
-      
-      yield Task.Run(p);
+      end);
       
     end;
     
