@@ -7366,6 +7366,15 @@ type
   
   {$region MtrTranspose}
   
+  function Transpose(self: Mtr2x2f); extensionmethod :=
+  new Mtr2x2f(self.val00, self.val10, self.val01, self.val11);
+  
+  function Transpose(self: Mtr3x3f); extensionmethod :=
+  new Mtr3x3f(self.val00, self.val10, self.val20, self.val01, self.val11, self.val21, self.val02, self.val12, self.val22);
+  
+  function Transpose(self: Mtr4x4f); extensionmethod :=
+  new Mtr4x4f(self.val00, self.val10, self.val20, self.val30, self.val01, self.val11, self.val21, self.val31, self.val02, self.val12, self.val22, self.val32, self.val03, self.val13, self.val23, self.val33);
+  
   function Transpose(self: Mtr2x3f); extensionmethod :=
   new Mtr3x2f(self.val00, self.val10, self.val01, self.val11, self.val02, self.val12);
   function Transpose(self: Mtr3x2f); extensionmethod :=
@@ -7380,6 +7389,15 @@ type
   new Mtr4x3f(self.val00, self.val10, self.val20, self.val01, self.val11, self.val21, self.val02, self.val12, self.val22, self.val03, self.val13, self.val23);
   function Transpose(self: Mtr4x3f); extensionmethod :=
   new Mtr3x4f(self.val00, self.val10, self.val20, self.val30, self.val01, self.val11, self.val21, self.val31, self.val02, self.val12, self.val22, self.val32);
+  
+  function Transpose(self: Mtr2x2d); extensionmethod :=
+  new Mtr2x2d(self.val00, self.val10, self.val01, self.val11);
+  
+  function Transpose(self: Mtr3x3d); extensionmethod :=
+  new Mtr3x3d(self.val00, self.val10, self.val20, self.val01, self.val11, self.val21, self.val02, self.val12, self.val22);
+  
+  function Transpose(self: Mtr4x4d); extensionmethod :=
+  new Mtr4x4d(self.val00, self.val10, self.val20, self.val30, self.val01, self.val11, self.val21, self.val31, self.val02, self.val12, self.val22, self.val32, self.val03, self.val13, self.val23, self.val33);
   
   function Transpose(self: Mtr2x3d); extensionmethod :=
   new Mtr3x2d(self.val00, self.val10, self.val01, self.val11, self.val02, self.val12);

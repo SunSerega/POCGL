@@ -31,6 +31,9 @@ $'Vec{self[0][0]}{self[1]}';
 function GetMltResT(self: (t_descr,t_descr)): t_descr; extensionmethod :=
 ((self[0][0][0], self[1][0][1]), self[0][1], self[0][2]);
 
+function GetTransposedT(self: t_descr): t_descr; extensionmethod :=
+((self[0][1], self[0][0]), self[1], self[2]);
+
 procedure AddMtrType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
 begin
   res += $'  '+#10;
@@ -285,25 +288,16 @@ begin
   
 end;
 
-procedure AddTranspose(res: StringBuilder; sz1,sz2: integer; gl_t: string);
+procedure AddTranspose(res: StringBuilder; t: t_descr);
 begin
-  var t1 := ((sz1,sz2), gl_t, gl_t.gl_to_pas_t);
-  var t2 := ((sz2,sz1), gl_t, gl_t.gl_to_pas_t);
   
-  res += '  '#10;
-  res += $'  function Transpose(self: {t1.GetName}); extensionmethod :='+#10;
-  res += $'  new {t2.GetName}(';
+  if t[0][0]<=t[0][1] then
+    res += '  '#10;
+  res += $'  function Transpose(self: {t.GetName}); extensionmethod :='+#10;
+  res += $'  new {t.GetTransposedT.GetName}(';
   res +=
-    Range(0,sz2-1)
-    .Cartesian(Range(0,sz1-1))
-    .Select(pos-> $'self.val{pos[1]}{pos[0]}' )
-    .JoinIntoString(', ');
-  res += ');'#10;
-  res += $'  function Transpose(self: {t2.GetName}); extensionmethod :='+#10;
-  res += $'  new {t1.GetName}(';
-  res +=
-    Range(0,sz1-1)
-    .Cartesian(Range(0,sz2-1))
+    Range(0,t[0][1]-1)
+    .Cartesian(Range(0,t[0][0]-1))
     .Select(pos-> $'self.val{pos[1]}{pos[0]}' )
     .JoinIntoString(', ');
   res += ');'#10;
@@ -336,12 +330,8 @@ begin
     res += '  '#10;
     res += '  {$region MtrTranspose}'#10;
     
-    foreach var t in Arr('f','d') do
-    begin
-      AddTranspose(res, 2,3, t);
-      AddTranspose(res, 2,4, t);
-      AddTranspose(res, 3,4, t);
-    end;
+    foreach var t in t_table do
+      AddTranspose(res, t);
     
     res += '  '#10;
     res += '  {$endregion MtrTranspose}'#10;
