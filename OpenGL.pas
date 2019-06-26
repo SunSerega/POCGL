@@ -8448,11 +8448,11 @@ type
     static function GetSubroutineIndex(&program: ProgramName; shadertype: ShaderType; name: IntPtr): UInt32;
     external 'opengl32.dll' name 'glGetSubroutineIndex';
     
-    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
     static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
-    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
     static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
@@ -8485,15 +8485,21 @@ type
     
     {$endregion 7.10 - Subroutine Uniform Variables}
     
+    {$region 7.13 - Shader Memory Access}
+    
+    //7.13.2
+    
+    static procedure MemoryBarrier(barriers: MemoryBarrierTypeFlags);
+    external 'opengl32.dll' name 'glMemoryBarrier';
+    
+    static procedure MemoryBarrierByRegion(barriers: MemoryBarrierTypeFlags);
+    external 'opengl32.dll' name 'glMemoryBarrierByRegion';
+    
+    {$endregion 7.13 - Shader Memory Access}
+    
     
     
     {$region unsorted}
-    
-    static procedure MemoryBarrier(barriers: UInt32);
-    external 'opengl32.dll' name 'glMemoryBarrier';
-    
-    static procedure MemoryBarrierByRegion(barriers: UInt32);
-    external 'opengl32.dll' name 'glMemoryBarrierByRegion';
     
     static procedure GetShaderiv(shader: UInt32; pname: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetShaderiv';
