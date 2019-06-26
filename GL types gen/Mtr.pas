@@ -2,6 +2,9 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
+//ToDo issue компилятора:
+// - #2021
+
 function gl_to_pas_t(self: string): string; extensionmethod;
 begin
   case self of
@@ -115,37 +118,9 @@ begin
   
   res += $'    '+#10;
   
-  for var x := 0 to t[0][1]-1 do
-  begin
-    res += $'    public property Row{x}: {t.GetRowTName} read new {t.GetRowTName}(';
-    res +=
-      Range(0,t[0][0]-1)
-      .Select(y-> $'self.val{y}{x}' )
-      .JoinIntoString(', ');
-    res += $') write begin';
-    for var y := 0 to t[0][0]-1 do
-      res += $' self.val{y}{x} := value.val{y};';
-    res += $' end;'+#10;
-  end;
-  
-  res += $'    public property Row[x: integer]: {t.GetRowTName} read ';
-  for var x := 0 to t[0][1]-1 do
-    res += $'x={x}?Row{x}:';
-  res += $'Arr&<{t.GetRowTName}>[x]';
-  res += $' write'+#10;
-  res += $'    case x of'+#10;
-  for var x := 0 to t[0][1]-1 do
-    res += $'      {x}: Row{x} := value;'+#10;
-  res += $'      else raise new IndexOutOfRangeException(''Номер строчки должен иметь значение 0..{t[0][1]-1}'');'+#10;
-  res += $'    end;'+#10;
-  
-  
-  
-  res += $'    '+#10;
-  
   for var y := 0 to t[0][0]-1 do
   begin
-    res += $'    public property Col{y}: {t.GetColTName} read new {t.GetColTName}(';
+    res += $'    public property Row{y}: {t.GetRowTName} read new {t.GetRowTName}(';
     res +=
       Range(0,t[0][1]-1)
       .Select(x-> $'self.val{y}{x}' )
@@ -156,15 +131,43 @@ begin
     res += $' end;'+#10;
   end;
   
-  res += $'    public property Col[y: integer]: {t.GetColTName} read ';
+  res += $'    public property Row[y: integer]: {t.GetRowTName} read ';
   for var y := 0 to t[0][0]-1 do
     res += $'y={y}?Row{y}:';
-  res += $'Arr&<{t.GetColTName}>[y]';
+  res += $'Arr&<{t.GetRowTName}>[y]';
   res += $' write'+#10;
   res += $'    case y of'+#10;
   for var y := 0 to t[0][0]-1 do
-    res += $'      {y}: Col{y} := value;'+#10;
-  res += $'      else raise new IndexOutOfRangeException(''Номер столбца должен иметь значение 0..{t[0][0]-1}'');'+#10;
+    res += $'      {y}: Row{y} := value;'+#10;
+  res += $'      else raise new IndexOutOfRangeException(''Номер строчки должен иметь значение 0..{t[0][0]-1}'');'+#10;
+  res += $'    end;'+#10;
+  
+  
+  
+  res += $'    '+#10;
+  
+  for var x := 0 to t[0][1]-1 do
+  begin
+    res += $'    public property Col{x}: {t.GetColTName} read new {t.GetColTName}(';
+    res +=
+      Range(0,t[0][0]-1)
+      .Select(y-> $'self.val{y}{x}' )
+      .JoinIntoString(', ');
+    res += $') write begin';
+    for var y := 0 to t[0][0]-1 do
+      res += $' self.val{y}{x} := value.val{y};';
+    res += $' end;'+#10;
+  end;
+  
+  res += $'    public property Col[x: integer]: {t.GetColTName} read ';
+  for var x := 0 to t[0][1]-1 do
+    res += $'x={x}?Col{x}:';
+  res += $'Arr&<{t.GetColTName}>[x]';
+  res += $' write'+#10;
+  res += $'    case x of'+#10;
+  for var x := 0 to t[0][1]-1 do
+    res += $'      {x}: Col{x} := value;'+#10;
+  res += $'      else raise new IndexOutOfRangeException(''Номер столбца должен иметь значение 0..{t[0][1]-1}'');'+#10;
   res += $'    end;'+#10;
   
   
@@ -184,33 +187,41 @@ begin
   for var i := 2 to 4 do
   begin
     var t2 := ((t[0][1],i), t[1], t[2]);
-    if prev_tps.Contains(t2) then mtr_mlt_tps += (t,t2);
+    if prev_tps.Contains(t2) and prev_tps.Contains((t,t2).GetMltResT) then mtr_mlt_tps += (t,t2);
   end;
   
   for var i := 2 to 4 do
   begin
     var t2 := ((i,t[0][0]), t[1], t[2]);
-    if prev_tps.Contains(t2) then mtr_mlt_tps += (t2,t);
+    if prev_tps.Contains(t2) and prev_tps.Contains((t2,t).GetMltResT) then mtr_mlt_tps += (t2,t);
   end;
+  
+  //ToDo #2021
+//  for var i := 2 to 4 do
+//  begin
+//    var t1 := ((t[0][0], i), t[1], t[2]);
+//    var t2 := ((i, t[0][1]), t[1], t[2]);
+//    if prev_tps.Contains(t1) and prev_tps.Contains(t2) then mtr_mlt_tps += (t1,t2);
+//  end;
   
   foreach var tt in mtr_mlt_tps do
   begin
     var rt := tt.GetMltResT;
     res += $'    '+#10;
     
-    res +=      $'     public static function operator*(m1: {tt[0].GetName}; m2: {tt[1].GetName}): {rt.GetName};'+#10;
-    res +=      $'     begin'+#10;
+    res +=      $'    public static function operator*(m1: {tt[0].GetName}; m2: {tt[1].GetName}): {rt.GetName};'+#10;
+    res +=      $'    begin'+#10;
     for var y := 0 to rt[0][0]-1 do
       for var x := 0 to rt[0][1]-1 do
       begin
-        res +=  $'       Result.val{y}{x} := ';
+        res +=  $'      Result.val{y}{x} := ';
         res +=
           Range(0, tt[0][0][1]-1)
           .Select(i-> $'m1.val{y}{i}*m2.val{i}{x}' )
           .JoinIntoString(' + ');
         res += ';'#10;
       end;
-    res +=      $'     end;'+#10;
+    res +=      $'    end;'+#10;
     
   end;
   

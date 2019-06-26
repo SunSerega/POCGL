@@ -457,7 +457,24 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): SByte;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: SByte);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: SByte read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec1b): Vec1b := new Vec1b(-v.val0);
+    public static function operator*(v: Vec1b; k: SByte): Vec1b := new Vec1b(v.val0*k);
     public static function operator+(v1, v2: Vec1b): Vec1b := new Vec1b(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1b): Vec1b := new Vec1b(v1.val0-v2.val0);
     
@@ -471,6 +488,23 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): Byte;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Byte);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: Byte read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec1ub; k: Byte): Vec1ub := new Vec1ub(v.val0*k);
     public static function operator+(v1, v2: Vec1ub): Vec1ub := new Vec1ub(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ub): Vec1ub := new Vec1ub(v1.val0-v2.val0);
     
@@ -487,7 +521,24 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): Int16;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int16);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec1s): Vec1s := new Vec1s(-v.val0);
+    public static function operator*(v: Vec1s; k: Int16): Vec1s := new Vec1s(v.val0*k);
     public static function operator+(v1, v2: Vec1s): Vec1s := new Vec1s(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1s): Vec1s := new Vec1s(v1.val0-v2.val0);
     
@@ -507,6 +558,23 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): UInt16;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt16);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec1us; k: UInt16): Vec1us := new Vec1us(v.val0*k);
     public static function operator+(v1, v2: Vec1us): Vec1us := new Vec1us(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1us): Vec1us := new Vec1us(v1.val0-v2.val0);
     
@@ -529,7 +597,24 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): Int32;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int32);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec1i): Vec1i := new Vec1i(-v.val0);
+    public static function operator*(v: Vec1i; k: Int32): Vec1i := new Vec1i(v.val0*k);
     public static function operator+(v1, v2: Vec1i): Vec1i := new Vec1i(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1i): Vec1i := new Vec1i(v1.val0-v2.val0);
     
@@ -555,6 +640,23 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): UInt32;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt32);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec1ui; k: UInt32): Vec1ui := new Vec1ui(v.val0*k);
     public static function operator+(v1, v2: Vec1ui): Vec1ui := new Vec1ui(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ui): Vec1ui := new Vec1ui(v1.val0-v2.val0);
     
@@ -583,7 +685,24 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): Int64;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int64);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec1i64): Vec1i64 := new Vec1i64(-v.val0);
+    public static function operator*(v: Vec1i64; k: Int64): Vec1i64 := new Vec1i64(v.val0*k);
     public static function operator+(v1, v2: Vec1i64): Vec1i64 := new Vec1i64(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1i64): Vec1i64 := new Vec1i64(v1.val0-v2.val0);
     
@@ -615,6 +734,23 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): UInt64;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt64);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec1ui64; k: UInt64): Vec1ui64 := new Vec1ui64(v.val0*k);
     public static function operator+(v1, v2: Vec1ui64): Vec1ui64 := new Vec1ui64(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ui64): Vec1ui64 := new Vec1ui64(v1.val0-v2.val0);
     
@@ -649,7 +785,24 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): single;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: single);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: single read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec1f): Vec1f := new Vec1f(-v.val0);
+    public static function operator*(v: Vec1f; k: single): Vec1f := new Vec1f(v.val0*k);
     public static function operator+(v1, v2: Vec1f): Vec1f := new Vec1f(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1f): Vec1f := new Vec1f(v1.val0-v2.val0);
     
@@ -687,7 +840,24 @@ type
       self.val0 := val0;
     end;
     
+    private function GetValAt(i: integer): real;
+    begin
+      case i of
+        0: Result := self.val0;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: real);
+    begin
+      case i of
+        0: self.val0 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      end;
+    end;
+    public property val[i: integer]: real read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec1d): Vec1d := new Vec1d(-v.val0);
+    public static function operator*(v: Vec1d; k: real): Vec1d := new Vec1d(v.val0*k);
     public static function operator+(v1, v2: Vec1d): Vec1d := new Vec1d(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1d): Vec1d := new Vec1d(v1.val0-v2.val0);
     
@@ -733,7 +903,26 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): SByte;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: SByte);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: SByte read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec2b): Vec2b := new Vec2b(-v.val0, -v.val1);
+    public static function operator*(v: Vec2b; k: SByte): Vec2b := new Vec2b(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2b): Vec2b := new Vec2b(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2b): Vec2b := new Vec2b(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -779,6 +968,25 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): Byte;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Byte);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: Byte read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec2ub; k: Byte): Vec2ub := new Vec2ub(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2ub): Vec2ub := new Vec2ub(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ub): Vec2ub := new Vec2ub(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -827,7 +1035,26 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): Int16;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int16);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec2s): Vec2s := new Vec2s(-v.val0, -v.val1);
+    public static function operator*(v: Vec2s; k: Int16): Vec2s := new Vec2s(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2s): Vec2s := new Vec2s(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2s): Vec2s := new Vec2s(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -879,6 +1106,25 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): UInt16;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt16);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec2us; k: UInt16): Vec2us := new Vec2us(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2us): Vec2us := new Vec2us(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2us): Vec2us := new Vec2us(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -933,7 +1179,26 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): Int32;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int32);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec2i): Vec2i := new Vec2i(-v.val0, -v.val1);
+    public static function operator*(v: Vec2i; k: Int32): Vec2i := new Vec2i(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2i): Vec2i := new Vec2i(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2i): Vec2i := new Vec2i(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -991,6 +1256,25 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): UInt32;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt32);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec2ui; k: UInt32): Vec2ui := new Vec2ui(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2ui): Vec2ui := new Vec2ui(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ui): Vec2ui := new Vec2ui(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -1051,7 +1335,26 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): Int64;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int64);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec2i64): Vec2i64 := new Vec2i64(-v.val0, -v.val1);
+    public static function operator*(v: Vec2i64; k: Int64): Vec2i64 := new Vec2i64(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2i64): Vec2i64 := new Vec2i64(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2i64): Vec2i64 := new Vec2i64(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -1115,6 +1418,25 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): UInt64;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt64);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec2ui64; k: UInt64): Vec2ui64 := new Vec2ui64(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2ui64): Vec2ui64 := new Vec2ui64(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ui64): Vec2ui64 := new Vec2ui64(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -1181,7 +1503,26 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): single;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: single);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: single read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec2f): Vec2f := new Vec2f(-v.val0, -v.val1);
+    public static function operator*(v: Vec2f; k: single): Vec2f := new Vec2f(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2f): Vec2f := new Vec2f(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2f): Vec2f := new Vec2f(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -1251,7 +1592,26 @@ type
       self.val1 := val1;
     end;
     
+    private function GetValAt(i: integer): real;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: real);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      end;
+    end;
+    public property val[i: integer]: real read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec2d): Vec2d := new Vec2d(-v.val0, -v.val1);
+    public static function operator*(v: Vec2d; k: real): Vec2d := new Vec2d(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2d): Vec2d := new Vec2d(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2d): Vec2d := new Vec2d(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -1329,7 +1689,28 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): SByte;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: SByte);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: SByte read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec3b): Vec3b := new Vec3b(-v.val0, -v.val1, -v.val2);
+    public static function operator*(v: Vec3b; k: SByte): Vec3b := new Vec3b(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3b): Vec3b := new Vec3b(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3b): Vec3b := new Vec3b(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -1407,6 +1788,27 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): Byte;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Byte);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: Byte read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec3ub; k: Byte): Vec3ub := new Vec3ub(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3ub): Vec3ub := new Vec3ub(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ub): Vec3ub := new Vec3ub(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -1487,7 +1889,28 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): Int16;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int16);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec3s): Vec3s := new Vec3s(-v.val0, -v.val1, -v.val2);
+    public static function operator*(v: Vec3s; k: Int16): Vec3s := new Vec3s(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3s): Vec3s := new Vec3s(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3s): Vec3s := new Vec3s(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -1571,6 +1994,27 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): UInt16;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt16);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec3us; k: UInt16): Vec3us := new Vec3us(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3us): Vec3us := new Vec3us(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3us): Vec3us := new Vec3us(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -1657,7 +2101,28 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): Int32;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int32);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec3i): Vec3i := new Vec3i(-v.val0, -v.val1, -v.val2);
+    public static function operator*(v: Vec3i; k: Int32): Vec3i := new Vec3i(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3i): Vec3i := new Vec3i(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3i): Vec3i := new Vec3i(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -1747,6 +2212,27 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): UInt32;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt32);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec3ui; k: UInt32): Vec3ui := new Vec3ui(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3ui): Vec3ui := new Vec3ui(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ui): Vec3ui := new Vec3ui(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -1839,7 +2325,28 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): Int64;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int64);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec3i64): Vec3i64 := new Vec3i64(-v.val0, -v.val1, -v.val2);
+    public static function operator*(v: Vec3i64; k: Int64): Vec3i64 := new Vec3i64(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3i64): Vec3i64 := new Vec3i64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3i64): Vec3i64 := new Vec3i64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -1935,6 +2442,27 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): UInt64;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt64);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec3ui64; k: UInt64): Vec3ui64 := new Vec3ui64(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3ui64): Vec3ui64 := new Vec3ui64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ui64): Vec3ui64 := new Vec3ui64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -2033,7 +2561,28 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): single;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: single);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: single read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec3f): Vec3f := new Vec3f(-v.val0, -v.val1, -v.val2);
+    public static function operator*(v: Vec3f; k: single): Vec3f := new Vec3f(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3f): Vec3f := new Vec3f(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3f): Vec3f := new Vec3f(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -2135,7 +2684,28 @@ type
       self.val2 := val2;
     end;
     
+    private function GetValAt(i: integer): real;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: real);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      end;
+    end;
+    public property val[i: integer]: real read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec3d): Vec3d := new Vec3d(-v.val0, -v.val1, -v.val2);
+    public static function operator*(v: Vec3d; k: real): Vec3d := new Vec3d(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3d): Vec3d := new Vec3d(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3d): Vec3d := new Vec3d(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -2245,7 +2815,30 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): SByte;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: SByte);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: SByte read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec4b): Vec4b := new Vec4b(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator*(v: Vec4b; k: SByte): Vec4b := new Vec4b(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4b): Vec4b := new Vec4b(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4b): Vec4b := new Vec4b(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -2355,6 +2948,29 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): Byte;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Byte);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: Byte read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec4ub; k: Byte): Vec4ub := new Vec4ub(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4ub): Vec4ub := new Vec4ub(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ub): Vec4ub := new Vec4ub(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -2467,7 +3083,30 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): Int16;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int16);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec4s): Vec4s := new Vec4s(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator*(v: Vec4s; k: Int16): Vec4s := new Vec4s(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4s): Vec4s := new Vec4s(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4s): Vec4s := new Vec4s(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -2583,6 +3222,29 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): UInt16;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt16);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec4us; k: UInt16): Vec4us := new Vec4us(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4us): Vec4us := new Vec4us(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4us): Vec4us := new Vec4us(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -2701,7 +3363,30 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): Int32;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int32);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec4i): Vec4i := new Vec4i(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator*(v: Vec4i; k: Int32): Vec4i := new Vec4i(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4i): Vec4i := new Vec4i(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4i): Vec4i := new Vec4i(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -2823,6 +3508,29 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): UInt32;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt32);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec4ui; k: UInt32): Vec4ui := new Vec4ui(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4ui): Vec4ui := new Vec4ui(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ui): Vec4ui := new Vec4ui(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -2947,7 +3655,30 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): Int64;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: Int64);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec4i64): Vec4i64 := new Vec4i64(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator*(v: Vec4i64; k: Int64): Vec4i64 := new Vec4i64(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4i64): Vec4i64 := new Vec4i64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4i64): Vec4i64 := new Vec4i64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -3075,6 +3806,29 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): UInt64;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: UInt64);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
+    
+    public static function operator*(v: Vec4ui64; k: UInt64): Vec4ui64 := new Vec4ui64(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4ui64): Vec4ui64 := new Vec4ui64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ui64): Vec4ui64 := new Vec4ui64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -3205,7 +3959,30 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): single;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: single);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: single read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec4f): Vec4f := new Vec4f(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator*(v: Vec4f; k: single): Vec4f := new Vec4f(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4f): Vec4f := new Vec4f(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4f): Vec4f := new Vec4f(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -3339,7 +4116,30 @@ type
       self.val3 := val3;
     end;
     
+    private function GetValAt(i: integer): real;
+    begin
+      case i of
+        0: Result := self.val0;
+        1: Result := self.val1;
+        2: Result := self.val2;
+        3: Result := self.val3;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(i: integer; val: real);
+    begin
+      case i of
+        0: self.val0 := val;
+        1: self.val1 := val;
+        2: self.val2 := val;
+        3: self.val3 := val;
+        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      end;
+    end;
+    public property val[i: integer]: real read GetValAt write SetValAt; default;
+    
     public static function operator-(v: Vec4d): Vec4d := new Vec4d(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator*(v: Vec4d; k: real): Vec4d := new Vec4d(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4d): Vec4d := new Vec4d(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4d): Vec4d := new Vec4d(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -3465,7 +4265,2788 @@ type
   {$endregion Vec4}
   
   {$endregion Vec}
-
+  
+  {$region Mtr}
+  
+  Mtr2x2f = record
+    public val00, val01: single;
+    public val10, val11: single;
+    
+    public constructor(val00, val01, val10, val11: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr2x2f read new Mtr2x2f(1.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec2f read new Vec2f(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2f read new Vec2f(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row[y: integer]: Vec2f read y=0?Row0:y=1?Row1:Arr&<Vec2f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..1');
+    end;
+    
+    public property Col0: Vec2f read new Vec2f(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2f read new Vec2f(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col[x: integer]: Vec2f read x=0?Col0:x=1?Col1:Arr&<Vec2f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
+    end;
+    
+    public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
+    public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    
+    public static function operator*(m1: Mtr2x2f; m2: Mtr2x2f): Mtr2x2f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+    end;
+    
+    public static function operator*(m: Mtr2x2f; v: Vec2f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
+    public static function operator*(v: Vec2f; m: Mtr2x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
+    
+  end;
+  Mtr2f = Mtr2x2f;
+  
+  Mtr3x3f = record
+    public val00, val01, val02: single;
+    public val10, val11, val12: single;
+    public val20, val21, val22: single;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr3x3f read new Mtr3x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec3f read new Vec3f(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3f read new Vec3f(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3f read new Vec3f(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    public property Row[y: integer]: Vec3f read y=0?Row0:y=1?Row1:y=2?Row2:Arr&<Vec3f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..2');
+    end;
+    
+    public property Col0: Vec3f read new Vec3f(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3f read new Vec3f(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3f read new Vec3f(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    public property Col[x: integer]: Vec3f read x=0?Col0:x=1?Col1:x=2?Col2:Arr&<Vec3f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
+    end;
+    
+    public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
+    public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
+    public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public static function operator*(m1: Mtr3x3f; m2: Mtr3x3f): Mtr3x3f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+    end;
+    
+    public static function operator*(m: Mtr3x3f; v: Vec3f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
+    public static function operator*(v: Vec3f; m: Mtr3x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x3f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+  end;
+  Mtr3f = Mtr3x3f;
+  
+  Mtr4x4f = record
+    public val00, val01, val02, val03: single;
+    public val10, val11, val12, val13: single;
+    public val20, val21, val22, val23: single;
+    public val30, val31, val32, val33: single;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+      self.val33 := val33;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          3: Result := self.val03;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          3: Result := self.val13;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          3: Result := self.val23;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        3:
+        case x of
+          0: Result := self.val30;
+          1: Result := self.val31;
+          2: Result := self.val32;
+          3: Result := self.val33;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          3: self.val03 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          3: self.val13 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          3: self.val23 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        3:
+        case x of
+          0: self.val30 := val;
+          1: self.val31 := val;
+          2: self.val32 := val;
+          3: self.val33 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr4x4f read new Mtr4x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec4f read new Vec4f(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4f read new Vec4f(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4f read new Vec4f(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    public property Row3: Vec4f read new Vec4f(self.val30, self.val31, self.val32, self.val33) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; self.val33 := value.val3; end;
+    public property Row[y: integer]: Vec4f read y=0?Row0:y=1?Row1:y=2?Row2:y=3?Row3:Arr&<Vec4f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      3: Row3 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..3');
+    end;
+    
+    public property Col0: Vec4f read new Vec4f(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4f read new Vec4f(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4f read new Vec4f(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    public property Col3: Vec4f read new Vec4f(self.val03, self.val13, self.val23, self.val33) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; self.val33 := value.val3; end;
+    public property Col[x: integer]: Vec4f read x=0?Col0:x=1?Col1:x=2?Col2:x=3?Col3:Arr&<Vec4f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      3: Col3 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
+    end;
+    
+    public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
+    public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
+    public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public static function operator*(m1: Mtr4x4f; m2: Mtr4x4f): Mtr4x4f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
+    end;
+    
+    public static function operator*(m: Mtr4x4f; v: Vec4f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
+    public static function operator*(v: Vec4f; m: Mtr4x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+  end;
+  Mtr4f = Mtr4x4f;
+  
+  Mtr2x3f = record
+    public val00, val01, val02: single;
+    public val10, val11, val12: single;
+    
+    public constructor(val00, val01, val02, val10, val11, val12: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr2x3f read new Mtr2x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec3f read new Vec3f(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3f read new Vec3f(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row[y: integer]: Vec3f read y=0?Row0:y=1?Row1:Arr&<Vec3f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..1');
+    end;
+    
+    public property Col0: Vec2f read new Vec2f(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2f read new Vec2f(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2f read new Vec2f(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    public property Col[x: integer]: Vec2f read x=0?Col0:x=1?Col1:x=2?Col2:Arr&<Vec2f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
+    end;
+    
+    public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
+    public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
+    public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public static function operator*(m: Mtr2x3f; v: Vec3f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
+    public static function operator*(v: Vec2f; m: Mtr2x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+  end;
+  
+  Mtr3x2f = record
+    public val00, val01: single;
+    public val10, val11: single;
+    public val20, val21: single;
+    
+    public constructor(val00, val01, val10, val11, val20, val21: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr3x2f read new Mtr3x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec2f read new Vec2f(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2f read new Vec2f(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2f read new Vec2f(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    public property Row[y: integer]: Vec2f read y=0?Row0:y=1?Row1:y=2?Row2:Arr&<Vec2f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..2');
+    end;
+    
+    public property Col0: Vec3f read new Vec3f(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3f read new Vec3f(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col[x: integer]: Vec3f read x=0?Col0:x=1?Col1:Arr&<Vec3f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
+    end;
+    
+    public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
+    public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    
+    public static function operator*(m1: Mtr3x2f; m2: Mtr2x3f): Mtr3x3f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+    end;
+    
+    public static function operator*(m1: Mtr2x3f; m2: Mtr3x2f): Mtr2x2f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+    end;
+    
+    public static function operator*(m: Mtr3x2f; v: Vec2f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
+    public static function operator*(v: Vec3f; m: Mtr3x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+  end;
+  
+  Mtr2x4f = record
+    public val00, val01, val02, val03: single;
+    public val10, val11, val12, val13: single;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          3: Result := self.val03;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          3: Result := self.val13;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          3: self.val03 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          3: self.val13 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr2x4f read new Mtr2x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec4f read new Vec4f(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4f read new Vec4f(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row[y: integer]: Vec4f read y=0?Row0:y=1?Row1:Arr&<Vec4f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..1');
+    end;
+    
+    public property Col0: Vec2f read new Vec2f(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2f read new Vec2f(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2f read new Vec2f(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    public property Col3: Vec2f read new Vec2f(self.val03, self.val13) write begin self.val03 := value.val0; self.val13 := value.val1; end;
+    public property Col[x: integer]: Vec2f read x=0?Col0:x=1?Col1:x=2?Col2:x=3?Col3:Arr&<Vec2f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      3: Col3 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
+    end;
+    
+    public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
+    public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
+    public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public static function operator*(m: Mtr2x4f; v: Vec4f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
+    public static function operator*(v: Vec2f; m: Mtr2x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1, m.val03*v.val0+m.val13*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x2f = record
+    public val00, val01: single;
+    public val10, val11: single;
+    public val20, val21: single;
+    public val30, val31: single;
+    
+    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val30 := val30;
+      self.val31 := val31;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        3:
+        case x of
+          0: Result := self.val30;
+          1: Result := self.val31;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        3:
+        case x of
+          0: self.val30 := val;
+          1: self.val31 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr4x2f read new Mtr4x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec2f read new Vec2f(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2f read new Vec2f(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2f read new Vec2f(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    public property Row3: Vec2f read new Vec2f(self.val30, self.val31) write begin self.val30 := value.val0; self.val31 := value.val1; end;
+    public property Row[y: integer]: Vec2f read y=0?Row0:y=1?Row1:y=2?Row2:y=3?Row3:Arr&<Vec2f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      3: Row3 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..3');
+    end;
+    
+    public property Col0: Vec4f read new Vec4f(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4f read new Vec4f(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col[x: integer]: Vec4f read x=0?Col0:x=1?Col1:Arr&<Vec4f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
+    end;
+    
+    public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
+    public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    
+    public static function operator*(m1: Mtr4x2f; m2: Mtr2x4f): Mtr4x4f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
+    end;
+    
+    public static function operator*(m1: Mtr2x4f; m2: Mtr4x2f): Mtr2x2f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+    end;
+    
+    public static function operator*(m: Mtr4x2f; v: Vec2f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
+    public static function operator*(v: Vec4f; m: Mtr4x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, m.val30, m.val31, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr3x4f = record
+    public val00, val01, val02, val03: single;
+    public val10, val11, val12, val13: single;
+    public val20, val21, val22, val23: single;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          3: Result := self.val03;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          3: Result := self.val13;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          3: Result := self.val23;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          3: self.val03 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          3: self.val13 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          3: self.val23 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr3x4f read new Mtr3x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec4f read new Vec4f(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4f read new Vec4f(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4f read new Vec4f(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    public property Row[y: integer]: Vec4f read y=0?Row0:y=1?Row1:y=2?Row2:Arr&<Vec4f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..2');
+    end;
+    
+    public property Col0: Vec3f read new Vec3f(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3f read new Vec3f(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3f read new Vec3f(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    public property Col3: Vec3f read new Vec3f(self.val03, self.val13, self.val23) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; end;
+    public property Col[x: integer]: Vec3f read x=0?Col0:x=1?Col1:x=2?Col2:x=3?Col3:Arr&<Vec3f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      3: Col3 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
+    end;
+    
+    public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
+    public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
+    public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public static function operator*(m1: Mtr3x4f; m2: Mtr4x2f): Mtr3x2f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+    end;
+    
+    public static function operator*(m1: Mtr2x3f; m2: Mtr3x4f): Mtr2x4f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+    end;
+    
+    public static function operator*(m: Mtr3x4f; v: Vec4f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
+    public static function operator*(v: Vec3f; m: Mtr3x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x3f = record
+    public val00, val01, val02: single;
+    public val10, val11, val12: single;
+    public val20, val21, val22: single;
+    public val30, val31, val32: single;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+    end;
+    
+    private function GetValAt(y,x: integer): single;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        3:
+        case x of
+          0: Result := self.val30;
+          1: Result := self.val31;
+          2: Result := self.val32;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: single);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        3:
+        case x of
+          0: self.val30 := val;
+          1: self.val31 := val;
+          2: self.val32 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    public property val[y,x: integer]: single read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr4x3f read new Mtr4x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec3f read new Vec3f(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3f read new Vec3f(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3f read new Vec3f(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    public property Row3: Vec3f read new Vec3f(self.val30, self.val31, self.val32) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; end;
+    public property Row[y: integer]: Vec3f read y=0?Row0:y=1?Row1:y=2?Row2:y=3?Row3:Arr&<Vec3f>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      3: Row3 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..3');
+    end;
+    
+    public property Col0: Vec4f read new Vec4f(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4f read new Vec4f(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4f read new Vec4f(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    public property Col[x: integer]: Vec4f read x=0?Col0:x=1?Col1:x=2?Col2:Arr&<Vec4f>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
+    end;
+    
+    public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
+    public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
+    public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public static function operator*(m1: Mtr4x3f; m2: Mtr3x2f): Mtr4x2f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+    end;
+    
+    public static function operator*(m1: Mtr4x3f; m2: Mtr3x4f): Mtr4x4f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
+    end;
+    
+    public static function operator*(m1: Mtr2x4f; m2: Mtr4x3f): Mtr2x3f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+    end;
+    
+    public static function operator*(m1: Mtr3x4f; m2: Mtr4x3f): Mtr3x3f;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+    end;
+    
+    public static function operator*(m: Mtr4x3f; v: Vec3f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
+    public static function operator*(v: Vec4f; m: Mtr4x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, m.val30, m.val31, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+  end;
+  
+  Mtr2x2d = record
+    public val00, val01: real;
+    public val10, val11: real;
+    
+    public constructor(val00, val01, val10, val11: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr2x2d read new Mtr2x2d(1.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec2d read new Vec2d(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2d read new Vec2d(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row[y: integer]: Vec2d read y=0?Row0:y=1?Row1:Arr&<Vec2d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..1');
+    end;
+    
+    public property Col0: Vec2d read new Vec2d(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2d read new Vec2d(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col[x: integer]: Vec2d read x=0?Col0:x=1?Col1:Arr&<Vec2d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
+    end;
+    
+    public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public static function operator*(m1: Mtr2x2d; m2: Mtr2x2d): Mtr2x2d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+    end;
+    
+    public static function operator*(m: Mtr2x2d; v: Vec2d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
+    public static function operator*(v: Vec2d; m: Mtr2x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+  end;
+  Mtr2d = Mtr2x2d;
+  
+  Mtr3x3d = record
+    public val00, val01, val02: real;
+    public val10, val11, val12: real;
+    public val20, val21, val22: real;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr3x3d read new Mtr3x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec3d read new Vec3d(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3d read new Vec3d(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3d read new Vec3d(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    public property Row[y: integer]: Vec3d read y=0?Row0:y=1?Row1:y=2?Row2:Arr&<Vec3d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..2');
+    end;
+    
+    public property Col0: Vec3d read new Vec3d(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3d read new Vec3d(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3d read new Vec3d(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    public property Col[x: integer]: Vec3d read x=0?Col0:x=1?Col1:x=2?Col2:Arr&<Vec3d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
+    end;
+    
+    public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
+    public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
+    public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public static function operator*(m1: Mtr3x3d; m2: Mtr3x3d): Mtr3x3d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+    end;
+    
+    public static function operator*(m: Mtr3x3d; v: Vec3d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
+    public static function operator*(v: Vec3d; m: Mtr3x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+  end;
+  Mtr3d = Mtr3x3d;
+  
+  Mtr4x4d = record
+    public val00, val01, val02, val03: real;
+    public val10, val11, val12, val13: real;
+    public val20, val21, val22, val23: real;
+    public val30, val31, val32, val33: real;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+      self.val33 := val33;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          3: Result := self.val03;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          3: Result := self.val13;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          3: Result := self.val23;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        3:
+        case x of
+          0: Result := self.val30;
+          1: Result := self.val31;
+          2: Result := self.val32;
+          3: Result := self.val33;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          3: self.val03 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          3: self.val13 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          3: self.val23 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        3:
+        case x of
+          0: self.val30 := val;
+          1: self.val31 := val;
+          2: self.val32 := val;
+          3: self.val33 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr4x4d read new Mtr4x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec4d read new Vec4d(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4d read new Vec4d(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4d read new Vec4d(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    public property Row3: Vec4d read new Vec4d(self.val30, self.val31, self.val32, self.val33) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; self.val33 := value.val3; end;
+    public property Row[y: integer]: Vec4d read y=0?Row0:y=1?Row1:y=2?Row2:y=3?Row3:Arr&<Vec4d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      3: Row3 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..3');
+    end;
+    
+    public property Col0: Vec4d read new Vec4d(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4d read new Vec4d(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4d read new Vec4d(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    public property Col3: Vec4d read new Vec4d(self.val03, self.val13, self.val23, self.val33) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; self.val33 := value.val3; end;
+    public property Col[x: integer]: Vec4d read x=0?Col0:x=1?Col1:x=2?Col2:x=3?Col3:Arr&<Vec4d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      3: Col3 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
+    end;
+    
+    public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
+    public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
+    public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
+    public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public static function operator*(m1: Mtr4x4d; m2: Mtr4x4d): Mtr4x4d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
+    end;
+    
+    public static function operator*(m: Mtr4x4d; v: Vec4d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
+    public static function operator*(v: Vec4d; m: Mtr4x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, m.val30, m.val31, m.val32, m.val33);
+    public static function operator implicit(m: Mtr4x4d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, m.val30, m.val31, m.val32, m.val33);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, m.val30, m.val31, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+  end;
+  Mtr4d = Mtr4x4d;
+  
+  Mtr2x3d = record
+    public val00, val01, val02: real;
+    public val10, val11, val12: real;
+    
+    public constructor(val00, val01, val02, val10, val11, val12: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr2x3d read new Mtr2x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec3d read new Vec3d(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3d read new Vec3d(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row[y: integer]: Vec3d read y=0?Row0:y=1?Row1:Arr&<Vec3d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..1');
+    end;
+    
+    public property Col0: Vec2d read new Vec2d(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2d read new Vec2d(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2d read new Vec2d(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    public property Col[x: integer]: Vec2d read x=0?Col0:x=1?Col1:x=2?Col2:Arr&<Vec2d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
+    end;
+    
+    public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
+    public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
+    public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public static function operator*(m: Mtr2x3d; v: Vec3d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
+    public static function operator*(v: Vec2d; m: Mtr2x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+  end;
+  
+  Mtr3x2d = record
+    public val00, val01: real;
+    public val10, val11: real;
+    public val20, val21: real;
+    
+    public constructor(val00, val01, val10, val11, val20, val21: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr3x2d read new Mtr3x2d(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec2d read new Vec2d(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2d read new Vec2d(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2d read new Vec2d(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    public property Row[y: integer]: Vec2d read y=0?Row0:y=1?Row1:y=2?Row2:Arr&<Vec2d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..2');
+    end;
+    
+    public property Col0: Vec3d read new Vec3d(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3d read new Vec3d(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col[x: integer]: Vec3d read x=0?Col0:x=1?Col1:Arr&<Vec3d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
+    end;
+    
+    public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public static function operator*(m1: Mtr3x2d; m2: Mtr2x3d): Mtr3x3d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+    end;
+    
+    public static function operator*(m1: Mtr2x3d; m2: Mtr3x2d): Mtr2x2d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+    end;
+    
+    public static function operator*(m: Mtr3x2d; v: Vec2d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
+    public static function operator*(v: Vec3d; m: Mtr3x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+  end;
+  
+  Mtr2x4d = record
+    public val00, val01, val02, val03: real;
+    public val10, val11, val12, val13: real;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          3: Result := self.val03;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          3: Result := self.val13;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          3: self.val03 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          3: self.val13 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..1');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr2x4d read new Mtr2x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec4d read new Vec4d(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4d read new Vec4d(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row[y: integer]: Vec4d read y=0?Row0:y=1?Row1:Arr&<Vec4d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..1');
+    end;
+    
+    public property Col0: Vec2d read new Vec2d(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2d read new Vec2d(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2d read new Vec2d(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    public property Col3: Vec2d read new Vec2d(self.val03, self.val13) write begin self.val03 := value.val0; self.val13 := value.val1; end;
+    public property Col[x: integer]: Vec2d read x=0?Col0:x=1?Col1:x=2?Col2:x=3?Col3:Arr&<Vec2d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      3: Col3 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
+    end;
+    
+    public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
+    public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
+    public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
+    public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public static function operator*(m: Mtr2x4d; v: Vec4d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
+    public static function operator*(v: Vec2d; m: Mtr2x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1, m.val03*v.val0+m.val13*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x2d = record
+    public val00, val01: real;
+    public val10, val11: real;
+    public val20, val21: real;
+    public val30, val31: real;
+    
+    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val30 := val30;
+      self.val31 := val31;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        3:
+        case x of
+          0: Result := self.val30;
+          1: Result := self.val31;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        3:
+        case x of
+          0: self.val30 := val;
+          1: self.val31 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..1');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr4x2d read new Mtr4x2d(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec2d read new Vec2d(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2d read new Vec2d(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2d read new Vec2d(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    public property Row3: Vec2d read new Vec2d(self.val30, self.val31) write begin self.val30 := value.val0; self.val31 := value.val1; end;
+    public property Row[y: integer]: Vec2d read y=0?Row0:y=1?Row1:y=2?Row2:y=3?Row3:Arr&<Vec2d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      3: Row3 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..3');
+    end;
+    
+    public property Col0: Vec4d read new Vec4d(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4d read new Vec4d(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col[x: integer]: Vec4d read x=0?Col0:x=1?Col1:Arr&<Vec4d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
+    end;
+    
+    public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public static function operator*(m1: Mtr4x2d; m2: Mtr2x4d): Mtr4x4d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
+    end;
+    
+    public static function operator*(m1: Mtr2x4d; m2: Mtr4x2d): Mtr2x2d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+    end;
+    
+    public static function operator*(m: Mtr4x2d; v: Vec2d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
+    public static function operator*(v: Vec4d; m: Mtr4x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, m.val30, m.val31, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, m.val30, m.val31, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0, m.val30, m.val31, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr3x4d = record
+    public val00, val01, val02, val03: real;
+    public val10, val11, val12, val13: real;
+    public val20, val21, val22, val23: real;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          3: Result := self.val03;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          3: Result := self.val13;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          3: Result := self.val23;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          3: self.val03 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          3: self.val13 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          3: self.val23 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..3');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..2');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr3x4d read new Mtr3x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec4d read new Vec4d(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4d read new Vec4d(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4d read new Vec4d(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    public property Row[y: integer]: Vec4d read y=0?Row0:y=1?Row1:y=2?Row2:Arr&<Vec4d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..2');
+    end;
+    
+    public property Col0: Vec3d read new Vec3d(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3d read new Vec3d(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3d read new Vec3d(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    public property Col3: Vec3d read new Vec3d(self.val03, self.val13, self.val23) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; end;
+    public property Col[x: integer]: Vec3d read x=0?Col0:x=1?Col1:x=2?Col2:x=3?Col3:Arr&<Vec3d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      3: Col3 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
+    end;
+    
+    public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
+    public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
+    public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
+    public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public static function operator*(m1: Mtr3x4d; m2: Mtr4x2d): Mtr3x2d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+    end;
+    
+    public static function operator*(m1: Mtr2x3d; m2: Mtr3x4d): Mtr2x4d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+    end;
+    
+    public static function operator*(m: Mtr3x4d; v: Vec4d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
+    public static function operator*(v: Vec3d; m: Mtr3x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x3d = record
+    public val00, val01, val02: real;
+    public val10, val11, val12: real;
+    public val20, val21, val22: real;
+    public val30, val31, val32: real;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: real);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+    end;
+    
+    private function GetValAt(y,x: integer): real;
+    begin
+      case y of
+        0:
+        case x of
+          0: Result := self.val00;
+          1: Result := self.val01;
+          2: Result := self.val02;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: Result := self.val10;
+          1: Result := self.val11;
+          2: Result := self.val12;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: Result := self.val20;
+          1: Result := self.val21;
+          2: Result := self.val22;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        3:
+        case x of
+          0: Result := self.val30;
+          1: Result := self.val31;
+          2: Result := self.val32;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    private procedure SetValAt(y,x: integer; val: real);
+    begin
+      case y of
+        0:
+        case x of
+          0: self.val00 := val;
+          1: self.val01 := val;
+          2: self.val02 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        1:
+        case x of
+          0: self.val10 := val;
+          1: self.val11 := val;
+          2: self.val12 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        2:
+        case x of
+          0: self.val20 := val;
+          1: self.val21 := val;
+          2: self.val22 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        3:
+        case x of
+          0: self.val30 := val;
+          1: self.val31 := val;
+          2: self.val32 := val;
+          else raise new IndexOutOfRangeException('Индекс "X" должен иметь значение 0..2');
+        end;
+        else raise new IndexOutOfRangeException('Индекс "Y" должен иметь значение 0..3');
+      end;
+    end;
+    public property val[y,x: integer]: real read GetValAt write SetValAt; default;
+    
+    public static property Identity: Mtr4x3d read new Mtr4x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec3d read new Vec3d(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3d read new Vec3d(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3d read new Vec3d(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    public property Row3: Vec3d read new Vec3d(self.val30, self.val31, self.val32) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; end;
+    public property Row[y: integer]: Vec3d read y=0?Row0:y=1?Row1:y=2?Row2:y=3?Row3:Arr&<Vec3d>[y] write
+    case y of
+      0: Row0 := value;
+      1: Row1 := value;
+      2: Row2 := value;
+      3: Row3 := value;
+      else raise new IndexOutOfRangeException('Номер строчки должен иметь значение 0..3');
+    end;
+    
+    public property Col0: Vec4d read new Vec4d(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4d read new Vec4d(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4d read new Vec4d(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    public property Col[x: integer]: Vec4d read x=0?Col0:x=1?Col1:x=2?Col2:Arr&<Vec4d>[x] write
+    case x of
+      0: Col0 := value;
+      1: Col1 := value;
+      2: Col2 := value;
+      else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
+    end;
+    
+    public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
+    public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
+    public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
+    public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public static function operator*(m1: Mtr4x3d; m2: Mtr3x2d): Mtr4x2d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+    end;
+    
+    public static function operator*(m1: Mtr4x3d; m2: Mtr3x4d): Mtr4x4d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
+    end;
+    
+    public static function operator*(m1: Mtr2x4d; m2: Mtr4x3d): Mtr2x3d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+    end;
+    
+    public static function operator*(m1: Mtr3x4d; m2: Mtr4x3d): Mtr3x3d;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+    end;
+    
+    public static function operator*(m: Mtr4x3d; v: Vec3d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
+    public static function operator*(v: Vec4d; m: Mtr4x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, m.val30, m.val31, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 0.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 0.0, m.val30, m.val31, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+  end;
+  
+  {$endregion Mtr}
+  
+  {$region MtrTranspose}
+  
+  function Transpose(self: Mtr2x3f); extensionmethod :=
+  new Mtr3x2f(self.val00, self.val10, self.val01, self.val11, self.val02, self.val12);
+  function Transpose(self: Mtr3x2f); extensionmethod :=
+  new Mtr2x3f(self.val00, self.val10, self.val20, self.val01, self.val11, self.val21);
+  
+  function Transpose(self: Mtr2x4f); extensionmethod :=
+  new Mtr4x2f(self.val00, self.val10, self.val01, self.val11, self.val02, self.val12, self.val03, self.val13);
+  function Transpose(self: Mtr4x2f); extensionmethod :=
+  new Mtr2x4f(self.val00, self.val10, self.val20, self.val30, self.val01, self.val11, self.val21, self.val31);
+  
+  function Transpose(self: Mtr3x4f); extensionmethod :=
+  new Mtr4x3f(self.val00, self.val10, self.val20, self.val01, self.val11, self.val21, self.val02, self.val12, self.val22, self.val03, self.val13, self.val23);
+  function Transpose(self: Mtr4x3f); extensionmethod :=
+  new Mtr3x4f(self.val00, self.val10, self.val20, self.val30, self.val01, self.val11, self.val21, self.val31, self.val02, self.val12, self.val22, self.val32);
+  
+  function Transpose(self: Mtr2x3d); extensionmethod :=
+  new Mtr3x2d(self.val00, self.val10, self.val01, self.val11, self.val02, self.val12);
+  function Transpose(self: Mtr3x2d); extensionmethod :=
+  new Mtr2x3d(self.val00, self.val10, self.val20, self.val01, self.val11, self.val21);
+  
+  function Transpose(self: Mtr2x4d); extensionmethod :=
+  new Mtr4x2d(self.val00, self.val10, self.val01, self.val11, self.val02, self.val12, self.val03, self.val13);
+  function Transpose(self: Mtr4x2d); extensionmethod :=
+  new Mtr2x4d(self.val00, self.val10, self.val20, self.val30, self.val01, self.val11, self.val21, self.val31);
+  
+  function Transpose(self: Mtr3x4d); extensionmethod :=
+  new Mtr4x3d(self.val00, self.val10, self.val20, self.val01, self.val11, self.val21, self.val02, self.val12, self.val22, self.val03, self.val13, self.val23);
+  function Transpose(self: Mtr4x3d); extensionmethod :=
+  new Mtr3x4d(self.val00, self.val10, self.val20, self.val30, self.val01, self.val11, self.val21, self.val31, self.val02, self.val12, self.val22, self.val32);
+  
+  {$endregion MtrTranspose}
+  
 {$endregion Записи}
 
 type

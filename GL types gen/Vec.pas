@@ -59,13 +59,11 @@ begin
   
   
   
-  res += $'    '+#10;
-  
   res +=      $'    private function GetValAt(i: integer): {t[2]};'+#10;
   res +=      $'    begin'+#10;
   res +=      $'      case i of'+#10;
   for var i := 0 to t[0]-1 do
-    res +=    $'        {i}: Result := self.val'+#10;
+    res +=    $'        {i}: Result := self.val{i};'+#10;
   res +=      $'        else raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
   res +=      $'      end;'+#10;
   res +=      $'    end;'+#10;
@@ -74,12 +72,13 @@ begin
   res +=      $'    begin'+#10;
   res +=      $'      case i of'+#10;
   for var i := 0 to t[0]-1 do
-    res +=    $'        {i}: val{i} := val'+#10;
+    res +=    $'        {i}: self.val{i} := val;'+#10;
   res +=      $'        else raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
   res +=      $'      end;'+#10;
   res +=      $'    end;'+#10;
   
   res += $'    public property val[i: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
+  res += $'    '+#10;
   
   
   
