@@ -4853,26 +4853,36 @@ type
     
     {$endregion 7.6 - Uniform Variables}
     
+    {$region 7.8 - Shader Buffer Variables and Shader Storage Blocks}
+    
+    static procedure ShaderStorageBlockBinding(&program: ProgramName; storageBlockIndex: UInt32; storageBlockBinding: UInt32);
+    external 'opengl32.dll' name 'glShaderStorageBlockBinding';
+    
+    {$endregion 7.8 - Shader Buffer Variables and Shader Storage Blocks}
+    
+    {$region 7.10 - Subroutine Uniform Variables}
+    
+    
+    
+    {$endregion 7.10 - Subroutine Uniform Variables}
+    
     
     
     {$region unsorted}
     
-    static procedure ShaderStorageBlockBinding(&program: UInt32; storageBlockIndex: UInt32; storageBlockBinding: UInt32);
-    external 'opengl32.dll' name 'glShaderStorageBlockBinding';
-    
-    static function GetSubroutineIndex(&program: UInt32; shadertype: UInt32; name: ^SByte): UInt32;
+    static function GetSubroutineIndex(&program: ProgramName; shadertype: UInt32; name: ^SByte): UInt32;
     external 'opengl32.dll' name 'glGetSubroutineIndex';
     
-    static procedure GetActiveSubroutineName(&program: UInt32; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
+    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
     
-    static function GetSubroutineUniformLocation(&program: UInt32; shadertype: UInt32; name: ^SByte): Int32;
+    static function GetSubroutineUniformLocation(&program: ProgramName; shadertype: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
     
-    static procedure GetActiveSubroutineUniformName(&program: UInt32; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: UInt32; index: UInt32; bufsize: Int32; length: ^Int32; name: ^SByte);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
     
-    static procedure GetActiveSubroutineUniformiv(&program: UInt32; shadertype: UInt32; index: UInt32; pname: UInt32; values: ^Int32);
+    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: UInt32; index: UInt32; pname: UInt32; values: ^Int32);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
     
     static procedure UniformSubroutinesuiv(shadertype: UInt32; count: Int32; indices: ^UInt32);
@@ -4887,22 +4897,22 @@ type
     static procedure GetShaderiv(shader: UInt32; pname: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetShaderiv';
     
-    static procedure GetProgramiv(&program: UInt32; pname: UInt32; &params: ^Int32);
+    static procedure GetProgramiv(&program: ProgramName; pname: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetProgramiv';
     
-    static procedure GetProgramPipelineiv(pipeline: UInt32; pname: UInt32; &params: ^Int32);
+    static procedure GetProgramPipelineiv(pipeline: ProgramPipelineName; pname: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetProgramPipelineiv';
     
-    static procedure GetAttachedShaders(&program: UInt32; maxCount: Int32; count: ^Int32; shaders: ^UInt32);
+    static procedure GetAttachedShaders(&program: ProgramName; maxCount: Int32; count: ^Int32; shaders: ^UInt32);
     external 'opengl32.dll' name 'glGetAttachedShaders';
     
     static procedure GetShaderInfoLog(shader: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
     external 'opengl32.dll' name 'glGetShaderInfoLog';
     
-    static procedure GetProgramInfoLog(&program: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
+    static procedure GetProgramInfoLog(&program: ProgramName; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
     external 'opengl32.dll' name 'glGetProgramInfoLog';
     
-    static procedure GetProgramPipelineInfoLog(pipeline: UInt32; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
+    static procedure GetProgramPipelineInfoLog(pipeline: ProgramPipelineName; bufSize: Int32; length: ^Int32; infoLog: ^SByte);
     external 'opengl32.dll' name 'glGetProgramPipelineInfoLog';
     
     static procedure GetShaderSource(shader: UInt32; bufSize: Int32; length: ^Int32; source: ^SByte);
@@ -4911,34 +4921,34 @@ type
     static procedure GetShaderPrecisionFormat(shadertype: UInt32; precisiontype: UInt32; range: ^Int32; precision: ^Int32);
     external 'opengl32.dll' name 'glGetShaderPrecisionFormat';
     
-    static procedure GetUniformfv(&program: UInt32; location: Int32; &params: ^single);
+    static procedure GetUniformfv(&program: ProgramName; location: Int32; &params: ^single);
     external 'opengl32.dll' name 'glGetUniformfv';
     
-    static procedure GetUniformdv(&program: UInt32; location: Int32; &params: ^real);
+    static procedure GetUniformdv(&program: ProgramName; location: Int32; &params: ^real);
     external 'opengl32.dll' name 'glGetUniformdv';
     
-    static procedure GetUniformiv(&program: UInt32; location: Int32; &params: ^Int32);
+    static procedure GetUniformiv(&program: ProgramName; location: Int32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetUniformiv';
     
-    static procedure GetUniformuiv(&program: UInt32; location: Int32; &params: ^UInt32);
+    static procedure GetUniformuiv(&program: ProgramName; location: Int32; &params: ^UInt32);
     external 'opengl32.dll' name 'glGetUniformuiv';
     
-    static procedure GetnUniformfv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^single);
+    static procedure GetnUniformfv(&program: ProgramName; location: Int32; bufSize: Int32; &params: ^single);
     external 'opengl32.dll' name 'glGetnUniformfv';
     
-    static procedure GetnUniformdv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^real);
+    static procedure GetnUniformdv(&program: ProgramName; location: Int32; bufSize: Int32; &params: ^real);
     external 'opengl32.dll' name 'glGetnUniformdv';
     
-    static procedure GetnUniformiv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^Int32);
+    static procedure GetnUniformiv(&program: ProgramName; location: Int32; bufSize: Int32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetnUniformiv';
     
-    static procedure GetnUniformuiv(&program: UInt32; location: Int32; bufSize: Int32; &params: ^UInt32);
+    static procedure GetnUniformuiv(&program: ProgramName; location: Int32; bufSize: Int32; &params: ^UInt32);
     external 'opengl32.dll' name 'glGetnUniformuiv';
     
     static procedure GetUniformSubroutineuiv(shadertype: UInt32; location: Int32; &params: ^UInt32);
     external 'opengl32.dll' name 'glGetUniformSubroutineuiv';
     
-    static procedure GetProgramStageiv(&program: UInt32; shadertype: UInt32; pname: UInt32; values: ^Int32);
+    static procedure GetProgramStageiv(&program: ProgramName; shadertype: UInt32; pname: UInt32; values: ^Int32);
     external 'opengl32.dll' name 'glGetProgramStageiv';
     
     {$endregion unsorted}

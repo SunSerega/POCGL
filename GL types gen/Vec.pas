@@ -18,7 +18,11 @@ begin
   end;
 end;
 
-type t_descr = (integer, string, string);
+type t_descr = (
+  integer,  // sz
+  string,   // gl_t
+  string    // pas_t
+);
 
 function GetName(self: t_descr); extensionmethod :=
 $'Vec{self[0]}{self[1]}';
@@ -55,12 +59,40 @@ begin
   
   
   
+  res += $'    '+#10;
+  
+  res +=      $'    private function GetValAt(i: integer): {t[2]};'+#10;
+  res +=      $'    begin'+#10;
+  res +=      $'      case i of'+#10;
+  for var i := 0 to t[0]-1 do
+    res +=    $'        {i}: Result := self.val'+#10;
+  res +=      $'        else raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
+  res +=      $'      end;'+#10;
+  res +=      $'    end;'+#10;
+  
+  res +=      $'    private procedure SetValAt(i: integer; val: {t[2]});'+#10;
+  res +=      $'    begin'+#10;
+  res +=      $'      case i of'+#10;
+  for var i := 0 to t[0]-1 do
+    res +=    $'        {i}: val{i} := val'+#10;
+  res +=      $'        else raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
+  res +=      $'      end;'+#10;
+  res +=      $'    end;'+#10;
+  
+  res += $'    public property val[i: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
+  
+  
+  
   if not t[1].Contains('u') then
   begin
     res += $'    public static function operator-(v: {t.GetName}): {t.GetName} := new {t.GetName}(';
     res += Range(0,t[0]-1).Select(i->$'-v.val{i}').JoinIntoString(', ');
     res += $');'+#10;
   end;
+  
+  res += $'    public static function operator*(v: {t.GetName}; k: {t[2]}): {t.GetName} := new {t.GetName}(';
+  res += Range(0,t[0]-1).Select(i->$'v.val{i}*k').JoinIntoString(', ');
+  res += $');'+#10;
   
   res += $'    public static function operator+(v1, v2: {t.GetName}): {t.GetName} := new {t.GetName}(';
   res += Range(0,t[0]-1).Select(i->$'v1.val{i}+v2.val{i}').JoinIntoString(', ');
@@ -151,7 +183,7 @@ begin
     res += '  '#10;
     res += '  {$endregion Vec4}'#10;
     res += '  '#10;
-    res += '  {$endregion Vec}'#10;
+    res += '  {$endregion Vec}'#10'  ';
     
     System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
     System.Console.Beep;
