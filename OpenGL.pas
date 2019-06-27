@@ -4973,14 +4973,6 @@ type
     public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function operator*(m1: Mtr2x2f; m2: Mtr2x2f): Mtr2x2f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
-    end;
-    
     public static function operator*(m: Mtr2x2f; v: Vec2f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
     public static function operator*(v: Vec2f; m: Mtr2x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
     
@@ -5089,19 +5081,6 @@ type
     public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
     public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
-    
-    public static function operator*(m1: Mtr3x3f; m2: Mtr3x3f): Mtr3x3f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
-    end;
     
     public static function operator*(m: Mtr3x3f; v: Vec3f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
     public static function operator*(v: Vec3f; m: Mtr3x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
@@ -5249,26 +5228,6 @@ type
     public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
     public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
-    
-    public static function operator*(m1: Mtr4x4f; m2: Mtr4x4f): Mtr4x4f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
-      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
-      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
-      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
-    end;
     
     public static function operator*(m: Mtr4x4f; v: Vec4f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
     public static function operator*(v: Vec4f; m: Mtr4x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
@@ -5469,27 +5428,6 @@ type
     public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
-    
-    public static function operator*(m1: Mtr3x2f; m2: Mtr2x3f): Mtr3x3f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
-    end;
-    
-    public static function operator*(m1: Mtr2x3f; m2: Mtr3x2f): Mtr2x2f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-    end;
     
     public static function operator*(m: Mtr3x2f; v: Vec2f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
     public static function operator*(v: Vec3f; m: Mtr3x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
@@ -5728,34 +5666,6 @@ type
     public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function operator*(m1: Mtr4x2f; m2: Mtr2x4f): Mtr4x4f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
-      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
-      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
-      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
-    end;
-    
-    public static function operator*(m1: Mtr2x4f; m2: Mtr4x2f): Mtr2x2f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-    end;
-    
     public static function operator*(m: Mtr4x2f; v: Vec2f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
     public static function operator*(v: Vec4f; m: Mtr4x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
     
@@ -5893,28 +5803,6 @@ type
     public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
     public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
-    
-    public static function operator*(m1: Mtr3x4f; m2: Mtr4x2f): Mtr3x2f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
-    end;
-    
-    public static function operator*(m1: Mtr2x3f; m2: Mtr3x4f): Mtr2x4f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
-    end;
     
     public static function operator*(m: Mtr3x4f; v: Vec4f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
     public static function operator*(v: Vec3f; m: Mtr3x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
@@ -6065,61 +5953,6 @@ type
     public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function operator*(m1: Mtr4x3f; m2: Mtr3x2f): Mtr4x2f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
-    end;
-    
-    public static function operator*(m1: Mtr4x3f; m2: Mtr3x4f): Mtr4x4f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
-      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
-      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
-      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
-    end;
-    
-    public static function operator*(m1: Mtr2x4f; m2: Mtr4x3f): Mtr2x3f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
-    end;
-    
-    public static function operator*(m1: Mtr3x4f; m2: Mtr4x3f): Mtr3x3f;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
-    end;
-    
     public static function operator*(m: Mtr4x3f; v: Vec3f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
     public static function operator*(v: Vec4f; m: Mtr4x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);
     
@@ -6222,14 +6055,6 @@ type
     public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
-    
-    public static function operator*(m1: Mtr2x2d; m2: Mtr2x2d): Mtr2x2d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
-    end;
     
     public static function operator*(m: Mtr2x2d; v: Vec2d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
     public static function operator*(v: Vec2d; m: Mtr2x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
@@ -6366,19 +6191,6 @@ type
     public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
-    
-    public static function operator*(m1: Mtr3x3d; m2: Mtr3x3d): Mtr3x3d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
-    end;
     
     public static function operator*(m: Mtr3x3d; v: Vec3d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
     public static function operator*(v: Vec3d; m: Mtr3x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
@@ -6553,26 +6365,6 @@ type
     public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
     public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
     public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
-    
-    public static function operator*(m1: Mtr4x4d; m2: Mtr4x4d): Mtr4x4d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
-      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
-      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
-      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
-    end;
     
     public static function operator*(m: Mtr4x4d; v: Vec4d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
     public static function operator*(v: Vec4d; m: Mtr4x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
@@ -6827,27 +6619,6 @@ type
     public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
-    
-    public static function operator*(m1: Mtr3x2d; m2: Mtr2x3d): Mtr3x3d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
-    end;
-    
-    public static function operator*(m1: Mtr2x3d; m2: Mtr3x2d): Mtr2x2d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-    end;
     
     public static function operator*(m: Mtr3x2d; v: Vec2d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
     public static function operator*(v: Vec3d; m: Mtr3x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
@@ -7140,34 +6911,6 @@ type
     public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function operator*(m1: Mtr4x2d; m2: Mtr2x4d): Mtr4x4d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
-      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
-      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
-      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
-    end;
-    
-    public static function operator*(m1: Mtr2x4d; m2: Mtr4x2d): Mtr2x2d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-    end;
-    
     public static function operator*(m: Mtr4x2d; v: Vec2d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
     public static function operator*(v: Vec4d; m: Mtr4x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
     
@@ -7332,28 +7075,6 @@ type
     public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
     public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
     public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
-    
-    public static function operator*(m1: Mtr3x4d; m2: Mtr4x2d): Mtr3x2d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
-    end;
-    
-    public static function operator*(m1: Mtr2x3d; m2: Mtr3x4d): Mtr2x4d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
-    end;
     
     public static function operator*(m: Mtr3x4d; v: Vec4d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
     public static function operator*(v: Vec3d; m: Mtr3x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
@@ -7531,61 +7252,6 @@ type
     public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
-    public static function operator*(m1: Mtr4x3d; m2: Mtr3x2d): Mtr4x2d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
-    end;
-    
-    public static function operator*(m1: Mtr4x3d; m2: Mtr3x4d): Mtr4x4d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
-      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
-      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
-      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
-      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
-      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
-      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
-      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
-    end;
-    
-    public static function operator*(m1: Mtr2x4d; m2: Mtr4x3d): Mtr2x3d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
-    end;
-    
-    public static function operator*(m1: Mtr3x4d; m2: Mtr4x3d): Mtr3x3d;
-    begin
-      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
-      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
-      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
-      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
-      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
-      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
-      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
-      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
-      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
-    end;
-    
     public static function operator*(m: Mtr4x3d; v: Vec3d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
     public static function operator*(v: Vec4d; m: Mtr4x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);
     
@@ -7645,6 +7311,1410 @@ type
   {$endregion Mtr}
   
   {$region MtrTranspose}
+    
+    function operator*(m1: Mtr2x2f; m2: Mtr2x2f): Mtr2x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr2x2f; m2: Mtr2x3f): Mtr2x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr2x2f; m2: Mtr2x4f): Mtr2x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr2x2f; m2: Mtr2x2d): Mtr2x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr2x2f; m2: Mtr2x3d): Mtr2x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr2x2f; m2: Mtr2x4d): Mtr2x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr3x3f; m2: Mtr3x3f): Mtr3x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr3x3f; m2: Mtr3x2f): Mtr3x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr3x3f; m2: Mtr3x4f): Mtr3x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr3x3f; m2: Mtr3x3d): Mtr3x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr3x3f; m2: Mtr3x2d): Mtr3x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr3x3f; m2: Mtr3x4d): Mtr3x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr4x4f; m2: Mtr4x4f): Mtr4x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr4x4f; m2: Mtr4x2f): Mtr4x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr4x4f; m2: Mtr4x3f): Mtr4x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr4x4f; m2: Mtr4x4d): Mtr4x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr4x4f; m2: Mtr4x2d): Mtr4x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr4x4f; m2: Mtr4x3d): Mtr4x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr2x3f; m2: Mtr3x3f): Mtr2x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr2x3f; m2: Mtr3x2f): Mtr2x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr2x3f; m2: Mtr3x4f): Mtr2x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr2x3f; m2: Mtr3x3d): Mtr2x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr2x3f; m2: Mtr3x2d): Mtr2x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr2x3f; m2: Mtr3x4d): Mtr2x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr3x2f; m2: Mtr2x2f): Mtr3x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr3x2f; m2: Mtr2x3f): Mtr3x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr3x2f; m2: Mtr2x4f): Mtr3x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr3x2f; m2: Mtr2x2d): Mtr3x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr3x2f; m2: Mtr2x3d): Mtr3x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr3x2f; m2: Mtr2x4d): Mtr3x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr2x4f; m2: Mtr4x4f): Mtr2x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr2x4f; m2: Mtr4x2f): Mtr2x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr2x4f; m2: Mtr4x3f): Mtr2x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr2x4f; m2: Mtr4x4d): Mtr2x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr2x4f; m2: Mtr4x2d): Mtr2x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr2x4f; m2: Mtr4x3d): Mtr2x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr4x2f; m2: Mtr2x2f): Mtr4x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr4x2f; m2: Mtr2x3f): Mtr4x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr4x2f; m2: Mtr2x4f): Mtr4x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr4x2f; m2: Mtr2x2d): Mtr4x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr4x2f; m2: Mtr2x3d): Mtr4x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr4x2f; m2: Mtr2x4d): Mtr4x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr3x4f; m2: Mtr4x4f): Mtr3x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr3x4f; m2: Mtr4x2f): Mtr3x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr3x4f; m2: Mtr4x3f): Mtr3x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr3x4f; m2: Mtr4x4d): Mtr3x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr3x4f; m2: Mtr4x2d): Mtr3x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr3x4f; m2: Mtr4x3d): Mtr3x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr4x3f; m2: Mtr3x3f): Mtr4x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr4x3f; m2: Mtr3x2f): Mtr4x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr4x3f; m2: Mtr3x4f): Mtr4x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr4x3f; m2: Mtr3x3d): Mtr4x3f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr4x3f; m2: Mtr3x2d): Mtr4x2f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr4x3f; m2: Mtr3x4d): Mtr4x4f; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr2x2d; m2: Mtr2x2f): Mtr2x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr2x2d; m2: Mtr2x3f): Mtr2x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr2x2d; m2: Mtr2x4f): Mtr2x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr2x2d; m2: Mtr2x2d): Mtr2x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr2x2d; m2: Mtr2x3d): Mtr2x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr2x2d; m2: Mtr2x4d): Mtr2x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr3x3d; m2: Mtr3x3f): Mtr3x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr3x3d; m2: Mtr3x2f): Mtr3x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr3x3d; m2: Mtr3x4f): Mtr3x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr3x3d; m2: Mtr3x3d): Mtr3x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr3x3d; m2: Mtr3x2d): Mtr3x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr3x3d; m2: Mtr3x4d): Mtr3x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr4x4d; m2: Mtr4x4f): Mtr4x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr4x4d; m2: Mtr4x2f): Mtr4x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr4x4d; m2: Mtr4x3f): Mtr4x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr4x4d; m2: Mtr4x4d): Mtr4x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23 + m1.val33*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr4x4d; m2: Mtr4x2d): Mtr4x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr4x4d; m2: Mtr4x3d): Mtr4x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20 + m1.val33*m2.val30;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21 + m1.val33*m2.val31;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22 + m1.val33*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr2x3d; m2: Mtr3x3f): Mtr2x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr2x3d; m2: Mtr3x2f): Mtr2x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr2x3d; m2: Mtr3x4f): Mtr2x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr2x3d; m2: Mtr3x3d): Mtr2x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr2x3d; m2: Mtr3x2d): Mtr2x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr2x3d; m2: Mtr3x4d): Mtr2x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr3x2d; m2: Mtr2x2f): Mtr3x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr3x2d; m2: Mtr2x3f): Mtr3x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr3x2d; m2: Mtr2x4f): Mtr3x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr3x2d; m2: Mtr2x2d): Mtr3x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr3x2d; m2: Mtr2x3d): Mtr3x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr3x2d; m2: Mtr2x4d): Mtr3x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr2x4d; m2: Mtr4x4f): Mtr2x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr2x4d; m2: Mtr4x2f): Mtr2x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr2x4d; m2: Mtr4x3f): Mtr2x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr2x4d; m2: Mtr4x4d): Mtr2x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr2x4d; m2: Mtr4x2d): Mtr2x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr2x4d; m2: Mtr4x3d): Mtr2x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr4x2d; m2: Mtr2x2f): Mtr4x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr4x2d; m2: Mtr2x3f): Mtr4x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr4x2d; m2: Mtr2x4f): Mtr4x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr4x2d; m2: Mtr2x2d): Mtr4x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+    end;
+    
+    function operator*(m1: Mtr4x2d; m2: Mtr2x3d): Mtr4x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+    end;
+    
+    function operator*(m1: Mtr4x2d; m2: Mtr2x4d): Mtr4x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13;
+    end;
+    
+    function operator*(m1: Mtr3x4d; m2: Mtr4x4f): Mtr3x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr3x4d; m2: Mtr4x2f): Mtr3x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr3x4d; m2: Mtr4x3f): Mtr3x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr3x4d; m2: Mtr4x4d): Mtr3x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23 + m1.val03*m2.val33;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23 + m1.val13*m2.val33;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23 + m1.val23*m2.val33;
+    end;
+    
+    function operator*(m1: Mtr3x4d; m2: Mtr4x2d): Mtr3x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+    end;
+    
+    function operator*(m1: Mtr3x4d; m2: Mtr4x3d): Mtr3x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20 + m1.val03*m2.val30;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21 + m1.val03*m2.val31;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22 + m1.val03*m2.val32;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20 + m1.val13*m2.val30;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21 + m1.val13*m2.val31;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22 + m1.val13*m2.val32;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20 + m1.val23*m2.val30;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21 + m1.val23*m2.val31;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22 + m1.val23*m2.val32;
+    end;
+    
+    function operator*(m1: Mtr4x3d; m2: Mtr3x3f): Mtr4x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr4x3d; m2: Mtr3x2f): Mtr4x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr4x3d; m2: Mtr3x4f): Mtr4x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
+    end;
+    
+    function operator*(m1: Mtr4x3d; m2: Mtr3x3d): Mtr4x3d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+    end;
+    
+    function operator*(m1: Mtr4x3d; m2: Mtr3x2d): Mtr4x2d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+    end;
+    
+    function operator*(m1: Mtr4x3d; m2: Mtr3x4d): Mtr4x4d; extensionmethod;
+    begin
+      Result.val00 := m1.val00*m2.val00 + m1.val01*m2.val10 + m1.val02*m2.val20;
+      Result.val01 := m1.val00*m2.val01 + m1.val01*m2.val11 + m1.val02*m2.val21;
+      Result.val02 := m1.val00*m2.val02 + m1.val01*m2.val12 + m1.val02*m2.val22;
+      Result.val03 := m1.val00*m2.val03 + m1.val01*m2.val13 + m1.val02*m2.val23;
+      Result.val10 := m1.val10*m2.val00 + m1.val11*m2.val10 + m1.val12*m2.val20;
+      Result.val11 := m1.val10*m2.val01 + m1.val11*m2.val11 + m1.val12*m2.val21;
+      Result.val12 := m1.val10*m2.val02 + m1.val11*m2.val12 + m1.val12*m2.val22;
+      Result.val13 := m1.val10*m2.val03 + m1.val11*m2.val13 + m1.val12*m2.val23;
+      Result.val20 := m1.val20*m2.val00 + m1.val21*m2.val10 + m1.val22*m2.val20;
+      Result.val21 := m1.val20*m2.val01 + m1.val21*m2.val11 + m1.val22*m2.val21;
+      Result.val22 := m1.val20*m2.val02 + m1.val21*m2.val12 + m1.val22*m2.val22;
+      Result.val23 := m1.val20*m2.val03 + m1.val21*m2.val13 + m1.val22*m2.val23;
+      Result.val30 := m1.val30*m2.val00 + m1.val31*m2.val10 + m1.val32*m2.val20;
+      Result.val31 := m1.val30*m2.val01 + m1.val31*m2.val11 + m1.val32*m2.val21;
+      Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
+      Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
+    end;
   
   function Transpose(self: Mtr2x2f); extensionmethod :=
   new Mtr2x2f(self.val00, self.val10, self.val01, self.val11);

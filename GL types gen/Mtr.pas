@@ -183,53 +183,6 @@ begin
   
   
   
-  var mtr_mlt_tps := new List<(t_descr,t_descr)>;
-  
-  if t[0][0]=t[0][1] then mtr_mlt_tps += (t,t);
-  
-  for var i := 2 to 4 do
-  begin
-    var t2 := ((t[0][1],i), t[1], t[2]);
-    if prev_tps.Contains(t2) and prev_tps.Contains((t,t2).GetMltResT) then mtr_mlt_tps += (t,t2);
-  end;
-  
-  for var i := 2 to 4 do
-  begin
-    var t2 := ((i,t[0][0]), t[1], t[2]);
-    if prev_tps.Contains(t2) and prev_tps.Contains((t2,t).GetMltResT) then mtr_mlt_tps += (t2,t);
-  end;
-  
-  //ToDo #2021
-//  for var i := 2 to 4 do
-//  begin
-//    var t1 := ((t[0][0], i), t[1], t[2]);
-//    var t2 := ((i, t[0][1]), t[1], t[2]);
-//    if prev_tps.Contains(t1) and prev_tps.Contains(t2) then mtr_mlt_tps += (t1,t2);
-//  end;
-  
-  foreach var tt in mtr_mlt_tps do
-  begin
-    var rt := tt.GetMltResT;
-    res += $'    '+#10;
-    
-    res +=      $'    public static function operator*(m1: {tt[0].GetName}; m2: {tt[1].GetName}): {rt.GetName};'+#10;
-    res +=      $'    begin'+#10;
-    for var y := 0 to rt[0][0]-1 do
-      for var x := 0 to rt[0][1]-1 do
-      begin
-        res +=  $'      Result.val{y}{x} := ';
-        res +=
-          Range(0, tt[0][0][1]-1)
-          .Select(i-> $'m1.val{y}{i}*m2.val{i}{x}' )
-          .JoinIntoString(' + ');
-        res += ';'#10;
-      end;
-    res +=      $'    end;'+#10;
-    
-  end;
-  
-  
-  
   res += $'    '+#10;
   
   res += $'    public static function operator*(m: {t.GetName}; v: {t.GetRowTName}): {t.GetColTName} := new {t.GetColTName}(';
@@ -288,6 +241,28 @@ begin
   
 end;
 
+procedure AddMtrMlt(res: StringBuilder; t1,t2: t_descr);
+begin
+  
+  var rt := (t1,t2).GetMltResT;
+  res += $'    '+#10;
+  
+  res +=      $'    function operator*(m1: {t1.GetName}; m2: {t2.GetName}): {rt.GetName}; extensionmethod;'+#10;
+  res +=      $'    begin'+#10;
+  for var y := 0 to rt[0][0]-1 do
+    for var x := 0 to rt[0][1]-1 do
+    begin
+      res +=  $'      Result.val{y}{x} := ';
+      res +=
+        Range(0, t1[0][1]-1)
+        .Select(i-> $'m1.val{y}{i}*m2.val{i}{x}' )
+        .JoinIntoString(' + ');
+      res += ';'#10;
+    end;
+  res +=      $'    end;'+#10;
+  
+end;
+
 procedure AddTranspose(res: StringBuilder; t: t_descr);
 begin
   
@@ -329,6 +304,11 @@ begin
     res += '  {$endregion Mtr}'#10;
     res += '  '#10;
     res += '  {$region MtrTranspose}'#10;
+    
+    foreach var t1 in t_table do
+      foreach var t2 in t_table do
+        if t1[0][1]=t2[0][0] then
+          AddMtrMlt(res, t1,t2);
     
     foreach var t in t_table do
       AddTranspose(res, t);
