@@ -177,7 +177,7 @@ begin
   
   res += $'    '+#10;
   
-  for var x := 0 to t[0][1]-1 do
+  for var x := 0 to t[0][0]-1 do
     res += $'    public property RowPtr{x}: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + {x*t[0][1]*(t[1].Contains(''d'')?8:4)});'+#10;
   res += $'    public property RowPtr[x: integer]: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][1]*(t[1].Contains(''d'')?8:4)});'+#10;
   

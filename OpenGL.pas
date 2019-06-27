@@ -5321,7 +5321,6 @@ type
     
     public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
-    public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
     public static function operator*(m: Mtr2x3f; v: Vec3f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
@@ -5427,6 +5426,7 @@ type
     
     public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
+    public property RowPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
     public static function operator*(m: Mtr3x2f; v: Vec2f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
@@ -5534,8 +5534,6 @@ type
     
     public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
     public static function operator*(m: Mtr2x4f; v: Vec4f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
@@ -5664,6 +5662,8 @@ type
     
     public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
+    public property RowPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr3: ^Vec2f read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
     public static function operator*(m: Mtr4x2f; v: Vec2f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
@@ -5801,7 +5801,6 @@ type
     public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
     public static function operator*(m: Mtr3x4f; v: Vec4f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
@@ -5951,6 +5950,7 @@ type
     public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
     public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
+    public property RowPtr3: ^Vec3f read pointer(IntPtr(pointer(@self)) + 36);
     public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
     public static function operator*(m: Mtr4x3f; v: Vec3f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
@@ -6485,7 +6485,6 @@ type
     
     public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
-    public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
     public static function operator*(m: Mtr2x3d; v: Vec3d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
@@ -6618,6 +6617,7 @@ type
     
     public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 32);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
     public static function operator*(m: Mtr3x2d; v: Vec2d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
@@ -6752,8 +6752,6 @@ type
     
     public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
-    public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
     public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
     public static function operator*(m: Mtr2x4d; v: Vec4d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
@@ -6909,6 +6907,8 @@ type
     
     public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
+    public property RowPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 32);
+    public property RowPtr3: ^Vec2d read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
     public static function operator*(m: Mtr4x2d; v: Vec2d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
@@ -7073,7 +7073,6 @@ type
     public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
     public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
-    public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
     public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
     public static function operator*(m: Mtr3x4d; v: Vec4d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
@@ -7250,6 +7249,7 @@ type
     public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
     public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
+    public property RowPtr3: ^Vec3d read pointer(IntPtr(pointer(@self)) + 72);
     public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
     public static function operator*(m: Mtr4x3d; v: Vec3d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
