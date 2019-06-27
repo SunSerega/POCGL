@@ -552,6 +552,284 @@ type
     
   end;
   
+  //S
+  GLGetQueries = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ACTIVE_TEXTURE:                            GLGetQueries read new GLGetQueries($84E0);
+    public static property ALIASED_LINE_WIDTH_RANGE:                  GLGetQueries read new GLGetQueries($846E);
+    public static property ARRAY_BUFFER_BINDING:                      GLGetQueries read new GLGetQueries($8894);
+    public static property BLEND_COLOR:                               GLGetQueries read new GLGetQueries($8005);
+    public static property BLEND_DST_ALPHA:                           GLGetQueries read new GLGetQueries($80CA);
+    public static property BLEND_DST_RGB:                             GLGetQueries read new GLGetQueries($80C8);
+    public static property BLEND_EQUATION_RGB:                        GLGetQueries read new GLGetQueries($8009);
+    public static property BLEND_EQUATION_ALPHA:                      GLGetQueries read new GLGetQueries($883D);
+    public static property BLEND_SRC_ALPHA:                           GLGetQueries read new GLGetQueries($80CB);
+    public static property BLEND_SRC_RGB:                             GLGetQueries read new GLGetQueries($80C9);
+    public static property COLOR_CLEAR_VALUE:                         GLGetQueries read new GLGetQueries($0C22);
+    public static property COLOR_WRITEMASK:                           GLGetQueries read new GLGetQueries($0C23);
+    public static property COMPRESSED_TEXTURE_FORMATS:                GLGetQueries read new GLGetQueries($86A3);
+    public static property MAX_COMPUTE_SHADER_STORAGE_BLOCKS:         GLGetQueries read new GLGetQueries($90DB);
+    public static property MAX_COMBINED_SHADER_STORAGE_BLOCKS:        GLGetQueries read new GLGetQueries($90DC);
+    public static property MAX_COMPUTE_UNIFORM_BLOCKS:                GLGetQueries read new GLGetQueries($91BB);
+    public static property MAX_COMPUTE_TEXTURE_IMAGE_UNITS:           GLGetQueries read new GLGetQueries($91BC);
+    public static property MAX_COMPUTE_UNIFORM_COMPONENTS:            GLGetQueries read new GLGetQueries($8263);
+    public static property MAX_COMPUTE_ATOMIC_COUNTERS:               GLGetQueries read new GLGetQueries($8265);
+    public static property MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS:        GLGetQueries read new GLGetQueries($8264);
+    public static property MAX_COMBINED_COMPUTE_UNIFORM_COMPONENTS:   GLGetQueries read new GLGetQueries($8266);
+    public static property MAX_COMPUTE_WORK_GROUP_INVOCATIONS:        GLGetQueries read new GLGetQueries($90EB);
+    public static property MAX_COMPUTE_WORK_GROUP_COUNT:              GLGetQueries read new GLGetQueries($91BE);
+    public static property MAX_COMPUTE_WORK_GROUP_SIZE:               GLGetQueries read new GLGetQueries($91BF);
+    public static property DISPATCH_INDIRECT_BUFFER_BINDING:          GLGetQueries read new GLGetQueries($90EF);
+    public static property MAX_DEBUG_GROUP_STACK_DEPTH:               GLGetQueries read new GLGetQueries($826C);
+    public static property DEBUG_GROUP_STACK_DEPTH:                   GLGetQueries read new GLGetQueries($826D);
+    public static property CONTEXT_FLAGS:                             GLGetQueries read new GLGetQueries($821E);
+    public static property CULL_FACE_MODE:                            GLGetQueries read new GLGetQueries($0B45);
+    public static property CURRENT_PROGRAM:                           GLGetQueries read new GLGetQueries($8B8D);
+    public static property DEPTH_CLEAR_VALUE:                         GLGetQueries read new GLGetQueries($0B73);
+    public static property DEPTH_FUNC:                                GLGetQueries read new GLGetQueries($0B74);
+    public static property DEPTH_RANGE:                               GLGetQueries read new GLGetQueries($0B70);
+    public static property DEPTH_WRITEMASK:                           GLGetQueries read new GLGetQueries($0B72);
+    public static property DOUBLEBUFFER:                              GLGetQueries read new GLGetQueries($0C32);
+    public static property DRAW_BUFFER:                               GLGetQueries read new GLGetQueries($0C01);
+    public static property DRAW_FRAMEBUFFER_BINDING:                  GLGetQueries read new GLGetQueries($8CA6);
+    public static property READ_FRAMEBUFFER_BINDING:                  GLGetQueries read new GLGetQueries($8CAA);
+    public static property ELEMENT_ARRAY_BUFFER_BINDING:              GLGetQueries read new GLGetQueries($8895);
+    public static property FRAGMENT_SHADER_DERIVATIVE_HINT:           GLGetQueries read new GLGetQueries($8B8B);
+    public static property IMPLEMENTATION_COLOR_READ_FORMAT:          GLGetQueries read new GLGetQueries($8B9B);
+    public static property IMPLEMENTATION_COLOR_READ_TYPE:            GLGetQueries read new GLGetQueries($8B9A);
+    public static property LINE_SMOOTH_HINT:                          GLGetQueries read new GLGetQueries($0C52);
+    public static property LINE_WIDTH:                                GLGetQueries read new GLGetQueries($0B21);
+    public static property LAYER_PROVOKING_VERTEX:                    GLGetQueries read new GLGetQueries($825E);
+    public static property LOGIC_OP_MODE:                             GLGetQueries read new GLGetQueries($0BF0);
+    public static property MAJOR_VERSION:                             GLGetQueries read new GLGetQueries($821B);
+    public static property MAX_3D_TEXTURE_SIZE:                       GLGetQueries read new GLGetQueries($8073);
+    public static property MAX_ARRAY_TEXTURE_LAYERS:                  GLGetQueries read new GLGetQueries($88FF);
+    public static property MAX_CLIP_DISTANCES:                        GLGetQueries read new GLGetQueries($0D32);
+    public static property MAX_COLOR_TEXTURE_SAMPLES:                 GLGetQueries read new GLGetQueries($910E);
+    public static property MAX_COMBINED_ATOMIC_COUNTERS:              GLGetQueries read new GLGetQueries($92D7);
+    public static property MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS:  GLGetQueries read new GLGetQueries($8A33);
+    public static property MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS:  GLGetQueries read new GLGetQueries($8A32);
+    public static property MAX_COMBINED_TEXTURE_IMAGE_UNITS:          GLGetQueries read new GLGetQueries($8B4D);
+    public static property MAX_COMBINED_UNIFORM_BLOCKS:               GLGetQueries read new GLGetQueries($8A2E);
+    public static property MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS:    GLGetQueries read new GLGetQueries($8A31);
+    public static property MAX_CUBE_MAP_TEXTURE_SIZE:                 GLGetQueries read new GLGetQueries($851C);
+    public static property MAX_DEPTH_TEXTURE_SAMPLES:                 GLGetQueries read new GLGetQueries($910F);
+    public static property MAX_DRAW_BUFFERS:                          GLGetQueries read new GLGetQueries($8824);
+    public static property MAX_DUAL_SOURCE_DRAW_BUFFERS:              GLGetQueries read new GLGetQueries($88FC);
+    public static property MAX_ELEMENTS_INDICES:                      GLGetQueries read new GLGetQueries($80E9);
+    public static property MAX_ELEMENTS_VERTICES:                     GLGetQueries read new GLGetQueries($80E8);
+    public static property MAX_FRAGMENT_ATOMIC_COUNTERS:              GLGetQueries read new GLGetQueries($92D6);
+    public static property MAX_FRAGMENT_SHADER_STORAGE_BLOCKS:        GLGetQueries read new GLGetQueries($90DA);
+    public static property MAX_FRAGMENT_INPUT_COMPONENTS:             GLGetQueries read new GLGetQueries($9125);
+    public static property MAX_FRAGMENT_UNIFORM_COMPONENTS:           GLGetQueries read new GLGetQueries($8B49);
+    public static property MAX_FRAGMENT_UNIFORM_VECTORS:              GLGetQueries read new GLGetQueries($8DFD);
+    public static property MAX_FRAGMENT_UNIFORM_BLOCKS:               GLGetQueries read new GLGetQueries($8A2D);
+    public static property MAX_FRAMEBUFFER_WIDTH:                     GLGetQueries read new GLGetQueries($9315);
+    public static property MAX_FRAMEBUFFER_HEIGHT:                    GLGetQueries read new GLGetQueries($9316);
+    public static property MAX_FRAMEBUFFER_LAYERS:                    GLGetQueries read new GLGetQueries($9317);
+    public static property MAX_FRAMEBUFFER_SAMPLES:                   GLGetQueries read new GLGetQueries($9318);
+    public static property MAX_GEOMETRY_ATOMIC_COUNTERS:              GLGetQueries read new GLGetQueries($92D5);
+    public static property MAX_GEOMETRY_SHADER_STORAGE_BLOCKS:        GLGetQueries read new GLGetQueries($90D7);
+    public static property MAX_GEOMETRY_INPUT_COMPONENTS:             GLGetQueries read new GLGetQueries($9123);
+    public static property MAX_GEOMETRY_OUTPUT_COMPONENTS:            GLGetQueries read new GLGetQueries($9124);
+    public static property MAX_GEOMETRY_TEXTURE_IMAGE_UNITS:          GLGetQueries read new GLGetQueries($8C29);
+    public static property MAX_GEOMETRY_UNIFORM_BLOCKS:               GLGetQueries read new GLGetQueries($8A2C);
+    public static property MAX_GEOMETRY_UNIFORM_COMPONENTS:           GLGetQueries read new GLGetQueries($8DDF);
+    public static property MAX_INTEGER_SAMPLES:                       GLGetQueries read new GLGetQueries($9110);
+    public static property MIN_MAP_BUFFER_ALIGNMENT:                  GLGetQueries read new GLGetQueries($90BC);
+    public static property MAX_LABEL_LENGTH:                          GLGetQueries read new GLGetQueries($82E8);
+    public static property MAX_PROGRAM_TEXEL_OFFSET:                  GLGetQueries read new GLGetQueries($8905);
+    public static property MIN_PROGRAM_TEXEL_OFFSET:                  GLGetQueries read new GLGetQueries($8904);
+    public static property MAX_RECTANGLE_TEXTURE_SIZE:                GLGetQueries read new GLGetQueries($84F8);
+    public static property MAX_RENDERBUFFER_SIZE:                     GLGetQueries read new GLGetQueries($84E8);
+    public static property MAX_SAMPLE_MASK_WORDS:                     GLGetQueries read new GLGetQueries($8E59);
+    public static property MAX_SERVER_WAIT_TIMEOUT:                   GLGetQueries read new GLGetQueries($9111);
+    public static property MAX_SHADER_STORAGE_BUFFER_BINDINGS:        GLGetQueries read new GLGetQueries($90DD);
+    public static property MAX_TESS_CONTROL_ATOMIC_COUNTERS:          GLGetQueries read new GLGetQueries($92D3);
+    public static property MAX_TESS_EVALUATION_ATOMIC_COUNTERS:       GLGetQueries read new GLGetQueries($92D4);
+    public static property MAX_TESS_CONTROL_SHADER_STORAGE_BLOCKS:    GLGetQueries read new GLGetQueries($90D8);
+    public static property MAX_TESS_EVALUATION_SHADER_STORAGE_BLOCKS: GLGetQueries read new GLGetQueries($90D9);
+    public static property MAX_TEXTURE_BUFFER_SIZE:                   GLGetQueries read new GLGetQueries($8C2B);
+    public static property MAX_TEXTURE_IMAGE_UNITS:                   GLGetQueries read new GLGetQueries($8872);
+    public static property MAX_TEXTURE_LOD_BIAS:                      GLGetQueries read new GLGetQueries($84FD);
+    public static property MAX_TEXTURE_SIZE:                          GLGetQueries read new GLGetQueries($0D33);
+    public static property MAX_UNIFORM_BUFFER_BINDINGS:               GLGetQueries read new GLGetQueries($8A2F);
+    public static property MAX_UNIFORM_BLOCK_SIZE:                    GLGetQueries read new GLGetQueries($8A30);
+    public static property MAX_UNIFORM_LOCATIONS:                     GLGetQueries read new GLGetQueries($826E);
+    public static property MAX_VARYING_COMPONENTS:                    GLGetQueries read new GLGetQueries($8B4B);
+    public static property MAX_VARYING_VECTORS:                       GLGetQueries read new GLGetQueries($8DFC);
+    public static property MAX_VARYING_FLOATS:                        GLGetQueries read new GLGetQueries($8B4B);
+    public static property MAX_VERTEX_ATOMIC_COUNTERS:                GLGetQueries read new GLGetQueries($92D2);
+    public static property MAX_VERTEX_ATTRIBS:                        GLGetQueries read new GLGetQueries($8869);
+    public static property MAX_VERTEX_SHADER_STORAGE_BLOCKS:          GLGetQueries read new GLGetQueries($90D6);
+    public static property MAX_VERTEX_TEXTURE_IMAGE_UNITS:            GLGetQueries read new GLGetQueries($8B4C);
+    public static property MAX_VERTEX_UNIFORM_COMPONENTS:             GLGetQueries read new GLGetQueries($8B4A);
+    public static property MAX_VERTEX_UNIFORM_VECTORS:                GLGetQueries read new GLGetQueries($8DFB);
+    public static property MAX_VERTEX_OUTPUT_COMPONENTS:              GLGetQueries read new GLGetQueries($9122);
+    public static property MAX_VERTEX_UNIFORM_BLOCKS:                 GLGetQueries read new GLGetQueries($8A2B);
+    public static property MAX_VIEWPORT_DIMS:                         GLGetQueries read new GLGetQueries($0D3A);
+    public static property MAX_VIEWPORTS:                             GLGetQueries read new GLGetQueries($825B);
+    public static property MINOR_VERSION:                             GLGetQueries read new GLGetQueries($821C);
+    public static property NUM_COMPRESSED_TEXTURE_FORMATS:            GLGetQueries read new GLGetQueries($86A2);
+    public static property NUM_EXTENSIONS:                            GLGetQueries read new GLGetQueries($821D);
+    public static property NUM_PROGRAM_BINARY_FORMATS:                GLGetQueries read new GLGetQueries($87FE);
+    public static property NUM_SHADER_BINARY_FORMATS:                 GLGetQueries read new GLGetQueries($8DF9);
+    public static property PACK_ALIGNMENT:                            GLGetQueries read new GLGetQueries($0D05);
+    public static property PACK_IMAGE_HEIGHT:                         GLGetQueries read new GLGetQueries($806C);
+    public static property PACK_LSB_FIRST:                            GLGetQueries read new GLGetQueries($0D01);
+    public static property PACK_ROW_LENGTH:                           GLGetQueries read new GLGetQueries($0D02);
+    public static property PACK_SKIP_IMAGES:                          GLGetQueries read new GLGetQueries($806B);
+    public static property PACK_SKIP_PIXELS:                          GLGetQueries read new GLGetQueries($0D04);
+    public static property PACK_SKIP_ROWS:                            GLGetQueries read new GLGetQueries($0D03);
+    public static property PACK_SWAP_BYTES:                           GLGetQueries read new GLGetQueries($0D00);
+    public static property PIXEL_PACK_BUFFER_BINDING:                 GLGetQueries read new GLGetQueries($88ED);
+    public static property PIXEL_UNPACK_BUFFER_BINDING:               GLGetQueries read new GLGetQueries($88EF);
+    public static property POINT_FADE_THRESHOLD_SIZE:                 GLGetQueries read new GLGetQueries($8128);
+    public static property PRIMITIVE_RESTART_INDEX:                   GLGetQueries read new GLGetQueries($8F9E);
+    public static property PROGRAM_BINARY_FORMATS:                    GLGetQueries read new GLGetQueries($87FF);
+    public static property PROGRAM_PIPELINE_BINDING:                  GLGetQueries read new GLGetQueries($825A);
+    public static property PROGRAM_POINT_SIZE:                        GLGetQueries read new GLGetQueries($8642);
+    public static property PROVOKING_VERTEX:                          GLGetQueries read new GLGetQueries($8E4F);
+    public static property POINT_SIZE:                                GLGetQueries read new GLGetQueries($0B11);
+    public static property POINT_SIZE_GRANULARITY:                    GLGetQueries read new GLGetQueries($0B13);
+    public static property POINT_SIZE_RANGE:                          GLGetQueries read new GLGetQueries($0B12);
+    public static property POLYGON_OFFSET_FACTOR:                     GLGetQueries read new GLGetQueries($8038);
+    public static property POLYGON_OFFSET_UNITS:                      GLGetQueries read new GLGetQueries($2A00);
+    public static property POLYGON_SMOOTH_HINT:                       GLGetQueries read new GLGetQueries($0C53);
+    public static property READ_BUFFER:                               GLGetQueries read new GLGetQueries($0C02);
+    public static property RENDERBUFFER_BINDING:                      GLGetQueries read new GLGetQueries($8CA7);
+    public static property SAMPLE_BUFFERS:                            GLGetQueries read new GLGetQueries($80A8);
+    public static property SAMPLE_COVERAGE_VALUE:                     GLGetQueries read new GLGetQueries($80AA);
+    public static property SAMPLE_COVERAGE_INVERT:                    GLGetQueries read new GLGetQueries($80AB);
+    public static property SAMPLER_BINDING:                           GLGetQueries read new GLGetQueries($8919);
+    public static property SAMPLES:                                   GLGetQueries read new GLGetQueries($80A9);
+    public static property SCISSOR_BOX:                               GLGetQueries read new GLGetQueries($0C10);
+    public static property SHADER_COMPILER:                           GLGetQueries read new GLGetQueries($8DFA);
+    public static property SHADER_STORAGE_BUFFER_BINDING:             GLGetQueries read new GLGetQueries($90D3);
+    public static property SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT:    GLGetQueries read new GLGetQueries($90DF);
+    public static property SHADER_STORAGE_BUFFER_START:               GLGetQueries read new GLGetQueries($90D4);
+    public static property SHADER_STORAGE_BUFFER_SIZE:                GLGetQueries read new GLGetQueries($90D5);
+    public static property SMOOTH_LINE_WIDTH_RANGE:                   GLGetQueries read new GLGetQueries($0B22);
+    public static property SMOOTH_LINE_WIDTH_GRANULARITY:             GLGetQueries read new GLGetQueries($0B23);
+    public static property STENCIL_BACK_FAIL:                         GLGetQueries read new GLGetQueries($8801);
+    public static property STENCIL_BACK_FUNC:                         GLGetQueries read new GLGetQueries($8800);
+    public static property STENCIL_BACK_PASS_DEPTH_FAIL:              GLGetQueries read new GLGetQueries($8802);
+    public static property STENCIL_BACK_PASS_DEPTH_PASS:              GLGetQueries read new GLGetQueries($8803);
+    public static property STENCIL_BACK_REF:                          GLGetQueries read new GLGetQueries($8CA3);
+    public static property STENCIL_BACK_VALUE_MASK:                   GLGetQueries read new GLGetQueries($8CA4);
+    public static property STENCIL_BACK_WRITEMASK:                    GLGetQueries read new GLGetQueries($8CA5);
+    public static property STENCIL_CLEAR_VALUE:                       GLGetQueries read new GLGetQueries($0B91);
+    public static property STENCIL_FAIL:                              GLGetQueries read new GLGetQueries($0B94);
+    public static property STENCIL_FUNC:                              GLGetQueries read new GLGetQueries($0B92);
+    public static property STENCIL_PASS_DEPTH_FAIL:                   GLGetQueries read new GLGetQueries($0B95);
+    public static property STENCIL_PASS_DEPTH_PASS:                   GLGetQueries read new GLGetQueries($0B96);
+    public static property STENCIL_REF:                               GLGetQueries read new GLGetQueries($0B97);
+    public static property STENCIL_VALUE_MASK:                        GLGetQueries read new GLGetQueries($0B93);
+    public static property STENCIL_WRITEMASK:                         GLGetQueries read new GLGetQueries($0B98);
+    public static property STEREO:                                    GLGetQueries read new GLGetQueries($0C33);
+    public static property SUBPIXEL_BITS:                             GLGetQueries read new GLGetQueries($0D50);
+    public static property TEXTURE_BINDING_1D:                        GLGetQueries read new GLGetQueries($8068);
+    public static property TEXTURE_BINDING_1D_ARRAY:                  GLGetQueries read new GLGetQueries($8C1C);
+    public static property TEXTURE_BINDING_2D:                        GLGetQueries read new GLGetQueries($8069);
+    public static property TEXTURE_BINDING_2D_ARRAY:                  GLGetQueries read new GLGetQueries($8C1D);
+    public static property TEXTURE_BINDING_2D_MULTISAMPLE:            GLGetQueries read new GLGetQueries($9104);
+    public static property TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY:      GLGetQueries read new GLGetQueries($9105);
+    public static property TEXTURE_BINDING_3D:                        GLGetQueries read new GLGetQueries($806A);
+    public static property TEXTURE_BINDING_BUFFER:                    GLGetQueries read new GLGetQueries($8C2C);
+    public static property TEXTURE_BINDING_CUBE_MAP:                  GLGetQueries read new GLGetQueries($8514);
+    public static property TEXTURE_BINDING_RECTANGLE:                 GLGetQueries read new GLGetQueries($84F6);
+    public static property TEXTURE_COMPRESSION_HINT:                  GLGetQueries read new GLGetQueries($84EF);
+    public static property TEXTURE_BUFFER_OFFSET_ALIGNMENT:           GLGetQueries read new GLGetQueries($919F);
+    public static property TIMESTAMP:                                 GLGetQueries read new GLGetQueries($8E28);
+    public static property TRANSFORM_FEEDBACK_BUFFER_BINDING:         GLGetQueries read new GLGetQueries($8C8F);
+    public static property TRANSFORM_FEEDBACK_BUFFER_START:           GLGetQueries read new GLGetQueries($8C84);
+    public static property TRANSFORM_FEEDBACK_BUFFER_SIZE:            GLGetQueries read new GLGetQueries($8C85);
+    public static property UNIFORM_BUFFER_BINDING:                    GLGetQueries read new GLGetQueries($8A28);
+    public static property UNIFORM_BUFFER_OFFSET_ALIGNMENT:           GLGetQueries read new GLGetQueries($8A34);
+    public static property UNIFORM_BUFFER_SIZE:                       GLGetQueries read new GLGetQueries($8A2A);
+    public static property UNIFORM_BUFFER_START:                      GLGetQueries read new GLGetQueries($8A29);
+    public static property UNPACK_ALIGNMENT:                          GLGetQueries read new GLGetQueries($0CF5);
+    public static property UNPACK_IMAGE_HEIGHT:                       GLGetQueries read new GLGetQueries($806E);
+    public static property UNPACK_LSB_FIRST:                          GLGetQueries read new GLGetQueries($0CF1);
+    public static property UNPACK_ROW_LENGTH:                         GLGetQueries read new GLGetQueries($0CF2);
+    public static property UNPACK_SKIP_IMAGES:                        GLGetQueries read new GLGetQueries($806D);
+    public static property UNPACK_SKIP_PIXELS:                        GLGetQueries read new GLGetQueries($0CF4);
+    public static property UNPACK_SKIP_ROWS:                          GLGetQueries read new GLGetQueries($0CF3);
+    public static property UNPACK_SWAP_BYTES:                         GLGetQueries read new GLGetQueries($0CF0);
+    public static property VERTEX_ARRAY_BINDING:                      GLGetQueries read new GLGetQueries($85B5);
+    public static property VERTEX_BINDING_DIVISOR:                    GLGetQueries read new GLGetQueries($82D6);
+    public static property VERTEX_BINDING_OFFSET:                     GLGetQueries read new GLGetQueries($82D7);
+    public static property VERTEX_BINDING_STRIDE:                     GLGetQueries read new GLGetQueries($82D8);
+    public static property MAX_VERTEX_ATTRIB_RELATIVE_OFFSET:         GLGetQueries read new GLGetQueries($82D9);
+    public static property MAX_VERTEX_ATTRIB_BINDINGS:                GLGetQueries read new GLGetQueries($82DA);
+    public static property VIEWPORT:                                  GLGetQueries read new GLGetQueries($0BA2);
+    public static property VIEWPORT_BOUNDS_RANGE:                     GLGetQueries read new GLGetQueries($825D);
+    public static property VIEWPORT_INDEX_PROVOKING_VERTEX:           GLGetQueries read new GLGetQueries($825F);
+    public static property VIEWPORT_SUBPIXEL_BITS:                    GLGetQueries read new GLGetQueries($825C);
+    public static property MAX_ELEMENT_INDEX:                         GLGetQueries read new GLGetQueries($8D6B);
+    
+  end;
+  
+  //S
+  EnablableName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property BLEND:                         EnablableName read new EnablableName($0BE2);
+    public static property CLIP_DISTANCE0:                EnablableName read new EnablableName($3000);
+    public static property CLIP_DISTANCE1:                EnablableName read new EnablableName($3001);
+    public static property CLIP_DISTANCE2:                EnablableName read new EnablableName($3002);
+    public static property CLIP_DISTANCE3:                EnablableName read new EnablableName($3003);
+    public static property CLIP_DISTANCE4:                EnablableName read new EnablableName($3004);
+    public static property CLIP_DISTANCE5:                EnablableName read new EnablableName($3005);
+    public static property CLIP_DISTANCE6:                EnablableName read new EnablableName($3006);
+    public static property CLIP_DISTANCE7:                EnablableName read new EnablableName($3007);
+    public static property COLOR_LOGIC_OP:                EnablableName read new EnablableName($0BF2);
+    public static property CULL_FACE:                     EnablableName read new EnablableName($0B44);
+    public static property DEBUG_OUTPUT:                  EnablableName read new EnablableName($92E0);
+    public static property DEBUG_OUTPUT_SYNCHRONOUS:      EnablableName read new EnablableName($8242);
+    public static property DEPTH_CLAMP:                   EnablableName read new EnablableName($864F);
+    public static property DEPTH_TEST:                    EnablableName read new EnablableName($0B71);
+    public static property DITHER:                        EnablableName read new EnablableName($0BD0);
+    public static property FRAMEBUFFER_SRGB:              EnablableName read new EnablableName($8DB9);
+    public static property LINE_SMOOTH:                   EnablableName read new EnablableName($0B20);
+    public static property MULTISAMPLE:                   EnablableName read new EnablableName($809D);
+    public static property POLYGON_OFFSET_FILL:           EnablableName read new EnablableName($8037);
+    public static property POLYGON_OFFSET_LINE:           EnablableName read new EnablableName($2A02);
+    public static property POLYGON_OFFSET_POINT:          EnablableName read new EnablableName($2A01);
+    public static property POLYGON_SMOOTH:                EnablableName read new EnablableName($0B41);
+    public static property PRIMITIVE_RESTART:             EnablableName read new EnablableName($8F9D);
+    public static property PRIMITIVE_RESTART_FIXED_INDEX: EnablableName read new EnablableName($8D69);
+    public static property RASTERIZER_DISCARD:            EnablableName read new EnablableName($8C89);
+    public static property SAMPLE_ALPHA_TO_COVERAGE:      EnablableName read new EnablableName($809E);
+    public static property SAMPLE_ALPHA_TO_ONE:           EnablableName read new EnablableName($809F);
+    public static property SAMPLE_COVERAGE:               EnablableName read new EnablableName($80A0);
+    public static property SAMPLE_SHADING:                EnablableName read new EnablableName($8C36);
+    public static property SAMPLE_MASK:                   EnablableName read new EnablableName($8E51);
+    public static property SCISSOR_TEST:                  EnablableName read new EnablableName($0C11);
+    public static property STENCIL_TEST:                  EnablableName read new EnablableName($0B90);
+    public static property TEXTURE_CUBE_MAP_SEAMLESS:     EnablableName read new EnablableName($884F);
+    public static property PROGRAM_POINT_SIZE:            EnablableName read new EnablableName($8642);
+    
+    public static function operator implicit(v: EnablableName): GLGetQueries := new GLGetQueries(v.val);
+    
+  end;
+  
+  //S
+  GLGetStringQueries = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property VENDOR:                    GLGetStringQueries read new GLGetStringQueries($1F00);
+    public static property RENDERER:                  GLGetStringQueries read new GLGetStringQueries($1F01);
+    public static property VERSION:                   GLGetStringQueries read new GLGetStringQueries($1F02);
+    public static property EXTENSIONS:                GLGetStringQueries read new GLGetStringQueries($1F03);
+    public static property SHADING_LANGUAGE_VERSION:  GLGetStringQueries read new GLGetStringQueries($8B8C);
+    
+  end;
+  
   //R
   ClientWaitSyncResult = record
     public val: UInt32;
@@ -7442,40 +7720,121 @@ type
     
     {$endregion Разное}
     
+	
     {$region Get[Type]}
     
-    static procedure GetIntegerv(pname: UInt32; data: pointer);
+    static procedure GetBooleanv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of boolean);
+    external 'opengl32.dll' name 'glGetBooleanv';
+    static procedure GetBooleanv(pname: GLGetQueries; var data: boolean);
+    external 'opengl32.dll' name 'glGetBooleanv';
+    static procedure GetBooleanv(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetBooleanv';
+    
+    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of boolean);
+    external 'opengl32.dll' name 'glGetBooleani_v';
+    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; var data: boolean);
+    external 'opengl32.dll' name 'glGetBooleani_v';
+    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetBooleani_v';
+    
+    static procedure GetFloatv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of single);
+    external 'opengl32.dll' name 'glGetFloatv';
+    static procedure GetFloatv(pname: GLGetQueries; var data: single);
+    external 'opengl32.dll' name 'glGetFloatv';
+    static procedure GetFloatv(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetFloatv';
+    
+    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of single);
+    external 'opengl32.dll' name 'glGetFloati_v';
+    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; var data: single);
+    external 'opengl32.dll' name 'glGetFloati_v';
+    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetFloati_v';
+    
+    static procedure GetDoublev(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of real);
+    external 'opengl32.dll' name 'glGetDoublev';
+    static procedure GetDoublev(pname: GLGetQueries; var data: real);
+    external 'opengl32.dll' name 'glGetDoublev';
+    static procedure GetDoublev(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetDoublev';
+    
+    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of real);
+    external 'opengl32.dll' name 'glGetDoublei_v';
+    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; var data: real);
+    external 'opengl32.dll' name 'glGetDoublei_v';
+    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetDoublei_v';
+    
+    static procedure GetIntegerv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of Int32);
     external 'opengl32.dll' name 'glGetIntegerv';
-    static procedure GetIntegerv(pname: UInt32; var data: Int32);
+    static procedure GetIntegerv(pname: GLGetQueries; var data: Int32);
     external 'opengl32.dll' name 'glGetIntegerv';
     static procedure GetIntegerv(pname: QueryInfoType; var data: Int32);
     external 'opengl32.dll' name 'glGetIntegerv';
-    static procedure GetIntegerv(pname: UniformComponentInfoType; var data: Int32);
+    static procedure GetIntegerv(pname: GLGetQueries; data: pointer);
     external 'opengl32.dll' name 'glGetIntegerv';
     
-    static procedure GetInteger64v(pname: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    static procedure GetInteger64v(pname: UInt32; var data: Int64);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    static procedure GetInteger64v(pname: QueryInfoType; var data: Int64);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    
-    static procedure GetIntegeri_v(target: UInt32; index: UInt32; data: pointer);
+    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of Int32);
     external 'opengl32.dll' name 'glGetIntegeri_v';
-    static procedure GetIntegeri_v(target: UInt32; index: UInt32; var data: Int32);
+    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; var data: Int32);
     external 'opengl32.dll' name 'glGetIntegeri_v';
     static procedure GetIntegeri_v(target: BufferBindType; index: UInt32; var data: BufferName);
     external 'opengl32.dll' name 'glGetIntegeri_v';
+    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
     
-    static procedure GetInteger64i_v(target: UInt32; index: UInt32; data: pointer);
+    static procedure GetInteger64v(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of Int64);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    static procedure GetInteger64v(pname: GLGetQueries; var data: Int64);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    static procedure GetInteger64v(pname: QueryInfoType; var data: Int64);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    static procedure GetInteger64v(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    
+    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of Int64);
     external 'opengl32.dll' name 'glGetInteger64i_v';
-    static procedure GetInteger64i_v(target: UInt32; index: UInt32; var data: Int64);
+    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; var data: Int64);
     external 'opengl32.dll' name 'glGetInteger64i_v';
     static procedure GetInteger64i_v(target: BufferBindType; index: UInt32; var data: Vec2i64);
     external 'opengl32.dll' name 'glGetInteger64i_v';
+    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+	
+    static function GetString(name: GLGetStringQueries): string;
+    external 'opengl32.dll' name 'glGetString';
+    static function GetStringPtr(name: GLGetStringQueries): IntPtr;
+    external 'opengl32.dll' name 'glGetString';
+    
+    static function GetStringi(name: GLGetStringQueries; index: UInt32): string;
+    external 'opengl32.dll' name 'glGetStringi';
+    static function GetStringPtri(name: GLGetStringQueries; index: UInt32): IntPtr;
+    external 'opengl32.dll' name 'glGetStringi';
     
     {$endregion Get[Type]}
     
+	  {$region Enablable}
+	  
+    static procedure Disable(cap: EnablableName);
+    external 'opengl32.dll' name 'glDisable';
+    
+    static procedure Enable(cap: EnablableName);
+    external 'opengl32.dll' name 'glEnable';
+    
+    static procedure Enablei(target: EnablableName; index: UInt32);
+    external 'opengl32.dll' name 'glEnablei';
+    
+    static procedure Disablei(target: EnablableName; index: UInt32);
+    external 'opengl32.dll' name 'glDisablei';
+    
+    static function IsEnabled(cap: EnablableName): boolean;
+    external 'opengl32.dll' name 'glIsEnabled';
+    
+    static function IsEnabledi(target: EnablableName; index: UInt32): boolean;
+    external 'opengl32.dll' name 'glIsEnabledi';
+    
+	  {$endregion Enablable}
+	  
     {$region 4.0 - Event Model}
     
     {$region 4.1 - Sync Objects and Fences}
@@ -7846,8 +8205,8 @@ type
     
     // для получения binaryformat
     // надо вызвать gl.Get... с параметрами:
-    // glGetQueries.NUM_SHADER_BINARY_FORMATS
-    // glGetQueries.SHADER_BINARY_FORMATS
+    // GLGetQueries.NUM_SHADER_BINARY_FORMATS
+    // GLGetQueries.SHADER_BINARY_FORMATS
     static procedure ShaderBinary(count: Int32; [MarshalAs(UnmanagedType.LPArray)] shaders: array of ShaderName; binaryformat: ShaderBinaryFormat; [MarshalAs(UnmanagedType.LPArray)] binary: array of byte; length: Int32);
     external 'opengl32.dll' name 'glShaderBinary';
     static procedure ShaderBinary(count: Int32; [MarshalAs(UnmanagedType.LPArray)] shaders: array of ShaderName; binaryformat: ShaderBinaryFormat; binary: IntPtr; length: Int32);
@@ -8822,44 +9181,44 @@ type
     
     {$region 7.10 - Subroutine Uniform Variables}
     
-    static function GetSubroutineIndex(&program: ProgramName; shadertype: ShaderType; [MarshalAs(UnmanagedType.LPStr)] name: string): UInt32;
+    static function GetSubroutineIndex(&program: ProgramName; __shadertype: ShaderType; [MarshalAs(UnmanagedType.LPStr)] name: string): UInt32;
     external 'opengl32.dll' name 'glGetSubroutineIndex';
-    static function GetSubroutineIndex(&program: ProgramName; shadertype: ShaderType; name: IntPtr): UInt32;
+    static function GetSubroutineIndex(&program: ProgramName; __shadertype: ShaderType; name: IntPtr): UInt32;
     external 'opengl32.dll' name 'glGetSubroutineIndex';
     
-    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveSubroutineName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
-    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: IntPtr);
+    static procedure GetActiveSubroutineName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
-    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveSubroutineName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
-    static procedure GetActiveSubroutineName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: IntPtr);
+    static procedure GetActiveSubroutineName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveSubroutineName';
     
-    static function GetSubroutineUniformLocation(&program: ProgramName; shadertype: ShaderType; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
+    static function GetSubroutineUniformLocation(&program: ProgramName; __shadertype: ShaderType; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
     external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
-    static function GetSubroutineUniformLocation(&program: ProgramName; shadertype: ShaderType; name: IntPtr): Int32;
+    static function GetSubroutineUniformLocation(&program: ProgramName; __shadertype: ShaderType; name: IntPtr): Int32;
     external 'opengl32.dll' name 'glGetSubroutineUniformLocation';
     
-    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
-    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: IntPtr);
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; var length: Int32; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
-    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
-    static procedure GetActiveSubroutineUniformName(&program: ProgramName; shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: IntPtr);
+    static procedure GetActiveSubroutineUniformName(&program: ProgramName; __shadertype: ShaderType; index: UInt32; bufsize: Int32; length: ^Int32; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformName';
     
-    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; [MarshalAs(UnmanagedType.LPArray)] values: array of Int32);
+    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; __shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; [MarshalAs(UnmanagedType.LPArray)] values: array of Int32);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
-    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; var values: Int32);
+    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; __shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; var values: Int32);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
-    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; values: pointer);
+    static procedure GetActiveSubroutineUniformiv(&program: ProgramName; __shadertype: ShaderType; index: UInt32; pname: ProgramInterfaceProperty; values: pointer);
     external 'opengl32.dll' name 'glGetActiveSubroutineUniformiv';
     
-    static procedure UniformSubroutinesuiv(shadertype: ShaderType; count: Int32; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32);
+    static procedure UniformSubroutinesuiv(__shadertype: ShaderType; count: Int32; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32);
     external 'opengl32.dll' name 'glUniformSubroutinesuiv';
-    static procedure UniformSubroutinesuiv(shadertype: ShaderType; count: Int32; indices: ^UInt32);
+    static procedure UniformSubroutinesuiv(__shadertype: ShaderType; count: Int32; indices: ^UInt32);
     external 'opengl32.dll' name 'glUniformSubroutinesuiv';
     
     {$endregion 7.10 - Subroutine Uniform Variables}
@@ -8945,13 +9304,13 @@ type
     static procedure GetShaderSource(shader: ShaderName; bufSize: Int32; length: ^Int32; source: IntPtr);
     external 'opengl32.dll' name 'glGetShaderSource';
     
-    static procedure GetShaderPrecisionFormat(shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; var range: Vec2i; var precision: Int32);
+    static procedure GetShaderPrecisionFormat(_shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; var range: Vec2i; var precision: Int32);
     external 'opengl32.dll' name 'glGetShaderPrecisionFormat';
-    static procedure GetShaderPrecisionFormat(shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; var range: Vec2i; precision: ^Int32);
+    static procedure GetShaderPrecisionFormat(_shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; var range: Vec2i; precision: ^Int32);
     external 'opengl32.dll' name 'glGetShaderPrecisionFormat';
-    static procedure GetShaderPrecisionFormat(shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; range: ^Vec2i; var precision: Int32);
+    static procedure GetShaderPrecisionFormat(_shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; range: ^Vec2i; var precision: Int32);
     external 'opengl32.dll' name 'glGetShaderPrecisionFormat';
-    static procedure GetShaderPrecisionFormat(shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; range: ^Vec2i; precision: ^Int32);
+    static procedure GetShaderPrecisionFormat(_shadertype: ShaderType; precisiontype: ShaderPrecisionFormatType; range: ^Vec2i; precision: ^Int32);
     external 'opengl32.dll' name 'glGetShaderPrecisionFormat';
     
     static procedure GetUniformfv(&program: ProgramName; location: Int32; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
@@ -9010,18 +9369,18 @@ type
     static procedure GetnUniformuiv(&program: ProgramName; location: Int32; bufSize: Int32; &params: pointer);
     external 'opengl32.dll' name 'glGetnUniformuiv';
     
-    static procedure GetUniformSubroutineuiv(shadertype: ShaderType; location: Int32; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt32);
+    static procedure GetUniformSubroutineuiv(_shadertype: ShaderType; location: Int32; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt32);
     external 'opengl32.dll' name 'glGetUniformSubroutineuiv';
-    static procedure GetUniformSubroutineuiv(shadertype: ShaderType; location: Int32; var &params: UInt32);
+    static procedure GetUniformSubroutineuiv(_shadertype: ShaderType; location: Int32; var &params: UInt32);
     external 'opengl32.dll' name 'glGetUniformSubroutineuiv';
-    static procedure GetUniformSubroutineuiv(shadertype: ShaderType; location: Int32; &params: pointer);
+    static procedure GetUniformSubroutineuiv(_shadertype: ShaderType; location: Int32; &params: pointer);
     external 'opengl32.dll' name 'glGetUniformSubroutineuiv';
     
-    static procedure GetProgramStageiv(&program: ProgramName; shadertype: ShaderType; pname: ActiveSubroutineInfoType; [MarshalAs(UnmanagedType.LPArray)] values: array of Int32);
+    static procedure GetProgramStageiv(&program: ProgramName; _shadertype: ShaderType; pname: ActiveSubroutineInfoType; [MarshalAs(UnmanagedType.LPArray)] values: array of Int32);
     external 'opengl32.dll' name 'glGetProgramStageiv';
-    static procedure GetProgramStageiv(&program: ProgramName; shadertype: ShaderType; pname: ActiveSubroutineInfoType; var values: Int32);
+    static procedure GetProgramStageiv(&program: ProgramName; _shadertype: ShaderType; pname: ActiveSubroutineInfoType; var values: Int32);
     external 'opengl32.dll' name 'glGetProgramStageiv';
-    static procedure GetProgramStageiv(&program: ProgramName; shadertype: ShaderType; pname: ActiveSubroutineInfoType; values: pointer);
+    static procedure GetProgramStageiv(&program: ProgramName; _shadertype: ShaderType; pname: ActiveSubroutineInfoType; values: pointer);
     external 'opengl32.dll' name 'glGetProgramStageiv';
     
     {$endregion 7.14 - Shader, Program, and Program Pipeline Queries}
@@ -9105,12 +9464,6 @@ type
     static procedure DepthMask(flag: boolean);
     external 'opengl32.dll' name 'glDepthMask';
     
-    static procedure Disable(cap: UInt32);
-    external 'opengl32.dll' name 'glDisable';
-    
-    static procedure Enable(cap: UInt32);
-    external 'opengl32.dll' name 'glEnable';
-    
     static procedure Finish;
     external 'opengl32.dll' name 'glFinish';
     
@@ -9144,18 +9497,6 @@ type
     static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
     external 'opengl32.dll' name 'glReadPixels';
     
-    static procedure GetBooleanv(pname: UInt32; data: ^boolean);
-    external 'opengl32.dll' name 'glGetBooleanv';
-    
-    static procedure GetDoublev(pname: UInt32; data: ^real);
-    external 'opengl32.dll' name 'glGetDoublev';
-    
-    static procedure GetFloatv(pname: UInt32; data: ^single);
-    external 'opengl32.dll' name 'glGetFloatv';
-    
-    static function GetString(name: UInt32): ^Byte;
-    external 'opengl32.dll' name 'glGetString';
-    
     static procedure GetTexImage(target: UInt32; level: Int32; format: UInt32; &type: UInt32; pixels: pointer);
     external 'opengl32.dll' name 'glGetTexImage';
     
@@ -9170,9 +9511,6 @@ type
     
     static procedure GetTexLevelParameteriv(target: UInt32; level: Int32; pname: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetTexLevelParameteriv';
-    
-    static function IsEnabled(cap: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsEnabled';
     
     static procedure DepthRange(n: real; f: real);
     external 'opengl32.dll' name 'glDepthRange';
@@ -9444,18 +9782,6 @@ type
     static procedure ColorMaski(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean);
     external 'opengl32.dll' name 'glColorMaski';
     
-    static procedure GetBooleani_v(target: UInt32; index: UInt32; data: ^boolean);
-    external 'opengl32.dll' name 'glGetBooleani_v';
-    
-    static procedure Enablei(target: UInt32; index: UInt32);
-    external 'opengl32.dll' name 'glEnablei';
-    
-    static procedure Disablei(target: UInt32; index: UInt32);
-    external 'opengl32.dll' name 'glDisablei';
-    
-    static function IsEnabledi(target: UInt32; index: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsEnabledi';
-    
     static procedure BeginTransformFeedback(primitiveMode: UInt32);
     external 'opengl32.dll' name 'glBeginTransformFeedback';
     
@@ -9575,9 +9901,6 @@ type
     
     static procedure ClearBufferfi(buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
     external 'opengl32.dll' name 'glClearBufferfi';
-    
-    static function GetStringi(name: UInt32; index: UInt32): ^Byte;
-    external 'opengl32.dll' name 'glGetStringi';
     
     static function IsRenderbuffer(renderbuffer: UInt32): boolean;
     external 'opengl32.dll' name 'glIsRenderbuffer';
@@ -9878,12 +10201,6 @@ type
     
     static procedure DepthRangeIndexed(index: UInt32; n: real; f: real);
     external 'opengl32.dll' name 'glDepthRangeIndexed';
-    
-    static procedure GetFloati_v(target: UInt32; index: UInt32; data: ^single);
-    external 'opengl32.dll' name 'glGetFloati_v';
-    
-    static procedure GetDoublei_v(target: UInt32; index: UInt32; data: ^real);
-    external 'opengl32.dll' name 'glGetDoublei_v';
     
     static procedure DrawArraysInstancedBaseInstance(mode: UInt32; first: Int32; count: Int32; instancecount: Int32; baseinstance: UInt32);
     external 'opengl32.dll' name 'glDrawArraysInstancedBaseInstance';
