@@ -25,6 +25,8 @@ unit OpenGL;
 
 //ToDo в самом конце - сделать прогу чтоб посмотреть какие константы по 2 раза, а каких вообще нет
 
+//ToDo http://forum.mmcs.sfedu.ru/t/zamechaniya-i-predlozheniya/143/1334?u=sun_serega
+
 uses System;
 uses System.Runtime.InteropServices;
 
