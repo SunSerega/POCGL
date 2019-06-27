@@ -303,12 +303,17 @@ begin
     res += '  '#10;
     res += '  {$endregion Mtr}'#10;
     res += '  '#10;
-    res += '  {$region MtrTranspose}'#10;
+    res += '  {$region MtrMlt}'#10;
     
     foreach var t1 in t_table do
       foreach var t2 in t_table do
         if t1[0][1]=t2[0][0] then
           AddMtrMlt(res, t1,t2);
+    
+    res += '  '#10;
+    res += '  {$endregion MtrMlt}'#10;
+    res += '  '#10;
+    res += '  {$region MtrTranspose}'#10;
     
     foreach var t in t_table do
       AddTranspose(res, t);

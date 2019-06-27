@@ -7310,7 +7310,7 @@ type
   
   {$endregion Mtr}
   
-  {$region MtrTranspose}
+  {$region MtrMlt}
     
     function operator*(m1: Mtr2x2f; m2: Mtr2x2f): Mtr2x2f; extensionmethod;
     begin
@@ -8715,6 +8715,10 @@ type
       Result.val32 := m1.val30*m2.val02 + m1.val31*m2.val12 + m1.val32*m2.val22;
       Result.val33 := m1.val30*m2.val03 + m1.val31*m2.val13 + m1.val32*m2.val23;
     end;
+  
+  {$endregion MtrMlt}
+  
+  {$region MtrTranspose}
   
   function Transpose(self: Mtr2x2f); extensionmethod :=
   new Mtr2x2f(self.val00, self.val10, self.val01, self.val11);
