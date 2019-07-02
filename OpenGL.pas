@@ -10462,274 +10462,558 @@ type
     
     {$endregion 7.0 - Programs and Shaders}
     
-    {$region }
-    
-    {$endregion }
-    
     {$region Chapter 8 - Textures and Samplers}
     
-    
-    
-    static procedure ActiveTexture(texture: UInt32);
+    static procedure ActiveTexture(texture: TextureUnitId);
     external 'opengl32.dll' name 'glActiveTexture';
     
-    static procedure BindTexture(target: UInt32; texture: UInt32);
-    external 'opengl32.dll' name 'glBindTexture';
+    {$region 8.1 - Texture Objects}
     
-    static procedure GenTextures(n: Int32; textures: ^UInt32);
+    static procedure GenTextures(n: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
+    external 'opengl32.dll' name 'glGenTextures';
+    static procedure GenTextures(n: Int32; var textures: TextureName);
+    external 'opengl32.dll' name 'glGenTextures';
+    static procedure GenTextures(n: Int32; textures: pointer);
     external 'opengl32.dll' name 'glGenTextures';
     
-    static procedure BindTextures(first: UInt32; count: Int32; textures: ^UInt32);
+    static procedure BindTexture(target: TextureBindTarget; texture: TextureName);
+    external 'opengl32.dll' name 'glBindTexture';
+    
+    static procedure BindTextures(first: TextureUnitId; count: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
+    external 'opengl32.dll' name 'glBindTextures';
+    static procedure BindTextures(first: TextureUnitId; count: Int32; textures: ^TextureName);
     external 'opengl32.dll' name 'glBindTextures';
     
-    static procedure BindTextureUnit(&unit: UInt32; texture: UInt32);
+    static procedure BindTextureUnit(&unit: TextureUnitId; texture: TextureName);
     external 'opengl32.dll' name 'glBindTextureUnit';
     
-    static procedure CreateTextures(target: UInt32; n: Int32; textures: ^UInt32);
+    static procedure CreateTextures(target: TextureBindTarget; n: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
+    external 'opengl32.dll' name 'glCreateTextures';
+    static procedure CreateTextures(target: TextureBindTarget; n: Int32; textures: ^TextureName);
     external 'opengl32.dll' name 'glCreateTextures';
     
-    static procedure DeleteTextures(n: Int32; textures: ^UInt32);
+    static procedure DeleteTextures(n: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
+    external 'opengl32.dll' name 'glDeleteTextures';
+    static procedure DeleteTextures(n: Int32; var textures: TextureName);
+    external 'opengl32.dll' name 'glDeleteTextures';
+    static procedure DeleteTextures(n: Int32; textures: ^TextureName);
     external 'opengl32.dll' name 'glDeleteTextures';
     
-    static function IsTexture(texture: UInt32): boolean;
+    static function IsTexture(texture: TextureName): boolean;
     external 'opengl32.dll' name 'glIsTexture';
     
-    static procedure GenSamplers(count: Int32; samplers: ^UInt32);
+    {$endregion 8.1 - Texture Objects}
+    
+    {$region 8.2 - Sampler Objects}
+    
+    static procedure GenSamplers(count: Int32; [MarshalAs(UnmanagedType.LPArray)] samplers: array of SamplerName);
+    external 'opengl32.dll' name 'glGenSamplers';
+    static procedure GenSamplers(count: Int32; var samplers: SamplerName);
+    external 'opengl32.dll' name 'glGenSamplers';
+    static procedure GenSamplers(count: Int32; samplers: pointer);
     external 'opengl32.dll' name 'glGenSamplers';
     
-    static procedure BindSampler(&unit: UInt32; sampler: UInt32);
-    external 'opengl32.dll' name 'glBindSampler';
-    
-    static function IsSampler(sampler: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsSampler';
-    
-    static procedure CreateSamplers(n: Int32; samplers: ^UInt32);
+    static procedure CreateSamplers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] samplers: array of SamplerName);
+    external 'opengl32.dll' name 'glCreateSamplers';
+    static procedure CreateSamplers(n: Int32; var samplers: SamplerName);
+    external 'opengl32.dll' name 'glCreateSamplers';
+    static procedure CreateSamplers(n: Int32; samplers: ^SamplerName);
     external 'opengl32.dll' name 'glCreateSamplers';
     
-    static procedure DeleteSamplers(count: Int32; samplers: ^UInt32);
-    external 'opengl32.dll' name 'glDeleteSamplers';
+    static procedure BindSampler(&unit: Int32; sampler: SamplerName);
+    external 'opengl32.dll' name 'glBindSampler';
     
-    static procedure BindSamplers(first: UInt32; count: Int32; samplers: ^UInt32);
+    static procedure BindSamplers(first: Int32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] samplers: array of SamplerName);
+    external 'opengl32.dll' name 'glBindSamplers';
+    static procedure BindSamplers(first: Int32; count: Int32; samplers: ^SamplerName);
     external 'opengl32.dll' name 'glBindSamplers';
     
-    static procedure SamplerParameterIiv(sampler: UInt32; pname: UInt32; param: ^Int32);
-    external 'opengl32.dll' name 'glSamplerParameterIiv';
+    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: Int32);
+    external 'opengl32.dll' name 'glSamplerParameteri';
     
-    static procedure SamplerParameterIuiv(sampler: UInt32; pname: UInt32; param: ^UInt32);
-    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    static procedure SamplerParameterf(sampler: SamplerName; pname: TextureInfoType; param: single);
+    external 'opengl32.dll' name 'glSamplerParameterf';
     
-    static procedure SamplerParameteriv(sampler: UInt32; pname: UInt32; param: ^Int32);
+    static procedure SamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glSamplerParameteriv';
+    static procedure SamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; param: ^Int32);
     external 'opengl32.dll' name 'glSamplerParameteriv';
     
-    static procedure GetSamplerParameterIiv(sampler: UInt32; pname: UInt32; &params: ^Int32);
+    static procedure SamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; var param: single);
+    external 'opengl32.dll' name 'glSamplerParameterfv';
+    static procedure SamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; param: ^single);
+    external 'opengl32.dll' name 'glSamplerParameterfv';
+    
+    static procedure SamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glSamplerParameterIiv';
+    static procedure SamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; param: ^Int32);
+    external 'opengl32.dll' name 'glSamplerParameterIiv';
+    
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: UInt32);
+    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; param: ^UInt32);
+    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    
+    static procedure DeleteSamplers(count: Int32; [MarshalAs(UnmanagedType.LPArray)] samplers: array of SamplerName);
+    external 'opengl32.dll' name 'glDeleteSamplers';
+    static procedure DeleteSamplers(count: Int32; var samplers: SamplerName);
+    external 'opengl32.dll' name 'glDeleteSamplers';
+    static procedure DeleteSamplers(count: Int32; samplers: ^SamplerName);
+    external 'opengl32.dll' name 'glDeleteSamplers';
+    
+    static function IsSampler(sampler: SamplerName): boolean;
+    external 'opengl32.dll' name 'glIsSampler';
+    
+    {$endregion 8.2 - Sampler Objects}
+    
+    {$region 8.3 - Sampler Object Queries}
+    
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetSamplerParameteriv';
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetSamplerParameteriv';
+    
+    static procedure GetSamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; var &params: single);
+    external 'opengl32.dll' name 'glGetSamplerParameterfv';
+    static procedure GetSamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; &params: ^single);
+    external 'opengl32.dll' name 'glGetSamplerParameterfv';
+    
+    static procedure GetSamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetSamplerParameterIiv';
+    static procedure GetSamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; &params: ^Int32);
     external 'opengl32.dll' name 'glGetSamplerParameterIiv';
     
-    static procedure GetSamplerParameterIuiv(sampler: UInt32; pname: UInt32; &params: ^UInt32);
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; &params: ^UInt32);
     external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
     
-    static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
-    external 'opengl32.dll' name 'glReadPixels';
+    {$endregion 8.3 - Sampler Object Queries}
     
-    static procedure TexImage3D(target: UInt32; level: Int32; internalformat: Int32; width: Int32; height: Int32; depth: Int32; border: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    {$region 8.4 - Pixel Rectangles}
+    
+    // 8.4.1
+    
+    static procedure PixelStorei(pname: PixelInfoType; param: Int32);
+    external 'opengl32.dll' name 'glPixelStorei';
+    
+    static procedure PixelStoref(pname: PixelInfoType; param: single);
+    external 'opengl32.dll' name 'glPixelStoref';
+    
+    {$endregion 8.4 - Pixel Rectangles}
+    
+    {$region 8.5 - Texture Image Specification}
+    
+    static procedure TexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTexImage3D';
+    static procedure TexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTexImage3D';
     
-    static procedure TextureView(texture: UInt32; target: UInt32; origtexture: UInt32; internalformat: UInt32; minlevel: UInt32; numlevels: UInt32; minlayer: UInt32; numlayers: UInt32);
-    external 'opengl32.dll' name 'glTextureView';
-    
-    static procedure CopyImageSubData(srcName: UInt32; srcTarget: UInt32; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: UInt32; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32);
-    external 'opengl32.dll' name 'glCopyImageSubData';
-    
-    static procedure TexImage2D(target: UInt32; level: Int32; internalformat: Int32; width: Int32; height: Int32; border: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTexImage2D';
+    static procedure TexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTexImage2D';
     
-    static procedure TexImage1D(target: UInt32; level: Int32; internalformat: Int32; width: Int32; border: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTexImage1D';
+    static procedure TexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTexImage1D';
     
-    static procedure CompressedTexImage1D(target: UInt32; level: Int32; internalformat: UInt32; width: Int32; border: Int32; imageSize: Int32; data: pointer);
-    external 'opengl32.dll' name 'glCompressedTexImage1D';
+    {$endregion 8.5 - Texture Image Specification}
     
-    static procedure CopyTexImage2D(target: UInt32; level: Int32; internalformat: UInt32; x: Int32; y: Int32; width: Int32; height: Int32; border: Int32);
+    {$region 8.6 - Alternate Texture Image Specification Commands}
+    
+    static procedure CopyTexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; x: Int32; y: Int32; width: Int32; height: Int32; border: Int32);
     external 'opengl32.dll' name 'glCopyTexImage2D';
     
-    static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
-    external 'opengl32.dll' name 'glCopyPixels';
-    
-    static procedure CopyTexImage1D(target: UInt32; level: Int32; internalformat: UInt32; x: Int32; y: Int32; width: Int32; border: Int32);
+    static procedure CopyTexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; x: Int32; y: Int32; width: Int32; border: Int32);
     external 'opengl32.dll' name 'glCopyTexImage1D';
     
-    static procedure TexSubImage3D(target: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTexSubImage3D';
+    static procedure TexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTexSubImage3D';
     
-    static procedure TexSubImage2D(target: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTexSubImage2D';
+    static procedure TexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTexSubImage2D';
     
-    static procedure TexSubImage1D(target: UInt32; level: Int32; xoffset: Int32; width: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTexSubImage1D';
+    static procedure TexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTexSubImage1D';
     
-    static procedure CopyTexSubImage3D(target: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
+    static procedure CopyTexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glCopyTexSubImage3D';
     
-    static procedure CopyTexSubImage2D(target: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
+    static procedure CopyTexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glCopyTexSubImage2D';
     
-    static procedure CopyTexSubImage1D(target: UInt32; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32);
+    static procedure CopyTexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32);
     external 'opengl32.dll' name 'glCopyTexSubImage1D';
     
-    static procedure TextureSubImage3D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TextureSubImage3D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTextureSubImage3D';
+    static procedure TextureSubImage3D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTextureSubImage3D';
     
-    static procedure TextureSubImage2D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TextureSubImage2D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTextureSubImage2D';
+    static procedure TextureSubImage2D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTextureSubImage2D';
     
-    static procedure TextureSubImage1D(texture: UInt32; level: Int32; xoffset: Int32; width: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    static procedure TextureSubImage1D(texture: TextureName; level: Int32; xoffset: Int32; width: Int32; DataFormat: UInt32; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glTextureSubImage1D';
+    static procedure TextureSubImage1D(texture: TextureName; level: Int32; xoffset: Int32; width: Int32; DataFormat: UInt32; &type: DataType; pixels: pointer);
     external 'opengl32.dll' name 'glTextureSubImage1D';
     
-    static procedure CopyTextureSubImage3D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
+    static procedure CopyTextureSubImage3D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glCopyTextureSubImage3D';
     
-    static procedure CopyTextureSubImage2D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
+    static procedure CopyTextureSubImage2D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glCopyTextureSubImage2D';
     
-    static procedure CopyTextureSubImage1D(texture: UInt32; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32);
+    static procedure CopyTextureSubImage1D(texture: TextureName; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32);
     external 'opengl32.dll' name 'glCopyTextureSubImage1D';
     
-    static procedure CompressedTexImage2D(target: UInt32; level: Int32; internalformat: UInt32; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: pointer);
+    {$endregion 8.6 - Alternate Texture Image Specification Commands}
+    
+    {$region 8.7 - Compressed Texture Images}
+    
+    static procedure CompressedTexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTexImage1D';
+    static procedure CompressedTexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; imageSize: Int32; data: pointer);
+    external 'opengl32.dll' name 'glCompressedTexImage1D';
+    
+    static procedure CompressedTexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTexImage2D';
+    static procedure CompressedTexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTexImage2D';
     
-    static procedure CompressedTexImage3D(target: UInt32; level: Int32; internalformat: UInt32; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: pointer);
+    static procedure CompressedTexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTexImage3D';
+    static procedure CompressedTexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTexImage3D';
     
-    static procedure GetCompressedTexImage(target: UInt32; level: Int32; img: pointer);
-    external 'opengl32.dll' name 'glGetCompressedTexImage';
-    
-    static procedure CompressedTexSubImage1D(target: UInt32; level: Int32; xoffset: Int32; width: Int32; format: UInt32; imageSize: Int32; data: pointer);
+    static procedure CompressedTexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTexSubImage1D';
+    static procedure CompressedTexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTexSubImage1D';
     
-    static procedure CompressedTexSubImage2D(target: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: UInt32; imageSize: Int32; data: pointer);
+    static procedure CompressedTexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTexSubImage2D';
+    static procedure CompressedTexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTexSubImage2D';
     
-    static procedure CompressedTexSubImage3D(target: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; imageSize: Int32; data: pointer);
+    static procedure CompressedTexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTexSubImage3D';
+    static procedure CompressedTexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTexSubImage3D';
     
-    static procedure CompressedTextureSubImage1D(texture: UInt32; level: Int32; xoffset: Int32; width: Int32; format: UInt32; imageSize: Int32; data: pointer);
+    static procedure CompressedTextureSubImage1D(texture: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTextureSubImage1D';
+    static procedure CompressedTextureSubImage1D(texture: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTextureSubImage1D';
     
-    static procedure CompressedTextureSubImage2D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: UInt32; imageSize: Int32; data: pointer);
+    static procedure CompressedTextureSubImage2D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTextureSubImage2D';
+    static procedure CompressedTextureSubImage2D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTextureSubImage2D';
     
-    static procedure CompressedTextureSubImage3D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; imageSize: Int32; data: pointer);
+    static procedure CompressedTextureSubImage3D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glCompressedTextureSubImage3D';
+    static procedure CompressedTextureSubImage3D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glCompressedTextureSubImage3D';
     
-    static procedure TexImage2DMultisample(target: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32; fixedsamplelocations: boolean);
+    {$endregion 8.7 - Compressed Texture Images}
+    
+    {$region 8.8 - Multisample Textures}
+    
+    static procedure TexImage2DMultisample(target: TextureBindTarget; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; fixedsamplelocations: boolean);
     external 'opengl32.dll' name 'glTexImage2DMultisample';
     
-    static procedure TexImage3DMultisample(target: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
+    static procedure TexImage3DMultisample(target: TextureBindTarget; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
     external 'opengl32.dll' name 'glTexImage3DMultisample';
     
-    static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetInternalformativ';
+    {$endregion 8.8 - Multisample Textures}
     
-    static procedure TexBufferRange(target: UInt32; internalformat: UInt32; buffer: UInt32; offset: IntPtr; size: UIntPtr);
+    {$region 8.9 - Buffer Textures}
+    
+    static procedure TexBufferRange(target: TextureBindTarget; internalformat: InternalDataFormat; buffer: BufferName; offset: IntPtr; size: UIntPtr);
     external 'opengl32.dll' name 'glTexBufferRange';
     
-    static procedure TextureBufferRange(texture: UInt32; internalformat: UInt32; buffer: UInt32; offset: IntPtr; size: UIntPtr);
+    static procedure TextureBufferRange(texture: TextureName; internalformat: InternalDataFormat; buffer: BufferName; offset: IntPtr; size: UIntPtr);
     external 'opengl32.dll' name 'glTextureBufferRange';
     
-    static procedure TexBuffer(target: UInt32; internalformat: UInt32; buffer: UInt32);
+    static procedure TexBuffer(target: TextureBindTarget; internalformat: InternalDataFormat; buffer: BufferName);
     external 'opengl32.dll' name 'glTexBuffer';
     
-    static procedure TextureBuffer(texture: UInt32; internalformat: UInt32; buffer: UInt32);
+    static procedure TextureBuffer(texture: TextureName; internalformat: InternalDataFormat; buffer: BufferName);
     external 'opengl32.dll' name 'glTextureBuffer';
     
-    static procedure TexParameterIiv(target: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glTexParameterIiv';
+    {$endregion 8.9 - Buffer Textures}
     
-    static procedure TexParameterIuiv(target: UInt32; pname: UInt32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glTexParameterIuiv';
+    {$region 8.10 - Texture Parameters}
+    //ToDo передавать можно энумы и массивы (и энумов тоже)...
+    // - в конце проверить чтоб все энумы существовали
+    // - и возможно ещё сделать для них перегрузки
+    // - это так же касается 8.11
     
-    static procedure TexParameteriv(target: UInt32; pname: UInt32; &params: ^Int32);
+    static procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: Int32);
+    external 'opengl32.dll' name 'glTexParameteri';
+    
+    static procedure TexParameterf(target: TextureBindTarget; pname: TextureInfoType; param: single);
+    external 'opengl32.dll' name 'glTexParameterf';
+    
+    static procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glTexParameteriv';
+    static procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; &params: ^Int32);
     external 'opengl32.dll' name 'glTexParameteriv';
     
-    static procedure GetTexImage(target: UInt32; level: Int32; format: UInt32; &type: UInt32; pixels: pointer);
-    external 'opengl32.dll' name 'glGetTexImage';
+    static procedure TexParameterfv(target: TextureBindTarget; pname: TextureInfoType; var &params: single);
+    external 'opengl32.dll' name 'glTexParameterfv';
+    static procedure TexParameterfv(target: TextureBindTarget; pname: TextureInfoType; &params: ^single);
+    external 'opengl32.dll' name 'glTexParameterfv';
     
-    static procedure GetTextureImage(texture: UInt32; level: Int32; format: UInt32; &type: UInt32; bufSize: Int32; pixels: pointer);
-    external 'opengl32.dll' name 'glGetTextureImage';
+    static procedure TexParameterIiv(target: TextureBindTarget; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glTexParameterIiv';
+    static procedure TexParameterIiv(target: TextureBindTarget; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glTexParameterIiv';
     
-    static procedure GetnTexImage(target: UInt32; level: Int32; format: UInt32; &type: UInt32; bufSize: Int32; pixels: pointer);
-    external 'opengl32.dll' name 'glGetnTexImage';
+    static procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glTexParameterIuiv';
+    static procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; &params: ^UInt32);
+    external 'opengl32.dll' name 'glTexParameterIuiv';
     
-    static procedure GetTextureSubImage(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; &type: UInt32; bufSize: Int32; pixels: pointer);
-    external 'opengl32.dll' name 'glGetTextureSubImage';
+    static procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: Int32);
+    external 'opengl32.dll' name 'glTextureParameteri';
     
-    static procedure GetCompressedTextureImage(texture: UInt32; level: Int32; bufSize: Int32; pixels: pointer);
-    external 'opengl32.dll' name 'glGetCompressedTextureImage';
+    static procedure TextureParameterf(texture: TextureName; pname: TextureInfoType; param: single);
+    external 'opengl32.dll' name 'glTextureParameterf';
     
-    static procedure GetnCompressedTexImage(target: UInt32; lod: Int32; bufSize: Int32; pixels: pointer);
-    external 'opengl32.dll' name 'glGetnCompressedTexImage';
+    static procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glTextureParameteriv';
+    static procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; param: ^Int32);
+    external 'opengl32.dll' name 'glTextureParameteriv';
     
-    static procedure GetCompressedTextureSubImage(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: pointer);
-    external 'opengl32.dll' name 'glGetCompressedTextureSubImage';
+    static procedure TextureParameterfv(texture: TextureName; pname: TextureInfoType; var param: single);
+    external 'opengl32.dll' name 'glTextureParameterfv';
+    static procedure TextureParameterfv(texture: TextureName; pname: TextureInfoType; param: ^single);
+    external 'opengl32.dll' name 'glTextureParameterfv';
     
-    static procedure GenerateMipmap(target: UInt32);
-    external 'opengl32.dll' name 'glGenerateMipmap';
+    static procedure TextureParameterIiv(texture: TextureName; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glTextureParameterIiv';
+    static procedure TextureParameterIiv(texture: TextureName; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glTextureParameterIiv';
     
-    static procedure GenerateTextureMipmap(texture: UInt32);
-    external 'opengl32.dll' name 'glGenerateTextureMipmap';
+    static procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glTextureParameterIuiv';
+    static procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; &params: ^UInt32);
+    external 'opengl32.dll' name 'glTextureParameterIuiv';
     
-    static procedure TexStorage1D(target: UInt32; levels: Int32; internalformat: UInt32; width: Int32);
-    external 'opengl32.dll' name 'glTexStorage1D';
+    {$endregion 8.10 - Texture Parameters}
     
-    static procedure TextureStorage1D(texture: UInt32; levels: Int32; internalformat: UInt32; width: Int32);
-    external 'opengl32.dll' name 'glTextureStorage1D';
+    {$region 8.11 - Texture Queries}
     
-    static procedure TexStorage2D(target: UInt32; levels: Int32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glTexStorage2D';
+    // 8.11.2
     
-    static procedure TextureStorage2D(texture: UInt32; levels: Int32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glTextureStorage2D';
-    
-    static procedure TexStorage3D(target: UInt32; levels: Int32; internalformat: UInt32; width: Int32; height: Int32; depth: Int32);
-    external 'opengl32.dll' name 'glTexStorage3D';
-    
-    static procedure TextureStorage3D(texture: UInt32; levels: Int32; internalformat: UInt32; width: Int32; height: Int32; depth: Int32);
-    external 'opengl32.dll' name 'glTextureStorage3D';
-    
-    static procedure TexStorage2DMultisample(target: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32; fixedsamplelocations: boolean);
-    external 'opengl32.dll' name 'glTexStorage2DMultisample';
-    
-    static procedure TextureStorage2DMultisample(texture: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32; fixedsamplelocations: boolean);
-    external 'opengl32.dll' name 'glTextureStorage2DMultisample';
-    
-    static procedure TexStorage3DMultisample(target: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
-    external 'opengl32.dll' name 'glTexStorage3DMultisample';
-    
-    static procedure TextureStorage3DMultisample(texture: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
-    external 'opengl32.dll' name 'glTextureStorage3DMultisample';
-    
-    static procedure InvalidateTexSubImage(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32);
-    external 'opengl32.dll' name 'glInvalidateTexSubImage';
-    
-    static procedure InvalidateTexImage(texture: UInt32; level: Int32);
-    external 'opengl32.dll' name 'glInvalidateTexImage';
-    
-    static procedure ClearTexSubImage(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: UInt32; &type: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glClearTexSubImage';
-    
-    static procedure ClearTexImage(texture: UInt32; level: Int32; format: UInt32; &type: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glClearTexImage';
-    
-    static procedure GetTexParameteriv(target: UInt32; pname: UInt32; &params: ^Int32);
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; &params: ^Int32);
     external 'opengl32.dll' name 'glGetTexParameteriv';
     
-    static procedure GetTexParameterfv(target: UInt32; pname: UInt32; &params: ^single);
+    static procedure GetTexParameterfv(target: TextureBindTarget; pname: TextureInfoType; var &params: single);
+    external 'opengl32.dll' name 'glGetTexParameterfv';
+    static procedure GetTexParameterfv(target: TextureBindTarget; pname: TextureInfoType; &params: ^single);
     external 'opengl32.dll' name 'glGetTexParameterfv';
     
-    static procedure BindImageTexture(&unit: UInt32; texture: UInt32; level: Int32; layered: boolean; layer: Int32; access: UInt32; format: UInt32);
+    static procedure GetTexParameterIiv(target: TextureBindTarget; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetTexParameterIiv';
+    static procedure GetTexParameterIiv(target: TextureBindTarget; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetTexParameterIiv';
+    
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; &params: ^UInt32);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    
+    static procedure GetTextureParameterfv(texture: TextureName; pname: TextureInfoType; var &params: single);
+    external 'opengl32.dll' name 'glGetTextureParameterfv';
+    static procedure GetTextureParameterfv(texture: TextureName; pname: TextureInfoType; &params: ^single);
+    external 'opengl32.dll' name 'glGetTextureParameterfv';
+    
+    static procedure GetTextureParameterIiv(texture: TextureName; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetTextureParameterIiv';
+    static procedure GetTextureParameterIiv(texture: TextureName; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetTextureParameterIiv';
+    
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; &params: ^UInt32);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    
+    // 8.11.3
+    
+    static procedure GetTexLevelParameterfv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; var &params: single);
+    external 'opengl32.dll' name 'glGetTexLevelParameterfv';
+    static procedure GetTexLevelParameterfv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; &params: ^single);
+    external 'opengl32.dll' name 'glGetTexLevelParameterfv';
+    
+    static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    
+    static procedure GetTextureLevelParameterfv(texture: TextureName; level: Int32; pname: TextureInfoType; var &params: single);
+    external 'opengl32.dll' name 'glGetTextureLevelParameterfv';
+    static procedure GetTextureLevelParameterfv(texture: TextureName; level: Int32; pname: TextureInfoType; &params: ^single);
+    external 'opengl32.dll' name 'glGetTextureLevelParameterfv';
+    
+    static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
+    static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
+    
+    // 8.11.4
+    
+    static procedure GetTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetTexImage';
+    static procedure GetTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; pixels: pointer);
+    external 'opengl32.dll' name 'glGetTexImage';
+    
+    static procedure GetTextureImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetTextureImage';
+    static procedure GetTextureImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer);
+    external 'opengl32.dll' name 'glGetTextureImage';
+    
+    static procedure GetnTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetnTexImage';
+    static procedure GetnTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer);
+    external 'opengl32.dll' name 'glGetnTexImage';
+    
+    static procedure GetTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetTextureSubImage';
+    static procedure GetTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer);
+    external 'opengl32.dll' name 'glGetTextureSubImage';
+    
+    static procedure GetCompressedTexImage(target: TextureBindTarget; level: Int32; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetCompressedTexImage';
+    static procedure GetCompressedTexImage(target: TextureBindTarget; level: Int32; pixels: pointer);
+    external 'opengl32.dll' name 'glGetCompressedTexImage';
+    
+    static procedure GetCompressedTextureImage(texture: TextureName; level: Int32; bufSize: Int32; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetCompressedTextureImage';
+    static procedure GetCompressedTextureImage(texture: TextureName; level: Int32; bufSize: Int32; pixels: pointer);
+    external 'opengl32.dll' name 'glGetCompressedTextureImage';
+    
+    static procedure GetnCompressedTexImage(target: TextureBindTarget; level: Int32; bufSize: Int32; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetnCompressedTexImage';
+    static procedure GetnCompressedTexImage(target: TextureBindTarget; level: Int32; bufSize: Int32; pixels: pointer);
+    external 'opengl32.dll' name 'glGetnCompressedTexImage';
+    
+    static procedure GetCompressedTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: IntPtr);
+    external 'opengl32.dll' name 'glGetCompressedTextureSubImage';
+    static procedure GetCompressedTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: pointer);
+    external 'opengl32.dll' name 'glGetCompressedTextureSubImage';
+    
+    {$endregion 8.11 - Texture Queries}
+    
+    {$region 8.14 - Texture Minification}
+    
+    // 8.14.4
+    
+    static procedure GenerateMipmap(target: TextureBindTarget);
+    external 'opengl32.dll' name 'glGenerateMipmap';
+    
+    static procedure GenerateTextureMipmap(texture: TextureName);
+    external 'opengl32.dll' name 'glGenerateTextureMipmap';
+    
+    {$endregion 8.14 - Texture Minification}
+    
+    {$region 8.18 - Texture Views}
+    
+    static procedure TextureView(texture: TextureName; target: TextureBindTarget; origtexture: TextureName; internalformat: InternalDataFormat; minlevel: UInt32; numlevels: UInt32; minlayer: UInt32; numlayers: UInt32);
+    external 'opengl32.dll' name 'glTextureView';
+    
+    {$endregion 8.18 - Texture Views}
+    
+    {$region 8.19 - Immutable-Format Texture Images}
+    
+    static procedure TexStorage1D(target: TextureBindTarget; levels: Int32; internalformat: InternalDataFormat; width: Int32);
+    external 'opengl32.dll' name 'glTexStorage1D';
+    
+    static procedure TextureStorage1D(texture: TextureName; levels: Int32; internalformat: InternalDataFormat; width: Int32);
+    external 'opengl32.dll' name 'glTextureStorage1D';
+    
+    static procedure TexStorage2D(target: TextureBindTarget; levels: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glTexStorage2D';
+    
+    static procedure TextureStorage2D(texture: TextureName; levels: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glTextureStorage2D';
+    
+    static procedure TexStorage3D(target: TextureBindTarget; levels: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32);
+    external 'opengl32.dll' name 'glTexStorage3D';
+    
+    static procedure TextureStorage3D(texture: TextureName; levels: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32);
+    external 'opengl32.dll' name 'glTextureStorage3D';
+    
+    static procedure TexStorage2DMultisample(target: TextureBindTarget; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; fixedsamplelocations: boolean);
+    external 'opengl32.dll' name 'glTexStorage2DMultisample';
+    
+    static procedure TextureStorage2DMultisample(texture: TextureName; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; fixedsamplelocations: boolean);
+    external 'opengl32.dll' name 'glTextureStorage2DMultisample';
+    
+    static procedure TexStorage3DMultisample(target: TextureBindTarget; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
+    external 'opengl32.dll' name 'glTexStorage3DMultisample';
+    
+    static procedure TextureStorage3DMultisample(texture: TextureName; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
+    external 'opengl32.dll' name 'glTextureStorage3DMultisample';
+    
+    {$endregion 8.19 - Immutable-Format Texture Images}
+    
+    {$region 8.20 - Invalidating Texture Image Data}
+    
+    static procedure InvalidateTexSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32);
+    external 'opengl32.dll' name 'glInvalidateTexSubImage';
+    
+    static procedure InvalidateTexImage(texture: TextureName; level: Int32);
+    external 'opengl32.dll' name 'glInvalidateTexImage';
+    
+    {$endregion 8.20 - Invalidating Texture Image Data}
+    
+    {$region 8.21 - Clearing Texture Image Data}
+    
+    static procedure ClearTexSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; data: IntPtr);
+    external 'opengl32.dll' name 'glClearTexSubImage';
+    static procedure ClearTexSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; data: pointer);
+    external 'opengl32.dll' name 'glClearTexSubImage';
+    
+    static procedure ClearTexImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; data: IntPtr);
+    external 'opengl32.dll' name 'glClearTexImage';
+    static procedure ClearTexImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; data: pointer);
+    external 'opengl32.dll' name 'glClearTexImage';
+    
+    {$endregion 8.21 - Clearing Texture Image Data}
+    
+    {$region 8.26 - Texture Image Loads and Stores}
+    
+    static procedure BindImageTexture(&unit: TextureUnitId; texture: TextureName; level: Int32; layered: boolean; layer: Int32; access: AccessType; format: DataFormat);
     external 'opengl32.dll' name 'glBindImageTexture';
     
-    static procedure BindImageTextures(first: UInt32; count: Int32; textures: ^UInt32);
+    static procedure BindImageTextures(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
     external 'opengl32.dll' name 'glBindImageTextures';
+    static procedure BindImageTextures(first: UInt32; count: Int32; var textures: TextureName);
+    external 'opengl32.dll' name 'glBindImageTextures';
+    static procedure BindImageTextures(first: UInt32; count: Int32; textures: ^TextureName);
+    external 'opengl32.dll' name 'glBindImageTextures';
+    
+    {$endregion 8.26 - Texture Image Loads and Stores}
     
     {$endregion Chapter 8 - Textures and Samplers}
     
@@ -10740,6 +11024,18 @@ type
     {$endregion }
     
     {$region unsorted}
+    
+    static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    external 'opengl32.dll' name 'glReadPixels';
+    
+    static procedure CopyImageSubData(srcName: UInt32; srcTarget: UInt32; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: UInt32; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32);
+    external 'opengl32.dll' name 'glCopyImageSubData';
+    
+    static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
+    external 'opengl32.dll' name 'glCopyPixels';
+    
+    static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetInternalformativ';
     
     static procedure ValidateProgram(&program: UInt32);
     external 'opengl32.dll' name 'glValidateProgram';
@@ -10767,15 +11063,6 @@ type
     
     static procedure Scissor(x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glScissor';
-    
-    static procedure TexParameterf(target: UInt32; pname: UInt32; param: single);
-    external 'opengl32.dll' name 'glTexParameterf';
-    
-    static procedure TexParameterfv(target: UInt32; pname: UInt32; &params: ^single);
-    external 'opengl32.dll' name 'glTexParameterfv';
-    
-    static procedure TexParameteri(target: UInt32; pname: UInt32; param: Int32);
-    external 'opengl32.dll' name 'glTexParameteri';
     
     static procedure DrawBuffer(buf: UInt32);
     external 'opengl32.dll' name 'glDrawBuffer';
@@ -10822,20 +11109,8 @@ type
     static procedure DepthFunc(func: UInt32);
     external 'opengl32.dll' name 'glDepthFunc';
     
-    static procedure PixelStoref(pname: UInt32; param: single);
-    external 'opengl32.dll' name 'glPixelStoref';
-    
-    static procedure PixelStorei(pname: UInt32; param: Int32);
-    external 'opengl32.dll' name 'glPixelStorei';
-    
     static procedure ReadBuffer(src: UInt32);
     external 'opengl32.dll' name 'glReadBuffer';
-    
-    static procedure GetTexLevelParameterfv(target: UInt32; level: Int32; pname: UInt32; &params: ^single);
-    external 'opengl32.dll' name 'glGetTexLevelParameterfv';
-    
-    static procedure GetTexLevelParameteriv(target: UInt32; level: Int32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
     
     static procedure DepthRange(n: real; f: real);
     external 'opengl32.dll' name 'glDepthRange';
@@ -11140,12 +11415,6 @@ type
     static function GetFragDataLocation(&program: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetFragDataLocation';
     
-    static procedure GetTexParameterIiv(target: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetTexParameterIiv';
-    
-    static procedure GetTexParameterIuiv(target: UInt32; pname: UInt32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glGetTexParameterIuiv';
-    
     static procedure ClearBufferiv(buffer: UInt32; drawbuffer: Int32; value: ^Int32);
     external 'opengl32.dll' name 'glClearBufferiv';
     
@@ -11265,21 +11534,6 @@ type
     
     static function GetFragDataIndex(&program: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetFragDataIndex';
-    
-    static procedure SamplerParameteri(sampler: UInt32; pname: UInt32; param: Int32);
-    external 'opengl32.dll' name 'glSamplerParameteri';
-    
-    static procedure SamplerParameterf(sampler: UInt32; pname: UInt32; param: single);
-    external 'opengl32.dll' name 'glSamplerParameterf';
-    
-    static procedure SamplerParameterfv(sampler: UInt32; pname: UInt32; param: ^single);
-    external 'opengl32.dll' name 'glSamplerParameterfv';
-    
-    static procedure GetSamplerParameteriv(sampler: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetSamplerParameteriv';
-    
-    static procedure GetSamplerParameterfv(sampler: UInt32; pname: UInt32; &params: ^single);
-    external 'opengl32.dll' name 'glGetSamplerParameterfv';
     
     static procedure VertexAttribDivisor(index: UInt32; divisor: UInt32);
     external 'opengl32.dll' name 'glVertexAttribDivisor';
@@ -11598,42 +11852,6 @@ type
     
     static procedure GetNamedRenderbufferParameteriv(renderbuffer: UInt32; pname: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetNamedRenderbufferParameteriv';
-    
-    static procedure TextureParameterf(texture: UInt32; pname: UInt32; param: single);
-    external 'opengl32.dll' name 'glTextureParameterf';
-    
-    static procedure TextureParameterfv(texture: UInt32; pname: UInt32; param: ^single);
-    external 'opengl32.dll' name 'glTextureParameterfv';
-    
-    static procedure TextureParameteri(texture: UInt32; pname: UInt32; param: Int32);
-    external 'opengl32.dll' name 'glTextureParameteri';
-    
-    static procedure TextureParameterIiv(texture: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glTextureParameterIiv';
-    
-    static procedure TextureParameterIuiv(texture: UInt32; pname: UInt32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glTextureParameterIuiv';
-    
-    static procedure TextureParameteriv(texture: UInt32; pname: UInt32; param: ^Int32);
-    external 'opengl32.dll' name 'glTextureParameteriv';
-    
-    static procedure GetTextureLevelParameterfv(texture: UInt32; level: Int32; pname: UInt32; &params: ^single);
-    external 'opengl32.dll' name 'glGetTextureLevelParameterfv';
-    
-    static procedure GetTextureLevelParameteriv(texture: UInt32; level: Int32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
-    
-    static procedure GetTextureParameterfv(texture: UInt32; pname: UInt32; &params: ^single);
-    external 'opengl32.dll' name 'glGetTextureParameterfv';
-    
-    static procedure GetTextureParameterIiv(texture: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetTextureParameterIiv';
-    
-    static procedure GetTextureParameterIuiv(texture: UInt32; pname: UInt32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
-    
-    static procedure GetTextureParameteriv(texture: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetTextureParameteriv';
     
     static procedure CreateVertexArrays(n: Int32; arrays: ^UInt32);
     external 'opengl32.dll' name 'glCreateVertexArrays';
