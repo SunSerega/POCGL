@@ -42,6 +42,8 @@ type
   ShaderName                    = UInt32;
   ProgramName                   = UInt32;
   ProgramPipelineName           = UInt32;
+  TextureName                   = UInt32;
+  SamplerName                   = UInt32;
   
   ShaderBinaryFormat            = UInt32;
   ProgramResourceIndex          = UInt32;
@@ -268,6 +270,143 @@ type
   end;
   
   {$endregion ...InfoType}
+  
+  //S
+  AccessType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property READ_ONLY:   AccessType read new AccessType($88B8);
+    public static property WRITE_ONLY:  AccessType read new AccessType($88B9);
+    public static property READ_WRITE:  AccessType read new AccessType($88BA);
+    
+  end;
+  
+  //S
+  TextureInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property DEPTH_STENCIL_TEXTURE_MODE:  TextureInfoType read new TextureInfoType($90EA);
+    public static property BASE_LEVEL:                  TextureInfoType read new TextureInfoType($813C);
+    public static property BORDER_COLOR:                TextureInfoType read new TextureInfoType($1004);
+    public static property COMPARE_MODE:                TextureInfoType read new TextureInfoType($884C);
+    public static property COMPARE_FUNC:                TextureInfoType read new TextureInfoType($884D);
+    public static property LOD_BIAS:                    TextureInfoType read new TextureInfoType($8501);
+    public static property MAG_FILTER:                  TextureInfoType read new TextureInfoType($2800);
+    public static property MAX_ANISOTROPY:              TextureInfoType read new TextureInfoType($84FE);
+    public static property MAX_LEVEL:                   TextureInfoType read new TextureInfoType($813D);
+    public static property MAX_LOD:                     TextureInfoType read new TextureInfoType($813B);
+    public static property MIN_FILTER:                  TextureInfoType read new TextureInfoType($2801);
+    public static property MIN_LOD:                     TextureInfoType read new TextureInfoType($813A);
+    public static property SWIZZLE_R:                   TextureInfoType read new TextureInfoType($8E42);
+    public static property SWIZZLE_G:                   TextureInfoType read new TextureInfoType($8E43);
+    public static property SWIZZLE_B:                   TextureInfoType read new TextureInfoType($8E44);
+    public static property SWIZZLE_A:                   TextureInfoType read new TextureInfoType($8E45);
+    public static property SWIZZLE_RGBA:                TextureInfoType read new TextureInfoType($8E46);
+    public static property WRAP_S:                      TextureInfoType read new TextureInfoType($2802);
+    public static property WRAP_T:                      TextureInfoType read new TextureInfoType($2803);
+    public static property WRAP_R:                      TextureInfoType read new TextureInfoType($8072);
+    
+  end;
+  
+  //S
+  PixelInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property UNPACK_SWAP_BYTES:               PixelInfoType read new PixelInfoType($0CF0);
+    public static property UNPACK_LSB_FIRST:                PixelInfoType read new PixelInfoType($0CF1);
+    public static property UNPACK_ROW_LENGTH:               PixelInfoType read new PixelInfoType($0CF2);
+    public static property UNPACK_SKIP_ROWS:                PixelInfoType read new PixelInfoType($0CF3);
+    public static property UNPACK_SKIP_PIXELS:              PixelInfoType read new PixelInfoType($0CF4);
+    public static property UNPACK_ALIGNMENT:                PixelInfoType read new PixelInfoType($0CF5);
+    public static property UNPACK_IMAGE_HEIGHT:             PixelInfoType read new PixelInfoType($806E);
+    public static property UNPACK_SKIP_IMAGES:              PixelInfoType read new PixelInfoType($806D);
+    public static property UNPACK_COMPRESSED_BLOCK_WIDTH:   PixelInfoType read new PixelInfoType($9127);
+    public static property UNPACK_COMPRESSED_BLOCK_HEIGHT:  PixelInfoType read new PixelInfoType($9128);
+    public static property UNPACK_COMPRESSED_BLOCK_DEPTH:   PixelInfoType read new PixelInfoType($9129);
+    public static property UNPACK_COMPRESSED_BLOCK_SIZE:    PixelInfoType read new PixelInfoType($912A);
+    public static property PACK_SWAP_BYTES:                 PixelInfoType read new PixelInfoType($0D00);
+    public static property PACK_LSB_FIRST:                  PixelInfoType read new PixelInfoType($0D01);
+    public static property PACK_ROW_LENGTH:                 PixelInfoType read new PixelInfoType($0D02);
+    public static property PACK_SKIP_ROWS:                  PixelInfoType read new PixelInfoType($0D03);
+    public static property PACK_SKIP_PIXELS:                PixelInfoType read new PixelInfoType($0D04);
+    public static property PACK_ALIGNMENT:                  PixelInfoType read new PixelInfoType($0D05);
+    public static property PACK_IMAGE_HEIGHT:               PixelInfoType read new PixelInfoType($806C);
+    public static property PACK_SKIP_IMAGES:                PixelInfoType read new PixelInfoType($806B);
+    public static property PACK_COMPRESSED_BLOCK_WIDTH:     PixelInfoType read new PixelInfoType($912B);
+    public static property PACK_COMPRESSED_BLOCK_HEIGHT:    PixelInfoType read new PixelInfoType($912C);
+    public static property PACK_COMPRESSED_BLOCK_DEPTH:     PixelInfoType read new PixelInfoType($912D);
+    public static property PACK_COMPRESSED_BLOCK_SIZE:      PixelInfoType read new PixelInfoType($912E);
+    
+  end;
+  
+  //S
+  TextureUnitId = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property TEXTURE0:  TextureUnitId read new TextureUnitId($84C0);
+    public static property TEXTURE1:  TextureUnitId read new TextureUnitId($84C1);
+    public static property TEXTURE2:  TextureUnitId read new TextureUnitId($84C2);
+    public static property TEXTURE3:  TextureUnitId read new TextureUnitId($84C3);
+    public static property TEXTURE4:  TextureUnitId read new TextureUnitId($84C4);
+    public static property TEXTURE5:  TextureUnitId read new TextureUnitId($84C5);
+    public static property TEXTURE6:  TextureUnitId read new TextureUnitId($84C6);
+    public static property TEXTURE7:  TextureUnitId read new TextureUnitId($84C7);
+    public static property TEXTURE8:  TextureUnitId read new TextureUnitId($84C8);
+    public static property TEXTURE9:  TextureUnitId read new TextureUnitId($84C9);
+    public static property TEXTURE10: TextureUnitId read new TextureUnitId($84CA);
+    public static property TEXTURE11: TextureUnitId read new TextureUnitId($84CB);
+    public static property TEXTURE12: TextureUnitId read new TextureUnitId($84CC);
+    public static property TEXTURE13: TextureUnitId read new TextureUnitId($84CD);
+    public static property TEXTURE14: TextureUnitId read new TextureUnitId($84CE);
+    public static property TEXTURE15: TextureUnitId read new TextureUnitId($84CF);
+    public static property TEXTURE16: TextureUnitId read new TextureUnitId($84D0);
+    public static property TEXTURE17: TextureUnitId read new TextureUnitId($84D1);
+    public static property TEXTURE18: TextureUnitId read new TextureUnitId($84D2);
+    public static property TEXTURE19: TextureUnitId read new TextureUnitId($84D3);
+    public static property TEXTURE20: TextureUnitId read new TextureUnitId($84D4);
+    public static property TEXTURE21: TextureUnitId read new TextureUnitId($84D5);
+    public static property TEXTURE22: TextureUnitId read new TextureUnitId($84D6);
+    public static property TEXTURE23: TextureUnitId read new TextureUnitId($84D7);
+    public static property TEXTURE24: TextureUnitId read new TextureUnitId($84D8);
+    public static property TEXTURE25: TextureUnitId read new TextureUnitId($84D9);
+    public static property TEXTURE26: TextureUnitId read new TextureUnitId($84DA);
+    public static property TEXTURE27: TextureUnitId read new TextureUnitId($84DB);
+    public static property TEXTURE28: TextureUnitId read new TextureUnitId($84DC);
+    public static property TEXTURE29: TextureUnitId read new TextureUnitId($84DD);
+    public static property TEXTURE30: TextureUnitId read new TextureUnitId($84DE);
+    public static property TEXTURE31: TextureUnitId read new TextureUnitId($84DF);
+    
+    public static function operator+(uid: TextureUnitId; n: integer): TextureUnitId := new TextureUnitId(uid.val+n);
+    public static function operator-(uid: TextureUnitId; n: integer): TextureUnitId := new TextureUnitId(uid.val-n);
+    
+    public function IsValid := (self.val >= TEXTURE0.val) and (self.val <= TEXTURE31.val);
+    
+  end;
+  
+  //S
+  TextureBindTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property T_1D:                          TextureBindTarget read new TextureBindTarget($0DE0);
+    public static property T_2D:                          TextureBindTarget read new TextureBindTarget($0DE1);
+    public static property T_3D:                          TextureBindTarget read new TextureBindTarget($806F);
+    public static property T_1D_ARRAY:                    TextureBindTarget read new TextureBindTarget($8C18);
+    public static property T_2D_ARRAY:                    TextureBindTarget read new TextureBindTarget($8C1A);
+    public static property T_RECTANGLE:                   TextureBindTarget read new TextureBindTarget($84F5);
+    public static property T_BUFFER:                      TextureBindTarget read new TextureBindTarget($8C2A);
+    public static property T_CUBE_MAP:                    TextureBindTarget read new TextureBindTarget($8513);
+    public static property T_CUBE_MAP_ARRAY:              TextureBindTarget read new TextureBindTarget($9009);
+    public static property T_2D_MULTISAMPLE:              TextureBindTarget read new TextureBindTarget($9100);
+    public static property PROXY_T_2D_MULTISAMPLE:        TextureBindTarget read new TextureBindTarget($9101);
+    public static property T_2D_MULTISAMPLE_ARRAY:        TextureBindTarget read new TextureBindTarget($9102);
+    public static property PROXY_T_2D_MULTISAMPLE_ARRAY:  TextureBindTarget read new TextureBindTarget($9103);
+    
+  end;
   
   //S
   ShaderPrecisionFormatType = record

@@ -27,17 +27,15 @@ begin
     
     var ufncs := new HashSet<string>;
     
-    foreach var w in wrds do
-    begin
-      var res := fncs.FirstOrDefault(f->
+    foreach var f in wrds.SelectMany(w->
+      fncs.Where(f->
         f.Contains($'procedure {w}(') or
         f.Contains($'function {w}(') or
         f.Contains($'procedure {w};') or
         f.Contains($'function {w};')
-      );
-      if res=nil then continue;
-      ufncs += res;
-    end;
+      )
+    ) do
+      ufncs += f;
     
     System.Console.Beep(5000,100);
     
