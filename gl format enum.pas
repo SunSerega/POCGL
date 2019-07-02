@@ -90,25 +90,25 @@ begin
     
     
     
-    res += '    // IS_'#10;
-    res += '    public function ToString: string; override;'#10;
-    res += '    begin'#10;
-    res += '      var res := typeof({TName}).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);'#10;
-    res += '      Result := res=nil?'#10;
-    res += '        $''{TName}[{self.val}]'':'#10;
-    res += '        res[0].Substring(3);'#10;
-    res += '    end;'#10;
+    res +=  '    // IS_'#10;
+    res +=  '    public function ToString: string; override;'#10;
+    res +=  '    begin'#10;
+    res += $'      var res := typeof({TName}).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);'+#10;
+    res +=  '      Result := res=nil?'#10;
+    res += $'        $''{TName}[{{self.val}}]'':'+#10;
+    res +=  '        res[0].Substring(3);'#10;
+    res +=  '    end;'#10;
     
     res += '    '#10;
     
-    res += '    // Flags'#10;
-    res += '    public function ToString: string; override;'#10;
-    res += '    begin'#10;
-    res += '      var res := typeof({TName}).GetProperties.Select(prop->(prop.Name,boolean(prop.GetValue(self)))).Where(t->t[1]).Select(t->t[0]).ToArray;'#10;
-    res += '      Result := res.Length=0?'#10;
-    res += '        $''{TName}[{self.val}]'':'#10;
-    res += '        res.JoinIntoString(''+'');'#10;
-    res += '    end;'#10;
+    res +=  '    // Flags'#10;
+    res +=  '    public function ToString: string; override;'#10;
+    res +=  '    begin'#10;
+    res += $'      var res := typeof({TName}).GetProperties.Select(prop->(prop.Name,boolean(prop.GetValue(self)))).Where(t->t[1]).Select(t->t[0]).ToArray;'+#10;
+    res +=  '      Result := res.Length=0?'#10;
+    res += $'        $''{TName}[{{self.val}}]'':'+#10;
+    res +=  '        res.JoinIntoString(''+'');'#10;
+    res +=  '    end;'#10;
     
     
     

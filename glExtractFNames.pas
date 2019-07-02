@@ -43,7 +43,19 @@ begin
     
     res += #10;
     res += '    {$region }'#10;
-    res += '    '#10'    '#10'    '#10;
+    res += '    '#10;
+    res += '    {$region }'#10;
+    res += '    '#10;
+    res += '    '#10;
+    res += '    '#10;
+    res += '    {$endregion }'#10;
+    res += '    '#10;
+    res += '    {$region }'#10;
+    res += '    '#10;
+    res += '    {$endregion }'#10;
+    res += '    '#10;
+    res += '    '#10;
+    res += '    '#10;
     
     res += ufncs.JoinIntoString(#10'    '#10);
     

@@ -44,6 +44,8 @@ type
   ProgramPipelineName           = UInt32;
   TextureName                   = UInt32;
   SamplerName                   = UInt32;
+  FramebufferName               = UInt32;
+  RenderbufferName              = UInt32;
   
   ShaderBinaryFormat            = UInt32;
   ProgramResourceIndex          = UInt32;
@@ -75,14 +77,16 @@ type
   ErrorCode = record
     public val: UInt32;
     
-    public const NO_ERROR =                                 $0;
-    public const INVALID_ENUM =                             $500;
-    public const INVALID_VALUE =                            $501;
-    public const INVALID_OPERATION =                        $502;
-    public const STACK_OVERFLOW =                           $503;
-    public const STACK_UNDERFLOW =                          $504;
-    public const OUT_OF_MEMORY =                            $505;
-    public const INVALID_FRAMEBUFFER_OPERATION =            $506;
+    public const NO_ERROR =                                $0000;
+    public const FRAMEBUFFER_COMPLETE =                    $8CD5;
+    
+    public const INVALID_ENUM =                            $0500;
+    public const INVALID_VALUE =                           $0501;
+    public const INVALID_OPERATION =                       $0502;
+    public const STACK_OVERFLOW =                          $0503;
+    public const STACK_UNDERFLOW =                         $0504;
+    public const OUT_OF_MEMORY =                           $0505;
+    public const INVALID_FRAMEBUFFER_OPERATION =           $0506;
     
     public function ToString: string; override;
     begin
@@ -93,7 +97,10 @@ type
     end;
     
     public procedure RaiseIfError :=
-    if val<>NO_ERROR then raise new OpenGLException(self.ToString);
+    case val of
+      NO_ERROR, FRAMEBUFFER_COMPLETE: ;
+      else raise new OpenGLException(self.ToString);
+    end;
     
   end;
   
@@ -130,6 +137,24 @@ type
   {$endregion ...Mode}
   
   {$region ...InfoType}
+  
+  //S
+  RenderbufferInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property WIDTH:           RenderbufferInfoType read new RenderbufferInfoType($8D42);
+    public static property HEIGHT:          RenderbufferInfoType read new RenderbufferInfoType($8D43);
+    public static property INTERNAL_FORMAT: RenderbufferInfoType read new RenderbufferInfoType($8D44);
+    public static property SAMPLES:         RenderbufferInfoType read new RenderbufferInfoType($8CAB);
+    public static property RED_SIZE:        RenderbufferInfoType read new RenderbufferInfoType($8D50);
+    public static property GREEN_SIZE:      RenderbufferInfoType read new RenderbufferInfoType($8D51);
+    public static property BLUE_SIZE:       RenderbufferInfoType read new RenderbufferInfoType($8D52);
+    public static property ALPHA_SIZE:      RenderbufferInfoType read new RenderbufferInfoType($8D53);
+    public static property DEPTH_SIZE:      RenderbufferInfoType read new RenderbufferInfoType($8D54);
+    public static property STENCIL_SIZE:    RenderbufferInfoType read new RenderbufferInfoType($8D55);
+    
+  end;
   
   //S
   ActiveSubroutineInfoType = record
@@ -272,6 +297,79 @@ type
   {$endregion ...InfoType}
   
   //S
+  FramebufferAttachmentInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property OBJECT_TYPE:           FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8CD0); // FramebufferAttachmentObjectType
+    
+    // non- NONE
+    public static property OBJECT_NAME:           FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8CD1); // UInt32
+    public static property RED_SIZE:              FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8212); // Int32
+    public static property GREEN_SIZE:            FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8213); // Int32
+    public static property BLUE_SIZE:             FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8214); // Int32
+    public static property ALPHA_SIZE:            FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8215); // Int32
+    public static property DEPTH_SIZE:            FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8216); // Int32
+    public static property STENCIL_SIZE:          FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8217); // Int32
+    public static property COMPONENT_TYPE:        FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8211); // Int32
+    public static property COLOR_ENCODING:        FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8210); // Int32
+    
+    // TEXTURE
+    public static property TEXTURE_LEVEL:         FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8CD2); // Int32
+    public static property TEXTURE_CUBE_MAP_FACE: FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8CD3); // Int32
+    public static property LAYERED:               FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8DA7); // 32-битное boolean (Int32, 0=False, остальное=True)
+    public static property TEXTURE_LAYER:         FramebufferAttachmentInfoType read new FramebufferAttachmentInfoType($8CD4); // Int32
+    
+  end;
+  
+  //S
+  FramebufferInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property WIDTH:                   FramebufferInfoType read new FramebufferInfoType($9310);
+    public static property HEIGHT:                  FramebufferInfoType read new FramebufferInfoType($9311);
+    public static property LAYERS:                  FramebufferInfoType read new FramebufferInfoType($9312);
+    public static property SAMPLES:                 FramebufferInfoType read new FramebufferInfoType($9313);
+    public static property FIXED_SAMPLE_LOCATIONS:  FramebufferInfoType read new FramebufferInfoType($9314);
+    
+  end;
+  
+  //S
+  FramebufferBindTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property READ_FRAMEBUFFER:  FramebufferBindTarget read new FramebufferBindTarget($8CA8);
+    public static property DRAW_FRAMEBUFFER:  FramebufferBindTarget read new FramebufferBindTarget($8CA9);
+    public static property FRAMEBUFFER:       FramebufferBindTarget read new FramebufferBindTarget($8D40);
+    
+  end;
+  
+  //S
+  TextureCubeSide = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property POSITIVE_X:  TextureCubeSide read new TextureCubeSide($8515);
+    public static property NEGATIVE_X:  TextureCubeSide read new TextureCubeSide($8516);
+    public static property POSITIVE_Y:  TextureCubeSide read new TextureCubeSide($8517);
+    public static property NEGATIVE_Y:  TextureCubeSide read new TextureCubeSide($8518);
+    public static property POSITIVE_Z:  TextureCubeSide read new TextureCubeSide($8519);
+    public static property NEGATIVE_Z:  TextureCubeSide read new TextureCubeSide($851A);
+    
+  end;
+  
+  //S
+  RenderbufferBindTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property RENDERBUFFER: RenderbufferBindTarget read new RenderbufferBindTarget($8D41);
+    
+  end;
+  
+  //S
   AccessType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -347,43 +445,30 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property TEXTURE0:  TextureUnitId read new TextureUnitId($84C0);
-    public static property TEXTURE1:  TextureUnitId read new TextureUnitId($84C1);
-    public static property TEXTURE2:  TextureUnitId read new TextureUnitId($84C2);
-    public static property TEXTURE3:  TextureUnitId read new TextureUnitId($84C3);
-    public static property TEXTURE4:  TextureUnitId read new TextureUnitId($84C4);
-    public static property TEXTURE5:  TextureUnitId read new TextureUnitId($84C5);
-    public static property TEXTURE6:  TextureUnitId read new TextureUnitId($84C6);
-    public static property TEXTURE7:  TextureUnitId read new TextureUnitId($84C7);
-    public static property TEXTURE8:  TextureUnitId read new TextureUnitId($84C8);
-    public static property TEXTURE9:  TextureUnitId read new TextureUnitId($84C9);
-    public static property TEXTURE10: TextureUnitId read new TextureUnitId($84CA);
-    public static property TEXTURE11: TextureUnitId read new TextureUnitId($84CB);
-    public static property TEXTURE12: TextureUnitId read new TextureUnitId($84CC);
-    public static property TEXTURE13: TextureUnitId read new TextureUnitId($84CD);
-    public static property TEXTURE14: TextureUnitId read new TextureUnitId($84CE);
-    public static property TEXTURE15: TextureUnitId read new TextureUnitId($84CF);
-    public static property TEXTURE16: TextureUnitId read new TextureUnitId($84D0);
-    public static property TEXTURE17: TextureUnitId read new TextureUnitId($84D1);
-    public static property TEXTURE18: TextureUnitId read new TextureUnitId($84D2);
-    public static property TEXTURE19: TextureUnitId read new TextureUnitId($84D3);
-    public static property TEXTURE20: TextureUnitId read new TextureUnitId($84D4);
-    public static property TEXTURE21: TextureUnitId read new TextureUnitId($84D5);
-    public static property TEXTURE22: TextureUnitId read new TextureUnitId($84D6);
-    public static property TEXTURE23: TextureUnitId read new TextureUnitId($84D7);
-    public static property TEXTURE24: TextureUnitId read new TextureUnitId($84D8);
-    public static property TEXTURE25: TextureUnitId read new TextureUnitId($84D9);
-    public static property TEXTURE26: TextureUnitId read new TextureUnitId($84DA);
-    public static property TEXTURE27: TextureUnitId read new TextureUnitId($84DB);
-    public static property TEXTURE28: TextureUnitId read new TextureUnitId($84DC);
-    public static property TEXTURE29: TextureUnitId read new TextureUnitId($84DD);
-    public static property TEXTURE30: TextureUnitId read new TextureUnitId($84DE);
-    public static property TEXTURE31: TextureUnitId read new TextureUnitId($84DF);
+    public static property Texture[i: integer]: TextureUnitId read new TextureUnitId($84C0+i);
     
-    public static function operator+(uid: TextureUnitId; n: integer): TextureUnitId := new TextureUnitId(uid.val+n);
-    public static function operator-(uid: TextureUnitId; n: integer): TextureUnitId := new TextureUnitId(uid.val-n);
+  end;
+  
+  //S
+  FramebufferAttachmentPoint = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
     
-    public function IsValid := (self.val >= TEXTURE0.val) and (self.val <= TEXTURE31.val);
+    // custom framebuffer
+    public static property COLOR_ATTACHMENT[i: integer]:  FramebufferAttachmentPoint read new FramebufferAttachmentPoint($8CE0+i);
+    public static property DEPTH_ATTACHMENT:              FramebufferAttachmentPoint read new FramebufferAttachmentPoint($8D00);
+    public static property STENCIL_ATTACHMENT:            FramebufferAttachmentPoint read new FramebufferAttachmentPoint($8D20);
+    public static property DEPTH_STENCIL_ATTACHMENT:      FramebufferAttachmentPoint read new FramebufferAttachmentPoint($821A);
+    
+    // default framebuffer
+    public static property FRONT:                         FramebufferAttachmentPoint read new FramebufferAttachmentPoint($0404);
+    public static property FRONT_LEFT:                    FramebufferAttachmentPoint read new FramebufferAttachmentPoint($0400);
+    public static property FRONT_RIGHT:                   FramebufferAttachmentPoint read new FramebufferAttachmentPoint($0401);
+    public static property BACK:                          FramebufferAttachmentPoint read new FramebufferAttachmentPoint($0405);
+    public static property BACK_LEFT:                     FramebufferAttachmentPoint read new FramebufferAttachmentPoint($0402);
+    public static property BACK_RIGHT:                    FramebufferAttachmentPoint read new FramebufferAttachmentPoint($0403);
+    public static property DEPTH:                         FramebufferAttachmentPoint read new FramebufferAttachmentPoint($1801);
+    public static property STENCIL:                       FramebufferAttachmentPoint read new FramebufferAttachmentPoint($1802);
     
   end;
   
@@ -666,34 +751,6 @@ type
   end;
   
   //S
-  DataType = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property BYTE:                        DataType read new DataType($1400);
-    public static property UNSIGNED_BYTE:               DataType read new DataType($1401);
-    public static property SHORT:                       DataType read new DataType($1402);
-    public static property UNSIGNED_SHORT:              DataType read new DataType($1403);
-    public static property INT:                         DataType read new DataType($1404);
-    public static property UNSIGNED_INT:                DataType read new DataType($1405);
-    public static property FLOAT:                       DataType read new DataType($1406);
-    public static property HALF_FLOAT:                  DataType read new DataType($140B);
-    public static property UNSIGNED_BYTE_3_3_2:         DataType read new DataType($8032);
-    public static property UNSIGNED_SHORT_5_6_5:        DataType read new DataType($8363);
-    public static property UNSIGNED_SHORT_4_4_4_4:      DataType read new DataType($8033);
-    public static property UNSIGNED_SHORT_5_5_5_1:      DataType read new DataType($8034);
-    public static property UNSIGNED_INT_8_8_8_8:        DataType read new DataType($8035);
-    public static property UNSIGNED_INT_10_10_10_2:     DataType read new DataType($8036);
-    public static property UNSIGNED_BYTE_2_3_3_REV:     DataType read new DataType($8362);
-    public static property UNSIGNED_SHORT_5_6_5_REV:    DataType read new DataType($8364);
-    public static property UNSIGNED_SHORT_4_4_4_4_REV:  DataType read new DataType($8365);
-    public static property UNSIGNED_SHORT_1_5_5_5_REV:  DataType read new DataType($8366);
-    public static property UNSIGNED_INT_8_8_8_8_REV:    DataType read new DataType($8367);
-    public static property UNSIGNED_INT_2_10_10_10_REV: DataType read new DataType($8368);
-    
-  end;
-  
-  //S
   GLGetQueries = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -971,6 +1028,108 @@ type
     
   end;
   
+  //SR
+  ColorEncodingMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property LINEAR:  ColorEncodingMode read new ColorEncodingMode($2601);
+    public static property SRGB:    ColorEncodingMode read new ColorEncodingMode($8C40);
+    
+    public property IS_LINEAR:  boolean read self = ColorEncodingMode.LINEAR;
+    public property IS_SRGB:    boolean read self = ColorEncodingMode.SRGB;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ColorEncodingMode).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'ColorEncodingMode[{self.val}]':
+        res[0].Substring(3);
+    end;
+    
+  end;
+  
+  //SR
+  DataType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property BYTE:                        DataType read new DataType($1400);
+    public static property UNSIGNED_BYTE:               DataType read new DataType($1401);
+    public static property SHORT:                       DataType read new DataType($1402);
+    public static property UNSIGNED_SHORT:              DataType read new DataType($1403);
+    public static property INT:                         DataType read new DataType($1404);
+    public static property UNSIGNED_INT:                DataType read new DataType($1405);
+    public static property FLOAT:                       DataType read new DataType($1406);
+    public static property HALF_FLOAT:                  DataType read new DataType($140B);
+    public static property UNSIGNED_BYTE_3_3_2:         DataType read new DataType($8032);
+    public static property UNSIGNED_SHORT_5_6_5:        DataType read new DataType($8363);
+    public static property UNSIGNED_SHORT_4_4_4_4:      DataType read new DataType($8033);
+    public static property UNSIGNED_SHORT_5_5_5_1:      DataType read new DataType($8034);
+    public static property UNSIGNED_INT_8_8_8_8:        DataType read new DataType($8035);
+    public static property UNSIGNED_INT_10_10_10_2:     DataType read new DataType($8036);
+    public static property UNSIGNED_BYTE_2_3_3_REV:     DataType read new DataType($8362);
+    public static property UNSIGNED_SHORT_5_6_5_REV:    DataType read new DataType($8364);
+    public static property UNSIGNED_SHORT_4_4_4_4_REV:  DataType read new DataType($8365);
+    public static property UNSIGNED_SHORT_1_5_5_5_REV:  DataType read new DataType($8366);
+    public static property UNSIGNED_INT_8_8_8_8_REV:    DataType read new DataType($8367);
+    public static property UNSIGNED_INT_2_10_10_10_REV: DataType read new DataType($8368);
+    public static property SIGNED_NORMALIZED:           DataType read new DataType($8F9C);
+    public static property UNSIGNED_NORMALIZED:         DataType read new DataType($8C17);
+    
+    public property IS_NONE:                        boolean read self.val = 0;
+    public property IS_BYTE:                        boolean read self.val = BYTE.val;
+    public property IS_UNSIGNED_BYTE:               boolean read self.val = UNSIGNED_BYTE.val;
+    public property IS_SHORT:                       boolean read self.val = SHORT.val;
+    public property IS_UNSIGNED_SHORT:              boolean read self.val = UNSIGNED_SHORT.val;
+    public property IS_INT:                         boolean read self.val = INT.val;
+    public property IS_UNSIGNED_INT:                boolean read self.val = UNSIGNED_INT.val;
+    public property IS_FLOAT:                       boolean read self.val = FLOAT.val;
+    public property IS_HALF_FLOAT:                  boolean read self.val = HALF_FLOAT.val;
+    public property IS_UNSIGNED_BYTE_3_3_2:         boolean read self.val = UNSIGNED_BYTE_3_3_2.val;
+    public property IS_UNSIGNED_SHORT_5_6_5:        boolean read self.val = UNSIGNED_SHORT_5_6_5.val;
+    public property IS_UNSIGNED_SHORT_4_4_4_4:      boolean read self.val = UNSIGNED_SHORT_4_4_4_4.val;
+    public property IS_UNSIGNED_SHORT_5_5_5_1:      boolean read self.val = UNSIGNED_SHORT_5_5_5_1.val;
+    public property IS_UNSIGNED_INT_8_8_8_8:        boolean read self.val = UNSIGNED_INT_8_8_8_8.val;
+    public property IS_UNSIGNED_INT_10_10_10_2:     boolean read self.val = UNSIGNED_INT_10_10_10_2.val;
+    public property IS_UNSIGNED_BYTE_2_3_3_REV:     boolean read self.val = UNSIGNED_BYTE_2_3_3_REV.val;
+    public property IS_UNSIGNED_SHORT_5_6_5_REV:    boolean read self.val = UNSIGNED_SHORT_5_6_5_REV.val;
+    public property IS_UNSIGNED_SHORT_4_4_4_4_REV:  boolean read self.val = UNSIGNED_SHORT_4_4_4_4_REV.val;
+    public property IS_UNSIGNED_SHORT_1_5_5_5_REV:  boolean read self.val = UNSIGNED_SHORT_1_5_5_5_REV.val;
+    public property IS_UNSIGNED_INT_8_8_8_8_REV:    boolean read self.val = UNSIGNED_INT_8_8_8_8_REV.val;
+    public property IS_UNSIGNED_INT_2_10_10_10_REV: boolean read self.val = UNSIGNED_INT_2_10_10_10_REV.val;
+    public property IS_SIGNED_NORMALIZED:           boolean read self.val = SIGNED_NORMALIZED.val;
+    public property IS_UNSIGNED_NORMALIZED:         boolean read self.val = UNSIGNED_NORMALIZED.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DataType).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'DataType[{self.val}]':
+        res[0].Substring(3);
+    end;
+    
+  end;
+  
+  //S
+  FramebufferAttachmentObjectType = record
+    public val: UInt32;
+    
+    public property NONE:                boolean read self.val = $0000;
+    public property FRAMEBUFFER_DEFAULT: boolean read self.val = $8218;
+    public property TEXTURE:             boolean read self.val = $1702;
+    public property RENDERBUFFER:        boolean read self.val = $8D41;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(FramebufferAttachmentObjectType).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'FramebufferAttachmentObjectType[{self.val}]':
+        res[0];
+    end;
+    
+  end;
+  
   //R
   ClientWaitSyncResult = record
     public val: UInt32;
@@ -993,7 +1152,6 @@ type
   //R
   ShadingLanguageTypeToken = record
     public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
     
     public property FLOAT:                                     boolean read self.val = $1406;
     public property FLOAT_VEC2:                                boolean read self.val = $8B50;
@@ -10601,7 +10759,7 @@ type
     
     {$endregion 7.0 - Programs and Shaders}
     
-    {$region Chapter 8 - Textures and Samplers}
+    {$region 8.0 - Textures and Samplers}
     
     static procedure ActiveTexture(texture: TextureUnitId);
     external 'opengl32.dll' name 'glActiveTexture';
@@ -11149,12 +11307,208 @@ type
     external 'opengl32.dll' name 'glBindImageTextures';
     static procedure BindImageTextures(first: UInt32; count: Int32; var textures: TextureName);
     external 'opengl32.dll' name 'glBindImageTextures';
-    static procedure BindImageTextures(first: UInt32; count: Int32; textures: ^TextureName);
+    static procedure BindImageTextures(first: UInt32; count: Int32; textures: pointer);
     external 'opengl32.dll' name 'glBindImageTextures';
     
     {$endregion 8.26 - Texture Image Loads and Stores}
     
-    {$endregion Chapter 8 - Textures and Samplers}
+    {$endregion 8.0 - Textures and Samplers}
+    
+    {$region 9.0 - Framebuffers and Framebuffer Objects}
+    
+    {$region 9.2 - Binding and Managing Framebuffer Objects}
+    
+    static procedure BindFramebuffer(target: FramebufferBindTarget; framebuffer: FramebufferName);
+    external 'opengl32.dll' name 'glBindFramebuffer';
+    
+    static procedure CreateFramebuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] framebuffers: array of FramebufferName);
+    external 'opengl32.dll' name 'glCreateFramebuffers';
+    static procedure CreateFramebuffers(n: Int32; var framebuffers: FramebufferName);
+    external 'opengl32.dll' name 'glCreateFramebuffers';
+    static procedure CreateFramebuffers(n: Int32; framebuffers: pointer);
+    external 'opengl32.dll' name 'glCreateFramebuffers';
+    
+    static procedure GenFramebuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] framebuffers: array of FramebufferName);
+    external 'opengl32.dll' name 'glGenFramebuffers';
+    static procedure GenFramebuffers(n: Int32; var framebuffers: FramebufferName);
+    external 'opengl32.dll' name 'glGenFramebuffers';
+    static procedure GenFramebuffers(n: Int32; framebuffers: pointer);
+    external 'opengl32.dll' name 'glGenFramebuffers';
+    
+    static procedure DeleteFramebuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] framebuffers: array of FramebufferName);
+    external 'opengl32.dll' name 'glDeleteFramebuffers';
+    static procedure DeleteFramebuffers(n: Int32; var framebuffers: FramebufferName);
+    external 'opengl32.dll' name 'glDeleteFramebuffers';
+    static procedure DeleteFramebuffers(n: Int32; framebuffers: pointer);
+    external 'opengl32.dll' name 'glDeleteFramebuffers';
+    
+    static function IsFramebuffer(framebuffer: FramebufferName): boolean;
+    external 'opengl32.dll' name 'glIsFramebuffer';
+    
+    // 9.2.1
+    
+    static procedure FramebufferParameteri(target: FramebufferBindTarget; pname: FramebufferInfoType; param: Int32);
+    external 'opengl32.dll' name 'glFramebufferParameteri';
+    
+    static procedure NamedFramebufferParameteri(framebuffer: FramebufferName; pname: FramebufferInfoType; param: Int32);
+    external 'opengl32.dll' name 'glNamedFramebufferParameteri';
+    
+    // 9.2.3
+    
+    static procedure GetFramebufferParameteriv(target: FramebufferBindTarget; pname: FramebufferInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetFramebufferParameteriv';
+    static procedure GetFramebufferParameteriv(target: FramebufferBindTarget; pname: FramebufferInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetFramebufferParameteriv';
+    
+    static procedure GetNamedFramebufferParameteriv(framebuffer: FramebufferName; pname: FramebufferInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glGetNamedFramebufferParameteriv';
+    static procedure GetNamedFramebufferParameteriv(framebuffer: FramebufferName; pname: FramebufferInfoType; param: pointer);
+    external 'opengl32.dll' name 'glGetNamedFramebufferParameteriv';
+    
+    static procedure GetFramebufferAttachmentParameteriv(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: FramebufferAttachmentObjectType);
+    external 'opengl32.dll' name 'glGetFramebufferAttachmentParameteriv';
+    static procedure GetFramebufferAttachmentParameteriv(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetFramebufferAttachmentParameteriv';
+    static procedure GetFramebufferAttachmentParameteriv(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetFramebufferAttachmentParameteriv';
+    static procedure GetFramebufferAttachmentParameteriv(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: ColorEncodingMode);
+    external 'opengl32.dll' name 'glGetFramebufferAttachmentParameteriv';
+    static procedure GetFramebufferAttachmentParameteriv(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetFramebufferAttachmentParameteriv';
+    static procedure GetFramebufferAttachmentParameteriv(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetFramebufferAttachmentParameteriv';
+    
+    static procedure GetNamedFramebufferAttachmentParameteriv(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: FramebufferAttachmentObjectType);
+    external 'opengl32.dll' name 'glGetNamedFramebufferAttachmentParameteriv';
+    static procedure GetNamedFramebufferAttachmentParameteriv(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetNamedFramebufferAttachmentParameteriv';
+    static procedure GetNamedFramebufferAttachmentParameteriv(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetNamedFramebufferAttachmentParameteriv';
+    static procedure GetNamedFramebufferAttachmentParameteriv(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: ColorEncodingMode);
+    external 'opengl32.dll' name 'glGetNamedFramebufferAttachmentParameteriv';
+    static procedure GetNamedFramebufferAttachmentParameteriv(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetNamedFramebufferAttachmentParameteriv';
+    static procedure GetNamedFramebufferAttachmentParameteriv(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; pname: FramebufferAttachmentInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetNamedFramebufferAttachmentParameteriv';
+    
+    // 9.2.4
+    
+    static procedure BindRenderbuffer(target: RenderbufferBindTarget; renderbuffer: RenderbufferName);
+    external 'opengl32.dll' name 'glBindRenderbuffer';
+    
+    static procedure CreateRenderbuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] renderbuffers: array of RenderbufferName);
+    external 'opengl32.dll' name 'glCreateRenderbuffers';
+    static procedure CreateRenderbuffers(n: Int32; var renderbuffers: RenderbufferName);
+    external 'opengl32.dll' name 'glCreateRenderbuffers';
+    static procedure CreateRenderbuffers(n: Int32; renderbuffers: pointer);
+    external 'opengl32.dll' name 'glCreateRenderbuffers';
+    
+    static procedure GenRenderbuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] renderbuffers: array of RenderbufferName);
+    external 'opengl32.dll' name 'glGenRenderbuffers';
+    static procedure GenRenderbuffers(n: Int32; var renderbuffers: RenderbufferName);
+    external 'opengl32.dll' name 'glGenRenderbuffers';
+    static procedure GenRenderbuffers(n: Int32; renderbuffers: pointer);
+    external 'opengl32.dll' name 'glGenRenderbuffers';
+    
+    static procedure DeleteRenderbuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] renderbuffers: array of RenderbufferName);
+    external 'opengl32.dll' name 'glDeleteRenderbuffers';
+    static procedure DeleteRenderbuffers(n: Int32; var renderbuffers: RenderbufferName);
+    external 'opengl32.dll' name 'glDeleteRenderbuffers';
+    static procedure DeleteRenderbuffers(n: Int32; renderbuffers: pointer);
+    external 'opengl32.dll' name 'glDeleteRenderbuffers';
+    
+    static function IsRenderbuffer(renderbuffer: RenderbufferName): boolean;
+    external 'opengl32.dll' name 'glIsRenderbuffer';
+    
+    static procedure RenderbufferStorageMultisample(target: RenderbufferBindTarget; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glRenderbufferStorageMultisample';
+    
+    static procedure NamedRenderbufferStorageMultisample(renderbuffer: RenderbufferName; samples: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glNamedRenderbufferStorageMultisample';
+    
+    static procedure RenderbufferStorage(target: RenderbufferBindTarget; internalformat: InternalDataFormat; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glRenderbufferStorage';
+    
+    static procedure NamedRenderbufferStorage(renderbuffer: RenderbufferName; internalformat: InternalDataFormat; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glNamedRenderbufferStorage';
+    
+    // 9.2.6
+    
+    static procedure GetRenderbufferParameteriv(target: RenderbufferBindTarget; pname: RenderbufferInfoType; var &params: InternalDataFormat);
+    external 'opengl32.dll' name 'glGetRenderbufferParameteriv';
+    static procedure GetRenderbufferParameteriv(target: RenderbufferBindTarget; pname: RenderbufferInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetRenderbufferParameteriv';
+    static procedure GetRenderbufferParameteriv(target: RenderbufferBindTarget; pname: RenderbufferInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetRenderbufferParameteriv';
+    
+    static procedure GetNamedRenderbufferParameteriv(renderbuffer: RenderbufferName; pname: RenderbufferInfoType; var &params: InternalDataFormat);
+    external 'opengl32.dll' name 'glGetNamedRenderbufferParameteriv';
+    static procedure GetNamedRenderbufferParameteriv(renderbuffer: RenderbufferName; pname: RenderbufferInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetNamedRenderbufferParameteriv';
+    static procedure GetNamedRenderbufferParameteriv(renderbuffer: RenderbufferName; pname: RenderbufferInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetNamedRenderbufferParameteriv';
+    
+    // 9.2.7
+    
+    static procedure FramebufferRenderbuffer(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; renderbuffertarget: RenderbufferBindTarget; renderbuffer: RenderbufferName);
+    external 'opengl32.dll' name 'glFramebufferRenderbuffer';
+    
+    static procedure NamedFramebufferRenderbuffer(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; renderbuffertarget: RenderbufferBindTarget; renderbuffer: RenderbufferName);
+    external 'opengl32.dll' name 'glNamedFramebufferRenderbuffer';
+    
+    // 9.2.8
+    
+    static procedure FramebufferTexture(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; texture: TextureName; level: Int32);
+    external 'opengl32.dll' name 'glFramebufferTexture';
+    
+    static procedure NamedFramebufferTexture(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; texture: TextureName; level: Int32);
+    external 'opengl32.dll' name 'glNamedFramebufferTexture';
+    
+    static procedure FramebufferTexture1D(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; textarget: TextureBindTarget; texture: TextureName; level: Int32);
+    external 'opengl32.dll' name 'glFramebufferTexture1D';
+    static procedure FramebufferTexture1D(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; textarget: TextureCubeSide; texture: TextureName; level: Int32);
+    external 'opengl32.dll' name 'glFramebufferTexture1D';
+    
+    static procedure FramebufferTexture2D(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; textarget: TextureBindTarget; texture: TextureName; level: Int32);
+    external 'opengl32.dll' name 'glFramebufferTexture2D';
+    static procedure FramebufferTexture2D(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; textarget: TextureCubeSide; texture: TextureName; level: Int32);
+    external 'opengl32.dll' name 'glFramebufferTexture2D';
+    
+    static procedure FramebufferTexture3D(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; textarget: TextureBindTarget; texture: TextureName; level: Int32; zoffset: Int32);
+    external 'opengl32.dll' name 'glFramebufferTexture3D';
+    static procedure FramebufferTexture3D(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; textarget: TextureCubeSide; texture: TextureName; level: Int32; zoffset: Int32);
+    external 'opengl32.dll' name 'glFramebufferTexture3D';
+    
+    static procedure FramebufferTextureLayer(target: FramebufferBindTarget; attachment: FramebufferAttachmentPoint; texture: TextureName; level: Int32; layer: Int32);
+    external 'opengl32.dll' name 'glFramebufferTextureLayer';
+    
+    static procedure NamedFramebufferTextureLayer(framebuffer: FramebufferName; attachment: FramebufferAttachmentPoint; texture: TextureName; level: Int32; layer: Int32);
+    external 'opengl32.dll' name 'glNamedFramebufferTextureLayer';
+    
+    {$endregion 9.2 - Binding and Managing Framebuffer Objects}
+    
+    {$region 9.3 - Feedback Loops Between Textures and the Framebuffer}
+    
+    // 9.3.1
+    
+    static procedure TextureBarrier;
+    external 'opengl32.dll' name 'glTextureBarrier';
+    
+    {$endregion 9.3 - Feedback Loops Between Textures and the Framebuffer}
+    
+    {$region 9.4 - Framebuffer Completeness}
+    
+    // 9.4.2
+    
+    static function CheckFramebufferStatus(target: FramebufferBindTarget): ErrorCode;
+    external 'opengl32.dll' name 'glCheckFramebufferStatus';
+    
+    static function CheckNamedFramebufferStatus(framebuffer: FramebufferName; target: FramebufferBindTarget): ErrorCode;
+    external 'opengl32.dll' name 'glCheckNamedFramebufferStatus';
+    
+    {$endregion 9.4 - Framebuffer Completeness}
+    
+    {$endregion 9.0 - Framebuffers and Framebuffer Objects}
     
     
     
@@ -11164,17 +11518,23 @@ type
     
     {$region unsorted}
     
+    static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    
+    static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
+    external 'opengl32.dll' name 'glBlitFramebuffer';
+    
     static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
     external 'opengl32.dll' name 'glReadPixels';
+    
+    static procedure Clear(mask: UInt32);
+    external 'opengl32.dll' name 'glClear';
     
     static procedure CopyImageSubData(srcName: UInt32; srcTarget: UInt32; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: UInt32; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32);
     external 'opengl32.dll' name 'glCopyImageSubData';
     
     static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
     external 'opengl32.dll' name 'glCopyPixels';
-    
-    static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetInternalformativ';
     
     static procedure ValidateProgram(&program: UInt32);
     external 'opengl32.dll' name 'glValidateProgram';
@@ -11205,9 +11565,6 @@ type
     
     static procedure DrawBuffer(buf: UInt32);
     external 'opengl32.dll' name 'glDrawBuffer';
-    
-    static procedure Clear(mask: UInt32);
-    external 'opengl32.dll' name 'glClear';
     
     static procedure ClearColor(red: single; green: single; blue: single; alpha: single);
     external 'opengl32.dll' name 'glClearColor';
@@ -11566,63 +11923,6 @@ type
     static procedure ClearBufferfi(buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
     external 'opengl32.dll' name 'glClearBufferfi';
     
-    static function IsRenderbuffer(renderbuffer: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsRenderbuffer';
-    
-    static procedure BindRenderbuffer(target: UInt32; renderbuffer: UInt32);
-    external 'opengl32.dll' name 'glBindRenderbuffer';
-    
-    static procedure DeleteRenderbuffers(n: Int32; renderbuffers: ^UInt32);
-    external 'opengl32.dll' name 'glDeleteRenderbuffers';
-    
-    static procedure GenRenderbuffers(n: Int32; renderbuffers: ^UInt32);
-    external 'opengl32.dll' name 'glGenRenderbuffers';
-    
-    static procedure RenderbufferStorage(target: UInt32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glRenderbufferStorage';
-    
-    static procedure GetRenderbufferParameteriv(target: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetRenderbufferParameteriv';
-    
-    static function IsFramebuffer(framebuffer: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsFramebuffer';
-    
-    static procedure BindFramebuffer(target: UInt32; framebuffer: UInt32);
-    external 'opengl32.dll' name 'glBindFramebuffer';
-    
-    static procedure DeleteFramebuffers(n: Int32; framebuffers: ^UInt32);
-    external 'opengl32.dll' name 'glDeleteFramebuffers';
-    
-    static procedure GenFramebuffers(n: Int32; framebuffers: ^UInt32);
-    external 'opengl32.dll' name 'glGenFramebuffers';
-    
-    static function CheckFramebufferStatus(target: UInt32): UInt32;
-    external 'opengl32.dll' name 'glCheckFramebufferStatus';
-    
-    static procedure FramebufferTexture1D(target: UInt32; attachment: UInt32; textarget: UInt32; texture: UInt32; level: Int32);
-    external 'opengl32.dll' name 'glFramebufferTexture1D';
-    
-    static procedure FramebufferTexture2D(target: UInt32; attachment: UInt32; textarget: UInt32; texture: UInt32; level: Int32);
-    external 'opengl32.dll' name 'glFramebufferTexture2D';
-    
-    static procedure FramebufferTexture3D(target: UInt32; attachment: UInt32; textarget: UInt32; texture: UInt32; level: Int32; zoffset: Int32);
-    external 'opengl32.dll' name 'glFramebufferTexture3D';
-    
-    static procedure FramebufferRenderbuffer(target: UInt32; attachment: UInt32; renderbuffertarget: UInt32; renderbuffer: UInt32);
-    external 'opengl32.dll' name 'glFramebufferRenderbuffer';
-    
-    static procedure GetFramebufferAttachmentParameteriv(target: UInt32; attachment: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetFramebufferAttachmentParameteriv';
-    
-    static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
-    external 'opengl32.dll' name 'glBlitFramebuffer';
-    
-    static procedure RenderbufferStorageMultisample(target: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glRenderbufferStorageMultisample';
-    
-    static procedure FramebufferTextureLayer(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32; layer: Int32);
-    external 'opengl32.dll' name 'glFramebufferTextureLayer';
-    
     static procedure BindVertexArray(&array: UInt32);
     external 'opengl32.dll' name 'glBindVertexArray';
     
@@ -11658,9 +11958,6 @@ type
     
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
-    
-    static procedure FramebufferTexture(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32);
-    external 'opengl32.dll' name 'glFramebufferTexture';
     
     static procedure GetMultisamplefv(pname: UInt32; index: UInt32; val: ^single);
     external 'opengl32.dll' name 'glGetMultisamplefv';
@@ -11833,12 +12130,6 @@ type
     static procedure DispatchComputeIndirect(indirect: IntPtr);
     external 'opengl32.dll' name 'glDispatchComputeIndirect';
     
-    static procedure FramebufferParameteri(target: UInt32; pname: UInt32; param: Int32);
-    external 'opengl32.dll' name 'glFramebufferParameteri';
-    
-    static procedure GetFramebufferParameteriv(target: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetFramebufferParameteriv';
-    
     static procedure GetInternalformati64v(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int64);
     external 'opengl32.dll' name 'glGetInternalformati64v';
     
@@ -11926,21 +12217,6 @@ type
     static procedure GetTransformFeedbacki64_v(xfb: UInt32; pname: UInt32; index: UInt32; param: ^Int64);
     external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
     
-    static procedure CreateFramebuffers(n: Int32; framebuffers: ^UInt32);
-    external 'opengl32.dll' name 'glCreateFramebuffers';
-    
-    static procedure NamedFramebufferRenderbuffer(framebuffer: UInt32; attachment: UInt32; renderbuffertarget: UInt32; renderbuffer: UInt32);
-    external 'opengl32.dll' name 'glNamedFramebufferRenderbuffer';
-    
-    static procedure NamedFramebufferParameteri(framebuffer: UInt32; pname: UInt32; param: Int32);
-    external 'opengl32.dll' name 'glNamedFramebufferParameteri';
-    
-    static procedure NamedFramebufferTexture(framebuffer: UInt32; attachment: UInt32; texture: UInt32; level: Int32);
-    external 'opengl32.dll' name 'glNamedFramebufferTexture';
-    
-    static procedure NamedFramebufferTextureLayer(framebuffer: UInt32; attachment: UInt32; texture: UInt32; level: Int32; layer: Int32);
-    external 'opengl32.dll' name 'glNamedFramebufferTextureLayer';
-    
     static procedure NamedFramebufferDrawBuffer(framebuffer: UInt32; buf: UInt32);
     external 'opengl32.dll' name 'glNamedFramebufferDrawBuffer';
     
@@ -11970,27 +12246,6 @@ type
     
     static procedure BlitNamedFramebuffer(readFramebuffer: UInt32; drawFramebuffer: UInt32; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
     external 'opengl32.dll' name 'glBlitNamedFramebuffer';
-    
-    static function CheckNamedFramebufferStatus(framebuffer: UInt32; target: UInt32): UInt32;
-    external 'opengl32.dll' name 'glCheckNamedFramebufferStatus';
-    
-    static procedure GetNamedFramebufferParameteriv(framebuffer: UInt32; pname: UInt32; param: ^Int32);
-    external 'opengl32.dll' name 'glGetNamedFramebufferParameteriv';
-    
-    static procedure GetNamedFramebufferAttachmentParameteriv(framebuffer: UInt32; attachment: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetNamedFramebufferAttachmentParameteriv';
-    
-    static procedure CreateRenderbuffers(n: Int32; renderbuffers: ^UInt32);
-    external 'opengl32.dll' name 'glCreateRenderbuffers';
-    
-    static procedure NamedRenderbufferStorage(renderbuffer: UInt32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glNamedRenderbufferStorage';
-    
-    static procedure NamedRenderbufferStorageMultisample(renderbuffer: UInt32; samples: Int32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glNamedRenderbufferStorageMultisample';
-    
-    static procedure GetNamedRenderbufferParameteriv(renderbuffer: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetNamedRenderbufferParameteriv';
     
     static procedure CreateVertexArrays(n: Int32; arrays: ^UInt32);
     external 'opengl32.dll' name 'glCreateVertexArrays';
@@ -12039,9 +12294,6 @@ type
     
     static procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; bufSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glReadnPixels';
-    
-    static procedure TextureBarrier;
-    external 'opengl32.dll' name 'glTextureBarrier';
     
     static procedure MultiDrawArraysIndirectCount(mode: UInt32; indirect: pointer; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
     external 'opengl32.dll' name 'glMultiDrawArraysIndirectCount';
