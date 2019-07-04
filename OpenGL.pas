@@ -312,6 +312,57 @@ type
   {$endregion ...InfoType}
   
   //S
+  PolygonRasterizationMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property POINT: PolygonRasterizationMode read new PolygonRasterizationMode($1B00);
+    public static property LINE:  PolygonRasterizationMode read new PolygonRasterizationMode($1B01);
+    public static property FILL:  PolygonRasterizationMode read new PolygonRasterizationMode($1B02);
+    
+  end;
+  
+  //S
+  PolygonFace = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FRONT:           PolygonFace read new PolygonFace($0404);
+    public static property BACK:            PolygonFace read new PolygonFace($0405);
+    public static property FRONT_AND_BACK:  PolygonFace read new PolygonFace($0408);
+    
+  end;
+  
+  //S
+  FrontFaceDirection = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property СW:  FrontFaceDirection read new FrontFaceDirection($0900);
+    public static property СCW: FrontFaceDirection read new FrontFaceDirection($0901);
+    
+  end;
+  
+  //S
+  PointInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FADE_THRESHOLD_SIZE: PointInfoType read new PointInfoType($8128);
+    public static property SPRITE_COORD_ORIGIN: PointInfoType read new PointInfoType($8CA0);
+    
+  end;
+  
+  //S
+  MultisampleInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property GL_SAMPLE_POSITION:  MultisampleInfoType read new MultisampleInfoType($8E50);
+    
+  end;
+  
+  //S
   ClipDepthMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12864,21 +12915,137 @@ type
     
     {$endregion 13.0 - Fixed-Function Vertex Post-Processing}
     
+    {$region 14.0 Fixed-Function Primitive Assembly and Rasterization}
+    
+    {$region 14.3 - Antialiasing}
+    
+    // 14.3.1
+    
+    static procedure GetMultisamplefv(pname: MultisampleInfoType; index: UInt32; var val: Vec2f);
+    external 'opengl32.dll' name 'glGetMultisamplefv';
+    static procedure GetMultisamplefv(pname: MultisampleInfoType; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] val: array of single);
+    external 'opengl32.dll' name 'glGetMultisamplefv';
+    static procedure GetMultisamplefv(pname: MultisampleInfoType; index: UInt32; var val: single);
+    external 'opengl32.dll' name 'glGetMultisamplefv';
+    static procedure GetMultisamplefv(pname: MultisampleInfoType; index: UInt32; val: pointer);
+    external 'opengl32.dll' name 'glGetMultisamplefv';
+    
+    // 14.3.1.1
+    
+    static procedure MinSampleShading(value: single);
+    external 'opengl32.dll' name 'glMinSampleShading';
+    
+    {$endregion 14.3 - Antialiasing}
+    
+    {$region 14.4 - Points}
+    
+    static procedure PointSize(size: single);
+    external 'opengl32.dll' name 'glPointSize';
+    
+    static procedure PointParameteri(pname: PointInfoType; param: Int32);
+    external 'opengl32.dll' name 'glPointParameteri';
+    static procedure PointParameteri(pname: PointInfoType; param: ClipOriginMode);
+    external 'opengl32.dll' name 'glPointParameteri';
+    
+    static procedure PointParameterf(pname: PointInfoType; param: single);
+    external 'opengl32.dll' name 'glPointParameterf';
+    
+    static procedure PointParameteriv(pname: PointInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glPointParameteriv';
+    static procedure PointParameteriv(pname: PointInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glPointParameteriv';
+    static procedure PointParameteriv(pname: PointInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glPointParameteriv';
+    
+    static procedure PointParameterfv(pname: PointInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
+    external 'opengl32.dll' name 'glPointParameterfv';
+    static procedure PointParameterfv(pname: PointInfoType; var &params: single);
+    external 'opengl32.dll' name 'glPointParameterfv';
+    static procedure PointParameterfv(pname: PointInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glPointParameterfv';
+    
+    {$endregion 14.4 - Points}
+    
+    {$region 14.5 - Line Segments}
+    
+    static procedure LineWidth(width: single);
+    external 'opengl32.dll' name 'glLineWidth';
+    
+    {$endregion 14.5 - Line Segments}
+    
+    {$region 14.6 - Polygons}
+    
+    // 14.6.1
+    
+    static procedure FrontFace(mode: FrontFaceDirection);
+    external 'opengl32.dll' name 'glFrontFace';
+    
+    static procedure CullFace(mode: PolygonFace);
+    external 'opengl32.dll' name 'glCullFace';
+    
+    // 14.6.4
+    
+    static procedure PolygonMode(face: PolygonFace; mode: PolygonRasterizationMode);
+    external 'opengl32.dll' name 'glPolygonMode';
+    
+    // 14.6.5
+    
+    static procedure PolygonOffsetClamp(factor: single; units: single; clamp: single);
+    external 'opengl32.dll' name 'glPolygonOffsetClamp';
+    
+    static procedure PolygonOffset(factor: single; units: single);
+    external 'opengl32.dll' name 'glPolygonOffset';
+    
+    {$endregion 14.6 - Polygons}
+    
+    {$region 14.9 - Early Per-Fragment Tests}
+    
+    // 14.9.2
+    
+    static procedure ScissorArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glScissorArrayv';
+    static procedure ScissorArrayv(first: UInt32; count: Int32; var v: Int32);
+    external 'opengl32.dll' name 'glScissorArrayv';
+    static procedure ScissorArrayv(first: UInt32; count: Int32; v: pointer);
+    external 'opengl32.dll' name 'glScissorArrayv';
+    
+    static procedure ScissorIndexed(index: UInt32; left: Int32; bottom: Int32; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glScissorIndexed';
+    
+    static procedure ScissorIndexedv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glScissorIndexedv';
+    static procedure ScissorIndexedv(index: UInt32; var v: Int32);
+    external 'opengl32.dll' name 'glScissorIndexedv';
+    static procedure ScissorIndexedv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glScissorIndexedv';
+    
+    static procedure Scissor(x: Int32; y: Int32; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glScissor';
+    
+    // 14.9.3
+    
+    static procedure SampleCoverage(value: single; invert: boolean);
+    external 'opengl32.dll' name 'glSampleCoverage';
+    
+    static procedure SampleMaski(maskNumber: UInt32; mask: UInt32);
+    external 'opengl32.dll' name 'glSampleMaski';
+    
+    {$endregion 14.9 - Early Per-Fragment Tests}
+    
+    {$endregion 14.0 Fixed-Function Primitive Assembly and Rasterization}
+    
     
     
     {$region unsorted}
+    
+    static procedure Clear(mask: UInt32);
+    external 'opengl32.dll' name 'glClear';
     
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
     
     static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
     external 'opengl32.dll' name 'glReadPixels';
-    
-    static procedure GetMultisamplefv(pname: UInt32; index: UInt32; val: ^single);
-    external 'opengl32.dll' name 'glGetMultisamplefv';
-    
-    static procedure PointSize(size: single);
-    external 'opengl32.dll' name 'glPointSize';
     
     static procedure DispatchComputeIndirect(indirect: IntPtr);
     external 'opengl32.dll' name 'glDispatchComputeIndirect';
@@ -12889,9 +13056,6 @@ type
     static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
     external 'opengl32.dll' name 'glBlitFramebuffer';
     
-    static procedure Clear(mask: UInt32);
-    external 'opengl32.dll' name 'glClear';
-    
     static procedure CopyImageSubData(srcName: UInt32; srcTarget: UInt32; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: UInt32; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32);
     external 'opengl32.dll' name 'glCopyImageSubData';
     
@@ -12900,21 +13064,6 @@ type
     
     static procedure Hint(target: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glHint';
-    
-    static procedure CullFace(mode: UInt32);
-    external 'opengl32.dll' name 'glCullFace';
-    
-    static procedure FrontFace(mode: UInt32);
-    external 'opengl32.dll' name 'glFrontFace';
-    
-    static procedure LineWidth(width: single);
-    external 'opengl32.dll' name 'glLineWidth';
-    
-    static procedure PolygonMode(face: UInt32; mode: UInt32);
-    external 'opengl32.dll' name 'glPolygonMode';
-    
-    static procedure Scissor(x: Int32; y: Int32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glScissor';
     
     static procedure DrawBuffer(buf: UInt32);
     external 'opengl32.dll' name 'glDrawBuffer';
@@ -12964,26 +13113,8 @@ type
     static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
     
-    static procedure PolygonOffset(factor: single; units: single);
-    external 'opengl32.dll' name 'glPolygonOffset';
-    
-    static procedure SampleCoverage(value: single; invert: boolean);
-    external 'opengl32.dll' name 'glSampleCoverage';
-    
     static procedure BlendFuncSeparate(sfactorRGB: UInt32; dfactorRGB: UInt32; sfactorAlpha: UInt32; dfactorAlpha: UInt32);
     external 'opengl32.dll' name 'glBlendFuncSeparate';
-    
-    static procedure PointParameterf(pname: UInt32; param: single);
-    external 'opengl32.dll' name 'glPointParameterf';
-    
-    static procedure PointParameterfv(pname: UInt32; &params: ^single);
-    external 'opengl32.dll' name 'glPointParameterfv';
-    
-    static procedure PointParameteri(pname: UInt32; param: Int32);
-    external 'opengl32.dll' name 'glPointParameteri';
-    
-    static procedure PointParameteriv(pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glPointParameteriv';
     
     static procedure BlendColor(red: single; green: single; blue: single; alpha: single);
     external 'opengl32.dll' name 'glBlendColor';
@@ -13030,17 +13161,11 @@ type
     static procedure ClearBufferfi(buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
     external 'opengl32.dll' name 'glClearBufferfi';
     
-    static procedure SampleMaski(maskNumber: UInt32; mask: UInt32);
-    external 'opengl32.dll' name 'glSampleMaski';
-    
     static procedure BindFragDataLocationIndexed(&program: UInt32; colorNumber: UInt32; index: UInt32; name: ^SByte);
     external 'opengl32.dll' name 'glBindFragDataLocationIndexed';
     
     static function GetFragDataIndex(&program: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetFragDataIndex';
-    
-    static procedure MinSampleShading(value: single);
-    external 'opengl32.dll' name 'glMinSampleShading';
     
     static procedure BlendEquationi(buf: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glBlendEquationi';
@@ -13056,15 +13181,6 @@ type
     
     static procedure ClearDepthf(d: single);
     external 'opengl32.dll' name 'glClearDepthf';
-    
-    static procedure ScissorArrayv(first: UInt32; count: Int32; v: ^Int32);
-    external 'opengl32.dll' name 'glScissorArrayv';
-    
-    static procedure ScissorIndexed(index: UInt32; left: Int32; bottom: Int32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glScissorIndexed';
-    
-    static procedure ScissorIndexedv(index: UInt32; v: ^Int32);
-    external 'opengl32.dll' name 'glScissorIndexedv';
     
     static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
     external 'opengl32.dll' name 'glDispatchCompute';
@@ -13152,9 +13268,6 @@ type
     
     static procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; bufSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glReadnPixels';
-    
-    static procedure PolygonOffsetClamp(factor: single; units: single; clamp: single);
-    external 'opengl32.dll' name 'glPolygonOffsetClamp';
     
     static procedure PrimitiveBoundingBoxARB(minX: single; minY: single; minZ: single; minW: single; maxX: single; maxY: single; maxZ: single; maxW: single);
     external 'opengl32.dll' name 'glPrimitiveBoundingBoxARB';
