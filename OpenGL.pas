@@ -13034,6 +13034,36 @@ type
     
     {$endregion 14.0 Fixed-Function Primitive Assembly and Rasterization}
     
+    {$region 15.0 - Programmable Fragment Processing}
+    
+    {$region 15.2 - Shader Execution}
+    
+    // 15.2.3
+    
+    static procedure BindFragDataLocationIndexed(&program: ProgramName; colorNumber: UInt32; index: UInt32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glBindFragDataLocationIndexed';
+    static procedure BindFragDataLocationIndexed(&program: ProgramName; colorNumber: UInt32; index: UInt32; name: IntPtr);
+    external 'opengl32.dll' name 'glBindFragDataLocationIndexed';
+    
+    static procedure BindFragDataLocation(&program: ProgramName; color: UInt32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glBindFragDataLocation';
+    static procedure BindFragDataLocation(&program: ProgramName; color: UInt32; name: IntPtr);
+    external 'opengl32.dll' name 'glBindFragDataLocation';
+    
+    static function GetFragDataLocation(&program: ProgramName; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
+    external 'opengl32.dll' name 'glGetFragDataLocation';
+    static function GetFragDataLocation(&program: ProgramName; name: IntPtr): Int32;
+    external 'opengl32.dll' name 'glGetFragDataLocation';
+    
+    static function GetFragDataIndex(&program: ProgramName; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
+    external 'opengl32.dll' name 'glGetFragDataIndex';
+    static function GetFragDataIndex(&program: ProgramName; name: IntPtr): Int32;
+    external 'opengl32.dll' name 'glGetFragDataIndex';
+    
+    {$endregion 15.2 - Shader Execution}
+    
+    {$endregion 15.0 - Programmable Fragment Processing}
+    
     
     
     {$region unsorted}
@@ -13143,12 +13173,6 @@ type
     static procedure ClampColor(target: UInt32; clamp: UInt32);
     external 'opengl32.dll' name 'glClampColor';
     
-    static procedure BindFragDataLocation(&program: UInt32; color: UInt32; name: ^SByte);
-    external 'opengl32.dll' name 'glBindFragDataLocation';
-    
-    static function GetFragDataLocation(&program: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetFragDataLocation';
-    
     static procedure ClearBufferiv(buffer: UInt32; drawbuffer: Int32; value: ^Int32);
     external 'opengl32.dll' name 'glClearBufferiv';
     
@@ -13160,12 +13184,6 @@ type
     
     static procedure ClearBufferfi(buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
     external 'opengl32.dll' name 'glClearBufferfi';
-    
-    static procedure BindFragDataLocationIndexed(&program: UInt32; colorNumber: UInt32; index: UInt32; name: ^SByte);
-    external 'opengl32.dll' name 'glBindFragDataLocationIndexed';
-    
-    static function GetFragDataIndex(&program: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetFragDataIndex';
     
     static procedure BlendEquationi(buf: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glBlendEquationi';
