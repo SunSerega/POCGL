@@ -27,6 +27,14 @@ unit OpenGL;
 
 //ToDo http://forum.mmcs.sfedu.ru/t/zamechaniya-i-predlozheniya/143/1334?u=sun_serega
 
+//ToDo ^T -> pointer
+// - и сразу проверить где можно nil передать
+// - и в OpenCL тоже...
+
+//ToDo проверить получение по указателя на строчку матрицы
+
+//ToDo передачу external функции вместо лямбды
+
 uses System;
 uses System.Runtime.InteropServices;
 
@@ -46,6 +54,7 @@ type
   SamplerName                   = UInt32;
   FramebufferName               = UInt32;
   RenderbufferName              = UInt32;
+  VertexArrayName               = UInt32;
   
   ShaderBinaryFormat            = UInt32;
   ProgramResourceIndex          = UInt32;
@@ -295,6 +304,74 @@ type
   end;
   
   {$endregion ...InfoType}
+  
+  //S
+  ConditionalRenderingMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property WAIT:                        ConditionalRenderingMode read new ConditionalRenderingMode($8E13);
+    public static property NO_WAIT:                     ConditionalRenderingMode read new ConditionalRenderingMode($8E14);
+    public static property BY_REGION_WAIT:              ConditionalRenderingMode read new ConditionalRenderingMode($8E15);
+    public static property BY_REGION_NO_WAIT:           ConditionalRenderingMode read new ConditionalRenderingMode($8E16);
+    public static property WAIT_INVERTED:               ConditionalRenderingMode read new ConditionalRenderingMode($8E17);
+    public static property NO_WAIT_INVERTED:            ConditionalRenderingMode read new ConditionalRenderingMode($8E18);
+    public static property BY_REGION_WAIT_INVERTED:     ConditionalRenderingMode read new ConditionalRenderingMode($8E19);
+    public static property BY_REGION_NO_WAIT_INVERTED:  ConditionalRenderingMode read new ConditionalRenderingMode($8E1A);
+    
+  end;
+  
+  //S
+  VertexAttribInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ELEMENT_ARRAY_BUFFER_BINDING:        VertexAttribInfoType read new VertexAttribInfoType($8895);
+    public static property VERTEX_ATTRIB_ARRAY_ENABLED:         VertexAttribInfoType read new VertexAttribInfoType($8622);
+    public static property VERTEX_ATTRIB_ARRAY_SIZE:            VertexAttribInfoType read new VertexAttribInfoType($8623);
+    public static property VERTEX_ATTRIB_ARRAY_STRIDE:          VertexAttribInfoType read new VertexAttribInfoType($8624);
+    public static property VERTEX_ATTRIB_ARRAY_TYPE:            VertexAttribInfoType read new VertexAttribInfoType($8625);
+    public static property VERTEX_ATTRIB_ARRAY_NORMALIZED:      VertexAttribInfoType read new VertexAttribInfoType($886A);
+    public static property VERTEX_ATTRIB_ARRAY_INTEGER:         VertexAttribInfoType read new VertexAttribInfoType($88FD);
+    public static property VERTEX_ATTRIB_ARRAY_LONG:            VertexAttribInfoType read new VertexAttribInfoType($874E);
+    public static property VERTEX_ATTRIB_ARRAY_DIVISOR:         VertexAttribInfoType read new VertexAttribInfoType($88FE);
+    public static property VERTEX_ATTRIB_RELATIVE_OFFSET:       VertexAttribInfoType read new VertexAttribInfoType($82D5);
+    public static property VERTEX_BINDING_OFFSET:               VertexAttribInfoType read new VertexAttribInfoType($82D7);
+    public static property VERTEX_ATTRIB_ARRAY_BUFFER_BINDING:  VertexAttribInfoType read new VertexAttribInfoType($889F);
+    public static property VERTEX_ATTRIB_BINDING:               VertexAttribInfoType read new VertexAttribInfoType($82D4);
+    public static property CURRENT_VERTEX_ATTRIB:               VertexAttribInfoType read new VertexAttribInfoType($8626);
+    
+  end;
+  
+  //S
+  PatchMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property VERTICES:            PatchMode read new PatchMode($8E72);
+    public static property DEFAULT_INNER_LEVEL: PatchMode read new PatchMode($8E73);
+    public static property DEFAULT_OUTER_LEVEL: PatchMode read new PatchMode($8E74);
+    
+  end;
+  
+  //S
+  PrimitiveType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property POINTS:                    PrimitiveType read new PrimitiveType($0000);
+    public static property LINE_STRIP:                PrimitiveType read new PrimitiveType($0003);
+    public static property LINE_LOOP:                 PrimitiveType read new PrimitiveType($0002);
+    public static property LINES:                     PrimitiveType read new PrimitiveType($0001);
+    public static property LINES_ADJACENCY:           PrimitiveType read new PrimitiveType($000A);
+    public static property LINE_STRIP_ADJACENCY:      PrimitiveType read new PrimitiveType($000B);
+    public static property TRIANGLE_STRIP:            PrimitiveType read new PrimitiveType($0005);
+    public static property TRIANGLE_FAN:              PrimitiveType read new PrimitiveType($0006);
+    public static property TRIANGLES:                 PrimitiveType read new PrimitiveType($0004);
+    public static property TRIANGLES_ADJACENCY:       PrimitiveType read new PrimitiveType($000C);
+    public static property TRIANGLE_STRIP_ADJACENCY:  PrimitiveType read new PrimitiveType($000D);
+    
+  end;
   
   //S
   FramebufferAttachmentInfoType = record
@@ -9079,6 +9156,22 @@ type
     
   end;
   
+  DrawArraysIndirectCommand = record
+    public count:         UInt32;
+    public instanceCount: UInt32;
+    public first:         UInt32;
+    public baseInstance:  UInt32;
+    
+    public constructor(count, instanceCount, first, baseInstance: UInt32);
+    begin
+      self.count := count;
+      self.instanceCount := instanceCount;
+      self.first := first;
+      self.baseInstance := baseInstance;
+    end;
+    
+  end;
+  
   {$endregion Misc}
   
 {$endregion Записи}
@@ -11510,13 +11603,972 @@ type
     
     {$endregion 9.0 - Framebuffers and Framebuffer Objects}
     
+    {$region Chapter 10 - Vertex Specification and Drawing Commands}
+    
+    {$region 10.1 - Primitive Types}
+    
+    // 10.1.15
+    
+    static procedure PatchParameteri(pname: PatchMode; value: Int32);
+    external 'opengl32.dll' name 'glPatchParameteri';
+    
+    {$endregion 10.1 - Primitive Types}
+    
+    {$region 10.2 - Current Vertex Attribute Values}
+    
+    // 10.2.1
+    
+    {$region VertexAttrib[1,2,3,4][s,f,d]}
+    
+    static procedure VertexAttrib1s(index: UInt32; x: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib1s';
+    
+    static procedure VertexAttrib2s(index: UInt32; x: Int16; y: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib2s';
+    
+    static procedure VertexAttrib3s(index: UInt32; x: Int16; y: Int16; z: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib3s';
+    
+    static procedure VertexAttrib4s(index: UInt32; x: Int16; y: Int16; z: Int16; w: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib4s';
+    
+    static procedure VertexAttrib1f(index: UInt32; x: single);
+    external 'opengl32.dll' name 'glVertexAttrib1f';
+    
+    static procedure VertexAttrib2f(index: UInt32; x: single; y: single);
+    external 'opengl32.dll' name 'glVertexAttrib2f';
+    
+    static procedure VertexAttrib3f(index: UInt32; x: single; y: single; z: single);
+    external 'opengl32.dll' name 'glVertexAttrib3f';
+    
+    static procedure VertexAttrib4f(index: UInt32; x: single; y: single; z: single; w: single);
+    external 'opengl32.dll' name 'glVertexAttrib4f';
+    
+    static procedure VertexAttrib1d(index: UInt32; x: real);
+    external 'opengl32.dll' name 'glVertexAttrib1d';
+    
+    static procedure VertexAttrib2d(index: UInt32; x: real; y: real);
+    external 'opengl32.dll' name 'glVertexAttrib2d';
+    
+    static procedure VertexAttrib3d(index: UInt32; x: real; y: real; z: real);
+    external 'opengl32.dll' name 'glVertexAttrib3d';
+    
+    static procedure VertexAttrib4d(index: UInt32; x: real; y: real; z: real; w: real);
+    external 'opengl32.dll' name 'glVertexAttrib4d';
+    
+    {$endregion VertexAttrib[1,2,3,4][s,f,d]}
+    
+    {$region VertexAttrib[1,2,3][s,f,d]v}
+    
+    static procedure VertexAttrib1sv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int16);
+    external 'opengl32.dll' name 'glVertexAttrib1sv';
+    static procedure VertexAttrib1sv(index: UInt32; var v: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib1sv';
+    static procedure VertexAttrib1sv(index: UInt32; var v: Vec1s);
+    external 'opengl32.dll' name 'glVertexAttrib1sv';
+    static procedure VertexAttrib1sv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib1sv';
+    
+    static procedure VertexAttrib2sv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int16);
+    external 'opengl32.dll' name 'glVertexAttrib2sv';
+    static procedure VertexAttrib2sv(index: UInt32; var v: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib2sv';
+    static procedure VertexAttrib2sv(index: UInt32; var v: Vec2s);
+    external 'opengl32.dll' name 'glVertexAttrib2sv';
+    static procedure VertexAttrib2sv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib2sv';
+    
+    static procedure VertexAttrib3sv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int16);
+    external 'opengl32.dll' name 'glVertexAttrib3sv';
+    static procedure VertexAttrib3sv(index: UInt32; var v: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib3sv';
+    static procedure VertexAttrib3sv(index: UInt32; var v: Vec3s);
+    external 'opengl32.dll' name 'glVertexAttrib3sv';
+    static procedure VertexAttrib3sv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib3sv';
+    
+    static procedure VertexAttrib1fv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
+    external 'opengl32.dll' name 'glVertexAttrib1fv';
+    static procedure VertexAttrib1fv(index: UInt32; var v: single);
+    external 'opengl32.dll' name 'glVertexAttrib1fv';
+    static procedure VertexAttrib1fv(index: UInt32; var v: Vec1f);
+    external 'opengl32.dll' name 'glVertexAttrib1fv';
+    static procedure VertexAttrib1fv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib1fv';
+    
+    static procedure VertexAttrib2fv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
+    external 'opengl32.dll' name 'glVertexAttrib2fv';
+    static procedure VertexAttrib2fv(index: UInt32; var v: single);
+    external 'opengl32.dll' name 'glVertexAttrib2fv';
+    static procedure VertexAttrib2fv(index: UInt32; var v: Vec2f);
+    external 'opengl32.dll' name 'glVertexAttrib2fv';
+    static procedure VertexAttrib2fv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib2fv';
+    
+    static procedure VertexAttrib3fv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
+    external 'opengl32.dll' name 'glVertexAttrib3fv';
+    static procedure VertexAttrib3fv(index: UInt32; var v: single);
+    external 'opengl32.dll' name 'glVertexAttrib3fv';
+    static procedure VertexAttrib3fv(index: UInt32; var v: Vec3f);
+    external 'opengl32.dll' name 'glVertexAttrib3fv';
+    static procedure VertexAttrib3fv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib3fv';
+    
+    static procedure VertexAttrib1dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttrib1dv';
+    static procedure VertexAttrib1dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttrib1dv';
+    static procedure VertexAttrib1dv(index: UInt32; var v: Vec1d);
+    external 'opengl32.dll' name 'glVertexAttrib1dv';
+    static procedure VertexAttrib1dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib1dv';
+    
+    static procedure VertexAttrib2dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttrib2dv';
+    static procedure VertexAttrib2dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttrib2dv';
+    static procedure VertexAttrib2dv(index: UInt32; var v: Vec2d);
+    external 'opengl32.dll' name 'glVertexAttrib2dv';
+    static procedure VertexAttrib2dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib2dv';
+    
+    static procedure VertexAttrib3dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttrib3dv';
+    static procedure VertexAttrib3dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttrib3dv';
+    static procedure VertexAttrib3dv(index: UInt32; var v: Vec3d);
+    external 'opengl32.dll' name 'glVertexAttrib3dv';
+    static procedure VertexAttrib3dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib3dv';
+    
+    {$endregion VertexAttrib[1,2,3][s,f,d]v}
+    
+    {$region VertexAttrib4[b,s,i,f,d,ub,us,ui]v}
+    
+    static procedure VertexAttrib4bv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of SByte);
+    external 'opengl32.dll' name 'glVertexAttrib4bv';
+    static procedure VertexAttrib4bv(index: UInt32; var v: SByte);
+    external 'opengl32.dll' name 'glVertexAttrib4bv';
+    static procedure VertexAttrib4bv(index: UInt32; var v: Vec4b);
+    external 'opengl32.dll' name 'glVertexAttrib4bv';
+    static procedure VertexAttrib4bv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4bv';
+    
+    static procedure VertexAttrib4sv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int16);
+    external 'opengl32.dll' name 'glVertexAttrib4sv';
+    static procedure VertexAttrib4sv(index: UInt32; var v: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib4sv';
+    static procedure VertexAttrib4sv(index: UInt32; var v: Vec4s);
+    external 'opengl32.dll' name 'glVertexAttrib4sv';
+    static procedure VertexAttrib4sv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4sv';
+    
+    static procedure VertexAttrib4iv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glVertexAttrib4iv';
+    static procedure VertexAttrib4iv(index: UInt32; var v: Int32);
+    external 'opengl32.dll' name 'glVertexAttrib4iv';
+    static procedure VertexAttrib4iv(index: UInt32; var v: Vec4i);
+    external 'opengl32.dll' name 'glVertexAttrib4iv';
+    static procedure VertexAttrib4iv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4iv';
+    
+    static procedure VertexAttrib4fv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
+    external 'opengl32.dll' name 'glVertexAttrib4fv';
+    static procedure VertexAttrib4fv(index: UInt32; var v: single);
+    external 'opengl32.dll' name 'glVertexAttrib4fv';
+    static procedure VertexAttrib4fv(index: UInt32; var v: Vec4f);
+    external 'opengl32.dll' name 'glVertexAttrib4fv';
+    static procedure VertexAttrib4fv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4fv';
+    
+    static procedure VertexAttrib4dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttrib4dv';
+    static procedure VertexAttrib4dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttrib4dv';
+    static procedure VertexAttrib4dv(index: UInt32; var v: Vec4d);
+    external 'opengl32.dll' name 'glVertexAttrib4dv';
+    static procedure VertexAttrib4dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4dv';
+    
+    static procedure VertexAttrib4ubv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Byte);
+    external 'opengl32.dll' name 'glVertexAttrib4ubv';
+    static procedure VertexAttrib4ubv(index: UInt32; var v: Byte);
+    external 'opengl32.dll' name 'glVertexAttrib4ubv';
+    static procedure VertexAttrib4ubv(index: UInt32; var v: Vec4ub);
+    external 'opengl32.dll' name 'glVertexAttrib4ubv';
+    static procedure VertexAttrib4ubv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4ubv';
+    
+    static procedure VertexAttrib4usv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt16);
+    external 'opengl32.dll' name 'glVertexAttrib4usv';
+    static procedure VertexAttrib4usv(index: UInt32; var v: UInt16);
+    external 'opengl32.dll' name 'glVertexAttrib4usv';
+    static procedure VertexAttrib4usv(index: UInt32; var v: Vec4us);
+    external 'opengl32.dll' name 'glVertexAttrib4usv';
+    static procedure VertexAttrib4usv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4usv';
+    
+    static procedure VertexAttrib4uiv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt32);
+    external 'opengl32.dll' name 'glVertexAttrib4uiv';
+    static procedure VertexAttrib4uiv(index: UInt32; var v: UInt32);
+    external 'opengl32.dll' name 'glVertexAttrib4uiv';
+    static procedure VertexAttrib4uiv(index: UInt32; var v: Vec4ui);
+    external 'opengl32.dll' name 'glVertexAttrib4uiv';
+    static procedure VertexAttrib4uiv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4uiv';
+    
+    {$endregion VertexAttrib4[b,s,i,f,d,ub,us,ui]v}
+    
+    {$region VertexAttrib4Nub}
+    
+    static procedure VertexAttrib4Nub(index: UInt32; x: Byte; y: Byte; z: Byte; w: Byte);
+    external 'opengl32.dll' name 'glVertexAttrib4Nub';
+    
+    {$endregion VertexAttrib4Nub}
+    
+    {$region VertexAttrib4N[b,s,i,ub,us,ui]v}
+    
+    static procedure VertexAttrib4Nbv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of SByte);
+    external 'opengl32.dll' name 'glVertexAttrib4Nbv';
+    static procedure VertexAttrib4Nbv(index: UInt32; var v: SByte);
+    external 'opengl32.dll' name 'glVertexAttrib4Nbv';
+    static procedure VertexAttrib4Nbv(index: UInt32; var v: Vec4b);
+    external 'opengl32.dll' name 'glVertexAttrib4Nbv';
+    static procedure VertexAttrib4Nbv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4Nbv';
+    
+    static procedure VertexAttrib4Nsv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int16);
+    external 'opengl32.dll' name 'glVertexAttrib4Nsv';
+    static procedure VertexAttrib4Nsv(index: UInt32; var v: Int16);
+    external 'opengl32.dll' name 'glVertexAttrib4Nsv';
+    static procedure VertexAttrib4Nsv(index: UInt32; var v: Vec4s);
+    external 'opengl32.dll' name 'glVertexAttrib4Nsv';
+    static procedure VertexAttrib4Nsv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4Nsv';
+    
+    static procedure VertexAttrib4Niv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glVertexAttrib4Niv';
+    static procedure VertexAttrib4Niv(index: UInt32; var v: Int32);
+    external 'opengl32.dll' name 'glVertexAttrib4Niv';
+    static procedure VertexAttrib4Niv(index: UInt32; var v: Vec4i);
+    external 'opengl32.dll' name 'glVertexAttrib4Niv';
+    static procedure VertexAttrib4Niv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4Niv';
+    
+    static procedure VertexAttrib4Nubv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Byte);
+    external 'opengl32.dll' name 'glVertexAttrib4Nubv';
+    static procedure VertexAttrib4Nubv(index: UInt32; var v: Byte);
+    external 'opengl32.dll' name 'glVertexAttrib4Nubv';
+    static procedure VertexAttrib4Nubv(index: UInt32; var v: Vec4ub);
+    external 'opengl32.dll' name 'glVertexAttrib4Nubv';
+    static procedure VertexAttrib4Nubv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4Nubv';
+    
+    static procedure VertexAttrib4Nusv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt16);
+    external 'opengl32.dll' name 'glVertexAttrib4Nusv';
+    static procedure VertexAttrib4Nusv(index: UInt32; var v: UInt16);
+    external 'opengl32.dll' name 'glVertexAttrib4Nusv';
+    static procedure VertexAttrib4Nusv(index: UInt32; var v: Vec4us);
+    external 'opengl32.dll' name 'glVertexAttrib4Nusv';
+    static procedure VertexAttrib4Nusv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4Nusv';
+    
+    static procedure VertexAttrib4Nuiv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt32);
+    external 'opengl32.dll' name 'glVertexAttrib4Nuiv';
+    static procedure VertexAttrib4Nuiv(index: UInt32; var v: UInt32);
+    external 'opengl32.dll' name 'glVertexAttrib4Nuiv';
+    static procedure VertexAttrib4Nuiv(index: UInt32; var v: Vec4ui);
+    external 'opengl32.dll' name 'glVertexAttrib4Nuiv';
+    static procedure VertexAttrib4Nuiv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttrib4Nuiv';
+    
+    {$endregion VertexAttrib4N[b,s,i,ub,us,ui]v}
+    
+    {$region VertexAttribI[1,2,3,4][i,ui]}
+    
+    static procedure VertexAttribI1i(index: UInt32; x: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI1i';
+    
+    static procedure VertexAttribI2i(index: UInt32; x: Int32; y: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI2i';
+    
+    static procedure VertexAttribI3i(index: UInt32; x: Int32; y: Int32; z: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI3i';
+    
+    static procedure VertexAttribI4i(index: UInt32; x: Int32; y: Int32; z: Int32; w: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI4i';
+    
+    static procedure VertexAttribI1ui(index: UInt32; x: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI1ui';
+    
+    static procedure VertexAttribI2ui(index: UInt32; x: UInt32; y: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI2ui';
+    
+    static procedure VertexAttribI3ui(index: UInt32; x: UInt32; y: UInt32; z: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI3ui';
+    
+    static procedure VertexAttribI4ui(index: UInt32; x: UInt32; y: UInt32; z: UInt32; w: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI4ui';
+    
+    {$endregion VertexAttribI[1,2,3,4][i,ui]}
+    
+    {$region VertexAttribI[1,2,3,4][i,ui]v}
+    
+    static procedure VertexAttribI1iv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glVertexAttribI1iv';
+    static procedure VertexAttribI1iv(index: UInt32; var v: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI1iv';
+    static procedure VertexAttribI1iv(index: UInt32; var v: Vec1i);
+    external 'opengl32.dll' name 'glVertexAttribI1iv';
+    static procedure VertexAttribI1iv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI1iv';
+    
+    static procedure VertexAttribI2iv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glVertexAttribI2iv';
+    static procedure VertexAttribI2iv(index: UInt32; var v: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI2iv';
+    static procedure VertexAttribI2iv(index: UInt32; var v: Vec2i);
+    external 'opengl32.dll' name 'glVertexAttribI2iv';
+    static procedure VertexAttribI2iv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI2iv';
+    
+    static procedure VertexAttribI3iv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glVertexAttribI3iv';
+    static procedure VertexAttribI3iv(index: UInt32; var v: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI3iv';
+    static procedure VertexAttribI3iv(index: UInt32; var v: Vec3i);
+    external 'opengl32.dll' name 'glVertexAttribI3iv';
+    static procedure VertexAttribI3iv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI3iv';
+    
+    static procedure VertexAttribI4iv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
+    external 'opengl32.dll' name 'glVertexAttribI4iv';
+    static procedure VertexAttribI4iv(index: UInt32; var v: Int32);
+    external 'opengl32.dll' name 'glVertexAttribI4iv';
+    static procedure VertexAttribI4iv(index: UInt32; var v: Vec4i);
+    external 'opengl32.dll' name 'glVertexAttribI4iv';
+    static procedure VertexAttribI4iv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI4iv';
+    
+    static procedure VertexAttribI1uiv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI1uiv';
+    static procedure VertexAttribI1uiv(index: UInt32; var v: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI1uiv';
+    static procedure VertexAttribI1uiv(index: UInt32; var v: Vec1ui);
+    external 'opengl32.dll' name 'glVertexAttribI1uiv';
+    static procedure VertexAttribI1uiv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI1uiv';
+    
+    static procedure VertexAttribI2uiv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI2uiv';
+    static procedure VertexAttribI2uiv(index: UInt32; var v: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI2uiv';
+    static procedure VertexAttribI2uiv(index: UInt32; var v: Vec2ui);
+    external 'opengl32.dll' name 'glVertexAttribI2uiv';
+    static procedure VertexAttribI2uiv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI2uiv';
+    
+    static procedure VertexAttribI3uiv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI3uiv';
+    static procedure VertexAttribI3uiv(index: UInt32; var v: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI3uiv';
+    static procedure VertexAttribI3uiv(index: UInt32; var v: Vec3ui);
+    external 'opengl32.dll' name 'glVertexAttribI3uiv';
+    static procedure VertexAttribI3uiv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI3uiv';
+    
+    static procedure VertexAttribI4uiv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI4uiv';
+    static procedure VertexAttribI4uiv(index: UInt32; var v: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribI4uiv';
+    static procedure VertexAttribI4uiv(index: UInt32; var v: Vec4ui);
+    external 'opengl32.dll' name 'glVertexAttribI4uiv';
+    static procedure VertexAttribI4uiv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI4uiv';
+    
+    {$endregion VertexAttribI[1,2,3,4][i,ui]v}
+    
+    {$region VertexAttribI4[b,s,ub,us]v}
+    
+    static procedure VertexAttribI4bv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of SByte);
+    external 'opengl32.dll' name 'glVertexAttribI4bv';
+    static procedure VertexAttribI4bv(index: UInt32; var v: SByte);
+    external 'opengl32.dll' name 'glVertexAttribI4bv';
+    static procedure VertexAttribI4bv(index: UInt32; var v: Vec4b);
+    external 'opengl32.dll' name 'glVertexAttribI4bv';
+    static procedure VertexAttribI4bv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI4bv';
+    
+    static procedure VertexAttribI4sv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int16);
+    external 'opengl32.dll' name 'glVertexAttribI4sv';
+    static procedure VertexAttribI4sv(index: UInt32; var v: Int16);
+    external 'opengl32.dll' name 'glVertexAttribI4sv';
+    static procedure VertexAttribI4sv(index: UInt32; var v: Vec4s);
+    external 'opengl32.dll' name 'glVertexAttribI4sv';
+    static procedure VertexAttribI4sv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI4sv';
+    
+    static procedure VertexAttribI4ubv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Byte);
+    external 'opengl32.dll' name 'glVertexAttribI4ubv';
+    static procedure VertexAttribI4ubv(index: UInt32; var v: Byte);
+    external 'opengl32.dll' name 'glVertexAttribI4ubv';
+    static procedure VertexAttribI4ubv(index: UInt32; var v: Vec4ub);
+    external 'opengl32.dll' name 'glVertexAttribI4ubv';
+    static procedure VertexAttribI4ubv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI4ubv';
+    
+    static procedure VertexAttribI4usv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of UInt16);
+    external 'opengl32.dll' name 'glVertexAttribI4usv';
+    static procedure VertexAttribI4usv(index: UInt32; var v: UInt16);
+    external 'opengl32.dll' name 'glVertexAttribI4usv';
+    static procedure VertexAttribI4usv(index: UInt32; var v: Vec4us);
+    external 'opengl32.dll' name 'glVertexAttribI4usv';
+    static procedure VertexAttribI4usv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribI4usv';
+    
+    {$endregion VertexAttribI4[b,s,ub,us]v}
+    
+    {$region VertexAttribL[1,2,3,4]d}
+    
+    static procedure VertexAttribL1d(index: UInt32; x: real);
+    external 'opengl32.dll' name 'glVertexAttribL1d';
+    
+    static procedure VertexAttribL2d(index: UInt32; x: real; y: real);
+    external 'opengl32.dll' name 'glVertexAttribL2d';
+    
+    static procedure VertexAttribL3d(index: UInt32; x: real; y: real; z: real);
+    external 'opengl32.dll' name 'glVertexAttribL3d';
+    
+    static procedure VertexAttribL4d(index: UInt32; x: real; y: real; z: real; w: real);
+    external 'opengl32.dll' name 'glVertexAttribL4d';
+    
+    {$endregion VertexAttribL[1,2,3,4]d}
+    
+    {$region VertexAttribL[1,2,3,4]dv}
+    
+    static procedure VertexAttribL1dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttribL1dv';
+    static procedure VertexAttribL1dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttribL1dv';
+    static procedure VertexAttribL1dv(index: UInt32; var v: Vec1d);
+    external 'opengl32.dll' name 'glVertexAttribL1dv';
+    static procedure VertexAttribL1dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribL1dv';
+    
+    static procedure VertexAttribL2dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttribL2dv';
+    static procedure VertexAttribL2dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttribL2dv';
+    static procedure VertexAttribL2dv(index: UInt32; var v: Vec2d);
+    external 'opengl32.dll' name 'glVertexAttribL2dv';
+    static procedure VertexAttribL2dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribL2dv';
+    
+    static procedure VertexAttribL3dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttribL3dv';
+    static procedure VertexAttribL3dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttribL3dv';
+    static procedure VertexAttribL3dv(index: UInt32; var v: Vec3d);
+    external 'opengl32.dll' name 'glVertexAttribL3dv';
+    static procedure VertexAttribL3dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribL3dv';
+    
+    static procedure VertexAttribL4dv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glVertexAttribL4dv';
+    static procedure VertexAttribL4dv(index: UInt32; var v: real);
+    external 'opengl32.dll' name 'glVertexAttribL4dv';
+    static procedure VertexAttribL4dv(index: UInt32; var v: Vec4d);
+    external 'opengl32.dll' name 'glVertexAttribL4dv';
+    static procedure VertexAttribL4dv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glVertexAttribL4dv';
+    
+    {$endregion VertexAttribL[1,2,3,4]dv}
+    
+    {$region VertexAttribP[1,2,3,4]ui}
+    
+    static procedure VertexAttribP1ui(index: UInt32; &type: DataType; normalized: boolean; value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP1ui';
+    
+    static procedure VertexAttribP2ui(index: UInt32; &type: DataType; normalized: boolean; value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP2ui';
+    
+    static procedure VertexAttribP3ui(index: UInt32; &type: DataType; normalized: boolean; value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP3ui';
+    
+    static procedure VertexAttribP4ui(index: UInt32; &type: DataType; normalized: boolean; value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP4ui';
+    
+    {$endregion VertexAttribP[1,2,3,4]ui}
+    
+    {$region VertexAttribP[1,2,3,4]uiv}
+    
+    static procedure VertexAttribP1uiv(index: UInt32; &type: DataType; normalized: boolean; var value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP1uiv';
+    static procedure VertexAttribP1uiv(index: UInt32; &type: DataType; normalized: boolean; value: pointer);
+    external 'opengl32.dll' name 'glVertexAttribP1uiv';
+    
+    static procedure VertexAttribP2uiv(index: UInt32; &type: DataType; normalized: boolean; var value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP2uiv';
+    static procedure VertexAttribP2uiv(index: UInt32; &type: DataType; normalized: boolean; value: pointer);
+    external 'opengl32.dll' name 'glVertexAttribP2uiv';
+    
+    static procedure VertexAttribP3uiv(index: UInt32; &type: DataType; normalized: boolean; var value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP3uiv';
+    static procedure VertexAttribP3uiv(index: UInt32; &type: DataType; normalized: boolean; value: pointer);
+    external 'opengl32.dll' name 'glVertexAttribP3uiv';
+    
+    static procedure VertexAttribP4uiv(index: UInt32; &type: DataType; normalized: boolean; var value: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribP4uiv';
+    static procedure VertexAttribP4uiv(index: UInt32; &type: DataType; normalized: boolean; value: pointer);
+    external 'opengl32.dll' name 'glVertexAttribP4uiv';
+    
+    {$endregion VertexAttribP[1,2,3,4]uiv}
+    
+    {$endregion 10.2 - Current Vertex Attribute Values}
+    
+    {$region 10.3 - Vertex Arrays}
+    
+    // 10.3.1
+    
+    static procedure GenVertexArrays(n: Int32; [MarshalAs(UnmanagedType.LPArray)] arrays: array of VertexArrayName);
+    external 'opengl32.dll' name 'glGenVertexArrays';
+    static procedure GenVertexArrays(n: Int32; var arrays: VertexArrayName);
+    external 'opengl32.dll' name 'glGenVertexArrays';
+    static procedure GenVertexArrays(n: Int32; arrays: pointer);
+    external 'opengl32.dll' name 'glGenVertexArrays';
+    
+    static procedure DeleteVertexArrays(n: Int32; [MarshalAs(UnmanagedType.LPArray)] arrays: array of VertexArrayName);
+    external 'opengl32.dll' name 'glDeleteVertexArrays';
+    static procedure DeleteVertexArrays(n: Int32; var arrays: VertexArrayName);
+    external 'opengl32.dll' name 'glDeleteVertexArrays';
+    static procedure DeleteVertexArrays(n: Int32; arrays: pointer);
+    external 'opengl32.dll' name 'glDeleteVertexArrays';
+    
+    static procedure BindVertexArray(&array: VertexArrayName);
+    external 'opengl32.dll' name 'glBindVertexArray';
+    
+    static procedure CreateVertexArrays(n: Int32; [MarshalAs(UnmanagedType.LPArray)] arrays: array of VertexArrayName);
+    external 'opengl32.dll' name 'glCreateVertexArrays';
+    static procedure CreateVertexArrays(n: Int32; var arrays: VertexArrayName);
+    external 'opengl32.dll' name 'glCreateVertexArrays';
+    static procedure CreateVertexArrays(n: Int32; arrays: pointer);
+    external 'opengl32.dll' name 'glCreateVertexArrays';
+    
+    static function IsVertexArray(&array: VertexArrayName): boolean;
+    external 'opengl32.dll' name 'glIsVertexArray';
+    
+    static procedure VertexArrayElementBuffer(vaobj: VertexArrayName; buffer: BufferName);
+    external 'opengl32.dll' name 'glVertexArrayElementBuffer';
+    
+    // 10.3.2
+    
+    static procedure VertexAttribFormat(attribindex: UInt32; size: Int32; &type: DataType; normalized: boolean; relativeoffset: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribFormat';
+    
+    static procedure VertexAttribIFormat(attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribIFormat';
+    
+    static procedure VertexAttribLFormat(attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribLFormat';
+    
+    static procedure VertexArrayAttribFormat(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; &type: DataType; normalized: boolean; relativeoffset: UInt32);
+    external 'opengl32.dll' name 'glVertexArrayAttribFormat';
+    
+    static procedure VertexArrayAttribIFormat(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32);
+    external 'opengl32.dll' name 'glVertexArrayAttribIFormat';
+    
+    static procedure VertexArrayAttribLFormat(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32);
+    external 'opengl32.dll' name 'glVertexArrayAttribLFormat';
+    
+    static procedure BindVertexBuffer(bindingindex: UInt32; buffer: BufferName; offset: IntPtr; stride: Int32);
+    external 'opengl32.dll' name 'glBindVertexBuffer';
+    
+    static procedure VertexArrayVertexBuffer(vaobj: VertexArrayName; bindingindex: UInt32; buffer: BufferName; offset: IntPtr; stride: Int32);
+    external 'opengl32.dll' name 'glVertexArrayVertexBuffer';
+    
+    static procedure BindVertexBuffers(first: UInt32; count: Int32; var buffers: BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] strides: array of Int32);
+    external 'opengl32.dll' name 'glBindVertexBuffers';
+    static procedure BindVertexBuffers(first: UInt32; count: Int32; var buffers: BufferName; var offsets: IntPtr; var strides: Int32);
+    external 'opengl32.dll' name 'glBindVertexBuffers';
+    static procedure BindVertexBuffers(first: UInt32; count: Int32; var buffers: BufferName; offsets: pointer; strides: pointer);
+    external 'opengl32.dll' name 'glBindVertexBuffers';
+    static procedure BindVertexBuffers(first: UInt32; count: Int32; buffers: pointer; var offsets: IntPtr; var strides: Int32);
+    external 'opengl32.dll' name 'glBindVertexBuffers';
+    static procedure BindVertexBuffers(first: UInt32; count: Int32; buffers: pointer; offsets: pointer; strides: pointer);
+    external 'opengl32.dll' name 'glBindVertexBuffers';
+    
+    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; var buffers: BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] strides: array of Int32);
+    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
+    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; var buffers: BufferName; var offsets: IntPtr; var strides: Int32);
+    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
+    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; var buffers: BufferName; offsets: pointer; strides: pointer);
+    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
+    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; buffers: pointer; var offsets: IntPtr; var strides: Int32);
+    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
+    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; buffers: pointer; offsets: pointer; strides: pointer);
+    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
+    
+    static procedure VertexAttribBinding(attribindex: UInt32; bindingindex: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribBinding';
+    
+    static procedure VertexArrayAttribBinding(vaobj: VertexArrayName; attribindex: UInt32; bindingindex: UInt32);
+    external 'opengl32.dll' name 'glVertexArrayAttribBinding';
+    
+    static procedure VertexAttribPointer(index: UInt32; size: Int32; &type: DataType; normalized: boolean; stride: Int32; _pointer: IntPtr);
+    external 'opengl32.dll' name 'glVertexAttribPointer';
+    static procedure VertexAttribPointer(index: UInt32; size: Int32; &type: DataType; normalized: boolean; stride: Int32; _pointer: pointer);
+    external 'opengl32.dll' name 'glVertexAttribPointer';
+    
+    static procedure VertexAttribIPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: IntPtr);
+    external 'opengl32.dll' name 'glVertexAttribIPointer';
+    static procedure VertexAttribIPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer);
+    external 'opengl32.dll' name 'glVertexAttribIPointer';
+    
+    static procedure VertexAttribLPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: IntPtr);
+    external 'opengl32.dll' name 'glVertexAttribLPointer';
+    static procedure VertexAttribLPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer);
+    external 'opengl32.dll' name 'glVertexAttribLPointer';
+    
+    static procedure EnableVertexAttribArray(index: UInt32);
+    external 'opengl32.dll' name 'glEnableVertexAttribArray';
+    
+    static procedure EnableVertexArrayAttrib(vaobj: VertexArrayName; index: UInt32);
+    external 'opengl32.dll' name 'glEnableVertexArrayAttrib';
+    
+    static procedure DisableVertexAttribArray(index: UInt32);
+    external 'opengl32.dll' name 'glDisableVertexAttribArray';
+    
+    static procedure DisableVertexArrayAttrib(vaobj: VertexArrayName; index: UInt32);
+    external 'opengl32.dll' name 'glDisableVertexArrayAttrib';
+    
+    static procedure VertexBindingDivisor(bindingindex: UInt32; divisor: UInt32);
+    external 'opengl32.dll' name 'glVertexBindingDivisor';
+    
+    static procedure VertexArrayBindingDivisor(vaobj: VertexArrayName; bindingindex: UInt32; divisor: UInt32);
+    external 'opengl32.dll' name 'glVertexArrayBindingDivisor';
+    
+    static procedure VertexAttribDivisor(index: UInt32; divisor: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribDivisor';
+    
+    // 10.3.6
+    
+    static procedure PrimitiveRestartIndex(index: UInt32);
+    external 'opengl32.dll' name 'glPrimitiveRestartIndex';
+    
+    {$endregion 10.3 - Vertex Arrays}
+    
+    {$region 10.4 - Drawing Commands Using Vertex Arrays}
+    
+    static procedure DrawArrays(mode: PrimitiveType; first: Int32; count: Int32);
+    external 'opengl32.dll' name 'glDrawArrays';
+    
+    static procedure DrawArraysInstancedBaseInstance(mode: PrimitiveType; first: Int32; count: Int32; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawArraysInstancedBaseInstance';
+    
+    static procedure DrawArraysInstanced(mode: PrimitiveType; first: Int32; count: Int32; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawArraysInstanced';
+    
+    static procedure DrawArraysIndirect(mode: PrimitiveType; var indirect: DrawArraysIndirectCommand);
+    external 'opengl32.dll' name 'glDrawArraysIndirect';
+    static procedure DrawArraysIndirect(mode: PrimitiveType; indirect: pointer);
+    external 'opengl32.dll' name 'glDrawArraysIndirect';
+    
+    static procedure MultiDrawArrays(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] first: array of Int32; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArrays';
+    static procedure MultiDrawArrays(mode: PrimitiveType; var first: Int32; var count: Int32; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArrays';
+    static procedure MultiDrawArrays(mode: PrimitiveType; first: pointer; count: pointer; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArrays';
+    
+    static procedure MultiDrawArraysIndirect(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] indirect: array of DrawArraysIndirectCommand; drawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArraysIndirect';
+    static procedure MultiDrawArraysIndirect(mode: PrimitiveType; var indirect: DrawArraysIndirectCommand; drawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArraysIndirect';
+    static procedure MultiDrawArraysIndirect(mode: PrimitiveType; indirect: pointer; drawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArraysIndirect';
+    
+    static procedure MultiDrawArraysIndirectCount(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] indirect: array of DrawArraysIndirectCommand; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArraysIndirectCount';
+    static procedure MultiDrawArraysIndirectCount(mode: PrimitiveType; var indirect: DrawArraysIndirectCommand; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArraysIndirectCount';
+    static procedure MultiDrawArraysIndirectCount(mode: PrimitiveType; indirect: pointer; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawArraysIndirectCount';
+    
+    static procedure DrawElements(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32);
+    external 'opengl32.dll' name 'glDrawElements';
+    static procedure DrawElements(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt32);
+    external 'opengl32.dll' name 'glDrawElements';
+    static procedure DrawElements(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16);
+    external 'opengl32.dll' name 'glDrawElements';
+    static procedure DrawElements(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt16);
+    external 'opengl32.dll' name 'glDrawElements';
+    static procedure DrawElements(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte);
+    external 'opengl32.dll' name 'glDrawElements';
+    static procedure DrawElements(mode: PrimitiveType; count: Int32; &type: DataType; var indices: Byte);
+    external 'opengl32.dll' name 'glDrawElements';
+    static procedure DrawElements(mode: PrimitiveType; count: Int32; &type: DataType; indices: pointer);
+    external 'opengl32.dll' name 'glDrawElements';
+    
+    static procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
+    static procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt32; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
+    static procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
+    static procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt16; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
+    static procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
+    static procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; var indices: Byte; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
+    static procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; indices: pointer; instancecount: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
+    
+    static procedure DrawElementsInstanced(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstanced';
+    static procedure DrawElementsInstanced(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt32; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstanced';
+    static procedure DrawElementsInstanced(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstanced';
+    static procedure DrawElementsInstanced(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt16; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstanced';
+    static procedure DrawElementsInstanced(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstanced';
+    static procedure DrawElementsInstanced(mode: PrimitiveType; count: Int32; &type: DataType; var indices: Byte; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstanced';
+    static procedure DrawElementsInstanced(mode: PrimitiveType; count: Int32; &type: DataType; indices: pointer; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstanced';
+    
+    static procedure MultiDrawElements(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] indices: array of array of UInt32; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] indices: array of array of UInt16; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] indices: array of array of Byte; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of IntPtr; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; var count: Int32; &type: DataType; [MarshalAs(UnmanagedType.SysInt, ArraySubType = UnmanagedType.LPArray)] var indices: array of UInt32; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; var count: Int32; &type: DataType; [MarshalAs(UnmanagedType.SysInt, ArraySubType = UnmanagedType.LPArray)] var indices: array of UInt16; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; var count: Int32; &type: DataType; [MarshalAs(UnmanagedType.SysInt, ArraySubType = UnmanagedType.LPArray)] var indices: array of Byte; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; var count: Int32; &type: DataType; var indices: IntPtr; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; var count: Int32; &type: DataType; var indices: pointer; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^IntPtr; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^pointer; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    static procedure MultiDrawElements(mode: PrimitiveType; count: pointer; &type: DataType; indices: pointer; drawcount: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElements';
+    
+    static procedure DrawRangeElements(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32);
+    external 'opengl32.dll' name 'glDrawRangeElements';
+    static procedure DrawRangeElements(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; var indices: UInt32);
+    external 'opengl32.dll' name 'glDrawRangeElements';
+    static procedure DrawRangeElements(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16);
+    external 'opengl32.dll' name 'glDrawRangeElements';
+    static procedure DrawRangeElements(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; var indices: UInt16);
+    external 'opengl32.dll' name 'glDrawRangeElements';
+    static procedure DrawRangeElements(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte);
+    external 'opengl32.dll' name 'glDrawRangeElements';
+    static procedure DrawRangeElements(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; var indices: Byte);
+    external 'opengl32.dll' name 'glDrawRangeElements';
+    static procedure DrawRangeElements(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; indices: pointer);
+    external 'opengl32.dll' name 'glDrawRangeElements';
+    
+    static procedure DrawElementsBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
+    static procedure DrawElementsBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
+    static procedure DrawElementsBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
+    static procedure DrawElementsBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt16; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
+    static procedure DrawElementsBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
+    static procedure DrawElementsBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; var indices: Byte; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
+    static procedure DrawElementsBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; indices: pointer; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
+    
+    static procedure DrawRangeElementsBaseVertex(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
+    static procedure DrawRangeElementsBaseVertex(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; var indices: UInt32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
+    static procedure DrawRangeElementsBaseVertex(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
+    static procedure DrawRangeElementsBaseVertex(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; var indices: UInt16; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
+    static procedure DrawRangeElementsBaseVertex(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
+    static procedure DrawRangeElementsBaseVertex(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; var indices: Byte; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
+    static procedure DrawRangeElementsBaseVertex(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DataType; indices: pointer; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
+    
+    static procedure DrawElementsInstancedBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32; instancecount: Int32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
+    static procedure DrawElementsInstancedBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt32; instancecount: Int32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
+    static procedure DrawElementsInstancedBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16; instancecount: Int32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
+    static procedure DrawElementsInstancedBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt16; instancecount: Int32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
+    static procedure DrawElementsInstancedBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte; instancecount: Int32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
+    static procedure DrawElementsInstancedBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; var indices: Byte; instancecount: Int32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
+    static procedure DrawElementsInstancedBaseVertex(mode: PrimitiveType; count: Int32; &type: DataType; indices: pointer; instancecount: Int32; basevertex: Int32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
+    
+    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt32; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
+    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt32; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
+    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of UInt16; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
+    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; var indices: UInt16; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
+    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of Byte; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
+    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; var indices: Byte; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
+    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: PrimitiveType; count: Int32; &type: DataType; indices: pointer; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
+    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
+    
+    static procedure DrawElementsIndirect(mode: PrimitiveType; &type: DataType; var indirect: DrawArraysIndirectCommand);
+    external 'opengl32.dll' name 'glDrawElementsIndirect';
+    static procedure DrawElementsIndirect(mode: PrimitiveType; &type: DataType; indirect: pointer);
+    external 'opengl32.dll' name 'glDrawElementsIndirect';
+    
+    static procedure MultiDrawElementsIndirect(mode: PrimitiveType; &type: DataType; var indirect: DrawArraysIndirectCommand; drawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsIndirect';
+    static procedure MultiDrawElementsIndirect(mode: PrimitiveType; &type: DataType; indirect: pointer; drawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsIndirect';
+    
+    static procedure MultiDrawElementsIndirectCount(mode: PrimitiveType; &type: DataType; var indirect: DrawArraysIndirectCommand; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsIndirectCount';
+    static procedure MultiDrawElementsIndirectCount(mode: PrimitiveType; &type: DataType; indirect: pointer; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsIndirectCount';
+    
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] indices: array of array of UInt32; drawcount: Int32; [MarshalAs(UnmanagedType.LPArray)] basevertex: array of Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] indices: array of array of UInt16; drawcount: Int32; [MarshalAs(UnmanagedType.LPArray)] basevertex: array of Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPArray)] indices: array of array of Byte; drawcount: Int32; [MarshalAs(UnmanagedType.LPArray)] basevertex: array of Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; [MarshalAs(UnmanagedType.LPArray)] count: array of Int32; &type: DataType; [MarshalAs(UnmanagedType.LPArray)] indices: array of IntPtr; drawcount: Int32; var basevertex: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; var count: Int32; &type: DataType; [MarshalAs(UnmanagedType.SysInt, ArraySubType = UnmanagedType.LPArray)] var indices: array of UInt32; drawcount: Int32; var basevertex: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; var count: Int32; &type: DataType; [MarshalAs(UnmanagedType.SysInt, ArraySubType = UnmanagedType.LPArray)] var indices: array of UInt16; drawcount: Int32; var basevertex: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; var count: Int32; &type: DataType; [MarshalAs(UnmanagedType.SysInt, ArraySubType = UnmanagedType.LPArray)] var indices: array of Byte; drawcount: Int32; var basevertex: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; var count: Int32; &type: DataType; var indices: IntPtr; drawcount: Int32; var basevertex: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; var count: Int32; &type: DataType; var indices: pointer; drawcount: Int32; var basevertex: Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^IntPtr; drawcount: Int32; basevertex: ^Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^pointer; drawcount: Int32; basevertex: ^Int32);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; count: pointer; &type: DataType; indices: pointer; drawcount: Int32; basevertex: pointer);
+    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
+    
+    {$endregion 10.4 - Drawing Commands Using Vertex Arrays}
+    
+    {$region 10.5 - Vertex Array and Vertex Array Object Queries}
+    
+    static procedure GetVertexArrayiv(vaobj: VertexArrayName; pname: VertexAttribInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glGetVertexArrayiv';
+    static procedure GetVertexArrayiv(vaobj: VertexArrayName; pname: VertexAttribInfoType; param: pointer);
+    external 'opengl32.dll' name 'glGetVertexArrayiv';
+    
+    static procedure GetVertexArrayIndexediv(vaobj: VertexArrayName; index: UInt32; pname: VertexAttribInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glGetVertexArrayIndexediv';
+    static procedure GetVertexArrayIndexediv(vaobj: VertexArrayName; index: UInt32; pname: VertexAttribInfoType; param: pointer);
+    external 'opengl32.dll' name 'glGetVertexArrayIndexediv';
+    
+    static procedure GetVertexArrayIndexed64iv(vaobj: VertexArrayName; index: UInt32; pname: VertexAttribInfoType; var param: Int64);
+    external 'opengl32.dll' name 'glGetVertexArrayIndexed64iv';
+    static procedure GetVertexArrayIndexed64iv(vaobj: VertexArrayName; index: UInt32; pname: VertexAttribInfoType; param: pointer);
+    external 'opengl32.dll' name 'glGetVertexArrayIndexed64iv';
+    
+    static procedure GetVertexAttribdv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of real);
+    external 'opengl32.dll' name 'glGetVertexAttribdv';
+    static procedure GetVertexAttribdv(index: UInt32; pname: VertexAttribInfoType; var &params: real);
+    external 'opengl32.dll' name 'glGetVertexAttribdv';
+    static procedure GetVertexAttribdv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribdv';
+    
+    static procedure GetVertexAttribfv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
+    external 'opengl32.dll' name 'glGetVertexAttribfv';
+    static procedure GetVertexAttribfv(index: UInt32; pname: VertexAttribInfoType; var &params: single);
+    external 'opengl32.dll' name 'glGetVertexAttribfv';
+    static procedure GetVertexAttribfv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribfv';
+    
+    static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetVertexAttribiv';
+    static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetVertexAttribiv';
+    static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribiv';
+    
+    static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetVertexAttribIiv';
+    static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetVertexAttribIiv';
+    static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribIiv';
+    
+    static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt32);
+    external 'opengl32.dll' name 'glGetVertexAttribIuiv';
+    static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetVertexAttribIuiv';
+    static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribIuiv';
+    
+    static procedure GetVertexAttribLdv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of real);
+    external 'opengl32.dll' name 'glGetVertexAttribLdv';
+    static procedure GetVertexAttribLdv(index: UInt32; pname: VertexAttribInfoType; var &params: real);
+    external 'opengl32.dll' name 'glGetVertexAttribLdv';
+    static procedure GetVertexAttribLdv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribLdv';
+    
+    static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; [MarshalAs(UnmanagedType.LPArray)] _pointer: array of IntPtr);
+    external 'opengl32.dll' name 'glGetVertexAttribPointerv';
+    static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; var _pointer: IntPtr);
+    external 'opengl32.dll' name 'glGetVertexAttribPointerv';
+    static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; var _pointer: pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribPointerv';
+    static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; _pointer: ^pointer);
+    external 'opengl32.dll' name 'glGetVertexAttribPointerv';
+    
+    {$endregion 10.5 - Vertex Array and Vertex Array Object Queries}
+    
+    {$region 10.9 - Conditional Rendering}
+    
+    static procedure BeginConditionalRender(id: UInt32; mode: ConditionalRenderingMode);
+    external 'opengl32.dll' name 'glBeginConditionalRender';
+    
+    static procedure EndConditionalRender;
+    external 'opengl32.dll' name 'glEndConditionalRender';
+    
+    {$endregion 10.9 - Conditional Rendering}
+    
+    {$endregion Chapter 10 - Vertex Specification and Drawing Commands}
     
     
-    {$region }
-    
-    {$endregion }
     
     {$region unsorted}
+    
+    static procedure DispatchComputeIndirect(indirect: IntPtr);
+    external 'opengl32.dll' name 'glDispatchComputeIndirect';
     
     static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetInternalformativ';
@@ -11614,32 +12666,17 @@ type
     static procedure Viewport(x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glViewport';
     
-    static procedure DrawArrays(mode: UInt32; first: Int32; count: Int32);
-    external 'opengl32.dll' name 'glDrawArrays';
-    
-    static procedure DrawElements(mode: UInt32; count: Int32; &type: UInt32; indices: pointer);
-    external 'opengl32.dll' name 'glDrawElements';
-    
     static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
     
     static procedure PolygonOffset(factor: single; units: single);
     external 'opengl32.dll' name 'glPolygonOffset';
     
-    static procedure DrawRangeElements(mode: UInt32; start: UInt32; &end: UInt32; count: Int32; &type: UInt32; indices: pointer);
-    external 'opengl32.dll' name 'glDrawRangeElements';
-    
     static procedure SampleCoverage(value: single; invert: boolean);
     external 'opengl32.dll' name 'glSampleCoverage';
     
     static procedure BlendFuncSeparate(sfactorRGB: UInt32; dfactorRGB: UInt32; sfactorAlpha: UInt32; dfactorAlpha: UInt32);
     external 'opengl32.dll' name 'glBlendFuncSeparate';
-    
-    static procedure MultiDrawArrays(mode: UInt32; first: ^Int32; count: ^Int32; drawcount: Int32);
-    external 'opengl32.dll' name 'glMultiDrawArrays';
-    
-    static procedure MultiDrawElements(mode: UInt32; count: ^Int32; &type: UInt32; indices: ^IntPtr; drawcount: Int32);
-    external 'opengl32.dll' name 'glMultiDrawElements';
     
     static procedure PointParameterf(pname: UInt32; param: single);
     external 'opengl32.dll' name 'glPointParameterf';
@@ -11677,140 +12714,11 @@ type
     static procedure BindAttribLocation(&program: UInt32; index: UInt32; name: ^SByte);
     external 'opengl32.dll' name 'glBindAttribLocation';
     
-    static procedure DisableVertexAttribArray(index: UInt32);
-    external 'opengl32.dll' name 'glDisableVertexAttribArray';
-    
-    static procedure EnableVertexAttribArray(index: UInt32);
-    external 'opengl32.dll' name 'glEnableVertexAttribArray';
-    
     static procedure GetActiveAttrib(&program: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: ^UInt32; name: ^SByte);
     external 'opengl32.dll' name 'glGetActiveAttrib';
     
     static function GetAttribLocation(&program: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetAttribLocation';
-    
-    static procedure GetVertexAttribdv(index: UInt32; pname: UInt32; &params: ^real);
-    external 'opengl32.dll' name 'glGetVertexAttribdv';
-    
-    static procedure GetVertexAttribfv(index: UInt32; pname: UInt32; &params: ^single);
-    external 'opengl32.dll' name 'glGetVertexAttribfv';
-    
-    static procedure GetVertexAttribiv(index: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetVertexAttribiv';
-    
-    static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; pointer: ^IntPtr);
-    external 'opengl32.dll' name 'glGetVertexAttribPointerv';
-    
-    static procedure VertexAttrib1d(index: UInt32; x: real);
-    external 'opengl32.dll' name 'glVertexAttrib1d';
-    
-    static procedure VertexAttrib1dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttrib1dv';
-    
-    static procedure VertexAttrib1f(index: UInt32; x: single);
-    external 'opengl32.dll' name 'glVertexAttrib1f';
-    
-    static procedure VertexAttrib1fv(index: UInt32; v: ^single);
-    external 'opengl32.dll' name 'glVertexAttrib1fv';
-    
-    static procedure VertexAttrib1s(index: UInt32; x: Int16);
-    external 'opengl32.dll' name 'glVertexAttrib1s';
-    
-    static procedure VertexAttrib1sv(index: UInt32; v: ^Int16);
-    external 'opengl32.dll' name 'glVertexAttrib1sv';
-    
-    static procedure VertexAttrib2d(index: UInt32; x: real; y: real);
-    external 'opengl32.dll' name 'glVertexAttrib2d';
-    
-    static procedure VertexAttrib2dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttrib2dv';
-    
-    static procedure VertexAttrib2f(index: UInt32; x: single; y: single);
-    external 'opengl32.dll' name 'glVertexAttrib2f';
-    
-    static procedure VertexAttrib2fv(index: UInt32; v: ^single);
-    external 'opengl32.dll' name 'glVertexAttrib2fv';
-    
-    static procedure VertexAttrib2s(index: UInt32; x: Int16; y: Int16);
-    external 'opengl32.dll' name 'glVertexAttrib2s';
-    
-    static procedure VertexAttrib2sv(index: UInt32; v: ^Int16);
-    external 'opengl32.dll' name 'glVertexAttrib2sv';
-    
-    static procedure VertexAttrib3d(index: UInt32; x: real; y: real; z: real);
-    external 'opengl32.dll' name 'glVertexAttrib3d';
-    
-    static procedure VertexAttrib3dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttrib3dv';
-    
-    static procedure VertexAttrib3f(index: UInt32; x: single; y: single; z: single);
-    external 'opengl32.dll' name 'glVertexAttrib3f';
-    
-    static procedure VertexAttrib3fv(index: UInt32; v: ^single);
-    external 'opengl32.dll' name 'glVertexAttrib3fv';
-    
-    static procedure VertexAttrib3s(index: UInt32; x: Int16; y: Int16; z: Int16);
-    external 'opengl32.dll' name 'glVertexAttrib3s';
-    
-    static procedure VertexAttrib3sv(index: UInt32; v: ^Int16);
-    external 'opengl32.dll' name 'glVertexAttrib3sv';
-    
-    static procedure VertexAttrib4Nbv(index: UInt32; v: ^SByte);
-    external 'opengl32.dll' name 'glVertexAttrib4Nbv';
-    
-    static procedure VertexAttrib4Niv(index: UInt32; v: ^Int32);
-    external 'opengl32.dll' name 'glVertexAttrib4Niv';
-    
-    static procedure VertexAttrib4Nsv(index: UInt32; v: ^Int16);
-    external 'opengl32.dll' name 'glVertexAttrib4Nsv';
-    
-    static procedure VertexAttrib4Nub(index: UInt32; x: Byte; y: Byte; z: Byte; w: Byte);
-    external 'opengl32.dll' name 'glVertexAttrib4Nub';
-    
-    static procedure VertexAttrib4Nubv(index: UInt32; v: ^Byte);
-    external 'opengl32.dll' name 'glVertexAttrib4Nubv';
-    
-    static procedure VertexAttrib4Nuiv(index: UInt32; v: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttrib4Nuiv';
-    
-    static procedure VertexAttrib4Nusv(index: UInt32; v: ^UInt16);
-    external 'opengl32.dll' name 'glVertexAttrib4Nusv';
-    
-    static procedure VertexAttrib4bv(index: UInt32; v: ^SByte);
-    external 'opengl32.dll' name 'glVertexAttrib4bv';
-    
-    static procedure VertexAttrib4d(index: UInt32; x: real; y: real; z: real; w: real);
-    external 'opengl32.dll' name 'glVertexAttrib4d';
-    
-    static procedure VertexAttrib4dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttrib4dv';
-    
-    static procedure VertexAttrib4f(index: UInt32; x: single; y: single; z: single; w: single);
-    external 'opengl32.dll' name 'glVertexAttrib4f';
-    
-    static procedure VertexAttrib4fv(index: UInt32; v: ^single);
-    external 'opengl32.dll' name 'glVertexAttrib4fv';
-    
-    static procedure VertexAttrib4iv(index: UInt32; v: ^Int32);
-    external 'opengl32.dll' name 'glVertexAttrib4iv';
-    
-    static procedure VertexAttrib4s(index: UInt32; x: Int16; y: Int16; z: Int16; w: Int16);
-    external 'opengl32.dll' name 'glVertexAttrib4s';
-    
-    static procedure VertexAttrib4sv(index: UInt32; v: ^Int16);
-    external 'opengl32.dll' name 'glVertexAttrib4sv';
-    
-    static procedure VertexAttrib4ubv(index: UInt32; v: ^Byte);
-    external 'opengl32.dll' name 'glVertexAttrib4ubv';
-    
-    static procedure VertexAttrib4uiv(index: UInt32; v: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttrib4uiv';
-    
-    static procedure VertexAttrib4usv(index: UInt32; v: ^UInt16);
-    external 'opengl32.dll' name 'glVertexAttrib4usv';
-    
-    static procedure VertexAttribPointer(index: UInt32; size: Int32; &type: UInt32; normalized: boolean; stride: Int32; _pointer: pointer);
-    external 'opengl32.dll' name 'glVertexAttribPointer';
     
     static procedure ColorMaski(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean);
     external 'opengl32.dll' name 'glColorMaski';
@@ -11830,81 +12738,6 @@ type
     static procedure ClampColor(target: UInt32; clamp: UInt32);
     external 'opengl32.dll' name 'glClampColor';
     
-    static procedure BeginConditionalRender(id: UInt32; mode: UInt32);
-    external 'opengl32.dll' name 'glBeginConditionalRender';
-    
-    static procedure EndConditionalRender;
-    external 'opengl32.dll' name 'glEndConditionalRender';
-    
-    static procedure VertexAttribIPointer(index: UInt32; size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
-    external 'opengl32.dll' name 'glVertexAttribIPointer';
-    
-    static procedure GetVertexAttribIiv(index: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetVertexAttribIiv';
-    
-    static procedure GetVertexAttribIuiv(index: UInt32; pname: UInt32; &params: ^UInt32);
-    external 'opengl32.dll' name 'glGetVertexAttribIuiv';
-    
-    static procedure VertexAttribI1i(index: UInt32; x: Int32);
-    external 'opengl32.dll' name 'glVertexAttribI1i';
-    
-    static procedure VertexAttribI2i(index: UInt32; x: Int32; y: Int32);
-    external 'opengl32.dll' name 'glVertexAttribI2i';
-    
-    static procedure VertexAttribI3i(index: UInt32; x: Int32; y: Int32; z: Int32);
-    external 'opengl32.dll' name 'glVertexAttribI3i';
-    
-    static procedure VertexAttribI4i(index: UInt32; x: Int32; y: Int32; z: Int32; w: Int32);
-    external 'opengl32.dll' name 'glVertexAttribI4i';
-    
-    static procedure VertexAttribI1ui(index: UInt32; x: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI1ui';
-    
-    static procedure VertexAttribI2ui(index: UInt32; x: UInt32; y: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI2ui';
-    
-    static procedure VertexAttribI3ui(index: UInt32; x: UInt32; y: UInt32; z: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI3ui';
-    
-    static procedure VertexAttribI4ui(index: UInt32; x: UInt32; y: UInt32; z: UInt32; w: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI4ui';
-    
-    static procedure VertexAttribI1iv(index: UInt32; v: ^Int32);
-    external 'opengl32.dll' name 'glVertexAttribI1iv';
-    
-    static procedure VertexAttribI2iv(index: UInt32; v: ^Int32);
-    external 'opengl32.dll' name 'glVertexAttribI2iv';
-    
-    static procedure VertexAttribI3iv(index: UInt32; v: ^Int32);
-    external 'opengl32.dll' name 'glVertexAttribI3iv';
-    
-    static procedure VertexAttribI4iv(index: UInt32; v: ^Int32);
-    external 'opengl32.dll' name 'glVertexAttribI4iv';
-    
-    static procedure VertexAttribI1uiv(index: UInt32; v: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI1uiv';
-    
-    static procedure VertexAttribI2uiv(index: UInt32; v: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI2uiv';
-    
-    static procedure VertexAttribI3uiv(index: UInt32; v: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI3uiv';
-    
-    static procedure VertexAttribI4uiv(index: UInt32; v: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribI4uiv';
-    
-    static procedure VertexAttribI4bv(index: UInt32; v: ^SByte);
-    external 'opengl32.dll' name 'glVertexAttribI4bv';
-    
-    static procedure VertexAttribI4sv(index: UInt32; v: ^Int16);
-    external 'opengl32.dll' name 'glVertexAttribI4sv';
-    
-    static procedure VertexAttribI4ubv(index: UInt32; v: ^Byte);
-    external 'opengl32.dll' name 'glVertexAttribI4ubv';
-    
-    static procedure VertexAttribI4usv(index: UInt32; v: ^UInt16);
-    external 'opengl32.dll' name 'glVertexAttribI4usv';
-    
     static procedure BindFragDataLocation(&program: UInt32; color: UInt32; name: ^SByte);
     external 'opengl32.dll' name 'glBindFragDataLocation';
     
@@ -11923,39 +12756,6 @@ type
     static procedure ClearBufferfi(buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
     external 'opengl32.dll' name 'glClearBufferfi';
     
-    static procedure BindVertexArray(&array: UInt32);
-    external 'opengl32.dll' name 'glBindVertexArray';
-    
-    static procedure DeleteVertexArrays(n: Int32; arrays: ^UInt32);
-    external 'opengl32.dll' name 'glDeleteVertexArrays';
-    
-    static procedure GenVertexArrays(n: Int32; arrays: ^UInt32);
-    external 'opengl32.dll' name 'glGenVertexArrays';
-    
-    static function IsVertexArray(&array: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsVertexArray';
-    
-    static procedure DrawArraysInstanced(mode: UInt32; first: Int32; count: Int32; instancecount: Int32);
-    external 'opengl32.dll' name 'glDrawArraysInstanced';
-    
-    static procedure DrawElementsInstanced(mode: UInt32; count: Int32; &type: UInt32; indices: pointer; instancecount: Int32);
-    external 'opengl32.dll' name 'glDrawElementsInstanced';
-    
-    static procedure PrimitiveRestartIndex(index: UInt32);
-    external 'opengl32.dll' name 'glPrimitiveRestartIndex';
-    
-    static procedure DrawElementsBaseVertex(mode: UInt32; count: Int32; &type: UInt32; indices: pointer; basevertex: Int32);
-    external 'opengl32.dll' name 'glDrawElementsBaseVertex';
-    
-    static procedure DrawRangeElementsBaseVertex(mode: UInt32; start: UInt32; &end: UInt32; count: Int32; &type: UInt32; indices: pointer; basevertex: Int32);
-    external 'opengl32.dll' name 'glDrawRangeElementsBaseVertex';
-    
-    static procedure DrawElementsInstancedBaseVertex(mode: UInt32; count: Int32; &type: UInt32; indices: pointer; instancecount: Int32; basevertex: Int32);
-    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertex';
-    
-    static procedure MultiDrawElementsBaseVertex(mode: UInt32; count: ^Int32; &type: UInt32; indices: ^IntPtr; drawcount: Int32; basevertex: ^Int32);
-    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
-    
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
     
@@ -11971,33 +12771,6 @@ type
     static function GetFragDataIndex(&program: UInt32; name: ^SByte): Int32;
     external 'opengl32.dll' name 'glGetFragDataIndex';
     
-    static procedure VertexAttribDivisor(index: UInt32; divisor: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribDivisor';
-    
-    static procedure VertexAttribP1ui(index: UInt32; &type: UInt32; normalized: boolean; value: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP1ui';
-    
-    static procedure VertexAttribP1uiv(index: UInt32; &type: UInt32; normalized: boolean; value: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP1uiv';
-    
-    static procedure VertexAttribP2ui(index: UInt32; &type: UInt32; normalized: boolean; value: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP2ui';
-    
-    static procedure VertexAttribP2uiv(index: UInt32; &type: UInt32; normalized: boolean; value: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP2uiv';
-    
-    static procedure VertexAttribP3ui(index: UInt32; &type: UInt32; normalized: boolean; value: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP3ui';
-    
-    static procedure VertexAttribP3uiv(index: UInt32; &type: UInt32; normalized: boolean; value: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP3uiv';
-    
-    static procedure VertexAttribP4ui(index: UInt32; &type: UInt32; normalized: boolean; value: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP4ui';
-    
-    static procedure VertexAttribP4uiv(index: UInt32; &type: UInt32; normalized: boolean; value: ^UInt32);
-    external 'opengl32.dll' name 'glVertexAttribP4uiv';
-    
     static procedure MinSampleShading(value: single);
     external 'opengl32.dll' name 'glMinSampleShading';
     
@@ -12012,15 +12785,6 @@ type
     
     static procedure BlendFuncSeparatei(buf: UInt32; srcRGB: UInt32; dstRGB: UInt32; srcAlpha: UInt32; dstAlpha: UInt32);
     external 'opengl32.dll' name 'glBlendFuncSeparatei';
-    
-    static procedure DrawArraysIndirect(mode: UInt32; indirect: pointer);
-    external 'opengl32.dll' name 'glDrawArraysIndirect';
-    
-    static procedure DrawElementsIndirect(mode: UInt32; &type: UInt32; indirect: pointer);
-    external 'opengl32.dll' name 'glDrawElementsIndirect';
-    
-    static procedure PatchParameteri(pname: UInt32; value: Int32);
-    external 'opengl32.dll' name 'glPatchParameteri';
     
     static procedure PatchParameterfv(pname: UInt32; values: ^single);
     external 'opengl32.dll' name 'glPatchParameterfv';
@@ -12055,36 +12819,6 @@ type
     static procedure ClearDepthf(d: single);
     external 'opengl32.dll' name 'glClearDepthf';
     
-    static procedure VertexAttribL1d(index: UInt32; x: real);
-    external 'opengl32.dll' name 'glVertexAttribL1d';
-    
-    static procedure VertexAttribL2d(index: UInt32; x: real; y: real);
-    external 'opengl32.dll' name 'glVertexAttribL2d';
-    
-    static procedure VertexAttribL3d(index: UInt32; x: real; y: real; z: real);
-    external 'opengl32.dll' name 'glVertexAttribL3d';
-    
-    static procedure VertexAttribL4d(index: UInt32; x: real; y: real; z: real; w: real);
-    external 'opengl32.dll' name 'glVertexAttribL4d';
-    
-    static procedure VertexAttribL1dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttribL1dv';
-    
-    static procedure VertexAttribL2dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttribL2dv';
-    
-    static procedure VertexAttribL3dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttribL3dv';
-    
-    static procedure VertexAttribL4dv(index: UInt32; v: ^real);
-    external 'opengl32.dll' name 'glVertexAttribL4dv';
-    
-    static procedure VertexAttribLPointer(index: UInt32; size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
-    external 'opengl32.dll' name 'glVertexAttribLPointer';
-    
-    static procedure GetVertexAttribLdv(index: UInt32; pname: UInt32; &params: ^real);
-    external 'opengl32.dll' name 'glGetVertexAttribLdv';
-    
     static procedure ViewportArrayv(first: UInt32; count: Int32; v: ^single);
     external 'opengl32.dll' name 'glViewportArrayv';
     
@@ -12109,15 +12843,6 @@ type
     static procedure DepthRangeIndexed(index: UInt32; n: real; f: real);
     external 'opengl32.dll' name 'glDepthRangeIndexed';
     
-    static procedure DrawArraysInstancedBaseInstance(mode: UInt32; first: Int32; count: Int32; instancecount: Int32; baseinstance: UInt32);
-    external 'opengl32.dll' name 'glDrawArraysInstancedBaseInstance';
-    
-    static procedure DrawElementsInstancedBaseInstance(mode: UInt32; count: Int32; &type: UInt32; indices: pointer; instancecount: Int32; baseinstance: UInt32);
-    external 'opengl32.dll' name 'glDrawElementsInstancedBaseInstance';
-    
-    static procedure DrawElementsInstancedBaseVertexBaseInstance(mode: UInt32; count: Int32; &type: UInt32; indices: pointer; instancecount: Int32; basevertex: Int32; baseinstance: UInt32);
-    external 'opengl32.dll' name 'glDrawElementsInstancedBaseVertexBaseInstance';
-    
     static procedure DrawTransformFeedbackInstanced(mode: UInt32; id: UInt32; instancecount: Int32);
     external 'opengl32.dll' name 'glDrawTransformFeedbackInstanced';
     
@@ -12127,9 +12852,6 @@ type
     static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
     external 'opengl32.dll' name 'glDispatchCompute';
     
-    static procedure DispatchComputeIndirect(indirect: IntPtr);
-    external 'opengl32.dll' name 'glDispatchComputeIndirect';
-    
     static procedure GetInternalformati64v(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int64);
     external 'opengl32.dll' name 'glGetInternalformati64v';
     
@@ -12138,30 +12860,6 @@ type
     
     static procedure InvalidateSubFramebuffer(target: UInt32; numAttachments: Int32; attachments: ^UInt32; x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glInvalidateSubFramebuffer';
-    
-    static procedure MultiDrawArraysIndirect(mode: UInt32; indirect: pointer; drawcount: Int32; stride: Int32);
-    external 'opengl32.dll' name 'glMultiDrawArraysIndirect';
-    
-    static procedure MultiDrawElementsIndirect(mode: UInt32; &type: UInt32; indirect: pointer; drawcount: Int32; stride: Int32);
-    external 'opengl32.dll' name 'glMultiDrawElementsIndirect';
-    
-    static procedure BindVertexBuffer(bindingindex: UInt32; buffer: UInt32; offset: IntPtr; stride: Int32);
-    external 'opengl32.dll' name 'glBindVertexBuffer';
-    
-    static procedure VertexAttribFormat(attribindex: UInt32; size: Int32; &type: UInt32; normalized: boolean; relativeoffset: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribFormat';
-    
-    static procedure VertexAttribIFormat(attribindex: UInt32; size: Int32; &type: UInt32; relativeoffset: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribIFormat';
-    
-    static procedure VertexAttribLFormat(attribindex: UInt32; size: Int32; &type: UInt32; relativeoffset: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribLFormat';
-    
-    static procedure VertexAttribBinding(attribindex: UInt32; bindingindex: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribBinding';
-    
-    static procedure VertexBindingDivisor(bindingindex: UInt32; divisor: UInt32);
-    external 'opengl32.dll' name 'glVertexBindingDivisor';
     
     static procedure DebugMessageControl(source: UInt32; &type: UInt32; severity: UInt32; count: Int32; ids: ^UInt32; enabled: boolean);
     external 'opengl32.dll' name 'glDebugMessageControl';
@@ -12192,9 +12890,6 @@ type
     
     static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; &label: ^SByte);
     external 'opengl32.dll' name 'glGetObjectPtrLabel';
-    
-    static procedure BindVertexBuffers(first: UInt32; count: Int32; buffers: ^UInt32; offsets: ^IntPtr; strides: ^Int32);
-    external 'opengl32.dll' name 'glBindVertexBuffers';
     
     static procedure ClipControl(origin: UInt32; depth: UInt32);
     external 'opengl32.dll' name 'glClipControl';
@@ -12247,59 +12942,11 @@ type
     static procedure BlitNamedFramebuffer(readFramebuffer: UInt32; drawFramebuffer: UInt32; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
     external 'opengl32.dll' name 'glBlitNamedFramebuffer';
     
-    static procedure CreateVertexArrays(n: Int32; arrays: ^UInt32);
-    external 'opengl32.dll' name 'glCreateVertexArrays';
-    
-    static procedure DisableVertexArrayAttrib(vaobj: UInt32; index: UInt32);
-    external 'opengl32.dll' name 'glDisableVertexArrayAttrib';
-    
-    static procedure EnableVertexArrayAttrib(vaobj: UInt32; index: UInt32);
-    external 'opengl32.dll' name 'glEnableVertexArrayAttrib';
-    
-    static procedure VertexArrayElementBuffer(vaobj: UInt32; buffer: UInt32);
-    external 'opengl32.dll' name 'glVertexArrayElementBuffer';
-    
-    static procedure VertexArrayVertexBuffer(vaobj: UInt32; bindingindex: UInt32; buffer: UInt32; offset: IntPtr; stride: Int32);
-    external 'opengl32.dll' name 'glVertexArrayVertexBuffer';
-    
-    static procedure VertexArrayVertexBuffers(vaobj: UInt32; first: UInt32; count: Int32; buffers: ^UInt32; offsets: ^IntPtr; strides: ^Int32);
-    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
-    
-    static procedure VertexArrayAttribBinding(vaobj: UInt32; attribindex: UInt32; bindingindex: UInt32);
-    external 'opengl32.dll' name 'glVertexArrayAttribBinding';
-    
-    static procedure VertexArrayAttribFormat(vaobj: UInt32; attribindex: UInt32; size: Int32; &type: UInt32; normalized: boolean; relativeoffset: UInt32);
-    external 'opengl32.dll' name 'glVertexArrayAttribFormat';
-    
-    static procedure VertexArrayAttribIFormat(vaobj: UInt32; attribindex: UInt32; size: Int32; &type: UInt32; relativeoffset: UInt32);
-    external 'opengl32.dll' name 'glVertexArrayAttribIFormat';
-    
-    static procedure VertexArrayAttribLFormat(vaobj: UInt32; attribindex: UInt32; size: Int32; &type: UInt32; relativeoffset: UInt32);
-    external 'opengl32.dll' name 'glVertexArrayAttribLFormat';
-    
-    static procedure VertexArrayBindingDivisor(vaobj: UInt32; bindingindex: UInt32; divisor: UInt32);
-    external 'opengl32.dll' name 'glVertexArrayBindingDivisor';
-    
-    static procedure GetVertexArrayiv(vaobj: UInt32; pname: UInt32; param: ^Int32);
-    external 'opengl32.dll' name 'glGetVertexArrayiv';
-    
-    static procedure GetVertexArrayIndexediv(vaobj: UInt32; index: UInt32; pname: UInt32; param: ^Int32);
-    external 'opengl32.dll' name 'glGetVertexArrayIndexediv';
-    
-    static procedure GetVertexArrayIndexed64iv(vaobj: UInt32; index: UInt32; pname: UInt32; param: ^Int64);
-    external 'opengl32.dll' name 'glGetVertexArrayIndexed64iv';
-    
     static function GetGraphicsResetStatus: UInt32;
     external 'opengl32.dll' name 'glGetGraphicsResetStatus';
     
     static procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; bufSize: Int32; data: pointer);
     external 'opengl32.dll' name 'glReadnPixels';
-    
-    static procedure MultiDrawArraysIndirectCount(mode: UInt32; indirect: pointer; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
-    external 'opengl32.dll' name 'glMultiDrawArraysIndirectCount';
-    
-    static procedure MultiDrawElementsIndirectCount(mode: UInt32; &type: UInt32; indirect: pointer; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
-    external 'opengl32.dll' name 'glMultiDrawElementsIndirectCount';
     
     static procedure PolygonOffsetClamp(factor: single; units: single; clamp: single);
     external 'opengl32.dll' name 'glPolygonOffsetClamp';
@@ -12345,15 +12992,6 @@ type
     
     static function IsImageHandleResidentARB(handle: UInt64): boolean;
     external 'opengl32.dll' name 'glIsImageHandleResidentARB';
-    
-    static procedure VertexAttribL1ui64ARB(index: UInt32; x: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64ARB';
-    
-    static procedure VertexAttribL1ui64vARB(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64vARB';
-    
-    static procedure GetVertexAttribLui64vARB(index: UInt32; pname: UInt32; &params: ^UInt64);
-    external 'opengl32.dll' name 'glGetVertexAttribLui64vARB';
     
     static function CreateSyncFromCLeventARB(context: cl_context; &event: cl_event; flags: UInt32): GLsync;
     external 'opengl32.dll' name 'glCreateSyncFromCLeventARB';
@@ -12519,9 +13157,6 @@ type
     
     static procedure MultiDrawElementsIndirectCountARB(mode: UInt32; &type: UInt32; indirect: pointer; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32);
     external 'opengl32.dll' name 'glMultiDrawElementsIndirectCountARB';
-    
-    static procedure VertexAttribDivisorARB(index: UInt32; divisor: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribDivisorARB';
     
     static procedure MaxShaderCompilerThreadsARB(count: UInt32);
     external 'opengl32.dll' name 'glMaxShaderCompilerThreadsARB';
@@ -14026,62 +14661,11 @@ type
     static procedure TextureBarrierNV;
     external 'opengl32.dll' name 'glTextureBarrierNV';
     
-    static procedure VertexAttribL1i64NV(index: UInt32; x: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL1i64NV';
-    
-    static procedure VertexAttribL2i64NV(index: UInt32; x: Int64; y: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL2i64NV';
-    
-    static procedure VertexAttribL3i64NV(index: UInt32; x: Int64; y: Int64; z: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL3i64NV';
-    
-    static procedure VertexAttribL4i64NV(index: UInt32; x: Int64; y: Int64; z: Int64; w: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL4i64NV';
-    
-    static procedure VertexAttribL1i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL1i64vNV';
-    
-    static procedure VertexAttribL2i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL2i64vNV';
-    
-    static procedure VertexAttribL3i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL3i64vNV';
-    
-    static procedure VertexAttribL4i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL4i64vNV';
-    
-    static procedure VertexAttribL1ui64NV(index: UInt32; x: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64NV';
-    
-    static procedure VertexAttribL2ui64NV(index: UInt32; x: UInt64; y: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL2ui64NV';
-    
-    static procedure VertexAttribL3ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL3ui64NV';
-    
-    static procedure VertexAttribL4ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64; w: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL4ui64NV';
-    
-    static procedure VertexAttribL1ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64vNV';
-    
-    static procedure VertexAttribL2ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL2ui64vNV';
-    
-    static procedure VertexAttribL3ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL3ui64vNV';
-    
-    static procedure VertexAttribL4ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL4ui64vNV';
-    
     static procedure GetVertexAttribLi64vNV(index: UInt32; pname: UInt32; &params: ^Int64);
     external 'opengl32.dll' name 'glGetVertexAttribLi64vNV';
     
     static procedure GetVertexAttribLui64vNV(index: UInt32; pname: UInt32; &params: ^UInt64);
     external 'opengl32.dll' name 'glGetVertexAttribLui64vNV';
-    
-    static procedure VertexAttribLFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
-    external 'opengl32.dll' name 'glVertexAttribLFormatNV';
     
     static procedure BufferAddressRangeNV(pname: UInt32; index: UInt32; address: UInt64; length: UIntPtr);
     external 'opengl32.dll' name 'glBufferAddressRangeNV';
@@ -14109,12 +14693,6 @@ type
     
     static procedure FogCoordFormatNV(&type: UInt32; stride: Int32);
     external 'opengl32.dll' name 'glFogCoordFormatNV';
-    
-    static procedure VertexAttribFormatNV(index: UInt32; size: Int32; &type: UInt32; normalized: boolean; stride: Int32);
-    external 'opengl32.dll' name 'glVertexAttribFormatNV';
-    
-    static procedure VertexAttribIFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
-    external 'opengl32.dll' name 'glVertexAttribIFormatNV';
     
     static procedure GetIntegerui64i_vNV(value: UInt32; index: UInt32; result: ^UInt64);
     external 'opengl32.dll' name 'glGetIntegerui64i_vNV';
@@ -14184,9 +14762,6 @@ type
     
     static function GenLists(range: Int32): UInt32;
     external 'opengl32.dll' name 'glGenLists';
-    
-    static procedure GetBooleanv(pname: UInt32; &params: ^Byte);
-    external 'opengl32.dll' name 'glGetBooleanv';
     
     static procedure GetColorTableEXT(target: UInt32; format: UInt32; &type: UInt32; table: pointer);
     external 'opengl32.dll' name 'glGetColorTableEXT';
@@ -14312,6 +14887,79 @@ type
     external 'opengl32.dll' name 'glVertexPointer';
     
     {$endregion unsorted}
+    
+    {$region странные расширения}{
+    
+    static procedure VertexAttribFormatNV(index: UInt32; size: Int32; &type: UInt32; normalized: boolean; stride: Int32);
+    external 'opengl32.dll' name 'glVertexAttribFormatNV';
+    
+    static procedure VertexAttribIFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
+    external 'opengl32.dll' name 'glVertexAttribIFormatNV';
+    
+    static procedure VertexAttribLFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
+    external 'opengl32.dll' name 'glVertexAttribLFormatNV';
+    
+    static procedure VertexAttribL1i64NV(index: UInt32; x: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL1i64NV';
+    
+    static procedure VertexAttribL2i64NV(index: UInt32; x: Int64; y: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL2i64NV';
+    
+    static procedure VertexAttribL3i64NV(index: UInt32; x: Int64; y: Int64; z: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL3i64NV';
+    
+    static procedure VertexAttribL4i64NV(index: UInt32; x: Int64; y: Int64; z: Int64; w: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL4i64NV';
+    
+    static procedure VertexAttribL1i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL1i64vNV';
+    
+    static procedure VertexAttribL2i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL2i64vNV';
+    
+    static procedure VertexAttribL3i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL3i64vNV';
+    
+    static procedure VertexAttribL4i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL4i64vNV';
+    
+    static procedure VertexAttribL1ui64NV(index: UInt32; x: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64NV';
+    
+    static procedure VertexAttribL2ui64NV(index: UInt32; x: UInt64; y: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL2ui64NV';
+    
+    static procedure VertexAttribL3ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL3ui64NV';
+    
+    static procedure VertexAttribL4ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64; w: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL4ui64NV';
+    
+    static procedure VertexAttribL1ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64vNV';
+    
+    static procedure VertexAttribL2ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL2ui64vNV';
+    
+    static procedure VertexAttribL3ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL3ui64vNV';
+    
+    static procedure VertexAttribL4ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL4ui64vNV';
+    
+    static procedure VertexAttribDivisorARB(index: UInt32; divisor: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribDivisorARB';
+    
+    static procedure GetVertexAttribLui64vARB(index: UInt32; pname: UInt32; &params: ^UInt64);
+    external 'opengl32.dll' name 'glGetVertexAttribLui64vARB';
+    
+    static procedure VertexAttribL1ui64ARB(index: UInt32; x: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64ARB';
+    
+    static procedure VertexAttribL1ui64vARB(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64vARB';
+    
+    }{$endregion странные расширения}
     
   end;
 
