@@ -23,6 +23,11 @@
 ///
 unit OpenGL;
 
+//ToDo матрицы в шейдерах передаются массивом столбцов
+// - это может бить по производительности, потому что тут матрицы хранятся строками
+// - разобраться - может там снова эта путаница и на самом деле в шейдере можно выбирать как хранится матрица
+// - возможно придётся вывернуть все матрицы наизнанку... или добавить ещё типов матриц
+
 //ToDo в самом конце - сделать прогу чтоб посмотреть какие константы по 2 раза, а каких вообще нет
 
 //ToDo http://forum.mmcs.sfedu.ru/t/zamechaniya-i-predlozheniya/143/1334?u=sun_serega
@@ -304,6 +309,16 @@ type
   end;
   
   {$endregion ...InfoType}
+  
+  //S
+  TransformFeedbackBufferMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property INTERLEAVED_ATTRIBS: TransformFeedbackBufferMode read new TransformFeedbackBufferMode($8C8C);
+    public static property SEPARATE_ATTRIBS:    TransformFeedbackBufferMode read new TransformFeedbackBufferMode($8C8D);
+    
+  end;
   
   //S
   ConditionalRenderingMode = record
@@ -1188,7 +1203,57 @@ type
     
   end;
   
-  //S
+  //R
+  ProgramVarType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public property FLOAT:             boolean read self.val = $1406;
+    public property FLOAT_VEC2:        boolean read self.val = $8B50;
+    public property FLOAT_VEC3:        boolean read self.val = $8B51;
+    public property FLOAT_VEC4:        boolean read self.val = $8B52;
+    public property FLOAT_MAT2:        boolean read self.val = $8B5A;
+    public property FLOAT_MAT3:        boolean read self.val = $8B5B;
+    public property FLOAT_MAT4:        boolean read self.val = $8B5C;
+    public property FLOAT_MAT2x3:      boolean read self.val = $8B65;
+    public property FLOAT_MAT3x2:      boolean read self.val = $8B67;
+    public property FLOAT_MAT2x4:      boolean read self.val = $8B66;
+    public property FLOAT_MAT4x2:      boolean read self.val = $8B69;
+    public property FLOAT_MAT3x4:      boolean read self.val = $8B68;
+    public property FLOAT_MAT4x3:      boolean read self.val = $8B6A;
+    public property INT:               boolean read self.val = $1404;
+    public property INT_VEC2:          boolean read self.val = $8B53;
+    public property INT_VEC3:          boolean read self.val = $8B54;
+    public property INT_VEC4:          boolean read self.val = $8B55;
+    public property UNSIGNED_INT:      boolean read self.val = $1405;
+    public property UNSIGNED_INT_VEC2: boolean read self.val = $8DC6;
+    public property UNSIGNED_INT_VEC3: boolean read self.val = $8DC7;
+    public property UNSIGNED_INT_VEC4: boolean read self.val = $8DC8;
+    public property DOUBLE:            boolean read self.val = $140A;
+    public property DOUBLE_VEC2:       boolean read self.val = $8FFC;
+    public property DOUBLE_VEC3:       boolean read self.val = $8FFD;
+    public property DOUBLE_VEC4:       boolean read self.val = $8FFE;
+    public property DOUBLE_MAT2:       boolean read self.val = $8F46;
+    public property DOUBLE_MAT3:       boolean read self.val = $8F47;
+    public property DOUBLE_MAT4:       boolean read self.val = $8F48;
+    public property DOUBLE_MAT2x3:     boolean read self.val = $8F49;
+    public property DOUBLE_MAT3x2:     boolean read self.val = $8F4B;
+    public property DOUBLE_MAT2x4:     boolean read self.val = $8F4A;
+    public property DOUBLE_MAT4x2:     boolean read self.val = $8F4D;
+    public property DOUBLE_MAT3x4:     boolean read self.val = $8F4C;
+    public property DOUBLE_MAT4x3:     boolean read self.val = $8F4E;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ProgramVarType).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'ProgramVarType[{self.val}]':
+        res[0];
+    end;
+    
+  end;
+  
+  //R
   FramebufferAttachmentObjectType = record
     public val: UInt32;
     
@@ -11603,7 +11668,7 @@ type
     
     {$endregion 9.0 - Framebuffers and Framebuffer Objects}
     
-    {$region Chapter 10 - Vertex Specification and Drawing Commands}
+    {$region 10.0 - Vertex Specification and Drawing Commands}
     
     {$region 10.1 - Primitive Types}
     
@@ -12561,11 +12626,105 @@ type
     
     {$endregion 10.9 - Conditional Rendering}
     
-    {$endregion Chapter 10 - Vertex Specification and Drawing Commands}
+    {$endregion 10.0 - Vertex Specification and Drawing Commands}
+    
+    {$region 11.0 - Programmable Vertex Processing}
+    
+    {$region 11.1 - Vertex Shaders}
+    
+    // 11.1.1
+    
+    static procedure BindAttribLocation(&program: ProgramName; index: UInt32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glBindAttribLocation';
+    static procedure BindAttribLocation(&program: ProgramName; index: UInt32; name: IntPtr);
+    external 'opengl32.dll' name 'glBindAttribLocation';
+    
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; var &type: ProgramVarType; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; var &type: ProgramVarType; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; &type: pointer; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; var &type: ProgramVarType; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; var &type: ProgramVarType; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; name: IntPtr);
+    external 'opengl32.dll' name 'glGetActiveAttrib';
+    
+    static function GetAttribLocation(&program: ProgramName; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
+    external 'opengl32.dll' name 'glGetAttribLocation';
+    static function GetAttribLocation(&program: ProgramName; name: IntPtr): Int32;
+    external 'opengl32.dll' name 'glGetAttribLocation';
+    
+    //11.1.2
+    
+    //11.1.2.1
+    
+    static procedure TransformFeedbackVaryings(&program: ProgramName; count: Int32; [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] varyings: array of string; bufferMode: TransformFeedbackBufferMode);
+    external 'opengl32.dll' name 'glTransformFeedbackVaryings';
+    static procedure TransformFeedbackVaryings(&program: ProgramName; count: Int32; [MarshalAs(UnmanagedType.SysInt, ArraySubType = UnmanagedType.LPStr)] var varyings: string; bufferMode: TransformFeedbackBufferMode);
+    external 'opengl32.dll' name 'glTransformFeedbackVaryings';
+    static procedure TransformFeedbackVaryings(&program: ProgramName; count: Int32; var varyings: IntPtr; bufferMode: TransformFeedbackBufferMode);
+    external 'opengl32.dll' name 'glTransformFeedbackVaryings';
+    static procedure TransformFeedbackVaryings(&program: ProgramName; count: Int32; varyings: pointer; bufferMode: TransformFeedbackBufferMode);
+    external 'opengl32.dll' name 'glTransformFeedbackVaryings';
+    
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; var &type: ProgramVarType; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; var &type: ProgramVarType; name: IntPtr);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; name: IntPtr);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    
+    //11.1.3
+    
+    //11.1.3.11
+    
+    static procedure ValidateProgram(&program: ProgramName);
+    external 'opengl32.dll' name 'glValidateProgram';
+    
+    static procedure ValidateProgramPipeline(pipeline: ProgramPipelineName);
+    external 'opengl32.dll' name 'glValidateProgramPipeline';
+    
+    {$endregion 11.1 - Vertex Shaders}
+    
+    {$region 11.2 - Tessellation}
+    
+    // 11.2.2
+    
+    static procedure PatchParameterfv(pname: PatchMode; [MarshalAs(UnmanagedType.LPArray)] values: array of single);
+    external 'opengl32.dll' name 'glPatchParameterfv';
+    static procedure PatchParameterfv(pname: PatchMode; var values: single);
+    external 'opengl32.dll' name 'glPatchParameterfv';
+    static procedure PatchParameterfv(pname: PatchMode; values: pointer);
+    external 'opengl32.dll' name 'glPatchParameterfv';
+    
+    {$endregion 11.2 - Tessellation}
+    
+    {$endregion 11.0 - Programmable Vertex Processing}
     
     
     
     {$region unsorted}
+    
+    static procedure GetMultisamplefv(pname: UInt32; index: UInt32; val: ^single);
+    external 'opengl32.dll' name 'glGetMultisamplefv';
+    
+    static procedure PointSize(size: single);
+    external 'opengl32.dll' name 'glPointSize';
+    
+    static procedure Viewport(x: Int32; y: Int32; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glViewport';
+    
+    static procedure ProvokingVertex(mode: UInt32);
+    external 'opengl32.dll' name 'glProvokingVertex';
     
     static procedure DispatchComputeIndirect(indirect: IntPtr);
     external 'opengl32.dll' name 'glDispatchComputeIndirect';
@@ -12588,12 +12747,6 @@ type
     static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
     external 'opengl32.dll' name 'glCopyPixels';
     
-    static procedure ValidateProgram(&program: UInt32);
-    external 'opengl32.dll' name 'glValidateProgram';
-    
-    static procedure ValidateProgramPipeline(pipeline: UInt32);
-    external 'opengl32.dll' name 'glValidateProgramPipeline';
-    
     static procedure Hint(target: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glHint';
     
@@ -12605,9 +12758,6 @@ type
     
     static procedure LineWidth(width: single);
     external 'opengl32.dll' name 'glLineWidth';
-    
-    static procedure PointSize(size: single);
-    external 'opengl32.dll' name 'glPointSize';
     
     static procedure PolygonMode(face: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glPolygonMode';
@@ -12663,9 +12813,6 @@ type
     static procedure DepthRange(n: real; f: real);
     external 'opengl32.dll' name 'glDepthRange';
     
-    static procedure Viewport(x: Int32; y: Int32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glViewport';
-    
     static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
     
@@ -12711,15 +12858,6 @@ type
     static procedure StencilMaskSeparate(face: UInt32; mask: UInt32);
     external 'opengl32.dll' name 'glStencilMaskSeparate';
     
-    static procedure BindAttribLocation(&program: UInt32; index: UInt32; name: ^SByte);
-    external 'opengl32.dll' name 'glBindAttribLocation';
-    
-    static procedure GetActiveAttrib(&program: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: ^UInt32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetActiveAttrib';
-    
-    static function GetAttribLocation(&program: UInt32; name: ^SByte): Int32;
-    external 'opengl32.dll' name 'glGetAttribLocation';
-    
     static procedure ColorMaski(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean);
     external 'opengl32.dll' name 'glColorMaski';
     
@@ -12728,12 +12866,6 @@ type
     
     static procedure EndTransformFeedback;
     external 'opengl32.dll' name 'glEndTransformFeedback';
-    
-    static procedure TransformFeedbackVaryings(&program: UInt32; count: Int32; varyings: ^^SByte; bufferMode: UInt32);
-    external 'opengl32.dll' name 'glTransformFeedbackVaryings';
-    
-    static procedure GetTransformFeedbackVarying(&program: UInt32; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: ^UInt32; name: ^SByte);
-    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
     
     static procedure ClampColor(target: UInt32; clamp: UInt32);
     external 'opengl32.dll' name 'glClampColor';
@@ -12755,12 +12887,6 @@ type
     
     static procedure ClearBufferfi(buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
     external 'opengl32.dll' name 'glClearBufferfi';
-    
-    static procedure ProvokingVertex(mode: UInt32);
-    external 'opengl32.dll' name 'glProvokingVertex';
-    
-    static procedure GetMultisamplefv(pname: UInt32; index: UInt32; val: ^single);
-    external 'opengl32.dll' name 'glGetMultisamplefv';
     
     static procedure SampleMaski(maskNumber: UInt32; mask: UInt32);
     external 'opengl32.dll' name 'glSampleMaski';
@@ -12785,9 +12911,6 @@ type
     
     static procedure BlendFuncSeparatei(buf: UInt32; srcRGB: UInt32; dstRGB: UInt32; srcAlpha: UInt32; dstAlpha: UInt32);
     external 'opengl32.dll' name 'glBlendFuncSeparatei';
-    
-    static procedure PatchParameterfv(pname: UInt32; values: ^single);
-    external 'opengl32.dll' name 'glPatchParameterfv';
     
     static procedure BindTransformFeedback(target: UInt32; id: UInt32);
     external 'opengl32.dll' name 'glBindTransformFeedback';
