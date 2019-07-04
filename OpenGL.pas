@@ -312,17 +312,6 @@ type
   {$endregion ...InfoType}
   
   //S
-  ClearModeFlags = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property COLOR_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00004000);
-    public static property DEPTH_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00000100);
-    public static property STENCIL_BUFFER_BIT:  ClearModeFlags read new ClearModeFlags($00000400);
-    
-  end;
-  
-  //S
   FrameBufferPart = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1625,6 +1614,19 @@ type
   {$region Флаги}
   
   //S
+  ClearModeFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property COLOR_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00004000);
+    public static property DEPTH_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00000100);
+    public static property STENCIL_BUFFER_BIT:  ClearModeFlags read new ClearModeFlags($00000400);
+    
+    public static function operator or(f1,f2: ClearModeFlags): ClearModeFlags := new ClearModeFlags(f1.val or f2.val);
+    
+  end;
+  
+  //S
   MemoryBarrierTypeFlags = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1645,6 +1647,8 @@ type
     public static property QUERY_BUFFER_BARRIER_BIT:        MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($00008000);
     public static property ALL_BARRIER_BITS:                MemoryBarrierTypeFlags read new MemoryBarrierTypeFlags($FFFFFFFF);
     
+    public static function operator or(f1,f2: MemoryBarrierTypeFlags): MemoryBarrierTypeFlags := new MemoryBarrierTypeFlags(f1.val or f2.val);
+    
   end;
   
   //S
@@ -1660,6 +1664,8 @@ type
     public static property COMPUTE_SHADER_BIT:          ProgramStagesFlags read new ProgramStagesFlags($00000020);
     public static property ALL_SHADER_BITS:             ProgramStagesFlags read new ProgramStagesFlags($FFFFFFFF);
     
+    public static function operator or(f1,f2: ProgramStagesFlags): ProgramStagesFlags := new ProgramStagesFlags(f1.val or f2.val);
+    
   end;
   
   //S
@@ -1669,6 +1675,8 @@ type
     
     public static property NONE: ReservedFlags read new ReservedFlags($0);
     
+    public static function operator or(f1,f2: ReservedFlags): ReservedFlags := new ReservedFlags(f1.val or f2.val);
+    
   end;
   
   //S
@@ -1677,6 +1685,8 @@ type
     public constructor(val: UInt32) := self.val := val;
     
     public static property SYNC_FLUSH_COMMANDS:  CommandFlushingBehaviorFlags read new CommandFlushingBehaviorFlags($00000001);
+    
+    public static function operator or(f1,f2: CommandFlushingBehaviorFlags): CommandFlushingBehaviorFlags := new CommandFlushingBehaviorFlags(f1.val or f2.val);
     
   end;
   
@@ -1694,6 +1704,8 @@ type
     public static property PERSISTENT_BIT:        BufferMapFlags read new BufferMapFlags($0040);
     public static property COHERENT_BIT:          BufferMapFlags read new BufferMapFlags($0080);
     
+    public static function operator or(f1,f2: BufferMapFlags): BufferMapFlags := new BufferMapFlags(f1.val or f2.val);
+    
   end;
   
   //S
@@ -1705,6 +1717,8 @@ type
     public static property CLIENT_STORAGE_BIT:  BufferStorageFlags read new BufferStorageFlags($0200);
     
     public static function operator implicit(f: BufferMapFlags): BufferStorageFlags := new BufferStorageFlags(f.val);
+    
+    public static function operator or(f1,f2: BufferStorageFlags): BufferStorageFlags := new BufferStorageFlags(f1.val or f2.val);
     
   end;
   
