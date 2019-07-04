@@ -312,6 +312,131 @@ type
   {$endregion ...InfoType}
   
   //S
+  ClearModeFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property COLOR_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00004000);
+    public static property DEPTH_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00000100);
+    public static property STENCIL_BUFFER_BIT:  ClearModeFlags read new ClearModeFlags($00000400);
+    
+  end;
+  
+  //S
+  FrameBufferPart = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NONE:            FrameBufferPart read new FrameBufferPart(0);
+    public static property FRONT_LEFT:      FrameBufferPart read new FrameBufferPart($0400);
+    public static property FRONT_RIGHT:     FrameBufferPart read new FrameBufferPart($0401);
+    public static property BACK_LEFT:       FrameBufferPart read new FrameBufferPart($0402);
+    public static property BACK_RIGHT:      FrameBufferPart read new FrameBufferPart($0403);
+    public static property FRONT:           FrameBufferPart read new FrameBufferPart($0404);
+    public static property BACK:            FrameBufferPart read new FrameBufferPart($0405);
+    public static property LEFT:            FrameBufferPart read new FrameBufferPart($0406);
+    public static property RIGHT:           FrameBufferPart read new FrameBufferPart($0407);
+    public static property FRONT_AND_BACK:  FrameBufferPart read new FrameBufferPart($0408);
+    
+  end;
+  
+  //S
+  LogicOpCode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property CLEAR:         LogicOpCode read new LogicOpCode($1500);
+    public static property &AND:          LogicOpCode read new LogicOpCode($1501);
+    public static property AND_REVERSE:   LogicOpCode read new LogicOpCode($1502);
+    public static property COPY:          LogicOpCode read new LogicOpCode($1503);
+    public static property AND_INVERTED:  LogicOpCode read new LogicOpCode($1504);
+    public static property NOOP:          LogicOpCode read new LogicOpCode($1505);
+    public static property &XOR:          LogicOpCode read new LogicOpCode($1506);
+    public static property &OR:           LogicOpCode read new LogicOpCode($1507);
+    public static property NOR:           LogicOpCode read new LogicOpCode($1508);
+    public static property EQUIV:         LogicOpCode read new LogicOpCode($1509);
+    public static property INVERT:        LogicOpCode read new LogicOpCode($150A);
+    public static property OR_REVERSE:    LogicOpCode read new LogicOpCode($150B);
+    public static property COPY_INVERTED: LogicOpCode read new LogicOpCode($150C);
+    public static property OR_INVERTED:   LogicOpCode read new LogicOpCode($150D);
+    public static property NAND:          LogicOpCode read new LogicOpCode($150E);
+    public static property &SET:          LogicOpCode read new LogicOpCode($150F);
+    
+  end;
+  
+  //S
+  BlendFuncMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ZERO:                      BlendFuncMode read new BlendFuncMode(0);
+    public static property ONE:                       BlendFuncMode read new BlendFuncMode(1);
+    public static property SRC_COLOR:                 BlendFuncMode read new BlendFuncMode($0300);
+    public static property ONE_MINUS_SRC_COLOR:       BlendFuncMode read new BlendFuncMode($0301);
+    public static property DST_COLOR:                 BlendFuncMode read new BlendFuncMode($0306);
+    public static property ONE_MINUS_DST_COLOR:       BlendFuncMode read new BlendFuncMode($0307);
+    public static property SRC_ALPHA:                 BlendFuncMode read new BlendFuncMode($0302);
+    public static property ONE_MINUS_SRC_ALPHA:       BlendFuncMode read new BlendFuncMode($0303);
+    public static property DST_ALPHA:                 BlendFuncMode read new BlendFuncMode($0304);
+    public static property ONE_MINUS_DST_ALPHA:       BlendFuncMode read new BlendFuncMode($0305);
+    public static property CONSTANT_COLOR:            BlendFuncMode read new BlendFuncMode($8001);
+    public static property ONE_MINUS_CONSTANT_COLOR:  BlendFuncMode read new BlendFuncMode($8002);
+    public static property CONSTANT_ALPHA:            BlendFuncMode read new BlendFuncMode($8003);
+    public static property ONE_MINUS_CONSTANT_ALPHA:  BlendFuncMode read new BlendFuncMode($8004);
+    public static property SRC_ALPHA_SATURATE:        BlendFuncMode read new BlendFuncMode($0308);
+    public static property SRC1_COLOR:                BlendFuncMode read new BlendFuncMode($88F9);
+    public static property ONE_MINUS_SRC1_COLOR:      BlendFuncMode read new BlendFuncMode($88FA);
+    public static property SRC1_ALPHA:                BlendFuncMode read new BlendFuncMode($8589);
+    public static property ONE_MINUS_SRC1_ALPHA:      BlendFuncMode read new BlendFuncMode($88FB);
+    
+  end;
+  
+  //S
+  BlendEquationMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FUNC_ADD:              BlendEquationMode read new BlendEquationMode($8006);
+    public static property FUNC_SUBTRACT:         BlendEquationMode read new BlendEquationMode($800A);
+    public static property FUNC_REVERSE_SUBTRACT: BlendEquationMode read new BlendEquationMode($800B);
+    public static property MIN:                   BlendEquationMode read new BlendEquationMode($8007);
+    public static property MAX:                   BlendEquationMode read new BlendEquationMode($8008);
+    
+  end;
+  
+  //S
+  StencilOpFailMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property KEEP:      StencilOpFailMode read new StencilOpFailMode($1E00);
+    public static property ZERO:      StencilOpFailMode read new StencilOpFailMode(0);
+    public static property REPLACE:   StencilOpFailMode read new StencilOpFailMode($1E01);
+    public static property INCR:      StencilOpFailMode read new StencilOpFailMode($1E02);
+    public static property INCR_WRAP: StencilOpFailMode read new StencilOpFailMode($8507);
+    public static property DECR:      StencilOpFailMode read new StencilOpFailMode($1E03);
+    public static property DECR_WRAP: StencilOpFailMode read new StencilOpFailMode($8508);
+    public static property INVERT:    StencilOpFailMode read new StencilOpFailMode($150A);
+    
+  end;
+  
+  //S
+  FuncActivationMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NEVER:     FuncActivationMode read new FuncActivationMode($0200);
+    public static property LESS:      FuncActivationMode read new FuncActivationMode($0201);
+    public static property LEQUAL:    FuncActivationMode read new FuncActivationMode($0203);
+    public static property GREATER:   FuncActivationMode read new FuncActivationMode($0204);
+    public static property GEQUAL:    FuncActivationMode read new FuncActivationMode($0206);
+    public static property EQUAL:     FuncActivationMode read new FuncActivationMode($0202);
+    public static property NOTEQUAL:  FuncActivationMode read new FuncActivationMode($0205);
+    public static property ALWAYS:    FuncActivationMode read new FuncActivationMode($0207);
+    
+  end;
+  
+  //S
   PolygonRasterizationMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9428,8 +9553,8 @@ type
     
     {$endregion Get[Type]}
     
-	  {$region Enablable}
-	  
+	{$region Enablable}
+	
     static procedure Disable(cap: EnablableName);
     external 'opengl32.dll' name 'glDisable';
     
@@ -9448,8 +9573,8 @@ type
     static function IsEnabledi(target: EnablableName; index: UInt32): boolean;
     external 'opengl32.dll' name 'glIsEnabledi';
     
-	  {$endregion Enablable}
-	  
+	{$endregion Enablable}
+	
     {$region 4.0 - Event Model}
     
     {$region 4.1 - Sync Objects and Fences}
@@ -13064,12 +13189,219 @@ type
     
     {$endregion 15.0 - Programmable Fragment Processing}
     
+    {$region 17.0 - Writing Fragments and Samples to the Framebuffer}
+    
+    {$region 17.3 - Per-Fragment Operations}
+    
+    // 17.3.3
+    
+    static procedure StencilFunc(func: FuncActivationMode; ref: Int32; mask: UInt32);
+    external 'opengl32.dll' name 'glStencilFunc';
+    
+    static procedure StencilFuncSeparate(face: PolygonFace; func: FuncActivationMode; ref: Int32; mask: UInt32);
+    external 'opengl32.dll' name 'glStencilFuncSeparate';
+    
+    static procedure StencilOp(fail: StencilOpFailMode; zfail: StencilOpFailMode; zpass: StencilOpFailMode);
+    external 'opengl32.dll' name 'glStencilOp';
+    
+    static procedure StencilOpSeparate(face: PolygonFace; sfail: StencilOpFailMode; dpfail: StencilOpFailMode; dppass: StencilOpFailMode);
+    external 'opengl32.dll' name 'glStencilOpSeparate';
+    
+    // 17.3.4
+    
+    static procedure DepthFunc(func: FuncActivationMode);
+    external 'opengl32.dll' name 'glDepthFunc';
+    
+    // 17.3.6
+    
+    // 17.3.6.1
+    
+    static procedure BlendEquation(mode: BlendEquationMode);
+    external 'opengl32.dll' name 'glBlendEquation';
+    
+    static procedure BlendEquationSeparate(modeRGB: BlendEquationMode; modeAlpha: BlendEquationMode);
+    external 'opengl32.dll' name 'glBlendEquationSeparate';
+    
+    static procedure BlendEquationi(buf: UInt32; mode: BlendEquationMode);
+    external 'opengl32.dll' name 'glBlendEquationi';
+    
+    static procedure BlendEquationSeparatei(buf: UInt32; modeRGB: BlendEquationMode; modeAlpha: BlendEquationMode);
+    external 'opengl32.dll' name 'glBlendEquationSeparatei';
+    
+    // 17.3.6.2
+    
+    static procedure BlendFunc(sfactor: BlendFuncMode; dfactor: BlendFuncMode);
+    external 'opengl32.dll' name 'glBlendFunc';
+    
+    static procedure BlendFuncSeparate(sfactorRGB: BlendFuncMode; dfactorRGB: BlendFuncMode; sfactorAlpha: BlendFuncMode; dfactorAlpha: BlendFuncMode);
+    external 'opengl32.dll' name 'glBlendFuncSeparate';
+    
+    static procedure BlendFunci(buf: UInt32; src: BlendFuncMode; dst: BlendFuncMode);
+    external 'opengl32.dll' name 'glBlendFunci';
+    
+    static procedure BlendFuncSeparatei(buf: UInt32; srcRGB: BlendFuncMode; dstRGB: BlendFuncMode; srcAlpha: BlendFuncMode; dstAlpha: BlendFuncMode);
+    external 'opengl32.dll' name 'glBlendFuncSeparatei';
+    
+    // 17.3.6.5
+    
+    static procedure BlendColor(red: single; green: single; blue: single; alpha: single);
+    external 'opengl32.dll' name 'glBlendColor';
+    
+    // 17.3.9
+    
+    static procedure LogicOp(opcode: LogicOpCode);
+    external 'opengl32.dll' name 'glLogicOp';
+    
+    {$endregion 17.3 - Per-Fragment Operations}
+    
+    {$region 17.4 - Whole Framebuffer Operations}
+    
+    // 17.4.1
+    
+    static procedure DrawBuffer(buf: FrameBufferPart);
+    external 'opengl32.dll' name 'glDrawBuffer';
+    
+    static procedure NamedFramebufferDrawBuffer(framebuffer: FramebufferName; buf: FrameBufferPart);
+    external 'opengl32.dll' name 'glNamedFramebufferDrawBuffer';
+    
+    static procedure DrawBuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] bufs: array of FrameBufferPart);
+    external 'opengl32.dll' name 'glDrawBuffers';
+    static procedure DrawBuffers(n: Int32; var bufs: FrameBufferPart);
+    external 'opengl32.dll' name 'glDrawBuffers';
+    static procedure DrawBuffers(n: Int32; bufs: pointer);
+    external 'opengl32.dll' name 'glDrawBuffers';
+    
+    static procedure NamedFramebufferDrawBuffers(framebuffer: FramebufferName; n: Int32; [MarshalAs(UnmanagedType.LPArray)] bufs: array of FrameBufferPart);
+    external 'opengl32.dll' name 'glNamedFramebufferDrawBuffers';
+    static procedure NamedFramebufferDrawBuffers(framebuffer: FramebufferName; n: Int32; var bufs: FrameBufferPart);
+    external 'opengl32.dll' name 'glNamedFramebufferDrawBuffers';
+    static procedure NamedFramebufferDrawBuffers(framebuffer: FramebufferName; n: Int32; bufs: pointer);
+    external 'opengl32.dll' name 'glNamedFramebufferDrawBuffers';
+    
+    // 17.4.2
+    
+    static procedure ColorMask(red: boolean; green: boolean; blue: boolean; alpha: boolean);
+    external 'opengl32.dll' name 'glColorMask';
+    
+    static procedure ColorMaski(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean);
+    external 'opengl32.dll' name 'glColorMaski';
+    
+    static procedure DepthMask(flag: boolean);
+    external 'opengl32.dll' name 'glDepthMask';
+    
+    static procedure StencilMask(mask: UInt32);
+    external 'opengl32.dll' name 'glStencilMask';
+    
+    static procedure StencilMaskSeparate(face: PolygonFace; mask: UInt32);
+    external 'opengl32.dll' name 'glStencilMaskSeparate';
+    
+    // 17.4.3
+    
+    static procedure Clear(mask: ClearModeFlags);
+    external 'opengl32.dll' name 'glClear';
+    
+    static procedure ClearColor(red: single; green: single; blue: single; alpha: single);
+    external 'opengl32.dll' name 'glClearColor';
+    
+    static procedure ClearDepth(depth: real);
+    external 'opengl32.dll' name 'glClearDepth';
+    
+    static procedure ClearDepthf(d: single);
+    external 'opengl32.dll' name 'glClearDepthf';
+    
+    static procedure ClearStencil(s: Int32);
+    external 'opengl32.dll' name 'glClearStencil';
+    
+    // 17.4.3.1
+    
+    static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32);
+    external 'opengl32.dll' name 'glClearBufferiv';
+    static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Int32);
+    external 'opengl32.dll' name 'glClearBufferiv';
+    static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
+    external 'opengl32.dll' name 'glClearBufferiv';
+    
+    static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of single);
+    external 'opengl32.dll' name 'glClearBufferfv';
+    static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: single);
+    external 'opengl32.dll' name 'glClearBufferfv';
+    static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
+    external 'opengl32.dll' name 'glClearBufferfv';
+    
+    static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of UInt32);
+    external 'opengl32.dll' name 'glClearBufferuiv';
+    static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: UInt32);
+    external 'opengl32.dll' name 'glClearBufferuiv';
+    static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
+    external 'opengl32.dll' name 'glClearBufferuiv';
+    
+    static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32);
+    external 'opengl32.dll' name 'glClearNamedFramebufferiv';
+    static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Int32);
+    external 'opengl32.dll' name 'glClearNamedFramebufferiv';
+    static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
+    external 'opengl32.dll' name 'glClearNamedFramebufferiv';
+    
+    static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of single);
+    external 'opengl32.dll' name 'glClearNamedFramebufferfv';
+    static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: single);
+    external 'opengl32.dll' name 'glClearNamedFramebufferfv';
+    static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
+    external 'opengl32.dll' name 'glClearNamedFramebufferfv';
+    
+    static procedure ClearNamedFramebufferuiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of UInt32);
+    external 'opengl32.dll' name 'glClearNamedFramebufferuiv';
+    static procedure ClearNamedFramebufferuiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: UInt32);
+    external 'opengl32.dll' name 'glClearNamedFramebufferuiv';
+    static procedure ClearNamedFramebufferuiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
+    external 'opengl32.dll' name 'glClearNamedFramebufferuiv';
+    
+    static procedure ClearBufferfi(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; depth: single; stencil: Int32);
+    external 'opengl32.dll' name 'glClearBufferfi';
+    
+    static procedure ClearNamedFramebufferfi(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; depth: single; stencil: Int32);
+    external 'opengl32.dll' name 'glClearNamedFramebufferfi';
+    
+    // 17.4.4
+    
+    static procedure InvalidateSubFramebuffer(target: FramebufferBindTarget; numAttachments: Int32; [MarshalAs(UnmanagedType.LPArray)] attachments: array of FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateSubFramebuffer';
+    static procedure InvalidateSubFramebuffer(target: FramebufferBindTarget; numAttachments: Int32; var attachments: FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateSubFramebuffer';
+    static procedure InvalidateSubFramebuffer(target: FramebufferBindTarget; numAttachments: Int32; attachments: pointer);
+    external 'opengl32.dll' name 'glInvalidateSubFramebuffer';
+    
+    static procedure InvalidateNamedFramebufferSubData(framebuffer: FramebufferName; numAttachments: Int32; [MarshalAs(UnmanagedType.LPArray)] attachments: array of FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateNamedFramebufferSubData';
+    static procedure InvalidateNamedFramebufferSubData(framebuffer: FramebufferName; numAttachments: Int32; var attachments: FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateNamedFramebufferSubData';
+    static procedure InvalidateNamedFramebufferSubData(framebuffer: FramebufferName; numAttachments: Int32; attachments: pointer);
+    external 'opengl32.dll' name 'glInvalidateNamedFramebufferSubData';
+    
+    static procedure InvalidateFramebuffer(target: FramebufferBindTarget; numAttachments: Int32; [MarshalAs(UnmanagedType.LPArray)] attachments: array of FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateFramebuffer';
+    static procedure InvalidateFramebuffer(target: FramebufferBindTarget; numAttachments: Int32; var attachments: FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateFramebuffer';
+    static procedure InvalidateFramebuffer(target: FramebufferBindTarget; numAttachments: Int32; attachments: pointer);
+    external 'opengl32.dll' name 'glInvalidateFramebuffer';
+    
+    static procedure InvalidateNamedFramebufferData(framebuffer: FramebufferName; numAttachments: Int32; [MarshalAs(UnmanagedType.LPArray)] attachments: array of FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateNamedFramebufferData';
+    static procedure InvalidateNamedFramebufferData(framebuffer: FramebufferName; numAttachments: Int32; var attachments: FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glInvalidateNamedFramebufferData';
+    static procedure InvalidateNamedFramebufferData(framebuffer: FramebufferName; numAttachments: Int32; attachments: pointer);
+    external 'opengl32.dll' name 'glInvalidateNamedFramebufferData';
+    
+    {$endregion 17.4 - Whole Framebuffer Operations}
+    
+    {$endregion 17.0 - Writing Fragments and Samples to the Framebuffer}
+    
     
     
     {$region unsorted}
     
-    static procedure Clear(mask: UInt32);
-    external 'opengl32.dll' name 'glClear';
+    static procedure ReadBuffer(src: UInt32);
+    external 'opengl32.dll' name 'glReadBuffer';
     
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
@@ -13095,122 +13427,23 @@ type
     static procedure Hint(target: UInt32; mode: UInt32);
     external 'opengl32.dll' name 'glHint';
     
-    static procedure DrawBuffer(buf: UInt32);
-    external 'opengl32.dll' name 'glDrawBuffer';
-    
-    static procedure ClearColor(red: single; green: single; blue: single; alpha: single);
-    external 'opengl32.dll' name 'glClearColor';
-    
-    static procedure ClearStencil(s: Int32);
-    external 'opengl32.dll' name 'glClearStencil';
-    
-    static procedure ClearDepth(depth: real);
-    external 'opengl32.dll' name 'glClearDepth';
-    
-    static procedure StencilMask(mask: UInt32);
-    external 'opengl32.dll' name 'glStencilMask';
-    
-    static procedure ColorMask(red: boolean; green: boolean; blue: boolean; alpha: boolean);
-    external 'opengl32.dll' name 'glColorMask';
-    
-    static procedure DepthMask(flag: boolean);
-    external 'opengl32.dll' name 'glDepthMask';
-    
     static procedure Finish;
     external 'opengl32.dll' name 'glFinish';
     
     static procedure Flush;
     external 'opengl32.dll' name 'glFlush';
     
-    static procedure BlendFunc(sfactor: UInt32; dfactor: UInt32);
-    external 'opengl32.dll' name 'glBlendFunc';
-    
-    static procedure LogicOp(opcode: UInt32);
-    external 'opengl32.dll' name 'glLogicOp';
-    
-    static procedure StencilFunc(func: UInt32; ref: Int32; mask: UInt32);
-    external 'opengl32.dll' name 'glStencilFunc';
-    
-    static procedure StencilOp(fail: UInt32; zfail: UInt32; zpass: UInt32);
-    external 'opengl32.dll' name 'glStencilOp';
-    
-    static procedure DepthFunc(func: UInt32);
-    external 'opengl32.dll' name 'glDepthFunc';
-    
-    static procedure ReadBuffer(src: UInt32);
-    external 'opengl32.dll' name 'glReadBuffer';
-    
     static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
     
-    static procedure BlendFuncSeparate(sfactorRGB: UInt32; dfactorRGB: UInt32; sfactorAlpha: UInt32; dfactorAlpha: UInt32);
-    external 'opengl32.dll' name 'glBlendFuncSeparate';
-    
-    static procedure BlendColor(red: single; green: single; blue: single; alpha: single);
-    external 'opengl32.dll' name 'glBlendColor';
-    
-    static procedure BlendEquation(mode: UInt32);
-    external 'opengl32.dll' name 'glBlendEquation';
-    
-    static procedure BlendEquationSeparate(modeRGB: UInt32; modeAlpha: UInt32);
-    external 'opengl32.dll' name 'glBlendEquationSeparate';
-    
-    static procedure DrawBuffers(n: Int32; bufs: ^UInt32);
-    external 'opengl32.dll' name 'glDrawBuffers';
-    
-    static procedure StencilOpSeparate(face: UInt32; sfail: UInt32; dpfail: UInt32; dppass: UInt32);
-    external 'opengl32.dll' name 'glStencilOpSeparate';
-    
-    static procedure StencilFuncSeparate(face: UInt32; func: UInt32; ref: Int32; mask: UInt32);
-    external 'opengl32.dll' name 'glStencilFuncSeparate';
-    
-    static procedure StencilMaskSeparate(face: UInt32; mask: UInt32);
-    external 'opengl32.dll' name 'glStencilMaskSeparate';
-    
-    static procedure ColorMaski(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean);
-    external 'opengl32.dll' name 'glColorMaski';
-    
     static procedure ClampColor(target: UInt32; clamp: UInt32);
     external 'opengl32.dll' name 'glClampColor';
-    
-    static procedure ClearBufferiv(buffer: UInt32; drawbuffer: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glClearBufferiv';
-    
-    static procedure ClearBufferuiv(buffer: UInt32; drawbuffer: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glClearBufferuiv';
-    
-    static procedure ClearBufferfv(buffer: UInt32; drawbuffer: Int32; value: ^single);
-    external 'opengl32.dll' name 'glClearBufferfv';
-    
-    static procedure ClearBufferfi(buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
-    external 'opengl32.dll' name 'glClearBufferfi';
-    
-    static procedure BlendEquationi(buf: UInt32; mode: UInt32);
-    external 'opengl32.dll' name 'glBlendEquationi';
-    
-    static procedure BlendEquationSeparatei(buf: UInt32; modeRGB: UInt32; modeAlpha: UInt32);
-    external 'opengl32.dll' name 'glBlendEquationSeparatei';
-    
-    static procedure BlendFunci(buf: UInt32; src: UInt32; dst: UInt32);
-    external 'opengl32.dll' name 'glBlendFunci';
-    
-    static procedure BlendFuncSeparatei(buf: UInt32; srcRGB: UInt32; dstRGB: UInt32; srcAlpha: UInt32; dstAlpha: UInt32);
-    external 'opengl32.dll' name 'glBlendFuncSeparatei';
-    
-    static procedure ClearDepthf(d: single);
-    external 'opengl32.dll' name 'glClearDepthf';
     
     static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
     external 'opengl32.dll' name 'glDispatchCompute';
     
     static procedure GetInternalformati64v(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int64);
     external 'opengl32.dll' name 'glGetInternalformati64v';
-    
-    static procedure InvalidateFramebuffer(target: UInt32; numAttachments: Int32; attachments: ^UInt32);
-    external 'opengl32.dll' name 'glInvalidateFramebuffer';
-    
-    static procedure InvalidateSubFramebuffer(target: UInt32; numAttachments: Int32; attachments: ^UInt32; x: Int32; y: Int32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glInvalidateSubFramebuffer';
     
     static procedure DebugMessageControl(source: UInt32; &type: UInt32; severity: UInt32; count: Int32; ids: ^UInt32; enabled: boolean);
     external 'opengl32.dll' name 'glDebugMessageControl';
@@ -13251,32 +13484,8 @@ type
     static procedure GetTransformFeedbacki64_v(xfb: UInt32; pname: UInt32; index: UInt32; param: ^Int64);
     external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
     
-    static procedure NamedFramebufferDrawBuffer(framebuffer: UInt32; buf: UInt32);
-    external 'opengl32.dll' name 'glNamedFramebufferDrawBuffer';
-    
-    static procedure NamedFramebufferDrawBuffers(framebuffer: UInt32; n: Int32; bufs: ^UInt32);
-    external 'opengl32.dll' name 'glNamedFramebufferDrawBuffers';
-    
     static procedure NamedFramebufferReadBuffer(framebuffer: UInt32; src: UInt32);
     external 'opengl32.dll' name 'glNamedFramebufferReadBuffer';
-    
-    static procedure InvalidateNamedFramebufferData(framebuffer: UInt32; numAttachments: Int32; attachments: ^UInt32);
-    external 'opengl32.dll' name 'glInvalidateNamedFramebufferData';
-    
-    static procedure InvalidateNamedFramebufferSubData(framebuffer: UInt32; numAttachments: Int32; attachments: ^UInt32; x: Int32; y: Int32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glInvalidateNamedFramebufferSubData';
-    
-    static procedure ClearNamedFramebufferiv(framebuffer: UInt32; buffer: UInt32; drawbuffer: Int32; value: ^Int32);
-    external 'opengl32.dll' name 'glClearNamedFramebufferiv';
-    
-    static procedure ClearNamedFramebufferuiv(framebuffer: UInt32; buffer: UInt32; drawbuffer: Int32; value: ^UInt32);
-    external 'opengl32.dll' name 'glClearNamedFramebufferuiv';
-    
-    static procedure ClearNamedFramebufferfv(framebuffer: UInt32; buffer: UInt32; drawbuffer: Int32; value: ^single);
-    external 'opengl32.dll' name 'glClearNamedFramebufferfv';
-    
-    static procedure ClearNamedFramebufferfi(framebuffer: UInt32; buffer: UInt32; drawbuffer: Int32; depth: single; stencil: Int32);
-    external 'opengl32.dll' name 'glClearNamedFramebufferfi';
     
     static procedure BlitNamedFramebuffer(readFramebuffer: UInt32; drawFramebuffer: UInt32; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
     external 'opengl32.dll' name 'glBlitNamedFramebuffer';
@@ -15063,9 +15272,6 @@ type
     static procedure Color4ub(red: Byte; green: Byte; blue: Byte; alpha: Byte);
     external 'opengl32.dll' name 'glColor4ub';
     
-    static procedure ColorMask(red: Byte; green: Byte; blue: Byte; alpha: Byte);
-    external 'opengl32.dll' name 'glColorMask';
-    
     static procedure ColorPointer(size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
     external 'opengl32.dll' name 'glColorPointer';
     
@@ -15074,9 +15280,6 @@ type
     
     static procedure ColorTableEXT(target: UInt32; internalformat: UInt32; width: Int32; format: UInt32; &type: UInt32; table: pointer);
     external 'opengl32.dll' name 'glColorTableEXT';
-    
-    static procedure DepthMask(flag: Byte);
-    external 'opengl32.dll' name 'glDepthMask';
     
     static procedure DisableClientState(&array: UInt32);
     external 'opengl32.dll' name 'glDisableClientState';
