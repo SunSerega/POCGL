@@ -60,6 +60,7 @@ type
   FramebufferName               = UInt32;
   RenderbufferName              = UInt32;
   VertexArrayName               = UInt32;
+  TransformFeedbackName         = UInt32;
   
   ShaderBinaryFormat            = UInt32;
   ProgramResourceIndex          = UInt32;
@@ -311,6 +312,35 @@ type
   {$endregion ...InfoType}
   
   //S
+  ClipDepthMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NEGATIVE_ONE_TO_ONE: ClipDepthMode read new ClipDepthMode($935E);
+    public static property ZERO_TO_ONE:         ClipDepthMode read new ClipDepthMode($935F);
+    
+  end;
+  
+  //S
+  ClipOriginMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property LOWER_LEFT:  ClipOriginMode read new ClipOriginMode($8CA1);
+    public static property UPPER_LEFT:  ClipOriginMode read new ClipOriginMode($8CA2);
+    
+  end;
+  
+  //S
+  TransformFeedbackBindTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property GL_TRANSFORM_FEEDBACK: TransformFeedbackBindTarget read new TransformFeedbackBindTarget($8E22);
+    
+  end;
+  
+  //S
   TransformFeedbackBufferMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -375,16 +405,20 @@ type
     public constructor(val: UInt32) := self.val := val;
     
     public static property POINTS:                    PrimitiveType read new PrimitiveType($0000);
-    public static property LINE_STRIP:                PrimitiveType read new PrimitiveType($0003);
-    public static property LINE_LOOP:                 PrimitiveType read new PrimitiveType($0002);
+    
     public static property LINES:                     PrimitiveType read new PrimitiveType($0001);
+    public static property LINE_LOOP:                 PrimitiveType read new PrimitiveType($0002);
+    public static property LINE_STRIP:                PrimitiveType read new PrimitiveType($0003);
     public static property LINES_ADJACENCY:           PrimitiveType read new PrimitiveType($000A);
     public static property LINE_STRIP_ADJACENCY:      PrimitiveType read new PrimitiveType($000B);
+    
+    public static property TRIANGLES:                 PrimitiveType read new PrimitiveType($0004);
     public static property TRIANGLE_STRIP:            PrimitiveType read new PrimitiveType($0005);
     public static property TRIANGLE_FAN:              PrimitiveType read new PrimitiveType($0006);
-    public static property TRIANGLES:                 PrimitiveType read new PrimitiveType($0004);
     public static property TRIANGLES_ADJACENCY:       PrimitiveType read new PrimitiveType($000C);
     public static property TRIANGLE_STRIP_ADJACENCY:  PrimitiveType read new PrimitiveType($000D);
+    
+    public static property PATCHES:                   PrimitiveType read new PrimitiveType($000E);
     
   end;
   
@@ -12710,21 +12744,141 @@ type
     
     {$endregion 11.0 - Programmable Vertex Processing}
     
+    {$region 13.0 - Fixed-Function Vertex Post-Processing}
+    
+    {$region 13.3 - Transform Feedback}
+    
+    // 13.3.1
+    
+    static procedure GenTransformFeedbacks(n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of TransformFeedbackName);
+    external 'opengl32.dll' name 'glGenTransformFeedbacks';
+    static procedure GenTransformFeedbacks(n: Int32; var ids: TransformFeedbackName);
+    external 'opengl32.dll' name 'glGenTransformFeedbacks';
+    static procedure GenTransformFeedbacks(n: Int32; ids: pointer);
+    external 'opengl32.dll' name 'glGenTransformFeedbacks';
+    
+    static procedure DeleteTransformFeedbacks(n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of TransformFeedbackName);
+    external 'opengl32.dll' name 'glDeleteTransformFeedbacks';
+    static procedure DeleteTransformFeedbacks(n: Int32; var ids: TransformFeedbackName);
+    external 'opengl32.dll' name 'glDeleteTransformFeedbacks';
+    static procedure DeleteTransformFeedbacks(n: Int32; ids: pointer);
+    external 'opengl32.dll' name 'glDeleteTransformFeedbacks';
+    
+    static function IsTransformFeedback(id: TransformFeedbackName): boolean;
+    external 'opengl32.dll' name 'glIsTransformFeedback';
+    
+    static procedure BindTransformFeedback(target: TransformFeedbackBindTarget; id: TransformFeedbackName);
+    external 'opengl32.dll' name 'glBindTransformFeedback';
+    
+    static procedure CreateTransformFeedbacks(n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of TransformFeedbackName);
+    external 'opengl32.dll' name 'glCreateTransformFeedbacks';
+    static procedure CreateTransformFeedbacks(n: Int32; var ids: TransformFeedbackName);
+    external 'opengl32.dll' name 'glCreateTransformFeedbacks';
+    static procedure CreateTransformFeedbacks(n: Int32; ids: pointer);
+    external 'opengl32.dll' name 'glCreateTransformFeedbacks';
+    
+    // 13.3.2
+    
+    static procedure BeginTransformFeedback(primitiveMode: PrimitiveType);
+    external 'opengl32.dll' name 'glBeginTransformFeedback';
+    
+    static procedure EndTransformFeedback;
+    external 'opengl32.dll' name 'glEndTransformFeedback';
+    
+    static procedure PauseTransformFeedback;
+    external 'opengl32.dll' name 'glPauseTransformFeedback';
+    
+    static procedure ResumeTransformFeedback;
+    external 'opengl32.dll' name 'glResumeTransformFeedback';
+    
+    static procedure TransformFeedbackBufferRange(xfb: TransformFeedbackName; index: UInt32; buffer: BufferName; offset: IntPtr; size: UIntPtr);
+    external 'opengl32.dll' name 'glTransformFeedbackBufferRange';
+    
+    static procedure TransformFeedbackBufferBase(xfb: TransformFeedbackName; index: UInt32; buffer: BufferName);
+    external 'opengl32.dll' name 'glTransformFeedbackBufferBase';
+    
+    // 13.3.3
+    
+    static procedure DrawTransformFeedback(mode: PrimitiveType; id: TransformFeedbackName);
+    external 'opengl32.dll' name 'glDrawTransformFeedback';
+    
+    static procedure DrawTransformFeedbackInstanced(mode: PrimitiveType; id: TransformFeedbackName; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawTransformFeedbackInstanced';
+    
+    static procedure DrawTransformFeedbackStream(mode: PrimitiveType; id: TransformFeedbackName; stream: UInt32);
+    external 'opengl32.dll' name 'glDrawTransformFeedbackStream';
+    
+    static procedure DrawTransformFeedbackStreamInstanced(mode: PrimitiveType; id: TransformFeedbackName; stream: UInt32; instancecount: Int32);
+    external 'opengl32.dll' name 'glDrawTransformFeedbackStreamInstanced';
+    
+    {$endregion 13.3 - Transform Feedback}
+    
+    {$region 13.7 - Primitive Clipping}
+    
+    static procedure ClipControl(origin: ClipOriginMode; depth: ClipDepthMode);
+    external 'opengl32.dll' name 'glClipControl';
+    
+    {$endregion 13.7 - Primitive Clipping}
+    
+    {$region 13.8 - Coordinate Transformations}
+    
+    // 13.8.1
+    
+    static procedure DepthRangeArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of real);
+    external 'opengl32.dll' name 'glDepthRangeArrayv';
+    static procedure DepthRangeArrayv(first: UInt32; count: Int32; var v: real);
+    external 'opengl32.dll' name 'glDepthRangeArrayv';
+    static procedure DepthRangeArrayv(first: UInt32; count: Int32; v: pointer);
+    external 'opengl32.dll' name 'glDepthRangeArrayv';
+    
+    static procedure DepthRangeIndexed(index: UInt32; n: real; f: real);
+    external 'opengl32.dll' name 'glDepthRangeIndexed';
+    
+    static procedure DepthRange(n: real; f: real);
+    external 'opengl32.dll' name 'glDepthRange';
+    
+    static procedure DepthRangef(n: single; f: single);
+    external 'opengl32.dll' name 'glDepthRangef';
+    
+    static procedure ViewportArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
+    external 'opengl32.dll' name 'glViewportArrayv';
+    static procedure ViewportArrayv(first: UInt32; count: Int32; var v: single);
+    external 'opengl32.dll' name 'glViewportArrayv';
+    static procedure ViewportArrayv(first: UInt32; count: Int32; v: pointer);
+    external 'opengl32.dll' name 'glViewportArrayv';
+    
+    static procedure ViewportIndexedf(index: UInt32; x: single; y: single; w: single; h: single);
+    external 'opengl32.dll' name 'glViewportIndexedf';
+    
+    static procedure ViewportIndexedfv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
+    external 'opengl32.dll' name 'glViewportIndexedfv';
+    static procedure ViewportIndexedfv(index: UInt32; var v: single);
+    external 'opengl32.dll' name 'glViewportIndexedfv';
+    static procedure ViewportIndexedfv(index: UInt32; v: pointer);
+    external 'opengl32.dll' name 'glViewportIndexedfv';
+    
+    static procedure Viewport(x: Int32; y: Int32; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glViewport';
+    
+    {$endregion 13.8 - Coordinate Transformations}
+    
+    {$endregion 13.0 - Fixed-Function Vertex Post-Processing}
+    
     
     
     {$region unsorted}
+    
+    static procedure ProvokingVertex(mode: UInt32);
+    external 'opengl32.dll' name 'glProvokingVertex';
+    
+    static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
+    external 'opengl32.dll' name 'glReadPixels';
     
     static procedure GetMultisamplefv(pname: UInt32; index: UInt32; val: ^single);
     external 'opengl32.dll' name 'glGetMultisamplefv';
     
     static procedure PointSize(size: single);
     external 'opengl32.dll' name 'glPointSize';
-    
-    static procedure Viewport(x: Int32; y: Int32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glViewport';
-    
-    static procedure ProvokingVertex(mode: UInt32);
-    external 'opengl32.dll' name 'glProvokingVertex';
     
     static procedure DispatchComputeIndirect(indirect: IntPtr);
     external 'opengl32.dll' name 'glDispatchComputeIndirect';
@@ -12734,9 +12888,6 @@ type
     
     static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
     external 'opengl32.dll' name 'glBlitFramebuffer';
-    
-    static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
-    external 'opengl32.dll' name 'glReadPixels';
     
     static procedure Clear(mask: UInt32);
     external 'opengl32.dll' name 'glClear';
@@ -12810,9 +12961,6 @@ type
     static procedure ReadBuffer(src: UInt32);
     external 'opengl32.dll' name 'glReadBuffer';
     
-    static procedure DepthRange(n: real; f: real);
-    external 'opengl32.dll' name 'glDepthRange';
-    
     static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
     
@@ -12861,12 +13009,6 @@ type
     static procedure ColorMaski(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean);
     external 'opengl32.dll' name 'glColorMaski';
     
-    static procedure BeginTransformFeedback(primitiveMode: UInt32);
-    external 'opengl32.dll' name 'glBeginTransformFeedback';
-    
-    static procedure EndTransformFeedback;
-    external 'opengl32.dll' name 'glEndTransformFeedback';
-    
     static procedure ClampColor(target: UInt32; clamp: UInt32);
     external 'opengl32.dll' name 'glClampColor';
     
@@ -12912,44 +13054,8 @@ type
     static procedure BlendFuncSeparatei(buf: UInt32; srcRGB: UInt32; dstRGB: UInt32; srcAlpha: UInt32; dstAlpha: UInt32);
     external 'opengl32.dll' name 'glBlendFuncSeparatei';
     
-    static procedure BindTransformFeedback(target: UInt32; id: UInt32);
-    external 'opengl32.dll' name 'glBindTransformFeedback';
-    
-    static procedure DeleteTransformFeedbacks(n: Int32; ids: ^UInt32);
-    external 'opengl32.dll' name 'glDeleteTransformFeedbacks';
-    
-    static procedure GenTransformFeedbacks(n: Int32; ids: ^UInt32);
-    external 'opengl32.dll' name 'glGenTransformFeedbacks';
-    
-    static function IsTransformFeedback(id: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsTransformFeedback';
-    
-    static procedure PauseTransformFeedback;
-    external 'opengl32.dll' name 'glPauseTransformFeedback';
-    
-    static procedure ResumeTransformFeedback;
-    external 'opengl32.dll' name 'glResumeTransformFeedback';
-    
-    static procedure DrawTransformFeedback(mode: UInt32; id: UInt32);
-    external 'opengl32.dll' name 'glDrawTransformFeedback';
-    
-    static procedure DrawTransformFeedbackStream(mode: UInt32; id: UInt32; stream: UInt32);
-    external 'opengl32.dll' name 'glDrawTransformFeedbackStream';
-    
-    static procedure DepthRangef(n: single; f: single);
-    external 'opengl32.dll' name 'glDepthRangef';
-    
     static procedure ClearDepthf(d: single);
     external 'opengl32.dll' name 'glClearDepthf';
-    
-    static procedure ViewportArrayv(first: UInt32; count: Int32; v: ^single);
-    external 'opengl32.dll' name 'glViewportArrayv';
-    
-    static procedure ViewportIndexedf(index: UInt32; x: single; y: single; w: single; h: single);
-    external 'opengl32.dll' name 'glViewportIndexedf';
-    
-    static procedure ViewportIndexedfv(index: UInt32; v: ^single);
-    external 'opengl32.dll' name 'glViewportIndexedfv';
     
     static procedure ScissorArrayv(first: UInt32; count: Int32; v: ^Int32);
     external 'opengl32.dll' name 'glScissorArrayv';
@@ -12959,18 +13065,6 @@ type
     
     static procedure ScissorIndexedv(index: UInt32; v: ^Int32);
     external 'opengl32.dll' name 'glScissorIndexedv';
-    
-    static procedure DepthRangeArrayv(first: UInt32; count: Int32; v: ^real);
-    external 'opengl32.dll' name 'glDepthRangeArrayv';
-    
-    static procedure DepthRangeIndexed(index: UInt32; n: real; f: real);
-    external 'opengl32.dll' name 'glDepthRangeIndexed';
-    
-    static procedure DrawTransformFeedbackInstanced(mode: UInt32; id: UInt32; instancecount: Int32);
-    external 'opengl32.dll' name 'glDrawTransformFeedbackInstanced';
-    
-    static procedure DrawTransformFeedbackStreamInstanced(mode: UInt32; id: UInt32; stream: UInt32; instancecount: Int32);
-    external 'opengl32.dll' name 'glDrawTransformFeedbackStreamInstanced';
     
     static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
     external 'opengl32.dll' name 'glDispatchCompute';
@@ -13013,18 +13107,6 @@ type
     
     static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; &label: ^SByte);
     external 'opengl32.dll' name 'glGetObjectPtrLabel';
-    
-    static procedure ClipControl(origin: UInt32; depth: UInt32);
-    external 'opengl32.dll' name 'glClipControl';
-    
-    static procedure CreateTransformFeedbacks(n: Int32; ids: ^UInt32);
-    external 'opengl32.dll' name 'glCreateTransformFeedbacks';
-    
-    static procedure TransformFeedbackBufferBase(xfb: UInt32; index: UInt32; buffer: UInt32);
-    external 'opengl32.dll' name 'glTransformFeedbackBufferBase';
-    
-    static procedure TransformFeedbackBufferRange(xfb: UInt32; index: UInt32; buffer: UInt32; offset: IntPtr; size: UIntPtr);
-    external 'opengl32.dll' name 'glTransformFeedbackBufferRange';
     
     static procedure GetTransformFeedbackiv(xfb: UInt32; pname: UInt32; param: ^Int32);
     external 'opengl32.dll' name 'glGetTransformFeedbackiv';
