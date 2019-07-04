@@ -312,6 +312,25 @@ type
   {$endregion ...InfoType}
   
   //S
+  PixelFilterMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NEAREST: PixelFilterMode read new PixelFilterMode($2600);
+    public static property LINEAR:  PixelFilterMode read new PixelFilterMode($2601);
+    
+  end;
+  
+  //S
+  ColorClampTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property GL_CLAMP_READ_COLOR: ColorClampTarget read new ColorClampTarget($891C);
+    
+  end;
+  
+  //S
   FrameBufferPart = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -932,6 +951,17 @@ type
     public static property TEXTURE_BUFFER:            BufferBindType read new BufferBindType($8C2A);
     public static property TRANSFORM_FEEDBACK_BUFFER: BufferBindType read new BufferBindType($8C8E);
     public static property UNIFORM_BUFFER:            BufferBindType read new BufferBindType($8A11);
+    
+  end;
+  
+  //S
+  CopyableImageType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property GL_RENDERBUFFER: CopyableImageType read new CopyableImageType($8D41);
+    
+    public static function operator implicit(v: BufferBindType): CopyableImageType := new CopyableImageType(v.val);
     
   end;
   
@@ -1614,15 +1644,15 @@ type
   {$region Флаги}
   
   //S
-  ClearModeFlags = record
+  BufferTypeFlags = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property COLOR_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00004000);
-    public static property DEPTH_BUFFER_BIT:    ClearModeFlags read new ClearModeFlags($00000100);
-    public static property STENCIL_BUFFER_BIT:  ClearModeFlags read new ClearModeFlags($00000400);
+    public static property COLOR_BUFFER_BIT:    BufferTypeFlags read new BufferTypeFlags($00004000);
+    public static property DEPTH_BUFFER_BIT:    BufferTypeFlags read new BufferTypeFlags($00000100);
+    public static property STENCIL_BUFFER_BIT:  BufferTypeFlags read new BufferTypeFlags($00000400);
     
-    public static function operator or(f1,f2: ClearModeFlags): ClearModeFlags := new ClearModeFlags(f1.val or f2.val);
+    public static function operator or(f1,f2: BufferTypeFlags): BufferTypeFlags := new BufferTypeFlags(f1.val or f2.val);
     
   end;
   
@@ -13311,7 +13341,7 @@ type
     
     // 17.4.3
     
-    static procedure Clear(mask: ClearModeFlags);
+    static procedure Clear(mask: BufferTypeFlags);
     external 'opengl32.dll' name 'glClear';
     
     static procedure ClearColor(red: single; green: single; blue: single; alpha: single);
@@ -13410,30 +13440,69 @@ type
     
     {$endregion 17.0 - Writing Fragments and Samples to the Framebuffer}
     
+    {$region 18.0 - Reading and Copying Pixels}
+    
+    {$region 18.2 - Reading Pixels}
+    
+    // 18.2.1
+    
+    static procedure ReadBuffer(src: FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glReadBuffer';
+    
+    static procedure NamedFramebufferReadBuffer(framebuffer: FramebufferName; src: FramebufferAttachmentPoint);
+    external 'opengl32.dll' name 'glNamedFramebufferReadBuffer';
+    
+    // 18.2.2
+    
+    static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr);
+    external 'opengl32.dll' name 'glReadPixels';
+    static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer);
+    external 'opengl32.dll' name 'glReadPixels';
+    
+    static procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; bufSize: Int32; data: IntPtr);
+    external 'opengl32.dll' name 'glReadnPixels';
+    static procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; bufSize: Int32; data: pointer);
+    external 'opengl32.dll' name 'glReadnPixels';
+    
+    // 18.2.8
+    
+    static procedure ClampColor(target: ColorClampTarget; clamp: UInt32);
+    external 'opengl32.dll' name 'glClampColor';
+    
+    {$endregion 18.2 - Reading Pixels}
+    
+    {$region 18.3 - Copying Pixels}
+    
+    // 18.3.1
+    
+    static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode);
+    external 'opengl32.dll' name 'glBlitFramebuffer';
+    
+    static procedure BlitNamedFramebuffer(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode);
+    external 'opengl32.dll' name 'glBlitNamedFramebuffer';
+    
+    // 18.3.2
+    
+    // BufferBindType автоматически конвертируется в CopyableImageType
+    static procedure CopyImageSubData(srcName: UInt32; srcTarget: CopyableImageType; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: CopyableImageType; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32);
+    external 'opengl32.dll' name 'glCopyImageSubData';
+    
+    {$endregion 18.3 - Copying Pixels}
+    
+    {$endregion 18.0 - Reading and Copying Pixels}
+    
     
     
     {$region unsorted}
     
-    static procedure ReadBuffer(src: UInt32);
-    external 'opengl32.dll' name 'glReadBuffer';
-    
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
-    
-    static procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
-    external 'opengl32.dll' name 'glReadPixels';
     
     static procedure DispatchComputeIndirect(indirect: IntPtr);
     external 'opengl32.dll' name 'glDispatchComputeIndirect';
     
     static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetInternalformativ';
-    
-    static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
-    external 'opengl32.dll' name 'glBlitFramebuffer';
-    
-    static procedure CopyImageSubData(srcName: UInt32; srcTarget: UInt32; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: UInt32; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32);
-    external 'opengl32.dll' name 'glCopyImageSubData';
     
     static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
     external 'opengl32.dll' name 'glCopyPixels';
@@ -13449,9 +13518,6 @@ type
     
     static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
-    
-    static procedure ClampColor(target: UInt32; clamp: UInt32);
-    external 'opengl32.dll' name 'glClampColor';
     
     static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
     external 'opengl32.dll' name 'glDispatchCompute';
@@ -13498,17 +13564,8 @@ type
     static procedure GetTransformFeedbacki64_v(xfb: UInt32; pname: UInt32; index: UInt32; param: ^Int64);
     external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
     
-    static procedure NamedFramebufferReadBuffer(framebuffer: UInt32; src: UInt32);
-    external 'opengl32.dll' name 'glNamedFramebufferReadBuffer';
-    
-    static procedure BlitNamedFramebuffer(readFramebuffer: UInt32; drawFramebuffer: UInt32; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: UInt32; filter: UInt32);
-    external 'opengl32.dll' name 'glBlitNamedFramebuffer';
-    
     static function GetGraphicsResetStatus: UInt32;
     external 'opengl32.dll' name 'glGetGraphicsResetStatus';
-    
-    static procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: UInt32; &type: UInt32; bufSize: Int32; data: pointer);
-    external 'opengl32.dll' name 'glReadnPixels';
     
     static procedure PrimitiveBoundingBoxARB(minX: single; minY: single; minZ: single; minW: single; maxX: single; maxY: single; maxZ: single; maxW: single);
     external 'opengl32.dll' name 'glPrimitiveBoundingBoxARB';
