@@ -106,7 +106,7 @@ begin
       
       f.Invoke(()->
       begin
-        gl.Clear($4000);
+        gl.Clear(BufferTypeFlags.COLOR_BUFFER_BIT);
         var rot_k := Cos(frame_rot);
         
         gl.Begin(4);
