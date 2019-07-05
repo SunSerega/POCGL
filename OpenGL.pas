@@ -312,6 +312,29 @@ type
   {$endregion ...InfoType}
   
   //S
+  HintValue = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FASTEST:   HintValue read new HintValue($1101);
+    public static property NICEST:    HintValue read new HintValue($1102);
+    public static property DONT_CARE: HintValue read new HintValue($1100);
+    
+  end;
+  
+  //S
+  HintType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property LINE_SMOOTH_HINT:                HintType read new HintType($0C52);
+    public static property POLYGON_SMOOTH_HINT:             HintType read new HintType($0C53);
+    public static property TEXTURE_COMPRESSION_HINT:        HintType read new HintType($84EF);
+    public static property FRAGMENT_SHADER_DERIVATIVE_HINT: HintType read new HintType($8B8B);
+    
+  end;
+  
+  //S
   ObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13692,6 +13715,17 @@ type
     
     {$endregion 20.0 - Debug Output}
     
+    {$region 21.0 - Special Functions}
+    
+    {$endregion 21.5 - Hints}
+    
+    static procedure Hint(target: HintType; mode: HintValue);
+    external 'opengl32.dll' name 'glHint';
+    
+    {$region 21.5 - Hints}
+    
+    {$endregion 21.0 - Special Functions}
+    
     
     
     {$region unsorted}
@@ -13710,9 +13744,6 @@ type
     
     static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
     external 'opengl32.dll' name 'glCopyPixels';
-    
-    static procedure Hint(target: UInt32; mode: UInt32);
-    external 'opengl32.dll' name 'glHint';
     
     static procedure Finish;
     external 'opengl32.dll' name 'glFinish';
