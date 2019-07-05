@@ -312,6 +312,25 @@ type
   {$endregion ...InfoType}
   
   //S
+  ObjectType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property BUFFER:              ObjectType read new ObjectType($82E0);
+    public static property FRAMEBUFFER:         ObjectType read new ObjectType($8D40);
+    public static property PROGRAM_PIPELINE:    ObjectType read new ObjectType($82E4);
+    public static property &PROGRAM:            ObjectType read new ObjectType($82E2);
+    public static property QUERY:               ObjectType read new ObjectType($82E3);
+    public static property RENDERBUFFER:        ObjectType read new ObjectType($8D41);
+    public static property SAMPLER:             ObjectType read new ObjectType($82E6);
+    public static property SHADER:              ObjectType read new ObjectType($82E1);
+    public static property TEXTURE:             ObjectType read new ObjectType($1702);
+    public static property TRANSFORM_FEEDBACK:  ObjectType read new ObjectType($8E22);
+    public static property VERTEX_ARRAY:        ObjectType read new ObjectType($8074);
+    
+  end;
+  
+  //S
   PixelFilterMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1639,6 +1658,79 @@ type
     
   end;
   
+  //R
+  DebugSourceType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public property API:                 boolean read self.val = $8246;
+    public property WINDOW_SYSTEM:       boolean read self.val = $8247;
+    public property SHADER_COMPILER:     boolean read self.val = $8248;
+    public property THIRD_PARTY:         boolean read self.val = $8249;
+    public property APPLICATION:         boolean read self.val = $824A;
+    public property OTHER:               boolean read self.val = $824B;
+    public property API_ARB:             boolean read self.val = $8246;
+    public property WINDOW_SYSTEM_ARB:   boolean read self.val = $8247;
+    public property SHADER_COMPILER_ARB: boolean read self.val = $8248;
+    public property THIRD_PARTY_ARB:     boolean read self.val = $8249;
+    public property APPLICATION_ARB:     boolean read self.val = $824A;
+    public property OTHER_ARB:           boolean read self.val = $824B;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DebugSourceType).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'DebugSourceType[{self.val}]':
+        res[0];
+    end;
+    
+  end;
+  
+  //R
+  DebugMessageType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public property ERROR:               boolean read self.val = $824C;
+    public property DEPRECATED_BEHAVIOR: boolean read self.val = $824D;
+    public property UNDEFINED_BEHAVIOR:  boolean read self.val = $824E;
+    public property PORTABILITY:         boolean read self.val = $824F;
+    public property PERFORMANCE:         boolean read self.val = $8250;
+    public property OTHER:               boolean read self.val = $8251;
+    public property MARKER:              boolean read self.val = $8268;
+    public property PUSH_GROUP:          boolean read self.val = $8269;
+    public property POP_GROUP:           boolean read self.val = $826A;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DebugMessageType).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'DebugMessageType[{self.val}]':
+        res[0];
+    end;
+    
+  end;
+  
+  //R
+  DebugSeverityLevel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public property HIGH:          boolean read self.val = $9146;
+    public property MEDIUM:        boolean read self.val = $9147;
+    public property LOW:           boolean read self.val = $9148;
+    public property NOTIFICATION:  boolean read self.val = $826B;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DebugSeverityLevel).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'DebugSeverityLevel[{self.val}]':
+        res[0];
+    end;
+    
+  end;
+  
   {$endregion 1 значение}
   
   {$region Флаги}
@@ -1760,7 +1852,7 @@ type
 
 type
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-  GLDEBUGPROC = procedure(source, &type, id, severity: UInt32; length: Int32; message_text: IntPtr; userParam: pointer);
+  GLDEBUGPROC = procedure(source: DebugSourceType; &type: DebugMessageType; id: UInt32; severity: DebugSeverityLevel; length: Int32; message_text: IntPtr; userParam: pointer);
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   GLVULKANPROCNV = procedure;
@@ -13491,15 +13583,127 @@ type
     
     {$endregion 18.0 - Reading and Copying Pixels}
     
+    {$region 19.0 - Compute Shaders}
+    
+    static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
+    external 'opengl32.dll' name 'glDispatchCompute';
+    
+    static procedure DispatchComputeIndirect(indirect: IntPtr);
+    external 'opengl32.dll' name 'glDispatchComputeIndirect';
+    
+    {$endregion 19.0 - Compute Shaders}
+    
+    {$region 20.0 - Debug Output}
+    
+    {$region 20.2 - Debug Message Callback}
+    
+    static procedure DebugMessageCallback(callback: GLDEBUGPROC; userParam: IntPtr);
+    external 'opengl32.dll' name 'glDebugMessageCallback';
+    static procedure DebugMessageCallback(callback: GLDEBUGPROC; userParam: pointer);
+    external 'opengl32.dll' name 'glDebugMessageCallback';
+    
+    {$endregion 20.2 - Debug Message Callback}
+    
+    {$region 20.4 - Controlling Debug Messages}
+    
+    static procedure DebugMessageControl(source: DebugSourceType; &type: DebugMessageType; severity: DebugSeverityLevel; count: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of UInt32; enabled: boolean);
+    external 'opengl32.dll' name 'glDebugMessageControl';
+    static procedure DebugMessageControl(source: DebugSourceType; &type: DebugMessageType; severity: DebugSeverityLevel; count: Int32; var ids: UInt32; enabled: boolean);
+    external 'opengl32.dll' name 'glDebugMessageControl';
+    static procedure DebugMessageControl(source: DebugSourceType; &type: DebugMessageType; severity: DebugSeverityLevel; count: Int32; ids: IntPtr; enabled: boolean);
+    external 'opengl32.dll' name 'glDebugMessageControl';
+    
+    {$endregion 20.4 - Controlling Debug Messages}
+    
+    {$region 20.5 - Externally Generated Messages}
+    
+    static procedure DebugMessageInsert(source: DebugSourceType; &type: DebugMessageType; id: UInt32; severity: DebugSeverityLevel; length: Int32; [MarshalAs(UnmanagedType.LPStr)] buf: string);
+    external 'opengl32.dll' name 'glDebugMessageInsert';
+    static procedure DebugMessageInsert(source: DebugSourceType; &type: DebugMessageType; id: UInt32; severity: DebugSeverityLevel; length: Int32; buf: IntPtr);
+    external 'opengl32.dll' name 'glDebugMessageInsert';
+    
+    {$endregion 20.5 - Externally Generated Messages}
+    
+    {$region 20.6 - Debug Groups}
+    
+    static procedure PushDebugGroup(source: DebugSourceType; id: UInt32; length: Int32; [MarshalAs(UnmanagedType.LPStr)] message: string);
+    external 'opengl32.dll' name 'glPushDebugGroup';
+    static procedure PushDebugGroup(source: DebugSourceType; id: UInt32; length: Int32; message: IntPtr);
+    external 'opengl32.dll' name 'glPushDebugGroup';
+    
+    static procedure PopDebugGroup;
+    external 'opengl32.dll' name 'glPopDebugGroup';
+    
+    {$endregion 20.6 - Debug Groups}
+    
+    {$region 20.7 - Debug Labels}
+    
+    static procedure ObjectLabel(identifier: ObjectType; name: UInt32; length: Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    external 'opengl32.dll' name 'glObjectLabel';
+    static procedure ObjectLabel(identifier: ObjectType; name: UInt32; length: Int32; &label: IntPtr);
+    external 'opengl32.dll' name 'glObjectLabel';
+    
+    static procedure ObjectPtrLabel(ptr: IntPtr; length: Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    external 'opengl32.dll' name 'glObjectPtrLabel';
+    static procedure ObjectPtrLabel(ptr: IntPtr; length: Int32; &label: IntPtr);
+    external 'opengl32.dll' name 'glObjectPtrLabel';
+    static procedure ObjectPtrLabel(ptr: pointer; length: Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    external 'opengl32.dll' name 'glObjectPtrLabel';
+    static procedure ObjectPtrLabel(ptr: pointer; length: Int32; &label: IntPtr);
+    external 'opengl32.dll' name 'glObjectPtrLabel';
+    
+    {$endregion 20.7 - Debug Labels}
+    
+    {$region 20.9 - Debug Output Queries}
+    
+    // ВНИМАНИЕ! messageLog является суммой count нуль-терминированных строк, то есть символ 0 будет после каждого сообщения. Обычные методы перевода тут не будут работать, надо ручками
+    static function GetDebugMessageLog(count: UInt32; bufSize: Int32; [MarshalAs(UnmanagedType.LPArray)] sources: array of DebugSourceType; [MarshalAs(UnmanagedType.LPArray)] types: array of DebugMessageType; [MarshalAs(UnmanagedType.LPArray)] ids: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] severities: array of DebugSeverityLevel; [MarshalAs(UnmanagedType.LPArray)] lengths: array of Int32; [MarshalAs(UnmanagedType.HString)] &messageLog: string): UInt32;
+    external 'opengl32.dll' name 'glGetDebugMessageLog';
+    static function GetDebugMessageLog(count: UInt32; bufSize: Int32; [MarshalAs(UnmanagedType.LPArray)] sources: array of DebugSourceType; [MarshalAs(UnmanagedType.LPArray)] types: array of DebugMessageType; [MarshalAs(UnmanagedType.LPArray)] ids: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] severities: array of DebugSeverityLevel; [MarshalAs(UnmanagedType.LPArray)] lengths: array of Int32; messageLog: IntPtr): UInt32;
+    external 'opengl32.dll' name 'glGetDebugMessageLog';
+    static function GetDebugMessageLog(count: UInt32; bufSize: Int32; var sources: DebugSourceType; var types: DebugMessageType; var ids: UInt32; var severities: DebugSeverityLevel; var lengths: Int32; [MarshalAs(UnmanagedType.HString)] &messageLog: string): UInt32;
+    external 'opengl32.dll' name 'glGetDebugMessageLog';
+    static function GetDebugMessageLog(count: UInt32; bufSize: Int32; var sources: DebugSourceType; var types: DebugMessageType; var ids: UInt32; var severities: DebugSeverityLevel; var lengths: Int32; messageLog: IntPtr): UInt32;
+    external 'opengl32.dll' name 'glGetDebugMessageLog';
+    static function GetDebugMessageLog(count: UInt32; bufSize: Int32; sources: IntPtr; types: IntPtr; ids: IntPtr; severities: IntPtr; lengths: IntPtr; [MarshalAs(UnmanagedType.HString)] &messageLog: string): UInt32;
+    external 'opengl32.dll' name 'glGetDebugMessageLog';
+    static function GetDebugMessageLog(count: UInt32; bufSize: Int32; sources: IntPtr; types: IntPtr; ids: IntPtr; severities: IntPtr; lengths: IntPtr; messageLog: IntPtr): UInt32;
+    external 'opengl32.dll' name 'glGetDebugMessageLog';
+    
+    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    external 'opengl32.dll' name 'glGetObjectLabel';
+    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; var length: Int32; &label: IntPtr);
+    external 'opengl32.dll' name 'glGetObjectLabel';
+    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    external 'opengl32.dll' name 'glGetObjectLabel';
+    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; length: ^Int32; &label: IntPtr);
+    external 'opengl32.dll' name 'glGetObjectLabel';
+    
+    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    external 'opengl32.dll' name 'glGetObjectPtrLabel';
+    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; var length: Int32; &label: IntPtr);
+    external 'opengl32.dll' name 'glGetObjectPtrLabel';
+    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    external 'opengl32.dll' name 'glGetObjectPtrLabel';
+    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; &label: IntPtr);
+    external 'opengl32.dll' name 'glGetObjectPtrLabel';
+    
+    {$endregion 20.9 - Debug Output Queries}
+    
+    {$endregion 20.0 - Debug Output}
+    
     
     
     {$region unsorted}
     
+    static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
+    external 'opengl32.dll' name 'glGetPointerv';
+    
+    static procedure GetPointerv(pname: UInt32; &params: ^pointer);
+    external 'opengl32.dll' name 'glGetPointerv';
+    
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
-    
-    static procedure DispatchComputeIndirect(indirect: IntPtr);
-    external 'opengl32.dll' name 'glDispatchComputeIndirect';
     
     static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetInternalformativ';
@@ -13516,44 +13720,8 @@ type
     static procedure Flush;
     external 'opengl32.dll' name 'glFlush';
     
-    static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
-    external 'opengl32.dll' name 'glGetPointerv';
-    
-    static procedure DispatchCompute(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32);
-    external 'opengl32.dll' name 'glDispatchCompute';
-    
     static procedure GetInternalformati64v(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int64);
     external 'opengl32.dll' name 'glGetInternalformati64v';
-    
-    static procedure DebugMessageControl(source: UInt32; &type: UInt32; severity: UInt32; count: Int32; ids: ^UInt32; enabled: boolean);
-    external 'opengl32.dll' name 'glDebugMessageControl';
-    
-    static procedure DebugMessageInsert(source: UInt32; &type: UInt32; id: UInt32; severity: UInt32; length: Int32; buf: ^SByte);
-    external 'opengl32.dll' name 'glDebugMessageInsert';
-    
-    static procedure DebugMessageCallback(callback: GLDEBUGPROC; userParam: pointer);
-    external 'opengl32.dll' name 'glDebugMessageCallback';
-    
-    static function GetDebugMessageLog(count: UInt32; bufSize: Int32; sources: ^UInt32; types: ^UInt32; ids: ^UInt32; severities: ^UInt32; lengths: ^Int32; messageLog: ^SByte): UInt32;
-    external 'opengl32.dll' name 'glGetDebugMessageLog';
-    
-    static procedure PushDebugGroup(source: UInt32; id: UInt32; length: Int32; message: ^SByte);
-    external 'opengl32.dll' name 'glPushDebugGroup';
-    
-    static procedure PopDebugGroup;
-    external 'opengl32.dll' name 'glPopDebugGroup';
-    
-    static procedure ObjectLabel(identifier: UInt32; name: UInt32; length: Int32; &label: ^SByte);
-    external 'opengl32.dll' name 'glObjectLabel';
-    
-    static procedure GetObjectLabel(identifier: UInt32; name: UInt32; bufSize: Int32; length: ^Int32; &label: ^SByte);
-    external 'opengl32.dll' name 'glGetObjectLabel';
-    
-    static procedure ObjectPtrLabel(ptr: pointer; length: Int32; &label: ^SByte);
-    external 'opengl32.dll' name 'glObjectPtrLabel';
-    
-    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; &label: ^SByte);
-    external 'opengl32.dll' name 'glGetObjectPtrLabel';
     
     static procedure GetTransformFeedbackiv(xfb: UInt32; pname: UInt32; param: ^Int32);
     external 'opengl32.dll' name 'glGetTransformFeedbackiv';
@@ -15384,9 +15552,6 @@ type
     
     static procedure GetMaterialfv(face: UInt32; pname: UInt32; &params: ^single);
     external 'opengl32.dll' name 'glGetMaterialfv';
-    
-    static procedure GetPointerv(pname: UInt32; &params: ^pointer);
-    external 'opengl32.dll' name 'glGetPointerv';
     
     static procedure GetPolygonStipple(mask: ^Byte);
     external 'opengl32.dll' name 'glGetPolygonStipple';
