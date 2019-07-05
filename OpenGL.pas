@@ -40,6 +40,9 @@ unit OpenGL;
 
 //ToDo передачу external функции вместо лямбды
 
+//ToDo issue компилятора:
+// - #2029
+
 uses System;
 uses System.Runtime.InteropServices;
 
@@ -310,6 +313,85 @@ type
   end;
   
   {$endregion ...InfoType}
+  
+  //S
+  InternalFormatInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property INTERNALFORMAT_SUPPORTED:                InternalFormatInfoType read new InternalFormatInfoType($826F);
+    public static property INTERNALFORMAT_PREFERRED:                InternalFormatInfoType read new InternalFormatInfoType($8270);
+    public static property INTERNALFORMAT_RED_SIZE:                 InternalFormatInfoType read new InternalFormatInfoType($8271);
+    public static property INTERNALFORMAT_RED_TYPE:                 InternalFormatInfoType read new InternalFormatInfoType($8278);
+    public static property MAX_WIDTH:                               InternalFormatInfoType read new InternalFormatInfoType($827E);
+    public static property MAX_HEIGHT:                              InternalFormatInfoType read new InternalFormatInfoType($827F);
+    public static property MAX_DEPTH:                               InternalFormatInfoType read new InternalFormatInfoType($8280);
+    public static property MAX_LAYERS:                              InternalFormatInfoType read new InternalFormatInfoType($8281);
+    public static property COLOR_COMPONENTS:                        InternalFormatInfoType read new InternalFormatInfoType($8283);
+    public static property COLOR_RENDERABLE:                        InternalFormatInfoType read new InternalFormatInfoType($8286);
+    public static property DEPTH_RENDERABLE:                        InternalFormatInfoType read new InternalFormatInfoType($8287);
+    public static property STENCIL_RENDERABLE:                      InternalFormatInfoType read new InternalFormatInfoType($8288);
+    public static property FRAMEBUFFER_RENDERABLE:                  InternalFormatInfoType read new InternalFormatInfoType($8289);
+    public static property FRAMEBUFFER_RENDERABLE_LAYERED:          InternalFormatInfoType read new InternalFormatInfoType($828A);
+    public static property FRAMEBUFFER_BLEND:                       InternalFormatInfoType read new InternalFormatInfoType($828B);
+    public static property READ_PIXELS:                             InternalFormatInfoType read new InternalFormatInfoType($828C);
+    public static property READ_PIXELS_FORMAT:                      InternalFormatInfoType read new InternalFormatInfoType($828D);
+    public static property READ_PIXELS_TYPE:                        InternalFormatInfoType read new InternalFormatInfoType($828E);
+    public static property TEXTURE_IMAGE_FORMAT:                    InternalFormatInfoType read new InternalFormatInfoType($828F);
+    public static property TEXTURE_IMAGE_TYPE:                      InternalFormatInfoType read new InternalFormatInfoType($8290);
+    public static property GET_TEXTURE_IMAGE_FORMAT:                InternalFormatInfoType read new InternalFormatInfoType($8291);
+    public static property GET_TEXTURE_IMAGE_TYPE:                  InternalFormatInfoType read new InternalFormatInfoType($8292);
+    public static property MIPMAP:                                  InternalFormatInfoType read new InternalFormatInfoType($8293);
+    public static property GENERATE_MIPMAP:                         InternalFormatInfoType read new InternalFormatInfoType($8191);
+    public static property AUTO_GENERATE_MIPMAP:                    InternalFormatInfoType read new InternalFormatInfoType($8295);
+    public static property COLOR_ENCODING:                          InternalFormatInfoType read new InternalFormatInfoType($8296);
+    public static property SRGB_READ:                               InternalFormatInfoType read new InternalFormatInfoType($8297);
+    public static property SRGB_WRITE:                              InternalFormatInfoType read new InternalFormatInfoType($8298);
+    public static property FILTER:                                  InternalFormatInfoType read new InternalFormatInfoType($829A);
+    public static property VERTEX_TEXTURE:                          InternalFormatInfoType read new InternalFormatInfoType($829B);
+    public static property TESS_CONTROL_TEXTURE:                    InternalFormatInfoType read new InternalFormatInfoType($829C);
+    public static property TESS_EVALUATION_TEXTURE:                 InternalFormatInfoType read new InternalFormatInfoType($829D);
+    public static property GEOMETRY_TEXTURE:                        InternalFormatInfoType read new InternalFormatInfoType($829E);
+    public static property FRAGMENT_TEXTURE:                        InternalFormatInfoType read new InternalFormatInfoType($829F);
+    public static property COMPUTE_TEXTURE:                         InternalFormatInfoType read new InternalFormatInfoType($82A0);
+    public static property TEXTURE_SHADOW:                          InternalFormatInfoType read new InternalFormatInfoType($82A1);
+    public static property TEXTURE_GATHER:                          InternalFormatInfoType read new InternalFormatInfoType($82A2);
+    public static property TEXTURE_GATHER_SHADOW:                   InternalFormatInfoType read new InternalFormatInfoType($82A3);
+    public static property SHADER_IMAGE_LOAD:                       InternalFormatInfoType read new InternalFormatInfoType($82A4);
+    public static property SHADER_IMAGE_STORE:                      InternalFormatInfoType read new InternalFormatInfoType($82A5);
+    public static property SHADER_IMAGE_ATOMIC:                     InternalFormatInfoType read new InternalFormatInfoType($82A6);
+    public static property IMAGE_TEXEL_SIZE:                        InternalFormatInfoType read new InternalFormatInfoType($82A7);
+    public static property IMAGE_COMPATIBILITY_CLASS:               InternalFormatInfoType read new InternalFormatInfoType($82A8);
+    public static property IMAGE_PIXEL_FORMAT:                      InternalFormatInfoType read new InternalFormatInfoType($82A9);
+    public static property IMAGE_PIXEL_TYPE:                        InternalFormatInfoType read new InternalFormatInfoType($82AA);
+    public static property IMAGE_FORMAT_COMPATIBILITY_TYPE:         InternalFormatInfoType read new InternalFormatInfoType($90C7);
+    public static property SIMULTANEOUS_TEXTURE_AND_DEPTH_TEST:     InternalFormatInfoType read new InternalFormatInfoType($82AC);
+    public static property SIMULTANEOUS_TEXTURE_AND_STENCIL_TEST:   InternalFormatInfoType read new InternalFormatInfoType($82AD);
+    public static property SIMULTANEOUS_TEXTURE_AND_DEPTH_WRITE:    InternalFormatInfoType read new InternalFormatInfoType($82AE);
+    public static property SIMULTANEOUS_TEXTURE_AND_STENCIL_WRITE:  InternalFormatInfoType read new InternalFormatInfoType($82AF);
+    public static property TEXTURE_COMPRESSED:                      InternalFormatInfoType read new InternalFormatInfoType($86A1);
+    public static property TEXTURE_COMPRESSED_BLOCK_WIDTH:          InternalFormatInfoType read new InternalFormatInfoType($82B1);
+    public static property TEXTURE_COMPRESSED_BLOCK_HEIGHT:         InternalFormatInfoType read new InternalFormatInfoType($82B2);
+    public static property TEXTURE_COMPRESSED_BLOCK_SIZE:           InternalFormatInfoType read new InternalFormatInfoType($82B3);
+    public static property CLEAR_BUFFER:                            InternalFormatInfoType read new InternalFormatInfoType($82B4);
+    public static property TEXTURE_VIEW:                            InternalFormatInfoType read new InternalFormatInfoType($82B5);
+    public static property VIEW_COMPATIBILITY_CLASS:                InternalFormatInfoType read new InternalFormatInfoType($82B6);
+    public static property CLEAR_TEXTURE:                           InternalFormatInfoType read new InternalFormatInfoType($9365);
+    
+  end;
+  
+  //S
+  TransformFeedbackInfoType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property BUFFER_BINDING:  TransformFeedbackInfoType read new TransformFeedbackInfoType($8C8F);
+    public static property BUFFER_START:    TransformFeedbackInfoType read new TransformFeedbackInfoType($8C84);
+    public static property BUFFER_SIZE:     TransformFeedbackInfoType read new TransformFeedbackInfoType($8C85);
+    public static property PAUSED:          TransformFeedbackInfoType read new TransformFeedbackInfoType($8E23);
+    public static property ACTIVE:          TransformFeedbackInfoType read new TransformFeedbackInfoType($8E24);
+    
+  end;
   
   //S
   HintValue = record
@@ -9613,127 +9695,27 @@ type
 type
   gl = static class
     
-    {$region Разное}
+    {$region 2.0 - OpenGL Fundamentals}
+    
+    {$region 2.3 - Command Execution}
+    
+    // 2.3.1
     
     public static function GetError: ErrorCode;
     external 'opengl32.dll' name 'glGetError';
     
-    {$endregion Разное}
+    // 2.3.3
     
-    {$region Get[Type]}
+    static procedure Finish;
+    external 'opengl32.dll' name 'glFinish';
     
-    static procedure GetBooleanv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of boolean);
-    external 'opengl32.dll' name 'glGetBooleanv';
-    static procedure GetBooleanv(pname: GLGetQueries; var data: boolean);
-    external 'opengl32.dll' name 'glGetBooleanv';
-    static procedure GetBooleanv(pname: GLGetQueries; data: pointer);
-    external 'opengl32.dll' name 'glGetBooleanv';
+    static procedure Flush;
+    external 'opengl32.dll' name 'glFlush';
     
-    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of boolean);
-    external 'opengl32.dll' name 'glGetBooleani_v';
-    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; var data: boolean);
-    external 'opengl32.dll' name 'glGetBooleani_v';
-    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glGetBooleani_v';
+    {$endregion 2.3 - Command Execution}
     
-    static procedure GetFloatv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of single);
-    external 'opengl32.dll' name 'glGetFloatv';
-    static procedure GetFloatv(pname: GLGetQueries; var data: single);
-    external 'opengl32.dll' name 'glGetFloatv';
-    static procedure GetFloatv(pname: GLGetQueries; data: pointer);
-    external 'opengl32.dll' name 'glGetFloatv';
+    {$endregion 2.0 - OpenGL Fundamentals}
     
-    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of single);
-    external 'opengl32.dll' name 'glGetFloati_v';
-    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; var data: single);
-    external 'opengl32.dll' name 'glGetFloati_v';
-    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glGetFloati_v';
-    
-    static procedure GetDoublev(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of real);
-    external 'opengl32.dll' name 'glGetDoublev';
-    static procedure GetDoublev(pname: GLGetQueries; var data: real);
-    external 'opengl32.dll' name 'glGetDoublev';
-    static procedure GetDoublev(pname: GLGetQueries; data: pointer);
-    external 'opengl32.dll' name 'glGetDoublev';
-    
-    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of real);
-    external 'opengl32.dll' name 'glGetDoublei_v';
-    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; var data: real);
-    external 'opengl32.dll' name 'glGetDoublei_v';
-    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glGetDoublei_v';
-    
-    static procedure GetIntegerv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of Int32);
-    external 'opengl32.dll' name 'glGetIntegerv';
-    static procedure GetIntegerv(pname: GLGetQueries; var data: Int32);
-    external 'opengl32.dll' name 'glGetIntegerv';
-    static procedure GetIntegerv(pname: QueryInfoType; var data: Int32);
-    external 'opengl32.dll' name 'glGetIntegerv';
-    static procedure GetIntegerv(pname: GLGetQueries; data: pointer);
-    external 'opengl32.dll' name 'glGetIntegerv';
-    
-    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of Int32);
-    external 'opengl32.dll' name 'glGetIntegeri_v';
-    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; var data: Int32);
-    external 'opengl32.dll' name 'glGetIntegeri_v';
-    static procedure GetIntegeri_v(target: BufferBindType; index: UInt32; var data: BufferName);
-    external 'opengl32.dll' name 'glGetIntegeri_v';
-    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glGetIntegeri_v';
-    
-    static procedure GetInteger64v(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of Int64);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    static procedure GetInteger64v(pname: GLGetQueries; var data: Int64);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    static procedure GetInteger64v(pname: QueryInfoType; var data: Int64);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    static procedure GetInteger64v(pname: GLGetQueries; data: pointer);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    
-    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of Int64);
-    external 'opengl32.dll' name 'glGetInteger64i_v';
-    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; var data: Int64);
-    external 'opengl32.dll' name 'glGetInteger64i_v';
-    static procedure GetInteger64i_v(target: BufferBindType; index: UInt32; var data: Vec2i64);
-    external 'opengl32.dll' name 'glGetInteger64i_v';
-    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glGetInteger64i_v';
-	
-    static function GetString(name: GLGetStringQueries): string;
-    external 'opengl32.dll' name 'glGetString';
-    static function GetStringPtr(name: GLGetStringQueries): IntPtr;
-    external 'opengl32.dll' name 'glGetString';
-    
-    static function GetStringi(name: GLGetStringQueries; index: UInt32): string;
-    external 'opengl32.dll' name 'glGetStringi';
-    static function GetStringPtri(name: GLGetStringQueries; index: UInt32): IntPtr;
-    external 'opengl32.dll' name 'glGetStringi';
-    
-    {$endregion Get[Type]}
-    
-	{$region Enablable}
-	
-    static procedure Disable(cap: EnablableName);
-    external 'opengl32.dll' name 'glDisable';
-    
-    static procedure Enable(cap: EnablableName);
-    external 'opengl32.dll' name 'glEnable';
-    
-    static procedure Enablei(target: EnablableName; index: UInt32);
-    external 'opengl32.dll' name 'glEnablei';
-    
-    static procedure Disablei(target: EnablableName; index: UInt32);
-    external 'opengl32.dll' name 'glDisablei';
-    
-    static function IsEnabled(cap: EnablableName): boolean;
-    external 'opengl32.dll' name 'glIsEnabled';
-    
-    static function IsEnabledi(target: EnablableName; index: UInt32): boolean;
-    external 'opengl32.dll' name 'glIsEnabledi';
-    
-	{$endregion Enablable}
-	
     {$region 4.0 - Event Model}
     
     {$region 4.1 - Sync Objects and Fences}
@@ -12686,6 +12668,12 @@ type
     
     // 10.3.6
     
+    static procedure Disable(cap: EnablableName);
+    external 'opengl32.dll' name 'glDisable';
+    
+    static procedure Enable(cap: EnablableName);
+    external 'opengl32.dll' name 'glEnable';
+    
     static procedure PrimitiveRestartIndex(index: UInt32);
     external 'opengl32.dll' name 'glPrimitiveRestartIndex';
     
@@ -13373,6 +13361,12 @@ type
     
     // 17.3.6
     
+    static procedure Enablei(target: EnablableName; index: UInt32);
+    external 'opengl32.dll' name 'glEnablei';
+    
+    static procedure Disablei(target: EnablableName; index: UInt32);
+    external 'opengl32.dll' name 'glDisablei';
+    
     // 17.3.6.1
     
     static procedure BlendEquation(mode: BlendEquationMode);
@@ -13726,42 +13720,171 @@ type
     
     {$endregion 21.0 - Special Functions}
     
+    {$region 22.0 - Context State Queries}
+    
+    {$region 22.1 - Simple Queries}
+    
+    static procedure GetBooleanv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of boolean);
+    external 'opengl32.dll' name 'glGetBooleanv';
+    static procedure GetBooleanv(pname: GLGetQueries; var data: boolean);
+    external 'opengl32.dll' name 'glGetBooleanv';
+    static procedure GetBooleanv(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetBooleanv';
+    
+    static procedure GetIntegerv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of Int32);
+    external 'opengl32.dll' name 'glGetIntegerv';
+    static procedure GetIntegerv(pname: GLGetQueries; var data: Int32);
+    external 'opengl32.dll' name 'glGetIntegerv';
+    static procedure GetIntegerv(pname: QueryInfoType; var data: Int32);
+    external 'opengl32.dll' name 'glGetIntegerv';
+    static procedure GetIntegerv(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetIntegerv';
+    
+    static procedure GetInteger64v(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of Int64);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    static procedure GetInteger64v(pname: GLGetQueries; var data: Int64);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    static procedure GetInteger64v(pname: QueryInfoType; var data: Int64);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    static procedure GetInteger64v(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetInteger64v';
+    
+    static procedure GetFloatv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of single);
+    external 'opengl32.dll' name 'glGetFloatv';
+    static procedure GetFloatv(pname: GLGetQueries; var data: single);
+    external 'opengl32.dll' name 'glGetFloatv';
+    static procedure GetFloatv(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetFloatv';
+    
+    static procedure GetDoublev(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of real);
+    external 'opengl32.dll' name 'glGetDoublev';
+    static procedure GetDoublev(pname: GLGetQueries; var data: real);
+    external 'opengl32.dll' name 'glGetDoublev';
+    static procedure GetDoublev(pname: GLGetQueries; data: pointer);
+    external 'opengl32.dll' name 'glGetDoublev';
+    
+    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of boolean);
+    external 'opengl32.dll' name 'glGetBooleani_v';
+    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; var data: boolean);
+    external 'opengl32.dll' name 'glGetBooleani_v';
+    static procedure GetBooleani_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetBooleani_v';
+    
+    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of single);
+    external 'opengl32.dll' name 'glGetFloati_v';
+    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; var data: single);
+    external 'opengl32.dll' name 'glGetFloati_v';
+    static procedure GetFloati_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetFloati_v';
+    
+    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of Int32);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
+    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; var data: Int32);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
+    static procedure GetIntegeri_v(target: BufferBindType; index: UInt32; var data: BufferName);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
+    static procedure GetIntegeri_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetIntegeri_v';
+    
+    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of Int64);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; var data: Int64);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+    static procedure GetInteger64i_v(target: BufferBindType; index: UInt32; var data: Vec2i64);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+    static procedure GetInteger64i_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetInteger64i_v';
+	  
+    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] data: array of real);
+    external 'opengl32.dll' name 'glGetDoublei_v';
+    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; var data: real);
+    external 'opengl32.dll' name 'glGetDoublei_v';
+    static procedure GetDoublei_v(target: GLGetQueries; index: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetDoublei_v';
+    
+    static function IsEnabled(cap: EnablableName): boolean;
+    external 'opengl32.dll' name 'glIsEnabled';
+    
+    static function IsEnabledi(target: EnablableName; index: UInt32): boolean;
+    external 'opengl32.dll' name 'glIsEnabledi';
+    
+    {$endregion 22.1 - Simple Queries}
+    
+    {$region 22.2 - Pointer, String, and Related Context Queries}
+    
+    static procedure GetPointerv(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] &params: array of IntPtr);
+    external 'opengl32.dll' name 'glGetPointerv';
+    static procedure GetPointerv(pname: GLGetQueries; var &params: IntPtr);
+    external 'opengl32.dll' name 'glGetPointerv';
+    static procedure GetPointerv(pname: GLGetQueries; &params: ^pointer);
+    external 'opengl32.dll' name 'glGetPointerv';
+    
+    static function GetString(name: GLGetStringQueries): string; //ToDo #2029
+    external 'opengl32.dll' name 'glGetString';
+    static function GetStringPtr(name: GLGetStringQueries): IntPtr;
+    external 'opengl32.dll' name 'glGetString';
+    
+    static function GetStringi(name: GLGetStringQueries; index: UInt32): string; //ToDo #2029
+    external 'opengl32.dll' name 'glGetStringi';
+    static function GetStringPtri(name: GLGetStringQueries; index: UInt32): IntPtr;
+    external 'opengl32.dll' name 'glGetStringi';
+    
+    {$endregion 22.2 - Pointer, String, and Related Context Queries}
+    
+    {$region 22.3 - Internal Format Queries}
+    
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: Int32);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; &params: pointer);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    
+    static procedure GetInternalformati64v(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
+    external 'opengl32.dll' name 'glGetInternalformati64v';
+    static procedure GetInternalformati64v(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: Int64);
+    external 'opengl32.dll' name 'glGetInternalformati64v';
+    static procedure GetInternalformati64v(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; &params: pointer);
+    external 'opengl32.dll' name 'glGetInternalformati64v';
+    
+    {$endregion 22.3 - Internal Format Queries}
+    
+    {$region 22.4 - Transform Feedback State Queries}
+    
+    static procedure GetTransformFeedbackiv(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; [MarshalAs(UnmanagedType.LPArray)] param: array of Int32);
+    external 'opengl32.dll' name 'glGetTransformFeedbackiv';
+    static procedure GetTransformFeedbackiv(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glGetTransformFeedbackiv';
+    static procedure GetTransformFeedbackiv(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; param: pointer);
+    external 'opengl32.dll' name 'glGetTransformFeedbackiv';
+    
+    static procedure GetTransformFeedbacki_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] param: array of Int32);
+    external 'opengl32.dll' name 'glGetTransformFeedbacki_v';
+    static procedure GetTransformFeedbacki_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; var param: Int32);
+    external 'opengl32.dll' name 'glGetTransformFeedbacki_v';
+    static procedure GetTransformFeedbacki_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; param: pointer);
+    external 'opengl32.dll' name 'glGetTransformFeedbacki_v';
+    
+    static procedure GetTransformFeedbacki64_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] param: array of Int64);
+    external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
+    static procedure GetTransformFeedbacki64_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; var param: Int64);
+    external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
+    static procedure GetTransformFeedbacki64_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; param: pointer);
+    external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
+    
+    {$endregion 22.4 - Transform Feedback State Queries}
+    
+    {$endregion 22.0 - Context State Queries}
+    
     
     
     {$region unsorted}
     
-    static procedure GetPointerv(pname: UInt32; &params: ^IntPtr);
-    external 'opengl32.dll' name 'glGetPointerv';
-    
-    static procedure GetPointerv(pname: UInt32; &params: ^pointer);
-    external 'opengl32.dll' name 'glGetPointerv';
-    
     static procedure ProvokingVertex(mode: UInt32);
     external 'opengl32.dll' name 'glProvokingVertex';
     
-    static procedure GetInternalformativ(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetInternalformativ';
-    
     static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
     external 'opengl32.dll' name 'glCopyPixels';
-    
-    static procedure Finish;
-    external 'opengl32.dll' name 'glFinish';
-    
-    static procedure Flush;
-    external 'opengl32.dll' name 'glFlush';
-    
-    static procedure GetInternalformati64v(target: UInt32; internalformat: UInt32; pname: UInt32; bufSize: Int32; &params: ^Int64);
-    external 'opengl32.dll' name 'glGetInternalformati64v';
-    
-    static procedure GetTransformFeedbackiv(xfb: UInt32; pname: UInt32; param: ^Int32);
-    external 'opengl32.dll' name 'glGetTransformFeedbackiv';
-    
-    static procedure GetTransformFeedbacki_v(xfb: UInt32; pname: UInt32; index: UInt32; param: ^Int32);
-    external 'opengl32.dll' name 'glGetTransformFeedbacki_v';
-    
-    static procedure GetTransformFeedbacki64_v(xfb: UInt32; pname: UInt32; index: UInt32; param: ^Int64);
-    external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
     
     static function GetGraphicsResetStatus: UInt32;
     external 'opengl32.dll' name 'glGetGraphicsResetStatus';
