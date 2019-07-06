@@ -337,10 +337,10 @@ type
     public static property READ_PIXELS:                             InternalFormatInfoType read new InternalFormatInfoType($828C);
     public static property READ_PIXELS_FORMAT:                      InternalFormatInfoType read new InternalFormatInfoType($828D);
     public static property READ_PIXELS_TYPE:                        InternalFormatInfoType read new InternalFormatInfoType($828E);
+    public static property GET_TEXTURE_IMAGE_FORMAT:                InternalFormatInfoType read new InternalFormatInfoType($8291);
+    public static property GET_TEXTURE_IMAGE_TYPE:                  InternalFormatInfoType read new InternalFormatInfoType($8292);
     public static property TEXTURE_IMAGE_FORMAT:                    InternalFormatInfoType read new InternalFormatInfoType($828F);
     public static property TEXTURE_IMAGE_TYPE:                      InternalFormatInfoType read new InternalFormatInfoType($8290);
-    public static property GET__TEXTURE_IMAGE_FORMAT:               InternalFormatInfoType read new InternalFormatInfoType($8291);
-    public static property GET__TEXTURE_IMAGE_TYPE:                 InternalFormatInfoType read new InternalFormatInfoType($8292);
     public static property MIPMAP:                                  InternalFormatInfoType read new InternalFormatInfoType($8293);
     public static property GENERATE_MIPMAP:                         InternalFormatInfoType read new InternalFormatInfoType($8191);
     public static property AUTO_GENERATE_MIPMAP:                    InternalFormatInfoType read new InternalFormatInfoType($8295);
