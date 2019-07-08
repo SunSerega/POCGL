@@ -1940,10 +1940,13 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
+//    public static property NONE:                BufferStorageFlags read new BufferStorageFlags($0000); //ToDo узнать надо ли
+    public static property MAP_READ_BIT:        BufferStorageFlags read new BufferStorageFlags($0001);
+    public static property MAP_WRITE_BIT:       BufferStorageFlags read new BufferStorageFlags($0002);
+    public static property MAP_PERSISTENT_BIT:  BufferStorageFlags read new BufferStorageFlags($0040);
+    public static property MAP_COHERENT_BIT:    BufferStorageFlags read new BufferStorageFlags($0080);
     public static property DYNAMIC_STORAGE_BIT: BufferStorageFlags read new BufferStorageFlags($0100);
     public static property CLIENT_STORAGE_BIT:  BufferStorageFlags read new BufferStorageFlags($0200);
-    
-    public static function operator implicit(f: BufferMapFlags): BufferStorageFlags := new BufferStorageFlags(f.val);
     
     public static function operator or(f1,f2: BufferStorageFlags): BufferStorageFlags := new BufferStorageFlags(f1.val or f2.val);
     
@@ -9881,12 +9884,16 @@ type
     
     static procedure CreateBuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName);
     external 'opengl32.dll' name 'glCreateBuffers';
-    static procedure CreateBuffers(n: Int32; buffers: ^UInt32);
+    static procedure CreateBuffers(n: Int32; var buffers: BufferName);
+    external 'opengl32.dll' name 'glCreateBuffers';
+    static procedure CreateBuffers(n: Int32; buffers: pointer);
     external 'opengl32.dll' name 'glCreateBuffers';
     
     static procedure DeleteBuffers(n: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName);
     external 'opengl32.dll' name 'glDeleteBuffers';
-    static procedure DeleteBuffers(n: Int32; buffers: ^BufferName);
+    static procedure DeleteBuffers(n: Int32; var buffers: BufferName);
+    external 'opengl32.dll' name 'glDeleteBuffers';
+    static procedure DeleteBuffers(n: Int32; buffers: pointer);
     external 'opengl32.dll' name 'glDeleteBuffers';
     
     static function IsBuffer(buffer: BufferName): boolean;
@@ -9907,19 +9914,22 @@ type
     
     static procedure BindBuffersBase(target: BufferBindType; first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName);
     external 'opengl32.dll' name 'glBindBuffersBase';
-    static procedure BindBuffersBase(target: BufferBindType; first: UInt32; count: Int32; buffers: ^BufferName);
+    static procedure BindBuffersBase(target: BufferBindType; first: UInt32; count: Int32; var buffers: BufferName);
+    external 'opengl32.dll' name 'glBindBuffersBase';
+    static procedure BindBuffersBase(target: BufferBindType; first: UInt32; count: Int32; buffers: pointer);
     external 'opengl32.dll' name 'glBindBuffersBase';
     
     static procedure BindBuffersRange(target: BufferBindType; first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] sizes: array of UIntPtr);
     external 'opengl32.dll' name 'glBindBuffersRange';
-    static procedure BindBuffersRange(target: BufferBindType; first: UInt32; count: Int32; buffers: ^BufferName; offsets: ^IntPtr; sizes: ^UIntPtr);
+    static procedure BindBuffersRange(target: BufferBindType; first: UInt32; count: Int32; var buffers: BufferName; var offsets: IntPtr; var sizes: UIntPtr);
+    external 'opengl32.dll' name 'glBindBuffersRange';
+    static procedure BindBuffersRange(target: BufferBindType; first: UInt32; count: Int32; buffers: pointer; offsets: pointer; sizes: pointer);
     external 'opengl32.dll' name 'glBindBuffersRange';
     
     {$endregion 6.1 - Creating and Binding Buffer Objects}
     
     {$region 6.2 - Creating and Modifying Buffer Object Data Stores}
     
-    // BufferMapFlags автоматически преобразовывается в BufferStorageFlags
     static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: IntPtr; flags: BufferStorageFlags);
     external 'opengl32.dll' name 'glBufferStorage';
     static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: pointer; flags: BufferStorageFlags);
@@ -9935,9 +9945,9 @@ type
     static procedure BufferData(target: BufferBindType; size: UIntPtr; data: pointer; usage: BufferDataUsage);
     external 'opengl32.dll' name 'glBufferData';
     
-    static procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: IntPtr; usage: UInt32);
+    static procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: IntPtr; usage: BufferDataUsage);
     external 'opengl32.dll' name 'glNamedBufferData';
-    static procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: pointer; usage: UInt32);
+    static procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: pointer; usage: BufferDataUsage);
     external 'opengl32.dll' name 'glNamedBufferData';
     
     static procedure BufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: IntPtr);
