@@ -260,17 +260,17 @@ type
   end;
   
   //S
-  QueryInfoType = record
+  QueryTargetType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property SAMPLES_PASSED:                        QueryInfoType read new QueryInfoType($8914);
-    public static property ANY_SAMPLES_PASSED:                    QueryInfoType read new QueryInfoType($8C2F);
-    public static property ANY_SAMPLES_PASSED_CONSERVATIVE:       QueryInfoType read new QueryInfoType($8D6A);
-    public static property PRIMITIVES_GENERATED:                  QueryInfoType read new QueryInfoType($8C87);
-    public static property TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN: QueryInfoType read new QueryInfoType($8C88);
-    public static property TIME_ELAPSED:                          QueryInfoType read new QueryInfoType($88BF);
-    public static property TIMESTAMP:                             QueryInfoType read new QueryInfoType($8E28);
+    public static property SAMPLES_PASSED:                        QueryTargetType read new QueryTargetType($8914);
+    public static property ANY_SAMPLES_PASSED:                    QueryTargetType read new QueryTargetType($8C2F);
+    public static property ANY_SAMPLES_PASSED_CONSERVATIVE:       QueryTargetType read new QueryTargetType($8D6A);
+    public static property PRIMITIVES_GENERATED:                  QueryTargetType read new QueryTargetType($8C87);
+    public static property TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN: QueryTargetType read new QueryTargetType($8C88);
+    public static property TIME_ELAPSED:                          QueryTargetType read new QueryTargetType($88BF);
+    public static property TIMESTAMP:                             QueryTargetType read new QueryTargetType($8E28);
     
   end;
   
@@ -9728,6 +9728,8 @@ type
     
     // 4.1.1
     
+    static function ClientWaitSync(sync: GLsync; flags: CommandFlushingBehaviorFlags; timeout: TimeSpan): ClientWaitSyncResult;
+    external 'opengl32.dll' name 'glClientWaitSync';
     static function ClientWaitSync(sync: GLsync; flags: CommandFlushingBehaviorFlags; timeout: UInt64): ClientWaitSyncResult;
     external 'opengl32.dll' name 'glClientWaitSync';
     
@@ -9736,7 +9738,14 @@ type
     
     // 4.1.3
     
-    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; values: pointer);
+    //ToDo
+//    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: SyncObjectType);
+//    external 'opengl32.dll' name 'glGetSynciv';
+//    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: FenceStatus);
+//    external 'opengl32.dll' name 'glGetSynciv';
+    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: FenceCondition);
+    external 'opengl32.dll' name 'glGetSynciv';
+    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: Int32);
     external 'opengl32.dll' name 'glGetSynciv';
     static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; length: ^Int32; values: pointer);
     external 'opengl32.dll' name 'glGetSynciv';
@@ -9757,24 +9766,28 @@ type
     static procedure GenQueries(n: Int32; ids: pointer);
     external 'opengl32.dll' name 'glGenQueries';
     
-    static procedure CreateQueries(target: QueryInfoType; n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of QueryName);
+    static procedure CreateQueries(target: QueryTargetType; n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of QueryName);
     external 'opengl32.dll' name 'glCreateQueries';
-    static procedure CreateQueries(target: QueryInfoType; n: Int32; ids: ^QueryName);
+    static procedure CreateQueries(target: QueryTargetType; n: Int32; var ids: QueryName);
+    external 'opengl32.dll' name 'glCreateQueries';
+    static procedure CreateQueries(target: QueryTargetType; n: Int32; ids: pointer);
     external 'opengl32.dll' name 'glCreateQueries';
     
     static procedure DeleteQueries(n: Int32; [MarshalAs(UnmanagedType.LPArray)] ids: array of QueryName);
     external 'opengl32.dll' name 'glDeleteQueries';
-    static procedure DeleteQueries(n: Int32; ids: ^QueryName);
+    static procedure DeleteQueries(n: Int32; var ids: QueryName);
+    external 'opengl32.dll' name 'glDeleteQueries';
+    static procedure DeleteQueries(n: Int32; ids: pointer);
     external 'opengl32.dll' name 'glDeleteQueries';
     
-    static procedure BeginQueryIndexed(target: QueryInfoType; index: UInt32; id: QueryName);
+    static procedure BeginQueryIndexed(target: QueryTargetType; index: UInt32; id: QueryName);
     external 'opengl32.dll' name 'glBeginQueryIndexed';
-    static procedure BeginQuery(target: QueryInfoType; id: QueryName);
+    static procedure BeginQuery(target: QueryTargetType; id: QueryName);
     external 'opengl32.dll' name 'glBeginQuery';
     
-    static procedure EndQueryIndexed(target: QueryInfoType; index: UInt32);
+    static procedure EndQueryIndexed(target: QueryTargetType; index: UInt32);
     external 'opengl32.dll' name 'glEndQueryIndexed';
-    static procedure EndQuery(target: QueryInfoType);
+    static procedure EndQuery(target: QueryTargetType);
     external 'opengl32.dll' name 'glEndQuery';
     
     // 4.2.3
@@ -9782,42 +9795,52 @@ type
     static function IsQuery(id: QueryName): boolean;
     external 'opengl32.dll' name 'glIsQuery';
     
-    static procedure GetQueryIndexediv(target: QueryInfoType; index: UInt32; pname: GetQueryInfoName; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    static procedure GetQueryIndexediv(target: QueryTargetType; index: UInt32; pname: GetQueryInfoName; var &params: QueryName);
     external 'opengl32.dll' name 'glGetQueryIndexediv';
-    static procedure GetQueryIndexediv(target: QueryInfoType; index: UInt32; pname: GetQueryInfoName; var &params: Int32);
+    static procedure GetQueryIndexediv(target: QueryTargetType; index: UInt32; pname: GetQueryInfoName; var &params: Int32);
     external 'opengl32.dll' name 'glGetQueryIndexediv';
-    static procedure GetQueryIndexediv(target: QueryInfoType; index: UInt32; pname: GetQueryInfoName; &params: pointer);
+    static procedure GetQueryIndexediv(target: QueryTargetType; index: UInt32; pname: GetQueryInfoName; var &params: boolean);
+    external 'opengl32.dll' name 'glGetQueryIndexediv';
+    static procedure GetQueryIndexediv(target: QueryTargetType; index: UInt32; pname: GetQueryInfoName; var &params: TimeSpan);
+    external 'opengl32.dll' name 'glGetQueryIndexediv';
+    static procedure GetQueryIndexediv(target: QueryTargetType; index: UInt32; pname: GetQueryInfoName; var &params: DateTime);
+    external 'opengl32.dll' name 'glGetQueryIndexediv';
+    static procedure GetQueryIndexediv(target: QueryTargetType; index: UInt32; pname: GetQueryInfoName; &params: pointer);
     external 'opengl32.dll' name 'glGetQueryIndexediv';
     
-    static procedure GetQueryiv(target: QueryInfoType; pname: GetQueryInfoName; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    static procedure GetQueryiv(target: QueryTargetType; pname: GetQueryInfoName; var &params: QueryName);
     external 'opengl32.dll' name 'glGetQueryiv';
-    static procedure GetQueryiv(target: QueryInfoType; pname: GetQueryInfoName; var &params: Int32);
+    static procedure GetQueryiv(target: QueryTargetType; pname: GetQueryInfoName; var &params: Int32);
     external 'opengl32.dll' name 'glGetQueryiv';
-    static procedure GetQueryiv(target: QueryInfoType; pname: GetQueryInfoName; &params: pointer);
+    static procedure GetQueryiv(target: QueryTargetType; pname: GetQueryInfoName; var &params: boolean);
+    external 'opengl32.dll' name 'glGetQueryiv';
+    static procedure GetQueryiv(target: QueryTargetType; pname: GetQueryInfoName; var &params: TimeSpan);
+    external 'opengl32.dll' name 'glGetQueryiv';
+    static procedure GetQueryiv(target: QueryTargetType; pname: GetQueryInfoName; var &params: DateTime);
+    external 'opengl32.dll' name 'glGetQueryiv';
+    static procedure GetQueryiv(target: QueryTargetType; pname: GetQueryInfoName; &params: pointer);
     external 'opengl32.dll' name 'glGetQueryiv';
     
-    static procedure GetQueryObjectiv(id: QueryName; pname: GetQueryObjectInfoName; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
-    external 'opengl32.dll' name 'glGetQueryObjectiv';
     static procedure GetQueryObjectiv(id: QueryName; pname: GetQueryObjectInfoName; var &params: Int32);
+    external 'opengl32.dll' name 'glGetQueryObjectiv';
+    static procedure GetQueryObjectiv(id: QueryName; pname: GetQueryObjectInfoName; var &params: boolean);
     external 'opengl32.dll' name 'glGetQueryObjectiv';
     static procedure GetQueryObjectiv(id: QueryName; pname: GetQueryObjectInfoName; &params: pointer);
     external 'opengl32.dll' name 'glGetQueryObjectiv';
     
-    static procedure GetQueryObjectuiv(id: QueryName; pname: GetQueryObjectInfoName; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt32);
-    external 'opengl32.dll' name 'glGetQueryObjectuiv';
-    static procedure GetQueryObjectuiv(id: QueryName; pname: GetQueryObjectInfoName; var &params: UInt32);
+    static procedure GetQueryObjectuiv(id: QueryName; pname: GetQueryObjectInfoName; var &params: UInt32); // QueryName=UInt32, поэтому его можно сюда же передавать
     external 'opengl32.dll' name 'glGetQueryObjectuiv';
     static procedure GetQueryObjectuiv(id: QueryName; pname: GetQueryObjectInfoName; &params: pointer);
     external 'opengl32.dll' name 'glGetQueryObjectuiv';
     
-    static procedure GetQueryObjecti64v(id: QueryName; pname: GetQueryObjectInfoName; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
-    external 'opengl32.dll' name 'glGetQueryObjecti64v';
     static procedure GetQueryObjecti64v(id: QueryName; pname: GetQueryObjectInfoName; var &params: Int64);
     external 'opengl32.dll' name 'glGetQueryObjecti64v';
     static procedure GetQueryObjecti64v(id: QueryName; pname: GetQueryObjectInfoName; &params: pointer);
     external 'opengl32.dll' name 'glGetQueryObjecti64v';
     
-    static procedure GetQueryObjectui64v(id: QueryName; pname: GetQueryObjectInfoName; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt64);
+    static procedure GetQueryObjectui64v(id: QueryName; pname: GetQueryObjectInfoName; var &params: TimeSpan);
+    external 'opengl32.dll' name 'glGetQueryObjectui64v';
+    static procedure GetQueryObjectui64v(id: QueryName; pname: GetQueryObjectInfoName; var &params: DateTime);
     external 'opengl32.dll' name 'glGetQueryObjectui64v';
     static procedure GetQueryObjectui64v(id: QueryName; pname: GetQueryObjectInfoName; var &params: UInt64);
     external 'opengl32.dll' name 'glGetQueryObjectui64v';
@@ -9840,7 +9863,7 @@ type
     
     {$region 4.3 - Time Queries}
     
-    static procedure QueryCounter(id: QueryName; target: QueryInfoType);
+    static procedure QueryCounter(id: QueryName; target: QueryTargetType);
     external 'opengl32.dll' name 'glQueryCounter';
     
     {$endregion 4.3 - Time Queries}
@@ -13735,16 +13758,12 @@ type
     external 'opengl32.dll' name 'glGetIntegerv';
     static procedure GetIntegerv(pname: GLGetQueries; var data: Int32);
     external 'opengl32.dll' name 'glGetIntegerv';
-    static procedure GetIntegerv(pname: QueryInfoType; var data: Int32);
-    external 'opengl32.dll' name 'glGetIntegerv';
     static procedure GetIntegerv(pname: GLGetQueries; data: pointer);
     external 'opengl32.dll' name 'glGetIntegerv';
     
     static procedure GetInteger64v(pname: GLGetQueries; [MarshalAs(UnmanagedType.LPArray)] data: array of Int64);
     external 'opengl32.dll' name 'glGetInteger64v';
     static procedure GetInteger64v(pname: GLGetQueries; var data: Int64);
-    external 'opengl32.dll' name 'glGetInteger64v';
-    static procedure GetInteger64v(pname: QueryInfoType; var data: Int64);
     external 'opengl32.dll' name 'glGetInteger64v';
     static procedure GetInteger64v(pname: GLGetQueries; data: pointer);
     external 'opengl32.dll' name 'glGetInteger64v';
