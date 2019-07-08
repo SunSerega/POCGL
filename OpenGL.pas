@@ -13187,7 +13187,7 @@ type
     
     {$endregion 13.0 - Fixed-Function Vertex Post-Processing}
     
-    {$region 14.0 Fixed-Function Primitive Assembly and Rasterization}
+    {$region 14.0 - Fixed-Function Primitive Assembly and Rasterization}
     
     {$region 14.3 - Antialiasing}
     
@@ -13304,7 +13304,7 @@ type
     
     {$endregion 14.9 - Early Per-Fragment Tests}
     
-    {$endregion 14.0 Fixed-Function Primitive Assembly and Rasterization}
+    {$endregion 14.0 - Fixed-Function Primitive Assembly and Rasterization}
     
     {$region 15.0 - Programmable Fragment Processing}
     
@@ -13711,12 +13711,12 @@ type
     
     {$region 21.0 - Special Functions}
     
-    {$endregion 21.5 - Hints}
+    {$region 21.5 - Hints}
     
     static procedure Hint(target: HintType; mode: HintValue);
     external 'opengl32.dll' name 'glHint';
     
-    {$region 21.5 - Hints}
+    {$endregion 21.5 - Hints}
     
     {$endregion 21.0 - Special Functions}
     
