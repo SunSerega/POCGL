@@ -14,6 +14,7 @@
 ///
 /// Код переведён отсюда:
 /// https://github.com/KhronosGroup/OpenGL-Registry
+/// (Основная часть не_расширений - \api\GL\ )
 ///
 /// Спецификация (что то типа справки):
 /// https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf
@@ -1044,6 +1045,25 @@ type
     public static property COMPUTE_SHADER:          ShaderType read new ShaderType($91B9);
     
     public static function operator implicit(st: ShaderType): ProgramPipelineInfoType := new ProgramPipelineInfoType(st.val);
+    
+  end;
+  
+  //S
+  SyncObjectType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property GL_SYNC_FENCE: SyncObjectType read new SyncObjectType($9116);
+    
+  end;
+  
+  //S
+  FenceStatus = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property UNSIGNALED:  FenceStatus read new FenceStatus($9118);
+    public static property SIGNALED:    FenceStatus read new FenceStatus($9119);
     
   end;
   
@@ -9741,11 +9761,10 @@ type
     
     // 4.1.3
     
-    //ToDo
-//    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: SyncObjectType);
-//    external 'opengl32.dll' name 'glGetSynciv';
-//    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: FenceStatus);
-//    external 'opengl32.dll' name 'glGetSynciv';
+    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: SyncObjectType);
+    external 'opengl32.dll' name 'glGetSynciv';
+    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: FenceStatus);
+    external 'opengl32.dll' name 'glGetSynciv';
     static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: FenceCondition);
     external 'opengl32.dll' name 'glGetSynciv';
     static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: Int32);
