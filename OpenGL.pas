@@ -10048,29 +10048,33 @@ type
     
     {$region 6.7 - Buffer Object Queries}
     
-    static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; var &params: BufferDataUsage);
+    external 'opengl32.dll' name 'glGetBufferParameteriv';
+    static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; var &params: AccessType);
     external 'opengl32.dll' name 'glGetBufferParameteriv';
     static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetBufferParameteriv';
+    static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; var &params: boolean);
     external 'opengl32.dll' name 'glGetBufferParameteriv';
     static procedure GetBufferParameteriv(target: BufferBindType; pname: BufferInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetBufferParameteriv';
     
-    static procedure GetBufferParameteri64v(target: BufferBindType; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
-    external 'opengl32.dll' name 'glGetBufferParameteri64v';
     static procedure GetBufferParameteri64v(target: BufferBindType; pname: BufferInfoType; var &params: Int64);
     external 'opengl32.dll' name 'glGetBufferParameteri64v';
     static procedure GetBufferParameteri64v(target: BufferBindType; pname: BufferInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetBufferParameteri64v';
     
-    static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; var &params: BufferDataUsage);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
+    static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; var &params: AccessType);
     external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
     static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
+    static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; var &params: boolean);
     external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
     static procedure GetNamedBufferParameteriv(target: BufferName; pname: BufferInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetNamedBufferParameteriv';
     
-    static procedure GetNamedBufferParameteri64v(target: BufferName; pname: BufferInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
-    external 'opengl32.dll' name 'glGetNamedBufferParameteri64v';
     static procedure GetNamedBufferParameteri64v(target: BufferName; pname: BufferInfoType; var &params: Int64);
     external 'opengl32.dll' name 'glGetNamedBufferParameteri64v';
     static procedure GetNamedBufferParameteri64v(target: BufferName; pname: BufferInfoType; &params: pointer);
@@ -10088,20 +10092,16 @@ type
     
     static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; var &params: IntPtr);
     external 'opengl32.dll' name 'glGetBufferPointerv';
-    static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; &params: ^IntPtr);
-    external 'opengl32.dll' name 'glGetBufferPointerv';
     static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; var &params: pointer);
     external 'opengl32.dll' name 'glGetBufferPointerv';
-    static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; &params: ^pointer);
+    static procedure GetBufferPointerv(target: BufferBindType; pname: BufferInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetBufferPointerv';
     
     static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; var &params: IntPtr);
     external 'opengl32.dll' name 'glGetNamedBufferPointerv';
-    static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; &params: ^IntPtr);
-    external 'opengl32.dll' name 'glGetNamedBufferPointerv';
     static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; var &params: pointer);
     external 'opengl32.dll' name 'glGetNamedBufferPointerv';
-    static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; &params: ^pointer);
+    static procedure GetNamedBufferPointerv(buffer: BufferName; pname: BufferInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetNamedBufferPointerv';
     
     {$endregion 6.7 - Buffer Object Queries}
