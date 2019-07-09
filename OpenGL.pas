@@ -41,6 +41,8 @@ unit OpenGL;
 
 //ToDo проверить передачу external функции вместо лямбды
 
+//ToDo .ToString всех энумов, которые может возвращать
+
 //ToDo issue компилятора:
 // - #2029
 
@@ -96,7 +98,7 @@ type
   ErrorCode = record
     public val: UInt32;
     
-    public const NO_ERROR =                                $0000;
+    public const NO_ERROR =                                0;
     public const FRAMEBUFFER_COMPLETE =                    $8CD5;
     
     public const INVALID_ENUM =                            $0500;
@@ -126,34 +128,6 @@ type
   {$endregion case Result of}
   
   {$region 1 значение}
-  
-  {$region ...Mode}
-  
-  //S
-  BeginMode = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property POINTS:          BeginMode read new BeginMode($0000);
-    public static property LINES:           BeginMode read new BeginMode($0001);
-    public static property LINE_LOOP:       BeginMode read new BeginMode($0002);
-    public static property LINE_STRIP:      BeginMode read new BeginMode($0003);
-    public static property TRIANGLES:       BeginMode read new BeginMode($0004);
-    public static property TRIANGLE_STRIP:  BeginMode read new BeginMode($0005);
-    public static property TRIANGLE_FAN:    BeginMode read new BeginMode($0006);
-    
-  end;
-  
-  //S
-  ReservedTimeoutMode = record
-    public val: uint64;
-    public constructor(val: uint64) := self.val := val;
-    
-    public static property GL_TIMEOUT_IGNORED:  ReservedTimeoutMode read new ReservedTimeoutMode(uint64.MaxValue);
-    
-  end;
-  
-  {$endregion ...Mode}
   
   {$region ...InfoType}
   
@@ -322,6 +296,38 @@ type
   {$endregion ...InfoType}
   
   //S
+  PixelWrapMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property CLAMP_TO_EDGE:         PixelWrapMode read new PixelWrapMode($812F);
+    public static property &REPEAT:               PixelWrapMode read new PixelWrapMode($2901);
+    public static property CLAMP_TO_BORDER:       PixelWrapMode read new PixelWrapMode($812D);
+    public static property MIRRORED_REPEAT:       PixelWrapMode read new PixelWrapMode($8370);
+    public static property MIRROR_CLAMP_TO_EDGE:  PixelWrapMode read new PixelWrapMode($8743);
+    
+  end;
+  
+  //S
+  TextureCompareMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NONE:                    TextureCompareMode read new TextureCompareMode(0);
+    public static property COMPARE_REF_TO_TEXTURE:  TextureCompareMode read new TextureCompareMode($884E);
+    
+  end;
+  
+  //S
+  ReservedTimeoutMode = record
+    public val: uint64;
+    public constructor(val: uint64) := self.val := val;
+    
+    public static property GL_TIMEOUT_IGNORED:  ReservedTimeoutMode read new ReservedTimeoutMode(uint64.MaxValue);
+    
+  end;
+  
+  //S
   InternalFormatInfoType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -443,12 +449,26 @@ type
   end;
   
   //S
-  PixelFilterMode = record
+  PixelMagFilterMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property NEAREST: PixelFilterMode read new PixelFilterMode($2600);
-    public static property LINEAR:  PixelFilterMode read new PixelFilterMode($2601);
+    public static property NEAREST: PixelMagFilterMode read new PixelMagFilterMode($2600);
+    public static property LINEAR:  PixelMagFilterMode read new PixelMagFilterMode($2601);
+    
+  end;
+  
+  //S
+  PixelMinFilterMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NEAREST:                 PixelMinFilterMode read new PixelMinFilterMode($2600);
+    public static property LINEAR:                  PixelMinFilterMode read new PixelMinFilterMode($2601);
+    public static property NEAREST_MIPMAP_NEAREST:  PixelMinFilterMode read new PixelMinFilterMode($2700);
+    public static property NEAREST_MIPMAP_LINEAR:   PixelMinFilterMode read new PixelMinFilterMode($2702);
+    public static property LINEAR_MIPMAP_NEAREST:   PixelMinFilterMode read new PixelMinFilterMode($2701);
+    public static property LINEAR_MIPMAP_LINEAR:    PixelMinFilterMode read new PixelMinFilterMode($2703);
     
   end;
   
@@ -560,18 +580,18 @@ type
   end;
   
   //S
-  FuncActivationMode = record
+  ActivationFunc = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property NEVER:     FuncActivationMode read new FuncActivationMode($0200);
-    public static property LESS:      FuncActivationMode read new FuncActivationMode($0201);
-    public static property LEQUAL:    FuncActivationMode read new FuncActivationMode($0203);
-    public static property GREATER:   FuncActivationMode read new FuncActivationMode($0204);
-    public static property GEQUAL:    FuncActivationMode read new FuncActivationMode($0206);
-    public static property EQUAL:     FuncActivationMode read new FuncActivationMode($0202);
-    public static property NOTEQUAL:  FuncActivationMode read new FuncActivationMode($0205);
-    public static property ALWAYS:    FuncActivationMode read new FuncActivationMode($0207);
+    public static property NEVER:     ActivationFunc read new ActivationFunc($0200);
+    public static property LESS:      ActivationFunc read new ActivationFunc($0201);
+    public static property LEQUAL:    ActivationFunc read new ActivationFunc($0203);
+    public static property GREATER:   ActivationFunc read new ActivationFunc($0204);
+    public static property GEQUAL:    ActivationFunc read new ActivationFunc($0206);
+    public static property EQUAL:     ActivationFunc read new ActivationFunc($0202);
+    public static property NOTEQUAL:  ActivationFunc read new ActivationFunc($0205);
+    public static property ALWAYS:    ActivationFunc read new ActivationFunc($0207);
     
   end;
   
@@ -1634,7 +1654,7 @@ type
   FramebufferAttachmentObjectType = record
     public val: UInt32;
     
-    public property NONE:                boolean read self.val = $0000;
+    public property NONE:                boolean read self.val = 0;
     public property FRAMEBUFFER_DEFAULT: boolean read self.val = $8218;
     public property TEXTURE:             boolean read self.val = $1702;
     public property RENDERBUFFER:        boolean read self.val = $8D41;
@@ -1964,7 +1984,7 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-//    public static property NONE:                BufferStorageFlags read new BufferStorageFlags($0000); //ToDo узнать надо ли
+//    public static property NONE:                BufferStorageFlags read new BufferStorageFlags(0); //ToDo узнать надо ли
     public static property MAP_READ_BIT:        BufferStorageFlags read new BufferStorageFlags($0001);
     public static property MAP_WRITE_BIT:       BufferStorageFlags read new BufferStorageFlags($0002);
     public static property MAP_PERSISTENT_BIT:  BufferStorageFlags read new BufferStorageFlags($0040);
@@ -11403,7 +11423,9 @@ type
     
     static procedure BindTextures(first: TextureUnitId; count: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
     external 'opengl32.dll' name 'glBindTextures';
-    static procedure BindTextures(first: TextureUnitId; count: Int32; textures: ^TextureName);
+    static procedure BindTextures(first: TextureUnitId; count: Int32; var textures: TextureName);
+    external 'opengl32.dll' name 'glBindTextures';
+    static procedure BindTextures(first: TextureUnitId; count: Int32; textures: pointer);
     external 'opengl32.dll' name 'glBindTextures';
     
     static procedure BindTextureUnit(&unit: TextureUnitId; texture: TextureName);
@@ -11411,14 +11433,16 @@ type
     
     static procedure CreateTextures(target: TextureBindTarget; n: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
     external 'opengl32.dll' name 'glCreateTextures';
-    static procedure CreateTextures(target: TextureBindTarget; n: Int32; textures: ^TextureName);
+    static procedure CreateTextures(target: TextureBindTarget; n: Int32; var textures: TextureName);
+    external 'opengl32.dll' name 'glCreateTextures';
+    static procedure CreateTextures(target: TextureBindTarget; n: Int32; textures: pointer);
     external 'opengl32.dll' name 'glCreateTextures';
     
     static procedure DeleteTextures(n: Int32; [MarshalAs(UnmanagedType.LPArray)] textures: array of TextureName);
     external 'opengl32.dll' name 'glDeleteTextures';
     static procedure DeleteTextures(n: Int32; var textures: TextureName);
     external 'opengl32.dll' name 'glDeleteTextures';
-    static procedure DeleteTextures(n: Int32; textures: ^TextureName);
+    static procedure DeleteTextures(n: Int32; textures: pointer);
     external 'opengl32.dll' name 'glDeleteTextures';
     
     static function IsTexture(texture: TextureName): boolean;
@@ -11439,7 +11463,7 @@ type
     external 'opengl32.dll' name 'glCreateSamplers';
     static procedure CreateSamplers(n: Int32; var samplers: SamplerName);
     external 'opengl32.dll' name 'glCreateSamplers';
-    static procedure CreateSamplers(n: Int32; samplers: ^SamplerName);
+    static procedure CreateSamplers(n: Int32; samplers: pointer);
     external 'opengl32.dll' name 'glCreateSamplers';
     
     static procedure BindSampler(&unit: Int32; sampler: SamplerName);
@@ -11447,10 +11471,22 @@ type
     
     static procedure BindSamplers(first: Int32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] samplers: array of SamplerName);
     external 'opengl32.dll' name 'glBindSamplers';
-    static procedure BindSamplers(first: Int32; count: Int32; samplers: ^SamplerName);
+    static procedure BindSamplers(first: Int32; count: Int32; var samplers: SamplerName);
+    external 'opengl32.dll' name 'glBindSamplers';
+    static procedure BindSamplers(first: Int32; count: Int32; samplers: pointer);
     external 'opengl32.dll' name 'glBindSamplers';
     
-    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: Int32);
+    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: TextureCompareMode);
+    external 'opengl32.dll' name 'glSamplerParameteri';
+    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: ActivationFunc);
+    external 'opengl32.dll' name 'glSamplerParameteri';
+    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glSamplerParameteri';
+    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glSamplerParameteri';
+    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: PixelWrapMode);
+    external 'opengl32.dll' name 'glSamplerParameteri';
+    static procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: Int32); // нигде не используется, существует только для совместимости с .val
     external 'opengl32.dll' name 'glSamplerParameteri';
     
     static procedure SamplerParameterf(sampler: SamplerName; pname: TextureInfoType; param: single);
@@ -11458,29 +11494,39 @@ type
     
     static procedure SamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var param: Int32);
     external 'opengl32.dll' name 'glSamplerParameteriv';
-    static procedure SamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; param: ^Int32);
+    static procedure SamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; param: pointer);
     external 'opengl32.dll' name 'glSamplerParameteriv';
     
     static procedure SamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; var param: single);
     external 'opengl32.dll' name 'glSamplerParameterfv';
-    static procedure SamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; param: ^single);
+    static procedure SamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; param: pointer);
     external 'opengl32.dll' name 'glSamplerParameterfv';
     
-    static procedure SamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; var param: Int32);
+    static procedure SamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; var param: Int32); // нигде не используется, существует только для совместимости с .val
     external 'opengl32.dll' name 'glSamplerParameterIiv';
-    static procedure SamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; param: ^Int32);
+    static procedure SamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; param: pointer);
     external 'opengl32.dll' name 'glSamplerParameterIiv';
     
-    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: UInt32);
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: TextureCompareMode);
     external 'opengl32.dll' name 'glSamplerParameterIuiv';
-    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; param: ^UInt32);
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: ActivationFunc);
+    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: PixelWrapMode);
+    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: UInt32); // нигде не используется, существует только для совместимости с .val
+    external 'opengl32.dll' name 'glSamplerParameterIuiv';
+    static procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; param: pointer);
     external 'opengl32.dll' name 'glSamplerParameterIuiv';
     
     static procedure DeleteSamplers(count: Int32; [MarshalAs(UnmanagedType.LPArray)] samplers: array of SamplerName);
     external 'opengl32.dll' name 'glDeleteSamplers';
     static procedure DeleteSamplers(count: Int32; var samplers: SamplerName);
     external 'opengl32.dll' name 'glDeleteSamplers';
-    static procedure DeleteSamplers(count: Int32; samplers: ^SamplerName);
+    static procedure DeleteSamplers(count: Int32; samplers: pointer);
     external 'opengl32.dll' name 'glDeleteSamplers';
     
     static function IsSampler(sampler: SamplerName): boolean;
@@ -11490,24 +11536,44 @@ type
     
     {$region 8.3 - Sampler Object Queries}
     
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: TextureCompareMode);
+    external 'opengl32.dll' name 'glGetSamplerParameteriv';
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: ActivationFunc);
+    external 'opengl32.dll' name 'glGetSamplerParameteriv';
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glGetSamplerParameteriv';
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glGetSamplerParameteriv';
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelWrapMode);
+    external 'opengl32.dll' name 'glGetSamplerParameteriv';
     static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetSamplerParameteriv';
-    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetSamplerParameteriv';
     
     static procedure GetSamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; var &params: single);
     external 'opengl32.dll' name 'glGetSamplerParameterfv';
-    static procedure GetSamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; &params: ^single);
+    static procedure GetSamplerParameterfv(sampler: SamplerName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetSamplerParameterfv';
     
     static procedure GetSamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetSamplerParameterIiv';
-    static procedure GetSamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetSamplerParameterIiv(sampler: SamplerName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetSamplerParameterIiv';
     
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: TextureCompareMode);
+    external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: ActivationFunc);
+    external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelWrapMode);
+    external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
     static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: UInt32);
     external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
-    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; &params: ^UInt32);
+    static procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetSamplerParameterIuiv';
     
     {$endregion 8.3 - Sampler Object Queries}
@@ -13458,10 +13524,10 @@ type
     
     // 17.3.3
     
-    static procedure StencilFunc(func: FuncActivationMode; ref: Int32; mask: UInt32);
+    static procedure StencilFunc(func: ActivationFunc; ref: Int32; mask: UInt32);
     external 'opengl32.dll' name 'glStencilFunc';
     
-    static procedure StencilFuncSeparate(face: PolygonFace; func: FuncActivationMode; ref: Int32; mask: UInt32);
+    static procedure StencilFuncSeparate(face: PolygonFace; func: ActivationFunc; ref: Int32; mask: UInt32);
     external 'opengl32.dll' name 'glStencilFuncSeparate';
     
     static procedure StencilOp(fail: StencilOpFailMode; zfail: StencilOpFailMode; zpass: StencilOpFailMode);
@@ -13472,7 +13538,7 @@ type
     
     // 17.3.4
     
-    static procedure DepthFunc(func: FuncActivationMode);
+    static procedure DepthFunc(func: ActivationFunc);
     external 'opengl32.dll' name 'glDepthFunc';
     
     // 17.3.6
@@ -13700,10 +13766,10 @@ type
     
     // 18.3.1
     
-    static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode);
+    static procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode);
     external 'opengl32.dll' name 'glBlitFramebuffer';
     
-    static procedure BlitNamedFramebuffer(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode);
+    static procedure BlitNamedFramebuffer(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode);
     external 'opengl32.dll' name 'glBlitNamedFramebuffer';
     
     // 18.3.2

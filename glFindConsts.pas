@@ -2,8 +2,12 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
+const
+  HeaderFile = 'C:\Users\Master in EngLiSH\Desktop\GL .h\glcorearb.h';
+//  HeaderFile = 'C:\Users\Ко\Desktop\OpenGL-Registry-master\api\GL\glcorearb.h';
+
 function ReadHeader :=
-  ReadLines('C:\Users\Ко\Desktop\OpenGL-Registry-master\api\GL\glcorearb.h')
+  ReadLines(HeaderFile)
   .Where(l->l.StartsWith('#define'))
   .ToList
 ;
