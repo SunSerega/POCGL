@@ -98,35 +98,43 @@ end;
 function GetTypeDefString(s: string): string;
 begin
   var rc := s.Count(ch->ch='*');
-  s := s.Remove('const ', ' ', '*', #13, #10);
+  s := s.Replace('const*','*').Remove('const ', ' ', '*', #13, #10);
   
   case s.ToLower of
     
-    'glbyte':       s := 'SByte';
-    'glubyte':      s := 'Byte';
-    'glchar':       s := 'Byte';
-    'glboolean':    s := 'Byte';
+    'glbyte':         s := 'SByte';
+    'glubyte':        s := 'Byte';
+    'glchar':         s := 'Byte';
+    'glchararb':      s := 'Byte';
+    'glboolean':      s := 'Byte';
     
-    'glshort':      s := 'Int16';
-    'glushort':     s := 'UInt16';
+    'glshort':        s := 'Int16';
+    'glushort':       s := 'UInt16';
     
-    'glint':        s := 'Int32';
-    'glsizei':      s := 'Int32';
-    'gluint':       s := 'UInt32';
-    'glbitfield':   s := 'UInt32';
+    'glint':          s := 'Int32';
+    'glsizei':        s := 'Int32';
+    'gluint':         s := 'UInt32';
+    'glbitfield':     s := 'UInt32';
     
-    'glint64':      s := 'Int64';
-    'gluint64':     s := 'UInt64';
-    'gluint64ext':  s := 'UInt64';
+    'glint64':        s := 'Int64';
+    'glint64ext':     s := 'Int64';
+    'gluint64':       s := 'UInt64';
+    'gluint64ext':    s := 'UInt64';
     
-    'glfloat':      s := 'single';
-    'glclampf':      s := 'single';
-    'gldouble':     s := 'real';
+    'glfloat':        s := 'single';
+    'glclampf':       s := 'single';
+    'gldouble':       s := 'double';
+    'glclampd':       s := 'double';
     
-    'glintptr':     s := 'IntPtr';
-    'glsizeiptr':   s := 'UIntPtr';
+    'glfixed':        s := 'fixed';
+    'glhalfnv':       s := 'half';
     
-    'glenum':       s := 'UInt32';
+    'glintptr':       s := 'IntPtr';
+    'glintptrarb':    s := 'IntPtr';
+    'glsizeiptr':     s := 'UIntPtr';
+    'glsizeiptrarb':  s := 'UIntPtr'; 
+    
+    'glenum':         s := 'ErrorCode';
     
     'glvoid',
     'void':
@@ -177,7 +185,7 @@ type
         );
         
         if cpar[0].ToLower in
-          ['params', 'type', 'end', 'program', 'array', 'unit', 'label', 'event']
+          ['params', 'type', 'end', 'program', 'array', 'unit', 'label', 'event', 'in', 'packed']
         then cpar := ('&'+cpar[0], cpar[1]);
         if cpar[0].ToLower = 'pointer' then cpar := ('_'+cpar[0], cpar[1]);
         

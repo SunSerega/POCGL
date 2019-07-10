@@ -96,7 +96,9 @@ begin
 end;
 
 const
+//  GLpas = 'Temp.pas';
   GLpas = 'OpenGL.pas';
+//  HeadersFolder = 'D:\0\Temp';
   HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\GL .h';
   
 begin
@@ -113,6 +115,7 @@ begin
       )
     do
     begin
+      if chs.Length<5 then continue;
       var res := string.Create(chs).TrimEnd;
       if not res.EndsWith(';') then res += '(';
       used_funcs += res;
@@ -121,17 +124,20 @@ begin
     var res := new StringBuilder;
     foreach var fname in System.IO.Directory.EnumerateFiles(HeadersFolder, '*.h', System.IO.SearchOption.AllDirectories) do
     begin
+//      writeln(fname);
       System.Windows.Forms.Clipboard.SetText(ReadAllText(fname));
       System.Diagnostics.Process.Start('gl format func.exe').WaitForExit;
       
-      var funcs := System.Windows.Forms.Clipboard.GetText.Remove(#13).Split(Arr(#10'    '#10), System.StringSplitOptions.None).ToList;
-      funcs.RemoveAll(f->not used_funcs.Any(uf->f.Contains(uf)));
+      var text := System.Windows.Forms.Clipboard.GetText;
+      var funcs := text.Remove(#13).Trim(#10' '.ToArray).Split(Arr(#10'    '#10), System.StringSplitOptions.RemoveEmptyEntries).ToList;
+      funcs.RemoveAll(f->used_funcs.Any(uf->f.Contains(uf)));
       if funcs.Count=0 then continue;
       
       res += #10;
       res += $'  {System.IO.Path.GetFileNameWithoutExtension(fname)} = static class' + #10;
-      res += $'    ';
+      res += $'    ' + #10;
       res += funcs.JoinIntoString(#10'    '#10);
+      res += #10;
       res += $'    ' + #10;
       res += $'  end;' + #10;
       res += $'  ';
