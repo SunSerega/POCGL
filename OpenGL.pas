@@ -42,6 +42,10 @@ unit OpenGL;
 //ToDo проверить передачу external функции вместо лямбды
 
 //ToDo .ToString всех энумов, которые может возвращать
+// - тупо пройтись по всем энумам, посмотреть де они заюзаны
+// - там куча всего сразу проверится
+
+//ToDo найти полный список кодов ошибок
 
 //ToDo issue компилятора:
 // - #2029
@@ -14291,13 +14295,7 @@ type
   
   //ToDo подчистить всё что дальше:
   
-  gl_OVR = static class
-    
-    static procedure FramebufferTextureMultiviewOVR(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32; baseViewIndex: Int32; numViews: Int32);
-    external 'opengl32.dll' name 'glFramebufferTextureMultiviewOVR';
-    
-  end;
-  
+  /// Расширения, которые встречаются у всех видеокарт
   gl_ARB = static class
     
     {$region ARB}
@@ -14594,6 +14592,7 @@ type
     
   end;
   
+  /// Расширения, которые встречаются у некоторых видеокарт
   gl_EXT = static class
     
     {$region EXT}
@@ -15430,20 +15429,7 @@ type
     
   end;
   
-  gl_KHR = static class
-    
-    {$region KHR}
-    
-    static procedure BlendBarrierKHR;
-    external 'opengl32.dll' name 'glBlendBarrierKHR';
-    
-    static procedure MaxShaderCompilerThreadsKHR(count: UInt32);
-    external 'opengl32.dll' name 'glMaxShaderCompilerThreadsKHR';
-    
-    {$endregion KHR}
-    
-  end;
-  
+  /// Расширения, которые встречаются только у видеокарт AMD
   gl_AMD = static class
     
     {$region AMD}
@@ -15491,6 +15477,7 @@ type
     
   end;
   
+  /// Расширения, которые встречаются только у видеокарт Intel
   gl_Intel = static class
     
     {$region INTEL}
@@ -15532,6 +15519,7 @@ type
     
   end;
   
+  /// Расширения, которые встречаются только у видеокарт NVidia
   gl_NVidia = static class
     
     {$region NVIDIA}
@@ -16176,6 +16164,32 @@ type
     
   end;
   
+  /// Расширение OVR, которое, почему то, отдельно
+  /// Это вроде что то для ускорения рендеринга как для VR шлема
+  /// Где одну и ту же сцену надо несколько (2 для VR) раз нарисовать, но под разным наклоном
+  gl_OVR = static class
+    
+    static procedure FramebufferTextureMultiviewOVR(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32; baseViewIndex: Int32; numViews: Int32);
+    external 'opengl32.dll' name 'glFramebufferTextureMultiviewOVR';
+    
+  end;
+  
+  //ToDo а что это кстати?
+  gl_KHR = static class
+    
+    {$region KHR}
+    
+    static procedure BlendBarrierKHR;
+    external 'opengl32.dll' name 'glBlendBarrierKHR';
+    
+    static procedure MaxShaderCompilerThreadsKHR(count: UInt32);
+    external 'opengl32.dll' name 'glMaxShaderCompilerThreadsKHR';
+    
+    {$endregion KHR}
+    
+  end;
+  
+  /// Всё устаревшее (то что удалено из последней версии OpenGL + то что собираются удалить в следующих)
   gl_Deprecated = static class
     
     {$region Deprecated}

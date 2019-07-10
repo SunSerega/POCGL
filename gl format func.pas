@@ -244,6 +244,7 @@ begin
     text := text
       .SkipCharsFromTo('/*', '*/')
       .TakeCharsFromTo('GLAPI', ';')
+      .Where(a->not string.Create(a).Contains('#define'))
       .Select(a->FuncDef.Create(a).ToString)
       .JoinIntoString('    '#10);
     
