@@ -9775,6 +9775,11 @@ type
     public static function GetError: ErrorCode;
     external 'opengl32.dll' name 'glGetError';
     
+    // 2.3.2
+    
+    static function GetGraphicsResetStatus: ErrorCode;
+    external 'opengl32.dll' name 'glGetGraphicsResetStatus';
+    
     // 2.3.3
     
     static procedure Finish;
@@ -13512,6 +13517,13 @@ type
     
     {$endregion 13.3 - Transform Feedback}
     
+    {$region 13.6 - Flatshading}
+    
+    static procedure ProvokingVertex(mode: VertexProvokingMode);
+    external 'opengl32.dll' name 'glProvokingVertex';
+    
+    {$endregion 13.6 - Flatshading}
+    
     {$region 13.7 - Primitive Clipping}
     
     static procedure ClipControl(origin: ClipOriginMode; depth: ClipDepthMode);
@@ -14248,18 +14260,20 @@ type
     
     {$endregion 22.0 - Context State Queries}
     
+  end;
+  
+  //ToDo подчистить всё что дальше:
+  
+  gl_OVR = static class
     
+    static procedure FramebufferTextureMultiviewOVR(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32; baseViewIndex: Int32; numViews: Int32);
+    external 'opengl32.dll' name 'glFramebufferTextureMultiviewOVR';
     
-    {$region unsorted}
+  end;
+  
+  gl_ARB = static class
     
-    static procedure ProvokingVertex(mode: UInt32);
-    external 'opengl32.dll' name 'glProvokingVertex';
-    
-    static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: UInt32);
-    external 'opengl32.dll' name 'glCopyPixels';
-    
-    static function GetGraphicsResetStatus: UInt32;
-    external 'opengl32.dll' name 'glGetGraphicsResetStatus';
+    {$region ARB}
     
     static procedure PrimitiveBoundingBoxARB(minX: single; minY: single; minZ: single; minW: single; maxX: single; maxY: single; maxZ: single; maxW: single);
     external 'opengl32.dll' name 'glPrimitiveBoundingBoxARB';
@@ -14528,9 +14542,6 @@ type
     static procedure BufferPageCommitmentARB(target: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean);
     external 'opengl32.dll' name 'glBufferPageCommitmentARB';
     
-    static procedure NamedBufferPageCommitmentEXT(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean);
-    external 'opengl32.dll' name 'glNamedBufferPageCommitmentEXT';
-    
     static procedure NamedBufferPageCommitmentARB(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean);
     external 'opengl32.dll' name 'glNamedBufferPageCommitmentARB';
     
@@ -14540,50 +14551,28 @@ type
     static procedure TexBufferARB(target: UInt32; internalformat: UInt32; buffer: UInt32);
     external 'opengl32.dll' name 'glTexBufferARB';
     
-    static procedure BlendBarrierKHR;
-    external 'opengl32.dll' name 'glBlendBarrierKHR';
+    static procedure VertexAttribDivisorARB(index: UInt32; divisor: UInt32);
+    external 'opengl32.dll' name 'glVertexAttribDivisorARB';
     
-    static procedure MaxShaderCompilerThreadsKHR(count: UInt32);
-    external 'opengl32.dll' name 'glMaxShaderCompilerThreadsKHR';
+    static procedure GetVertexAttribLui64vARB(index: UInt32; pname: UInt32; &params: ^UInt64);
+    external 'opengl32.dll' name 'glGetVertexAttribLui64vARB';
     
-    static procedure RenderbufferStorageMultisampleAdvancedAMD(target: UInt32; samples: Int32; storageSamples: Int32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glRenderbufferStorageMultisampleAdvancedAMD';
+    static procedure VertexAttribL1ui64ARB(index: UInt32; x: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64ARB';
     
-    static procedure NamedRenderbufferStorageMultisampleAdvancedAMD(renderbuffer: UInt32; samples: Int32; storageSamples: Int32; internalformat: UInt32; width: Int32; height: Int32);
-    external 'opengl32.dll' name 'glNamedRenderbufferStorageMultisampleAdvancedAMD';
+    static procedure VertexAttribL1ui64vARB(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64vARB';
     
-    static procedure GetPerfMonitorGroupsAMD(numGroups: ^Int32; groupsSize: Int32; groups: ^UInt32);
-    external 'opengl32.dll' name 'glGetPerfMonitorGroupsAMD';
+    {$endregion ARB}
     
-    static procedure GetPerfMonitorCountersAMD(group: UInt32; numCounters: ^Int32; maxActiveCounters: ^Int32; counterSize: Int32; counters: ^UInt32);
-    external 'opengl32.dll' name 'glGetPerfMonitorCountersAMD';
+  end;
+  
+  gl_EXT = static class
     
-    static procedure GetPerfMonitorGroupStringAMD(group: UInt32; bufSize: Int32; length: ^Int32; groupString: ^SByte);
-    external 'opengl32.dll' name 'glGetPerfMonitorGroupStringAMD';
+    {$region EXT}
     
-    static procedure GetPerfMonitorCounterStringAMD(group: UInt32; counter: UInt32; bufSize: Int32; length: ^Int32; counterString: ^SByte);
-    external 'opengl32.dll' name 'glGetPerfMonitorCounterStringAMD';
-    
-    static procedure GetPerfMonitorCounterInfoAMD(group: UInt32; counter: UInt32; pname: UInt32; data: pointer);
-    external 'opengl32.dll' name 'glGetPerfMonitorCounterInfoAMD';
-    
-    static procedure GenPerfMonitorsAMD(n: Int32; monitors: ^UInt32);
-    external 'opengl32.dll' name 'glGenPerfMonitorsAMD';
-    
-    static procedure DeletePerfMonitorsAMD(n: Int32; monitors: ^UInt32);
-    external 'opengl32.dll' name 'glDeletePerfMonitorsAMD';
-    
-    static procedure SelectPerfMonitorCountersAMD(monitor: UInt32; enable: boolean; group: UInt32; numCounters: Int32; counterList: ^UInt32);
-    external 'opengl32.dll' name 'glSelectPerfMonitorCountersAMD';
-    
-    static procedure BeginPerfMonitorAMD(monitor: UInt32);
-    external 'opengl32.dll' name 'glBeginPerfMonitorAMD';
-    
-    static procedure EndPerfMonitorAMD(monitor: UInt32);
-    external 'opengl32.dll' name 'glEndPerfMonitorAMD';
-    
-    static procedure GetPerfMonitorCounterDataAMD(monitor: UInt32; pname: UInt32; dataSize: Int32; data: ^UInt32; bytesWritten: ^Int32);
-    external 'opengl32.dll' name 'glGetPerfMonitorCounterDataAMD';
+    static procedure NamedBufferPageCommitmentEXT(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean);
+    external 'opengl32.dll' name 'glNamedBufferPageCommitmentEXT';
     
     static procedure EGLImageTargetTexStorageEXT(target: UInt32; image: GLeglImageOES; attrib_list: ^Int32);
     external 'opengl32.dll' name 'glEGLImageTargetTexStorageEXT';
@@ -15398,6 +15387,87 @@ type
     static procedure WindowRectanglesEXT(mode: UInt32; count: Int32; box: ^Int32);
     external 'opengl32.dll' name 'glWindowRectanglesEXT';
     
+    static procedure ColorSubTableEXT(target: UInt32; start: Int32; count: Int32; format: UInt32; &type: UInt32; table: pointer);
+    external 'opengl32.dll' name 'glColorSubTableEXT';
+    
+    static procedure ColorTableEXT(target: UInt32; internalformat: UInt32; width: Int32; format: UInt32; &type: UInt32; table: pointer);
+    external 'opengl32.dll' name 'glColorTableEXT';
+    
+    static procedure GetColorTableEXT(target: UInt32; format: UInt32; &type: UInt32; table: pointer);
+    external 'opengl32.dll' name 'glGetColorTableEXT';
+    
+    static procedure GetColorTableParameterivEXT(target: UInt32; pname: UInt32; &params: ^Int32);
+    external 'opengl32.dll' name 'glGetColorTableParameterivEXT';
+    
+    {$endregion EXT}
+    
+  end;
+  
+  gl_KHR = static class
+    
+    {$region KHR}
+    
+    static procedure BlendBarrierKHR;
+    external 'opengl32.dll' name 'glBlendBarrierKHR';
+    
+    static procedure MaxShaderCompilerThreadsKHR(count: UInt32);
+    external 'opengl32.dll' name 'glMaxShaderCompilerThreadsKHR';
+    
+    {$endregion KHR}
+    
+  end;
+  
+  gl_AMD = static class
+    
+    {$region AMD}
+    
+    static procedure RenderbufferStorageMultisampleAdvancedAMD(target: UInt32; samples: Int32; storageSamples: Int32; internalformat: UInt32; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glRenderbufferStorageMultisampleAdvancedAMD';
+    
+    static procedure NamedRenderbufferStorageMultisampleAdvancedAMD(renderbuffer: UInt32; samples: Int32; storageSamples: Int32; internalformat: UInt32; width: Int32; height: Int32);
+    external 'opengl32.dll' name 'glNamedRenderbufferStorageMultisampleAdvancedAMD';
+    
+    static procedure GetPerfMonitorGroupsAMD(numGroups: ^Int32; groupsSize: Int32; groups: ^UInt32);
+    external 'opengl32.dll' name 'glGetPerfMonitorGroupsAMD';
+    
+    static procedure GetPerfMonitorCountersAMD(group: UInt32; numCounters: ^Int32; maxActiveCounters: ^Int32; counterSize: Int32; counters: ^UInt32);
+    external 'opengl32.dll' name 'glGetPerfMonitorCountersAMD';
+    
+    static procedure GetPerfMonitorGroupStringAMD(group: UInt32; bufSize: Int32; length: ^Int32; groupString: ^SByte);
+    external 'opengl32.dll' name 'glGetPerfMonitorGroupStringAMD';
+    
+    static procedure GetPerfMonitorCounterStringAMD(group: UInt32; counter: UInt32; bufSize: Int32; length: ^Int32; counterString: ^SByte);
+    external 'opengl32.dll' name 'glGetPerfMonitorCounterStringAMD';
+    
+    static procedure GetPerfMonitorCounterInfoAMD(group: UInt32; counter: UInt32; pname: UInt32; data: pointer);
+    external 'opengl32.dll' name 'glGetPerfMonitorCounterInfoAMD';
+    
+    static procedure GenPerfMonitorsAMD(n: Int32; monitors: ^UInt32);
+    external 'opengl32.dll' name 'glGenPerfMonitorsAMD';
+    
+    static procedure DeletePerfMonitorsAMD(n: Int32; monitors: ^UInt32);
+    external 'opengl32.dll' name 'glDeletePerfMonitorsAMD';
+    
+    static procedure SelectPerfMonitorCountersAMD(monitor: UInt32; enable: boolean; group: UInt32; numCounters: Int32; counterList: ^UInt32);
+    external 'opengl32.dll' name 'glSelectPerfMonitorCountersAMD';
+    
+    static procedure BeginPerfMonitorAMD(monitor: UInt32);
+    external 'opengl32.dll' name 'glBeginPerfMonitorAMD';
+    
+    static procedure EndPerfMonitorAMD(monitor: UInt32);
+    external 'opengl32.dll' name 'glEndPerfMonitorAMD';
+    
+    static procedure GetPerfMonitorCounterDataAMD(monitor: UInt32; pname: UInt32; dataSize: Int32; data: ^UInt32; bytesWritten: ^Int32);
+    external 'opengl32.dll' name 'glGetPerfMonitorCounterDataAMD';
+    
+    {$endregion AMD}
+    
+  end;
+  
+  gl_Intel = static class
+    
+    {$region INTEL}
+    
     static procedure ApplyFramebufferAttachmentCMAAINTEL;
     external 'opengl32.dll' name 'glApplyFramebufferAttachmentCMAAINTEL';
     
@@ -15430,6 +15500,14 @@ type
     
     static procedure GetPerfQueryInfoINTEL(queryId: UInt32; queryNameLength: UInt32; queryName: ^SByte; dataSize: ^UInt32; noCounters: ^UInt32; noInstances: ^UInt32; capsMask: ^UInt32);
     external 'opengl32.dll' name 'glGetPerfQueryInfoINTEL';
+    
+    {$endregion INTEL}
+    
+  end;
+  
+  gl_NVidia = static class
+    
+    {$region NVIDIA}
     
     static procedure MultiDrawArraysIndirectBindlessNV(mode: UInt32; indirect: pointer; drawCount: Int32; stride: Int32; vertexBufferCount: Int32);
     external 'opengl32.dll' name 'glMultiDrawArraysIndirectBindlessNV';
@@ -16010,68 +16088,140 @@ type
     static procedure ViewportSwizzleNV(index: UInt32; swizzlex: UInt32; swizzley: UInt32; swizzlez: UInt32; swizzlew: UInt32);
     external 'opengl32.dll' name 'glViewportSwizzleNV';
     
-    static procedure FramebufferTextureMultiviewOVR(target: UInt32; attachment: UInt32; texture: UInt32; level: Int32; baseViewIndex: Int32; numViews: Int32);
-    external 'opengl32.dll' name 'glFramebufferTextureMultiviewOVR';
+    static procedure VertexAttribFormatNV(index: UInt32; size: Int32; &type: UInt32; normalized: boolean; stride: Int32);
+    external 'opengl32.dll' name 'glVertexAttribFormatNV';
     
-    static procedure AlphaFunc(func: UInt32; ref: single);
-    external 'opengl32.dll' name 'glAlphaFunc';
+    static procedure VertexAttribIFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
+    external 'opengl32.dll' name 'glVertexAttribIFormatNV';
     
-    static procedure &Begin(mode: UInt32);
+    static procedure VertexAttribLFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
+    external 'opengl32.dll' name 'glVertexAttribLFormatNV';
+    
+    static procedure VertexAttribL1i64NV(index: UInt32; x: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL1i64NV';
+    
+    static procedure VertexAttribL2i64NV(index: UInt32; x: Int64; y: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL2i64NV';
+    
+    static procedure VertexAttribL3i64NV(index: UInt32; x: Int64; y: Int64; z: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL3i64NV';
+    
+    static procedure VertexAttribL4i64NV(index: UInt32; x: Int64; y: Int64; z: Int64; w: Int64);
+    external 'opengl32.dll' name 'glVertexAttribL4i64NV';
+    
+    static procedure VertexAttribL1i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL1i64vNV';
+    
+    static procedure VertexAttribL2i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL2i64vNV';
+    
+    static procedure VertexAttribL3i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL3i64vNV';
+    
+    static procedure VertexAttribL4i64vNV(index: UInt32; v: ^Int64);
+    external 'opengl32.dll' name 'glVertexAttribL4i64vNV';
+    
+    static procedure VertexAttribL1ui64NV(index: UInt32; x: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64NV';
+    
+    static procedure VertexAttribL2ui64NV(index: UInt32; x: UInt64; y: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL2ui64NV';
+    
+    static procedure VertexAttribL3ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL3ui64NV';
+    
+    static procedure VertexAttribL4ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64; w: UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL4ui64NV';
+    
+    static procedure VertexAttribL1ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL1ui64vNV';
+    
+    static procedure VertexAttribL2ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL2ui64vNV';
+    
+    static procedure VertexAttribL3ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL3ui64vNV';
+    
+    static procedure VertexAttribL4ui64vNV(index: UInt32; v: ^UInt64);
+    external 'opengl32.dll' name 'glVertexAttribL4ui64vNV';
+    
+    {$endregion NVIDIA}
+    
+  end;
+  
+  gl_Deprecated = static class
+    
+    {$region Deprecated}
+    
+    {$region Old graphics}
+    
+    static procedure &Begin(mode: PrimitiveType);
     external 'opengl32.dll' name 'glBegin';
     
-    static procedure Bitmap(width: Int32; height: Int32; xorig: single; yorig: single; xmove: single; ymove: single; bitmap: ^Byte);
-    external 'opengl32.dll' name 'glBitmap';
+    static procedure &End;
+    external 'opengl32.dll' name 'glEnd';
+    static procedure _End; //ToDo #2041
+    external 'opengl32.dll' name 'glEnd';
     
-    static procedure CallLists(n: Int32; &type: UInt32; lists: pointer);
-    external 'opengl32.dll' name 'glCallLists';
+    //ToDo тут не все явно
     
-    static procedure ClientActiveTexture(texture: UInt32);
-    external 'opengl32.dll' name 'glClientActiveTexture';
+    {$region EdgeFlag[]}
     
-    static procedure Color4f(red: single; green: single; blue: single; alpha: single);
-    external 'opengl32.dll' name 'glColor4f';
+    {$endregion EdgeFlag[]}
     
-    static procedure Color4fv(v: ^single);
-    external 'opengl32.dll' name 'glColor4fv';
+    {$region Color[1,2,3,4][ub,f]}
     
     static procedure Color4ub(red: Byte; green: Byte; blue: Byte; alpha: Byte);
     external 'opengl32.dll' name 'glColor4ub';
     
-    static procedure ColorPointer(size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
-    external 'opengl32.dll' name 'glColorPointer';
+    static procedure Color4f(red: single; green: single; blue: single; alpha: single);
+    external 'opengl32.dll' name 'glColor4f';
     
-    static procedure ColorSubTableEXT(target: UInt32; start: Int32; count: Int32; format: UInt32; &type: UInt32; table: pointer);
-    external 'opengl32.dll' name 'glColorSubTableEXT';
+    {$endregion Color[1,2,3,4][ub,f]}
     
-    static procedure ColorTableEXT(target: UInt32; internalformat: UInt32; width: Int32; format: UInt32; &type: UInt32; table: pointer);
-    external 'opengl32.dll' name 'glColorTableEXT';
+    {$region Color[1,2,3,4][ub,f]v}
     
-    static procedure DisableClientState(&array: UInt32);
-    external 'opengl32.dll' name 'glDisableClientState';
+    static procedure Color4fv([MarshalAs(UnmanagedType.LPArray)] v: array of single);
+    external 'opengl32.dll' name 'glColor4fv';
+    static procedure Color4fv(var v: Vec4f);
+    external 'opengl32.dll' name 'glColor4fv';
+    static procedure Color4fv(var v: single);
+    external 'opengl32.dll' name 'glColor4fv';
+    static procedure Color4fv(v: pointer);
+    external 'opengl32.dll' name 'glColor4fv';
     
-    static procedure DrawPixels(width: Int32; height: Int32; format: UInt32; &type: UInt32; pixels: pointer);
-    external 'opengl32.dll' name 'glDrawPixels';
+    {$endregion Color[1,2,3,4][ub,f]v}
     
-    static procedure EnableClientState(&array: UInt32);
-    external 'opengl32.dll' name 'glEnableClientState';
+    {$region FogCoord[]}
     
-    static procedure &End;
-    external 'opengl32.dll' name 'glEnd';
+    {$endregion FogCoord[]}
     
-    static procedure EndList;
-    external 'opengl32.dll' name 'glEndList';
+    {$region Index[]}
+    
+    {$endregion Index[]}
+    
+    {$region Normal3[]}
+    
+    {$endregion Normal3[]}
+    
+    {$region SecondaryColor3[]}
+    
+    {$endregion SecondaryColor3[]}
+    
+    {$region TexCoord[]}
+    
+    {$endregion TexCoord[]}
+    
+    {$region Vertex[1,2,3,4][]}
+    
+    {$endregion Vertex[1,2,3,4][]}
+    
+    {$region Vertex[1,2,3,4][]v}
+    
+    {$endregion Vertex[1,2,3,4][]v}
     
     static procedure Frustumf(left: single; right: single; bottom: single; top: single; zNear: single; zFar: single);
     external 'opengl32.dll' name 'glFrustumf';
-    
-    static function GenLists(range: Int32): UInt32;
-    external 'opengl32.dll' name 'glGenLists';
-    
-    static procedure GetColorTableEXT(target: UInt32; format: UInt32; &type: UInt32; table: pointer);
-    external 'opengl32.dll' name 'glGetColorTableEXT';
-    
-    static procedure GetColorTableParameterivEXT(target: UInt32; pname: UInt32; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetColorTableParameterivEXT';
     
     static procedure GetLightfv(light: UInt32; pname: UInt32; &params: ^single);
     external 'opengl32.dll' name 'glGetLightfv';
@@ -16123,9 +16273,6 @@ type
     
     static procedure MultiTexCoord2fv(target: UInt32; v: ^single);
     external 'opengl32.dll' name 'glMultiTexCoord2fv';
-    
-    static procedure NewList(list: UInt32; mode: UInt32);
-    external 'opengl32.dll' name 'glNewList';
     
     static procedure Normal3f(nx: single; ny: single; nz: single);
     external 'opengl32.dll' name 'glNormal3f';
@@ -16187,81 +16334,62 @@ type
     static procedure VertexPointer(size: Int32; &type: UInt32; stride: Int32; _pointer: pointer);
     external 'opengl32.dll' name 'glVertexPointer';
     
-    {$endregion unsorted}
+    {$endregion Old graphics}
     
-    {$region странные расширения}{
+    {$region Lists}
     
-    static procedure VertexAttribFormatNV(index: UInt32; size: Int32; &type: UInt32; normalized: boolean; stride: Int32);
-    external 'opengl32.dll' name 'glVertexAttribFormatNV';
+    static function GenLists(range: Int32): UInt32; // : ListName; - напишите если очень надо добавить
+    external 'opengl32.dll' name 'glGenLists';
     
-    static procedure VertexAttribIFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
-    external 'opengl32.dll' name 'glVertexAttribIFormatNV';
+    // lists может быть нескольких разных типов массивов,
+    // надо многовато перегрузок, как для устаревшей функции
+    // если вам для чего то надо - напишите мне
+    // желательно, в issue
+    static procedure CallLists(n: Int32; &type: DataType; lists: pointer);
+    external 'opengl32.dll' name 'glCallLists';
     
-    static procedure VertexAttribLFormatNV(index: UInt32; size: Int32; &type: UInt32; stride: Int32);
-    external 'opengl32.dll' name 'glVertexAttribLFormatNV';
+    static procedure EndList;
+    external 'opengl32.dll' name 'glEndList';
     
-    static procedure VertexAttribL1i64NV(index: UInt32; x: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL1i64NV';
+    static procedure NewList(list: UInt32; mode: UInt32); // mode это энум который тут не описан, напишите если очень надо добавить
+    external 'opengl32.dll' name 'glNewList';
     
-    static procedure VertexAttribL2i64NV(index: UInt32; x: Int64; y: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL2i64NV';
+    {$endregion Lists}
     
-    static procedure VertexAttribL3i64NV(index: UInt32; x: Int64; y: Int64; z: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL3i64NV';
+    {$region Misc}
     
-    static procedure VertexAttribL4i64NV(index: UInt32; x: Int64; y: Int64; z: Int64; w: Int64);
-    external 'opengl32.dll' name 'glVertexAttribL4i64NV';
+    static procedure AlphaFunc(func: ActivationFunc; ref: single);
+    external 'opengl32.dll' name 'glAlphaFunc';
     
-    static procedure VertexAttribL1i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL1i64vNV';
+    static procedure Bitmap(width: Int32; height: Int32; xorig: single; yorig: single; xmove: single; ymove: single; [MarshalAs(UnmanagedType.LPArray)] bitmap: array of byte);
+    external 'opengl32.dll' name 'glBitmap';
+    static procedure Bitmap(width: Int32; height: Int32; xorig: single; yorig: single; xmove: single; ymove: single; bitmap: IntPtr);
+    external 'opengl32.dll' name 'glBitmap';
+    static procedure Bitmap(width: Int32; height: Int32; xorig: single; yorig: single; xmove: single; ymove: single; bitmap: pointer);
+    external 'opengl32.dll' name 'glBitmap';
     
-    static procedure VertexAttribL2i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL2i64vNV';
+    static procedure CopyPixels(x: Int32; y: Int32; width: Int32; height: Int32; &type: CopyableImageBuffer);
+    external 'opengl32.dll' name 'glCopyPixels';
     
-    static procedure VertexAttribL3i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL3i64vNV';
+    static procedure DrawPixels(width: Int32; height: Int32; format: DataFormat; &type: CopyableImageBuffer; pixels: pointer);
+    external 'opengl32.dll' name 'glDrawPixels';
     
-    static procedure VertexAttribL4i64vNV(index: UInt32; v: ^Int64);
-    external 'opengl32.dll' name 'glVertexAttribL4i64vNV';
+    static procedure ColorPointer(size: Int32; &type: DataType; stride: Int32; _pointer: pointer); // может быть надо другие перегрузки, напишите если очень надо добавить
+    external 'opengl32.dll' name 'glColorPointer';
     
-    static procedure VertexAttribL1ui64NV(index: UInt32; x: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64NV';
+    static procedure ClientActiveTexture(texture: TextureUnitId);
+    external 'opengl32.dll' name 'glClientActiveTexture';
     
-    static procedure VertexAttribL2ui64NV(index: UInt32; x: UInt64; y: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL2ui64NV';
+    static procedure DisableClientState(&array: UInt32); // array это энум который тут не описан, напишите если очень надо добавить
+    external 'opengl32.dll' name 'glDisableClientState';
     
-    static procedure VertexAttribL3ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL3ui64NV';
+    static procedure EnableClientState(&array: UInt32);
+    external 'opengl32.dll' name 'glEnableClientState';
     
-    static procedure VertexAttribL4ui64NV(index: UInt32; x: UInt64; y: UInt64; z: UInt64; w: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL4ui64NV';
+    {$endregion Misc}
     
-    static procedure VertexAttribL1ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64vNV';
-    
-    static procedure VertexAttribL2ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL2ui64vNV';
-    
-    static procedure VertexAttribL3ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL3ui64vNV';
-    
-    static procedure VertexAttribL4ui64vNV(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL4ui64vNV';
-    
-    static procedure VertexAttribDivisorARB(index: UInt32; divisor: UInt32);
-    external 'opengl32.dll' name 'glVertexAttribDivisorARB';
-    
-    static procedure GetVertexAttribLui64vARB(index: UInt32; pname: UInt32; &params: ^UInt64);
-    external 'opengl32.dll' name 'glGetVertexAttribLui64vARB';
-    
-    static procedure VertexAttribL1ui64ARB(index: UInt32; x: UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64ARB';
-    
-    static procedure VertexAttribL1ui64vARB(index: UInt32; v: ^UInt64);
-    external 'opengl32.dll' name 'glVertexAttribL1ui64vARB';
-    
-    }{$endregion странные расширения}
+    {$endregion Deprecated}
     
   end;
-
+  
 end.
