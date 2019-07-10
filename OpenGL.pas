@@ -11914,66 +11914,148 @@ type
     
     // 8.11.2
     
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: DepthStencilMode);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
     static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetTexParameteriv';
-    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: TextureCompareMode);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: ActivationFunc);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: SwizzleMode);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelWrapMode);
+    external 'opengl32.dll' name 'glGetTexParameteriv';
+    static procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTexParameteriv';
     
     static procedure GetTexParameterfv(target: TextureBindTarget; pname: TextureInfoType; var &params: single);
     external 'opengl32.dll' name 'glGetTexParameterfv';
-    static procedure GetTexParameterfv(target: TextureBindTarget; pname: TextureInfoType; &params: ^single);
+    static procedure GetTexParameterfv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTexParameterfv';
     
     static procedure GetTexParameterIiv(target: TextureBindTarget; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetTexParameterIiv';
-    static procedure GetTexParameterIiv(target: TextureBindTarget; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetTexParameterIiv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTexParameterIiv';
     
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: DepthStencilMode);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: TextureCompareMode);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: ActivationFunc);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: SwizzleMode);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelWrapMode);
+    external 'opengl32.dll' name 'glGetTexParameterIuiv';
     static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: UInt32);
     external 'opengl32.dll' name 'glGetTexParameterIuiv';
-    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; &params: ^UInt32);
+    static procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTexParameterIuiv';
     
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: DepthStencilMode);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
     static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetTextureParameteriv';
-    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: TextureCompareMode);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: ActivationFunc);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: SwizzleMode);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: PixelWrapMode);
+    external 'opengl32.dll' name 'glGetTextureParameteriv';
+    static procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTextureParameteriv';
     
     static procedure GetTextureParameterfv(texture: TextureName; pname: TextureInfoType; var &params: single);
     external 'opengl32.dll' name 'glGetTextureParameterfv';
-    static procedure GetTextureParameterfv(texture: TextureName; pname: TextureInfoType; &params: ^single);
+    static procedure GetTextureParameterfv(texture: TextureName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTextureParameterfv';
     
     static procedure GetTextureParameterIiv(texture: TextureName; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetTextureParameterIiv';
-    static procedure GetTextureParameterIiv(texture: TextureName; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetTextureParameterIiv(texture: TextureName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTextureParameterIiv';
     
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: DepthStencilMode);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: TextureCompareMode);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: ActivationFunc);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelMagFilterMode);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelMinFilterMode);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: SwizzleMode);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelWrapMode);
+    external 'opengl32.dll' name 'glGetTextureParameterIuiv';
     static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: UInt32);
     external 'opengl32.dll' name 'glGetTextureParameterIuiv';
-    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; &params: ^UInt32);
+    static procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTextureParameterIuiv';
     
     // 8.11.3
     
     static procedure GetTexLevelParameterfv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; var &params: single);
     external 'opengl32.dll' name 'glGetTexLevelParameterfv';
-    static procedure GetTexLevelParameterfv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; &params: ^single);
+    static procedure GetTexLevelParameterfv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetTexLevelParameterfv';
+    static procedure GetTexLevelParameterfv(target: TextureCubeSide; level: Int32; pname: TextureInfoType; var &params: single);
+    external 'opengl32.dll' name 'glGetTexLevelParameterfv';
+    static procedure GetTexLevelParameterfv(target: TextureCubeSide; level: Int32; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTexLevelParameterfv';
     
+    static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
     static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetTexLevelParameteriv';
-    static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; var &params: boolean);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; var &params: InternalDataFormat);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureBindTarget; level: Int32; pname: TextureInfoType; &params: pointer);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureCubeSide; level: Int32; pname: TextureInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureCubeSide; level: Int32; pname: TextureInfoType; var &params: Int32);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureCubeSide; level: Int32; pname: TextureInfoType; var &params: boolean);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureCubeSide; level: Int32; pname: TextureInfoType; var &params: InternalDataFormat);
+    external 'opengl32.dll' name 'glGetTexLevelParameteriv';
+    static procedure GetTexLevelParameteriv(target: TextureCubeSide; level: Int32; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTexLevelParameteriv';
     
     static procedure GetTextureLevelParameterfv(texture: TextureName; level: Int32; pname: TextureInfoType; var &params: single);
     external 'opengl32.dll' name 'glGetTextureLevelParameterfv';
-    static procedure GetTextureLevelParameterfv(texture: TextureName; level: Int32; pname: TextureInfoType; &params: ^single);
+    static procedure GetTextureLevelParameterfv(texture: TextureName; level: Int32; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTextureLevelParameterfv';
     
+    static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
     static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
-    static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; &params: ^Int32);
+    static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; var &params: boolean);
+    external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
+    static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; var &params: InternalDataFormat);
+    external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
+    static procedure GetTextureLevelParameteriv(texture: TextureName; level: Int32; pname: TextureInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetTextureLevelParameteriv';
     
     // 8.11.4
