@@ -76,7 +76,7 @@ begin
   
   
   
-  gl.LoadIdentity;
+  gl_Deprecated.LoadIdentity;
   gl.ClearColor(0.0, 0.0, 0.0, 1.0);
   
   
@@ -97,7 +97,8 @@ begin
     var hdc := InitOpenGL(f.Handle);
     
     var dy := -Sin(Pi/6) / 2;
-    var pts := 0.0.Step(Pi*2/3).Take(3).Select(rot->(Sin(rot), Cos(rot)+dy)).ToArray;
+//    var pts := real(0.0).Step(Pi*2/3).Take(3).Select(rot->(Sin(rot), Cos(rot)+dy)).ToArray; //ToDo #2042
+    var pts := Range(0,2).Select(i->i* Pi*2/3 ).Select(rot->(Sin(rot), Cos(rot)+dy)).ToArray;
     var frame_rot := 0.0;
     
     System.Threading.Thread.Create(()->
@@ -109,11 +110,11 @@ begin
         gl.Clear(BufferTypeFlags.COLOR_BUFFER_BIT);
         var rot_k := Cos(frame_rot);
         
-        gl.Begin(4);
-        gl.Color4f(1,0,0,1); gl.Vertex2f( pts[0][0]*rot_k, pts[0][1] );
-        gl.Color4f(0,1,0,1); gl.Vertex2f( pts[1][0]*rot_k, pts[1][1] );
-        gl.Color4f(0,0,1,1); gl.Vertex2f( pts[2][0]*rot_k, pts[2][1] );
-        gl.&End;
+        gl_Deprecated.Begin(PrimitiveType.TRIANGLES);
+        gl_Deprecated.Color4f(1,0,0,1); gl_Deprecated.Vertex2f( pts[0][0]*rot_k, pts[0][1] );
+        gl_Deprecated.Color4f(0,1,0,1); gl_Deprecated.Vertex2f( pts[1][0]*rot_k, pts[1][1] );
+        gl_Deprecated.Color4f(0,0,1,1); gl_Deprecated.Vertex2f( pts[2][0]*rot_k, pts[2][1] );
+        gl_Deprecated._End;
         
         frame_rot += 0.03;
         gl.Finish;
