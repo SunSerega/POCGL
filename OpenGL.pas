@@ -33,10 +33,6 @@ unit OpenGL;
 
 //ToDo Возможно *Name -ам сделать отдельные типы?
 
-//ToDo ^T -> pointer
-// - и сразу проверить где можно nil передать
-// - и в OpenCL тоже...
-
 //ToDo проверить получение указателя на строчку матрицы
 
 //ToDo проверить передачу external функции вместо лямбды
@@ -9877,7 +9873,7 @@ type
     external 'opengl32.dll' name 'glGetSynciv';
     static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; var length: Int32; var values: Int32);
     external 'opengl32.dll' name 'glGetSynciv';
-    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; length: ^Int32; values: pointer);
+    static procedure GetSynciv(sync: GLsync; pname: SyncObjInfoType; bufSize: Int32; length: pointer; values: pointer);
     external 'opengl32.dll' name 'glGetSynciv';
     
     static function IsSync(sync: GLsync): boolean;
@@ -10269,15 +10265,31 @@ type
     
     static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of IntFloatUnion);
     external 'opengl32.dll' name 'glSpecializeShader';
-    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^IntFloatUnion);
+    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of Int32);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of single);
     external 'opengl32.dll' name 'glSpecializeShader';
     static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; var pConstantIndex: UInt32; var pConstantValue: IntFloatUnion);
     external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; var pConstantIndex: UInt32; var pConstantValue: Int32);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; var pConstantIndex: UInt32; var pConstantValue: single);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; [MarshalAs(UnmanagedType.LPStr)] pEntryPoint: string; numSpecializationConstants: UInt32; pConstantIndex: pointer; pConstantValue: pointer);
+    external 'opengl32.dll' name 'glSpecializeShader';
     static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of IntFloatUnion);
     external 'opengl32.dll' name 'glSpecializeShader';
-    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: ^UInt32; pConstantValue: ^IntFloatUnion);
+    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of Int32);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantIndex: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] pConstantValue: array of single);
     external 'opengl32.dll' name 'glSpecializeShader';
     static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; var pConstantIndex: UInt32; var pConstantValue: IntFloatUnion);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; var pConstantIndex: UInt32; var pConstantValue: Int32);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; var pConstantIndex: UInt32; var pConstantValue: single);
+    external 'opengl32.dll' name 'glSpecializeShader';
+    static procedure SpecializeShader(shader: ShaderName; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: pointer; pConstantValue: pointer);
     external 'opengl32.dll' name 'glSpecializeShader';
     
     {$endregion 7.2 - Shader Binaries}
@@ -13215,10 +13227,6 @@ type
     external 'opengl32.dll' name 'glMultiDrawElements';
     static procedure MultiDrawElements(mode: PrimitiveType; var count: Int32; &type: DataType; var indices: pointer; drawcount: Int32);
     external 'opengl32.dll' name 'glMultiDrawElements';
-    static procedure MultiDrawElements(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^IntPtr; drawcount: Int32);
-    external 'opengl32.dll' name 'glMultiDrawElements';
-    static procedure MultiDrawElements(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^pointer; drawcount: Int32);
-    external 'opengl32.dll' name 'glMultiDrawElements';
     static procedure MultiDrawElements(mode: PrimitiveType; count: pointer; &type: DataType; indices: pointer; drawcount: Int32);
     external 'opengl32.dll' name 'glMultiDrawElements';
     
@@ -13330,10 +13338,6 @@ type
     external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
     static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; var count: Int32; &type: DataType; var indices: pointer; drawcount: Int32; var basevertex: Int32);
     external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
-    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^IntPtr; drawcount: Int32; basevertex: ^Int32);
-    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
-    static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; count: ^Int32; &type: DataType; indices: ^pointer; drawcount: Int32; basevertex: ^Int32);
-    external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
     static procedure MultiDrawElementsBaseVertex(mode: PrimitiveType; count: pointer; &type: DataType; indices: pointer; drawcount: Int32; basevertex: pointer);
     external 'opengl32.dll' name 'glMultiDrawElementsBaseVertex';
     
@@ -13404,7 +13408,7 @@ type
     external 'opengl32.dll' name 'glGetVertexAttribPointerv';
     static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; var _pointer: pointer);
     external 'opengl32.dll' name 'glGetVertexAttribPointerv';
-    static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; _pointer: ^pointer);
+    static procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; _pointer: ^IntPtr);
     external 'opengl32.dll' name 'glGetVertexAttribPointerv';
     
     {$endregion 10.5 - Vertex Array and Vertex Array Object Queries}
@@ -13440,13 +13444,13 @@ type
     external 'opengl32.dll' name 'glGetActiveAttrib';
     static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; &type: pointer; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveAttrib';
-    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; var &type: ProgramVarType; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; var &type: ProgramVarType; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveAttrib';
-    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; var &type: ProgramVarType; name: IntPtr);
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; var &type: ProgramVarType; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveAttrib';
-    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetActiveAttrib';
-    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; name: IntPtr);
+    static procedure GetActiveAttrib(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; &type: pointer; name: IntPtr);
     external 'opengl32.dll' name 'glGetActiveAttrib';
     
     static function GetAttribLocation(&program: ProgramName; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
@@ -13471,9 +13475,9 @@ type
     external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
     static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; var &type: ProgramVarType; name: IntPtr);
     external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
-    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
-    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: ^Int32; size: ^Int32; &type: pointer; name: IntPtr);
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; &type: pointer; name: IntPtr);
     external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
     
     //11.1.3
@@ -14134,18 +14138,18 @@ type
     external 'opengl32.dll' name 'glGetObjectLabel';
     static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; var length: Int32; &label: IntPtr);
     external 'opengl32.dll' name 'glGetObjectLabel';
-    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; length: pointer; [MarshalAs(UnmanagedType.LPStr)] &label: string);
     external 'opengl32.dll' name 'glGetObjectLabel';
-    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; length: ^Int32; &label: IntPtr);
+    static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; length: pointer; &label: IntPtr);
     external 'opengl32.dll' name 'glGetObjectLabel';
     
     static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
     external 'opengl32.dll' name 'glGetObjectPtrLabel';
     static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; var length: Int32; &label: IntPtr);
     external 'opengl32.dll' name 'glGetObjectPtrLabel';
-    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);
+    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: pointer; [MarshalAs(UnmanagedType.LPStr)] &label: string);
     external 'opengl32.dll' name 'glGetObjectPtrLabel';
-    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: ^Int32; &label: IntPtr);
+    static procedure GetObjectPtrLabel(ptr: pointer; bufSize: Int32; length: pointer; &label: IntPtr);
     external 'opengl32.dll' name 'glGetObjectPtrLabel';
     
     {$endregion 20.9 - Debug Output Queries}
@@ -14255,7 +14259,9 @@ type
     external 'opengl32.dll' name 'glGetPointerv';
     static procedure GetPointerv(pname: GLGetQueries; var &params: IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
-    static procedure GetPointerv(pname: GLGetQueries; &params: ^pointer);
+    static procedure GetPointerv(pname: GLGetQueries; var &params: pointer);
+    external 'opengl32.dll' name 'glGetPointerv';
+    static procedure GetPointerv(pname: GLGetQueries; &params: ^IntPtr);
     external 'opengl32.dll' name 'glGetPointerv';
     
     static function GetString(name: GLGetStringQueries): string; //ToDo #2029
