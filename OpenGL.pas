@@ -12238,10 +12238,14 @@ type
     
     static procedure GetFramebufferParameteriv(target: FramebufferBindTarget; pname: FramebufferInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetFramebufferParameteriv';
+    static procedure GetFramebufferParameteriv(target: FramebufferBindTarget; pname: FramebufferInfoType; var &params: boolean);
+    external 'opengl32.dll' name 'glGetFramebufferParameteriv';
     static procedure GetFramebufferParameteriv(target: FramebufferBindTarget; pname: FramebufferInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetFramebufferParameteriv';
     
     static procedure GetNamedFramebufferParameteriv(framebuffer: FramebufferName; pname: FramebufferInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glGetNamedFramebufferParameteriv';
+    static procedure GetNamedFramebufferParameteriv(framebuffer: FramebufferName; pname: FramebufferInfoType; var param: boolean);
     external 'opengl32.dll' name 'glGetNamedFramebufferParameteriv';
     static procedure GetNamedFramebufferParameteriv(framebuffer: FramebufferName; pname: FramebufferInfoType; param: pointer);
     external 'opengl32.dll' name 'glGetNamedFramebufferParameteriv';
