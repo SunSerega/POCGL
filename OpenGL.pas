@@ -98,16 +98,22 @@ type
   ErrorCode = record
     public val: UInt32;
     
-    public const NO_ERROR =                                0;
-    public const FRAMEBUFFER_COMPLETE =                    $8CD5;
+    public const NO_ERROR =                                 0;
+    public const FRAMEBUFFER_COMPLETE =                     $8CD5;
     
-    public const INVALID_ENUM =                            $0500;
-    public const INVALID_VALUE =                           $0501;
-    public const INVALID_OPERATION =                       $0502;
-    public const STACK_OVERFLOW =                          $0503;
-    public const STACK_UNDERFLOW =                         $0504;
-    public const OUT_OF_MEMORY =                           $0505;
-    public const INVALID_FRAMEBUFFER_OPERATION =           $0506;
+    public const INVALID_ENUM =                             $0500;
+    public const INVALID_VALUE =                            $0501;
+    public const INVALID_OPERATION =                        $0502;
+    public const STACK_OVERFLOW =                           $0503;
+    public const STACK_UNDERFLOW =                          $0504;
+    public const OUT_OF_MEMORY =                            $0505;
+    public const INVALID_FRAMEBUFFER_OPERATION =            $0506;
+    
+    public const GUILTY_CONTEXT_RESET =                     $8253;
+    public const INNOCENT_CONTEXT_RESET =                   $8254;
+    public const UNKNOWN_CONTEXT_RESET =                    $8255;
+    
+    
     
     public function ToString: string; override;
     begin
@@ -294,6 +300,27 @@ type
   end;
   
   {$endregion ...InfoType}
+  
+  //S
+  CopyableImageBuffer = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property COLOR:   CopyableImageBuffer read new CopyableImageBuffer($1800);
+    public static property DEPTH:   CopyableImageBuffer read new CopyableImageBuffer($1801);
+    public static property STENCIL: CopyableImageBuffer read new CopyableImageBuffer($1802);
+    
+  end;
+  
+  //S
+  VertexProvokingMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FIRST_VERTEX_CONVENTION: VertexProvokingMode read new VertexProvokingMode($8E4D);
+    public static property LAST_VERTEX_CONVENTION:  VertexProvokingMode read new VertexProvokingMode($8E4E);
+    
+  end;
   
   //S
   SwizzleMode = record
