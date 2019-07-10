@@ -18019,7 +18019,7 @@ type
     static procedure GetProgramEnvParameterIivNV(target: ErrorCode; index: UInt32; &params: ^Int32);
     external 'opengl32.dll' name 'glGetProgramEnvParameterIivNV';
     
-    static procedure GetProgramEnvParterIuivNV(target: ErrorCode; index: UInt32; &params: ^UInt32);
+    static procedure GetProgramEnvParameterIuivNV(target: ErrorCode; index: UInt32; &params: ^UInt32);
     external 'opengl32.dll' name 'glGetProgramEnvParameterIuivNV';
     
     static procedure ProgramSubroutineParametersuivNV(target: ErrorCode; count: Int32; &params: ^UInt32);

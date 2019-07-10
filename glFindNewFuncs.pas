@@ -144,8 +144,12 @@ begin
       
     end;
     
-    System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
-    System.Console.Beep(5000,1000);
+    if res.Length<>0 then
+    begin
+      System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
+      System.Console.Beep(5000,1000);
+    end else
+      System.Console.Beep(3000,1000);
     
   except
     on e: Exception do
