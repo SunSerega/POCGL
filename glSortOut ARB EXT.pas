@@ -38,7 +38,7 @@ begin
     
     foreach var f in fncs.ToArray do
       foreach var t in table do
-        if f.Contains(t.Key) then
+        if f.Contains(t.Key+'(') then
         begin
           groups[t.Value] += f;
           fncs -= f;

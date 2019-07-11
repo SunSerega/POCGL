@@ -14546,9 +14546,6 @@ type
     static procedure MaxShaderCompilerThreadsARB(count: UInt32);
     external 'opengl32.dll' name 'glMaxShaderCompilerThreadsARB';
     
-    static function GetGraphicsResetStatusARB: UInt32;
-    external 'opengl32.dll' name 'glGetGraphicsResetStatusARB';
-    
     static procedure GetnTexImageARB(target: UInt32; level: Int32; format: UInt32; &type: UInt32; bufSize: Int32; img: pointer);
     external 'opengl32.dll' name 'glGetnTexImageARB';
     
@@ -20097,219 +20094,6 @@ type
     
     {$region SGI}
     
-    static procedure DetailTexFuncSGIS(target: ErrorCode; n: Int32; points: ^single);
-    external 'opengl32.dll' name 'glDetailTexFuncSGIS';
-    
-    static procedure GetDetailTexFuncSGIS(target: ErrorCode; points: ^single);
-    external 'opengl32.dll' name 'glGetDetailTexFuncSGIS';
-    
-    static procedure FogFuncSGIS(n: Int32; points: ^single);
-    external 'opengl32.dll' name 'glFogFuncSGIS';
-    
-    static procedure GetFogFuncSGIS(points: ^single);
-    external 'opengl32.dll' name 'glGetFogFuncSGIS';
-    
-    static procedure SampleMaskSGIS(value: single; invert: Byte);
-    external 'opengl32.dll' name 'glSampleMaskSGIS';
-    
-    static procedure SamplePatternSGIS(pattern: ErrorCode);
-    external 'opengl32.dll' name 'glSamplePatternSGIS';
-    
-    static procedure PixelTexGenParameteriSGIS(pname: ErrorCode; param: Int32);
-    external 'opengl32.dll' name 'glPixelTexGenParameteriSGIS';
-    
-    static procedure PixelTexGenParameterivSGIS(pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glPixelTexGenParameterivSGIS';
-    
-    static procedure PixelTexGenParameterfSGIS(pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glPixelTexGenParameterfSGIS';
-    
-    static procedure PixelTexGenParameterfvSGIS(pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glPixelTexGenParameterfvSGIS';
-    
-    static procedure GetPixelTexGenParameterivSGIS(pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetPixelTexGenParameterivSGIS';
-    
-    static procedure GetPixelTexGenParameterfvSGIS(pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glGetPixelTexGenParameterfvSGIS';
-    
-    static procedure PointParameterfSGIS(pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glPointParameterfSGIS';
-    
-    static procedure PointParameterfvSGIS(pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glPointParameterfvSGIS';
-    
-    static procedure SharpenTexFuncSGIS(target: ErrorCode; n: Int32; points: ^single);
-    external 'opengl32.dll' name 'glSharpenTexFuncSGIS';
-    
-    static procedure GetSharpenTexFuncSGIS(target: ErrorCode; points: ^single);
-    external 'opengl32.dll' name 'glGetSharpenTexFuncSGIS';
-    
-    static procedure TexImage4DSGIS(target: ErrorCode; level: Int32; internalformat: ErrorCode; width: Int32; height: Int32; depth: Int32; size4d: Int32; border: Int32; format: ErrorCode; &type: ErrorCode; pixels: pointer);
-    external 'opengl32.dll' name 'glTexImage4DSGIS';
-    
-    static procedure TexSubImage4DSGIS(target: ErrorCode; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; woffset: Int32; width: Int32; height: Int32; depth: Int32; size4d: Int32; format: ErrorCode; &type: ErrorCode; pixels: pointer);
-    external 'opengl32.dll' name 'glTexSubImage4DSGIS';
-    
-    static procedure TextureColorMaskSGIS(red: Byte; green: Byte; blue: Byte; alpha: Byte);
-    external 'opengl32.dll' name 'glTextureColorMaskSGIS';
-    
-    static procedure GetTexFilterFuncSGIS(target: ErrorCode; filter: ErrorCode; weights: ^single);
-    external 'opengl32.dll' name 'glGetTexFilterFuncSGIS';
-    
-    static procedure TexFilterFuncSGIS(target: ErrorCode; filter: ErrorCode; n: Int32; weights: ^single);
-    external 'opengl32.dll' name 'glTexFilterFuncSGIS';
-    
-    static procedure AsyncMarkerSGIX(marker: UInt32);
-    external 'opengl32.dll' name 'glAsyncMarkerSGIX';
-    
-    static function FinishAsyncSGIX(markerp: ^UInt32): Int32;
-    external 'opengl32.dll' name 'glFinishAsyncSGIX';
-    
-    static function PollAsyncSGIX(markerp: ^UInt32): Int32;
-    external 'opengl32.dll' name 'glPollAsyncSGIX';
-    
-    static function GenAsyncMarkersSGIX(range: Int32): UInt32;
-    external 'opengl32.dll' name 'glGenAsyncMarkersSGIX';
-    
-    static procedure DeleteAsyncMarkersSGIX(marker: UInt32; range: Int32);
-    external 'opengl32.dll' name 'glDeleteAsyncMarkersSGIX';
-    
-    static function IsAsyncMarkerSGIX(marker: UInt32): Byte;
-    external 'opengl32.dll' name 'glIsAsyncMarkerSGIX';
-    
-    static procedure FlushRasterSGIX;
-    external 'opengl32.dll' name 'glFlushRasterSGIX';
-    
-    static procedure FragmentColorMaterialSGIX(face: ErrorCode; mode: ErrorCode);
-    external 'opengl32.dll' name 'glFragmentColorMaterialSGIX';
-    
-    static procedure FragmentLightfSGIX(light: ErrorCode; pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glFragmentLightfSGIX';
-    
-    static procedure FragmentLightfvSGIX(light: ErrorCode; pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glFragmentLightfvSGIX';
-    
-    static procedure FragmentLightiSGIX(light: ErrorCode; pname: ErrorCode; param: Int32);
-    external 'opengl32.dll' name 'glFragmentLightiSGIX';
-    
-    static procedure FragmentLightivSGIX(light: ErrorCode; pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glFragmentLightivSGIX';
-    
-    static procedure FragmentLightModelfSGIX(pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glFragmentLightModelfSGIX';
-    
-    static procedure FragmentLightModelfvSGIX(pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glFragmentLightModelfvSGIX';
-    
-    static procedure FragmentLightModeliSGIX(pname: ErrorCode; param: Int32);
-    external 'opengl32.dll' name 'glFragmentLightModeliSGIX';
-    
-    static procedure FragmentLightModelivSGIX(pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glFragmentLightModelivSGIX';
-    
-    static procedure FragmentMaterialfSGIX(face: ErrorCode; pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glFragmentMaterialfSGIX';
-    
-    static procedure FragmentMaterialfvSGIX(face: ErrorCode; pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glFragmentMaterialfvSGIX';
-    
-    static procedure FragmentMaterialiSGIX(face: ErrorCode; pname: ErrorCode; param: Int32);
-    external 'opengl32.dll' name 'glFragmentMaterialiSGIX';
-    
-    static procedure FragmentMaterialivSGIX(face: ErrorCode; pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glFragmentMaterialivSGIX';
-    
-    static procedure GetFragmentLightfvSGIX(light: ErrorCode; pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glGetFragmentLightfvSGIX';
-    
-    static procedure GetFragmentLightivSGIX(light: ErrorCode; pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetFragmentLightivSGIX';
-    
-    static procedure GetFragmentMaterialfvSGIX(face: ErrorCode; pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glGetFragmentMaterialfvSGIX';
-    
-    static procedure GetFragmentMaterialivSGIX(face: ErrorCode; pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetFragmentMaterialivSGIX';
-    
-    static procedure LightEnviSGIX(pname: ErrorCode; param: Int32);
-    external 'opengl32.dll' name 'glLightEnviSGIX';
-    
-    static procedure FrameZoomSGIX(factor: Int32);
-    external 'opengl32.dll' name 'glFrameZoomSGIX';
-    
-    static procedure IglooInterfaceSGIX(pname: ErrorCode; &params: pointer);
-    external 'opengl32.dll' name 'glIglooInterfaceSGIX';
-    
-    static function GetInstrumentsSGIX: Int32;
-    external 'opengl32.dll' name 'glGetInstrumentsSGIX';
-    
-    static procedure InstrumentsBufferSGIX(size: Int32; buffer: ^Int32);
-    external 'opengl32.dll' name 'glInstrumentsBufferSGIX';
-    
-    static function PollInstrumentsSGIX(marker_p: ^Int32): Int32;
-    external 'opengl32.dll' name 'glPollInstrumentsSGIX';
-    
-    static procedure ReadInstrumentsSGIX(marker: Int32);
-    external 'opengl32.dll' name 'glReadInstrumentsSGIX';
-    
-    static procedure StartInstrumentsSGIX;
-    external 'opengl32.dll' name 'glStartInstrumentsSGIX';
-    
-    static procedure StopInstrumentsSGIX(marker: Int32);
-    external 'opengl32.dll' name 'glStopInstrumentsSGIX';
-    
-    static procedure GetListParameterfvSGIX(list: UInt32; pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glGetListParameterfvSGIX';
-    
-    static procedure GetListParameterivSGIX(list: UInt32; pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glGetListParameterivSGIX';
-    
-    static procedure ListParameterfSGIX(list: UInt32; pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glListParameterfSGIX';
-    
-    static procedure ListParameterfvSGIX(list: UInt32; pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glListParameterfvSGIX';
-    
-    static procedure ListParameteriSGIX(list: UInt32; pname: ErrorCode; param: Int32);
-    external 'opengl32.dll' name 'glListParameteriSGIX';
-    
-    static procedure ListParameterivSGIX(list: UInt32; pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glListParameterivSGIX';
-    
-    static procedure PixelTexGenSGIX(mode: ErrorCode);
-    external 'opengl32.dll' name 'glPixelTexGenSGIX';
-    
-    static procedure DeformationMap3dSGIX(target: ErrorCode; u1: double; u2: double; ustride: Int32; uorder: Int32; v1: double; v2: double; vstride: Int32; vorder: Int32; w1: double; w2: double; wstride: Int32; worder: Int32; points: ^double);
-    external 'opengl32.dll' name 'glDeformationMap3dSGIX';
-    
-    static procedure DeformationMap3fSGIX(target: ErrorCode; u1: single; u2: single; ustride: Int32; uorder: Int32; v1: single; v2: single; vstride: Int32; vorder: Int32; w1: single; w2: single; wstride: Int32; worder: Int32; points: ^single);
-    external 'opengl32.dll' name 'glDeformationMap3fSGIX';
-    
-    static procedure DeformSGIX(mask: UInt32);
-    external 'opengl32.dll' name 'glDeformSGIX';
-    
-    static procedure LoadIdentityDeformationMapSGIX(mask: UInt32);
-    external 'opengl32.dll' name 'glLoadIdentityDeformationMapSGIX';
-    
-    static procedure ReferencePlaneSGIX(equation: ^double);
-    external 'opengl32.dll' name 'glReferencePlaneSGIX';
-    
-    static procedure SpriteParameterfSGIX(pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glSpriteParameterfSGIX';
-    
-    static procedure SpriteParameterfvSGIX(pname: ErrorCode; &params: ^single);
-    external 'opengl32.dll' name 'glSpriteParameterfvSGIX';
-    
-    static procedure SpriteParameteriSGIX(pname: ErrorCode; param: Int32);
-    external 'opengl32.dll' name 'glSpriteParameteriSGIX';
-    
-    static procedure SpriteParameterivSGIX(pname: ErrorCode; &params: ^Int32);
-    external 'opengl32.dll' name 'glSpriteParameterivSGIX';
-    
-    static procedure TagSampleBufferSGIX;
-    external 'opengl32.dll' name 'glTagSampleBufferSGIX';
-    
     static procedure ColorTableSGI(target: ErrorCode; internalformat: ErrorCode; width: Int32; format: ErrorCode; &type: ErrorCode; table: pointer);
     external 'opengl32.dll' name 'glColorTableSGI';
     
@@ -21022,19 +20806,19 @@ type
     static procedure TbufferMask3DFX(mask: UInt32);
     external 'opengl32.dll' name 'glTbufferMask3DFX';
     
-    static procedure AlphaFuncx(func: ErrorCode; ref: GLclampx);
+    static procedure AlphaFuncx(func: ErrorCode; ref: Int32);
     external 'opengl32.dll' name 'glAlphaFuncx';
     
-    static procedure ClearColorx(red: GLclampx; green: GLclampx; blue: GLclampx; alpha: GLclampx);
+    static procedure ClearColorx(red: Int32; green: Int32; blue: Int32; alpha: Int32);
     external 'opengl32.dll' name 'glClearColorx';
     
-    static procedure ClearDepthx(depth: GLclampx);
+    static procedure ClearDepthx(depth: Int32);
     external 'opengl32.dll' name 'glClearDepthx';
     
     static procedure Color4x(red: fixed; green: fixed; blue: fixed; alpha: fixed);
     external 'opengl32.dll' name 'glColor4x';
     
-    static procedure DepthRangex(zNear: GLclampx; zFar: GLclampx);
+    static procedure DepthRangex(zNear: Int32; zFar: Int32);
     external 'opengl32.dll' name 'glDepthRangex';
     
     static procedure Fogf(pname: ErrorCode; param: single);
@@ -21103,7 +20887,7 @@ type
     static procedure Rotatex(angle: fixed; x: fixed; y: fixed; z: fixed);
     external 'opengl32.dll' name 'glRotatex';
     
-    static procedure SampleCoveragex(value: GLclampx; invert: Byte);
+    static procedure SampleCoveragex(value: Int32; invert: Byte);
     external 'opengl32.dll' name 'glSampleCoveragex';
     
     static procedure Scalex(x: fixed; y: fixed; z: fixed);
@@ -21123,9 +20907,6 @@ type
     
     static procedure Translatex(x: fixed; y: fixed; z: fixed);
     external 'opengl32.dll' name 'glTranslatex';
-    
-    static procedure LightModelf(pname: ErrorCode; param: single);
-    external 'opengl32.dll' name 'glLightModelf';
     
     {$endregion unsorted}
     

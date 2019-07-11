@@ -113,6 +113,7 @@ begin
     
     'glint':          s := 'Int32';
     'glsizei':        s := 'Int32';
+    'glclampx':       s := 'Int32'; //ToDo размер тот же, но по названию - применение нет
     'gluint':         s := 'UInt32';
     'glbitfield':     s := 'UInt32';
     
