@@ -99,7 +99,8 @@ const
 //  GLpas = 'Temp.pas';
   GLpas = 'OpenGL.pas';
 //  HeadersFolder = 'D:\0\Temp';
-  HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\GL .h';
+//  HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\GL .h';
+  HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\OpenGL-Registry';
   
 begin
   try
@@ -149,7 +150,10 @@ begin
       System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
       System.Console.Beep(5000,1000);
     end else
+    begin
+      System.Windows.Forms.Clipboard.Clear;
       System.Console.Beep(3000,1000);
+    end;
     
   except
     on e: Exception do
