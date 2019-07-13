@@ -41,8 +41,6 @@ unit OpenGL;
 // - тупо пройтись по всем энумам, посмотреть де они заюзаны
 // - там куча всего сразу проверится
 
-//ToDo найти полный список кодов ошибок
-
 //ToDo issue компилятора:
 // - #2029
 
@@ -114,10 +112,14 @@ type
     public const STACK_UNDERFLOW =                          $0504;
     public const OUT_OF_MEMORY =                            $0505;
     public const INVALID_FRAMEBUFFER_OPERATION =            $0506;
+    public const CONTEXT_LOST =                             $0507;
     
     public const GUILTY_CONTEXT_RESET =                     $8253;
     public const INNOCENT_CONTEXT_RESET =                   $8254;
     public const UNKNOWN_CONTEXT_RESET =                    $8255;
+    
+    ///Устарело, в 3.1 уже не существует
+    public const TABLE_TOO_LARGE =                          $8031;
     
     
     
