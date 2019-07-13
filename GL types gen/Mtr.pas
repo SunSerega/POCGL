@@ -9,7 +9,7 @@ function gl_to_pas_t(self: string): string; extensionmethod;
 begin
   case self of
     ''+'f':     Result := 'single';
-    ''+'d':     Result := 'real';
+    ''+'d':     Result := 'double';
   end;
 end;
 
@@ -34,6 +34,8 @@ function GetMltResT(self: (t_descr,t_descr)): t_descr; extensionmethod :=
 function GetTransposedT(self: t_descr): t_descr; extensionmethod :=
 ((self[0][1], self[0][0]), self[1], self[2]);
 
+
+
 procedure AddMtrType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
 begin
   res += $'  '+#10;
@@ -41,10 +43,10 @@ begin
   
   
   
-  for var y := 0 to t[0][0]-1 do
+  for var y := 0 to t[0][1]-1 do
   begin
     res += $'    public ';
-    res += Range(0, t[0][1]-1).Select(x->$'val{y}{x}').JoinIntoString(', ');
+    res += Range(0, t[0][0]-1).Select(x->$'val{x}{y}').JoinIntoString(', ');
     res += $': {t[2]};' + #10;
   end;
   
@@ -53,9 +55,9 @@ begin
   res += $'    '+#10;
   res += $'    public constructor(';
   res +=
-    Range(0,t[0][0]-1)
-    .Cartesian(Range(0,t[0][1]-1))
-    .Select(pos->$'val{pos[0]}{pos[1]}')
+    Range(0,t[0][1]-1)
+    .Cartesian(Range(0,t[0][0]-1))
+    .Select(pos->$'val{pos[1]}{pos[0]}')
     .JoinIntoString(', ');
   res += $': {t[2]});'+#10;
   
@@ -278,6 +280,8 @@ begin
   res += ');'#10;
   
 end;
+
+
 
 begin
   try

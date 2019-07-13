@@ -28,6 +28,10 @@ unit OpenGL;
 // - это может бить по производительности, потому что тут матрицы хранятся строками
 // - разобраться - может там снова эта путаница и на самом деле в шейдере можно выбирать как хранится матрица
 // - возможно придётся вывернуть все матрицы наизнанку... или добавить ещё типов матриц
+//
+// - ОБНОВЛЕНИЕ:
+// - таки сделал пока что по столбцам, потому что увидел у 1 C++ библиотеки так
+// - но всё же надо нормально разобраться самому
 
 //ToDo в самом конце - сделать прогу чтоб посмотреть какие константы по 2 раза, а каких вообще нет
 
@@ -5900,10 +5904,10 @@ type
   {$region Mtr}
   
   Mtr2x2f = record
-    public val00, val01: single;
-    public val10, val11: single;
+    public val00, val10: single;
+    public val01, val11: single;
     
-    public constructor(val00, val01, val10, val11: single);
+    public constructor(val00, val10, val01, val11: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -5980,11 +5984,11 @@ type
   Mtr2f = Mtr2x2f;
   
   Mtr3x3f = record
-    public val00, val01, val02: single;
-    public val10, val11, val12: single;
-    public val20, val21, val22: single;
+    public val00, val10, val20: single;
+    public val01, val11, val21: single;
+    public val02, val12, val22: single;
     
-    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: single);
+    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6092,12 +6096,12 @@ type
   Mtr3f = Mtr3x3f;
   
   Mtr4x4f = record
-    public val00, val01, val02, val03: single;
-    public val10, val11, val12, val13: single;
-    public val20, val21, val22, val23: single;
-    public val30, val31, val32, val33: single;
+    public val00, val10, val20, val30: single;
+    public val01, val11, val21, val31: single;
+    public val02, val12, val22, val32: single;
+    public val03, val13, val23, val33: single;
     
-    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: single);
+    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32, val03, val13, val23, val33: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6242,10 +6246,11 @@ type
   Mtr4f = Mtr4x4f;
   
   Mtr2x3f = record
-    public val00, val01, val02: single;
-    public val10, val11, val12: single;
+    public val00, val10: single;
+    public val01, val11: single;
+    public val02, val12: single;
     
-    public constructor(val00, val01, val02, val10, val11, val12: single);
+    public constructor(val00, val10, val01, val11, val02, val12: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6338,11 +6343,10 @@ type
   end;
   
   Mtr3x2f = record
-    public val00, val01: single;
-    public val10, val11: single;
-    public val20, val21: single;
+    public val00, val10, val20: single;
+    public val01, val11, val21: single;
     
-    public constructor(val00, val01, val10, val11, val20, val21: single);
+    public constructor(val00, val10, val20, val01, val11, val21: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6447,10 +6451,12 @@ type
   end;
   
   Mtr2x4f = record
-    public val00, val01, val02, val03: single;
-    public val10, val11, val12, val13: single;
+    public val00, val10: single;
+    public val01, val11: single;
+    public val02, val12: single;
+    public val03, val13: single;
     
-    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: single);
+    public constructor(val00, val10, val01, val11, val02, val12, val03, val13: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6557,12 +6563,10 @@ type
   end;
   
   Mtr4x2f = record
-    public val00, val01: single;
-    public val10, val11: single;
-    public val20, val21: single;
-    public val30, val31: single;
+    public val00, val10, val20, val30: single;
+    public val01, val11, val21, val31: single;
     
-    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: single);
+    public constructor(val00, val10, val20, val30, val01, val11, val21, val31: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6690,11 +6694,12 @@ type
   end;
   
   Mtr3x4f = record
-    public val00, val01, val02, val03: single;
-    public val10, val11, val12, val13: single;
-    public val20, val21, val22, val23: single;
+    public val00, val10, val20: single;
+    public val01, val11, val21: single;
+    public val02, val12, val22: single;
+    public val03, val13, val23: single;
     
-    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: single);
+    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22, val03, val13, val23: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6830,12 +6835,11 @@ type
   end;
   
   Mtr4x3f = record
-    public val00, val01, val02: single;
-    public val10, val11, val12: single;
-    public val20, val21, val22: single;
-    public val30, val31, val32: single;
+    public val00, val10, val20, val30: single;
+    public val01, val11, val21, val31: single;
+    public val02, val12, val22, val32: single;
     
-    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: single);
+    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6983,10 +6987,10 @@ type
   end;
   
   Mtr2x2d = record
-    public val00, val01: double;
-    public val10, val11: double;
+    public val00, val10: double;
+    public val01, val11: double;
     
-    public constructor(val00, val01, val10, val11: double);
+    public constructor(val00, val10, val01, val11: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7090,11 +7094,11 @@ type
   Mtr2d = Mtr2x2d;
   
   Mtr3x3d = record
-    public val00, val01, val02: double;
-    public val10, val11, val12: double;
-    public val20, val21, val22: double;
+    public val00, val10, val20: double;
+    public val01, val11, val21: double;
+    public val02, val12, val22: double;
     
-    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: double);
+    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7229,12 +7233,12 @@ type
   Mtr3d = Mtr3x3d;
   
   Mtr4x4d = record
-    public val00, val01, val02, val03: double;
-    public val10, val11, val12, val13: double;
-    public val20, val21, val22, val23: double;
-    public val30, val31, val32, val33: double;
+    public val00, val10, val20, val30: double;
+    public val01, val11, val21, val31: double;
+    public val02, val12, val22, val32: double;
+    public val03, val13, val23, val33: double;
     
-    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: double);
+    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32, val03, val13, val23, val33: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7406,10 +7410,11 @@ type
   Mtr4d = Mtr4x4d;
   
   Mtr2x3d = record
-    public val00, val01, val02: double;
-    public val10, val11, val12: double;
+    public val00, val10: double;
+    public val01, val11: double;
+    public val02, val12: double;
     
-    public constructor(val00, val01, val02, val10, val11, val12: double);
+    public constructor(val00, val10, val01, val11, val02, val12: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7529,11 +7534,10 @@ type
   end;
   
   Mtr3x2d = record
-    public val00, val01: double;
-    public val10, val11: double;
-    public val20, val21: double;
+    public val00, val10, val20: double;
+    public val01, val11, val21: double;
     
-    public constructor(val00, val01, val10, val11, val20, val21: double);
+    public constructor(val00, val10, val20, val01, val11, val21: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7665,10 +7669,12 @@ type
   end;
   
   Mtr2x4d = record
-    public val00, val01, val02, val03: double;
-    public val10, val11, val12, val13: double;
+    public val00, val10: double;
+    public val01, val11: double;
+    public val02, val12: double;
+    public val03, val13: double;
     
-    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: double);
+    public constructor(val00, val10, val01, val11, val02, val12, val03, val13: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7802,12 +7808,10 @@ type
   end;
   
   Mtr4x2d = record
-    public val00, val01: double;
-    public val10, val11: double;
-    public val20, val21: double;
-    public val30, val31: double;
+    public val00, val10, val20, val30: double;
+    public val01, val11, val21, val31: double;
     
-    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: double);
+    public constructor(val00, val10, val20, val30, val01, val11, val21, val31: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7962,11 +7966,12 @@ type
   end;
   
   Mtr3x4d = record
-    public val00, val01, val02, val03: double;
-    public val10, val11, val12, val13: double;
-    public val20, val21, val22, val23: double;
+    public val00, val10, val20: double;
+    public val01, val11, val21: double;
+    public val02, val12, val22: double;
+    public val03, val13, val23: double;
     
-    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: double);
+    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22, val03, val13, val23: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -8129,12 +8134,11 @@ type
   end;
   
   Mtr4x3d = record
-    public val00, val01, val02: double;
-    public val10, val11, val12: double;
-    public val20, val21, val22: double;
-    public val30, val31, val32: double;
+    public val00, val10, val20, val30: double;
+    public val01, val11, val21, val31: double;
+    public val02, val12, val22, val32: double;
     
-    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: double);
+    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32: double);
     begin
       self.val00 := val00;
       self.val01 := val01;

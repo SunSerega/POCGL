@@ -14,7 +14,7 @@ begin
     ''+'i64':   Result :=  'Int64';
     ''+'ui64':  Result := 'UInt64';
     ''+'f':     Result := 'single';
-    ''+'d':     Result := 'real';
+    ''+'d':     Result := 'double';
   end;
 end;
 
