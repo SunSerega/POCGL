@@ -5956,11 +5956,11 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
     end;
     
-    public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
-    public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    public property ColPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Rotate2Dcw(rot: double): Mtr2x2f;
+    public static function RotateXYcw(rot: double): Mtr2x2f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -5969,8 +5969,7 @@ type
         -sr,  cr
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr2x2f;
+    public static function RotateXYccw(rot: double): Mtr2x2f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6061,12 +6060,12 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
     end;
     
-    public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
-    public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
-    public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    public property ColPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
+    public property ColPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Rotate2Dcw(rot: double): Mtr3x3f;
+    public static function RotateXYcw(rot: double): Mtr3x3f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6076,8 +6075,7 @@ type
         0.0, 0.0, 1.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr3x3f;
+    public static function RotateXYccw(rot: double): Mtr3x3f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6085,6 +6083,48 @@ type
          cr, -sr, 0.0,
         +sr,  cr, 0.0,
         0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr
       );
     end;
     
@@ -6185,13 +6225,13 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
     end;
     
-    public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
-    public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    public property ColPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
+    public property ColPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
+    public property ColPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Rotate2Dcw(rot: double): Mtr4x4f;
+    public static function RotateXYcw(rot: double): Mtr4x4f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6202,8 +6242,7 @@ type
         0.0, 0.0, 0.0, 1.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr4x4f;
+    public static function RotateXYccw(rot: double): Mtr4x4f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6212,6 +6251,121 @@ type
         +sr,  cr, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateXWcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, 0.0, 0.0, +sr,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        -sr, 0.0, 0.0,  cr
+      );
+    end;
+    public static function RotateXWccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, 0.0, 0.0, -sr,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        +sr, 0.0, 0.0,  cr
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateYWcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, 0.0, +sr,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, -sr, 0.0,  cr
+      );
+    end;
+    public static function RotateYWccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, 0.0, -sr,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, +sr, 0.0,  cr
+      );
+    end;
+    
+    public static function RotateZWcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,  cr, +sr,
+        0.0, 0.0, -sr,  cr
+      );
+    end;
+    public static function RotateZWccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,  cr, -sr,
+        0.0, 0.0, +sr,  cr
       );
     end;
     
@@ -6299,11 +6453,11 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
     end;
     
-    public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
-    public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    public property ColPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 8);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Rotate2Dcw(rot: double): Mtr2x3f;
+    public static function RotateXYcw(rot: double): Mtr2x3f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6312,8 +6466,7 @@ type
         -sr,  cr, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr2x3f;
+    public static function RotateXYccw(rot: double): Mtr2x3f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6406,12 +6559,12 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
     end;
     
-    public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
-    public property RowPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    public property ColPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 12);
+    public property ColPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 24);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Rotate2Dcw(rot: double): Mtr3x2f;
+    public static function RotateXYcw(rot: double): Mtr3x2f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6421,8 +6574,7 @@ type
         0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr3x2f;
+    public static function RotateXYccw(rot: double): Mtr3x2f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6526,11 +6678,11 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
     end;
     
-    public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    public property ColPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 8);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Rotate2Dcw(rot: double): Mtr2x4f;
+    public static function RotateXYcw(rot: double): Mtr2x4f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6539,8 +6691,7 @@ type
         -sr,  cr, 0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr2x4f;
+    public static function RotateXYccw(rot: double): Mtr2x4f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6643,13 +6794,13 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
     end;
     
-    public property RowPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
-    public property RowPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr3: ^Vec2f read pointer(IntPtr(pointer(@self)) + 24);
-    public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    public property ColPtr0: ^Vec2f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 16);
+    public property ColPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 32);
+    public property ColPtr3: ^Vec2f read pointer(IntPtr(pointer(@self)) + 48);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Rotate2Dcw(rot: double): Mtr4x2f;
+    public static function RotateXYcw(rot: double): Mtr4x2f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6660,8 +6811,7 @@ type
         0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr4x2f;
+    public static function RotateXYccw(rot: double): Mtr4x2f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6779,12 +6929,12 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
     end;
     
-    public property RowPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    public property ColPtr0: ^Vec4f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 12);
+    public property ColPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 24);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Rotate2Dcw(rot: double): Mtr3x4f;
+    public static function RotateXYcw(rot: double): Mtr3x4f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6794,8 +6944,7 @@ type
         0.0, 0.0, 1.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr3x4f;
+    public static function RotateXYccw(rot: double): Mtr3x4f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6803,6 +6952,48 @@ type
          cr, -sr, 0.0, 0.0,
         +sr,  cr, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0
       );
     end;
     
@@ -6913,13 +7104,13 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
     end;
     
-    public property RowPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
-    public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
-    public property RowPtr3: ^Vec3f read pointer(IntPtr(pointer(@self)) + 36);
-    public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    public property ColPtr0: ^Vec3f read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 16);
+    public property ColPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 32);
+    public property ColPtr3: ^Vec3f read pointer(IntPtr(pointer(@self)) + 48);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Rotate2Dcw(rot: double): Mtr4x3f;
+    public static function RotateXYcw(rot: double): Mtr4x3f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6930,8 +7121,7 @@ type
         0.0, 0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr4x3f;
+    public static function RotateXYccw(rot: double): Mtr4x3f;
     begin
       var sr: single := Sin(rot);
       var cr: single := Cos(rot);
@@ -6939,6 +7129,52 @@ type
          cr, -sr, 0.0,
         +sr,  cr, 0.0,
         0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr,
         0.0, 0.0, 0.0
       );
     end;
@@ -7039,11 +7275,11 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
     end;
     
-    public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    public property ColPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Rotate2Dcw(rot: double): Mtr2x2d;
+    public static function RotateXYcw(rot: double): Mtr2x2d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7052,8 +7288,7 @@ type
         -sr,  cr
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr2x2d;
+    public static function RotateXYccw(rot: double): Mtr2x2d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7171,12 +7406,12 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
     end;
     
-    public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
-    public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
-    public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    public property ColPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
+    public property ColPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
-    public static function Rotate2Dcw(rot: double): Mtr3x3d;
+    public static function RotateXYcw(rot: double): Mtr3x3d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7186,8 +7421,7 @@ type
         0.0, 0.0, 1.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr3x3d;
+    public static function RotateXYccw(rot: double): Mtr3x3d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7195,6 +7429,48 @@ type
          cr, -sr, 0.0,
         +sr,  cr, 0.0,
         0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr
       );
     end;
     
@@ -7322,13 +7598,13 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
     end;
     
-    public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
-    public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
-    public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    public property ColPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
+    public property ColPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
+    public property ColPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
-    public static function Rotate2Dcw(rot: double): Mtr4x4d;
+    public static function RotateXYcw(rot: double): Mtr4x4d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7339,8 +7615,7 @@ type
         0.0, 0.0, 0.0, 1.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr4x4d;
+    public static function RotateXYccw(rot: double): Mtr4x4d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7349,6 +7624,121 @@ type
         +sr,  cr, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateXWcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, 0.0, 0.0, +sr,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        -sr, 0.0, 0.0,  cr
+      );
+    end;
+    public static function RotateXWccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, 0.0, 0.0, -sr,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        +sr, 0.0, 0.0,  cr
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateYWcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, 0.0, +sr,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, -sr, 0.0,  cr
+      );
+    end;
+    public static function RotateYWccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, 0.0, -sr,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, +sr, 0.0,  cr
+      );
+    end;
+    
+    public static function RotateZWcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,  cr, +sr,
+        0.0, 0.0, -sr,  cr
+      );
+    end;
+    public static function RotateZWccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,  cr, -sr,
+        0.0, 0.0, +sr,  cr
       );
     end;
     
@@ -7463,11 +7853,11 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
     end;
     
-    public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
-    public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    public property ColPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 16);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Rotate2Dcw(rot: double): Mtr2x3d;
+    public static function RotateXYcw(rot: double): Mtr2x3d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7476,8 +7866,7 @@ type
         -sr,  cr, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr2x3d;
+    public static function RotateXYccw(rot: double): Mtr2x3d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7597,12 +7986,12 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
     end;
     
-    public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    public property ColPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 24);
+    public property ColPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 48);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*24);
     
-    public static function Rotate2Dcw(rot: double): Mtr3x2d;
+    public static function RotateXYcw(rot: double): Mtr3x2d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7612,8 +8001,7 @@ type
         0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr3x2d;
+    public static function RotateXYccw(rot: double): Mtr3x2d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7744,11 +8132,11 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
     end;
     
-    public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    public property ColPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 16);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Rotate2Dcw(rot: double): Mtr2x4d;
+    public static function RotateXYcw(rot: double): Mtr2x4d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7757,8 +8145,7 @@ type
         -sr,  cr, 0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr2x4d;
+    public static function RotateXYccw(rot: double): Mtr2x4d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7888,13 +8275,13 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..1');
     end;
     
-    public property RowPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
-    public property RowPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr3: ^Vec2d read pointer(IntPtr(pointer(@self)) + 48);
-    public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    public property ColPtr0: ^Vec2d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 32);
+    public property ColPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 64);
+    public property ColPtr3: ^Vec2d read pointer(IntPtr(pointer(@self)) + 96);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*32);
     
-    public static function Rotate2Dcw(rot: double): Mtr4x2d;
+    public static function RotateXYcw(rot: double): Mtr4x2d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -7905,8 +8292,7 @@ type
         0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr4x2d;
+    public static function RotateXYccw(rot: double): Mtr4x2d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -8051,12 +8437,12 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..3');
     end;
     
-    public property RowPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
-    public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
-    public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    public property ColPtr0: ^Vec4d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 24);
+    public property ColPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 48);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*24);
     
-    public static function Rotate2Dcw(rot: double): Mtr3x4d;
+    public static function RotateXYcw(rot: double): Mtr3x4d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -8066,8 +8452,7 @@ type
         0.0, 0.0, 1.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr3x4d;
+    public static function RotateXYccw(rot: double): Mtr3x4d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -8075,6 +8460,48 @@ type
          cr, -sr, 0.0, 0.0,
         +sr,  cr, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0
       );
     end;
     
@@ -8212,13 +8639,13 @@ type
       else raise new IndexOutOfRangeException('Номер столбца должен иметь значение 0..2');
     end;
     
-    public property RowPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
-    public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
-    public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
-    public property RowPtr3: ^Vec3d read pointer(IntPtr(pointer(@self)) + 72);
-    public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    public property ColPtr0: ^Vec3d read pointer(IntPtr(pointer(@self)) + 0);
+    public property ColPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 32);
+    public property ColPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 64);
+    public property ColPtr3: ^Vec3d read pointer(IntPtr(pointer(@self)) + 96);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*32);
     
-    public static function Rotate2Dcw(rot: double): Mtr4x3d;
+    public static function RotateXYcw(rot: double): Mtr4x3d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -8229,8 +8656,7 @@ type
         0.0, 0.0, 0.0
       );
     end;
-    
-    public static function Rotate2Dccw(rot: double): Mtr4x3d;
+    public static function RotateXYccw(rot: double): Mtr4x3d;
     begin
       var sr: double := Sin(rot);
       var cr: double := Cos(rot);
@@ -8238,6 +8664,52 @@ type
          cr, -sr, 0.0,
         +sr,  cr, 0.0,
         0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateXZcw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateXZccw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr,
         0.0, 0.0, 0.0
       );
     end;

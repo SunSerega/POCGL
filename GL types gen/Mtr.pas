@@ -9,6 +9,8 @@
 //ToDo issue компилятора:
 // - #2021
 
+{$region Misc helpers}
+
 function gl_to_pas_t(self: string): string; extensionmethod;
 begin
   case self of
@@ -38,14 +40,14 @@ function GetMltResT(self: (t_descr,t_descr)): t_descr; extensionmethod :=
 function GetTransposedT(self: t_descr): t_descr; extensionmethod :=
 ((self[0][1], self[0][0]), self[1], self[2]);
 
-
+{$endregion Misc helpers}
 
 procedure AddMtrType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
 begin
   res += $'  '+#10;
   res += $'  {t.GetName} = record'+#10;
   
-  
+  {$region field's}
   
   for var y := 0 to t[0][1]-1 do
   begin
@@ -54,9 +56,12 @@ begin
     res += $': {t[2]};' + #10;
   end;
   
+  {$endregion field's}
   
+  {$region constructor's}
   
   res += $'    '+#10;
+  
   res += $'    public constructor(';
   res +=
     Range(0,t[0][0]-1)
@@ -73,7 +78,11 @@ begin
   
   res += $'    end;'+#10;
   
+  {$endregion constructor's}
   
+  {$region property's}
+  
+  {$region property val[y,x]}
   
   res += $'    '+#10;
   
@@ -95,7 +104,9 @@ begin
   
   res += $'    public property val[y,x: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
   
+  {$endregion property val[y,x]}
   
+  {$region static property Identity}
   
   res += $'    '+#10;
   
@@ -107,7 +118,9 @@ begin
     .JoinIntoString(', ');
   res += $');'+#10;
   
+  {$endregion static property Identity}
   
+  {$region property's Row*}
   
   res += $'    '+#10;
   
@@ -135,7 +148,9 @@ begin
   res += $'      else raise new IndexOutOfRangeException(''Номер строчки должен иметь значение 0..{t[0][0]-1}'');'+#10;
   res += $'    end;'+#10;
   
+  {$endregion property's Row*}
   
+  {$region property's Col*}
   
   res += $'    '+#10;
   
@@ -163,71 +178,94 @@ begin
   res += $'      else raise new IndexOutOfRangeException(''Номер столбца должен иметь значение 0..{t[0][1]-1}'');'+#10;
   res += $'    end;'+#10;
   
+  {$endregion property's Col*}
   
+  {$region property ColPtr[x]}
   
   res += $'    '+#10;
   
   for var x := 0 to t[0][0]-1 do
-    res += $'    public property RowPtr{x}: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + {x*t[0][1]*(t[1].Contains(''d'')?8:4)});'+#10;
-  res += $'    public property RowPtr[x: integer]: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][1]*(t[1].Contains(''d'')?8:4)});'+#10;
+    res += $'    public property ColPtr{x}: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + {x*t[0][0]*(t[1].Contains(''d'')?8:4)});'+#10;
+  res += $'    public property ColPtr[x: integer]: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][0]*(t[1].Contains(''d'')?8:4)});'+#10;
   
+  {$endregion property ColPtr[x]}
   
+  {$endregion property's}
   
-  res += $'    '+#10;
+  {$region method's}
   
-  res += $'    public static function Rotate2Dcw(rot: double): {t.GetName};'+#10;
-  res += $'    begin'+#10;
-  res += $'      var sr: {t[2]} := Sin(rot);'+#10;
-  res += $'      var cr: {t[2]} := Cos(rot);'+#10;
-  res += $'      Result := new {t.GetName}('+#10;
-  res += $'        ';
-  res +=
-    Range(0,t[0][0]-1)
-    .Select(y->
-      Range(0,t[0][1]-1)
-      .Select(x->
-      begin
-        if (x<2) and (y<2) then
-          case x of  
-            0: Result := y=0 ? ' cr' : '-sr';
-            1: Result := y=0 ? '+sr' : ' cr';
-          end else
-          Result := x=y?'1.0':'0.0';
-      end)
-      .JoinIntoString(', ')
-    )
-    .JoinIntoString(','#10'        ') + #10;
-  res += $'      );'+#10;
-  res += $'    end;'+#10;
+  {$region static function Rotate2D}
   
-  res += $'    '+#10;
+  begin
+    var Axiss := Range(1, Min(t[0][0],t[0][1]));
+    var ANT: Dictionary<integer,char> := Dict((1,'X'),(2,'Y'),(3,'Z'),(4,'W')); // axiss name table
+    
+    foreach var plane in Axiss.SelectMany((a,i)->Axiss.Skip(i+1).Select(a2->(a,a2))) do
+    begin
+      var plane_name := ANT[plane[0]]+ANT[plane[1]];
+      var mpc := HSet(plane[0]-1, plane[1]-1); // mtr plane coord
+      
+      res += $'    '+#10;
+      
+      res += $'    public static function Rotate{plane_name}cw(rot: double): {t.GetName};'+#10;
+      res += $'    begin'+#10;
+      res += $'      var sr: {t[2]} := Sin(rot);'+#10;
+      res += $'      var cr: {t[2]} := Cos(rot);'+#10;
+      res += $'      Result := new {t.GetName}('+#10;
+      res += $'        ';
+      res +=
+        Range(0,t[0][0]-1)
+        .Select(y->
+          Range(0,t[0][1]-1)
+          .Select(x->
+          begin
+            if (x in mpc) and (y in mpc) then
+            begin
+              if y=plane[0]-1 then
+                Result := x=plane[0]-1 ? ' cr' : '+sr' else
+                Result := x=plane[0]-1 ? '-sr' : ' cr';
+            end else
+              Result := x=y ? '1.0' : '0.0';
+          end)
+          .JoinIntoString(', ')
+        )
+        .JoinIntoString(','#10'        ') + #10;
+      res += $'      );'+#10;
+      res += $'    end;'+#10;
+      
+      res += $'    public static function Rotate{plane_name}ccw(rot: double): {t.GetName};'+#10;
+      res += $'    begin'+#10;
+      res += $'      var sr: {t[2]} := Sin(rot);'+#10;
+      res += $'      var cr: {t[2]} := Cos(rot);'+#10;
+      res += $'      Result := new {t.GetName}('+#10;
+      res += $'        ';
+      res +=
+        Range(0,t[0][0]-1)
+        .Select(y->
+          Range(0,t[0][1]-1)
+          .Select(x->
+          begin
+            if (x in mpc) and (y in mpc) then
+            begin
+              if y=plane[0]-1 then
+                Result := x=plane[0]-1 ? ' cr' : '-sr' else
+                Result := x=plane[0]-1 ? '+sr' : ' cr';
+            end else
+              Result := x=y ? '1.0' : '0.0';
+          end)
+          .JoinIntoString(', ')
+        )
+        .JoinIntoString(','#10'        ') + #10;
+      res += $'      );'+#10;
+      res += $'    end;'+#10;
+      
+    end;
+    
+  end;
   
-  res += $'    public static function Rotate2Dccw(rot: double): {t.GetName};'+#10;
-  res += $'    begin'+#10;
-  res += $'      var sr: {t[2]} := Sin(rot);'+#10;
-  res += $'      var cr: {t[2]} := Cos(rot);'+#10;
-  res += $'      Result := new {t.GetName}('+#10;
-  res += $'        ';
-  res +=
-    Range(0,t[0][0]-1)
-    .Select(y->
-      Range(0,t[0][1]-1)
-      .Select(x->
-      begin
-        if (x<2) and (y<2) then
-          case x of  
-            0: Result := y=0 ? ' cr' : '+sr';
-            1: Result := y=0 ? '-sr' : ' cr';
-          end else
-          Result := x=y?'1.0':'0.0';
-      end)
-      .JoinIntoString(', ')
-    )
-    .JoinIntoString(','#10'        ') + #10;
-  res += $'      );'+#10;
-  res += $'    end;'+#10;
+  {$endregion static function Rotate2D}
   
-  
+  {$region function Println}
   
   res += $'    '+#10;
   
@@ -262,7 +300,11 @@ begin
   res +=      $'      Result := self;'+#10;
   res +=      $'    end;'+#10;
   
+  {$endregion function Println}
   
+  {$endregion method's}
+  
+  {$region operator's}
   
   res += $'    '+#10;
   
@@ -312,7 +354,7 @@ begin
     
   end;
   
-  
+  {$endregion operator's}
   
   res += $'    '+#10;
   
@@ -321,6 +363,8 @@ begin
     res += $'  Mtr{t[0][0]}{t[1]} = {t.GetName};'+#10;
   
 end;
+
+{$region extensionmethod's}
 
 procedure AddMtrMlt(res: StringBuilder; t1,t2: t_descr);
 begin
@@ -360,7 +404,7 @@ begin
   
 end;
 
-
+{$endregion extensionmethod's}
 
 begin
   try
