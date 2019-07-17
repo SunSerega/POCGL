@@ -2,8 +2,6 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
-//ToDo получение элемента по индексу - надо через указатели!
-
 //ToDo Rotate2D - для матриц 3х3 и 4x4 и всех больше добавить выбор - в какой плоскости вращение
 
 //ToDo Rotate3D - поворот относительно 3вектора
@@ -81,34 +79,18 @@ begin
   
   res +=      $'    private function GetValAt(y,x: integer): {t[2]};'+#10;
   res +=      $'    begin'+#10;
-  res +=      $'      case y of'+#10;
-  for var y := 0 to t[0][0]-1 do
-  begin
-    res +=    $'        {y}:'+#10;
-    res +=    $'        case x of'+#10;
-    for var x := 0 to t[0][1]-1 do
-      res +=  $'          {x}: Result := self.val{y}{x};'+#10;
-    res +=    $'          else raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
-    res +=    $'        end;'+#10;
-  end;
-  res +=      $'        else raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
-  res +=      $'      end;'+#10;
+  res +=      $'      if cardinal(x) > {t[0][1]-1} then raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
+  res +=      $'      if cardinal(y) > {t[0][0]-1} then raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
+  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0][0]} + y) * {t[1].Contains(''d'')?8:4} );'+#10;
+  res +=      $'      Result := ptr^;'+#10;
   res +=      $'    end;'+#10;
   
   res +=      $'    private procedure SetValAt(y,x: integer; val: {t[2]});'+#10;
   res +=      $'    begin'+#10;
-  res +=      $'      case y of'+#10;
-  for var y := 0 to t[0][0]-1 do
-  begin
-    res +=    $'        {y}:'+#10;
-    res +=    $'        case x of'+#10;
-    for var x := 0 to t[0][1]-1 do
-      res +=  $'          {x}: self.val{y}{x} := val;'+#10;
-    res +=    $'          else raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
-    res +=    $'        end;'+#10;
-  end;
-  res +=      $'        else raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
-  res +=      $'      end;'+#10;
+  res +=      $'      if cardinal(x) > {t[0][1]-1} then raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
+  res +=      $'      if cardinal(y) > {t[0][0]-1} then raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
+  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0][0]} + y) * {t[1].Contains(''d'')?8:4} );'+#10;
+  res +=      $'      ptr^ := val;'+#10;
   res +=      $'    end;'+#10;
   
   res += $'    public property val[y,x: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
