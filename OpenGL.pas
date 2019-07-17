@@ -32,6 +32,7 @@ unit OpenGL;
 // - ОБНОВЛЕНИЕ:
 // - таки сделал пока что по столбцам, потому что увидел у 1 C++ библиотеки так
 // - но всё же надо нормально разобраться самому
+// - однако в конструктор значения передаются по строчкам, иначе надо вообще всё поменять
 
 //ToDo в самом конце - сделать прогу чтоб посмотреть какие константы по 2 раза, а каких вообще нет
 
@@ -40,6 +41,10 @@ unit OpenGL;
 //ToDo проверить получение указателя на строчку матрицы
 
 //ToDo проверить передачу external функции вместо лямбды
+
+//ToDo автоматический тестировщик
+// - особенно для матриц надо...
+// - и примеры тоже надо проверять после любых изменений
 
 //ToDo .ToString всех энумов, которые может возвращать
 // - тупо пройтись по всем энумам, посмотреть де они заюзаны
@@ -5907,7 +5912,7 @@ type
     public val00, val10: single;
     public val01, val11: single;
     
-    public constructor(val00, val10, val01, val11: single);
+    public constructor(val00, val01, val10, val11: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -5977,6 +5982,43 @@ type
     public property RowPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
+    public static function Rotate2Dcw(rot: double): Mtr2x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x2f(
+         cr, +sr,
+        -sr,  cr
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr2x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x2f(
+         cr, -sr,
+        +sr,  cr
+      );
+    end;
+    
+    public function Println: Mtr2x2f;
+    begin
+      var ElStrs := new string[2,2];
+      for var y := 0 to 2-1 do
+        for var x := 0 to 2-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr2x2f; v: Vec2f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
     public static function operator*(v: Vec2f; m: Mtr2x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
     
@@ -5988,7 +6030,7 @@ type
     public val01, val11, val21: single;
     public val02, val12, val22: single;
     
-    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22: single);
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6086,6 +6128,46 @@ type
     public property RowPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
+    public static function Rotate2Dcw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    
+    public function Println: Mtr3x3f;
+    begin
+      var ElStrs := new string[3,3];
+      for var y := 0 to 3-1 do
+        for var x := 0 to 3-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr3x3f; v: Vec3f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
     public static function operator*(v: Vec3f; m: Mtr3x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
     
@@ -6101,7 +6183,7 @@ type
     public val02, val12, val22, val32: single;
     public val03, val13, val23, val33: single;
     
-    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32, val03, val13, val23, val33: single);
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6233,6 +6315,49 @@ type
     public property RowPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Rotate2Dcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public function Println: Mtr4x4f;
+    begin
+      var ElStrs := new string[4,4];
+      for var y := 0 to 4-1 do
+        for var x := 0 to 4-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ', ', ElStrs[3,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr4x4f; v: Vec4f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
     public static function operator*(v: Vec4f; m: Mtr4x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
     
@@ -6250,7 +6375,7 @@ type
     public val01, val11: single;
     public val02, val12: single;
     
-    public constructor(val00, val10, val01, val11, val02, val12: single);
+    public constructor(val00, val01, val02, val10, val11, val12: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6328,6 +6453,43 @@ type
     public property RowPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
     public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
+    public static function Rotate2Dcw(rot: double): Mtr2x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x3f(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr2x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x3f(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0
+      );
+    end;
+    
+    public function Println: Mtr2x3f;
+    begin
+      var ElStrs := new string[2,3];
+      for var y := 0 to 2-1 do
+        for var x := 0 to 3-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr2x3f; v: Vec3f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
     public static function operator*(v: Vec2f; m: Mtr2x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1);
     
@@ -6346,7 +6508,7 @@ type
     public val00, val10, val20: single;
     public val01, val11, val21: single;
     
-    public constructor(val00, val10, val20, val01, val11, val21: single);
+    public constructor(val00, val01, val10, val11, val20, val21: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6433,6 +6595,46 @@ type
     public property RowPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
+    public static function Rotate2Dcw(rot: double): Mtr3x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x2f(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr3x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x2f(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr3x2f;
+    begin
+      var ElStrs := new string[3,2];
+      for var y := 0 to 3-1 do
+        for var x := 0 to 2-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr3x2f; v: Vec2f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
     public static function operator*(v: Vec3f; m: Mtr3x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
     
@@ -6456,7 +6658,7 @@ type
     public val02, val12: single;
     public val03, val13: single;
     
-    public constructor(val00, val10, val01, val11, val02, val12, val03, val13: single);
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6542,6 +6744,43 @@ type
     public property RowPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Rotate2Dcw(rot: double): Mtr2x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x4f(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr2x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x4f(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr2x4f;
+    begin
+      var ElStrs := new string[2,4];
+      for var y := 0 to 2-1 do
+        for var x := 0 to 4-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr2x4f; v: Vec4f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
     public static function operator*(v: Vec2f; m: Mtr2x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1, m.val03*v.val0+m.val13*v.val1);
     
@@ -6566,7 +6805,7 @@ type
     public val00, val10, val20, val30: single;
     public val01, val11, val21, val31: single;
     
-    public constructor(val00, val10, val20, val30, val01, val11, val21, val31: single);
+    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6670,6 +6909,49 @@ type
     public property RowPtr3: ^Vec2f read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
+    public static function Rotate2Dcw(rot: double): Mtr4x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x2f(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr4x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x2f(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr4x2f;
+    begin
+      var ElStrs := new string[4,2];
+      for var y := 0 to 4-1 do
+        for var x := 0 to 2-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr4x2f; v: Vec2f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
     public static function operator*(v: Vec4f; m: Mtr4x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
     
@@ -6699,7 +6981,7 @@ type
     public val02, val12, val22: single;
     public val03, val13, val23: single;
     
-    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22, val03, val13, val23: single);
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6808,6 +7090,46 @@ type
     public property RowPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 32);
     public property RowPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Rotate2Dcw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr3x4f;
+    begin
+      var ElStrs := new string[3,4];
+      for var y := 0 to 3-1 do
+        for var x := 0 to 4-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr3x4f; v: Vec4f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
     public static function operator*(v: Vec3f; m: Mtr3x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
     
@@ -6839,7 +7161,7 @@ type
     public val01, val11, val21, val31: single;
     public val02, val12, val22, val32: single;
     
-    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32: single);
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: single);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -6957,6 +7279,49 @@ type
     public property RowPtr3: ^Vec3f read pointer(IntPtr(pointer(@self)) + 36);
     public property RowPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
+    public static function Rotate2Dcw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr4x3f;
+    begin
+      var ElStrs := new string[4,3];
+      for var y := 0 to 4-1 do
+        for var x := 0 to 3-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr4x3f; v: Vec3f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
     public static function operator*(v: Vec4f; m: Mtr4x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);
     
@@ -6990,7 +7355,7 @@ type
     public val00, val10: double;
     public val01, val11: double;
     
-    public constructor(val00, val10, val01, val11: double);
+    public constructor(val00, val01, val10, val11: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7060,6 +7425,43 @@ type
     public property RowPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Rotate2Dcw(rot: double): Mtr2x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x2d(
+         cr, +sr,
+        -sr,  cr
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr2x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x2d(
+         cr, -sr,
+        +sr,  cr
+      );
+    end;
+    
+    public function Println: Mtr2x2d;
+    begin
+      var ElStrs := new string[2,2];
+      for var y := 0 to 2-1 do
+        for var x := 0 to 2-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr2x2d; v: Vec2d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
     public static function operator*(v: Vec2d; m: Mtr2x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
     
@@ -7098,7 +7500,7 @@ type
     public val01, val11, val21: double;
     public val02, val12, val22: double;
     
-    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22: double);
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7196,6 +7598,46 @@ type
     public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
+    public static function Rotate2Dcw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    
+    public function Println: Mtr3x3d;
+    begin
+      var ElStrs := new string[3,3];
+      for var y := 0 to 3-1 do
+        for var x := 0 to 3-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr3x3d; v: Vec3d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
     public static function operator*(v: Vec3d; m: Mtr3x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
     
@@ -7238,7 +7680,7 @@ type
     public val02, val12, val22, val32: double;
     public val03, val13, val23, val33: double;
     
-    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32, val03, val13, val23, val33: double);
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7370,6 +7812,49 @@ type
     public property RowPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
     public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
+    public static function Rotate2Dcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public function Println: Mtr4x4d;
+    begin
+      var ElStrs := new string[4,4];
+      for var y := 0 to 4-1 do
+        for var x := 0 to 4-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ', ', ElStrs[3,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr4x4d; v: Vec4d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
     public static function operator*(v: Vec4d; m: Mtr4x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
     
@@ -7414,7 +7899,7 @@ type
     public val01, val11: double;
     public val02, val12: double;
     
-    public constructor(val00, val10, val01, val11, val02, val12: double);
+    public constructor(val00, val01, val02, val10, val11, val12: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7492,6 +7977,43 @@ type
     public property RowPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
     public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
+    public static function Rotate2Dcw(rot: double): Mtr2x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x3d(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr2x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x3d(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0
+      );
+    end;
+    
+    public function Println: Mtr2x3d;
+    begin
+      var ElStrs := new string[2,3];
+      for var y := 0 to 2-1 do
+        for var x := 0 to 3-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr2x3d; v: Vec3d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
     public static function operator*(v: Vec2d; m: Mtr2x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1);
     
@@ -7537,7 +8059,7 @@ type
     public val00, val10, val20: double;
     public val01, val11, val21: double;
     
-    public constructor(val00, val10, val20, val01, val11, val21: double);
+    public constructor(val00, val01, val10, val11, val20, val21: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7624,6 +8146,46 @@ type
     public property RowPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 32);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Rotate2Dcw(rot: double): Mtr3x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x2d(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr3x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x2d(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr3x2d;
+    begin
+      var ElStrs := new string[3,2];
+      for var y := 0 to 3-1 do
+        for var x := 0 to 2-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr3x2d; v: Vec2d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
     public static function operator*(v: Vec3d; m: Mtr3x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
     
@@ -7674,7 +8236,7 @@ type
     public val02, val12: double;
     public val03, val13: double;
     
-    public constructor(val00, val10, val01, val11, val02, val12, val03, val13: double);
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7760,6 +8322,43 @@ type
     public property RowPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 32);
     public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
+    public static function Rotate2Dcw(rot: double): Mtr2x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x4d(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr2x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x4d(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr2x4d;
+    begin
+      var ElStrs := new string[2,4];
+      for var y := 0 to 2-1 do
+        for var x := 0 to 4-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr2x4d; v: Vec4d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
     public static function operator*(v: Vec2d; m: Mtr2x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1, m.val03*v.val0+m.val13*v.val1);
     
@@ -7811,7 +8410,7 @@ type
     public val00, val10, val20, val30: double;
     public val01, val11, val21, val31: double;
     
-    public constructor(val00, val10, val20, val30, val01, val11, val21, val31: double);
+    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -7915,6 +8514,49 @@ type
     public property RowPtr3: ^Vec2d read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Rotate2Dcw(rot: double): Mtr4x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x2d(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr4x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x2d(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr4x2d;
+    begin
+      var ElStrs := new string[4,2];
+      for var y := 0 to 4-1 do
+        for var x := 0 to 2-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr4x2d; v: Vec2d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
     public static function operator*(v: Vec4d; m: Mtr4x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
     
@@ -7971,7 +8613,7 @@ type
     public val02, val12, val22: double;
     public val03, val13, val23: double;
     
-    public constructor(val00, val10, val20, val01, val11, val21, val02, val12, val22, val03, val13, val23: double);
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -8080,6 +8722,46 @@ type
     public property RowPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 64);
     public property RowPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
+    public static function Rotate2Dcw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr3x4d;
+    begin
+      var ElStrs := new string[3,4];
+      for var y := 0 to 3-1 do
+        for var x := 0 to 4-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
+    
     public static function operator*(m: Mtr3x4d; v: Vec4d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
     public static function operator*(v: Vec3d; m: Mtr3x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
     
@@ -8138,7 +8820,7 @@ type
     public val01, val11, val21, val31: double;
     public val02, val12, val22, val32: double;
     
-    public constructor(val00, val10, val20, val30, val01, val11, val21, val31, val02, val12, val22, val32: double);
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: double);
     begin
       self.val00 := val00;
       self.val01 := val01;
@@ -8255,6 +8937,49 @@ type
     public property RowPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
     public property RowPtr3: ^Vec3d read pointer(IntPtr(pointer(@self)) + 72);
     public property RowPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public static function Rotate2Dcw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate2Dccw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public function Println: Mtr4x3d;
+    begin
+      var ElStrs := new string[4,3];
+      for var y := 0 to 4-1 do
+        for var x := 0 to 3-1 do
+          ElStrs[y,x] := (Sign(val[y,x])=-1?'-':'+') + Abs(val[y,x]).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      writeln( '┌' + #32*PrintlnMtrW + '┐' );
+      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ' │' );
+      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      
+      Result := self;
+    end;
     
     public static function operator*(m: Mtr4x3d; v: Vec3d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
     public static function operator*(v: Vec4d; m: Mtr4x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);

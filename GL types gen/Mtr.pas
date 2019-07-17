@@ -2,6 +2,12 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
+//ToDo получение элемента по индексу - надо через указатели!
+
+//ToDo Rotate2D - для матриц 3х3 и 4x4 и всех больше добавить выбор - в какой плоскости вращение
+
+//ToDo Rotate3D - поворот относительно 3вектора
+
 //ToDo issue компилятора:
 // - #2021
 
@@ -55,9 +61,9 @@ begin
   res += $'    '+#10;
   res += $'    public constructor(';
   res +=
-    Range(0,t[0][1]-1)
-    .Cartesian(Range(0,t[0][0]-1))
-    .Select(pos->$'val{pos[1]}{pos[0]}')
+    Range(0,t[0][0]-1)
+    .Cartesian(Range(0,t[0][1]-1))
+    .Select(pos->$'val{pos[0]}{pos[1]}')
     .JoinIntoString(', ');
   res += $': {t[2]});'+#10;
   
@@ -182,6 +188,97 @@ begin
   for var x := 0 to t[0][0]-1 do
     res += $'    public property RowPtr{x}: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + {x*t[0][1]*(t[1].Contains(''d'')?8:4)});'+#10;
   res += $'    public property RowPtr[x: integer]: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][1]*(t[1].Contains(''d'')?8:4)});'+#10;
+  
+  
+  
+  res += $'    '+#10;
+  
+  res += $'    public static function Rotate2Dcw(rot: double): {t.GetName};'+#10;
+  res += $'    begin'+#10;
+  res += $'      var sr: {t[2]} := Sin(rot);'+#10;
+  res += $'      var cr: {t[2]} := Cos(rot);'+#10;
+  res += $'      Result := new {t.GetName}('+#10;
+  res += $'        ';
+  res +=
+    Range(0,t[0][0]-1)
+    .Select(y->
+      Range(0,t[0][1]-1)
+      .Select(x->
+      begin
+        if (x<2) and (y<2) then
+          case x of  
+            0: Result := y=0 ? ' cr' : '-sr';
+            1: Result := y=0 ? '+sr' : ' cr';
+          end else
+          Result := x=y?'1.0':'0.0';
+      end)
+      .JoinIntoString(', ')
+    )
+    .JoinIntoString(','#10'        ') + #10;
+  res += $'      );'+#10;
+  res += $'    end;'+#10;
+  
+  res += $'    '+#10;
+  
+  res += $'    public static function Rotate2Dccw(rot: double): {t.GetName};'+#10;
+  res += $'    begin'+#10;
+  res += $'      var sr: {t[2]} := Sin(rot);'+#10;
+  res += $'      var cr: {t[2]} := Cos(rot);'+#10;
+  res += $'      Result := new {t.GetName}('+#10;
+  res += $'        ';
+  res +=
+    Range(0,t[0][0]-1)
+    .Select(y->
+      Range(0,t[0][1]-1)
+      .Select(x->
+      begin
+        if (x<2) and (y<2) then
+          case x of  
+            0: Result := y=0 ? ' cr' : '+sr';
+            1: Result := y=0 ? '-sr' : ' cr';
+          end else
+          Result := x=y?'1.0':'0.0';
+      end)
+      .JoinIntoString(', ')
+    )
+    .JoinIntoString(','#10'        ') + #10;
+  res += $'      );'+#10;
+  res += $'    end;'+#10;
+  
+  
+  
+  res += $'    '+#10;
+  
+  res +=      $'    public function Println: {t.GetName};'+#10;
+  res +=      $'    begin'+#10;
+  res +=      $'      var ElStrs := new string[{t[0][0]},{t[0][1]}];' + #10;
+  res +=      $'      for var y := 0 to {t[0][0]}-1 do' + #10;
+  res +=      $'        for var x := 0 to {t[0][1]}-1 do' + #10;
+  res +=      $'          ElStrs[y,x] := (Sign(val[y,x])=-1?''-'':''+'') + Abs(val[y,x]).ToString(''f2'');' + #10;
+  
+  res +=      $'      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);' + #10;
+  res +=      $'      var PrintlnMtrW := MtrElTextW*{t[0][1]} + {2*t[0][1]}; // +2*(Width-1) + 2;' + #10;
+  
+  res +=      $'      ' + #10;
+  
+  res +=      $'      writeln( ''{ char($250C) }'' + #32*PrintlnMtrW + ''{ char($2510) }'' );' + #10;
+  for var y := 0 to t[0][0]-1 do
+  begin
+    res +=    $'      writeln( ''{ char($2502) } '', ';
+    for var x := 0 to t[0][1]-1 do
+    begin
+      res += $'ElStrs[{y},{x}].PadLeft(MtrElTextW)';
+      if x<>t[0][1]-1 then res += ', '', '', ';
+    end;
+    
+    res +=    $', '' { char($2502) }'' );' + #10;
+  end;
+  res +=      $'      writeln( ''{ char($2514) }'' + #32*PrintlnMtrW + ''{ char($2518) }'' );' + #10;
+  
+  res +=      $'      ' + #10;
+  
+  res +=      $'      Result := self;'+#10;
+  res +=      $'    end;'+#10;
   
   
   

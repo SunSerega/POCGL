@@ -31,6 +31,8 @@ uses System.Runtime.InteropServices;
 //ToDo клонирование очередей
 // - для паралельного выполнения из разных потоков
 
+//ToDo если контекст создан из cl_context - не удалять его
+
 //ToDo issue компилятора:
 // - #1952
 // - #1981
@@ -506,8 +508,8 @@ type
         cl.ReleaseCommandQueue(cq).RaiseIfError;
         Result := q.res;
       end;
-      Result := Task&<T>.Run(костыль_для_Result);
       
+      Result := Task.Run(костыль_для_Result);
     end;
     
     public function SyncInvoke<T>(q: CommandQueue<T>): T;
@@ -515,6 +517,7 @@ type
       var tsk := BeginInvoke(q);
       tsk.Wait; //ToDo плавающая ошибка - на этой строчке "System.Threading.Tasks.TaskCanceledException: Отменена задача."
       Result := tsk.Result;
+      // может там Task&<T>.Run криво вызывается... посмотреть IL
     end;
     
     public procedure Finalize; override :=
