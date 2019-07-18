@@ -2,8 +2,6 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
-//ToDo Rotate2D - для матриц 3х3 и 4x4 и всех больше добавить выбор - в какой плоскости вращение
-
 //ToDo Rotate3D - поворот относительно 3вектора
 
 //ToDo issue компилятора:

@@ -88,14 +88,14 @@ begin
   res +=      $'    private function GetValAt(i: integer): {t[2]};'+#10;
   res +=      $'    begin'+#10;
   res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
-  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0]} + y) * {t.GetElSize} );'+#10;
+  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + i*{t.GetElSize} );'+#10;
   res +=      $'      Result := ptr^;'+#10;
   res +=      $'    end;'+#10;
   
   res +=      $'    private procedure SetValAt(i: integer; val: {t[2]});'+#10;
   res +=      $'    begin'+#10;
   res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
-  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0]} + y) * {t.GetElSize} );'+#10;
+  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + i*{t.GetElSize} );'+#10;
   res +=      $'      ptr^ := val;'+#10;
   res +=      $'    end;'+#10;
   
@@ -123,6 +123,7 @@ begin
   res += $''' ]'' );'+#10;
   res += $'      Result := self;'+#10;
   res += $'    end;'+#10;
+  res += $'    '+#10;
   
   {$endregion function Println}
   
