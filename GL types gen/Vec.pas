@@ -29,6 +29,22 @@ type t_descr = (
 function GetName(self: t_descr); extensionmethod :=
 $'Vec{self[0]}{self[1]}';
 
+function GetElSize(self: t_descr): integer; extensionmethod;
+begin
+  case self[1] of
+    ''+'b':     Result := 1;
+    ''+'ub':    Result := 1;
+    ''+'s':     Result := 2;
+    ''+'us':    Result := 2;
+    ''+'i':     Result := 4;
+    ''+'ui':    Result := 4;
+    ''+'i64':   Result := 8;
+    ''+'ui64':  Result := 8;
+    ''+'f':     Result := 4;
+    ''+'d':     Result := 4;
+  end;
+end;
+
 function IsFloat(self: t_descr); extensionmethod :=
   self[1].Contains('f') or
   self[1].Contains('d')
@@ -71,20 +87,16 @@ begin
   
   res +=      $'    private function GetValAt(i: integer): {t[2]};'+#10;
   res +=      $'    begin'+#10;
-  res +=      $'      case i of'+#10;
-  for var i := 0 to t[0]-1 do
-    res +=    $'        {i}: Result := self.val{i};'+#10;
-  res +=      $'        else raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
-  res +=      $'      end;'+#10;
+  res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
+  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0]} + y) * {t.GetElSize} );'+#10;
+  res +=      $'      Result := ptr^;'+#10;
   res +=      $'    end;'+#10;
   
   res +=      $'    private procedure SetValAt(i: integer; val: {t[2]});'+#10;
   res +=      $'    begin'+#10;
-  res +=      $'      case i of'+#10;
-  for var i := 0 to t[0]-1 do
-    res +=    $'        {i}: self.val{i} := val;'+#10;
-  res +=      $'        else raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
-  res +=      $'      end;'+#10;
+  res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
+  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0]} + y) * {t.GetElSize} );'+#10;
+  res +=      $'      ptr^ := val;'+#10;
   res +=      $'    end;'+#10;
   
   res += $'    public property val[i: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;

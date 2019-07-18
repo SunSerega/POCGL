@@ -2099,17 +2099,15 @@ type
     
     private function GetValAt(i: integer): SByte;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*1 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: SByte);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*1 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
@@ -2135,17 +2133,15 @@ type
     
     private function GetValAt(i: integer): Byte;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*1 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Byte);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*1 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
@@ -2173,17 +2169,15 @@ type
     
     private function GetValAt(i: integer): Int16;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*1 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int16);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*1 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
@@ -2215,17 +2209,15 @@ type
     
     private function GetValAt(i: integer): UInt16;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*1 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt16);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*1 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
@@ -2259,17 +2251,15 @@ type
     
     private function GetValAt(i: integer): Int32;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int32);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
@@ -2307,17 +2297,15 @@ type
     
     private function GetValAt(i: integer): UInt32;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt32);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
@@ -2357,17 +2345,15 @@ type
     
     private function GetValAt(i: integer): Int64;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*1 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int64);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*1 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
@@ -2411,17 +2397,15 @@ type
     
     private function GetValAt(i: integer): UInt64;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*1 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt64);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*1 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
@@ -2467,17 +2451,15 @@ type
     
     private function GetValAt(i: integer): single;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: single);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
@@ -2527,17 +2509,15 @@ type
     
     private function GetValAt(i: integer): double;
     begin
-      case i of
-        0: Result := self.val0;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: double);
     begin
-      case i of
-        0: self.val0 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
-      end;
+      if cardinal(i) > 0 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..0');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*1 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
@@ -2595,19 +2575,15 @@ type
     
     private function GetValAt(i: integer): SByte;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*2 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: SByte);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*2 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
@@ -2665,19 +2641,15 @@ type
     
     private function GetValAt(i: integer): Byte;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*2 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Byte);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*2 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
@@ -2737,19 +2709,15 @@ type
     
     private function GetValAt(i: integer): Int16;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*2 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int16);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*2 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
@@ -2813,19 +2781,15 @@ type
     
     private function GetValAt(i: integer): UInt16;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*2 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt16);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*2 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
@@ -2891,19 +2855,15 @@ type
     
     private function GetValAt(i: integer): Int32;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int32);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
@@ -2973,19 +2933,15 @@ type
     
     private function GetValAt(i: integer): UInt32;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt32);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
@@ -3057,19 +3013,15 @@ type
     
     private function GetValAt(i: integer): Int64;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*2 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int64);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*2 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
@@ -3145,19 +3097,15 @@ type
     
     private function GetValAt(i: integer): UInt64;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*2 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt64);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*2 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
@@ -3235,19 +3183,15 @@ type
     
     private function GetValAt(i: integer): single;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: single);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
@@ -3329,19 +3273,15 @@ type
     
     private function GetValAt(i: integer): double;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: double);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
-      end;
+      if cardinal(i) > 1 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..1');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*2 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
@@ -3431,21 +3371,15 @@ type
     
     private function GetValAt(i: integer): SByte;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*3 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: SByte);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*3 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
@@ -3535,21 +3469,15 @@ type
     
     private function GetValAt(i: integer): Byte;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*3 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Byte);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*3 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
@@ -3641,21 +3569,15 @@ type
     
     private function GetValAt(i: integer): Int16;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*3 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int16);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*3 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
@@ -3751,21 +3673,15 @@ type
     
     private function GetValAt(i: integer): UInt16;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*3 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt16);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*3 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
@@ -3863,21 +3779,15 @@ type
     
     private function GetValAt(i: integer): Int32;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int32);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
@@ -3979,21 +3889,15 @@ type
     
     private function GetValAt(i: integer): UInt32;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt32);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
@@ -4097,21 +4001,15 @@ type
     
     private function GetValAt(i: integer): Int64;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*3 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int64);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*3 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
@@ -4219,21 +4117,15 @@ type
     
     private function GetValAt(i: integer): UInt64;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*3 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt64);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*3 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
@@ -4343,21 +4235,15 @@ type
     
     private function GetValAt(i: integer): single;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: single);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
@@ -4471,21 +4357,15 @@ type
     
     private function GetValAt(i: integer): double;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: double);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
-      end;
+      if cardinal(i) > 2 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..2');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*3 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
@@ -4607,23 +4487,15 @@ type
     
     private function GetValAt(i: integer): SByte;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*4 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: SByte);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^SByte := pointer(new IntPtr(@self) + (x*4 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
@@ -4745,23 +4617,15 @@ type
     
     private function GetValAt(i: integer): Byte;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*4 + y) * 1 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Byte);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Byte := pointer(new IntPtr(@self) + (x*4 + y) * 1 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
@@ -4885,23 +4749,15 @@ type
     
     private function GetValAt(i: integer): Int16;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*4 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int16);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Int16 := pointer(new IntPtr(@self) + (x*4 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
@@ -5029,23 +4885,15 @@ type
     
     private function GetValAt(i: integer): UInt16;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*4 + y) * 2 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt16);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^UInt16 := pointer(new IntPtr(@self) + (x*4 + y) * 2 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
@@ -5175,23 +5023,15 @@ type
     
     private function GetValAt(i: integer): Int32;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int32);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Int32 := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
@@ -5325,23 +5165,15 @@ type
     
     private function GetValAt(i: integer): UInt32;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt32);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^UInt32 := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
@@ -5477,23 +5309,15 @@ type
     
     private function GetValAt(i: integer): Int64;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*4 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: Int64);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^Int64 := pointer(new IntPtr(@self) + (x*4 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
@@ -5633,23 +5457,15 @@ type
     
     private function GetValAt(i: integer): UInt64;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*4 + y) * 8 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: UInt64);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^UInt64 := pointer(new IntPtr(@self) + (x*4 + y) * 8 );
+      ptr^ := val;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
@@ -5791,23 +5607,15 @@ type
     
     private function GetValAt(i: integer): single;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: single);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^single := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
@@ -5953,23 +5761,15 @@ type
     
     private function GetValAt(i: integer): double;
     begin
-      case i of
-        0: Result := self.val0;
-        1: Result := self.val1;
-        2: Result := self.val2;
-        3: Result := self.val3;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      Result := ptr^;
     end;
     private procedure SetValAt(i: integer; val: double);
     begin
-      case i of
-        0: self.val0 := val;
-        1: self.val1 := val;
-        2: self.val2 := val;
-        3: self.val3 := val;
-        else raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
-      end;
+      if cardinal(i) > 3 then raise new IndexOutOfRangeException('Индекс должен иметь значение 0..3');
+      var ptr: ^double := pointer(new IntPtr(@self) + (x*4 + y) * 4 );
+      ptr^ := val;
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
