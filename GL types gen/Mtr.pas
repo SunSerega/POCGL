@@ -306,6 +306,8 @@ begin
   
   {$region operator's}
   
+  {$region arithmetics}
+  
   res += $'    '+#10;
   
   res += $'    public static function operator*(m: {t.GetName}; v: {t.GetRowTName}): {t.GetColTName} := new {t.GetColTName}(';
@@ -330,7 +332,9 @@ begin
     ).JoinIntoString(', ');
   res += $');'+#10;
   
+  {$endregion arithmetics}
   
+  {$region operator implicit}
   
   foreach var t2 in prev_tps do
   begin
@@ -353,6 +357,8 @@ begin
     res += $');'+#10;
     
   end;
+  
+  {$endregion operator implicit}
   
   {$endregion operator's}
   

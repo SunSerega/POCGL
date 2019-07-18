@@ -2,6 +2,8 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
+{$region Misc helpers}
+
 function gl_to_pas_t(self: string): string; extensionmethod;
 begin
   case self of
@@ -32,18 +34,22 @@ function IsFloat(self: t_descr); extensionmethod :=
   self[1].Contains('d')
 ;
 
+{$endregion Misc helpers}
+
 procedure AddVecType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
 begin
   res += $'  '+#10;
   res += $'  {t.GetName} = record'+#10;
   
-  
+  {$region field's}
   
   for var i := 0 to t[0]-1 do
     res += $'    public val{i}: {t[2]};'+#10;
   res += $'    '+#10;
   
+  {$endregion field's}
   
+  {$region constructor's}
   
   res += $'    public constructor(';
   res += Range(0,t[0]-1).Select(i->$'val{i}').JoinIntoString(', ');
@@ -57,7 +63,11 @@ begin
   res += $'    end;'+#10;
   res += $'    '+#10;
   
+  {$endregion constructor's}
   
+  {$region property's}
+  
+  {$region property val[i]}
   
   res +=      $'    private function GetValAt(i: integer): {t[2]};'+#10;
   res +=      $'    begin'+#10;
@@ -80,7 +90,35 @@ begin
   res += $'    public property val[i: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
   res += $'    '+#10;
   
+  {$endregion property val[i]}
   
+  {$endregion property's}
+  
+  {$region method's}
+  
+  {$region function Println}
+  
+  res += $'    public function Println: {t.GetName};'+#10;
+  res += $'    begin'+#10;
+  res += $'      writeln( ''[ '', ';
+  
+  for var i := 0 to t[0]-1 do
+  begin
+    res += $'val{i}.ToString(''f2''), ';
+    if i <> t[0]-1 then res += ''', '', ';
+  end;
+  
+  res += $''' ]'' );'+#10;
+  res += $'      Result := self;'+#10;
+  res += $'    end;'+#10;
+  
+  {$endregion function Println}
+  
+  {$endregion method's}
+  
+  {$region operator's}
+  
+  {$region arithmetics}
   
   if not t[1].Contains('u') then
   begin
@@ -103,7 +141,9 @@ begin
   
   res += $'    '+#10;
   
+  {$endregion arithmetics}
   
+  {$region operator implicit}
   
   var get_val_str: integer->string := i->$'v.val{i}';
   var get_conv_val_str_templ: (integer,t_descr)->string := (i,t2)->$'Convert.To{t2[2]}(v.val{i})';
@@ -138,7 +178,9 @@ begin
     res += $'    '+#10;
   end;
   
+  {$endregion operator implicit}
   
+  {$endregion operator's}
   
   res += $'  end;'+#10;
 end;

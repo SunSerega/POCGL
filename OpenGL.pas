@@ -2113,6 +2113,11 @@ type
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
+    public function Println: Vec1b;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec1b): Vec1b := new Vec1b(-v.val0);
     public static function operator*(v: Vec1b; k: SByte): Vec1b := new Vec1b(v.val0*k);
     public static function operator+(v1, v2: Vec1b): Vec1b := new Vec1b(v1.val0+v2.val0);
@@ -2144,6 +2149,11 @@ type
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public function Println: Vec1ub;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec1ub; k: Byte): Vec1ub := new Vec1ub(v.val0*k);
     public static function operator+(v1, v2: Vec1ub): Vec1ub := new Vec1ub(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ub): Vec1ub := new Vec1ub(v1.val0-v2.val0);
@@ -2177,6 +2187,11 @@ type
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec1s;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec1s): Vec1s := new Vec1s(-v.val0);
     public static function operator*(v: Vec1s; k: Int16): Vec1s := new Vec1s(v.val0*k);
     public static function operator+(v1, v2: Vec1s): Vec1s := new Vec1s(v1.val0+v2.val0);
@@ -2214,6 +2229,11 @@ type
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec1us;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec1us; k: UInt16): Vec1us := new Vec1us(v.val0*k);
     public static function operator+(v1, v2: Vec1us): Vec1us := new Vec1us(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1us): Vec1us := new Vec1us(v1.val0-v2.val0);
@@ -2253,6 +2273,11 @@ type
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec1i;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec1i): Vec1i := new Vec1i(-v.val0);
     public static function operator*(v: Vec1i; k: Int32): Vec1i := new Vec1i(v.val0*k);
     public static function operator+(v1, v2: Vec1i): Vec1i := new Vec1i(v1.val0+v2.val0);
@@ -2296,6 +2321,11 @@ type
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec1ui;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec1ui; k: UInt32): Vec1ui := new Vec1ui(v.val0*k);
     public static function operator+(v1, v2: Vec1ui): Vec1ui := new Vec1ui(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ui): Vec1ui := new Vec1ui(v1.val0-v2.val0);
@@ -2341,6 +2371,11 @@ type
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec1i64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec1i64): Vec1i64 := new Vec1i64(-v.val0);
     public static function operator*(v: Vec1i64; k: Int64): Vec1i64 := new Vec1i64(v.val0*k);
     public static function operator+(v1, v2: Vec1i64): Vec1i64 := new Vec1i64(v1.val0+v2.val0);
@@ -2390,6 +2425,11 @@ type
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec1ui64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec1ui64; k: UInt64): Vec1ui64 := new Vec1ui64(v.val0*k);
     public static function operator+(v1, v2: Vec1ui64): Vec1ui64 := new Vec1ui64(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ui64): Vec1ui64 := new Vec1ui64(v1.val0-v2.val0);
@@ -2441,6 +2481,11 @@ type
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
+    public function Println: Vec1f;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec1f): Vec1f := new Vec1f(-v.val0);
     public static function operator*(v: Vec1f; k: single): Vec1f := new Vec1f(v.val0*k);
     public static function operator+(v1, v2: Vec1f): Vec1f := new Vec1f(v1.val0+v2.val0);
@@ -2496,6 +2541,11 @@ type
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
+    public function Println: Vec1d;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec1d): Vec1d := new Vec1d(-v.val0);
     public static function operator*(v: Vec1d; k: double): Vec1d := new Vec1d(v.val0*k);
     public static function operator+(v1, v2: Vec1d): Vec1d := new Vec1d(v1.val0+v2.val0);
@@ -2561,6 +2611,11 @@ type
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
+    public function Println: Vec2b;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec2b): Vec2b := new Vec2b(-v.val0, -v.val1);
     public static function operator*(v: Vec2b; k: SByte): Vec2b := new Vec2b(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2b): Vec2b := new Vec2b(v1.val0+v2.val0, v1.val1+v2.val1);
@@ -2626,6 +2681,11 @@ type
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public function Println: Vec2ub;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec2ub; k: Byte): Vec2ub := new Vec2ub(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2ub): Vec2ub := new Vec2ub(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ub): Vec2ub := new Vec2ub(v1.val0-v2.val0, v1.val1-v2.val1);
@@ -2693,6 +2753,11 @@ type
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec2s;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec2s): Vec2s := new Vec2s(-v.val0, -v.val1);
     public static function operator*(v: Vec2s; k: Int16): Vec2s := new Vec2s(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2s): Vec2s := new Vec2s(v1.val0+v2.val0, v1.val1+v2.val1);
@@ -2764,6 +2829,11 @@ type
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec2us;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec2us; k: UInt16): Vec2us := new Vec2us(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2us): Vec2us := new Vec2us(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2us): Vec2us := new Vec2us(v1.val0-v2.val0, v1.val1-v2.val1);
@@ -2837,6 +2907,11 @@ type
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec2i;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec2i): Vec2i := new Vec2i(-v.val0, -v.val1);
     public static function operator*(v: Vec2i; k: Int32): Vec2i := new Vec2i(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2i): Vec2i := new Vec2i(v1.val0+v2.val0, v1.val1+v2.val1);
@@ -2914,6 +2989,11 @@ type
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec2ui;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec2ui; k: UInt32): Vec2ui := new Vec2ui(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2ui): Vec2ui := new Vec2ui(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ui): Vec2ui := new Vec2ui(v1.val0-v2.val0, v1.val1-v2.val1);
@@ -2993,6 +3073,11 @@ type
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec2i64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec2i64): Vec2i64 := new Vec2i64(-v.val0, -v.val1);
     public static function operator*(v: Vec2i64; k: Int64): Vec2i64 := new Vec2i64(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2i64): Vec2i64 := new Vec2i64(v1.val0+v2.val0, v1.val1+v2.val1);
@@ -3076,6 +3161,11 @@ type
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec2ui64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec2ui64; k: UInt64): Vec2ui64 := new Vec2ui64(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2ui64): Vec2ui64 := new Vec2ui64(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ui64): Vec2ui64 := new Vec2ui64(v1.val0-v2.val0, v1.val1-v2.val1);
@@ -3161,6 +3251,11 @@ type
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
+    public function Println: Vec2f;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec2f): Vec2f := new Vec2f(-v.val0, -v.val1);
     public static function operator*(v: Vec2f; k: single): Vec2f := new Vec2f(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2f): Vec2f := new Vec2f(v1.val0+v2.val0, v1.val1+v2.val1);
@@ -3250,6 +3345,11 @@ type
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
+    public function Println: Vec2d;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec2d): Vec2d := new Vec2d(-v.val0, -v.val1);
     public static function operator*(v: Vec2d; k: double): Vec2d := new Vec2d(v.val0*k, v.val1*k);
     public static function operator+(v1, v2: Vec2d): Vec2d := new Vec2d(v1.val0+v2.val0, v1.val1+v2.val1);
@@ -3349,6 +3449,11 @@ type
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
+    public function Println: Vec3b;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec3b): Vec3b := new Vec3b(-v.val0, -v.val1, -v.val2);
     public static function operator*(v: Vec3b; k: SByte): Vec3b := new Vec3b(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3b): Vec3b := new Vec3b(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
@@ -3448,6 +3553,11 @@ type
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public function Println: Vec3ub;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec3ub; k: Byte): Vec3ub := new Vec3ub(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3ub): Vec3ub := new Vec3ub(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ub): Vec3ub := new Vec3ub(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
@@ -3549,6 +3659,11 @@ type
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec3s;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec3s): Vec3s := new Vec3s(-v.val0, -v.val1, -v.val2);
     public static function operator*(v: Vec3s; k: Int16): Vec3s := new Vec3s(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3s): Vec3s := new Vec3s(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
@@ -3654,6 +3769,11 @@ type
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec3us;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec3us; k: UInt16): Vec3us := new Vec3us(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3us): Vec3us := new Vec3us(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3us): Vec3us := new Vec3us(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
@@ -3761,6 +3881,11 @@ type
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec3i;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec3i): Vec3i := new Vec3i(-v.val0, -v.val1, -v.val2);
     public static function operator*(v: Vec3i; k: Int32): Vec3i := new Vec3i(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3i): Vec3i := new Vec3i(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
@@ -3872,6 +3997,11 @@ type
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec3ui;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec3ui; k: UInt32): Vec3ui := new Vec3ui(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3ui): Vec3ui := new Vec3ui(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ui): Vec3ui := new Vec3ui(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
@@ -3985,6 +4115,11 @@ type
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec3i64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec3i64): Vec3i64 := new Vec3i64(-v.val0, -v.val1, -v.val2);
     public static function operator*(v: Vec3i64; k: Int64): Vec3i64 := new Vec3i64(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3i64): Vec3i64 := new Vec3i64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
@@ -4102,6 +4237,11 @@ type
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec3ui64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec3ui64; k: UInt64): Vec3ui64 := new Vec3ui64(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3ui64): Vec3ui64 := new Vec3ui64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ui64): Vec3ui64 := new Vec3ui64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
@@ -4221,6 +4361,11 @@ type
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
+    public function Println: Vec3f;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec3f): Vec3f := new Vec3f(-v.val0, -v.val1, -v.val2);
     public static function operator*(v: Vec3f; k: single): Vec3f := new Vec3f(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3f): Vec3f := new Vec3f(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
@@ -4344,6 +4489,11 @@ type
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
+    public function Println: Vec3d;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec3d): Vec3d := new Vec3d(-v.val0, -v.val1, -v.val2);
     public static function operator*(v: Vec3d; k: double): Vec3d := new Vec3d(v.val0*k, v.val1*k, v.val2*k);
     public static function operator+(v1, v2: Vec3d): Vec3d := new Vec3d(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
@@ -4477,6 +4627,11 @@ type
     end;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
+    public function Println: Vec4b;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec4b): Vec4b := new Vec4b(-v.val0, -v.val1, -v.val2, -v.val3);
     public static function operator*(v: Vec4b; k: SByte): Vec4b := new Vec4b(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4b): Vec4b := new Vec4b(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
@@ -4610,6 +4765,11 @@ type
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public function Println: Vec4ub;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec4ub; k: Byte): Vec4ub := new Vec4ub(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4ub): Vec4ub := new Vec4ub(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ub): Vec4ub := new Vec4ub(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
@@ -4745,6 +4905,11 @@ type
     end;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec4s;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec4s): Vec4s := new Vec4s(-v.val0, -v.val1, -v.val2, -v.val3);
     public static function operator*(v: Vec4s; k: Int16): Vec4s := new Vec4s(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4s): Vec4s := new Vec4s(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
@@ -4884,6 +5049,11 @@ type
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public function Println: Vec4us;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec4us; k: UInt16): Vec4us := new Vec4us(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4us): Vec4us := new Vec4us(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4us): Vec4us := new Vec4us(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
@@ -5025,6 +5195,11 @@ type
     end;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec4i;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec4i): Vec4i := new Vec4i(-v.val0, -v.val1, -v.val2, -v.val3);
     public static function operator*(v: Vec4i; k: Int32): Vec4i := new Vec4i(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4i): Vec4i := new Vec4i(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
@@ -5170,6 +5345,11 @@ type
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public function Println: Vec4ui;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec4ui; k: UInt32): Vec4ui := new Vec4ui(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4ui): Vec4ui := new Vec4ui(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ui): Vec4ui := new Vec4ui(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
@@ -5317,6 +5497,11 @@ type
     end;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec4i64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec4i64): Vec4i64 := new Vec4i64(-v.val0, -v.val1, -v.val2, -v.val3);
     public static function operator*(v: Vec4i64; k: Int64): Vec4i64 := new Vec4i64(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4i64): Vec4i64 := new Vec4i64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
@@ -5468,6 +5653,11 @@ type
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public function Println: Vec4ui64;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator*(v: Vec4ui64; k: UInt64): Vec4ui64 := new Vec4ui64(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4ui64): Vec4ui64 := new Vec4ui64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ui64): Vec4ui64 := new Vec4ui64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
@@ -5621,6 +5811,11 @@ type
     end;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
+    public function Println: Vec4f;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec4f): Vec4f := new Vec4f(-v.val0, -v.val1, -v.val2, -v.val3);
     public static function operator*(v: Vec4f; k: single): Vec4f := new Vec4f(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4f): Vec4f := new Vec4f(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
@@ -5778,6 +5973,11 @@ type
     end;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
+    public function Println: Vec4d;
+    begin
+      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Result := self;
+    end;
     public static function operator-(v: Vec4d): Vec4d := new Vec4d(-v.val0, -v.val1, -v.val2, -v.val3);
     public static function operator*(v: Vec4d; k: double): Vec4d := new Vec4d(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator+(v1, v2: Vec4d): Vec4d := new Vec4d(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
