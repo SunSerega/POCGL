@@ -125,7 +125,7 @@ begin
     var res := new StringBuilder;
     foreach var fname in System.IO.Directory.EnumerateFiles(HeadersFolder, '*.h', System.IO.SearchOption.AllDirectories) do
     begin
-//      writeln(fname);
+      writeln(fname);
       System.Windows.Forms.Clipboard.SetText(ReadAllText(fname));
       System.Diagnostics.Process.Start('gl format func.exe').WaitForExit;
       

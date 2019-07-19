@@ -75,6 +75,9 @@ type
   VertexArrayName               = UInt32;
   TransformFeedbackName         = UInt32;
   
+  GLContext                     = UInt32;
+  GDI_DC                        = IntPtr;
+  
   ShaderBinaryFormat            = UInt32;
   ProgramResourceIndex          = UInt32;
   ProgramBinaryFormat           = UInt32;
@@ -82,7 +85,6 @@ type
   GLhandleARB                   = UInt32;
   GLeglClientBufferEXT          = IntPtr;
   GLvdpauSurfaceNV              = IntPtr;
-  HGLRC                         = UInt32; //ToDo вроде это что то для связки с GDI... если в конце окажется не нужно - удалить
   
   
   
@@ -317,6 +319,27 @@ type
   end;
   
   {$endregion ...InfoType}
+  
+  //S
+  GDI_LayerType = record
+    public val: Byte;
+    public constructor(val: Byte) := self.val := val;
+    
+    public static property MAIN_PLANE:      GDI_LayerType read new GDI_LayerType(0);
+    public static property OVERLAY_PLANE:   GDI_LayerType read new GDI_LayerType(1);
+    public static property UNDERLAY_PLANE:  GDI_LayerType read new GDI_LayerType(-1);
+    
+  end;
+  
+  //S
+  GDI_PixelDataType = record
+    public val: Byte;
+    public constructor(val: Byte) := self.val := val;
+    
+    public static property RGBA:        GDI_PixelDataType read new GDI_PixelDataType(0);
+    public static property COLORINDEX:  GDI_PixelDataType read new GDI_PixelDataType(1);
+    
+  end;
   
   //S
   CopyableImageBuffer = record
@@ -1951,6 +1974,33 @@ type
   {$endregion 1 значение}
   
   {$region Флаги}
+  
+  //S
+  GDI_PixelFormatFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property DOUBLEBUFFER:          GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000001);
+    public static property STEREO:                GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000002);
+    public static property DRAW_TO_WINDOW:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000004);
+    public static property DRAW_TO_BITMAP:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000008);
+    public static property SUPPORT_GDI:           GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000010);
+    public static property SUPPORT_OPENGL:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000020);
+    public static property GENERIC_FORMAT:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000040);
+    public static property NEED_PALETTE:          GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000080);
+    public static property NEED_SYSTEM_PALETTE:   GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000100);
+    public static property SWAP_EXCHANGE:         GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000200);
+    public static property SWAP_COPY:             GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000400);
+    public static property SWAP_LAYER_BUFFERS:    GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00000800);
+    public static property GENERIC_ACCELERATED:   GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00001000);
+    public static property SUPPORT_DIRECTDRAW:    GDI_PixelFormatFlags read new GDI_PixelFormatFlags($00002000);
+    public static property DEPTH_DONTCARE:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($20000000);
+    public static property DOUBLEBUFFER_DONTCARE: GDI_PixelFormatFlags read new GDI_PixelFormatFlags($40000000);
+    public static property STEREO_DONTCARE:       GDI_PixelFormatFlags read new GDI_PixelFormatFlags($80000000);
+    
+    public static function operator or(v1,v2: GDI_PixelFormatFlags): GDI_PixelFormatFlags := new GDI_PixelFormatFlags(v1.val or v2.val);
+    
+  end;
   
   //S
   BufferTypeFlags = record
@@ -10333,6 +10383,44 @@ type
     
   end;
   
+  GDI_PixelFormatDescriptor = record
+    nSize:            UInt16 := sizeof(GDI_PixelFormatDescriptor);
+    nVersion:         UInt16 := 1;
+    
+    dwFlags:          GDI_PixelFormatFlags;
+    iPixelType:       GDI_PixelDataType;
+    
+    cColorBits:       Byte; // кол-во битов для R+G+B
+    
+    cRedBits:         Byte; // похоже, если оставить нулями - их автоматом заполнит
+    cRedShift:        Byte;
+    cGreenBits:       Byte;
+    cGreenShift:      Byte;
+    cBlueBits:        Byte;
+    cBlueShift:       Byte;
+    cAlphaBits:       Byte; // последние 2 не работают на Windows
+    cAlphaShift:      Byte;
+    
+    cAccumBits:       Byte;
+    cAccumRedBits:    Byte;
+    cAccumGreenBits:  Byte;
+    cAccumBlueBits:   Byte;
+    cAccumAlphaBits:  Byte;
+    
+    cDepthBits:       Byte;
+    cStencilBits:     Byte;
+    cAuxBuffers:      Byte; // устарело
+    
+    iLayerType:       GDI_LayerType; // устарело
+    bLayersSize:      Byte; // разделено на 2 числа по 4 бита, и бесполезно без iLayerType, то есть оно тоже устарело
+    
+    // не смог найти нормального описания последних 3, но все присваивают им нолики
+    dwLayerMask:      UInt32;
+    dwVisibleMask:    UInt32;
+    dwDamageMask:     UInt32;
+    
+  end;
+  
   {$endregion Misc}
   
 {$endregion Записи}
@@ -13576,24 +13664,16 @@ type
     static procedure VertexArrayVertexBuffer(vaobj: VertexArrayName; bindingindex: UInt32; buffer: BufferName; offset: IntPtr; stride: Int32);
     external 'opengl32.dll' name 'glVertexArrayVertexBuffer';
     
-    static procedure BindVertexBuffers(first: UInt32; count: Int32; var buffers: BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] strides: array of Int32);
+    static procedure BindVertexBuffers(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] strides: array of Int32);
     external 'opengl32.dll' name 'glBindVertexBuffers';
     static procedure BindVertexBuffers(first: UInt32; count: Int32; var buffers: BufferName; var offsets: IntPtr; var strides: Int32);
-    external 'opengl32.dll' name 'glBindVertexBuffers';
-    static procedure BindVertexBuffers(first: UInt32; count: Int32; var buffers: BufferName; offsets: pointer; strides: pointer);
-    external 'opengl32.dll' name 'glBindVertexBuffers';
-    static procedure BindVertexBuffers(first: UInt32; count: Int32; buffers: pointer; var offsets: IntPtr; var strides: Int32);
     external 'opengl32.dll' name 'glBindVertexBuffers';
     static procedure BindVertexBuffers(first: UInt32; count: Int32; buffers: pointer; offsets: pointer; strides: pointer);
     external 'opengl32.dll' name 'glBindVertexBuffers';
     
-    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; var buffers: BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] strides: array of Int32);
+    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] buffers: array of BufferName; [MarshalAs(UnmanagedType.LPArray)] offsets: array of IntPtr; [MarshalAs(UnmanagedType.LPArray)] strides: array of Int32);
     external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
     static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; var buffers: BufferName; var offsets: IntPtr; var strides: Int32);
-    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
-    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; var buffers: BufferName; offsets: pointer; strides: pointer);
-    external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
-    static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; buffers: pointer; var offsets: IntPtr; var strides: Int32);
     external 'opengl32.dll' name 'glVertexArrayVertexBuffers';
     static procedure VertexArrayVertexBuffers(vaobj: VertexArrayName; first: UInt32; count: Int32; buffers: pointer; offsets: pointer; strides: pointer);
     external 'opengl32.dll' name 'glVertexArrayVertexBuffers';

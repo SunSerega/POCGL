@@ -61,6 +61,7 @@ begin
   var pfd: PIXELFORMATDESCRIPTOR;
   pfd.nSize := sizeof( PIXELFORMATDESCRIPTOR );
   pfd.nVersion := 1;
+  
   pfd.dwFlags := $1 or $4 or $20;
   pfd.cColorBits := 24;
   pfd.cDepthBits := 16;
@@ -121,7 +122,7 @@ begin
         SwapBuffers(hdc);
       end);
       
-      Sleep(1);
+      Sleep(16);
     end).Start;
     
   end;

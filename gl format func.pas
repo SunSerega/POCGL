@@ -102,40 +102,59 @@ begin
   
   case s.ToLower of
     
-    'glbyte':         s := 'SByte';
-    'glubyte':        s := 'Byte';
-    'glchar':         s := 'Byte';
-    'glchararb':      s := 'Byte';
-    'glboolean':      s := 'Byte';
+    'bool':                   s := 'boolean';
     
-    'glshort':        s := 'Int16';
-    'glushort':       s := 'UInt16';
+    'glbyte':                 s := 'SByte';
+    'glubyte':                s := 'Byte';
+    'glchararb':              s := 'Byte';
+    'glboolean':              s := 'Byte';
     
-    'glint':          s := 'Int32';
-    'glsizei':        s := 'Int32';
-    'glclampx':       s := 'Int32'; //ToDo размер тот же, но по названию - применение нет
-    'gluint':         s := 'UInt32';
-    'glbitfield':     s := 'UInt32';
+    'glshort':                s := 'Int16';
+    'glushort':               s := 'UInt16';
     
-    'glint64':        s := 'Int64';
-    'glint64ext':     s := 'Int64';
-    'gluint64':       s := 'UInt64';
-    'gluint64ext':    s := 'UInt64';
+    'glint':                  s := 'Int32';
+    'glsizei':                s := 'Int32';
+    'glclampx':               s := 'Int32'; //ToDo размер тот же, но по названию - применение нет
+    'int':                    s := 'Int32';
+    'gluint':                 s := 'UInt32';
+    'glbitfield':             s := 'UInt32';
+    'uint':                   s := 'UInt32';
+    'dword':                  s := 'UInt32';
     
-    'glfloat':        s := 'single';
-    'glclampf':       s := 'single';
-    'gldouble':       s := 'double';
-    'glclampd':       s := 'double';
+    'glint64':                s := 'Int64';
+    'glint64ext':             s := 'Int64';
+    'int64':                  s := 'Int64';
+    'gluint64':               s := 'UInt64';
+    'gluint64ext':            s := 'UInt64';
+    'unsignedlong':           s := 'UInt64';
     
-    'glfixed':        s := 'fixed';
-    'glhalfnv':       s := 'half';
+    'glfloat':                s := 'single';
+    'glclampf':               s := 'single';
+    'float':                  s := 'single';
+    'gldouble':               s := 'double';
+    'glclampd':               s := 'double';
     
-    'glintptr':       s := 'IntPtr';
-    'glintptrarb':    s := 'IntPtr';
-    'glsizeiptr':     s := 'UIntPtr';
-    'glsizeiptrarb':  s := 'UIntPtr'; 
+    'glfixed':                s := 'fixed';
+    'glhalfnv':               s := 'half';
     
-    'glenum':         s := 'ErrorCode';
+    'glintptr':               s := 'IntPtr';
+    'glintptrarb':            s := 'IntPtr';
+    'proc':                   s := 'IntPtr';
+    'handle':                 s := 'IntPtr';
+    'glsizeiptr':             s := 'UIntPtr';
+    'glsizeiptrarb':          s := 'UIntPtr'; 
+    
+    'glenum':                 s := 'ErrorCode';
+    
+    'hdc':                    s := 'GDI_DC';
+    'pixelformatdescriptor':  s := 'GDI_PixelFormatDescriptor';
+    'henhmetafile':           s := 'GDI_HENHMetafile';
+    'hglrc':                  s := 'HGLRC';
+    'layerplanedescriptor':   s := 'GDI_LayerPlaneDescriptor';
+    'colorref':               s := 'GDI_COLORREF';
+    'lpcstr':                 s := 'string';
+    'lpglyphmetricsfloat':    s := 'GDI_LPGlyphmetricsFloat';
+    'hpbufferarb':            s := 'HPBufferARB';
     
     'glvoid',
     'void':
@@ -143,7 +162,19 @@ begin
     begin
       s := 'pointer';
       rc -= 1;
-    end;
+    end else
+      s := 'void';
+    
+    'glchar',
+    'char':
+    if rc<>0 then
+    begin
+      s := 'string';
+      rc -= 1;
+    end else
+      s := 'ByteString';
+    
+    else raise new System.ArgumentException($'тип "{s}" не описан');
   end;
   
   Result := '^'*rc + s;
@@ -157,11 +188,10 @@ type
     
     par := new List<(string,string)>;
     
-    constructor(a: array of char);
+    constructor(s: string);
     begin
       
-      var s := new string(a);
-      s := s.Remove('APIENTRY').Replace(#10,' ');
+      s := s.Remove('APIENTRY', 'WINAPI');
       
       var ind1 := s.IndexOf('(');
       var ind2 := s.LastIndexOf(')');
@@ -251,10 +281,14 @@ begin
     var text := System.Windows.Forms.Clipboard.GetText;
     
     text := text
+      .Remove(#13)
       .SkipCharsFromTo('/*', '*/')
-      .TakeCharsFromTo('GLAPI', ';')
-      .Where(a->not string.Create(a).Contains('#define'))
-      .Select(a->FuncDef.Create(a).ToString)
+      .SkipCharsFromTo('typedef',';')
+      .SkipCharsFromTo('#define',#10)
+      .JoinIntoString('')
+      .ToWords(#10)
+      .Where(l->l.Contains('API '))
+      .Select(l->FuncDef.Create(l).ToString)
       .JoinIntoString('    '#10);
     
     text += '    ';
