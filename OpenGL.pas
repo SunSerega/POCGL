@@ -14140,11 +14140,11 @@ type
     
     // 11.2.2
     
-    static procedure PatchParameterfv(pname: PatchMode; [MarshalAs(UnmanagedType.LPArray)] values: array of single);
-    external 'opengl32.dll' name 'glPatchParameterfv';
     static procedure PatchParameterfv(pname: PatchMode; var values: Vec2f);
     external 'opengl32.dll' name 'glPatchParameterfv';
     static procedure PatchParameterfv(pname: PatchMode; var values: Vec4f);
+    external 'opengl32.dll' name 'glPatchParameterfv';
+    static procedure PatchParameterfv(pname: PatchMode; [MarshalAs(UnmanagedType.LPArray)] values: array of single);
     external 'opengl32.dll' name 'glPatchParameterfv';
     static procedure PatchParameterfv(pname: PatchMode; var values: single);
     external 'opengl32.dll' name 'glPatchParameterfv';
@@ -14242,6 +14242,10 @@ type
     
     // 13.8.1
     
+    static procedure DepthRangeArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of Vec2d);
+    external 'opengl32.dll' name 'glDepthRangeArrayv';
+    static procedure DepthRangeArrayv(first: UInt32; count: Int32; var v: Vec2d);
+    external 'opengl32.dll' name 'glDepthRangeArrayv';
     static procedure DepthRangeArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of double);
     external 'opengl32.dll' name 'glDepthRangeArrayv';
     static procedure DepthRangeArrayv(first: UInt32; count: Int32; var v: double);
@@ -14249,15 +14253,19 @@ type
     static procedure DepthRangeArrayv(first: UInt32; count: Int32; v: pointer);
     external 'opengl32.dll' name 'glDepthRangeArrayv';
     
-    static procedure DepthRangeIndexed(index: UInt32; n: double; f: double);
+    static procedure DepthRangeIndexed(index: UInt32; nearVal: double; farVal: double);
     external 'opengl32.dll' name 'glDepthRangeIndexed';
     
-    static procedure DepthRange(n: double; f: double);
+    static procedure DepthRange(nearVal: double; farVal: double);
     external 'opengl32.dll' name 'glDepthRange';
     
-    static procedure DepthRangef(n: single; f: single);
+    static procedure DepthRangef(nearVal: single; farVal: single);
     external 'opengl32.dll' name 'glDepthRangef';
     
+    static procedure ViewportArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of Vec4f);
+    external 'opengl32.dll' name 'glViewportArrayv';
+    static procedure ViewportArrayv(first: UInt32; count: Int32; var v: Vec4f);
+    external 'opengl32.dll' name 'glViewportArrayv';
     static procedure ViewportArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
     external 'opengl32.dll' name 'glViewportArrayv';
     static procedure ViewportArrayv(first: UInt32; count: Int32; var v: single);
@@ -14268,6 +14276,8 @@ type
     static procedure ViewportIndexedf(index: UInt32; x: single; y: single; w: single; h: single);
     external 'opengl32.dll' name 'glViewportIndexedf';
     
+    static procedure ViewportIndexedfv(index: UInt32; var v: Vec4f);
+    external 'opengl32.dll' name 'glViewportIndexedfv';
     static procedure ViewportIndexedfv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
     external 'opengl32.dll' name 'glViewportIndexedfv';
     static procedure ViewportIndexedfv(index: UInt32; var v: single);
@@ -14317,15 +14327,11 @@ type
     static procedure PointParameterf(pname: PointInfoType; param: single);
     external 'opengl32.dll' name 'glPointParameterf';
     
-    static procedure PointParameteriv(pname: PointInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
-    external 'opengl32.dll' name 'glPointParameteriv';
     static procedure PointParameteriv(pname: PointInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glPointParameteriv';
     static procedure PointParameteriv(pname: PointInfoType; &params: pointer);
     external 'opengl32.dll' name 'glPointParameteriv';
     
-    static procedure PointParameterfv(pname: PointInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
-    external 'opengl32.dll' name 'glPointParameterfv';
     static procedure PointParameterfv(pname: PointInfoType; var &params: single);
     external 'opengl32.dll' name 'glPointParameterfv';
     static procedure PointParameterfv(pname: PointInfoType; &params: pointer);
