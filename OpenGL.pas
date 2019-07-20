@@ -1220,9 +1220,22 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property GL_RENDERBUFFER: CopyableImageType read new CopyableImageType($8D41);
+    public static property ARRAY_BUFFER:              CopyableImageType read new CopyableImageType($8892);
+    public static property ATOMIC_COUNTER_BUFFER:     CopyableImageType read new CopyableImageType($92C0);
+    public static property COPY_READ_BUFFER:          CopyableImageType read new CopyableImageType($8F36);
+    public static property COPY_WRITE_BUFFER:         CopyableImageType read new CopyableImageType($8F37);
+    public static property DISPATCH_INDIRECT_BUFFER:  CopyableImageType read new CopyableImageType($90EE);
+    public static property DRAW_INDIRECT_BUFFER:      CopyableImageType read new CopyableImageType($8F3F);
+    public static property ELEMENT_ARRAY_BUFFER:      CopyableImageType read new CopyableImageType($8893);
+    public static property PIXEL_PACK_BUFFER:         CopyableImageType read new CopyableImageType($88EB);
+    public static property PIXEL_UNPACK_BUFFER:       CopyableImageType read new CopyableImageType($88EC);
+    public static property QUERY_BUFFER:              CopyableImageType read new CopyableImageType($9192);
+    public static property SHADER_STORAGE_BUFFER:     CopyableImageType read new CopyableImageType($90D2);
+    public static property TEXTURE_BUFFER:            CopyableImageType read new CopyableImageType($8C2A);
+    public static property TRANSFORM_FEEDBACK_BUFFER: CopyableImageType read new CopyableImageType($8C8E);
+    public static property UNIFORM_BUFFER:            CopyableImageType read new CopyableImageType($8A11);
     
-    public static function operator implicit(v: BufferBindType): CopyableImageType := new CopyableImageType(v.val);
+    public static property GL_RENDERBUFFER:           CopyableImageType read new CopyableImageType($8D41);
     
   end;
   
