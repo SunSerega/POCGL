@@ -14111,6 +14111,14 @@ type
     external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
     static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; var &type: ProgramVarType; name: IntPtr);
     external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; var length: Int32; var size: Int32; &type: pointer; name: IntPtr);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; var &type: ProgramVarType; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
+    static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; var &type: ProgramVarType; name: IntPtr);
+    external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
     static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; &type: pointer; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glGetTransformFeedbackVarying';
     static procedure GetTransformFeedbackVarying(&program: ProgramName; index: UInt32; bufSize: Int32; length: pointer; size: pointer; &type: pointer; name: IntPtr);
@@ -14133,6 +14141,10 @@ type
     // 11.2.2
     
     static procedure PatchParameterfv(pname: PatchMode; [MarshalAs(UnmanagedType.LPArray)] values: array of single);
+    external 'opengl32.dll' name 'glPatchParameterfv';
+    static procedure PatchParameterfv(pname: PatchMode; var values: Vec2f);
+    external 'opengl32.dll' name 'glPatchParameterfv';
+    static procedure PatchParameterfv(pname: PatchMode; var values: Vec4f);
     external 'opengl32.dll' name 'glPatchParameterfv';
     static procedure PatchParameterfv(pname: PatchMode; var values: single);
     external 'opengl32.dll' name 'glPatchParameterfv';
