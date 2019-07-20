@@ -10371,6 +10371,7 @@ type
     
   end;
   
+  //ToDo функции принемающие single - бывает, принимают и fixed
   fixed = record
     {private} val: UInt32;
     
@@ -14375,6 +14376,10 @@ type
     
     // 14.9.2
     
+    static procedure ScissorArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of Vec4i);
+    external 'opengl32.dll' name 'glScissorArrayv';
+    static procedure ScissorArrayv(first: UInt32; count: Int32; var v: Vec4i);
+    external 'opengl32.dll' name 'glScissorArrayv';
     static procedure ScissorArrayv(first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
     external 'opengl32.dll' name 'glScissorArrayv';
     static procedure ScissorArrayv(first: UInt32; count: Int32; var v: Int32);
@@ -14385,6 +14390,8 @@ type
     static procedure ScissorIndexed(index: UInt32; left: Int32; bottom: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glScissorIndexed';
     
+    static procedure ScissorIndexedv(index: UInt32; var v: Vec4i);
+    external 'opengl32.dll' name 'glScissorIndexedv';
     static procedure ScissorIndexedv(index: UInt32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
     external 'opengl32.dll' name 'glScissorIndexedv';
     static procedure ScissorIndexedv(index: UInt32; var v: Int32);
@@ -14418,9 +14425,9 @@ type
     static procedure BindFragDataLocationIndexed(&program: ProgramName; colorNumber: UInt32; index: UInt32; name: IntPtr);
     external 'opengl32.dll' name 'glBindFragDataLocationIndexed';
     
-    static procedure BindFragDataLocation(&program: ProgramName; color: UInt32; [MarshalAs(UnmanagedType.LPStr)] name: string);
+    static procedure BindFragDataLocation(&program: ProgramName; colorNumber: UInt32; [MarshalAs(UnmanagedType.LPStr)] name: string);
     external 'opengl32.dll' name 'glBindFragDataLocation';
-    static procedure BindFragDataLocation(&program: ProgramName; color: UInt32; name: IntPtr);
+    static procedure BindFragDataLocation(&program: ProgramName; colorNumber: UInt32; name: IntPtr);
     external 'opengl32.dll' name 'glBindFragDataLocation';
     
     static function GetFragDataLocation(&program: ProgramName; [MarshalAs(UnmanagedType.LPStr)] name: string): Int32;
@@ -14560,7 +14567,7 @@ type
     static procedure ClearDepth(depth: double);
     external 'opengl32.dll' name 'glClearDepth';
     
-    static procedure ClearDepthf(d: single);
+    static procedure ClearDepthf(depth: single);
     external 'opengl32.dll' name 'glClearDepthf';
     
     static procedure ClearStencil(s: Int32);
@@ -14568,6 +14575,10 @@ type
     
     // 17.4.3.1
     
+    static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Vec4i);
+    external 'opengl32.dll' name 'glClearBufferiv';
+    static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Vec4i);
+    external 'opengl32.dll' name 'glClearBufferiv';
     static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32);
     external 'opengl32.dll' name 'glClearBufferiv';
     static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Int32);
@@ -14575,6 +14586,10 @@ type
     static procedure ClearBufferiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
     external 'opengl32.dll' name 'glClearBufferiv';
     
+    static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Vec4f);
+    external 'opengl32.dll' name 'glClearBufferfv';
+    static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Vec4f);
+    external 'opengl32.dll' name 'glClearBufferfv';
     static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of single);
     external 'opengl32.dll' name 'glClearBufferfv';
     static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: single);
@@ -14582,6 +14597,10 @@ type
     static procedure ClearBufferfv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
     external 'opengl32.dll' name 'glClearBufferfv';
     
+    static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Vec4ui);
+    external 'opengl32.dll' name 'glClearBufferuiv';
+    static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Vec4ui);
+    external 'opengl32.dll' name 'glClearBufferuiv';
     static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of UInt32);
     external 'opengl32.dll' name 'glClearBufferuiv';
     static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: UInt32);
@@ -14589,6 +14608,10 @@ type
     static procedure ClearBufferuiv(buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
     external 'opengl32.dll' name 'glClearBufferuiv';
     
+    static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Vec4i);
+    external 'opengl32.dll' name 'glClearNamedFramebufferiv';
+    static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Vec4i);
+    external 'opengl32.dll' name 'glClearNamedFramebufferiv';
     static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32);
     external 'opengl32.dll' name 'glClearNamedFramebufferiv';
     static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Int32);
@@ -14596,6 +14619,10 @@ type
     static procedure ClearNamedFramebufferiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
     external 'opengl32.dll' name 'glClearNamedFramebufferiv';
     
+    static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Vec4f);
+    external 'opengl32.dll' name 'glClearNamedFramebufferfv';
+    static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Vec4f);
+    external 'opengl32.dll' name 'glClearNamedFramebufferfv';
     static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of single);
     external 'opengl32.dll' name 'glClearNamedFramebufferfv';
     static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: single);
@@ -14603,6 +14630,10 @@ type
     static procedure ClearNamedFramebufferfv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; value: pointer);
     external 'opengl32.dll' name 'glClearNamedFramebufferfv';
     
+    static procedure ClearNamedFramebufferuiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Vec4ui);
+    external 'opengl32.dll' name 'glClearNamedFramebufferuiv';
+    static procedure ClearNamedFramebufferuiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: Vec4ui);
+    external 'opengl32.dll' name 'glClearNamedFramebufferuiv';
     static procedure ClearNamedFramebufferuiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of UInt32);
     external 'opengl32.dll' name 'glClearNamedFramebufferuiv';
     static procedure ClearNamedFramebufferuiv(framebuffer: FramebufferName; buffer: FramebufferAttachmentPoint; drawbuffer: Int32; var value: UInt32);
