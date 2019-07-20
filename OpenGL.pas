@@ -42,6 +42,8 @@ unit OpenGL;
 
 //ToDo проверить передачу external функции вместо лямбды
 
+//ToDo SysInt - а это вообще работает так как я думаю?
+
 //ToDo автоматический тестировщик
 // - особенно для матриц надо...
 // - и примеры тоже надо проверять после любых изменений
@@ -13951,12 +13953,16 @@ type
     
     {$region 10.5 - Vertex Array and Vertex Array Object Queries}
     
+    static procedure GetVertexArrayiv(vaobj: VertexArrayName; pname: VertexAttribInfoType; var param: BufferName);
+    external 'opengl32.dll' name 'glGetVertexArrayiv';
     static procedure GetVertexArrayiv(vaobj: VertexArrayName; pname: VertexAttribInfoType; var param: Int32);
     external 'opengl32.dll' name 'glGetVertexArrayiv';
     static procedure GetVertexArrayiv(vaobj: VertexArrayName; pname: VertexAttribInfoType; param: pointer);
     external 'opengl32.dll' name 'glGetVertexArrayiv';
     
     static procedure GetVertexArrayIndexediv(vaobj: VertexArrayName; index: UInt32; pname: VertexAttribInfoType; var param: Int32);
+    external 'opengl32.dll' name 'glGetVertexArrayIndexediv';
+    static procedure GetVertexArrayIndexediv(vaobj: VertexArrayName; index: UInt32; pname: VertexAttribInfoType; var param: DataType);
     external 'opengl32.dll' name 'glGetVertexArrayIndexediv';
     static procedure GetVertexArrayIndexediv(vaobj: VertexArrayName; index: UInt32; pname: VertexAttribInfoType; param: pointer);
     external 'opengl32.dll' name 'glGetVertexArrayIndexediv';
@@ -13970,6 +13976,8 @@ type
     external 'opengl32.dll' name 'glGetVertexAttribdv';
     static procedure GetVertexAttribdv(index: UInt32; pname: VertexAttribInfoType; var &params: double);
     external 'opengl32.dll' name 'glGetVertexAttribdv';
+    static procedure GetVertexAttribdv(index: UInt32; pname: VertexAttribInfoType; var &params: Vec4d);
+    external 'opengl32.dll' name 'glGetVertexAttribdv';
     static procedure GetVertexAttribdv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetVertexAttribdv';
     
@@ -13977,26 +13985,46 @@ type
     external 'opengl32.dll' name 'glGetVertexAttribfv';
     static procedure GetVertexAttribfv(index: UInt32; pname: VertexAttribInfoType; var &params: single);
     external 'opengl32.dll' name 'glGetVertexAttribfv';
+    static procedure GetVertexAttribfv(index: UInt32; pname: VertexAttribInfoType; var &params: Vec4f);
+    external 'opengl32.dll' name 'glGetVertexAttribfv';
     static procedure GetVertexAttribfv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetVertexAttribfv';
     
+    static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; var &params: BufferName);
+    external 'opengl32.dll' name 'glGetVertexAttribiv';
+    static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetVertexAttribiv';
     static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
     external 'opengl32.dll' name 'glGetVertexAttribiv';
     static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetVertexAttribiv';
+    static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; var &params: Vec4i);
+    external 'opengl32.dll' name 'glGetVertexAttribiv';
     static procedure GetVertexAttribiv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetVertexAttribiv';
     
+    static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; var &params: BufferName);
+    external 'opengl32.dll' name 'glGetVertexAttribIiv';
+    static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetVertexAttribIiv';
     static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
     external 'opengl32.dll' name 'glGetVertexAttribIiv';
     static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; var &params: Int32);
     external 'opengl32.dll' name 'glGetVertexAttribIiv';
+    static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; var &params: Vec4i);
+    external 'opengl32.dll' name 'glGetVertexAttribIiv';
     static procedure GetVertexAttribIiv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetVertexAttribIiv';
     
+    static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; var &params: BufferName);
+    external 'opengl32.dll' name 'glGetVertexAttribIuiv';
+    static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; var &params: DataType);
+    external 'opengl32.dll' name 'glGetVertexAttribIuiv';
     static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt32);
     external 'opengl32.dll' name 'glGetVertexAttribIuiv';
     static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetVertexAttribIuiv';
+    static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; var &params: Vec4ui);
     external 'opengl32.dll' name 'glGetVertexAttribIuiv';
     static procedure GetVertexAttribIuiv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetVertexAttribIuiv';
@@ -14004,6 +14032,8 @@ type
     static procedure GetVertexAttribLdv(index: UInt32; pname: VertexAttribInfoType; [MarshalAs(UnmanagedType.LPArray)] &params: array of double);
     external 'opengl32.dll' name 'glGetVertexAttribLdv';
     static procedure GetVertexAttribLdv(index: UInt32; pname: VertexAttribInfoType; var &params: double);
+    external 'opengl32.dll' name 'glGetVertexAttribLdv';
+    static procedure GetVertexAttribLdv(index: UInt32; pname: VertexAttribInfoType; var &params: Vec4d);
     external 'opengl32.dll' name 'glGetVertexAttribLdv';
     static procedure GetVertexAttribLdv(index: UInt32; pname: VertexAttribInfoType; &params: pointer);
     external 'opengl32.dll' name 'glGetVertexAttribLdv';
