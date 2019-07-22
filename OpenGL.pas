@@ -15381,22 +15381,20 @@ type
     
     {$region 22.4 - Transform Feedback State Queries}
     
-    static procedure GetTransformFeedbackiv(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; [MarshalAs(UnmanagedType.LPArray)] param: array of Int32);
+    static procedure GetTransformFeedbackiv(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; var param: BufferName);
     external 'opengl32.dll' name 'glGetTransformFeedbackiv';
     static procedure GetTransformFeedbackiv(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; var param: Int32);
     external 'opengl32.dll' name 'glGetTransformFeedbackiv';
     static procedure GetTransformFeedbackiv(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; param: pointer);
     external 'opengl32.dll' name 'glGetTransformFeedbackiv';
     
-    static procedure GetTransformFeedbacki_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] param: array of Int32);
+    static procedure GetTransformFeedbacki_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; var param: BufferName);
     external 'opengl32.dll' name 'glGetTransformFeedbacki_v';
     static procedure GetTransformFeedbacki_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; var param: Int32);
     external 'opengl32.dll' name 'glGetTransformFeedbacki_v';
     static procedure GetTransformFeedbacki_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; param: pointer);
     external 'opengl32.dll' name 'glGetTransformFeedbacki_v';
     
-    static procedure GetTransformFeedbacki64_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; [MarshalAs(UnmanagedType.LPArray)] param: array of Int64);
-    external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
     static procedure GetTransformFeedbacki64_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; var param: Int64);
     external 'opengl32.dll' name 'glGetTransformFeedbacki64_v';
     static procedure GetTransformFeedbacki64_v(xfb: TransformFeedbackName; pname: TransformFeedbackInfoType; index: UInt32; param: pointer);
