@@ -323,6 +323,71 @@ type
   {$endregion ...InfoType}
   
   //S
+  CompatibilityViewClassType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property C_128_BITS:        CompatibilityViewClassType read new CompatibilityViewClassType($82C4);
+    public static property C_96_BITS:         CompatibilityViewClassType read new CompatibilityViewClassType($82C5);
+    public static property C_64_BITS:         CompatibilityViewClassType read new CompatibilityViewClassType($82C6);
+    public static property C_48_BITS:         CompatibilityViewClassType read new CompatibilityViewClassType($82C7);
+    public static property C_32_BITS:         CompatibilityViewClassType read new CompatibilityViewClassType($82C8);
+    public static property C_24_BITS:         CompatibilityViewClassType read new CompatibilityViewClassType($82C9);
+    public static property C_16_BITS:         CompatibilityViewClassType read new CompatibilityViewClassType($82CA);
+    public static property C_8_BITS:          CompatibilityViewClassType read new CompatibilityViewClassType($82CB);
+    public static property C_S3TC_DXT1_RGB:   CompatibilityViewClassType read new CompatibilityViewClassType($82CC);
+    public static property C_S3TC_DXT1_RGBA:  CompatibilityViewClassType read new CompatibilityViewClassType($82CD);
+    public static property C_S3TC_DXT3_RGBA:  CompatibilityViewClassType read new CompatibilityViewClassType($82CE);
+    public static property C_S3TC_DXT5_RGBA:  CompatibilityViewClassType read new CompatibilityViewClassType($82CF);
+    public static property C_RGTC1_RED:       CompatibilityViewClassType read new CompatibilityViewClassType($82D0);
+    public static property C_RGTC2_RG:        CompatibilityViewClassType read new CompatibilityViewClassType($82D1);
+    public static property C_BPTC_UNORM:      CompatibilityViewClassType read new CompatibilityViewClassType($82D2);
+    public static property C_BPTC_FLOAT:      CompatibilityViewClassType read new CompatibilityViewClassType($82D3);
+    
+  end;
+  
+  //S
+  CompatibilityImageClassType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property C_4_X_32:      CompatibilityImageClassType read new CompatibilityImageClassType($82B9);
+    public static property C_2_X_32:      CompatibilityImageClassType read new CompatibilityImageClassType($82BA);
+    public static property C_1_X_32:      CompatibilityImageClassType read new CompatibilityImageClassType($82BB);
+    public static property C_4_X_16:      CompatibilityImageClassType read new CompatibilityImageClassType($82BC);
+    public static property C_2_X_16:      CompatibilityImageClassType read new CompatibilityImageClassType($82BD);
+    public static property C_1_X_16:      CompatibilityImageClassType read new CompatibilityImageClassType($82BE);
+    public static property C_4_X_8:       CompatibilityImageClassType read new CompatibilityImageClassType($82BF);
+    public static property C_2_X_8:       CompatibilityImageClassType read new CompatibilityImageClassType($82C0);
+    public static property C_1_X_8:       CompatibilityImageClassType read new CompatibilityImageClassType($82C1);
+    public static property C_11_11_10:    CompatibilityImageClassType read new CompatibilityImageClassType($82C2);
+    public static property C_10_10_10_2:  CompatibilityImageClassType read new CompatibilityImageClassType($82C3);
+    
+  end;
+  
+  //S
+  ImageFormatCompatibilityMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property COMPATIBILITY1_BY_SIZE:  ImageFormatCompatibilityMode read new ImageFormatCompatibilityMode($90C8);
+    public static property COMPATIBILITY2_BY_CLASS: ImageFormatCompatibilityMode read new ImageFormatCompatibilityMode($90C9);
+    public static property NONE:                    ImageFormatCompatibilityMode read new ImageFormatCompatibilityMode($90C9);
+    
+  end;
+  
+  //S
+  SupportLevel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NONE:            SupportLevel read new SupportLevel(0);
+    public static property FULL_SUPPORT:    SupportLevel read new SupportLevel($82B7);
+    public static property CAVEAT_SUPPORT:  SupportLevel read new SupportLevel($82B8);
+    
+  end;
+  
+  //S
   GDI_LayerType = record
     public val: Byte;
     public constructor(val: Byte) := self.val := val;
@@ -15288,9 +15353,19 @@ type
     
     {$region 22.3 - Internal Format Queries}
     
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: Int32);
+    external 'opengl32.dll' name 'glGetInternalformativ';
     static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
     external 'opengl32.dll' name 'glGetInternalformativ';
-    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: Int32);
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: SupportLevel);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: DataFormat);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: DataType);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: CompatibilityImageClassType);
+    external 'opengl32.dll' name 'glGetInternalformativ';
+    static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; var &params: ImageFormatCompatibilityMode);
     external 'opengl32.dll' name 'glGetInternalformativ';
     static procedure GetInternalformativ(target: TextureBindTarget; internalformat: InternalDataFormat; pname: InternalFormatInfoType; bufSize: Int32; &params: pointer);
     external 'opengl32.dll' name 'glGetInternalformativ';

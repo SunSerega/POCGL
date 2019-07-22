@@ -2,8 +2,6 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
-//ToDo Rotate3D - поворот относительно 3вектора
-
 //ToDo issue компилятора:
 // - #2021
 
@@ -192,13 +190,19 @@ begin
   
   {$region method's}
   
+  {$region static function Scale}
+  
+  {$endregion static function Scale}
+  
+  {$region static function Translate}
+  
+  {$endregion static function Translate}
+  
   {$region static function Rotate2D}
   
   begin
     var AxissCount := Min(t[0][0],t[0][1]);
     var ANT: Dictionary<integer,char> := Dict((0,'X'),(1,'Y'),(2,'Z')); // axiss name table
-    
-//    if AxissCount=3 then debug_state := 1;
     
     var planes := (t[0][0]>2) and (t[0][1]>2)?
       Seq((0,1), (1,2), (2,0)):

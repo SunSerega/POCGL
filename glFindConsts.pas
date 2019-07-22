@@ -3,14 +3,28 @@
 {$reference System.Windows.Forms.dll}
 
 const
-  HeaderFile = 'C:\Users\Master in EngLiSH\Desktop\GL .h\glcorearb.h';
+  HeaderFile = 'C:\Users\Master in EngLiSH\Desktop\OpenGL-Registry\api\GL\glcorearb.h';
 //  HeaderFile = 'C:\Users\Ко\Desktop\OpenGL-Registry-master\api\GL\glcorearb.h';
 
-function ReadHeader :=
-  ReadLines(HeaderFile)
-  .Where(l->l.StartsWith('#define'))
-  .ToList
-;
+function ReadHeader: List<string>;
+begin
+  try
+    
+    Result :=
+      ReadLines(HeaderFile)
+      .Where(l->l.StartsWith('#define'))
+      .ToList
+    ;
+    
+  except
+    on e: Exception do
+    begin
+      writeln(e);
+      readln;
+      halt;
+    end;
+  end;
+end;
 
 var header := ReadHeader;
 var err := false;
