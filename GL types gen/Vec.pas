@@ -106,29 +106,6 @@ begin
   
   {$endregion property's}
   
-  {$region method's}
-  
-  {$region function Println}
-  
-  res += $'    public function Println: {t.GetName};'+#10;
-  res += $'    begin'+#10;
-  res += $'      writeln( ''[ '', ';
-  
-  for var i := 0 to t[0]-1 do
-  begin
-    res += $'val{i}.ToString(''f2''), ';
-    if i <> t[0]-1 then res += ''', '', ';
-  end;
-  
-  res += $''' ]'' );'+#10;
-  res += $'      Result := self;'+#10;
-  res += $'    end;'+#10;
-  res += $'    '+#10;
-  
-  {$endregion function Println}
-  
-  {$endregion method's}
-  
   {$region operator's}
   
   {$region arithmetics}
@@ -143,6 +120,15 @@ begin
   res += $'    public static function operator*(v: {t.GetName}; k: {t[2]}): {t.GetName} := new {t.GetName}(';
   res += Range(0,t[0]-1).Select(i->$'v.val{i}*k').JoinIntoString(', ');
   res += $');'+#10;
+  
+  if t.IsFloat then
+  begin
+    
+    res += $'    public static function operator/(v: {t.GetName}; k: {t[2]}): {t.GetName} := new {t.GetName}(';
+    res += Range(0,t[0]-1).Select(i->$'v.val{i}/k').JoinIntoString(', ');
+    res += $');'+#10;
+    
+  end;
   
   res += $'    public static function operator+(v1, v2: {t.GetName}): {t.GetName} := new {t.GetName}(';
   res += Range(0,t[0]-1).Select(i->$'v1.val{i}+v2.val{i}').JoinIntoString(', ');
@@ -194,6 +180,69 @@ begin
   {$endregion operator implicit}
   
   {$endregion operator's}
+  
+  {$region method's}
+  
+  {$region function SqrLength}
+  
+  res += '    public function SqrLength := ';
+  res +=
+    Range(0,t[0]-1)
+    .Select(i->$'val{i}*val{i}')
+    .JoinIntoString(' + ');
+  res += ';'#10;
+  res += '    '#10;
+  
+  if t[1] <> 'd' then
+  begin
+    
+    res += '    public function SqrLength_d: double := ';
+    res +=
+      Range(0,t[0]-1)
+      .Select(i->$'real(val{i})*val{i}')
+      .JoinIntoString(' + ');
+    res += ';'#10;
+    res += '    '#10;
+    
+  end;
+  
+  {$endregion function SqrLength}
+  
+  {$region function Normalized}
+  
+  if t.IsFloat then
+  begin
+    
+    res +=    $'    public function Normalized := ';
+    if t[1] = 'f' then
+      res +=  $'self / single(Sqrt(self.SqrLength_d));'+#10 else
+      res +=  $'self / Sqrt(self.SqrLength);'+#10;
+    res +=    $'    '+#10;
+    
+  end;
+  
+  {$endregion function Normalized}
+  
+  {$region function Println}
+  
+  res += $'    public function Println: {t.GetName};'+#10;
+  res += $'    begin'+#10;
+  res += $'      writeln( ''[ '', ';
+  
+  for var i := 0 to t[0]-1 do
+  begin
+    res += $'val{i}.ToString(''f2''), ';
+    if i <> t[0]-1 then res += ''', '', ';
+  end;
+  
+  res += $''' ]'' );'+#10;
+  res += $'      Result := self;'+#10;
+  res += $'    end;'+#10;
+  res += $'    '+#10;
+  
+  {$endregion function Println}
+  
+  {$endregion method's}
   
   res += $'  end;'+#10;
 end;
