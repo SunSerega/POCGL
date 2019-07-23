@@ -43,6 +43,9 @@ begin
   res += $'  '+#10;
   res += $'  {t.GetName} = record'+#10;
   
+  var ANT: Dictionary<integer,char> := Dict((0,'X'),(1,'Y'),(2,'Z'));// axiss name table
+  var MinSize := Min(t[0][0],t[0][1]);
+  
   {$region field's}
   
   for var y := 0 to t[0][1]-1 do
@@ -192,19 +195,77 @@ begin
   
   {$region static function Scale}
   
+  res += $'    '+#10;
+  
+  res += $'    public static function Scale(k: double): {t.GetName} := new {t.GetName}(';
+  res +=
+    Range(0,t[0][0]-1)
+    .Cartesian(Range(0,t[0][1]-1))
+    .Select(pos->pos[0]=pos[1]?'k':'0.0')
+    .JoinIntoString(', ');
+  res += ');'#10;
+  
   {$endregion static function Scale}
   
   {$region static function Translate}
+  
+  res += $'    '+#10;
+  
+  res += '    public static function Traslate(';
+  res +=
+    Range(0, t[0][0]=Max(t[0][0],t[0][1]) ? MinSize-2 : t[0][0]-1)
+    .Select(n->ANT[n])
+    .JoinIntoString(', ');
+  res += $': {t[2]}): {t.GetName} := new {t.GetName}(';
+  res +=
+    Range(0,t[0][0]-1)
+    .Cartesian(Range(0,t[0][1]-1))
+    .Select(pos->
+    begin
+      try
+      Result :=
+        pos[0]=pos[1] ?
+        '1.0' :
+        (pos[1]=t[0][1]-1) and (pos[0]<MinSize) ?
+        ANT[pos[0]] :
+        '0.0';
+        
+      except
+        on e: Exception do
+        writeln(0);
+      end;
+      
+    end
+    )
+    .JoinIntoString(', ');
+  res += ');'+#10;
+  
+  res += '    public static function TraslateTransposed(';
+  res +=
+    Range(0, t[0][1]=Max(t[0][0],t[0][1]) ? MinSize-2 : t[0][1]-1)
+    .Select(n->ANT[n])
+    .JoinIntoString(', ');
+  res += $': {t[2]}): {t.GetName} := new {t.GetName}(';
+  res +=
+    Range(0,t[0][0]-1)
+    .Cartesian(Range(0,t[0][1]-1))
+    .Select(pos->
+      pos[0]=pos[1] ?
+      '1.0' :
+      (pos[0]=t[0][0]-1) and (pos[1]<MinSize) ?
+      ANT[pos[1]] :
+      '0.0'
+    )
+    .JoinIntoString(', ');
+  res += ');'+#10;
   
   {$endregion static function Translate}
   
   {$region static function Rotate2D}
   
   begin
-    var AxissCount := Min(t[0][0],t[0][1]);
-    var ANT: Dictionary<integer,char> := Dict((0,'X'),(1,'Y'),(2,'Z')); // axiss name table
     
-    var planes := (t[0][0]>2) and (t[0][1]>2)?
+    var planes := MinSize >= 3 ?
       Seq((0,1), (1,2), (2,0)):
       Seq((0,1));
     
@@ -276,7 +337,7 @@ begin
   
   {$region static function Rotate3D}
   
-  if (t[0][0]>=3) and (t[0][1]>=3) then
+  if MinSize >= 3 then
   begin
     //     ┌                  ┐
     //     │    0, +u.z, -u.y │

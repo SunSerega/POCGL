@@ -6306,6 +6306,11 @@ type
     public property ColPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
+    public static function Scale(k: double): Mtr2x2f := new Mtr2x2f(k, 0.0, 0.0, k);
+    
+    public static function Traslate(X: single): Mtr2x2f := new Mtr2x2f(1.0, X, 0.0, 1.0);
+    public static function TraslateTransposed(X: single): Mtr2x2f := new Mtr2x2f(1.0, 0.0, X, 1.0);
+    
     public static function RotateXYcw(rot: double): Mtr2x2f;
     begin
       var sr: single := Sin(rot);
@@ -6410,6 +6415,11 @@ type
     public property ColPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 12);
     public property ColPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public static function Scale(k: double): Mtr3x3f := new Mtr3x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, 1.0);
     
     public static function RotateXYcw(rot: double): Mtr3x3f;
     begin
@@ -6611,6 +6621,11 @@ type
     public property ColPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Scale(k: double): Mtr4x4f := new Mtr4x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z, 0.0, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, Z, 1.0);
+    
     public static function RotateXYcw(rot: double): Mtr4x4f;
     begin
       var sr: single := Sin(rot);
@@ -6804,6 +6819,11 @@ type
     public property ColPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*8);
     
+    public static function Scale(k: double): Mtr2x3f := new Mtr2x3f(k, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, X, 0.0, 1.0, Y);
+    public static function TraslateTransposed(X: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, 0.0, X, 1.0, 0.0);
+    
     public static function RotateXYcw(rot: double): Mtr2x3f;
     begin
       var sr: single := Sin(rot);
@@ -6910,6 +6930,11 @@ type
     public property ColPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 12);
     public property ColPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public static function Scale(k: double): Mtr3x2f := new Mtr3x2f(k, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X: single): Mtr3x2f := new Mtr3x2f(1.0, X, 0.0, 1.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: single): Mtr3x2f := new Mtr3x2f(1.0, 0.0, 0.0, 1.0, X, Y);
     
     public static function RotateXYcw(rot: double): Mtr3x2f;
     begin
@@ -7029,6 +7054,11 @@ type
     public property ColPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*8);
     
+    public static function Scale(k: double): Mtr2x4f := new Mtr2x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y);
+    public static function TraslateTransposed(X: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, 0.0, X, 1.0, 0.0, 0.0);
+    
     public static function RotateXYcw(rot: double): Mtr2x4f;
     begin
       var sr: single := Sin(rot);
@@ -7146,6 +7176,11 @@ type
     public property ColPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 32);
     public property ColPtr3: ^Vec2f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public static function Scale(k: double): Mtr4x2f := new Mtr4x2f(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X: single): Mtr4x2f := new Mtr4x2f(1.0, X, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: single): Mtr4x2f := new Mtr4x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y);
     
     public static function RotateXYcw(rot: double): Mtr4x2f;
     begin
@@ -7280,6 +7315,11 @@ type
     public property ColPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 12);
     public property ColPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public static function Scale(k: double): Mtr3x4f := new Mtr3x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y, Z: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z);
+    public static function TraslateTransposed(X, Y: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y, 1.0, 0.0);
     
     public static function RotateXYcw(rot: double): Mtr3x4f;
     begin
@@ -7491,6 +7531,11 @@ type
     public property ColPtr3: ^Vec3f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Scale(k: double): Mtr4x3f := new Mtr4x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y, Z: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, X, Y, Z);
+    
     public static function RotateXYcw(rot: double): Mtr4x3f;
     begin
       var sr: single := Sin(rot);
@@ -7694,6 +7739,11 @@ type
     public property ColPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 16);
     public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Scale(k: double): Mtr2x2d := new Mtr2x2d(k, 0.0, 0.0, k);
+    
+    public static function Traslate(X: double): Mtr2x2d := new Mtr2x2d(1.0, X, 0.0, 1.0);
+    public static function TraslateTransposed(X: double): Mtr2x2d := new Mtr2x2d(1.0, 0.0, X, 1.0);
+    
     public static function RotateXYcw(rot: double): Mtr2x2d;
     begin
       var sr: double := Sin(rot);
@@ -7825,6 +7875,11 @@ type
     public property ColPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public static function Scale(k: double): Mtr3x3d := new Mtr3x3d(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y: double): Mtr3x3d := new Mtr3x3d(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y: double): Mtr3x3d := new Mtr3x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, 1.0);
     
     public static function RotateXYcw(rot: double): Mtr3x3d;
     begin
@@ -8053,6 +8108,11 @@ type
     public property ColPtr3: ^Vec4d read pointer(IntPtr(pointer(@self)) + 96);
     public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
+    public static function Scale(k: double): Mtr4x4d := new Mtr4x4d(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y, Z: double): Mtr4x4d := new Mtr4x4d(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z, 0.0, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y, Z: double): Mtr4x4d := new Mtr4x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, Z, 1.0);
+    
     public static function RotateXYcw(rot: double): Mtr4x4d;
     begin
       var sr: double := Sin(rot);
@@ -8273,6 +8333,11 @@ type
     public property ColPtr1: ^Vec3d read pointer(IntPtr(pointer(@self)) + 16);
     public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Scale(k: double): Mtr2x3d := new Mtr2x3d(k, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y: double): Mtr2x3d := new Mtr2x3d(1.0, 0.0, X, 0.0, 1.0, Y);
+    public static function TraslateTransposed(X: double): Mtr2x3d := new Mtr2x3d(1.0, 0.0, 0.0, X, 1.0, 0.0);
+    
     public static function RotateXYcw(rot: double): Mtr2x3d;
     begin
       var sr: double := Sin(rot);
@@ -8406,6 +8471,11 @@ type
     public property ColPtr1: ^Vec2d read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public static function Scale(k: double): Mtr3x2d := new Mtr3x2d(k, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X: double): Mtr3x2d := new Mtr3x2d(1.0, X, 0.0, 1.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: double): Mtr3x2d := new Mtr3x2d(1.0, 0.0, 0.0, 1.0, X, Y);
     
     public static function RotateXYcw(rot: double): Mtr3x2d;
     begin
@@ -8552,6 +8622,11 @@ type
     public property ColPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 16);
     public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*16);
     
+    public static function Scale(k: double): Mtr2x4d := new Mtr2x4d(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: double): Mtr2x4d := new Mtr2x4d(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y);
+    public static function TraslateTransposed(X: double): Mtr2x4d := new Mtr2x4d(1.0, 0.0, 0.0, 0.0, X, 1.0, 0.0, 0.0);
+    
     public static function RotateXYcw(rot: double): Mtr2x4d;
     begin
       var sr: double := Sin(rot);
@@ -8696,6 +8771,11 @@ type
     public property ColPtr2: ^Vec2d read pointer(IntPtr(pointer(@self)) + 64);
     public property ColPtr3: ^Vec2d read pointer(IntPtr(pointer(@self)) + 96);
     public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public static function Scale(k: double): Mtr4x2d := new Mtr4x2d(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X: double): Mtr4x2d := new Mtr4x2d(1.0, X, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: double): Mtr4x2d := new Mtr4x2d(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y);
     
     public static function RotateXYcw(rot: double): Mtr4x2d;
     begin
@@ -8857,6 +8937,11 @@ type
     public property ColPtr1: ^Vec4d read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr2: ^Vec4d read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public static function Scale(k: double): Mtr3x4d := new Mtr3x4d(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y, Z: double): Mtr3x4d := new Mtr3x4d(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z);
+    public static function TraslateTransposed(X, Y: double): Mtr3x4d := new Mtr3x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y, 1.0, 0.0);
     
     public static function RotateXYcw(rot: double): Mtr3x4d;
     begin
@@ -9094,6 +9179,11 @@ type
     public property ColPtr2: ^Vec3d read pointer(IntPtr(pointer(@self)) + 64);
     public property ColPtr3: ^Vec3d read pointer(IntPtr(pointer(@self)) + 96);
     public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public static function Scale(k: double): Mtr4x3d := new Mtr4x3d(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: double): Mtr4x3d := new Mtr4x3d(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y, Z: double): Mtr4x3d := new Mtr4x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, X, Y, Z);
     
     public static function RotateXYcw(rot: double): Mtr4x3d;
     begin
