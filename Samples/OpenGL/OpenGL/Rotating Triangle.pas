@@ -4,6 +4,8 @@ uses System.Windows.Forms;
 uses OpenGL;
 uses System;
 
+{ $apptype windows} //ToDo убрать когда протестирую всё что надо
+
 type
   PIXELFORMATDESCRIPTOR = record
     nSize: Word;
@@ -33,6 +35,8 @@ type
     dwVisibleMask: longword;
     dwDamageMask: longword;
   end;
+  
+  HGLRC = IntPtr;
 
 function GetDC(hwnd: IntPtr): IntPtr;
 external 'user32.dll';
@@ -66,14 +70,21 @@ begin
   pfd.cColorBits := 24;
   pfd.cDepthBits := 16;
   
+  writeln(1); //ToDo протестировать и таки убрать
+  
   if not SetPixelFormat(
     Result,
     ChoosePixelFormat(Result, @pfd),
     @pfd
   ) then raise new InvalidOperationException;
   
+  writeln(2);
+  
   var context := wglCreateContext(Result);
+  writeln(3);
   if not wglMakeCurrent(Result, context) then raise new InvalidOperationException;
+  
+  writeln(4);
   
   
   

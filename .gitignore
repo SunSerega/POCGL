@@ -1,3 +1,4 @@
 *.pcu
 *.pdb
 *.exe
+/Release
