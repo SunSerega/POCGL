@@ -325,11 +325,11 @@ type
       end else
       if expected_otp<>otp then
       begin
-        writeln($'{expected_otp.Length} : {otp.Length}');
-        expected_otp.ZipTuple(otp)
-        .Select(t->(word(t[0]), word(t[1])))
-        .PrintLines;
-        halt;
+//        writeln($'{expected_otp.Length} : {otp.Length}');
+//        expected_otp.ZipTuple(otp)
+//        .Select(t->(word(t[0]), word(t[1])))
+//        .PrintLines;
+//        halt;
         
         case MessageBox.Show($'In "{pas_fname}"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{otp}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
           

@@ -6810,8 +6810,10 @@ type
       );
     end;
     
-    public function Println: Mtr2x2f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[2,2];
       for var y := 0 to 2-1 do
         for var x := 0 to 2-1 do
@@ -6819,11 +6821,29 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x2f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -6998,8 +7018,10 @@ type
       
     end;
     
-    public function Println: Mtr3x3f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[3,3];
       for var y := 0 to 3-1 do
         for var x := 0 to 3-1 do
@@ -7007,12 +7029,40 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x3f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -7211,8 +7261,10 @@ type
       Result.val33 := 1;
     end;
     
-    public function Println: Mtr4x4f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[4,4];
       for var y := 0 to 4-1 do
         for var x := 0 to 4-1 do
@@ -7220,13 +7272,55 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ', ', ElStrs[3,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x4f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -7323,8 +7417,10 @@ type
       );
     end;
     
-    public function Println: Mtr2x3f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[2,3];
       for var y := 0 to 2-1 do
         for var x := 0 to 3-1 do
@@ -7332,11 +7428,33 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x3f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -7437,8 +7555,10 @@ type
       );
     end;
     
-    public function Println: Mtr3x2f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[3,2];
       for var y := 0 to 3-1 do
         for var x := 0 to 2-1 do
@@ -7446,12 +7566,34 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x2f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -7558,8 +7700,10 @@ type
       );
     end;
     
-    public function Println: Mtr2x4f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[2,4];
       for var y := 0 to 2-1 do
         for var x := 0 to 4-1 do
@@ -7567,11 +7711,37 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x4f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -7685,8 +7855,10 @@ type
       );
     end;
     
-    public function Println: Mtr4x2f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[4,2];
       for var y := 0 to 4-1 do
         for var x := 0 to 2-1 do
@@ -7694,13 +7866,39 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x2f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -7898,8 +8096,10 @@ type
       
     end;
     
-    public function Println: Mtr3x4f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[3,4];
       for var y := 0 to 3-1 do
         for var x := 0 to 4-1 do
@@ -7907,12 +8107,46 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x4f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -8119,8 +8353,10 @@ type
       
     end;
     
-    public function Println: Mtr4x3f;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[4,3];
       for var y := 0 to 4-1 do
         for var x := 0 to 3-1 do
@@ -8128,13 +8364,47 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x3f;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -8243,8 +8513,10 @@ type
       );
     end;
     
-    public function Println: Mtr2x2d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[2,2];
       for var y := 0 to 2-1 do
         for var x := 0 to 2-1 do
@@ -8252,11 +8524,29 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x2d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -8458,8 +8748,10 @@ type
       
     end;
     
-    public function Println: Mtr3x3d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[3,3];
       for var y := 0 to 3-1 do
         for var x := 0 to 3-1 do
@@ -8467,12 +8759,40 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x3d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -8698,8 +9018,10 @@ type
       Result.val33 := 1;
     end;
     
-    public function Println: Mtr4x4d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[4,4];
       for var y := 0 to 4-1 do
         for var x := 0 to 4-1 do
@@ -8707,13 +9029,55 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ', ', ElStrs[3,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x4d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -8837,8 +9201,10 @@ type
       );
     end;
     
-    public function Println: Mtr2x3d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[2,3];
       for var y := 0 to 2-1 do
         for var x := 0 to 3-1 do
@@ -8846,11 +9212,33 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x3d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -8978,8 +9366,10 @@ type
       );
     end;
     
-    public function Println: Mtr3x2d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[3,2];
       for var y := 0 to 3-1 do
         for var x := 0 to 2-1 do
@@ -8987,12 +9377,34 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x2d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -9126,8 +9538,10 @@ type
       );
     end;
     
-    public function Println: Mtr2x4d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[2,4];
       for var y := 0 to 2-1 do
         for var x := 0 to 4-1 do
@@ -9135,11 +9549,37 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x4d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -9280,8 +9720,10 @@ type
       );
     end;
     
-    public function Println: Mtr4x2d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[4,2];
       for var y := 0 to 4-1 do
         for var x := 0 to 2-1 do
@@ -9289,13 +9731,39 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x2d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -9520,8 +9988,10 @@ type
       
     end;
     
-    public function Println: Mtr3x4d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[3,4];
       for var y := 0 to 3-1 do
         for var x := 0 to 4-1 do
@@ -9529,12 +9999,46 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ', ', ElStrs[0,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ', ', ElStrs[1,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ', ', ElStrs[2,3].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x4d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -9768,8 +10272,10 @@ type
       
     end;
     
-    public function Println: Mtr4x3d;
+    public function ToString: string; override;
     begin
+      var res := new StringBuilder;
+      
       var ElStrs := new string[4,3];
       for var y := 0 to 4-1 do
         for var x := 0 to 3-1 do
@@ -9777,13 +10283,47 @@ type
       var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
       var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
       
-      writeln( '┌' + #32*PrintlnMtrW + '┐' );
-      writeln( '│ ', ElStrs[0,0].PadLeft(MtrElTextW), ', ', ElStrs[0,1].PadLeft(MtrElTextW), ', ', ElStrs[0,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[1,0].PadLeft(MtrElTextW), ', ', ElStrs[1,1].PadLeft(MtrElTextW), ', ', ElStrs[1,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[2,0].PadLeft(MtrElTextW), ', ', ElStrs[2,1].PadLeft(MtrElTextW), ', ', ElStrs[2,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '│ ', ElStrs[3,0].PadLeft(MtrElTextW), ', ', ElStrs[3,1].PadLeft(MtrElTextW), ', ', ElStrs[3,2].PadLeft(MtrElTextW), ' │' );
-      writeln( '└' + #32*PrintlnMtrW + '┘' );
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
       
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x3d;
+    begin
+      Writeln(self.ToString);
       Result := self;
     end;
     

@@ -440,8 +440,10 @@ begin
   
   res +=      $'    '+#10;
   
-  res +=      $'    public function Println: {t.GetName};'+#10;
+  res +=      $'    public function ToString: string; override;'+#10;
   res +=      $'    begin'+#10;
+  res +=      $'      var res := new StringBuilder;'+#10;
+  res +=      $'      '+#10;
   res +=      $'      var ElStrs := new string[{t[0][0]},{t[0][1]}];' + #10;
   res +=      $'      for var y := 0 to {t[0][0]}-1 do' + #10;
   res +=      $'        for var x := 0 to {t[0][1]}-1 do' + #10;
@@ -452,24 +454,36 @@ begin
   
   res +=      $'      ' + #10;
   
-  res +=      $'      writeln( ''{ char($250C) }'' + #32*PrintlnMtrW + ''{ char($2510) }'' );' + #10;
+  res +=      $'      res += ''{ char($250C) }'';'+#10;
+  res +=      $'      res.Append(#32, PrintlnMtrW);'+#10;
+  res +=      $'      res += ''{ char($2510) }''#10;'+#10;
+  
   for var y := 0 to t[0][0]-1 do
   begin
-    res +=    $'      writeln( ''{ char($2502) } '', ';
-    for var x := 0 to t[0][1]-1 do
-    begin
-      res += $'ElStrs[{y},{x}].PadLeft(MtrElTextW)';
-      if x<>t[0][1]-1 then res += ', '', '', ';
-    end;
-    
-    res +=    $', '' { char($2502) }'' );' + #10;
+    res +=    $'      res += ''{ char($2502) } '';'+#10;
+    res +=
+      Range(0,t[0][1]-1)
+      .Select(x->$'      res += ElStrs[{y},{x}].PadLeft(MtrElTextW);'+#10)
+      .JoinIntoString($'      res += '', '';'+#10);
+    res +=    $'      res += '' { char($2502) }''#10;'+#10;
   end;
-  res +=      $'      writeln( ''{ char($2514) }'' + #32*PrintlnMtrW + ''{ char($2518) }'' );' + #10;
+  
+  res +=      $'      res += ''{ char($2514) }'';'+#10;
+  res +=      $'      res.Append(#32, PrintlnMtrW);'+#10;
+  res +=      $'      res += ''{ char($2518) }'';'+#10;
   
   res +=      $'      ' + #10;
   
-  res +=      $'      Result := self;'+#10;
+  res +=      $'      Result := res.ToString;'+#10;
   res +=      $'    end;'+#10;
+  
+  res += $'    '+#10;
+  
+  res += $'    public function Println: {t.GetName};'+#10;
+  res += $'    begin'+#10;
+  res += $'      Writeln(self.ToString);'+#10;
+  res += $'      Result := self;'+#10;
+  res += $'    end;'+#10;
   
   {$endregion function Println}
   
