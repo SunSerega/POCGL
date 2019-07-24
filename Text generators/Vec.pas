@@ -225,17 +225,24 @@ begin
   
   {$region function Println}
   
+  res += $'    public function ToString: string; override;'+#10;
+  res += $'    begin'+#10;
+  res += $'      var res := new StringBuilder;'+#10;
+  res += $'      res += ''[ '';'+#10;
+  
+  res +=
+    Range(0,t[0]-1)
+    .Select(i->$'      res += val{i}.ToString(''f2'');'+#10)
+    .JoinIntoString($'      res += '', '';'+#10);
+  
+  res += $'      res += '' ]'';'+#10;
+  res += $'      Result := res.ToString;'+#10;
+  res += $'    end;'+#10;
+  res += $'    '+#10;
+  
   res += $'    public function Println: {t.GetName};'+#10;
   res += $'    begin'+#10;
-  res += $'      writeln( ''[ '', ';
-  
-  for var i := 0 to t[0]-1 do
-  begin
-    res += $'val{i}.ToString(''f2''), ';
-    if i <> t[0]-1 then res += ''', '', ';
-  end;
-  
-  res += $''' ]'' );'+#10;
+  res += $'      Writeln(self.ToString);'+#10;
   res += $'      Result := self;'+#10;
   res += $'    end;'+#10;
   res += $'    '+#10;

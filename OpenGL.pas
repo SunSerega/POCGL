@@ -2250,9 +2250,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1b;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2291,9 +2300,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1ub;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2336,9 +2354,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1s;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2383,9 +2410,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1us;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2434,9 +2470,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1i;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2487,9 +2532,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1ui;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2544,9 +2598,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1i64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2603,9 +2666,18 @@ type
     
     public function SqrLength_d: double := real(val0)*val0;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1ui64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2669,9 +2741,18 @@ type
     
     public function Normalized := self / single(Sqrt(self.SqrLength_d));
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1f;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2736,9 +2817,18 @@ type
     
     public function Normalized := self / Sqrt(self.SqrLength);
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec1d;
     begin
-      writeln( '[ ', val0.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2810,9 +2900,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2b;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2883,9 +2984,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2ub;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -2960,9 +3072,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2s;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3039,9 +3162,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2us;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3122,9 +3256,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2i;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3207,9 +3352,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2ui;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3296,9 +3452,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2i64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3387,9 +3554,20 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2ui64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3485,9 +3663,20 @@ type
     
     public function Normalized := self / single(Sqrt(self.SqrLength_d));
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2f;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3584,9 +3773,20 @@ type
     
     public function Normalized := self / Sqrt(self.SqrLength);
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec2d;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3690,9 +3890,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3b;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3795,9 +4008,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3ub;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -3904,9 +4130,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3s;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4015,9 +4254,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3us;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4130,9 +4382,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3i;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4247,9 +4512,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3ui;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4368,9 +4646,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3i64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4491,9 +4782,22 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3ui64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4621,9 +4925,22 @@ type
     
     public function Normalized := self / single(Sqrt(self.SqrLength_d));
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3f;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4752,9 +5069,22 @@ type
     
     public function Normalized := self / Sqrt(self.SqrLength);
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec3d;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -4890,9 +5220,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4b;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -5027,9 +5372,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4ub;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -5168,9 +5528,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4s;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -5311,9 +5686,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4us;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -5458,9 +5848,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4i;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -5607,9 +6012,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4ui;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -5760,9 +6180,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4i64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -5915,9 +6350,24 @@ type
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4ui64;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -6077,9 +6527,24 @@ type
     
     public function Normalized := self / single(Sqrt(self.SqrLength_d));
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4f;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
@@ -6240,9 +6705,24 @@ type
     
     public function Normalized := self / Sqrt(self.SqrLength);
     
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += '[ ';
+      res += val0.ToString('f2');
+      res += ', ';
+      res += val1.ToString('f2');
+      res += ', ';
+      res += val2.ToString('f2');
+      res += ', ';
+      res += val3.ToString('f2');
+      res += ' ]';
+      Result := res.ToString;
+    end;
+    
     public function Println: Vec4d;
     begin
-      writeln( '[ ', val0.ToString('f2'), ', ', val1.ToString('f2'), ', ', val2.ToString('f2'), ', ', val3.ToString('f2'), ' ]' );
+      Writeln(self.ToString);
       Result := self;
     end;
     
