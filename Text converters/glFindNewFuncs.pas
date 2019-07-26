@@ -109,10 +109,11 @@ begin
     var org_glpas_text := ReadAllText(GLpas);
     foreach var chs in
       org_glpas_text
-      .SkipCharsFromTo('//',#13)
+      .Remove(#13)
+      .SkipCharsFromTo('//',#10)
       .TakeCharsFromTo(
         Arr('procedure', ' function'),
-        Arr&<string>('(', #13, #10)
+        Arr&<string>('(', ':', ';')
       )
     do
     begin
@@ -122,29 +123,110 @@ begin
       used_funcs += res;
     end;
     
-    var res := new StringBuilder;
+    var all_funcs := new HashSet<string>;
+    
     foreach var fname in System.IO.Directory.EnumerateFiles(HeadersFolder, '*.h', System.IO.SearchOption.AllDirectories) do
     begin
       writeln(fname);
       System.Windows.Forms.Clipboard.SetText(ReadAllText(fname));
       System.Diagnostics.Process.Start('gl format func.exe').WaitForExit;
       
-      var text := System.Windows.Forms.Clipboard.GetText;
-      var funcs := text.Remove(#13).Trim(#10' '.ToArray).Split(Arr(#10'    '#10), System.StringSplitOptions.RemoveEmptyEntries).ToList;
-      funcs.RemoveAll(f->used_funcs.Any(uf->f.Contains(uf)));
-      if funcs.Count=0 then continue;
+      var text := System.Windows.Forms.Clipboard.GetText.Remove(#13).Trim(#10' '.ToArray);
+      if text='' then continue;
       
-      res += #10;
-      res += $'  {System.IO.Path.GetFileNameWithoutExtension(fname)} = static class' + #10;
-      res += $'    ' + #10;
-      res += funcs.JoinIntoString(#10'    '#10);
-      res += #10;
-      res += $'    ' + #10;
-      res += $'  end;' + #10;
-      res += $'  ';
+      all_funcs +=
+        ('    ' + text)
+        .Split(Arr(#10'    '#10), System.StringSplitOptions.RemoveEmptyEntries)
+        .Where(f->not used_funcs.Any(uf->f.Contains(uf)))
+      ;
+      
+//      if funcs.Count=0 then continue;
+//      
+//      res += #10;
+//      res += $'  {System.IO.Path.GetFileNameWithoutExtension(fname)} = static class' + #10;
+//      res += $'    ' + #10;
+//      res += funcs.JoinIntoString(#10'    '#10);
+//      res += #10;
+//      res += $'    ' + #10;
+//      res += $'  end;' + #10;
+//      res += $'  ';
       
     end;
     
+    var funcs_data :=
+      all_funcs.Tabulate(f->
+      begin
+        
+        var ind := f.IndexOf('procedure');
+        if ind=-1 then ind := f.IndexOf('function');
+        ind := f.IndexOf(' ', ind)+1;
+        
+        var ind2 := f.IndexOf('(');
+        if ind2=-1 then ind2 := f.IndexOf(':');
+        if ind2=-1 then ind2 := f.IndexOf(';');
+        
+        Result := f.Substring(ind, ind2-ind);
+      end)
+      .OrderBy(t->t[1])
+      .ToList;
+    
+    var ext_types :=
+      funcs_data
+      .Select(t->t[1])
+      .Select(s->s.Reverse.TakeWhile(ch->ch.IsUpper).Reverse.JoinIntoString(''))
+      .Where(s->not (s in ['', 'D', 'A', 'W', 'CMAAINTEL', 'DEXT', 'DARB', 'DOES', 'GPUIDAMD', 'DC', 'DCARB', 'DCEXT', 'DCNV', 'DFX', 'DINTEL', 'DL', 'DSGIS']))
+      .Distinct
+      .ToList;
+    ext_types += '';
+    
+    var funcs_by_ext_type := new Dictionary<string, List<(string,string)>>;
+    foreach var t in funcs_data do
+    begin
+      var ext_t := ext_types.Single(ext_t->t[1].EndsWith(ext_t));
+      if not funcs_by_ext_type.ContainsKey(ext_t) then funcs_by_ext_type[ext_t] := new List<(string,string)>;
+      funcs_by_ext_type[ext_t] += t;
+    end;
+    
+    var funcs_sorted := new Dictionary<string, Dictionary<string, (string,string)>>;
+    foreach var ext_t in funcs_by_ext_type.Keys do
+    begin
+      var funcs_by_ext := new Dictionary<string, (string,string)>;
+      
+      foreach var t in funcs_by_ext_type[ext_t] do
+      begin
+        
+      end;
+      
+      funcs_sorted[ext_t] := funcs_by_ext;
+    end;
+    
+//    foreach var f in all_funcs do
+//    begin
+//      for var n := f.Length downto 2 do
+//        if all_funcs.Any(f2-> (f2<>f) and f2.
+//      begin
+//        
+//      end;
+//    end;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    var res := new StringBuilder;
+    
+    res += #10 + funcs_data.Select(t->t[0]).JoinIntoString(#10'    '#10) + #10'    ';
+//    res += funcs_data.Select(t->t[1]).JoinIntoString(#10);
+//    res += ext_types.Sorted.JoinIntoString(#10);
+//    res += funcs_data.Select(t->t[1]).Where(s->s.EndsWith('A')).JoinIntoString(#10);
+    
+    writeln('done');
     if res.Length<>0 then
     begin
       System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
@@ -155,6 +237,7 @@ begin
       System.Console.Beep(3000,1000);
     end;
     
+    readln;
   except
     on e: Exception do
     begin

@@ -2,6 +2,9 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
+var
+  keywords := HSet('begin', 'end', 'params', 'type', 'end', 'program', 'array', 'unit', 'label', 'event', 'in', 'packed', 'property');
+
 function SkipCharsFromTo(self: sequence of char; f,t: string): sequence of char; extensionmethod;
 begin
   var enm := self.GetEnumerator;
@@ -95,7 +98,34 @@ begin
   
 end;
 
-function GetTypeDefString(s: string): string;
+function GetAllCombos<T>(variants: sequence of sequence of T): sequence of sequence of T;
+begin
+  
+  if not variants.Any then
+    yield Seq&<T> else
+  if variants.Count=1 then
+    yield sequence variants.First.Select(curr->Seq(curr)) else
+    yield sequence variants.First.SelectMany(curr->GetAllCombos(variants.Skip(1)).Select(next->next.Prepend(curr)));
+  
+end;
+
+function pas_to_gl_t(self: string): string; extensionmethod;
+begin
+  case self of
+    'SByte':  Result := 'b';
+     'Byte':  Result := 'ub';
+     'Int16': Result := 's';
+    'UInt16': Result := 'us';
+     'Int32': Result := 'i';
+    'UInt32': Result := 'ui';
+     'Int64': Result := 'i64';
+    'UInt64': Result := 'ui64';
+    'single': Result := 'f';
+    'double': Result := 'd';
+  end;
+end;
+
+function GetTypeDefString(s: string): sequence of (string, string);
 begin
   var rc := s.Count(ch->ch='*');
   s := s.Replace('const*','*').Remove('const ', ' ', '*', #13, #10);
@@ -111,15 +141,18 @@ begin
     
     'glshort':                s := 'Int16';
     'glushort':               s := 'UInt16';
+    'ushort':                 s := 'UInt16';
     
     'glint':                  s := 'Int32';
     'glsizei':                s := 'Int32';
-    'glclampx':               s := 'Int32'; //ToDo размер тот же, но по названию - применение нет
+    'glclampx':               s := 'Int32';
     'int':                    s := 'Int32';
+    'int32':                  s := 'Int32';
     'gluint':                 s := 'UInt32';
     'glbitfield':             s := 'UInt32';
     'uint':                   s := 'UInt32';
     'dword':                  s := 'UInt32';
+    'unsignedint':            s := 'UInt32';
     
     'glint64':                s := 'Int64';
     'glint64ext':             s := 'Int64';
@@ -141,20 +174,41 @@ begin
     'glintptrarb':            s := 'IntPtr';
     'proc':                   s := 'IntPtr';
     'handle':                 s := 'IntPtr';
+    'lpvoid':                 s := 'IntPtr';
     'glsizeiptr':             s := 'UIntPtr';
     'glsizeiptrarb':          s := 'UIntPtr'; 
     
+    'pgpu_device':            s := '^GPU_Device_Affinity_Info';
+    
     'glenum':                 s := 'ErrorCode';
     
+    'glsync':                 s := 'GLsync';
+    'gleglimageoes':          s := 'GLeglImageOES';
+    'glhandlearb':            s := 'GLhandleARB';
+    'hgpunv':                 s := 'GPUAffinityHandle';
+    'hvideooutputdevicenv':   s := 'VideoOutputDeviceHandleNV';
+    'hvideoinputdevicenv':    s := 'VideoInputDeviceHandleNV';
+    'hpvideodev':             s := 'VideoDeviceHandleNV';
+    'gleglclientbufferext':   s := 'GLeglClientBufferEXT';
+    'glvdpausurfacenv':       s := 'GLvdpauSurfaceNV';
+    'hpbufferext':            s := 'PBufferName';
+    'lpcstr':                 s := 'string';
+    'hpbufferarb':            s := 'HPBufferARB';
     'hdc':                    s := 'GDI_DC';
     'pixelformatdescriptor':  s := 'GDI_PixelFormatDescriptor';
     'henhmetafile':           s := 'GDI_HENHMetafile';
-    'hglrc':                  s := 'HGLRC';
     'layerplanedescriptor':   s := 'GDI_LayerPlaneDescriptor';
     'colorref':               s := 'GDI_COLORREF';
-    'lpcstr':                 s := 'string';
+    'hglrc':                  s := 'HGLRC';
     'lpglyphmetricsfloat':    s := 'GDI_LPGlyphmetricsFloat';
-    'hpbufferarb':            s := 'HPBufferARB';
+    
+    'struct_cl_context':      s := 'cl_context';
+    'struct_cl_event':        s := 'cl_event';
+    
+    'gldebugproc':            s := 'GLDEBUGPROC';
+    'gldebugprocarb':         s := 'GLDEBUGPROC';
+    'glvulkanprocnv':         s := 'GLVULKANPROCNV';
+    'gldebugprocamd':         s := 'GLDEBUGPROCAMD';
     
     'glvoid',
     'void':
@@ -172,26 +226,45 @@ begin
       s := 'string';
       rc -= 1;
     end else
-      s := 'ByteString';
+      s := 'Byte';
     
     else raise new System.ArgumentException($'тип "{s}" не описан');
   end;
   
-  Result := '^'*rc + s;
+  s := '^'*rc + s;
+  
+  
+  
+  if s.Count(ch->ch='^')=1 then
+  begin
+    yield ('[MarshalAs(UnmanagedType.LPArray)] ', s.Replace('^', 'array of '));
+    yield ('var ', s.Remove('^'));
+    yield ('', 'pointer');
+  end else
+  
+  if s='string' then
+  begin
+    yield ('[MarshalAs(UnmanagedType.LPStr)] ', s);
+    yield ('', 'IntPtr');
+  end else
+    
+    yield ('', s);
+  
 end;
 
 type
   FuncDef = class
     
-    name: string;
+    name_header, name: string;
     res: string;
+    lib_name := 'opengl32.dll';
     
-    par := new List<(string,string)>;
+    par := new List<sequence of (string,string)>;
     
     constructor(s: string);
     begin
       
-      s := s.Remove('APIENTRY', 'WINAPI');
+      s := s.Remove('GL_APIENTRY', 'GLAPI', 'GL_API', 'WINAPI', 'APIENTRY');
       
       var ind1 := s.IndexOf('(');
       var ind2 := s.LastIndexOf(')');
@@ -200,8 +273,25 @@ type
         var nts := s.Remove(ind1).Trim;
         var ind := nts.LastIndexOf(' ');
         
-        name := nts.Substring(ind+3);
-        res := GetTypeDefString(nts.Remove(ind));
+        name := nts.Substring(ind+1);
+        
+        name_header := nil;
+        foreach var pnh in Arr('wgl', 'gl') do
+          if name.StartsWith(pnh) then
+          begin
+            name_header := pnh;
+            name := name.SubString(pnh.Length);
+            break;
+          end;
+        if name_header=nil then
+        begin
+          name_header := '';
+          lib_name := 'gdi32.dll';
+        end;
+        if name.ToLower() in keywords then name := '&'+name;
+        
+//        name.Println;
+        res := GetTypeDefString(nts.Remove(ind)).Last[1];
         
       end;
       
@@ -215,64 +305,78 @@ type
           GetTypeDefString(p.Remove(ind))
         );
         
-        if cpar[0].ToLower in
-          ['params', 'type', 'end', 'program', 'array', 'unit', 'label', 'event', 'in', 'packed']
-        then cpar := ('&'+cpar[0], cpar[1]);
-        if cpar[0].ToLower = 'pointer' then cpar := ('_'+cpar[0], cpar[1]);
+        if cpar[0].ToLower() in keywords then cpar := ('&'+cpar[0], cpar[1]);
         
-        par += cpar;
+        par += cpar[1].Select(
+          tt->(
+            tt[0] + (tt[1].ToLower.Contains(cpar[0].ToLower)?'_':'') + cpar[0],
+            tt[1]
+          )
+        ).Select(tt->
+        begin
+          if not tt[0].Remove('[MarshalAs').Contains('[') then
+          begin
+            Result := tt;
+            exit;
+          end;
+          
+          var ind1 := tt[0].IndexOf('[')+1;
+          var ind2 := tt[0].IndexOf(']',ind1);
+//          tt[0].SubString(ind1,ind2-ind1).Println;
+          var n := tt[0].SubString(ind1,ind2-ind1).ToInteger;
+          
+          var gl_t := tt[1].pas_to_gl_t;
+          if gl_t='' then gl_t := '_'+tt[1];
+          
+          Result := ( tt[0].Remove(ind1-1), 'Vec'+n+gl_t );
+        end).ToList.AsEnumerable;
       end;
       
     end;
     
-    public function ToString: string; override;
+    public function GetAllStrings: sequence of string;
     begin
-      var f := res<>'void';
-      var sb := new StringBuilder;
-      sb += '    static ';
-      
-      sb += f?'function':'procedure';
-      sb += ' ';
-      sb += name;
-      
-      if par.Count<>0 then
+      foreach var par_combo in GetAllCombos(par) do
       begin
-        sb += '(';
-        sb += par.Select(t->$'{t[0]}: {t[1]}').JoinIntoString('; ');
-        sb += ')';
+        
+        var f := res<>'void';
+        var sb := new StringBuilder;
+        sb += '    static ';
+        
+        sb += f?'function':'procedure';
+        sb += ' ';
+        sb += name;
+        
+        if par.Count<>0 then
+        begin
+          sb += '(';
+          sb += par_combo.Select(t->$'{t[0]}: {t[1]}').JoinIntoString('; ');
+          sb += ')';
+        end;
+        
+        if f then
+        begin
+          sb += ': ';
+          sb += res;
+        end;
+        
+        sb += ';';
+        
+        sb.AppendLine;
+        sb += $'    external ''{lib_name}'' name ''';
+        sb += name_header;
+        sb += name;
+        sb += ''';';
+        
+        sb.AppendLine;
+        yield sb.ToString;
       end;
-      
-      if f then
-      begin
-        sb += ': ';
-        sb += res;
-      end;
-      
-      sb += ';';
-      
-      sb.AppendLine;
-      sb += '    external ''opengl32.dll'' name ''gl';
-      sb += name;
-      sb += ''';';
-      
-      sb.AppendLine;
-      Result := sb.ToString;
-      
-      if Result.Contains('event_wait_list: ^cl_event; &event: ^cl_event') then
-        Result :=
-          Result.Replace(
-          'event_wait_list: ^cl_event; &event: ^cl_event',
-          '[MarshalAs(UnmanagedType.LPArray)] event_wait_list: array of cl_event; var &event: cl_event'
-          ) + Result;
-      
-      if Result.Contains('errcode_ret: ^ErrorCode') then
-        Result :=
-          Result.Replace(
-            'errcode_ret: ^ErrorCode',
-            'var errcode_ret: ErrorCode'
-          ) + Result;
       
     end;
+    
+    public function ToString: string; override :=
+    GetAllStrings
+    .JoinIntoString('');
     
   end;
 
@@ -284,7 +388,7 @@ begin
       .Remove(#13)
       .SkipCharsFromTo('/*', '*/')
       .SkipCharsFromTo('typedef',';')
-      .SkipCharsFromTo('#define',#10)
+      .SkipCharsFromTo('#',#10)
       .JoinIntoString('')
       .ToWords(#10)
       .Where(l->l.Contains('API '))
