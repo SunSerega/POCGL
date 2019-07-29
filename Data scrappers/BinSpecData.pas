@@ -44,6 +44,23 @@ begin
   
 end;
 
+function FindBrackets(self: string; from: integer): (integer,integer); extensionmethod;
+begin
+  var ind1 := self.IndexOf('(',from);
+  if ind1=-1 then exit;
+  
+  var ind2 := self.IndexOf(')',ind1+1);
+  if ind2=-1 then raise new System.ArgumentException(self);
+  if self.IndexOf('(',ind1+1, ind2-ind1-1) <> -1 then
+  begin
+    var t := self.FindBrackets(ind1+1);
+    ind2 := self.IndexOf(')',t[1]+1);
+  end;
+  if ind2=-1 then raise new System.ArgumentException(self);
+  
+  Result := (ind1,ind2);
+end;
+
 {$endregion}
 
 type
@@ -126,10 +143,10 @@ type
     
     constructor(s: string);
     begin
-      s := s.Trim(#9' '.ToArray);
+      s := s.Trim(' ');
       var ind := s.IndexOf(#10);
-      self.header_end := s.Remove(ind).Trim(#9#10' '.ToArray);
-      self.contents := s.Substring(ind+1).Trim(#9#10' '.ToArray);
+      self.header_end := s.Remove(ind).Trim(#10' '.ToArray);
+      self.contents := s.Substring(ind+1).Trim(#10' '.ToArray);
     end;
     
   end;
@@ -148,7 +165,7 @@ type
       self.strings :=
         contents
         .Split(#10)
-        .Select(s->s.Trim(#9' '.ToArray))
+        .Select(s->s.Trim(' '))
         .Where(s->s<>'')
         .Where(s->s.All(ch->  ch.IsDigit or ch.IsLetter or (ch='_')  ))
         .ToArray;
@@ -157,6 +174,37 @@ type
   end;
   
   NewFuncsChapter = class(ExtSpecChapter)
+    funcs := new List<(string,string)>;
+    
+    static function TryCreate(s: string): NewFuncsChapter;
+    begin
+      Result := new NewFuncsChapter(s);
+      
+      var last_ind := 0;
+      while true do
+      begin
+        var t := s.FindBrackets(last_ind);
+        if t=nil then break;
+        last_ind := t[1]+1;
+        
+        if s.IndexOf('.', t[0]+1, t[1]-t[0]-1) <> -1 then continue; // в скобках бывают комментарии. Благо, их можно отличить - у них в конце точка
+        
+        var name_ind := s.LastIndexOfAny(' *'.ToArray,t[0]-1)+1;
+        if name_ind=-1 then raise new System.ArgumentException(s);
+        var func_name := s.Substring(name_ind, t[0]-name_ind);
+        while s[name_ind] in ' *' do name_ind -= 1;
+        
+        var f_ind := s.LastIndexOf(' ',name_ind-1)+1; // даже если вернёт -1, это вполне устраивает как ответ
+        
+        var func_text := s.Substring(f_ind, t[1]+1-f_ind);
+        func_text := func_text.Replace(#10,' ');
+        while func_text.Contains('  ') do func_text := func_text.Replace('  ',' ');
+        
+        Result.funcs += ( func_name, func_text );
+      end;
+      
+      if Result.funcs.Count=0 then Result := nil;
+    end;
     
   end;
   
@@ -230,7 +278,8 @@ type
     
     static function InitFromFile(fname: string): ExtSpec;
     begin
-      var spec_text := ReadAllText(fname).Remove(#13);
+      var spec_text := ReadAllText(fname).Remove(#13).Replace(#9,' '*4);
+      while spec_text.Contains(' '#10) do spec_text := spec_text.Replace(' '#10, #10); //ToDo переместить в скачивающую программу
       
       // у незаконченных расширений - криво прописана спецификация (не приведена в общий вид с остальными расширениями)
       if spec_text.Split(#10).Any(l->l.StartsWith('XXX')) then exit;
@@ -242,7 +291,6 @@ type
       
       Result := new ExtSpec;
       Result.fname := fname;
-      while spec_text.Contains(' '#10) do spec_text := spec_text.Replace(' '#10, #10); //ToDo переместить в скачивающую программу
 //      writeln(fname);
       
       
@@ -319,25 +367,27 @@ type
         
         case p[0][0] of
           
-          'SpecModifications': Result.SpecModifications                                   += new SpecModificationsChapter (chapt_contents);
-          'ExtStrings':       if Result.ExtStrings      =nil then Result.ExtStrings       := new ExtStringsChapter        (chapt_contents) else raise new System.InvalidOperationException($'multiple ExtStrings chapters in {fname}');
-          'NewFuncs':         if Result.NewFuncs        =nil then Result.NewFuncs         := new NewFuncsChapter          (chapt_contents) else raise new System.InvalidOperationException($'multiple NewFuncs chapters in {fname}');
-          'AuthorContacts':   if Result.AuthorContacts  =nil then Result.AuthorContacts   := new AuthorContactsChapter    (chapt_contents) else raise new System.InvalidOperationException($'multiple AuthorContacts chapters in {fname}');
-          'ContributorsList': if Result.ContributorsList=nil then Result.ContributorsList := new ContributorsListChapter  (chapt_contents) else raise new System.InvalidOperationException($'multiple ContributorsList chapters in {fname}');
-          'Errors':           if Result.Errors          =nil then Result.Errors           := new ErrorsChapter            (chapt_contents) else raise new System.InvalidOperationException($'multiple Errors chapters in {fname}');
-          'Issues':           Result.Issues                                               += new IssuesChapter            (chapt_contents);
-          'NewKeywords':      if Result.NewKeywords     =nil then Result.NewKeywords      := new NewKeywordsChapter       (chapt_contents) else raise new System.InvalidOperationException($'multiple NewKeywords chapters in {fname}');
-          'NewState':         if Result.NewState        =nil then Result.NewState         := new NewStateChapter          (chapt_contents) else raise new System.InvalidOperationException($'multiple NewState chapters in {fname}');
-          'NewTokens':        Result.NewTokens                                            += new NewTokensChapter         (chapt_contents);
-          'Notice':           if Result.Notice          =nil then Result.Notice           := new NoticeChapter            (chapt_contents) else raise new System.InvalidOperationException($'multiple Notice chapters in {fname}');
-          'Status':           if sf1 or (Result.Status=nil)  then Result.Status           := new StatusChapter            (chapt_contents) else raise new System.InvalidOperationException($'multiple Status chapters in {fname}');
-          'Version':          if Result.Version         =nil then Result.Version          := new VersionChapter           (chapt_contents) else raise new System.InvalidOperationException($'multiple Version chapters in {fname}');
+          'SpecModifications':                                      Result.SpecModifications  += SpecModificationsChapter .Create   (chapt_contents);
+          'ExtStrings':       if (Result.ExtStrings      =nil) then Result.ExtStrings         := ExtStringsChapter        .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ExtStrings chapters in {fname}');
+          'NewFuncs':         if (Result.NewFuncs        =nil) then Result.NewFuncs           := NewFuncsChapter          .TryCreate(chapt_contents) else raise new System.InvalidOperationException($'multiple NewFuncs chapters in {fname}');
+          'AuthorContacts':   if (Result.AuthorContacts  =nil) then Result.AuthorContacts     := AuthorContactsChapter    .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple AuthorContacts chapters in {fname}');
+          'ContributorsList': if (Result.ContributorsList=nil) then Result.ContributorsList   := ContributorsListChapter  .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ContributorsList chapters in {fname}');
+          'Errors':           if (Result.Errors          =nil) then Result.Errors             := ErrorsChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Errors chapters in {fname}');
+          'Issues':                                                 Result.Issues             += IssuesChapter            .Create   (chapt_contents);
+          'NewKeywords':      if (Result.NewKeywords     =nil) then Result.NewKeywords        := NewKeywordsChapter       .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewKeywords chapters in {fname}');
+          'NewState':         if (Result.NewState        =nil) then Result.NewState           := NewStateChapter          .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewState chapters in {fname}');
+          'NewTokens':                                              Result.NewTokens          += NewTokensChapter         .Create   (chapt_contents);
+          'Notice':           if (Result.Notice          =nil) then Result.Notice             := NoticeChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Notice chapters in {fname}');
+          'Status':           if (Result.Status=nil)    or sf1 then Result.Status             := StatusChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Status chapters in {fname}');
+          'Version':          if (Result.Version         =nil) then Result.Version            := VersionChapter           .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Version chapters in {fname}');
           
         end;
         
       end;
       
       if Result.ExtStrings=nil then raise new System.InvalidOperationException($'no ExtStrings chapter in file {fname}');
+      
+      
       
     end;
     
@@ -353,10 +403,17 @@ type
       Result := new BinSpecDB;
       
       foreach var fname in System.IO.Directory.EnumerateFiles(dir,'*.txt',System.IO.SearchOption.AllDirectories) do
-      begin
+      try
         var ext := ExtSpec.InitFromFile(fname);
         if ext=nil then continue;
         Result.exts += ext;
+      except
+        on e: Exception do
+        begin
+          writeln(fname);
+          writeln(e);
+          writeln('*'*50);
+        end;
       end;
       
     end;
@@ -365,21 +422,12 @@ type
     begin
       var ToDo := 0;
       
-      var l :=
-        exts.SelectMany(
-          ext->
-          ext.ExtStrings
-          .strings
-          .Select(s->(s,ext.fname))
-        )
-        .Distinct(t->t[0])
-        .OrderBy(t->t[0])
-        .ToList
-      ;
-      
-      var max_w := l.Max(t->t[0].Length);
-      l.Select(t->$'{t[0].PadRight(max_w)} : {t[1]}')
-      .PrintLines;
+      foreach var ext in exts do
+        if ext.NewFuncs<>nil then
+        begin
+          ext.NewFuncs.funcs.Select(t->t[1]).PrintLines;
+          Writeln('='*50);
+        end;
       
     end;
     
