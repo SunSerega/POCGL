@@ -238,50 +238,50 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
      Table 3.A:
 
                                                                                                texture shader
-	texture shader operation i         previous texture input     texture shader operation i-1     operation i-2     texture shader operation i+1
-	=================================  =========================  ===============================  ================  ================================
-	TEXTURE_3D                         -                          -                                -                 -
-	---------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
-	DOT_PRODUCT_TEXTURE_3D_NV          shader result type must    shader operation                 shader operation  -
-										be one of signed HILO,     must be                          must be
-										unsigned HILO, all         DOT_PRODUCT_NV                   DOT_PRODUCT_NV
-										signed RGBA, all
-										unsigned RGBA
-	---------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+texture shader operation i         previous texture input     texture shader operation i-1     operation i-2     texture shader operation i+1
+=================================  =========================  ===============================  ================  ================================
+TEXTURE_3D                         -                          -                                -                 -
+---------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+DOT_PRODUCT_TEXTURE_3D_NV          shader result type must    shader operation                 shader operation  -
+                                    be one of signed HILO,     must be                          must be
+                                    unsigned HILO, all         DOT_PRODUCT_NV                   DOT_PRODUCT_NV
+                                    signed RGBA, all
+                                    unsigned RGBA
+---------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
 
-		 Table 3.B:
+     Table 3.B:
 
-	texture shader operation i         texture unit i
-	=================================  =======================================
-	TEXTURE_3D                         3D target must be consistent
-	---------------------------------  ---------------------------------------
-	DOT_PRODUCT_TEXTURE_3D_NV          3D target must be consistent
-	---------------------------------  ---------------------------------------
+texture shader operation i         texture unit i
+=================================  =======================================
+TEXTURE_3D                         3D target must be consistent
+---------------------------------  ---------------------------------------
+DOT_PRODUCT_TEXTURE_3D_NV          3D target must be consistent
+---------------------------------  ---------------------------------------
 
-		 Table 3.C:
+     Table 3.C:
 
-															  uses    uses    uses    uses             uses       offset    uses
-									   texture                stage   stage   stage   previous  uses   offset     texture   const
-									   coordinate  texture    result  result  result  texture   cull   texture    2D scale  eye
-	texture shader operation i         set usage   target     i-1     i-2     i+1     input     modes  2D matrix  and bias  vector
-	=================================  ==========  =========  ======  ======  ======  ========  =====  =========  ========  ======
-	TEXTURE_3D                         s,t,r,q     3D         -       -       -       -         -      -          -         -
-	---------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
-	DOT_PRODUCT_TEXTURE_3D_NV          s,t,r       3D         y       y       -       y         -      -          -         -
-	---------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+                                                          uses    uses    uses    uses             uses       offset    uses
+                                   texture                stage   stage   stage   previous  uses   offset     texture   const
+                                   coordinate  texture    result  result  result  texture   cull   texture    2D scale  eye
+texture shader operation i         set usage   target     i-1     i-2     i+1     input     modes  2D matrix  and bias  vector
+=================================  ==========  =========  ======  ======  ======  ========  =====  =========  ========  ======
+TEXTURE_3D                         s,t,r,q     3D         -       -       -       -         -      -          -         -
+---------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+DOT_PRODUCT_TEXTURE_3D_NV          s,t,r       3D         y       y       -       y         -      -          -         -
+---------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
 
-		 Table 3.D:
+     Table 3.D:
 
-	texture shader operation i         shader stage result type       shader stage result                  texture unit RGBA color result
-	=================================  =============================  ===================================  ======================================
-	TEXTURE_3D                         matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA, 
-																											filtered 3D target texel,
-																											else (0,0,0,0)
-	---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
-	DOT_PRODUCT_TEXTURE_3D_NV          matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA,
-																											filtered 3D target texel,
-																											else (0,0,0,0)   
-	-------------------------------    -----------------------------  -----------------------------------  --------------------------------------
+texture shader operation i         shader stage result type       shader stage result                  texture unit RGBA color result
+=================================  =============================  ===================================  ======================================
+TEXTURE_3D                         matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA, 
+                                                                                                        filtered 3D target texel,
+                                                                                                        else (0,0,0,0)
+---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
+DOT_PRODUCT_TEXTURE_3D_NV          matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA,
+                                                                                                        filtered 3D target texel,
+                                                                                                        else (0,0,0,0)   
+-------------------------------    -----------------------------  -----------------------------------  --------------------------------------
 
      Add the following new sections specifying new 3D texture operations:
 
@@ -560,19 +560,19 @@ Errors
 
 New State
 
-	Table 6.TextureShaders.  Texture Shaders.
+Table 6.TextureShaders.  Texture Shaders.
 
-	Get Value                    Type    Get Command  Initial Value         Description          Sec     Attribute
-	---------------------------  ------  -----------  --------------------  -------------------  ------  --------------
-	SHADER_OPERATION_NV          TxZ23   GetTexEnviv  NONE                  Texture shader       3.8.13  texture
-																			operation
+Get Value                    Type    Get Command  Initial Value         Description          Sec     Attribute
+---------------------------  ------  -----------  --------------------  -------------------  ------  --------------
+SHADER_OPERATION_NV          TxZ23   GetTexEnviv  NONE                  Texture shader       3.8.13  texture
+                                                                        operation
 
-	* Z21 in NV_texture_shader is now Z23 with NV_texture_shader2.
+* Z21 in NV_texture_shader is now Z23 with NV_texture_shader2.
 
-	[ The "Tx" type prefix means that the state is per-texture unit. ]
+[ The "Tx" type prefix means that the state is per-texture unit. ]
 
-	[ The "Zn" type is an n-valued integer where n is the
-	  implementation-dependent number of texture units supported.]
+[ The "Zn" type is an n-valued integer where n is the
+  implementation-dependent number of texture units supported.]
 
 New Implementation State
 

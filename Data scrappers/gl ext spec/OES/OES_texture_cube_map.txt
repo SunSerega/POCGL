@@ -416,53 +416,53 @@ Errors
 
 New State
 
-	(table 6.12, p202) add the following entries:
+(table 6.12, p202) add the following entries:
 
-	Get Value                        Type    Get Command   Initial Value   Description           Sec    Attribute
-	---------                        ----    -----------   -------------   -----------           ------ --------------
-	TEXTURE_CUBE_MAP_OES             B       IsEnabled     False           True if cube map      3.8.10 texture/enable
-																		   texturing is enabled
-	TEXTURE_BINDING_CUBE_MAP_OES     Z+      GetIntegerv   0               Texture object        3.8.8  texture
-																		   for TEXTURE_CUBE_MAP
-	TEXTURE_CUBE_MAP_POSITIVE_X_OES  nxI     N/A           see 3.8         positive x face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_NEGATIVE_X_OES  nxI     N/A           see 3.8         negative x face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_POSITIVE_Y_OES  nxI     N/A           see 3.8         positive y face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_NEGATIVE_Y_OES  nxI     N/A           see 3.8         negative y face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_POSITIVE_Z_OES  nxI     N/A           see 3.8         positive z face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_NEGATIVE_Z_OES  nxI     N/A           see 3.8         negative z face       3.8    -
-																		   cube map texture
-																		   image at lod i
+Get Value                        Type    Get Command   Initial Value   Description           Sec    Attribute
+---------                        ----    -----------   -------------   -----------           ------ --------------
+TEXTURE_CUBE_MAP_OES             B       IsEnabled     False           True if cube map      3.8.10 texture/enable
+                                                                       texturing is enabled
+TEXTURE_BINDING_CUBE_MAP_OES     Z+      GetIntegerv   0               Texture object        3.8.8  texture
+                                                                       for TEXTURE_CUBE_MAP
+TEXTURE_CUBE_MAP_POSITIVE_X_OES  nxI     N/A           see 3.8         positive x face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_NEGATIVE_X_OES  nxI     N/A           see 3.8         negative x face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_POSITIVE_Y_OES  nxI     N/A           see 3.8         positive y face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_NEGATIVE_Y_OES  nxI     N/A           see 3.8         negative y face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_POSITIVE_Z_OES  nxI     N/A           see 3.8         positive z face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_NEGATIVE_Z_OES  nxI     N/A           see 3.8         negative z face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
 
-	(table 6.14, p204) add the following entries:
+(table 6.14, p204) add the following entries:
 
-	Get Value            Type Get Command    Initial Value      Description Sec     Attribute
-	---------            ---- -----------    -------------      ----------- ------  ---------
-	TEXTURE_GEN_MODE_OES Z2   GetTexGenivOES REFLECTION_MAP_OES Function used for   2.10.4 texture
-																texgen (for s,t,r)
-	TEXTURE_GEN_STR_OES  B    IsEnabled      FALSE              True if texgen is   2.10.4 texture
+Get Value            Type Get Command    Initial Value      Description Sec     Attribute
+---------            ---- -----------    -------------      ----------- ------  ---------
+TEXTURE_GEN_MODE_OES Z2   GetTexGenivOES REFLECTION_MAP_OES Function used for   2.10.4 texture
+                                                            texgen (for s,t,r)
+TEXTURE_GEN_STR_OES  B    IsEnabled      FALSE              True if texgen is   2.10.4 texture
                                                             enabled (for s,t,r)
 
 New Implementation Dependent State
 
-	(table 6.24, p214) add the following entry:
+(table 6.24, p214) add the following entry:
 
-	Get Value                       Type    Get Command   Minimum Value   Description           Sec    Attribute
-	---------                       ----    -----------   -------------   -----------           ------ --------------
-	MAX_CUBE_MAP_TEXTURE_SIZE_OES   Z+      GetIntegerv   16              Maximum cube map      3.8.1  -
+Get Value                       Type    Get Command   Minimum Value   Description           Sec    Attribute
+---------                       ----    -----------   -------------   -----------           ------ --------------
+MAX_CUBE_MAP_TEXTURE_SIZE_OES   Z+      GetIntegerv   16              Maximum cube map      3.8.1  -
                                                                       texture image
                                                                       dimension
 
 Revision History
 
-	Version 1, November 8, 2007 (Benj Lipchak) - First version cleaned up for ES
-	Version 2, April 16, 2015 (Jon Leech) - Remove border width term bt (nonexistent in ES)
+Version 1, November 8, 2007 (Benj Lipchak) - First version cleaned up for ES
+Version 2, April 16, 2015 (Jon Leech) - Remove border width term bt (nonexistent in ES)

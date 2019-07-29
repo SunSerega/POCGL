@@ -234,10 +234,10 @@ Errors
 
 New State
 
-	(table 6.7)
-	Get Value       Type  Get Command  Initial Value  Description     Sec      Attribute
-	--------------  ----  -----------  -------------  --------------  ------   ----------------
-	DEPTH_CLAMP_NV  B     IsEnabled    False          Depth clamping  2.10.2   transform/enable
+(table 6.7)
+Get Value       Type  Get Command  Initial Value  Description     Sec      Attribute
+--------------  ----  -----------  -------------  --------------  ------   ----------------
+DEPTH_CLAMP_NV  B     IsEnabled    False          Depth clamping  2.10.2   transform/enable
                                                   on/off
 
 New Implementation Dependent State

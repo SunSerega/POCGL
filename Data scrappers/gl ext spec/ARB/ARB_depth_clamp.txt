@@ -242,12 +242,12 @@ Errors
 
 New State
 
-	Add to table 6.7, transformation state
+Add to table 6.7, transformation state
 
-	Get Value       Type  Get Command  Initial Value  Description     Sec      Attribute
-	--------------  ----  -----------  -------------  --------------  ------   ----------------
-	DEPTH_CLAMP     B     IsEnabled    False          Depth clamping  2.12.2   transform/enable
-													  on/off
+Get Value       Type  Get Command  Initial Value  Description     Sec      Attribute
+--------------  ----  -----------  -------------  --------------  ------   ----------------
+DEPTH_CLAMP     B     IsEnabled    False          Depth clamping  2.12.2   transform/enable
+                                                  on/off
 
 New Implementation Dependent State
 

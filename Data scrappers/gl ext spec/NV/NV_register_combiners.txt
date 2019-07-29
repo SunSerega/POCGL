@@ -1398,57 +1398,57 @@ New State
 
  --  (NEW table 6.29, after p217) 
 
-	Get Value                          Type      Get Command                          Initial Value           Description        Sec       Attribute
-	---------                          --------  ----------------------------------   ----------------------  ----------------   --------  --------------
-	REGISTER_COMBINERS_NV              B         IsEnabled                            False                   register           3.8.11    texture/enable
-																											  combiners enable
-	NUM_GENERAL_COMBINERS_NV           Z+        GetIntegerv                          1                       number of active   3.8.12.1  texture
-																											  combiner stages
-	COLOR_SUM_CLAMP_NV                 B         GetBooleanv                          True                    whether or not     3.8.12.1  texture
-																											  SPARE0_PLUS_
-																											  SECONDARY_
-																											  COLOR_NV clamps
-																											  combiner stages
-	CONSTANT_COLOR0_NV                 C         GetFloatv                            0,0,0,0                 combiner constant  3.8.12.1  texture
-																											  color zero
-	CONSTANT_COLOR1_NV                 C         GetFloatv                            0,0,0,0                 combiner constant  3.8.12.1  texture
-																											  color one
-	COMBINER_INPUT_NV                  Z8x#x2x4  GetCombinerInputParameter*NV         see 3.8.12.4            combiner input     3.8.12.2  texture
-																											  variables
-	COMBINER_COMPONENT_USAGE_NV        Z3x#x2x4  GetCombinerInputParameter*NV         see 3.8.12.4            use alpha for      3.8.12.2  texture
-																											  combiner input
-	COMBINER_MAPPING_NV                Z8x#x2x4  GetCombinerInputParameter*NV         see 3.8.12.4            complement         3.8.12.2  texture
-																											  combiner input
-	COMBINER_AB_DOT_PRODUCT_NV         Bx#x2     GetCombinerOutputParameter*NV        False                   output AB dot      3.8.12.3  texture
-																											  product
-	COMBINER_CD_DOT_PRODUCT_NV         Bx#x2     GetCombinerOutputParameter*NV        False                   output CD dot      3.8.12.3  texture
-																											  product
-	COMBINER_MUX_SUM_NV                Bx#x2     GetCombinerOutputParameter*NV        False                   output mux sum     3.8.12.3  texture
-	COMBINER_SCALE_NV                  Z2x#x2    GetCombinerOutputParameter*NV        NONE                    output scale       3.8.12.3  texture
-	COMBINER_BIAS_NV                   Z2x#x2    GetCombinerOutputParameter*NV        NONE                    output bias        3.8.12.3  texture
-	COMBINER_AB_OUTPUT_NV              Z7x#x2    GetCombinerOutputParameter*NV        DISCARD_NV              AB output          3.8.12.3  texture
-																											  register
-	COMBINER_CD_OUTPUT_NV              Z7x#x2    GetCombinerOutputParameter*NV        DISCARD_NV              CD output          3.8.12.3  texture
-																											  register
-	COMBINER_SUM_OUTPUT_NV             Z7x#x2    GetCombinerOutputParameter*NV        SPARE0_NV               sum output         3.8.12.3  texture
-																											  register
-	COMBINER_INPUT_NV                  Z10x7     GetFinalCombinerInputParameter*NV    see 3.8.12.4            final combiner     3.8.12.4  texture
-																											  input
-	COMBINER_MAPPING_NV                Z2x7      GetFinalCombinerInputParameter*NV    UNSIGNED_IDENTITY_NV    final combiner     3.8.12.4  texture
-																											  input mapping
-	COMBINER_COMPONENT_USAGE_NV        Z2x7      GetFinalCombinerInputParameter*NV    see 3.8.12.4            use alpha for      3.8.12.4  texture
-																											  final combiner
-																											  input mapping
+Get Value                          Type      Get Command                          Initial Value           Description        Sec       Attribute
+---------                          --------  ----------------------------------   ----------------------  ----------------   --------  --------------
+REGISTER_COMBINERS_NV              B         IsEnabled                            False                   register           3.8.11    texture/enable
+                                                                                                          combiners enable
+NUM_GENERAL_COMBINERS_NV           Z+        GetIntegerv                          1                       number of active   3.8.12.1  texture
+                                                                                                          combiner stages
+COLOR_SUM_CLAMP_NV                 B         GetBooleanv                          True                    whether or not     3.8.12.1  texture
+                                                                                                          SPARE0_PLUS_
+                                                                                                          SECONDARY_
+                                                                                                          COLOR_NV clamps
+                                                                                                          combiner stages
+CONSTANT_COLOR0_NV                 C         GetFloatv                            0,0,0,0                 combiner constant  3.8.12.1  texture
+                                                                                                          color zero
+CONSTANT_COLOR1_NV                 C         GetFloatv                            0,0,0,0                 combiner constant  3.8.12.1  texture
+                                                                                                          color one
+COMBINER_INPUT_NV                  Z8x#x2x4  GetCombinerInputParameter*NV         see 3.8.12.4            combiner input     3.8.12.2  texture
+                                                                                                          variables
+COMBINER_COMPONENT_USAGE_NV        Z3x#x2x4  GetCombinerInputParameter*NV         see 3.8.12.4            use alpha for      3.8.12.2  texture
+                                                                                                          combiner input
+COMBINER_MAPPING_NV                Z8x#x2x4  GetCombinerInputParameter*NV         see 3.8.12.4            complement         3.8.12.2  texture
+                                                                                                          combiner input
+COMBINER_AB_DOT_PRODUCT_NV         Bx#x2     GetCombinerOutputParameter*NV        False                   output AB dot      3.8.12.3  texture
+                                                                                                          product
+COMBINER_CD_DOT_PRODUCT_NV         Bx#x2     GetCombinerOutputParameter*NV        False                   output CD dot      3.8.12.3  texture
+                                                                                                          product
+COMBINER_MUX_SUM_NV                Bx#x2     GetCombinerOutputParameter*NV        False                   output mux sum     3.8.12.3  texture
+COMBINER_SCALE_NV                  Z2x#x2    GetCombinerOutputParameter*NV        NONE                    output scale       3.8.12.3  texture
+COMBINER_BIAS_NV                   Z2x#x2    GetCombinerOutputParameter*NV        NONE                    output bias        3.8.12.3  texture
+COMBINER_AB_OUTPUT_NV              Z7x#x2    GetCombinerOutputParameter*NV        DISCARD_NV              AB output          3.8.12.3  texture
+                                                                                                          register
+COMBINER_CD_OUTPUT_NV              Z7x#x2    GetCombinerOutputParameter*NV        DISCARD_NV              CD output          3.8.12.3  texture
+                                                                                                          register
+COMBINER_SUM_OUTPUT_NV             Z7x#x2    GetCombinerOutputParameter*NV        SPARE0_NV               sum output         3.8.12.3  texture
+                                                                                                          register
+COMBINER_INPUT_NV                  Z10x7     GetFinalCombinerInputParameter*NV    see 3.8.12.4            final combiner     3.8.12.4  texture
+                                                                                                          input
+COMBINER_MAPPING_NV                Z2x7      GetFinalCombinerInputParameter*NV    UNSIGNED_IDENTITY_NV    final combiner     3.8.12.4  texture
+                                                                                                          input mapping
+COMBINER_COMPONENT_USAGE_NV        Z2x7      GetFinalCombinerInputParameter*NV    see 3.8.12.4            use alpha for      3.8.12.4  texture
+                                                                                                          final combiner
+                                                                                                          input mapping
 
-	[ where # is the value of MAX_GENERAL_COMBINERS_NV   ]
+[ where # is the value of MAX_GENERAL_COMBINERS_NV   ]
 
 New Implementation Dependent State
 
-	(table 6.24, p214) add the following entry:
+(table 6.24, p214) add the following entry:
 
-		Get Value                    Type    Get Command   Minimum Value   Description         Sec     Attribute
-		--------------------------   ----    -----------   -------------   ----------------    ------  --------------
-		MAX_GENERAL_COMBINERS_NV     Z+      GetIntegerv   2               Maximum num of      3.8.12  -
+    Get Value                    Type    Get Command   Minimum Value   Description         Sec     Attribute
+    --------------------------   ----    -----------   -------------   ----------------    ------  --------------
+    MAX_GENERAL_COMBINERS_NV     Z+      GetIntegerv   2               Maximum num of      3.8.12  -
                                                                        general combiner
 
 NVIDIA Implementation Details

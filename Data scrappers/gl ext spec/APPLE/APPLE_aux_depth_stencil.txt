@@ -104,8 +104,8 @@ New State
 
 New Implementation Dependent State
 
-	Get Value                        Type    Get Command    Values        Description         Section
-	-------------------------------  ------  -------------  ------------- ------------------  ------------
-	AUX_DEPTH_STENCIL_APPLE          Z2      GetIntegerv    True or False aux depth stencil   -
+Get Value                        Type    Get Command    Values        Description         Section
+-------------------------------  ------  -------------  ------------- ------------------  ------------
+AUX_DEPTH_STENCIL_APPLE          Z2      GetIntegerv    True or False aux depth stencil   -
                                                                       enabled
 

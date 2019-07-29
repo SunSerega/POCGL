@@ -115,23 +115,23 @@ Errors
 
 New State
 
-	(table 6.6, p. 232)
-									   Get         Initial
-	Get Value                    Type  Command      Value   Description
-	---------                    ----  -------     -------  -----------
-	POINT_SIZE_ARRAY_OES          B    IsEnabled    False   point sprite array enable
-	POINT_SIZE_ARRAY_TYPE_OES     Z2   GetIntegerv  Float   type of point size
-	POINT_SIZE_ARRAY_STRIDE_OES   Z+   GetIntegerv  0       stride between point sizes
-	POINT_SIZE_ARRAY_POINTER_OES  Y    GetPointerv  0       pointer to point sprite array
+(table 6.6, p. 232)
+                                   Get         Initial
+Get Value                    Type  Command      Value   Description
+---------                    ----  -------     -------  -----------
+POINT_SIZE_ARRAY_OES          B    IsEnabled    False   point sprite array enable
+POINT_SIZE_ARRAY_TYPE_OES     Z2   GetIntegerv  Float   type of point size
+POINT_SIZE_ARRAY_STRIDE_OES   Z+   GetIntegerv  0       stride between point sizes
+POINT_SIZE_ARRAY_POINTER_OES  Y    GetPointerv  0       pointer to point sprite array
 
-	(table 6.7, p. 233)
+(table 6.7, p. 233)
 
                                            Get         Initial
-	Get Value                            Type  Command     Value    Description
-	---------                            ----  -------     -------  -----------
+Get Value                            Type  Command     Value    Description
+---------                            ----  -------     -------  -----------
 
-	POINT_SIZE_ARRAY_BUFFER_BINDING_OES  Z+    GetIntegerv    0     point size array
-																	buffer binding
+POINT_SIZE_ARRAY_BUFFER_BINDING_OES  Z+    GetIntegerv    0     point size array
+                                                                buffer binding
 
 Revision History
 

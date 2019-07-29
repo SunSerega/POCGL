@@ -581,34 +581,34 @@ Errors
 
 New State
 
-	(table 6.5, p196)
-	Get Value                   Type    Get Command     Initial Value   Description     Sec Attribute
-	---------                   ----    -----------     -------------   -----------     --- ---------
-	CURRENT_VERTEX_WEIGHT_EXT    F       GetFloatv       1               Current         2.8 current
-																		 vertex weight
+(table 6.5, p196)
+Get Value                   Type    Get Command     Initial Value   Description     Sec Attribute
+---------                   ----    -----------     -------------   -----------     --- ---------
+CURRENT_VERTEX_WEIGHT_EXT    F       GetFloatv       1               Current         2.8 current
+                                                                     vertex weight
 
-	(table 6.6, p197)
-	Get Value                           Type    Get Command     Initial Value   Description                     Sec Attribute
-	---------                           ----    -----------     -------------   -----------                     --- ---------
-	VERTEX_WEIGHT_ARRAY_EXT              B       IsEnabled       False           Vertex weight enable            2.8 vertex-array
-	VERTEX_WEIGHT_ARRAY_SIZE_EXT         Z+      GetIntegerv     1               Weights per vertex              2.8 vertex-array
-	VERTEX_WEIGHT_ARRAY_TYPE_EXT         Z1      GetIntegerv     FLOAT           Type of weights                 2.8 vertex-array
-	VERTEX_WEIGHT_ARRAY_STRIDE_EXT       Z       GetIntegerv     0               Stride between weights          2.8 vertex-array
-	VERTEX_WEIGHT_ARRAY_POINTER_EXT      Y       GetPointerv     0               Pointer to vertex weight array  2.8 vertex-array
+(table 6.6, p197)
+Get Value                           Type    Get Command     Initial Value   Description                     Sec Attribute
+---------                           ----    -----------     -------------   -----------                     --- ---------
+VERTEX_WEIGHT_ARRAY_EXT              B       IsEnabled       False           Vertex weight enable            2.8 vertex-array
+VERTEX_WEIGHT_ARRAY_SIZE_EXT         Z+      GetIntegerv     1               Weights per vertex              2.8 vertex-array
+VERTEX_WEIGHT_ARRAY_TYPE_EXT         Z1      GetIntegerv     FLOAT           Type of weights                 2.8 vertex-array
+VERTEX_WEIGHT_ARRAY_STRIDE_EXT       Z       GetIntegerv     0               Stride between weights          2.8 vertex-array
+VERTEX_WEIGHT_ARRAY_POINTER_EXT      Y       GetPointerv     0               Pointer to vertex weight array  2.8 vertex-array
 
-	(table 6.7, p198)
-	Get Value                   Type    Get Command     Initial Value   Description         Sec      Attribute
-	---------                   ----    -----------     -------------   -----------         ------   ---------
-	MODELVIEW0_MATRIX_EXT       32*xM4  GetFloatv       Identity        Primary modelview    2.10.2   -
-																		stack
-	MODELVIEW1_MATRIX_EXT       32*xM4  GetFloatv       Identity        Secondary modelview  2.10.2   -
-																		stack
-	MODELVIEW0_STACK_DEPTH_EXT  Z+      GetIntegerv     1               Primary modelview    2.10.2   -
-																		stack depth
-	MODELVIEW1_STACK_DEPTH_EXT  Z+      GetIntegerv     1               Secondary modelview  2.10.2   -
-																		stack depth
-	MATRIX_MODE                 Z4      GetIntegerv     MODELVIEW0      Current matrix mode  2.10.2   transform
-	VERTEX_WEIGHTING_EXT        B       IsEnabled       False           Vertex weighting     2.10.2   transform/enable
+(table 6.7, p198)
+Get Value                   Type    Get Command     Initial Value   Description         Sec      Attribute
+---------                   ----    -----------     -------------   -----------         ------   ---------
+MODELVIEW0_MATRIX_EXT       32*xM4  GetFloatv       Identity        Primary modelview    2.10.2   -
+                                                                    stack
+MODELVIEW1_MATRIX_EXT       32*xM4  GetFloatv       Identity        Secondary modelview  2.10.2   -
+                                                                    stack
+MODELVIEW0_STACK_DEPTH_EXT  Z+      GetIntegerv     1               Primary modelview    2.10.2   -
+                                                                    stack depth
+MODELVIEW1_STACK_DEPTH_EXT  Z+      GetIntegerv     1               Secondary modelview  2.10.2   -
+                                                                    stack depth
+MATRIX_MODE                 Z4      GetIntegerv     MODELVIEW0      Current matrix mode  2.10.2   transform
+VERTEX_WEIGHTING_EXT        B       IsEnabled       False           Vertex weighting     2.10.2   transform/enable
                                                                     on/off
 
     NOTE:  MODELVIEW_MATRIX is an alias for MODELVIEW0_MATRIX_EXT

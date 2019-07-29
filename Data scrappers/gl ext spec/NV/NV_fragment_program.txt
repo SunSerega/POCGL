@@ -4192,57 +4192,57 @@ Errors
 
 New State
 
-	Get Value                          Type  Get Command              Initial Value  Description         Section   Attribute
-	---------------------------------  ----  -----------------------  -------------  ------------------  --------  ------------
-	FRAGMENT_PROGRAM_NV                B     IsEnabled                FALSE          fragment program    3.11      enable
-																					 mode enable
-	FRAGMENT_PROGRAM_BINDING_NV        Z+    GetIntegerv              0              bound fragment      5.7       -
-																					 program
+Get Value                          Type  Get Command              Initial Value  Description         Section   Attribute
+---------------------------------  ----  -----------------------  -------------  ------------------  --------  ------------
+FRAGMENT_PROGRAM_NV                B     IsEnabled                FALSE          fragment program    3.11      enable
+                                                                                 mode enable
+FRAGMENT_PROGRAM_BINDING_NV        Z+    GetIntegerv              0              bound fragment      5.7       -
+                                                                                 program
 
-	Table X.6.  New State Introduced by NV_fragment_program.
-
-
-	Get Value                  Type    Get Command          Initial Value  Description         Section   Attribute
-	-------------------------  ------  ------------------   -------------  ------------------  --------  ---------
-	PROGRAM_ERROR_POSITION_NV  Z       GetIntegerv          -1             program error       5.7       -
-																		   position
-	PROGRAM_TARGET_NV          Z2      GetProgramivNV       0              program target      6.1.13    -
-	PROGRAM_LENGTH_NV          Z+      GetProgramivNV       0              program length      6.1.13    -
-	PROGRAM_RESIDENT_NV        Z2      GetProgramivNV       False          program residency   6.1.13    -
-	PROGRAM_STRING_NV          ubxn    GetProgramStringNV   ""             program string      6.1.13    -
-	-                          nxR4    GetProgramNamed-     (0,0,0,0)      named program local 5.7       -
-									   ParameterNV                         parameter value
-	-                          64+xR4  GetProgramLocal-     (0,0,0,0)      numbered program    5.7       -
-									   ParameterARB                        local parameter
-
-	Table X.7.  Program Object State common to NV_vertex_program and NV_fragment_program.
+Table X.6.  New State Introduced by NV_fragment_program.
 
 
-	Get Value    Type    Get Command   Initial Value  Description               Section   Attribute
-	---------    ------  -----------   -------------  -----------------------   --------  ---------
-	-            12xR4   -             fragment data  fragment attribute
-													  registers                 3.11.1.1  -
-	-            16xR4   -             (0,0,0,0)      fp32 temporary registers  3.11.1.2  -
-	-            32xR4   -             (0,0,0,0)      fp16 temporary registers  3.11.1.2  -
-				 (Z_4)4  -             (EQ,EQ,EQ,EQ)  condition code register   3.11.1.4  -
-													  address register
+Get Value                  Type    Get Command          Initial Value  Description         Section   Attribute
+-------------------------  ------  ------------------   -------------  ------------------  --------  ---------
+PROGRAM_ERROR_POSITION_NV  Z       GetIntegerv          -1             program error       5.7       -
+                                                                       position
+PROGRAM_TARGET_NV          Z2      GetProgramivNV       0              program target      6.1.13    -
+PROGRAM_LENGTH_NV          Z+      GetProgramivNV       0              program length      6.1.13    -
+PROGRAM_RESIDENT_NV        Z2      GetProgramivNV       False          program residency   6.1.13    -
+PROGRAM_STRING_NV          ubxn    GetProgramStringNV   ""             program string      6.1.13    -
+-                          nxR4    GetProgramNamed-     (0,0,0,0)      named program local 5.7       -
+                                   ParameterNV                         parameter value
+-                          64+xR4  GetProgramLocal-     (0,0,0,0)      numbered program    5.7       -
+                                   ParameterARB                        local parameter
 
-	Table X.8.  Fragment Program Per-Fragment Execution State.
+Table X.7.  Program Object State common to NV_vertex_program and NV_fragment_program.
+
+
+Get Value    Type    Get Command   Initial Value  Description               Section   Attribute
+---------    ------  -----------   -------------  -----------------------   --------  ---------
+-            12xR4   -             fragment data  fragment attribute
+                                                  registers                 3.11.1.1  -
+-            16xR4   -             (0,0,0,0)      fp32 temporary registers  3.11.1.2  -
+-            32xR4   -             (0,0,0,0)      fp16 temporary registers  3.11.1.2  -
+             (Z_4)4  -             (EQ,EQ,EQ,EQ)  condition code register   3.11.1.4  -
+                                                  address register
+
+Table X.8.  Fragment Program Per-Fragment Execution State.
 
 
 New Implementation Dependent State
 
                                                  Minimum
-	Get Value                   Type   Get Command    Value       Description    Section  Attribute
-	---------                   ----   -----------   -------  -----------------  -------  ---------
-	MAX_TEXTURE_COORDS_NV       Z+     GetIntegerv      2     number of texture  2.6      -
-															  coordinate sets
-															  supported
-	MAX_TEXTURE_IMAGE_UNITS_NV  Z+     GetIntegerv      2     number of texture  2.10.2   -
-															  image units
-															  supported
-	MAX_FRAGMENT_PROGRAM_       Z+     GetIntegerv     64     number of numbered 3.11.7   -
-	  LOCAL_PARAMETERS_NV                                     local parameters
+Get Value                   Type   Get Command    Value       Description    Section  Attribute
+---------                   ----   -----------   -------  -----------------  -------  ---------
+MAX_TEXTURE_COORDS_NV       Z+     GetIntegerv      2     number of texture  2.6      -
+                                                          coordinate sets
+                                                          supported
+MAX_TEXTURE_IMAGE_UNITS_NV  Z+     GetIntegerv      2     number of texture  2.10.2   -
+                                                          image units
+                                                          supported
+MAX_FRAGMENT_PROGRAM_       Z+     GetIntegerv     64     number of numbered 3.11.7   -
+  LOCAL_PARAMETERS_NV                                     local parameters
                                                           supported
 
 

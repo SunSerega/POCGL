@@ -230,11 +230,11 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
 
      Add two more rows to table 3.16:
 
-	Sized                          Base                  R    G    B    A    L    I    HI   LO   DS   DT   MAG
-	Internal Format                Internal Format       bits bits bits bits bits bits bits bits bits bits bits
-	------------------------------ --------------------- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-	HILO8_NV                       HILO                                                8    8
-	SIGNED_HILO8_NV                HILO                                                8*   8*
+Sized                          Base                  R    G    B    A    L    I    HI   LO   DS   DT   MAG
+Internal Format                Internal Format       bits bits bits bits bits bits bits bits bits bits bits
+------------------------------ --------------------- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+HILO8_NV                       HILO                                                8    8
+SIGNED_HILO8_NV                HILO                                                8*   8*
 
      Update this paragraph inserted by NV_texture_shader before the last
      sentence in the fifth paragraph to read:
@@ -341,170 +341,170 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
 
      Table 3.A:
                                                                                                           texture shader
-	texture shader operation i                    previous texture input     texture shader operation i-1     operation i-2     texture shader operation i+1
-	============================================  =========================  ===============================  ================  ================================
-	OFFSET_PROJECTIVE_TEXTURE_2D_NV               base internal texture      -                                -                 -
-												   format must be one of
-												   DSDT_NV, DSDT_MAG_NV, or
-												   DSDT_MAG_INTENSITY_NV
-	OFFSET_PROJECTIVE_TEXTURE_2D_SCALE_NV         base internal texture      -                                -                 -
-												   format must be either
-												   DSDT_MAG_NV or
-												   DSDT_MAG_INTENSITY_NV
-	OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_NV        base internal texture      -                                -                 -
-												   format must be one of
-												   DSDT_NV, DSDT_MAG_NV, or
-												   DSDT_MAG_INTENSITY_NV
-	OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_SCALE_NV  base internal texture      -                                -                 -
-												   format must be either
-												   DSDT_MAG_NV or
-												   DSDT_MAG_INTENSITY_NV
-	--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
-	OFFSET_HILO_TEXTURE_2D_NV                     base internal texture      -                                -                 -
-												   format must be HILO
-	OFFSET_HILO_TEXTURE_RECTANGLE_NV              base internal texture      -                                -                 -
-												   format must be HILO
-	OFFSET_HILO_PROJECTIVE_TEXTURE_2D_NV          base internal texture      -                                -                 -
-												   format must be HILO
-	OFFSET_HILO_PROJECTIVE_TEXTURE_RECTANGLE_NV   base internal texture      -                                -                 -
-												   format must be HILO
-	--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
-	DEPENDENT_HILO_TEXTURE_2D_NV                  base internal texture      -                                -                 -
-												   format must be HILO
-	DEPENDENT_RGB_TEXTURE_3D_NV                   shader result type must    -                                -                 -
-												   all be unsigned RGBA
-	DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV             shader result type must    -                                -                 -
-												   all be RGB or RGBA
-												   (signed RGB components
-												   are allowed)
-	--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
-	DOT_PRODUCT_PASS_THROUGH_NV                   shader result type must    -                                -                 -
-												   be one of signed HILO,
-												   unsigned HILO, all
-												   signed RGBA, or all
-												   unsigned RGBA
-	--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
-	DOT_PRODUCT_TEXTURE_1D_NV                     shader result type must    -                                -                 -
-												   be one of signed HILO,
-												   unsigned HILO, all
-												   signed RGBA, or all
-												   unsigned RGBA
-	--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
-	DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV           shader result type must    -                                -                 -
-												   be one of signed HILO,
-												   unsigned HILO, all
-												   signed RGBA, or all
-												   unsigned RGBA 
-	--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+texture shader operation i                    previous texture input     texture shader operation i-1     operation i-2     texture shader operation i+1
+============================================  =========================  ===============================  ================  ================================
+OFFSET_PROJECTIVE_TEXTURE_2D_NV               base internal texture      -                                -                 -
+                                               format must be one of
+                                               DSDT_NV, DSDT_MAG_NV, or
+                                               DSDT_MAG_INTENSITY_NV
+OFFSET_PROJECTIVE_TEXTURE_2D_SCALE_NV         base internal texture      -                                -                 -
+                                               format must be either
+                                               DSDT_MAG_NV or
+                                               DSDT_MAG_INTENSITY_NV
+OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_NV        base internal texture      -                                -                 -
+                                               format must be one of
+                                               DSDT_NV, DSDT_MAG_NV, or
+                                               DSDT_MAG_INTENSITY_NV
+OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_SCALE_NV  base internal texture      -                                -                 -
+                                               format must be either
+                                               DSDT_MAG_NV or
+                                               DSDT_MAG_INTENSITY_NV
+--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+OFFSET_HILO_TEXTURE_2D_NV                     base internal texture      -                                -                 -
+                                               format must be HILO
+OFFSET_HILO_TEXTURE_RECTANGLE_NV              base internal texture      -                                -                 -
+                                               format must be HILO
+OFFSET_HILO_PROJECTIVE_TEXTURE_2D_NV          base internal texture      -                                -                 -
+                                               format must be HILO
+OFFSET_HILO_PROJECTIVE_TEXTURE_RECTANGLE_NV   base internal texture      -                                -                 -
+                                               format must be HILO
+--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+DEPENDENT_HILO_TEXTURE_2D_NV                  base internal texture      -                                -                 -
+                                               format must be HILO
+DEPENDENT_RGB_TEXTURE_3D_NV                   shader result type must    -                                -                 -
+                                               all be unsigned RGBA
+DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV             shader result type must    -                                -                 -
+                                               all be RGB or RGBA
+                                               (signed RGB components
+                                               are allowed)
+--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+DOT_PRODUCT_PASS_THROUGH_NV                   shader result type must    -                                -                 -
+                                               be one of signed HILO,
+                                               unsigned HILO, all
+                                               signed RGBA, or all
+                                               unsigned RGBA
+--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+DOT_PRODUCT_TEXTURE_1D_NV                     shader result type must    -                                -                 -
+                                               be one of signed HILO,
+                                               unsigned HILO, all
+                                               signed RGBA, or all
+                                               unsigned RGBA
+--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
+DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV           shader result type must    -                                -                 -
+                                               be one of signed HILO,
+                                               unsigned HILO, all
+                                               signed RGBA, or all
+                                               unsigned RGBA 
+--------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
 
-		 Table 3.B:
+     Table 3.B:
 
-	texture shader operation i                    texture unit i
-	============================================  =======================================
-	OFFSET_PROJECTIVE_TEXTURE_2D_NV               2D target must be consistent
-	OFFSET_PROJECTIVE_TEXTURE_2D_SCALE_NV         2D target must be consistent
-												   and 2D texture target type must
-												   be unsigned RGBA 
-	OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_NV        rectangle target must be consistent
-	OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_SCALE_NV  rectangle target must be consistent
-												   and rectangle texture target type must
-												   be unsigned RGBA 
-	--------------------------------------------  ---------------------------------------
-	OFFSET_HILO_TEXTURE_2D_NV                     2D target must be consistent
-	OFFSET_HILO_TEXTURE_RECTANGLE_NV              rectangle target must be consistent
-	OFFSET_HILO_PROJECTIVE_TEXTURE_2D_NV          2D target must be consistent
-	OFFSET_HILO_PROJECTIVE_TEXTURE_RECTANGLE_NV   rectangle target must be consistent
-	--------------------------------------------  ---------------------------------------
-	DEPENDENT_HILO_TEXTURE_2D_NV                  2D target must be consistent
-	DEPENDENT_RGB_TEXTURE_3D_NV                   3D target must be consistent
-	DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV             cube map target must be consistent
-	--------------------------------------------  ---------------------------------------
-	DOT_PRODUCT_PASS_THROUGH_NV                   -
-	--------------------------------------------  ---------------------------------------
-	DOT_PRODUCT_TEXTURE_1D_NV                     1D target must be consistent
-	--------------------------------------------  ---------------------------------------
-	DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV           -
-	--------------------------------------------  ---------------------------------------
+texture shader operation i                    texture unit i
+============================================  =======================================
+OFFSET_PROJECTIVE_TEXTURE_2D_NV               2D target must be consistent
+OFFSET_PROJECTIVE_TEXTURE_2D_SCALE_NV         2D target must be consistent
+                                               and 2D texture target type must
+                                               be unsigned RGBA 
+OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_NV        rectangle target must be consistent
+OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_SCALE_NV  rectangle target must be consistent
+                                               and rectangle texture target type must
+                                               be unsigned RGBA 
+--------------------------------------------  ---------------------------------------
+OFFSET_HILO_TEXTURE_2D_NV                     2D target must be consistent
+OFFSET_HILO_TEXTURE_RECTANGLE_NV              rectangle target must be consistent
+OFFSET_HILO_PROJECTIVE_TEXTURE_2D_NV          2D target must be consistent
+OFFSET_HILO_PROJECTIVE_TEXTURE_RECTANGLE_NV   rectangle target must be consistent
+--------------------------------------------  ---------------------------------------
+DEPENDENT_HILO_TEXTURE_2D_NV                  2D target must be consistent
+DEPENDENT_RGB_TEXTURE_3D_NV                   3D target must be consistent
+DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV             cube map target must be consistent
+--------------------------------------------  ---------------------------------------
+DOT_PRODUCT_PASS_THROUGH_NV                   -
+--------------------------------------------  ---------------------------------------
+DOT_PRODUCT_TEXTURE_1D_NV                     1D target must be consistent
+--------------------------------------------  ---------------------------------------
+DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV           -
+--------------------------------------------  ---------------------------------------
 
 
-		 Table 3.C:
+     Table 3.C:
 
-																uses    uses    uses    uses             uses       offset    uses
-										 texture                stage   stage   stage   previous  uses   offset     texture   const
-										 coordinate  texture    result  result  result  texture   cull   texture    2D scale  eye
-	texture shader operation i           set usage   target     i-1     i-2     i+1     input     modes  2D matrix  and bias  vector
-	===================================  ==========  =========  ======  ======  ======  ========  =====  =========  ========  ======
-	OFFSET_PROJECTIVE_TEXTURE_2D_NV      s,t,q       2D         -       -       -       y         -      y          -         -
-	OFFSET_PROJECTIVE_-                  s,t,q       2D         -       -       -       y         -      y          y         -
-	  TEXTURE_2D_SCALE_NV
-	OFFSET_PROJECTIVE_-                  s,t,q       rectangle  -       -       -       y         -      y          -         -
-	  TEXTURE_RECTANGLE_NV
-	OFFSET_PROJECTIVE_-                  s,t,q       rectangle  -       -       -       y         -      y          y         -
-	  TEXTURE_RECTANGLE_SCALE_NV
-	-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
-	OFFSET_HILO_TEXTURE_2D_NV            s,t         2D         -       -       -       y         -      y          -         -
-	OFFSET_HILO_TEXTURE_RECTANGLE_NV     s,t         rectangle  -       -       -       y         -      y          -         -
-	OFFSET_PROJECTIVE_-                  s,t,q       2D         -       -       -       y         -      y          -         -
-	  HILO_TEXTURE_2D_NV
-	OFFSET_PROJECTIVE_-                  s,t,q       rectangle  -       -       -       y         -      y          -         -
-	  HILO_TEXTURE_RECTANGLE_NV
-	-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
-	DEPENDENT_HILO_TEXTURE_2D_NV         -           2D         -       -       -       y         -      -          -         -
-	DEPENDENT_RGB_TEXTURE_3D_NV          -           3D         -       -       -       y         -      -          -         -
-	DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV    -           cube map   -       -       -       y         -      -          -         -
-	-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
-	DOT_PRODUCT_PASS_THROUGH_NV          s,t,r       -          -       -       -       y         -      -          -         -
-	-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
-	DOT_PRODUCT_TEXTURE_1D_NV            s,t,r       1D         -       -       -       y         -      -          -         -
-	-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
-	DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV  s,t,r       -          -       -       -       y         -      -          -         -
-	-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+                                                            uses    uses    uses    uses             uses       offset    uses
+                                     texture                stage   stage   stage   previous  uses   offset     texture   const
+                                     coordinate  texture    result  result  result  texture   cull   texture    2D scale  eye
+texture shader operation i           set usage   target     i-1     i-2     i+1     input     modes  2D matrix  and bias  vector
+===================================  ==========  =========  ======  ======  ======  ========  =====  =========  ========  ======
+OFFSET_PROJECTIVE_TEXTURE_2D_NV      s,t,q       2D         -       -       -       y         -      y          -         -
+OFFSET_PROJECTIVE_-                  s,t,q       2D         -       -       -       y         -      y          y         -
+  TEXTURE_2D_SCALE_NV
+OFFSET_PROJECTIVE_-                  s,t,q       rectangle  -       -       -       y         -      y          -         -
+  TEXTURE_RECTANGLE_NV
+OFFSET_PROJECTIVE_-                  s,t,q       rectangle  -       -       -       y         -      y          y         -
+  TEXTURE_RECTANGLE_SCALE_NV
+-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+OFFSET_HILO_TEXTURE_2D_NV            s,t         2D         -       -       -       y         -      y          -         -
+OFFSET_HILO_TEXTURE_RECTANGLE_NV     s,t         rectangle  -       -       -       y         -      y          -         -
+OFFSET_PROJECTIVE_-                  s,t,q       2D         -       -       -       y         -      y          -         -
+  HILO_TEXTURE_2D_NV
+OFFSET_PROJECTIVE_-                  s,t,q       rectangle  -       -       -       y         -      y          -         -
+  HILO_TEXTURE_RECTANGLE_NV
+-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+DEPENDENT_HILO_TEXTURE_2D_NV         -           2D         -       -       -       y         -      -          -         -
+DEPENDENT_RGB_TEXTURE_3D_NV          -           3D         -       -       -       y         -      -          -         -
+DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV    -           cube map   -       -       -       y         -      -          -         -
+-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+DOT_PRODUCT_PASS_THROUGH_NV          s,t,r       -          -       -       -       y         -      -          -         -
+-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+DOT_PRODUCT_TEXTURE_1D_NV            s,t,r       1D         -       -       -       y         -      -          -         -
+-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
+DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV  s,t,r       -          -       -       -       y         -      -          -         -
+-----------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
 
-		 Table 3.D:
+     Table 3.D:
 
-	texture shader operation i         shader stage result type       shader stage result                  texture unit RGBA color result
-	=================================  =============================  ===================================  ======================================
-	OFFSET_TEXTURE_2D_NV               matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
-																											filtered 2D target texel,
-																											else (0,0,0,0) 
-	OFFSET_TEXTURE_2D_SCALE_NV         unsigned RGBA                  filtered 2D target texel             scaled filtered 2D target texel
-	OFFSET_TEXTURE_RECTANGLE_NV        matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
-																											RGBA, filtered rectangle target
-																											texel, else (0,0,0,0) 
-	OFFSET_TEXTURE_RECTANGLE_SCALE_NV  unsigned RGBA                  filtered rectangle target texel      scaled filtered rectangle target texel
-	OFFSET_PROJECTIVE_TEXTURE_2D_NV    matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
-																											filtered 2D target texel,
-																											else (0,0,0,0) 
-	OFFSET_PROJECTIVE_-                unsigned RGBA                  filtered 2D target texel             scaled filtered 2D target texel
-	  TEXTURE_2D_SCALE_NV
-	OFFSET_PROJECTIVE_-                matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
-	  TEXTURE_RECTANGLE_NV                                                                                  RGBA, filtered rectangle target
-																											texel, else (0,0,0,0) 
-	OFFSET_PROJECTIVE_-                unsigned RGBA                  filtered rectangle target texel      scaled filtered rectangle target texel
-	  TEXTURE_RECTANGLE_SCALE_NV
-	---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
-	DEPENDENT_HILO_TEXTURE_2D_NV       matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
-																											filtered 2D target texel,
-																											else (0,0,0,0)  
-	DEPENDENT_RGB_TEXTURE_3D_NV        matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA,
-																											filtered 3D target texel,
-																											else (0,0,0,0)  
-	DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV  matches cube map target type   filtered cube map target texel       if cube map target texture type is
-																											RGBA,  filtered cube map target
-																											texel, else (0,0,0,0) 
-	---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
-	DOT_PRODUCT_PASS_THROUGH_NV        unsigned RGBA                  (max(0,min(1,[s,t,r]dot[a,b,c])),    (max(0,min(1,[s,t,r]dot[a,b,c])),
-																	   max(0,min(1,[s,t,r]dot[a,b,c])),     max(0,min(1,[s,t,r]dot[a,b,c])),
-																	   max(0,min(1,[s,t,r]dot[a,b,c])),     max(0,min(1,[s,t,r]dot[a,b,c])),
-																	   max(0,min(1,[s,t,r]dot[a,b,c])))     max(0,min(1,[s,t,r]dot[a,b,c])))
-	---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
-	DOT_PRODUCT_TEXTURE_1D_NV          matches 1D target type         filtered 1D target texel             if 1D target texture type is RGBA,
-																											filtered 1D target texel,
-																											else (0,0,0,0)  
-	---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
-	DOT_PRODUCT_-                      unsigned RGBA                  invalid                              (0,0,0,0)
-	  AFFINE_DEPTH_REPLACE_NV
-	---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
+texture shader operation i         shader stage result type       shader stage result                  texture unit RGBA color result
+=================================  =============================  ===================================  ======================================
+OFFSET_TEXTURE_2D_NV               matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
+                                                                                                        filtered 2D target texel,
+                                                                                                        else (0,0,0,0) 
+OFFSET_TEXTURE_2D_SCALE_NV         unsigned RGBA                  filtered 2D target texel             scaled filtered 2D target texel
+OFFSET_TEXTURE_RECTANGLE_NV        matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
+                                                                                                        RGBA, filtered rectangle target
+                                                                                                        texel, else (0,0,0,0) 
+OFFSET_TEXTURE_RECTANGLE_SCALE_NV  unsigned RGBA                  filtered rectangle target texel      scaled filtered rectangle target texel
+OFFSET_PROJECTIVE_TEXTURE_2D_NV    matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
+                                                                                                        filtered 2D target texel,
+                                                                                                        else (0,0,0,0) 
+OFFSET_PROJECTIVE_-                unsigned RGBA                  filtered 2D target texel             scaled filtered 2D target texel
+  TEXTURE_2D_SCALE_NV
+OFFSET_PROJECTIVE_-                matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
+  TEXTURE_RECTANGLE_NV                                                                                  RGBA, filtered rectangle target
+                                                                                                        texel, else (0,0,0,0) 
+OFFSET_PROJECTIVE_-                unsigned RGBA                  filtered rectangle target texel      scaled filtered rectangle target texel
+  TEXTURE_RECTANGLE_SCALE_NV
+---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
+DEPENDENT_HILO_TEXTURE_2D_NV       matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
+                                                                                                        filtered 2D target texel,
+                                                                                                        else (0,0,0,0)  
+DEPENDENT_RGB_TEXTURE_3D_NV        matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA,
+                                                                                                        filtered 3D target texel,
+                                                                                                        else (0,0,0,0)  
+DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV  matches cube map target type   filtered cube map target texel       if cube map target texture type is
+                                                                                                        RGBA,  filtered cube map target
+                                                                                                        texel, else (0,0,0,0) 
+---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
+DOT_PRODUCT_PASS_THROUGH_NV        unsigned RGBA                  (max(0,min(1,[s,t,r]dot[a,b,c])),    (max(0,min(1,[s,t,r]dot[a,b,c])),
+                                                                   max(0,min(1,[s,t,r]dot[a,b,c])),     max(0,min(1,[s,t,r]dot[a,b,c])),
+                                                                   max(0,min(1,[s,t,r]dot[a,b,c])),     max(0,min(1,[s,t,r]dot[a,b,c])),
+                                                                   max(0,min(1,[s,t,r]dot[a,b,c])))     max(0,min(1,[s,t,r]dot[a,b,c])))
+---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
+DOT_PRODUCT_TEXTURE_1D_NV          matches 1D target type         filtered 1D target texel             if 1D target texture type is RGBA,
+                                                                                                        filtered 1D target texel,
+                                                                                                        else (0,0,0,0)  
+---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
+DOT_PRODUCT_-                      unsigned RGBA                  invalid                              (0,0,0,0)
+  AFFINE_DEPTH_REPLACE_NV
+---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 
      3.8.13.1.14  Dot Product
 
@@ -1026,25 +1026,25 @@ Errors
 
 New State
 
-	UPDATE lines in Table 6.TextureShaders.
+UPDATE lines in Table 6.TextureShaders.
 
-	Get Value                Type    Get Command  Initial Value         Description          Sec     Attribute
-	-----------------------  ------  -----------  --------------------  -------------------  ------  ---------
-	SHADER_OPERATION_NV      TxZ37   GetTexEnviv  NONE                  Texture shader       3.8.13  texture
-																		operation
-	RGBA_UNSIGNED_-          TxZ3    GetTexEnviv  UNSIGNED_IDENTITY_NV  Texture shader RGBA  3.8.13  texture
-	  DOT_PRODUCT_MAPPING_NV                                            dot product mapping
+Get Value                Type    Get Command  Initial Value         Description          Sec     Attribute
+-----------------------  ------  -----------  --------------------  -------------------  ------  ---------
+SHADER_OPERATION_NV      TxZ37   GetTexEnviv  NONE                  Texture shader       3.8.13  texture
+                                                                    operation
+RGBA_UNSIGNED_-          TxZ3    GetTexEnviv  UNSIGNED_IDENTITY_NV  Texture shader RGBA  3.8.13  texture
+  DOT_PRODUCT_MAPPING_NV                                            dot product mapping
 
-	* SHADER_OPERATION_NV: Z21 in NV_texture_shader (and Z23 in
-	  NV_texture_shader2) is now Z37 with NV_texture_shader3.
+* SHADER_OPERATION_NV: Z21 in NV_texture_shader (and Z23 in
+  NV_texture_shader2) is now Z37 with NV_texture_shader3.
 
-	* RGBA_UNSIGNED_DOT_PRODUCT_MAPPING_NV: Z2 in NV_texture_shader is now
-	  Z3 with NV_texture_shader3.
+* RGBA_UNSIGNED_DOT_PRODUCT_MAPPING_NV: Z2 in NV_texture_shader is now
+  Z3 with NV_texture_shader3.
 
-	[ The "Tx" type prefix means that the state is per-texture unit. ]
+[ The "Tx" type prefix means that the state is per-texture unit. ]
 
-	[ The "Zn" type is an n-valued integer where n is the
-	  implementation-dependent number of texture units supported.]
+[ The "Zn" type is an n-valued integer where n is the
+  implementation-dependent number of texture units supported.]
 
 New Implementation State
 

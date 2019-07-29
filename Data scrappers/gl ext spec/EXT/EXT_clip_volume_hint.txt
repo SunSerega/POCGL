@@ -83,6 +83,7 @@ Requests)
         Clip volume clipping hint|5.6|hint
 
 Revision History
+----------------
     Original draft, revision 0.9, March 1, 1996 (drewb)
         Created.
     Minor revision, revision 0.91, March 8, 1996 (drewb)

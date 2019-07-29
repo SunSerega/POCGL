@@ -309,17 +309,17 @@ Modifications to Appendix A.spv of the OpenGL 4.5 (Core Profile) Specification
 
 New State
 
-	Add the following rows to Table 23.56 (Implementation Dependent Version
-	and Extensions support)
+Add the following rows to Table 23.56 (Implementation Dependent Version
+and Extensions support)
 
-	Get Value             Type  Get         Minimum Description      Sec.
-								Command     Value
-	--------------------- ----- ----------- ------- ---------------- ----
-	SPIR_V_EXTENSIONS     n x S GetStringi     -    Supported SPIR-V 22.2
-													extension names
-	NUM_SPIR_V_EXTENSIONS  Z+   GetIntegerv    0    No. of supported 22.2
-													SPIR-V extension
-													names
+Get Value             Type  Get         Minimum Description      Sec.
+                            Command     Value
+--------------------- ----- ----------- ------- ---------------- ----
+SPIR_V_EXTENSIONS     n x S GetStringi     -    Supported SPIR-V 22.2
+                                                extension names
+NUM_SPIR_V_EXTENSIONS  Z+   GetIntegerv    0    No. of supported 22.2
+                                                SPIR-V extension
+                                                names
 
 
 Interactions with ARB_shader_ballot and SPV_KHR_shader_ballot:
@@ -445,49 +445,49 @@ Interactions with SPV_KHR_storage_buffer_storage_class:
 
 Issues
 
-	1. Where should we document environment interactions for new SPIR-V
-	   extensions?
+1. Where should we document environment interactions for new SPIR-V
+   extensions?
 
-	   DISCUSSION. The environment interactions could be:
-	   a) added to the corresponding (existing) GL extension? This means they
-		  would be spread across all manner of documents and hard to find.
-		  We would prefer to have them documented in few locations.
-	   b) added to ARB_gl_spirv? This means ARB_gl_spirv would be an ever
-		  growing document which is a bit strange as it gives no way to
-		  advertise or enable the new functionality. Also that document effectively
-		  corresponds go GL 4.5 level functionality and is going to be rolled
-		  into OpenGL 4.6.
-	   c) added to this extension? This document becomes the ever growing version
-		  instead, and it does provide a query to be able to tell if new
-		  functionality is supported by an implementation.
+   DISCUSSION. The environment interactions could be:
+   a) added to the corresponding (existing) GL extension? This means they
+      would be spread across all manner of documents and hard to find.
+      We would prefer to have them documented in few locations.
+   b) added to ARB_gl_spirv? This means ARB_gl_spirv would be an ever
+      growing document which is a bit strange as it gives no way to
+      advertise or enable the new functionality. Also that document effectively
+      corresponds go GL 4.5 level functionality and is going to be rolled
+      into OpenGL 4.6.
+   c) added to this extension? This document becomes the ever growing version
+      instead, and it does provide a query to be able to tell if new
+      functionality is supported by an implementation.
 
-	   RESOLVED. Pick (c). New GL extensions should add their SPIR-V environment
-	   restrictions for OpenGL to this document. It it is recommended to include a
-	   pointer to this extension from the new GL extension.
+   RESOLVED. Pick (c). New GL extensions should add their SPIR-V environment
+   restrictions for OpenGL to this document. It it is recommended to include a
+   pointer to this extension from the new GL extension.
 
-	2. Does that mean we can add brand new SPIR-V functionality to GL just by
-	   editing this extension?
+2. Does that mean we can add brand new SPIR-V functionality to GL just by
+   editing this extension?
 
-	   RESOLVED. Only for shader functionality that already exists in OpenGL
-	   by a previous extension.  For completely new functionality it should be
-	   done via a new API extension that adds any necessary API support as
-	   well as defining the GLSL-version of the functionality.
+   RESOLVED. Only for shader functionality that already exists in OpenGL
+   by a previous extension.  For completely new functionality it should be
+   done via a new API extension that adds any necessary API support as
+   well as defining the GLSL-version of the functionality.
 
-	3. If a new GL extension is added that includes SPIR-V support via a
-	   new SPIR-V extension does it's SPIR-V extension also get enumerated by
-	   the SPIR_V_EXTENSIONS_ARB query?.
+3. If a new GL extension is added that includes SPIR-V support via a
+   new SPIR-V extension does it's SPIR-V extension also get enumerated by
+   the SPIR_V_EXTENSIONS_ARB query?.
 
-	   RESOLVED. Yes. It's good to include it for consistency. Any SPIR-V
-	   functionality supported beyond the SPIR-V version that is required
-	   for the GL API version should be enumerated.
+   RESOLVED. Yes. It's good to include it for consistency. Any SPIR-V
+   functionality supported beyond the SPIR-V version that is required
+   for the GL API version should be enumerated.
 
-	4. Does (3) mean that we should have a query for the version of SPIR-V
-	   that is supported as well?
+4. Does (3) mean that we should have a query for the version of SPIR-V
+   that is supported as well?
 
-	   RESOLVED. No. With ARB_gl_spirv (and in OpenGL 4.6) OpenGL only supports
-	   SPIR-V 1.0. If we want to support additional versions of SPIR-V we'll need
-	   to update the SPIR-V environment which will require a new GL extension to
-	   to do this.
+   RESOLVED. No. With ARB_gl_spirv (and in OpenGL 4.6) OpenGL only supports
+   SPIR-V 1.0. If we want to support additional versions of SPIR-V we'll need
+   to update the SPIR-V environment which will require a new GL extension to
+   to do this.
 
 Revision History
 

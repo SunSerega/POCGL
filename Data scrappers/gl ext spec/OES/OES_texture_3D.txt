@@ -188,21 +188,21 @@ Errors
 
     None.
 
-	New State
+New State
 
-	Get Value                Type    Get Command        Value    Description
-	---------                ----    -----------        -----    -----------
-	TEXTURE_BINDING_3D_OES    Z+     GetIntegerv        0        texture object 
-																 bound to TEXTURE_3D
-	TEXTURE_WRAP_R_OES        1xZ2   GetTexParameteriv  REPEAT   texture coord "r"
-																 wrap mode
-	MAX_3D_TEXTURE_SIZE_OES   Z+     GetIntegerv        16       maximum 3D texture 
+Get Value                Type    Get Command        Value    Description
+---------                ----    -----------        -----    -----------
+TEXTURE_BINDING_3D_OES    Z+     GetIntegerv        0        texture object 
+                                                             bound to TEXTURE_3D
+TEXTURE_WRAP_R_OES        1xZ2   GetTexParameteriv  REPEAT   texture coord "r"
+                                                             wrap mode
+MAX_3D_TEXTURE_SIZE_OES   Z+     GetIntegerv        16       maximum 3D texture 
                                                              image dimension
 
 Revision History
 
-	7/06/2005    Aaftab Munshi    Created the extension
-	6/09/2006    Aaftab Munshi    Added OES suffixes
-	7/24/2007    Benj Lipchak     Merged in details of language changes, removed
-								  OES_framebuffer_object requirement (now core),
-								  reformatted to 80 columns
+7/06/2005    Aaftab Munshi    Created the extension
+6/09/2006    Aaftab Munshi    Added OES suffixes
+7/24/2007    Benj Lipchak     Merged in details of language changes, removed
+                              OES_framebuffer_object requirement (now core),
+                              reformatted to 80 columns

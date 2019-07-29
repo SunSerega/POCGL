@@ -466,12 +466,12 @@ Errors
 
 New State
 
-	Table 6.X.  Fence Objects.
+Table 6.X.  Fence Objects.
 
-	Get value           Type  Get command   Initial value                 Description      Section  Attribute
-	------------------  ----  ------------  ----------------------------  ---------------  -------  ---------
-	FENCE_STATUS_NV     B     GetFenceivNV  determined by 1st SetFenceNV  Fence status     5.X      -
-	FENCE_CONDITION_NV  Z1    GetFenceivNV  determined by 1st SetFenceNV  Fence condition  5.X      -
+Get value           Type  Get command   Initial value                 Description      Section  Attribute
+------------------  ----  ------------  ----------------------------  ---------------  -------  ---------
+FENCE_STATUS_NV     B     GetFenceivNV  determined by 1st SetFenceNV  Fence status     5.X      -
+FENCE_CONDITION_NV  Z1    GetFenceivNV  determined by 1st SetFenceNV  Fence condition  5.X      -
 
 New Implementation Dependent State
 

@@ -323,51 +323,51 @@ Errors
 
 New State
 
-	(table 6.6, p. 232)
+(table 6.6, p. 232)
 
-										   Get          Initial
-	Get Value                      Type    Command      Value   Description                    
-	---------                      ----    -------      ------- -----------                   
-	MATRIX_INDEX_ARRAY_OES         B       IsEnabled    False   matrix index array enable
-	MATRIX_INDEX_ARRAY_SIZE_OES    Z+      GetIntegerv  0       matrix indices per vertex
-	MATRIX_INDEX_ARRAY_TYPE_OES    Z+      GetIntegerv  UBYTE   type of matrix index data
-	MATRIX_INDEX_ARRAY_STRIDE_OES  Z+      GetIntegerv  0       stride between
-																matrix indices
-	MATRIX_INDEX_ARRAY_POINTER_OES Y       GetPointerv  0       pointer to matrix
-																index array
+                                       Get          Initial
+Get Value                      Type    Command      Value   Description                    
+---------                      ----    -------      ------- -----------                   
+MATRIX_INDEX_ARRAY_OES         B       IsEnabled    False   matrix index array enable
+MATRIX_INDEX_ARRAY_SIZE_OES    Z+      GetIntegerv  0       matrix indices per vertex
+MATRIX_INDEX_ARRAY_TYPE_OES    Z+      GetIntegerv  UBYTE   type of matrix index data
+MATRIX_INDEX_ARRAY_STRIDE_OES  Z+      GetIntegerv  0       stride between
+                                                            matrix indices
+MATRIX_INDEX_ARRAY_POINTER_OES Y       GetPointerv  0       pointer to matrix
+                                                            index array
 
-	WEIGHT_ARRAY_OES               B       IsEnabled    False   weight array enable
-	WEIGHT_ARRAY_SIZE_OES          Z+      GetIntegerv  0       weights per vertex
-	WEIGHT_ARRAY_TYPE_OES          Z2      GetIntegerv  FLOAT   type of weight data
-	WEIGHT_ARRAY_STRIDE_OES        Z+      GetIntegerv  0       stride between weights
-																per vertex
-	WEIGHT_ARRAY_POINTER_OES       Y       GetPointerv  0       pointer to weight array
+WEIGHT_ARRAY_OES               B       IsEnabled    False   weight array enable
+WEIGHT_ARRAY_SIZE_OES          Z+      GetIntegerv  0       weights per vertex
+WEIGHT_ARRAY_TYPE_OES          Z2      GetIntegerv  FLOAT   type of weight data
+WEIGHT_ARRAY_STRIDE_OES        Z+      GetIntegerv  0       stride between weights
+                                                            per vertex
+WEIGHT_ARRAY_POINTER_OES       Y       GetPointerv  0       pointer to weight array
 
 
-	(table 6.7, p. 233)
+(table 6.7, p. 233)
 
-												 Get         Initial
-	Get Value                              Type  Command      Value  Description 
-	---------                              ----  -------      -----  -----------
+                                             Get         Initial
+Get Value                              Type  Command      Value  Description 
+---------                              ----  -------      -----  -----------
 
-	MATRIX_INDEX_ARRAY_BUFFER_BINDING_OES  Z+    GetIntegerv  0      matrix index array
-																	 buffer binding
+MATRIX_INDEX_ARRAY_BUFFER_BINDING_OES  Z+    GetIntegerv  0      matrix index array
+                                                                 buffer binding
 
-	WEIGHT_ARRAY_BUFFER_BINDING_OES        Z+    GetIntegerv  0      weight array
-																	 buffer binding
+WEIGHT_ARRAY_BUFFER_BINDING_OES        Z+    GetIntegerv  0      weight array
+                                                                 buffer binding
 
-	(table 6.9, p. 235)
+(table 6.9, p. 235)
 
-									  Get          Initial
-	Get Value                   Type  Command      Value    Description 
-	---------                   ----  -------      -------  -----------
+                                  Get          Initial
+Get Value                   Type  Command      Value    Description 
+---------                   ----  -------      -------  -----------
 
-	MATRIX_PALETTE_OES          B     IsEnabled    False    matrix palette enable
-	MAX_PALETTE_MATRICES_OES    Z+    GetIntegerv  9        size of matrix palette
-	MAX_VERTEX_UNITS_OES        Z+    GetIntegerv  3        number of matrices per vertex
-	CURRENT_PALETTE_MATRIX_OES  Z+    GetIntegerv  0        transform  index of current 
-															modelview matrix in the palette,
-															as set by CurrentPaletteMatrixOES()
+MATRIX_PALETTE_OES          B     IsEnabled    False    matrix palette enable
+MAX_PALETTE_MATRICES_OES    Z+    GetIntegerv  9        size of matrix palette
+MAX_VERTEX_UNITS_OES        Z+    GetIntegerv  3        number of matrices per vertex
+CURRENT_PALETTE_MATRIX_OES  Z+    GetIntegerv  0        transform  index of current 
+                                                        modelview matrix in the palette,
+                                                        as set by CurrentPaletteMatrixOES()
 
 
 Revision History

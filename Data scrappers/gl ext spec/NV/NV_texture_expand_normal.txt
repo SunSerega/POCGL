@@ -203,26 +203,26 @@ Errors
 
 New State
 
-	(add to table 6.15, p. 230)
-															 Initial
-	Get Value                       Type  Get Command        Value   Description         Sec.   Attribute
-	------------------------------  ----  -----------------  ------- ------------------  -----  ---------
-	TEXTURE_UNSIGNED_REMAP_MODE_NV  nxZ2  GetTexParameteriv  NONE    unsigned component  3.8.8  texture
+(add to table 6.15, p. 230)
+                                                         Initial
+Get Value                       Type  Get Command        Value   Description         Sec.   Attribute
+------------------------------  ----  -----------------  ------- ------------------  -----  ---------
+TEXTURE_UNSIGNED_REMAP_MODE_NV  nxZ2  GetTexParameteriv  NONE    unsigned component  3.8.8  texture
                                                                  remapping
 
 
 Revision History
 
-	Rev.    Date    Author   Changes
-	----  -------- --------  --------------------------------------------
-	 4    06/14/05  mjk      Add to-be-discontinued "Status" message and
-							 discussion of alternatives.
+Rev.    Date    Author   Changes
+----  -------- --------  --------------------------------------------
+ 4    06/14/05  mjk      Add to-be-discontinued "Status" message and
+                         discussion of alternatives.
 
-	 3    10/07/02  pbrown   Minor wording changes on precision issues -- this
-							 remapping should produce roughly the same results
-							 as storing the texture in signed form.
+ 3    10/07/02  pbrown   Minor wording changes on precision issues -- this
+                         remapping should produce roughly the same results
+                         as storing the texture in signed form.
 
-	 2    10/07/02  pbrown   Added issue about where the remapping is applied,
-							 and what happens to border colors.
+ 2    10/07/02  pbrown   Added issue about where the remapping is applied,
+                         and what happens to border colors.
 
-	 1    10/07/02  pbrown   Initial revision.
+ 1    10/07/02  pbrown   Initial revision.

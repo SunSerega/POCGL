@@ -1030,151 +1030,151 @@ Deprecated Functionality
 
 Sample Usage
 
-	-----------------------------------------------------
+-----------------------------------------------------
 
-		# The following program shows how to perform a simple modulation
-		# between the interpolated color and a single texture:
-		!!ATIfs1.0
+    # The following program shows how to perform a simple modulation
+    # between the interpolated color and a single texture:
+    !!ATIfs1.0
 
-		StartOutputPass;
-			SampleMap r0, t0.stq_dq; #sample the texture
-			
-			MUL r0, r0, color0;      #perform the modulation
-		EndPass;
+    StartOutputPass;
+        SampleMap r0, t0.stq_dq; #sample the texture
+        
+        MUL r0, r0, color0;      #perform the modulation
+    EndPass;
 
-	-----------------------------------------------------
+-----------------------------------------------------
 
-		# The following program shows how to use the constant
-		# declaration block in a fragment program.
-		!!ATIfs1.0
-		
-		StartConstants;
-			CONSTANT c0 = program.env[0];
-			CONSTANT c1 = program.local[3];
-			CONSTANT c2 = { 1.0, 0.0, 0.5, 0.75 };
-		EndConstants;
+    # The following program shows how to use the constant
+    # declaration block in a fragment program.
+    !!ATIfs1.0
+    
+    StartConstants;
+        CONSTANT c0 = program.env[0];
+        CONSTANT c1 = program.local[3];
+        CONSTANT c2 = { 1.0, 0.0, 0.5, 0.75 };
+    EndConstants;
 
-		StartOutputPass;
-			MUL r2, c1, c0;  # multiply global param by local param
-			ADD r0, c2, r0;  # add constant param and put result in r0
-		EndPass;
+    StartOutputPass;
+        MUL r2, c1, c0;  # multiply global param by local param
+        ADD r0, c2, r0;  # add constant param and put result in r0
+    EndPass;
 
-	-----------------------------------------------------
+-----------------------------------------------------
 
-		# The following is an example that performs bumped
-		# cubic environment mapping:
-		!!ATIfs1.0
+    # The following is an example that performs bumped
+    # cubic environment mapping:
+    !!ATIfs1.0
 
-		StartPrelimPass;
-			PassTexCoord r0, t0.str;    # 1st row of 3x3 basis matrix
-			PassTexCoord r1, t1.str;    # 2nd row of 3x3 basis matrix
-			PassTexCoord r2, t2.str;    # 3rd row of 3x3 basis matrix
-			PassTexCoord r3, t3.str;    # Eye vector
-			SampleMap    r4, t5.str;    # Sample normal map
+    StartPrelimPass;
+        PassTexCoord r0, t0.str;    # 1st row of 3x3 basis matrix
+        PassTexCoord r1, t1.str;    # 2nd row of 3x3 basis matrix
+        PassTexCoord r2, t2.str;    # 3rd row of 3x3 basis matrix
+        PassTexCoord r3, t3.str;    # Eye vector
+        SampleMap    r4, t5.str;    # Sample normal map
 
-			# Three dot products transform from tangent space to cube map space
-			DOT3 r0.r, r0, r4;
-			DOT3 r0.g, r1, r4;
-			DOT3 r0.b, r2, r4;
+        # Three dot products transform from tangent space to cube map space
+        DOT3 r0.r, r0, r4;
+        DOT3 r0.g, r1, r4;
+        DOT3 r0.b, r2, r4;
 
-			DOT3 r2.2x, r0,     r3;      # 2 * (N dot Eye)
-			MUL  r2,    r0,     r2;      # 2 * N * (N dot Eye)
-			DOT3 r1,    r0,     r0;      # N dot N
-			MAD  r1,    r3.neg, r1, r2;  # 2 * N * (N dot Eye) - Eye * (N dot N)
-		EndPass;
+        DOT3 r2.2x, r0,     r3;      # 2 * (N dot Eye)
+        MUL  r2,    r0,     r2;      # 2 * N * (N dot Eye)
+        DOT3 r1,    r0,     r0;      # N dot N
+        MAD  r1,    r3.neg, r1, r2;  # 2 * N * (N dot Eye) - Eye * (N dot N)
+    EndPass;
 
-		StartOutputPass;
-			SampleMap r0, r0.str;        # Sample diffuse cubic env map
-			SampleMap r1, r1.str;        # Sample specular cubic env map
-			SampleMap r2, t5.str;        # Sample the base map (gloss in a)
+    StartOutputPass;
+        SampleMap r0, r0.str;        # Sample diffuse cubic env map
+        SampleMap r1, r1.str;        # Sample specular cubic env map
+        SampleMap r2, t5.str;        # Sample the base map (gloss in a)
 
-			MUL r0, r0, r2;              # diffuse * base
-			MAD r0, r0, r2.a, r1;        # (diffuse * base) + (spec * gloss)
-		EndPass;
+        MUL r0, r0, r2;              # diffuse * base
+        MAD r0, r0, r2.a, r1;        # (diffuse * base) + (spec * gloss)
+    EndPass;
 
-	-----------------------------------------------------
+-----------------------------------------------------
 
-		# Chrome shader from ATIRadeon8500_PointLight_Shader demo
-		!!ATIfs1.0
+    # Chrome shader from ATIRadeon8500_PointLight_Shader demo
+    !!ATIfs1.0
 
-		StartPrelimPass;
-			# get the outputs from the vertex shader
-			PassTexCoord r1, t1.str;    # N
-			PassTexCoord r2, t2.str;    # light to vtx vector in light space
-			PassTexCoord r3, t3.str;    # H
-			SampleMap    r4, t4.str;    # L  (sample cubemap normalizer)
+    StartPrelimPass;
+        # get the outputs from the vertex shader
+        PassTexCoord r1, t1.str;    # N
+        PassTexCoord r2, t2.str;    # light to vtx vector in light space
+        PassTexCoord r3, t3.str;    # H
+        SampleMap    r4, t4.str;    # L  (sample cubemap normalizer)
 
-			DOT3 r4, r1, r4.2x.bias;    # reg4 = N.L
-			DOT3 r1, r1, r3;            # reg1 = N.H
-			DOT3 r1.g, r3, r3;          # reg1(green) = H.H  aka |H|^2)
-			DOT3 r2, r2, r2;            # reg2 = |light to vertex|^2
-		EndPass;
+        DOT3 r4, r1, r4.2x.bias;    # reg4 = N.L
+        DOT3 r1, r1, r3;            # reg1 = N.H
+        DOT3 r1.g, r3, r3;          # reg1(green) = H.H  aka |H|^2)
+        DOT3 r2, r2, r2;            # reg2 = |light to vertex|^2
+    EndPass;
 
-		StartOutputPass;
-			SampleMap    r0, t5.str;   # sample env map using eye vector
-			SampleMap    r2, r2.str;   # sample atten map
-			SampleMap    r3, r1.str;   # sample spec NHHH map = (N.H)^256
-			PassTexCoord r4, r4.str;   # pass N.L through
+    StartOutputPass;
+        SampleMap    r0, t5.str;   # sample env map using eye vector
+        SampleMap    r2, r2.str;   # sample atten map
+        SampleMap    r3, r1.str;   # sample spec NHHH map = (N.H)^256
+        PassTexCoord r4, r4.str;   # pass N.L through
 
-			# this ensures a pixel is only lit if facing the light
-			# (since the spec exp makes negative N.H positive 
-			# we must do this)
-			MUL r3, r3, r4;             # reg3 = ((N.H)^256 *  N.L)
+        # this ensures a pixel is only lit if facing the light
+        # (since the spec exp makes negative N.H positive 
+        # we must do this)
+        MUL r3, r3, r4;             # reg3 = ((N.H)^256 *  N.L)
 
-			MUL r3, r0, r3;             # reg3 = spec * env map
-			MUL r4, r0, r4;             # reg4 = diff * env map
-			ADD r0, r3, r4;             # reg0 = ((spec * env map) + diff * env map)
-			MUL r0.sat, r0, r2.r;       # apply point light attenuation
-		EndPass;
+        MUL r3, r0, r3;             # reg3 = spec * env map
+        MUL r4, r0, r4;             # reg4 = diff * env map
+        ADD r0, r3, r4;             # reg0 = ((spec * env map) + diff * env map)
+        MUL r0.sat, r0, r2.r;       # apply point light attenuation
+    EndPass;
 
-	-----------------------------------------------------
+-----------------------------------------------------
 
-		# Rusty shader from ATIRadeon8500_PointLight_Shader demo
-		!!ATIfs1.0
+    # Rusty shader from ATIRadeon8500_PointLight_Shader demo
+    !!ATIfs1.0
 
-		StartPrelimPass;
-			# get the outputs from the vertex shader
-			SampleMap r1, t0.str;    # N from bump map
-			PassTexCoord r2, t2.str; # light to vertex vector in light space  
-			PassTexCoord r3, t3.str; # H
-			SampleMap r4, t4.str;    # L (sample cubemap normalizer)
-			SampleMap r5, t0.str;    # specular map (provides our k term for computing N.H^k)
+    StartPrelimPass;
+        # get the outputs from the vertex shader
+        SampleMap r1, t0.str;    # N from bump map
+        PassTexCoord r2, t2.str; # light to vertex vector in light space  
+        PassTexCoord r3, t3.str; # H
+        SampleMap r4, t4.str;    # L (sample cubemap normalizer)
+        SampleMap r5, t0.str;    # specular map (provides our k term for computing N.H^k)
 
-			
-			DOT3 r4, r1.2x.bias, r4.2x.bias; # reg4 = N.L
-			DOT3 r1, r1.2x.bias, r3;         # reg1 = N.H
-			MUL  r1, r1, r1;                 # reg1 = N.H * N.H = (N.H)^2
-			DOT3 r1.b, r3, r3;               # reg1(blue) = H.H = |H|^2
-			MUL  r1.g.half, r1.b, r5;        # reg1(green) = |H|^2 * 0.5 * k
-			DOT3 r2, r2, r2;                 # reg2 = |light to vertex|^2
-		EndPass;
-		
-		StartOutputPass;
-			SampleMap r0, t0.str;    # base map
-			SampleMap r2, r2.str;    # attenuation
+        
+        DOT3 r4, r1.2x.bias, r4.2x.bias; # reg4 = N.L
+        DOT3 r1, r1.2x.bias, r3;         # reg1 = N.H
+        MUL  r1, r1, r1;                 # reg1 = N.H * N.H = (N.H)^2
+        DOT3 r1.b, r3, r3;               # reg1(blue) = H.H = |H|^2
+        MUL  r1.g.half, r1.b, r5;        # reg1(green) = |H|^2 * 0.5 * k
+        DOT3 r2, r2, r2;                 # reg2 = |light to vertex|^2
+    EndPass;
+    
+    StartOutputPass;
+        SampleMap r0, t0.str;    # base map
+        SampleMap r2, r2.str;    # attenuation
 
-			# note the swizzle (str_DR) because we devide by R we get the following:
-			# <(N.H)^2, |H|^2 * 0.5 * k> / |H|^2 = <(N.H)^2/|H>H|^2, 0.5 * k>
-			# note that N.H^2 / |H|^2 effectively takes care of the denormalized H term
-			# and reduces to N.H^2 also note that raising this to the (0.5*k) power
-			# results in (N.H)^k     ... it's a little tricky but it works and now you
-			# get per pixel specular lighting with per pixel k exponents!
-			SampleMap r3, r1.str_dr; # (N.H)^k
-			PassTexCoord r4, r4.str; # N.L
+        # note the swizzle (str_DR) because we devide by R we get the following:
+        # <(N.H)^2, |H|^2 * 0.5 * k> / |H|^2 = <(N.H)^2/|H>H|^2, 0.5 * k>
+        # note that N.H^2 / |H|^2 effectively takes care of the denormalized H term
+        # and reduces to N.H^2 also note that raising this to the (0.5*k) power
+        # results in (N.H)^k     ... it's a little tricky but it works and now you
+        # get per pixel specular lighting with per pixel k exponents!
+        SampleMap r3, r1.str_dr; # (N.H)^k
+        PassTexCoord r4, r4.str; # N.L
 
-			# reg3 = (N.H)^k * (N.L) 
-			# this ensures a pixel is only lit if facing the light 
-			# (since the specular exponent makes negative N.H look positive, 
-			# we must do this)
-			MUL r3, r3, r4;
-			
-			MUL r3, r0, r3;       # reg3 = specular * basemap
-			MUL r4, r0, r4;       # reg4 = diffuse * basemap
-			ADD r0, r3, r4;       # reg0 = specular + diffuse
-			MUL r0.sat, r0, r2.r; # apply attenuation
-		EndPass;
+        # reg3 = (N.H)^k * (N.L) 
+        # this ensures a pixel is only lit if facing the light 
+        # (since the specular exponent makes negative N.H look positive, 
+        # we must do this)
+        MUL r3, r3, r4;
+        
+        MUL r3, r0, r3;       # reg3 = specular * basemap
+        MUL r4, r0, r4;       # reg4 = diffuse * basemap
+        ADD r0, r3, r4;       # reg0 = specular + diffuse
+        MUL r0.sat, r0, r2.r; # apply attenuation
+    EndPass;
 
-	-----------------------------------------------------
+-----------------------------------------------------
 
 Revision History
 

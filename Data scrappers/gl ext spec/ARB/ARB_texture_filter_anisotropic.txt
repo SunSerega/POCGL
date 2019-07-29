@@ -237,28 +237,28 @@ Additions to the GLX Specification
 
 New State
 
-	(table 23.19, p721) add the entry:
+(table 23.19, p721) add the entry:
 
-	Get Value                   Type  Get Command        Initial Value   Description      Sec     Attribute
-	--------------------------  ----  -----------------  --------------  ---------------  -----   ---------
-	TEXTURE_MAX_ANISOTROPY       R    GetTexParameterfv  1.0             Maximum degree   8.14    texture
-																		 of anisotropy
+Get Value                   Type  Get Command        Initial Value   Description      Sec     Attribute
+--------------------------  ----  -----------------  --------------  ---------------  -----   ---------
+TEXTURE_MAX_ANISOTROPY       R    GetTexParameterfv  1.0             Maximum degree   8.14    texture
+                                                                     of anisotropy
 
-	(table 23.23, p725) add the entry:
+(table 23.23, p725) add the entry:
 
-	Get Value                   Type  Get Command            Initial Value   Description      Sec     Attribute
-	--------------------------  ----  ---------------------  --------------  ---------------  -----   ---------
-	TEXTURE_MAX_ANISOTROPY       R    GetSamplerParameterfv  1.0             Maximum degree   8.14    -
+Get Value                   Type  Get Command            Initial Value   Description      Sec     Attribute
+--------------------------  ----  ---------------------  --------------  ---------------  -----   ---------
+TEXTURE_MAX_ANISOTROPY       R    GetSamplerParameterfv  1.0             Maximum degree   8.14    -
                                                                          of anisotropy
 
 
 New Implementation State
 
-	(table 23.64, p766) add the entry:
+(table 23.64, p766) add the entry:
 
-	Get Value                       Type  Get Command   Minimum Value   Description      Sec     Attribute
-	------------------------------  ----  ------------  --------------  ---------------  -----   ---------
-	MAX_TEXTURE_MAX_ANISOTROPY       R    GetFloatv     16.0            Limit of         8.14    -
+Get Value                       Type  Get Command   Minimum Value   Description      Sec     Attribute
+------------------------------  ----  ------------  --------------  ---------------  -----   ---------
+MAX_TEXTURE_MAX_ANISOTROPY       R    GetFloatv     16.0            Limit of         8.14    -
                                                                     maximum degree
                                                                     of anisotropy
 

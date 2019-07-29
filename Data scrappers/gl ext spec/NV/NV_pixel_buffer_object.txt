@@ -358,7 +358,7 @@ Additions to Chapter 5 of the OpenGL ES 2.0 Specification (Special Functions)
 Additions to Chapter 6 of the OpenGL ES 2.0 Specification (State and State
 Requests)
 
- -- Section 6.1.3 Enumerated Queries
+--- Section 6.1.3 Enumerated Queries
 
     Change the 1st sentence of the 3rd paragraph to read:
     "The command
@@ -420,7 +420,7 @@ Dependencies on EXT_map_buffer_range
     
 New State
 
-	(table 6.13, Pixels, p. 147)
+(table 6.13, Pixels, p. 147)
 
                                                          Initial
     Get Value                        Type   Get Command  Value    Sec    

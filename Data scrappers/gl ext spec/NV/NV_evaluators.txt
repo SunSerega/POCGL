@@ -342,6 +342,30 @@ Additions to Chapter 5 of the 1.2 Specification (Special Functions)
     per-vertex attributes for implementations that do not support
     GL_NV_vertex_program.
 
+Vertex
+Attribute  Conventional                                              Conventional
+Register   Per-vertex        Conventional                            Component
+Number     Parameter         Per-vertex Parameter Command            Mapping
+---------  ---------------   --------------------------------------  ------------
+ 0         vertex position   Vertex                                  x,y,z,w
+ 1         vertex weights    VertexWeightEXT                         w,0,0,1
+ 2         normal            Normal                                  x,y,z,1
+ 3         primary color     Color                                   r,g,b,a
+ 4         secondary color   SecondaryColorEXT                       r,g,b,1
+ 5         fog coordinate    FogCoordEXT                             fc,0,0,1
+ 6         -                 -                                       -
+ 7         -                 -                                       -
+ 8         texture coord 0   MultiTexCoordARB(GL_TEXTURE0_ARB, ...)  s,t,r,q
+ 9         texture coord 1   MultiTexCoordARB(GL_TEXTURE1_ARB, ...)  s,t,r,q
+ 10        texture coord 2   MultiTexCoordARB(GL_TEXTURE2_ARB, ...)  s,t,r,q
+ 11        texture coord 3   MultiTexCoordARB(GL_TEXTURE3_ARB, ...)  s,t,r,q
+ 12        texture coord 4   MultiTexCoordARB(GL_TEXTURE4_ARB, ...)  s,t,r,q
+ 13        texture coord 5   MultiTexCoordARB(GL_TEXTURE5_ARB, ...)  s,t,r,q
+ 14        texture coord 6   MultiTexCoordARB(GL_TEXTURE6_ARB, ...)  s,t,r,q
+ 15        texture coord 7   MultiTexCoordARB(GL_TEXTURE7_ARB, ...)  s,t,r,q
+
+Table X.1:  Aliasing of vertex attributes with conventional per-vertex
+parameters.
 
     type is either FLOAT or DOUBLE.  ustride and vstride are the numbers
     of basic machine units (typically unsigned bytes) between control
@@ -864,34 +888,34 @@ Errors
 
 New State
 
-	(add to table 6.22, page 212)
+(add to table 6.22, page 212)
 
-	Get Value                        Type         Get Command               Initial Value     Description     Sec    Attribute
-	-------------------------------  -----------  ------------------------  ----------------  --------------  -----  ---------
-	EVAL_FRACTIONAL_TESSELLATION_NV  B            IsEnabled                 False             fractional      5.7    eval/enable
-																							  tess. enable
-	EVAL_VERTEX_ATTRIBi_NV           Bx16         IsEnabled                 True if i=0,      attrib eval     5.7    eval/enable
-																			false otherwise   enable
+Get Value                        Type         Get Command               Initial Value     Description     Sec    Attribute
+-------------------------------  -----------  ------------------------  ----------------  --------------  -----  ---------
+EVAL_FRACTIONAL_TESSELLATION_NV  B            IsEnabled                 False             fractional      5.7    eval/enable
+                                                                                          tess. enable
+EVAL_VERTEX_ATTRIBi_NV           Bx16         IsEnabled                 True if i=0,      attrib eval     5.7    eval/enable
+                                                                        false otherwise   enable
 
-	EVAL_2D_NV                       R4x16x8*x8*  GetMapControlPointsNV     [0,0,0,1]         control points  5.7    -
-	EVAL_TRIANGULAR_2D_NV            R4x16x8*x8*  GetMapControlPoints       [0,0,0,1]         control points  5.7    -
+EVAL_2D_NV                       R4x16x8*x8*  GetMapControlPointsNV     [0,0,0,1]         control points  5.7    -
+EVAL_TRIANGULAR_2D_NV            R4x16x8*x8*  GetMapControlPoints       [0,0,0,1]         control points  5.7    -
 
-	MAP_TESSELLATION_NV              R4,R3        GetMapParameter*NV        all 1.0           level of        5.7    eval
-																							  tessellation
+MAP_TESSELLATION_NV              R4,R3        GetMapParameter*NV        all 1.0           level of        5.7    eval
+                                                                                          tessellation
 
-	MAP_ATTRIB_U_ORDER_NV            Z8*x16x2     GetMapAttribParameter*NV  1                 map order in    5.7    -
-																							  U direction
-	MAP_ATTRIB_V_ORDER_NV            Z8*x16x2     GetMapAttribParameter*NV  1                 map order in    5.7    -
+MAP_ATTRIB_U_ORDER_NV            Z8*x16x2     GetMapAttribParameter*NV  1                 map order in    5.7    -
+                                                                                          U direction
+MAP_ATTRIB_V_ORDER_NV            Z8*x16x2     GetMapAttribParameter*NV  1                 map order in    5.7    -
                                                                                           V direction
 New Implementation Dependent State
 
-	(add to table 6.24/6.25, page 214)
+(add to table 6.24/6.25, page 214)
 
-	Get Value                   Type   Get Command    Minimum Value   Description     Sec    Attribute
-	------------------------    ----   ------------   -------------   -----------     -----  ---------
-	MAX_MAP_TESSELLATION_NV     Z+     GetIntegerv    256             maximum level   5.7    -
-																	  of tessellation
-	MAX_RATIONAL_EVAL_ORDER_NV  Z+     GetIntegerv    4               maximum order   5.7    -
+Get Value                   Type   Get Command    Minimum Value   Description     Sec    Attribute
+------------------------    ----   ------------   -------------   -----------     -----  ---------
+MAX_MAP_TESSELLATION_NV     Z+     GetIntegerv    256             maximum level   5.7    -
+                                                                  of tessellation
+MAX_RATIONAL_EVAL_ORDER_NV  Z+     GetIntegerv    4               maximum order   5.7    -
                                                                   of rational
                                                                   surfaces
 

@@ -794,30 +794,30 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     Table X.2.  The table includes how the various conventional components
     map to the 4-component vertex attribute components.
 
-	Vertex
-	Attribute  Conventional                                           Conventional
-	Register   Per-vertex        Conventional                         Component
-	Number     Parameter         Per-vertex Parameter Command         Mapping
-	---------  ---------------   -----------------------------------  ------------
-	 0         vertex position   Vertex                               x,y,z,w
-	 1         vertex weights    VertexWeightEXT                      w,0,0,1
-	 2         normal            Normal                               x,y,z,1
-	 3         primary color     Color                                r,g,b,a
-	 4         secondary color   SecondaryColorEXT                    r,g,b,1
-	 5         fog coordinate    FogCoordEXT                          fc,0,0,1
-	 6         -                 -                                    -
-	 7         -                 -                                    -
-	 8         texture coord 0   MultiTexCoord(GL_TEXTURE0_ARB, ...)  s,t,r,q
-	 9         texture coord 1   MultiTexCoord(GL_TEXTURE1_ARB, ...)  s,t,r,q
-	 10        texture coord 2   MultiTexCoord(GL_TEXTURE2_ARB, ...)  s,t,r,q
-	 11        texture coord 3   MultiTexCoord(GL_TEXTURE3_ARB, ...)  s,t,r,q
-	 12        texture coord 4   MultiTexCoord(GL_TEXTURE4_ARB, ...)  s,t,r,q
-	 13        texture coord 5   MultiTexCoord(GL_TEXTURE5_ARB, ...)  s,t,r,q
-	 14        texture coord 6   MultiTexCoord(GL_TEXTURE6_ARB, ...)  s,t,r,q
-	 15        texture coord 7   MultiTexCoord(GL_TEXTURE7_ARB, ...)  s,t,r,q
+Vertex
+Attribute  Conventional                                           Conventional
+Register   Per-vertex        Conventional                         Component
+Number     Parameter         Per-vertex Parameter Command         Mapping
+---------  ---------------   -----------------------------------  ------------
+ 0         vertex position   Vertex                               x,y,z,w
+ 1         vertex weights    VertexWeightEXT                      w,0,0,1
+ 2         normal            Normal                               x,y,z,1
+ 3         primary color     Color                                r,g,b,a
+ 4         secondary color   SecondaryColorEXT                    r,g,b,1
+ 5         fog coordinate    FogCoordEXT                          fc,0,0,1
+ 6         -                 -                                    -
+ 7         -                 -                                    -
+ 8         texture coord 0   MultiTexCoord(GL_TEXTURE0_ARB, ...)  s,t,r,q
+ 9         texture coord 1   MultiTexCoord(GL_TEXTURE1_ARB, ...)  s,t,r,q
+ 10        texture coord 2   MultiTexCoord(GL_TEXTURE2_ARB, ...)  s,t,r,q
+ 11        texture coord 3   MultiTexCoord(GL_TEXTURE3_ARB, ...)  s,t,r,q
+ 12        texture coord 4   MultiTexCoord(GL_TEXTURE4_ARB, ...)  s,t,r,q
+ 13        texture coord 5   MultiTexCoord(GL_TEXTURE5_ARB, ...)  s,t,r,q
+ 14        texture coord 6   MultiTexCoord(GL_TEXTURE6_ARB, ...)  s,t,r,q
+ 15        texture coord 7   MultiTexCoord(GL_TEXTURE7_ARB, ...)  s,t,r,q
 
-	Table X.2:  Aliasing of vertex attributes with conventional per-vertex
-	parameters.
+Table X.2:  Aliasing of vertex attributes with conventional per-vertex
+parameters.
 
     Only vertex attribute zero is treated specially because it is
     the attribute that provokes the execution of the vertex program;
@@ -3404,24 +3404,24 @@ Errors
 
 New State
 
-	(Modify Table X.5, New State Introduced by NV_vertex_program from the
-	 NV_vertex_program specification.)
+(Modify Table X.5, New State Introduced by NV_vertex_program from the
+ NV_vertex_program specification.)
 
-	Get Value             Type    Get Command              Initial Value  Description         Sec       Attribute
-	--------------------- ------  -----------------------  -------------  ------------------  --------  ------------
-	PROGRAM_PARAMETER_NV  256xR4  GetProgramParameterNV    (0,0,0,0)      program parameters  2.14.1.2  -
+Get Value             Type    Get Command              Initial Value  Description         Sec       Attribute
+--------------------- ------  -----------------------  -------------  ------------------  --------  ------------
+PROGRAM_PARAMETER_NV  256xR4  GetProgramParameterNV    (0,0,0,0)      program parameters  2.14.1.2  -
 
 
-	(Modify Table X.7.  Vertex Program Per-vertex Execution State.  "VP1" and
-	"VP2" refer to the VP1 and VP2 execution environments, respectively.)
+(Modify Table X.7.  Vertex Program Per-vertex Execution State.  "VP1" and
+"VP2" refer to the VP1 and VP2 execution environments, respectively.)
 
-	Get Value    Type    Get Command   Initial Value  Description              Sec       Attribute
-	---------    ------  -----------   -------------  -----------------------  --------  ---------
-	-            12xR4   -             (0,0,0,0)      VP1 temporary registers  2.14.1.4  -
-	-            16xR4   -             (0,0,0,0)      VP2 temporary registers  2.14.1.4  -
-	-            15xR4   -             (0,0,0,1)      vertex result registers  2.14.1.4  -
-				 Z4      -             (0,0,0,0)      VP1 address register     2.14.1.3  -
-				 2xZ4    -             (0,0,0,0)      VP2 address registers    2.14.1.3  -
+Get Value    Type    Get Command   Initial Value  Description              Sec       Attribute
+---------    ------  -----------   -------------  -----------------------  --------  ---------
+-            12xR4   -             (0,0,0,0)      VP1 temporary registers  2.14.1.4  -
+-            16xR4   -             (0,0,0,0)      VP2 temporary registers  2.14.1.4  -
+-            15xR4   -             (0,0,0,1)      vertex result registers  2.14.1.4  -
+             Z4      -             (0,0,0,0)      VP1 address register     2.14.1.3  -
+             2xZ4    -             (0,0,0,0)      VP2 address registers    2.14.1.3  -
 
 
 Revision History

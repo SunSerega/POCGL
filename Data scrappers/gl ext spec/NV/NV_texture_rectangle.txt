@@ -677,46 +677,46 @@ Errors
 
 New State
 
-	(table 6.12, p202) amend/add the following entries:
+(table 6.12, p202) amend/add the following entries:
 
-	Get Value                     Type  Get Command  Initial Value  Description            Sec     Attribute
-	----------------------------  ----  -----------  -------------  ---------------------  ------  --------------
-	TEXTURE_RECTANGULAR_NV        B     IsEnabled    False          True if rectangular    3.8.10  texture/enable
-																	texturing is enabled
-	TEXTURE_BINDING_RECTANGLE_NV  Z+    GetIntegerv  0              Texture object         3.8.8   texture
-																	for texture rectangle
-	TEXTURE_RECTANGLE_NV          I     GetTexImage  see 3.8        rectangular texture    3.8     -
-																	image for lod 0
+Get Value                     Type  Get Command  Initial Value  Description            Sec     Attribute
+----------------------------  ----  -----------  -------------  ---------------------  ------  --------------
+TEXTURE_RECTANGULAR_NV        B     IsEnabled    False          True if rectangular    3.8.10  texture/enable
+                                                                texturing is enabled
+TEXTURE_BINDING_RECTANGLE_NV  Z+    GetIntegerv  0              Texture object         3.8.8   texture
+                                                                for texture rectangle
+TEXTURE_RECTANGLE_NV          I     GetTexImage  see 3.8        rectangular texture    3.8     -
+                                                                image for lod 0
 
 
-	(table 6.13, p203) amend/add the following entries:
+(table 6.13, p203) amend/add the following entries:
 
-	Get Value           Type   Get Command      Initial Value          Description           Sec    Attribute
-	------------------  -----  ---------------  ---------------------  --------------------  -----  ---------
-	TEXTURE_MIN_FILTER  2+xZ6  GetTexparameter  NEAREST_MIPMAP_LINEAR  Texture minification  3.8.5  texture
-												except for             function
-												rectangular which is
-												LINEAR
-	TEXTURE_WRAP_S      5+xZ5  GetTexParameter  REPEAT except          Texture wrap mode S   3.8    texture
-												for rectangular
-												which is
-												CLAMP_TO_EDGE
-	TEXTURE_WRAP_T      5+xZ5  GetTexParameter  REPEAT except          Texture wrap mode T   3.8    texture
-												for rectangular
-												which is
-												CLAMP_TO_EDGE
-	TEXTURE_WRAP_R      5+xZ5  GetTexParameter  REPEAT except          Texture wrap mode R   3.8    texture
-												for rectangular
-												which is
-												CLAMP_TO_EDGE
+Get Value           Type   Get Command      Initial Value          Description           Sec    Attribute
+------------------  -----  ---------------  ---------------------  --------------------  -----  ---------
+TEXTURE_MIN_FILTER  2+xZ6  GetTexparameter  NEAREST_MIPMAP_LINEAR  Texture minification  3.8.5  texture
+                                            except for             function
+                                            rectangular which is
+                                            LINEAR
+TEXTURE_WRAP_S      5+xZ5  GetTexParameter  REPEAT except          Texture wrap mode S   3.8    texture
+                                            for rectangular
+                                            which is
+                                            CLAMP_TO_EDGE
+TEXTURE_WRAP_T      5+xZ5  GetTexParameter  REPEAT except          Texture wrap mode T   3.8    texture
+                                            for rectangular
+                                            which is
+                                            CLAMP_TO_EDGE
+TEXTURE_WRAP_R      5+xZ5  GetTexParameter  REPEAT except          Texture wrap mode R   3.8    texture
+                                            for rectangular
+                                            which is
+                                            CLAMP_TO_EDGE
 
 New Implementation Dependent State
 
-	(table 6.24, p214) add the following entry:
+(table 6.24, p214) add the following entry:
 
-	Get Value                      Type  Get Command  Minimum Value  Description          Sec    Attribute
-	-----------------------------  ----  -----------  -------------  -------------------  -----  ---------
-	MAX_RECTANGLE_TEXTURE_SIZE_NV  Z+    GetIntegerv  64             Maximum rectangular  3.8.1  -
+Get Value                      Type  Get Command  Minimum Value  Description          Sec    Attribute
+-----------------------------  ----  -----------  -------------  -------------------  -----  ---------
+MAX_RECTANGLE_TEXTURE_SIZE_NV  Z+    GetIntegerv  64             Maximum rectangular  3.8.1  -
                                                                  texture image
                                                                  dimension
 

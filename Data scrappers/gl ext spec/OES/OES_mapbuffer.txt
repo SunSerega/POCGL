@@ -90,13 +90,13 @@ Errors
 
 New State
 
-	(table 6.8)
-													  Initial
-	Get Value              Type  Get Command          Value           Description
-	---------              ----  -----------          -----           -----------
-	BUFFER_ACCESS_OES      Z1    GetBufferParameteriv WRITE_ONLY_OES  buffer map flag
-	BUFFER_MAPPED_OES      B     GetBufferParameteriv FALSE           buffer map flag
-	BUFFER_MAP_POINTER_OES Y     GetBufferPointervOES NULL            mapped buffer pointer
+(table 6.8)
+                                                  Initial
+Get Value              Type  Get Command          Value           Description
+---------              ----  -----------          -----           -----------
+BUFFER_ACCESS_OES      Z1    GetBufferParameteriv WRITE_ONLY_OES  buffer map flag
+BUFFER_MAPPED_OES      B     GetBufferParameteriv FALSE           buffer map flag
+BUFFER_MAP_POINTER_OES Y     GetBufferPointervOES NULL            mapped buffer pointer
 
 Revision History
 

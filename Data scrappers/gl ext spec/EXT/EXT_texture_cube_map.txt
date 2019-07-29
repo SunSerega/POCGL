@@ -639,49 +639,49 @@ Errors
 
 New State
 
-	(table 6.12, p202) add the following entries:
+(table 6.12, p202) add the following entries:
 
-	Get Value                        Type    Get Command   Initial Value   Description           Sec    Attribute
-	---------                        ----    -----------   -------------   -----------           ------ --------------
-	TEXTURE_CUBE_MAP_EXT             B       IsEnabled     False           True if cube map      3.8.10 texture/enable
-																		   texturing is enabled
-	TEXTURE_BINDING_CUBE_MAP_EXT     Z+      GetIntegerv   0               Texture object        3.8.8  texture
-																		   for TEXTURE_CUBE_MAP
-	TEXTURE_CUBE_MAP_POSITIVE_X_EXT  nxI     GetTexImage   see 3.8         positive x face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_NEGATIVE_X_EXT  nxI     GetTexImage   see 3.8         negative x face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_POSITIVE_Y_EXT  nxI     GetTexImage   see 3.8         positive y face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_NEGATIVE_Y_EXT  nxI     GetTexImage   see 3.8         negative y face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_POSITIVE_Z_EXT  nxI     GetTexImage   see 3.8         positive z face       3.8    -
-																		   cube map texture
-																		   image at lod i
-	TEXTURE_CUBE_MAP_NEGATIVE_Z_EXT  nxI     GetTexImage   see 3.8         negative z face       3.8    -
-																		   cube map texture
-																		   image at lod i
+Get Value                        Type    Get Command   Initial Value   Description           Sec    Attribute
+---------                        ----    -----------   -------------   -----------           ------ --------------
+TEXTURE_CUBE_MAP_EXT             B       IsEnabled     False           True if cube map      3.8.10 texture/enable
+                                                                       texturing is enabled
+TEXTURE_BINDING_CUBE_MAP_EXT     Z+      GetIntegerv   0               Texture object        3.8.8  texture
+                                                                       for TEXTURE_CUBE_MAP
+TEXTURE_CUBE_MAP_POSITIVE_X_EXT  nxI     GetTexImage   see 3.8         positive x face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_NEGATIVE_X_EXT  nxI     GetTexImage   see 3.8         negative x face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_POSITIVE_Y_EXT  nxI     GetTexImage   see 3.8         positive y face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_NEGATIVE_Y_EXT  nxI     GetTexImage   see 3.8         negative y face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_POSITIVE_Z_EXT  nxI     GetTexImage   see 3.8         positive z face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
+TEXTURE_CUBE_MAP_NEGATIVE_Z_EXT  nxI     GetTexImage   see 3.8         negative z face       3.8    -
+                                                                       cube map texture
+                                                                       image at lod i
 
-	(table 6.14, p204) change the entry for TEXTURE_GEN_MODE to:
+(table 6.14, p204) change the entry for TEXTURE_GEN_MODE to:
 
-	Get Value            Type    Get Command     Initial Value   Description        Sec    Attribute
-	---------            ----    -----------     -------------   -----------        ------ ---------
-	TEXTURE_GEN_MODE     4xZ5    GetTexGeniv     EYE_LINEAR      Function used for  2.10.4 texture
-																 texgen (for s,t,r,
-																 and q)
+Get Value            Type    Get Command     Initial Value   Description        Sec    Attribute
+---------            ----    -----------     -------------   -----------        ------ ---------
+TEXTURE_GEN_MODE     4xZ5    GetTexGeniv     EYE_LINEAR      Function used for  2.10.4 texture
+                                                             texgen (for s,t,r,
+                                                             and q)
 
-	(the type changes from 4xZ3 to 4xZ5)
+(the type changes from 4xZ3 to 4xZ5)
 
 New Implementation Dependent State
 
-	(table 6.24, p214) add the following entry:
+(table 6.24, p214) add the following entry:
 
-	Get Value                       Type    Get Command   Minimum Value   Description           Sec    Attribute
-	---------                       ----    -----------   -------------   -----------           ------ --------------
-	MAX_CUBE_MAP_TEXTURE_SIZE_EXT   Z+      GetIntegerv   16              Maximum cube map      3.8.1  -
+Get Value                       Type    Get Command   Minimum Value   Description           Sec    Attribute
+---------                       ----    -----------   -------------   -----------           ------ --------------
+MAX_CUBE_MAP_TEXTURE_SIZE_EXT   Z+      GetIntegerv   16              Maximum cube map      3.8.1  -
                                                                       texture image
                                                                       dimension

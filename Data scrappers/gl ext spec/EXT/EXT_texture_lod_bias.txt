@@ -230,22 +230,22 @@ Errors
 
 New State
 
-	(table 6.14, p204) add the entry:
+(table 6.14, p204) add the entry:
 
-	Get Value                 Type   Get Command  Initial Value     Description      Sec     Attribute
-	-----------------------   ----   -----------  --------------    ---------------  -----   ---------
-	TEXTURE_LOD_BIAS_EXT      R      GetTexEnvfv  0.0               Biases texture   3.8.9    texture
-																	level of detail
+Get Value                 Type   Get Command  Initial Value     Description      Sec     Attribute
+-----------------------   ----   -----------  --------------    ---------------  -----   ---------
+TEXTURE_LOD_BIAS_EXT      R      GetTexEnvfv  0.0               Biases texture   3.8.9    texture
+                                                                level of detail
 
-	(When ARB_multitexture is supported, the TEXTURE_LOD_BIAS_EXT state is per-texture unit.)
+(When ARB_multitexture is supported, the TEXTURE_LOD_BIAS_EXT state is per-texture unit.)
 
 New Implementation State
 
-	(table 6.24, p214) add the following entries:
+(table 6.24, p214) add the following entries:
 
-	Get Value                    Type    Get Command   Minimum Value   Description         Sec     Attribute
-	--------------------------   ----    -----------   -------------   -----------------   ------  --------------
-	MAX_TEXTURE_LOD_BIAS_EXT     R+      GetFloatv     4.0             Maximum             3.8.9   -
+Get Value                    Type    Get Command   Minimum Value   Description         Sec     Attribute
+--------------------------   ----    -----------   -------------   -----------------   ------  --------------
+MAX_TEXTURE_LOD_BIAS_EXT     R+      GetFloatv     4.0             Maximum             3.8.9   -
                                                                    absolute texture
                                                                    lod bias
 

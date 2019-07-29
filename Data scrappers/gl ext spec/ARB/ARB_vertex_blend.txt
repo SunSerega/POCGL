@@ -588,36 +588,36 @@ New State
 
       Modified State in Table 6.5:
 
-	Get Value                Get Command Type     Initial Value Attribute
-	---------                ----------- ----     ------------- ---------
-	CURRENT_WEIGHT_ARB       GetFloatv   Rn       n=0 - 1.0     current
+Get Value                Get Command Type     Initial Value Attribute
+---------                ----------- ----     ------------- ---------
+CURRENT_WEIGHT_ARB       GetFloatv   Rn       n=0 - 1.0     current
                                               n>0 - 0.0 
     
       Modified State in Table 6.6:
 
-	Get Value                 Get Command Type   Initial Value Attribute
-	---------                 ----------- ----   ------------- --------- 
-	WEIGHT_ARRAY_ARB          IsEnabled   1*B    False         vert-array
-	WEIGHT_ARRAY_TYPE_ARB     GetIntegerv 1*Z2   FLOAT         vert-array
-	WEIGHT_ARRAY_SIZE_ARB     GetIntegerv 1*Z+   0             vert-array
-	WEIGHT_ARRAY_STRIDE_ARB   GetIntegerv 1*Z+   0             vert-array
-	WEIGHT_ARRAY_POINTER_ARB  GetPointerv 1*Y    0             vert-array
+Get Value                 Get Command Type   Initial Value Attribute
+---------                 ----------- ----   ------------- --------- 
+WEIGHT_ARRAY_ARB          IsEnabled   1*B    False         vert-array
+WEIGHT_ARRAY_TYPE_ARB     GetIntegerv 1*Z2   FLOAT         vert-array
+WEIGHT_ARRAY_SIZE_ARB     GetIntegerv 1*Z+   0             vert-array
+WEIGHT_ARRAY_STRIDE_ARB   GetIntegerv 1*Z+   0             vert-array
+WEIGHT_ARRAY_POINTER_ARB  GetPointerv 1*Y    0             vert-array
 
 
       Modified state in Table 6.7:
 
-	Get Value                Get Command Type     Initial Value Attribute
-	---------                ----------- ----     ------------- ---------
-	MODELVIEWn_ARB           GetFloatv   1*32*xM4 Identity          -
-	ACTIVE_VERTEX_UNITS_ARB  GetIntegerv Z+       1             transform
-	VERTEX_BLEND_ARB         IsEnabled   B        False         transform
+Get Value                Get Command Type     Initial Value Attribute
+---------                ----------- ----     ------------- ---------
+MODELVIEWn_ARB           GetFloatv   1*32*xM4 Identity          -
+ACTIVE_VERTEX_UNITS_ARB  GetIntegerv Z+       1             transform
+VERTEX_BLEND_ARB         IsEnabled   B        False         transform
                                                             enable
 
       Modified state in Table 6.25:
 
-	Get Value                Get Command Type     Minmum Value  Attribute
-	---------                ----------- ----     ------------  ---------
-	MAX_VERTEX_UNITS_ARB     GetIntegerv Z+       2                 -
+Get Value                Get Command Type     Minmum Value  Attribute
+---------                ----------- ----     ------------  ---------
+MAX_VERTEX_UNITS_ARB     GetIntegerv Z+       2                 -
 
 Additions to Appendix A:
 

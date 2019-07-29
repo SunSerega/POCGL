@@ -200,10 +200,10 @@ New State
 
     Add to Table 6.27: Hints
 
-	Get Value                    Type  Get Command  Initial Value  Description 
-	---------                    ----  -----------  -------------  -----------
-	FRAGMENT_SHADER_DERIVATIVE_  Z3    GetIntegerv  DONT_CARE      Fragment shader
-	HINT_OES                                                       derivative
+Get Value                    Type  Get Command  Initial Value  Description 
+---------                    ----  -----------  -------------  -----------
+FRAGMENT_SHADER_DERIVATIVE_  Z3    GetIntegerv  DONT_CARE      Fragment shader
+HINT_OES                                                       derivative
                                                                accuracy hint
 
 Revision History

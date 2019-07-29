@@ -281,15 +281,15 @@ Errors
 
 New State
 
-	Get Value               Type  Get Command                    Initial Value  Description         Sec       Attribute
-	----------------------  ----  -----------------------------  -------------  ------------------  --------  --------------
-	PER_STAGE_CONSTANTS_NV  B     IsEnabled                      False          enable for          3.8.12    texture/enable
-	CONSTANT_COLOR0_NV      Cx#   GetCombinerStageParameterfvNV  0,0,0,0        per-stage constant  3.8.12.1  texture
-																				color zero
-	CONSTANT_COLOR1_NV      Cx#   GetCombinerStageParameterfvNV  0,0,0,0        per-stage constant  3.8.12.1  texture
-																				 color one
+Get Value               Type  Get Command                    Initial Value  Description         Sec       Attribute
+----------------------  ----  -----------------------------  -------------  ------------------  --------  --------------
+PER_STAGE_CONSTANTS_NV  B     IsEnabled                      False          enable for          3.8.12    texture/enable
+CONSTANT_COLOR0_NV      Cx#   GetCombinerStageParameterfvNV  0,0,0,0        per-stage constant  3.8.12.1  texture
+                                                                            color zero
+CONSTANT_COLOR1_NV      Cx#   GetCombinerStageParameterfvNV  0,0,0,0        per-stage constant  3.8.12.1  texture
+                                                                             color one
 
-	[ where # is the value of MAX_GENERAL_COMBINERS_NV ]
+[ where # is the value of MAX_GENERAL_COMBINERS_NV ]
 
 New Implementation State
 

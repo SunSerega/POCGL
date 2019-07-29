@@ -207,11 +207,11 @@ Errors
 
 New State
 
-	(table 6.23, p213) add the following entry:
+(table 6.23, p213) add the following entry:
 
-	Get Value                      Type    Get Command   Initial Value   Description           Sec    Attribute
-	----------------------------   ----    -----------   -------------   -----------           ------ --------------
-	MULTISAMPLE_FILTER_HINT_NV     Z3      GetIntegerv   DONT_CARE       Multisample filter    5.6    hint
+Get Value                      Type    Get Command   Initial Value   Description           Sec    Attribute
+----------------------------   ----    -----------   -------------   -----------           ------ --------------
+MULTISAMPLE_FILTER_HINT_NV     Z3      GetIntegerv   DONT_CARE       Multisample filter    5.6    hint
                                                                      quality hint
 
 Revision History

@@ -378,17 +378,17 @@ Errors
 
 New State
 
-	(table 6.12, p. 220)
+(table 6.12, p. 220)
 
-	Get Value                Type    Get Command     Initial Value   Description             Sec    Attribute
-	---------                ----    -----------     -------------   -----------             ------ ---------
-	POINT_SPRITE_ARB         B       IsEnabled       False           point sprite enable     3.3    point/enable
+Get Value                Type    Get Command     Initial Value   Description             Sec    Attribute
+---------                ----    -----------     -------------   -----------             ------ ---------
+POINT_SPRITE_ARB         B       IsEnabled       False           point sprite enable     3.3    point/enable
 
-	(table 6.17, p. 225)
+(table 6.17, p. 225)
 
-	Get Value                Type    Get Command     Initial Value   Description             Sec    Attribute
-	---------                ----    -----------     -------------   -----------             ------ ---------
-	COORD_REPLACE_ARB        2* x B  GetTexEnviv     False           coordinate replacement  3.3    point
+Get Value                Type    Get Command     Initial Value   Description             Sec    Attribute
+---------                ----    -----------     -------------   -----------             ------ ---------
+COORD_REPLACE_ARB        2* x B  GetTexEnviv     False           coordinate replacement  3.3    point
                                                                  enable
 
 Revision History

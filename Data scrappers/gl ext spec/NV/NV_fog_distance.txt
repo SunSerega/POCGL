@@ -187,11 +187,11 @@ Errors
 
 New State
 
-	(table 6.8, p198) add the entry:
+(table 6.8, p198) add the entry:
 
-	Get Value              Type    Get Command  Initial Value      Description      Sec     Attribute
-	--------------------   ----    -----------  ---------------    -----------      -----   ---------
-	FOG_DISTANCE_MODE_NV   Z3      GetIntegerv  implementation     Determines how   3.10    fog
+Get Value              Type    Get Command  Initial Value      Description      Sec     Attribute
+--------------------   ----    -----------  ---------------    -----------      -----   ---------
+FOG_DISTANCE_MODE_NV   Z3      GetIntegerv  implementation     Determines how   3.10    fog
                                             dependent          fog distance      
                                                                is computed
 

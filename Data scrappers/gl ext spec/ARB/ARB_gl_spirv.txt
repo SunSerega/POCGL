@@ -1544,11 +1544,11 @@ Dependencies on ARB_program_interface_query
 
 New State
 
-	Add the following to Table 23.30 "Shader Object State"
+Add the following to Table 23.30 "Shader Object State"
 
-	Get Value         Type  Get Command  Initial Value Description           Sec
-	----------------- ----- ------------ ------------- --------------------- ---
-	SPIR_V_BINARY_ARB  B    GetShaderiv  FALSE         Shader is associated  7.2
+Get Value         Type  Get Command  Initial Value Description           Sec
+----------------- ----- ------------ ------------- --------------------- ---
+SPIR_V_BINARY_ARB  B    GetShaderiv  FALSE         Shader is associated  7.2
                                                    with a SPIR-V module.
 
 Usage Example
@@ -1590,580 +1590,580 @@ Usage Example
 
 Issues
 
-	1. Do we need separate extensions to expose legacy GLSL and ESSL legacy
-	   capabilities in SPIR-V?
-
-		DISCUSSION:
-
-		When GLSL was created, multiple extensions were simultaneously introduced
-		to separate the API mechanism (ARB_shader_objects), the shading language
-		(GL_ARB_shading_language_100) and the shader stages (GL_ARB_vertex_shader,
-		GL_ARB_fragment_shader).
-
-		We can expect that future versions of OpenGL will support SPIR-V
-		as well but with a different set of capabilities.
-
-		Additionally, it's probably enough for the ARB to only define a SPIR-V
-		capabilities for OpenGL 4.5 but SPIR-V is not only going to be consumed by
-		OpenGL implementation but also by engine tool chains which can't afford to
-		only support the last version of OpenGL. As a result Unity would define its
-		own private extensions at least to clearly define the capability sets our
-		engine supports at time T, e.g.: GL_UNITY_spirv_webgl,
-		GL_UNITY_spirv_base_level, GL_UNITY_spirv_base_compute,
-		GL_UNITY_spirv_max_level, etc to target older versions of OpenGL without
-		being forced to use a specific GLSL version.
-
-		For example, GL_UNITY_spirv_base_compute has a feature subset between
-		GLSL 420 + GL_ARB_shader_storage_buffer_object + GL_ARB_compute_shader +
-		GL_ARB_shader_image_load_store and GLES 310 would correspond to what we
-		call an OpenGL device level in Unity 5.1.
-
-		We should except that many engines would have the need of such ISV
-		specific capability sets. This said it's important for the Khronos Group
-		to set future convergence point but OpenGL 4.5 is not realistic today, which
-		is the domain where ISVs must work.
-
-		Possible Resolution:
-		   Two extensions:
-			- GL_ARB_program_binary_spirv to specify the mechanism.
-			- GL_ARB_spir_v_gl_450 to specify the required SPIR-V capabilities for
-			OpenGL 4.5.
-
-		Key data needed: What will IHVs actually support?
-
-		RESOLVED:
-
-		Minimum: 3.3 for desktop
-				 3.1 for ES [ however, ES is not covered by this extension ]
-
-		Need to add capabilities needed to distinguish between 3.3 and 4.5.
-
-		See bug 14520 for data on fine-grained capabilities and other
-		relevant details.
-
-	2. Do we want to look at SPIR-V as a shading language or a binary format?
-
-		DISCUSSION:
-
-		Practically, this issue is about whether we want to load SPIR-V
-		through the shader object API, the program binary API or do we need
-		a new construct. Unfortunately, there is a lot of issues with the
-		two first options and the third might be a little too complex.
-
-		Support through program binary API:
-		- SPIR-V is the standard binary format
-		- It makes SPIR-V a post LinkProgram construct
-		- No location remapping is possible (glBindAttribLocation,
-		  glBindFragDataLocation[Indexed])
-		- Can't support multiple OpEntryPoint instructions
-		- Can't provide program arguments (alternative to #pragma)
-		- Can't retrieve SPIR-V source. GL_NUM_PROGRAM_BINARY_FORMATS can
-		enumerate multiple format but glGetProgramBinary doesn't allow us to
-		select the format we want to query back.
-		- Currently SPIR-V doesn't support multiple shader stages per module
-		but this would be useful for linked programs.
-
-		Support through shader object API:
-		- OpenGL API allows to attach multiple shader objects but SPIR-V modules
-		are fully contained: A single module define the entire stage.
-		- SPIR-V modules don't have to support multiple stage per module but we
-		lose the represent linked program and perform offline cross shader stage
-		dead code elimination.
-		- Need a new glCompileShader variant to support multiple entry-points
-		(OpEntryPoint) or compilation arguments (OpCompileFlag)
-		- glShaderSource doesn't allow to specify the shading language. Is looking
-		at the first bytes to check the magic string okay?
-		- Reflection may be striped from SPIR-V modules
-
-		Support through new API, "modules":
-		// The difference between a module and a shader:
-		// - Can contain multiple entry points
-		// - Could specify the language, support both GLSL and SPIR-V (maybe)
-		// - Can contain multiple shader stages
-		// - Cross shader stage dead code elimination could be perform offline. (How to hint the compiler? OpCompileFlag?)
-		// - Could be faster to compile shader variants?
-		// - Programs created with glLinkProgramModule don't need GL_PROGRAM_SEPARABLE
-		// - No need to specify the shader stage at object creation, it's embedded in the SPIR-V module
-
-		GLint length = 0;
-		GLbyte* binary = LoadBinary(Path, &length);
-
-		GLuint ModuleName = 0;
-		glCreateModules(1, &ModuleName);
-		glCompileModule(ModuleName, GL_SHADING_LANGUAGE_SPIR_V, &binary, &length);
+1. Do we need separate extensions to expose legacy GLSL and ESSL legacy
+   capabilities in SPIR-V?
+
+    DISCUSSION:
+
+    When GLSL was created, multiple extensions were simultaneously introduced
+    to separate the API mechanism (ARB_shader_objects), the shading language
+    (GL_ARB_shading_language_100) and the shader stages (GL_ARB_vertex_shader,
+    GL_ARB_fragment_shader).
+
+    We can expect that future versions of OpenGL will support SPIR-V
+    as well but with a different set of capabilities.
+
+    Additionally, it's probably enough for the ARB to only define a SPIR-V
+    capabilities for OpenGL 4.5 but SPIR-V is not only going to be consumed by
+    OpenGL implementation but also by engine tool chains which can't afford to
+    only support the last version of OpenGL. As a result Unity would define its
+    own private extensions at least to clearly define the capability sets our
+    engine supports at time T, e.g.: GL_UNITY_spirv_webgl,
+    GL_UNITY_spirv_base_level, GL_UNITY_spirv_base_compute,
+    GL_UNITY_spirv_max_level, etc to target older versions of OpenGL without
+    being forced to use a specific GLSL version.
+
+    For example, GL_UNITY_spirv_base_compute has a feature subset between
+    GLSL 420 + GL_ARB_shader_storage_buffer_object + GL_ARB_compute_shader +
+    GL_ARB_shader_image_load_store and GLES 310 would correspond to what we
+    call an OpenGL device level in Unity 5.1.
+
+    We should except that many engines would have the need of such ISV
+    specific capability sets. This said it's important for the Khronos Group
+    to set future convergence point but OpenGL 4.5 is not realistic today, which
+    is the domain where ISVs must work.
+
+    Possible Resolution:
+       Two extensions:
+        - GL_ARB_program_binary_spirv to specify the mechanism.
+        - GL_ARB_spir_v_gl_450 to specify the required SPIR-V capabilities for
+        OpenGL 4.5.
+
+    Key data needed: What will IHVs actually support?
+
+    RESOLVED:
+
+    Minimum: 3.3 for desktop
+             3.1 for ES [ however, ES is not covered by this extension ]
+
+    Need to add capabilities needed to distinguish between 3.3 and 4.5.
+
+    See bug 14520 for data on fine-grained capabilities and other
+    relevant details.
+
+2. Do we want to look at SPIR-V as a shading language or a binary format?
+
+    DISCUSSION:
+
+    Practically, this issue is about whether we want to load SPIR-V
+    through the shader object API, the program binary API or do we need
+    a new construct. Unfortunately, there is a lot of issues with the
+    two first options and the third might be a little too complex.
+
+    Support through program binary API:
+    - SPIR-V is the standard binary format
+    - It makes SPIR-V a post LinkProgram construct
+    - No location remapping is possible (glBindAttribLocation,
+      glBindFragDataLocation[Indexed])
+    - Can't support multiple OpEntryPoint instructions
+    - Can't provide program arguments (alternative to #pragma)
+    - Can't retrieve SPIR-V source. GL_NUM_PROGRAM_BINARY_FORMATS can
+    enumerate multiple format but glGetProgramBinary doesn't allow us to
+    select the format we want to query back.
+    - Currently SPIR-V doesn't support multiple shader stages per module
+    but this would be useful for linked programs.
+
+    Support through shader object API:
+    - OpenGL API allows to attach multiple shader objects but SPIR-V modules
+    are fully contained: A single module define the entire stage.
+    - SPIR-V modules don't have to support multiple stage per module but we
+    lose the represent linked program and perform offline cross shader stage
+    dead code elimination.
+    - Need a new glCompileShader variant to support multiple entry-points
+    (OpEntryPoint) or compilation arguments (OpCompileFlag)
+    - glShaderSource doesn't allow to specify the shading language. Is looking
+    at the first bytes to check the magic string okay?
+    - Reflection may be striped from SPIR-V modules
+
+    Support through new API, "modules":
+    // The difference between a module and a shader:
+    // - Can contain multiple entry points
+    // - Could specify the language, support both GLSL and SPIR-V (maybe)
+    // - Can contain multiple shader stages
+    // - Cross shader stage dead code elimination could be perform offline. (How to hint the compiler? OpCompileFlag?)
+    // - Could be faster to compile shader variants?
+    // - Programs created with glLinkProgramModule don't need GL_PROGRAM_SEPARABLE
+    // - No need to specify the shader stage at object creation, it's embedded in the SPIR-V module
+
+    GLint length = 0;
+    GLbyte* binary = LoadBinary(Path, &length);
+
+    GLuint ModuleName = 0;
+    glCreateModules(1, &ModuleName);
+    glCompileModule(ModuleName, GL_SHADING_LANGUAGE_SPIR_V, &binary, &length);
 
-		GLboolean HasReflection = GL_FALSE;
-		glGetModuleiv(ModuleName, GL_MODULE_REFLECTION, &HasReflection);
+    GLboolean HasReflection = GL_FALSE;
+    glGetModuleiv(ModuleName, GL_MODULE_REFLECTION, &HasReflection);
 
-		GLuint ProgramName[2];
-		glCreatePrograms(2, &ProgramName[0]);
+    GLuint ProgramName[2];
+    glCreatePrograms(2, &ProgramName[0]);
 
-		assert(HasReflection == GL_TRUE);
-		GLchar const * Strings[] = {"gl_Position", "block.Color"};
-		glTransformFeedbackVaryings(ProgramName[0], 2, Strings, GL_INTERLEAVED_ATTRIBS);
-		glBindAttribLocation(ProgramName[0], 0, "Position");
-		glBindAttribLocation(ProgramName[0], 1, "Color");
-		glBindFragDataLocation(ProgramName[0], 0, "Color");
-		glLinkProgramModule(ProgramName[0], ModuleName, "mainA", "-pragma optimize(on)");
+    assert(HasReflection == GL_TRUE);
+    GLchar const * Strings[] = {"gl_Position", "block.Color"};
+    glTransformFeedbackVaryings(ProgramName[0], 2, Strings, GL_INTERLEAVED_ATTRIBS);
+    glBindAttribLocation(ProgramName[0], 0, "Position");
+    glBindAttribLocation(ProgramName[0], 1, "Color");
+    glBindFragDataLocation(ProgramName[0], 0, "Color");
+    glLinkProgramModule(ProgramName[0], ModuleName, "mainA", "-pragma optimize(on)");
 
-		glLinkProgramModule(ProgramName[1], ModuleName, "mainB", "-pragma optimize(on)");
+    glLinkProgramModule(ProgramName[1], ModuleName, "mainB", "-pragma optimize(on)");
 
-		Other notes:
+    Other notes:
 
-		 - API doesn't require GLSL -> SPIR-V followed by getProgramBinary()
-		   * need an ID for specifying you want a SPIR-V binary?
-			(christophe) GetProgramBinary doesn't do conversion, currently we would retrieve a SPIR-V
-			is the program binary was a SPIR-V binary. However, that would prevent query a of native
-			binary cache. I guess we could add a program parameter or specific that if we use
-			GL_PROGRAM_BINARY_RETRIEVABLE_HINT GetProgramBinary return a native program binary cache,
-			otherwise we get a SPIR-V binary back.
+     - API doesn't require GLSL -> SPIR-V followed by getProgramBinary()
+       * need an ID for specifying you want a SPIR-V binary?
+        (christophe) GetProgramBinary doesn't do conversion, currently we would retrieve a SPIR-V
+        is the program binary was a SPIR-V binary. However, that would prevent query a of native
+        binary cache. I guess we could add a program parameter or specific that if we use
+        GL_PROGRAM_BINARY_RETRIEVABLE_HINT GetProgramBinary return a native program binary cache,
+        otherwise we get a SPIR-V binary back.
 
-		 - LoadProgramBinary() needs a flag to link by SSO or by name?
-			* or does API spec. just say this comes from using SSO mode or...?
-			(christophe) GL_PROGRAM_SEPARABLE doesn't change linking by name or by location.
-			In GLSL 450, when locations are present, we link by location. Otherwise, we link by name.
-			GL_PROGRAM_SEPARABLE protects the shader code against a backward compatibility change regarding
-			gl_PerVertex block. With separated shader stages, the block must be declared in the shader will
-			before it was optional. This behavior was requested by AMD during the separated program
-			ratification process.
+     - LoadProgramBinary() needs a flag to link by SSO or by name?
+        * or does API spec. just say this comes from using SSO mode or...?
+        (christophe) GL_PROGRAM_SEPARABLE doesn't change linking by name or by location.
+        In GLSL 450, when locations are present, we link by location. Otherwise, we link by name.
+        GL_PROGRAM_SEPARABLE protects the shader code against a backward compatibility change regarding
+        gl_PerVertex block. With separated shader stages, the block must be declared in the shader will
+        before it was optional. This behavior was requested by AMD during the separated program
+        ratification process.
 
-		Neither the program binary API or the shader object API
-		seem to match SPIR-V features. Creating a new module API has potential but maybe
-		we could build something around the shader object.
+    Neither the program binary API or the shader object API
+    seem to match SPIR-V features. Creating a new module API has potential but maybe
+    we could build something around the shader object.
 
-		RESOLVED: Use the existing ShaderBinary() and a new entry point,
-		SpecializeShaderARB() to set specialization constants.
+    RESOLVED: Use the existing ShaderBinary() and a new entry point,
+    SpecializeShaderARB() to set specialization constants.
 
-	3. Allow more than one stage per SPIR-V module?
+3. Allow more than one stage per SPIR-V module?
 
-		DISCUSSION:
+    DISCUSSION:
 
-		SPIR-V supports multiple entry points per module, of any stage, or any
-		number of instances of the same stage.  However, the knowledge of which
-		of those might be used together lies outside the module.
+    SPIR-V supports multiple entry points per module, of any stage, or any
+    number of instances of the same stage.  However, the knowledge of which
+    of those might be used together lies outside the module.
 
-		OpenGL supports both linked programs and separated programs. If we
-		consider strict separated programs with a program per shader stage, we can
-		rely on a SPIR-V module per program. However, linked programs allows
-		combining multiple shader stages into a single program. Furthermore,
-		linked programs are more efficient than separated programs as the
-		implementation can perform cross shader stages optimizations and packing of
-		inputs and outputs with linked programs.
+    OpenGL supports both linked programs and separated programs. If we
+    consider strict separated programs with a program per shader stage, we can
+    rely on a SPIR-V module per program. However, linked programs allows
+    combining multiple shader stages into a single program. Furthermore,
+    linked programs are more efficient than separated programs as the
+    implementation can perform cross shader stages optimizations and packing of
+    inputs and outputs with linked programs.
 
-		Allowing multiple shader stage in a module would profile a semantic for
-		linked programs and would allow performing dead code elimination and input
-		and output location packing offline.
+    Allowing multiple shader stage in a module would profile a semantic for
+    linked programs and would allow performing dead code elimination and input
+    and output location packing offline.
 
-		RESOLVED: Allow full generality of what SPIR-V supports, and have
-		the new entry points in the API select the subset of a module that it
-		cares about.
+    RESOLVED: Allow full generality of what SPIR-V supports, and have
+    the new entry points in the API select the subset of a module that it
+    cares about.
 
-	4. Do we want to expose multiple entry points?
+4. Do we want to expose multiple entry points?
 
-		DISCUSSION:
+    DISCUSSION:
 
-		SPIR-V supports multiple entry points through the OpEntryPoint
-		instruction. Do we want to expose this?
+    SPIR-V supports multiple entry points through the OpEntryPoint
+    instruction. Do we want to expose this?
 
-		A way to expose it would be to introduce a variant of glLinkProgram
-		which takes the entry point main as an argument.
+    A way to expose it would be to introduce a variant of glLinkProgram
+    which takes the entry point main as an argument.
 
-		Typically, engines such as UE4 and Unity are rebuilding a big shared shader
-		library over and over again for each shader variation.
+    Typically, engines such as UE4 and Unity are rebuilding a big shared shader
+    library over and over again for each shader variation.
 
-		While orthogonal to GL_ARB_program_instance, this feature would work
-		extremely well with program instance for an application.
+    While orthogonal to GL_ARB_program_instance, this feature would work
+    extremely well with program instance for an application.
 
-		We could defer but I'll rather have all the SPIR-V interactions
-		mechanisms defined in one extension from start to provide first class
-		citizenship to SPIR-V.
+    We could defer but I'll rather have all the SPIR-V interactions
+    mechanisms defined in one extension from start to provide first class
+    citizenship to SPIR-V.
 
-		RESOLVED: This is mostly a duplicate of Issue 3, and a single resolution
-		for both is needed there in that one place.
+    RESOLVED: This is mostly a duplicate of Issue 3, and a single resolution
+    for both is needed there in that one place.
 
-	5. Do we want to add support for "constantId" in OpenGL?
+5. Do we want to add support for "constantId" in OpenGL?
 
-		RESOLVED: Have the new entry points in the API support specializing
-		constants, as in Vulkan.
+    RESOLVED: Have the new entry points in the API support specializing
+    constants, as in Vulkan.
 
-	6. Do we want to support multiple modules per program
+6. Do we want to support multiple modules per program
 
-		DISCUSSION:
+    DISCUSSION:
 
-		A use case could be to compile subroutines into different modules
-		and link a set of subroutines we want to use into a program canvas.
-		In another use case, using multiple entry points we could build multiple
-		code paths sharing the same shader library.
+    A use case could be to compile subroutines into different modules
+    and link a set of subroutines we want to use into a program canvas.
+    In another use case, using multiple entry points we could build multiple
+    code paths sharing the same shader library.
 
-		SPIR-V for Vulkan currently expects fully linked stages.
+    SPIR-V for Vulkan currently expects fully linked stages.
 
-		This could be part of a much needed rework or the subroutines.
-		Okay to defer for now.
+    This could be part of a much needed rework or the subroutines.
+    Okay to defer for now.
 
-		RESOLVED: Fully linked modules only, no direct "subroutine" support.
+    RESOLVED: Fully linked modules only, no direct "subroutine" support.
 
-	7. Do we want to be able to provide compilation arguments?
+7. Do we want to be able to provide compilation arguments?
 
-		DISCUSSION:
+    DISCUSSION:
 
-		SPIR-V supports the OpCompileFlag instructions to store
-		compilation arguments however OpenGL doesn't support compilation
-		arguments. If we add a new variant of glLinkProgram, it could be an
-		opportunity to add a compilation arguments parameter to glLinkProgram.
+    SPIR-V supports the OpCompileFlag instructions to store
+    compilation arguments however OpenGL doesn't support compilation
+    arguments. If we add a new variant of glLinkProgram, it could be an
+    opportunity to add a compilation arguments parameter to glLinkProgram.
 
-		Some use cases:
-		- Compiling the shaders with different optimizations: It's currently
-		supported with #pragma but SPIR-V doesn't contain preprocessor
-		information
-		- Vendors refused to fix GLSL bugs and there are a lot of them. The
-		reason is that fixing these bugs could cause to break shader compilation
-		hence applications. If we want to start a virtue circle, we need to
-		give developers the opportunity to enforce conformant compilation.
-		- Display on or off warnings in the compilation log.
-		- All the cool stuff C++ compilers are using compilation arguments for.
+    Some use cases:
+    - Compiling the shaders with different optimizations: It's currently
+    supported with #pragma but SPIR-V doesn't contain preprocessor
+    information
+    - Vendors refused to fix GLSL bugs and there are a lot of them. The
+    reason is that fixing these bugs could cause to break shader compilation
+    hence applications. If we want to start a virtue circle, we need to
+    give developers the opportunity to enforce conformant compilation.
+    - Display on or off warnings in the compilation log.
+    - All the cool stuff C++ compilers are using compilation arguments for.
 
-		Note that the instruction OpCompileFlag was removed from SPIR-V, and
-		a Bug 13418 "Need a way to control target-compiler behavior from the API"
-		was deferred to a future release.
+    Note that the instruction OpCompileFlag was removed from SPIR-V, and
+    a Bug 13418 "Need a way to control target-compiler behavior from the API"
+    was deferred to a future release.
 
-		RESOLVED: No flags in first release.
+    RESOLVED: No flags in first release.
 
-	8. Do we want to build a reflection API on SPIR-V modules specifics?
+8. Do we want to build a reflection API on SPIR-V modules specifics?
 
-		- Retrieve compilation arguments
-		- Retrieve shader stages included
-		- Retrieve the list of entry points
-		- Retrieve the list of required capabilities
+    - Retrieve compilation arguments
+    - Retrieve shader stages included
+    - Retrieve the list of entry points
+    - Retrieve the list of required capabilities
 
-		Arguably, it's trivial to build a SPIR-V parser and figure this out
-		ourselves.
+    Arguably, it's trivial to build a SPIR-V parser and figure this out
+    ourselves.
 
-		DISCUSSION:
+    DISCUSSION:
 
-		If drivers implement SPIR-V support by lowering it to the same
-		representation that GLSL is lowered to, and that representation is the
-		source of reflection information, much reflection would naturally be
-		present.
+    If drivers implement SPIR-V support by lowering it to the same
+    representation that GLSL is lowered to, and that representation is the
+    source of reflection information, much reflection would naturally be
+    present.
 
-		RESOLVED: First start without reflection, then add later if needed.
-		In the meantime, we have to document how the existing API operates
-		with no reflection information. See Issue 22.
+    RESOLVED: First start without reflection, then add later if needed.
+    In the meantime, we have to document how the existing API operates
+    with no reflection information. See Issue 22.
 
-	9. Separate programs require gl_PerVertex output blocks to be declared.
-	   How do we enforce this requirement in SPIR-V modules?
+9. Separate programs require gl_PerVertex output blocks to be declared.
+   How do we enforce this requirement in SPIR-V modules?
 
-		DISCUSSION: Force compiler to generate a gl_PerVertex block if the
-		shader code writes vertex-shader output built-ins?
+    DISCUSSION: Force compiler to generate a gl_PerVertex block if the
+    shader code writes vertex-shader output built-ins?
 
-		RESOLVED: (In the validation rules): SPIR-V should contain the
-		same form of input/output block as expected by recent versions of GLSL.
-		All in/out built-in show up in SPIR-V in blocks, as per Vulkan rules.
-		GLSL can stay the same, front ends need to block non-blocked built-ins.
+    RESOLVED: (In the validation rules): SPIR-V should contain the
+    same form of input/output block as expected by recent versions of GLSL.
+    All in/out built-in show up in SPIR-V in blocks, as per Vulkan rules.
+    GLSL can stay the same, front ends need to block non-blocked built-ins.
 
-	10. Do we want to support glBindAttribLocation and glBindFragDataLocation[Indexed]
-		with SPIR-V?  Also, what about glTransformFeedbackVaryings?
+10. Do we want to support glBindAttribLocation and glBindFragDataLocation[Indexed]
+    with SPIR-V?  Also, what about glTransformFeedbackVaryings?
 
-		DISCUSSION: Locations can be explicitly put into the shader, and
-		then the application uses the right location.
+    DISCUSSION: Locations can be explicitly put into the shader, and
+    then the application uses the right location.
 
-		Note that SPIR-V 1.0 does not allow using specialization constants for
+    Note that SPIR-V 1.0 does not allow using specialization constants for
 
-			layout(location=X) ...  // X must be a literal, not specialized
+        layout(location=X) ...  // X must be a literal, not specialized
 
-		Alternatively, add a SPIR-V instruction that assigns a string name to an
-		input which the API can use to link with.  This would initially be an
-		extension to SPIR-V as part of this.
+    Alternatively, add a SPIR-V instruction that assigns a string name to an
+    input which the API can use to link with.  This would initially be an
+    extension to SPIR-V as part of this.
 
-		RESOLVED: Don't support any of glBindAttribLocation,
-		glBindFragDataLocation[Index], or glTransformFeedbackVaryings.
+    RESOLVED: Don't support any of glBindAttribLocation,
+    glBindFragDataLocation[Index], or glTransformFeedbackVaryings.
 
-	11. What capabilities do we need for GL 4.5?
+11. What capabilities do we need for GL 4.5?
 
-		RESOLVED: There is a Appendix A.spv for this.
+    RESOLVED: There is a Appendix A.spv for this.
 
-	12. How is user-linkage done between stages?
+12. How is user-linkage done between stages?
 
-		DISCUSSION: SPIR-V linkage is by location number and BuiltIn decoration.
-		Does OpenGL need linkage by name? Is SSO required to work with SPIR-V?
-		Require OpName can't be stripped out for linkage objects.  If we use the
-		program binary API, yes but this is not desirable. See issue 2.
+    DISCUSSION: SPIR-V linkage is by location number and BuiltIn decoration.
+    Does OpenGL need linkage by name? Is SSO required to work with SPIR-V?
+    Require OpName can't be stripped out for linkage objects.  If we use the
+    program binary API, yes but this is not desirable. See issue 2.
 
-		RESOLVED: Link the Vulkan way: built-in decorations, location numbers,
-		etc., never by name.  No reflection required.  This is a lot like SSO.
+    RESOLVED: Link the Vulkan way: built-in decorations, location numbers,
+    etc., never by name.  No reflection required.  This is a lot like SSO.
 
-	13. Can we really handle separate textures and samplers?
+13. Can we really handle separate textures and samplers?
 
-		DISCUSSION: AMD: No, can't do this because OpenGL has features that need
-		cross validation that can't be done.
+    DISCUSSION: AMD: No, can't do this because OpenGL has features that need
+    cross validation that can't be done.
 
-		RESOLVED: Remove separate textures and samplers.
+    RESOLVED: Remove separate textures and samplers.
 
-	14. Are there differences in binding counting between Vulkan and OpenGL?
+14. Are there differences in binding counting between Vulkan and OpenGL?
 
-		DISCUSSION: Yes, OpenGL uses multiple binding points for a resource array
-		while Vulkan uses just one.
+    DISCUSSION: Yes, OpenGL uses multiple binding points for a resource array
+    while Vulkan uses just one.
 
-		RESOLVED: This leaves OpenGL as is, but state in the overview what this
-		difference is.
+    RESOLVED: This leaves OpenGL as is, but state in the overview what this
+    difference is.
 
-	15. What GL version(s) should be required for the ImageQuery OpCapability?
+15. What GL version(s) should be required for the ImageQuery OpCapability?
 
-		DISCUSSION: The GL features it corresponds with are:
-			- textureSize - EXT_gpu_shader4 (GL 3.0)
-			- textureQueryLod - ARB_texture_query_lod (GL 4.0)
-			- textureQueryLevels - ARB_texture_query_levels (GL 4.3)
-			- imageSize - ARB_shader_image_size (GL 4.3)
-			- textureSamples, imageSamples - ARB_shader_texture_image_samples (GL 4.5)
-		The belief is that these are largely software features and while some
-		of them were not added until later API versions, it was not because of
-		hardware reasons.
-
-		RESOLVED: Require ImageQuery to be supported for all versions of GL,
-		as it is required for all Vulkan implementations.
-
-	16. At what point should an error due to an invalid SPIR-V module/capability
-		be reported? ShaderBinary, SpecializeShaderARB, LinkProgram time?
-		ShaderBinary says a "valid SPIR-V module binary" is required, but you
-		can have a valid module that uses capabilities or extensions not
-		supported by an implementation.
-
-		RESOLVED. ShaderBinary is expected to form an association between the
-		SPIR-V module and likely would not parse the module as would be required
-		to detect unsupported capabilities or other validation failures. In order
-		to avoid requiring the implementation to parse the module multiples times,
-		we allow this analysis to happen at either SpecializeShaderARB or
-		LinkProgram time, similar to how many errors for source shaders are
-		detected at either compile or link time.
+    DISCUSSION: The GL features it corresponds with are:
+        - textureSize - EXT_gpu_shader4 (GL 3.0)
+        - textureQueryLod - ARB_texture_query_lod (GL 4.0)
+        - textureQueryLevels - ARB_texture_query_levels (GL 4.3)
+        - imageSize - ARB_shader_image_size (GL 4.3)
+        - textureSamples, imageSamples - ARB_shader_texture_image_samples (GL 4.5)
+    The belief is that these are largely software features and while some
+    of them were not added until later API versions, it was not because of
+    hardware reasons.
+
+    RESOLVED: Require ImageQuery to be supported for all versions of GL,
+    as it is required for all Vulkan implementations.
+
+16. At what point should an error due to an invalid SPIR-V module/capability
+    be reported? ShaderBinary, SpecializeShaderARB, LinkProgram time?
+    ShaderBinary says a "valid SPIR-V module binary" is required, but you
+    can have a valid module that uses capabilities or extensions not
+    supported by an implementation.
+
+    RESOLVED. ShaderBinary is expected to form an association between the
+    SPIR-V module and likely would not parse the module as would be required
+    to detect unsupported capabilities or other validation failures. In order
+    to avoid requiring the implementation to parse the module multiples times,
+    we allow this analysis to happen at either SpecializeShaderARB or
+    LinkProgram time, similar to how many errors for source shaders are
+    detected at either compile or link time.
 
-	17. Should we allow program objects to contain both source shaders and
-		SPIR-V binary shaders, or should this be a link time failure?
-
-		RESOLVED. No. This would be needlessly complex to specify. Make this
-		a link-time error. This can be determined by examining the
-		SPIR_V_BINARY_ARB state of each shader. They must either: all be TRUE
-		(SPIR-V shader) or all be FALSE (source shaders). If an application
-		really wishes to mix source and SPIR-V binary shaders, this can be
-		done at program object boundaries by using separable program objects
-		(if supported).
-
-	18. Do we need a section for "SPIR-V Transform Feedback Interface"?
-		This would discuss any requirements for the Xfb related decorations
-		in SPIR-V.
-
-		RESOLVED. Yes.
-
-	19. How should the program interface query operations behave for program
-		objects created from SPIR-V shaders?
-
-		DISCUSSION: we previously said we didn't need reflection to work
-		for SPIR-V shaders (at least for the first version), however we
-		are left with specifying how it should "not work". The primary issue
-		is that SPIR-V binaries are not required to have names associated
-		with variables. They can be associated in debug information, but there
-		is no requirement for that to be present, and it should not be relied
-		upon.
-
-		Options:
-		A) Make it work.  If debug names are present they are enumerated
-		correctly with associated variables. If the names aren't present,
-		the compiler or driver gets to make them up. Alternatively, we could
-		augment SPIR-V to have a mode where all interface variables need to
-		have names which must not be stripped.
-
-		B) Completely disallow it. All/Most such operations return an error.
-		This may result in some implementation-dependent behavior which
-		is impossible to know (although this problem may exist anyhow due
-		to the offline-compilation step).  This would likely include not
-		being able to tell how many active resources there are and related
-		problems.
-
-		C) Allow as much as possible to work "naturally". You can query for
-		the number of active resources, and for details about them. Anything
-		that doesn't query by name will work as expected. Queries for maximum
-		length of names return one. Queries for anything "by name" return
-		INVALID_INDEX (or -1). Querying the name property of a resource
-		returns an empty string. This may allow many queries to work, but it's
-		not clear how useful it would be if you can't actually know which
-		specific variable you are retrieving information on. If everything
-		is specified a-priori by location/binding/offset/index/component
-		in the shader, this may be sufficient.
-
-		RESOLVED.  Pick (c), but also allow debug names to be returned if an
-		implementation wants to.
-
-	20. How should we deal with implementation-dependent behavior that
-		must normally be queried after linking? Examples include:
-		 - set of active resources
-		 - offsets and strides of GLSLShared and GLSLPacked UBO/SSBOs
-		 - MATRIX_STRIDE, UNIFORM_ARRAY_STRIDE for UBOs (only relevant for
-		   packed/shared?)
-		 - UNIFORM_ARRAY_STRIDE for arrays of atomic counter buffers.
-
-		DISCUSSION:
-		- Option (c) from issue 19 allows determination of active resources (by
-		  shader specified layouts, but not name).
-		- GLSLShared and GLSLPacked should not be allowed in this
-		  extension as there is no way to sensibly support, short of Option (a)
-		  from Issue 19.
-		- For arrays of atomic counters, Option (c) from Issue 19 may be enough
-		  to figure this out, but I'm not sure that will work for offline
-		  compilation. Do we need to define a standard "layout" (stride) for
-		  arrays of atomic counters?
-
-		RESOLVED:
-		Picked (c) in issue 19, allowing determination of the number and types
-		of active resources.
-		Remove the shared and packed layouts and have the same behavior as in
-		Vulkan.
-		Atomic counter buffers don't have an associated name string already so
-		there should be no issue with figuring out the UNIFORM_ARRAY_STRIDE for
-		them.
-
-	21. What do we need to say about various linking rules related to "named
-		uniform blocks" and "named shader storage blocks"?
-
-		RESOLVED. We don't need to say anything, as they won't have
-		names in SPIR-V shaders, so they aren't really "named". Instead of
-		being identified by name they are identified (and matched) by
-		uniform block index and/or binding.
-
-	22. How do the program interface query APIs work when no name reflection
-		information is available?
-
-		RESOLVED: The following naturally follows from the specification:
-
-		GetProgramInterfaceiv(.., pname=MAX_NAME_LENGTH, ..) -> params = 1
-		GetProgramResourceIndex(.., name) -> INVALID_INDEX
-		GetProgramResourceName(.., length, name) -> length=0, name = ""
-		GetProgramResourceiv(.., props=NAME_LENGTH, ..) -> params = 1
-		GetProgramResourceLocation(.., name) -> -1
-		GetProgramResourceLocationIndex(.., name) -> -1
-		GetUniformLocation(.., name) -> -1
-		GetActiveUniformName(.., length, uniformName) -> length=0, uniformName = ""
-		GetUniformIndices(..,uniformNames, uniformIndices) -> uniformIndices=INVALID_INDEX
-		GetActiveUniform(..,length,.., name) -> length = 0, name = ""
-		GetActiveUniformsiv(..,pname=UNIFORM_NAME_LENGTH,..) -> params = 1
-		GetUniformBlockIndex(.., uniformBlockName) -> INVALID_INDEX
-		GetActiveUniformBlockName(..,length,uniformBlockName) -> length=0, uniformBlockName=""
-		GetActiveUniformBlockiv(.., pname=UNIFORM_BLOCK_NAME_LENGTH, ..) -> params = 1
-		GetActiveAttrib(..) -> length = 0, name = ""
-		GetAttribLocation(.., name) -> -1
-		GetTransformFeedbackVarying(..) -> length = 0, name = ""
-		GetFragDatatLocation(.., name) -> -1
-		GetFragDataIndex(.., name) -> -1
-		GetProgramiv(.., pname=ACTIVE_ATTRIBUTE_MAX_LENGTH, ..) -> params = 1
-		GetProgramiv(.., pname=ACTIVE_UNIFORM_MAX_LENGTH, ..) -> params = 1
-		GetProgramiv(.., pname=TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH, ..) -> params = 1
-		GetProgramiv(.., pname=ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH, ..) -> params = 1
-
-	23. How does setting uniforms work if we can't query for locations based on
-		names?
-
-		RESOLVED. The shaders need to specify explicit locations for all uniform
-		variables. The application can use offline reflection (or a reflection
-		library) to know which variables are at which location, and then
-		use that to specify the values of uniforms by location, as normal
-		(e.g. Uniform*, ProgramUniform*).
-
-	24. What about UniformBlockBinding and ShaderStorageBlockBinding?
-
-		RESOLVED. Because it is not possible to obtain the uniform block index
-		or storage block index from an unnamed block, the binding value remains
-		as specified in the shader by the layout qualifier or decoration.
-		If you are feeling lucky you could just guess and remap used index values
-		[0, #active blocks), but you won't really know what is going
-		where, so just treat it as an immutable binding, similar to the atomic
-		counter buffer binding point. Really.
-
-	25. What about subroutine queries based on names?
-
-		RESOLVED. SPIR-V does not currently support subroutines, so it is not
-		possibly to have any active subroutines from a SPIR-V based shader,
-		and thus there is never anything to report.
-
-	26. How do we change the location of samplers and images?
-
-		RESOLVED. You don't. Well you can using Uniform1i as usual, but you have
-		no way of knowing which location corresponds to which sampler or image
-		variable as GetUniformLocation won't work without a named variable. Best
-		to just treat them as immutable bindings which are specified in the
-		shader source or binary.
-
-	27. Appendix A.spv.3 gives a list of required capabilities that correspond
-		to the core GL 4.5 features as well as for *some* of the ARB extensions
-		that require shading language support. What about the rest of the
-		ARB and vendor extensions that require shading language support?
-
-		RESOLVED: Extensions that can be represented in terms of core
-		SPIR-V 1.0 functionality don't need any specific consideration.
-		Other ARB or vendor extensions that require SPIR-V functionality that
-		can't be expressed in terms of SPIR-V 1.0 functionality will need to
-		have SPIR-V extensions defined to add the required functionality.
-		Further GL extensions can be defined to advertise support for
-		consuming such SPIR-V capabilities once they have been defined.
-
-		A (partial) list of extensions that are expected to need some form
-		of modification to SPIR-V follows.
-
-			ARB_shader_viewport_layer_array
-				- need to allow ViewportIndex and Layer to be output by VS
-				  and TES.
-			ARB_shader_clock
-				- need clock() builtin function
-			ARB_shader_ballot
-				- use subgroup capability and add other builtins
-			ARB_shader_atomic_counter_ops
-				- need atomic counter builtin functions
-			ARB_post_depth_coverage
-				- need post_depth_coverage layout
-			ARB_fragment_shader_interlock
-				- need new layouts and interlock builtin functions
-			KHR_blend_equation_advanced
-				- need new layouts
-			ARB_shader_group_vote
-				- need new builtin functions
-			ARB_shader_draw_parameters
-				- need new builtin variables
-			ARB_bindless_texture
-				- need new layout qualifiers and probably other semantics
-			ARB_compute_variable_group_size
-				- need new layout qualifiers and builtin variables
-
-	28. Should a SPIR-V binary linked through this extension work with
-		ARB_get_program_binary? Do we need to define what would happen
-		with specialization constants?
-
-		RESOLVED. Yes it should work seamlessly, and no, it shouldn't be
-		required to add more details on how to store specialization
-		constants. It is expected that GetProgramBinary should operate
-		irrespective of how the program was created.
-
-		(from GL 4.6 spec section 7.5, Program Binaries):
-
-			GetProgramBinary returns a binary representation of the
-			program object's compiled and linked executable source,
-			henceforth referred to as its program binary.
-
-		There are two ways you can end up with a linked executable.
-
-		GLSL sources:
-			ShaderSource() -> CompileShader() -> AttachShader() -> LinkProgram()
-		SPIR-V binaries:
-			ShaderBinary() -> SpecializeShader() -> AttachShader() -> LinkProgram()
-
-		Exactly what is stored in a program binary is not defined by the
-		GL spec.
-
-		If the driver is storing the final compiled machine assembly for
-		the program in the program binary, it clearly shouldn't matter
-		which path it takes to get to the LinkProgram step.
-
-		If instead the driver is storing some higher level representation
-		of the shaders (say the original sources, or some IR) then it's up
-		to the implementation to store whatever it needs to reconstitute
-		the linked binary. If the given implementation happened to choose
-		to store the SPIR-V code then it would also need to store any
-		relevant specialization information with it as well.
+17. Should we allow program objects to contain both source shaders and
+    SPIR-V binary shaders, or should this be a link time failure?
+
+    RESOLVED. No. This would be needlessly complex to specify. Make this
+    a link-time error. This can be determined by examining the
+    SPIR_V_BINARY_ARB state of each shader. They must either: all be TRUE
+    (SPIR-V shader) or all be FALSE (source shaders). If an application
+    really wishes to mix source and SPIR-V binary shaders, this can be
+    done at program object boundaries by using separable program objects
+    (if supported).
+
+18. Do we need a section for "SPIR-V Transform Feedback Interface"?
+    This would discuss any requirements for the Xfb related decorations
+    in SPIR-V.
+
+    RESOLVED. Yes.
+
+19. How should the program interface query operations behave for program
+    objects created from SPIR-V shaders?
+
+    DISCUSSION: we previously said we didn't need reflection to work
+    for SPIR-V shaders (at least for the first version), however we
+    are left with specifying how it should "not work". The primary issue
+    is that SPIR-V binaries are not required to have names associated
+    with variables. They can be associated in debug information, but there
+    is no requirement for that to be present, and it should not be relied
+    upon.
+
+    Options:
+    A) Make it work.  If debug names are present they are enumerated
+    correctly with associated variables. If the names aren't present,
+    the compiler or driver gets to make them up. Alternatively, we could
+    augment SPIR-V to have a mode where all interface variables need to
+    have names which must not be stripped.
+
+    B) Completely disallow it. All/Most such operations return an error.
+    This may result in some implementation-dependent behavior which
+    is impossible to know (although this problem may exist anyhow due
+    to the offline-compilation step).  This would likely include not
+    being able to tell how many active resources there are and related
+    problems.
+
+    C) Allow as much as possible to work "naturally". You can query for
+    the number of active resources, and for details about them. Anything
+    that doesn't query by name will work as expected. Queries for maximum
+    length of names return one. Queries for anything "by name" return
+    INVALID_INDEX (or -1). Querying the name property of a resource
+    returns an empty string. This may allow many queries to work, but it's
+    not clear how useful it would be if you can't actually know which
+    specific variable you are retrieving information on. If everything
+    is specified a-priori by location/binding/offset/index/component
+    in the shader, this may be sufficient.
+
+    RESOLVED.  Pick (c), but also allow debug names to be returned if an
+    implementation wants to.
+
+20. How should we deal with implementation-dependent behavior that
+    must normally be queried after linking? Examples include:
+     - set of active resources
+     - offsets and strides of GLSLShared and GLSLPacked UBO/SSBOs
+     - MATRIX_STRIDE, UNIFORM_ARRAY_STRIDE for UBOs (only relevant for
+       packed/shared?)
+     - UNIFORM_ARRAY_STRIDE for arrays of atomic counter buffers.
+
+    DISCUSSION:
+    - Option (c) from issue 19 allows determination of active resources (by
+      shader specified layouts, but not name).
+    - GLSLShared and GLSLPacked should not be allowed in this
+      extension as there is no way to sensibly support, short of Option (a)
+      from Issue 19.
+    - For arrays of atomic counters, Option (c) from Issue 19 may be enough
+      to figure this out, but I'm not sure that will work for offline
+      compilation. Do we need to define a standard "layout" (stride) for
+      arrays of atomic counters?
+
+    RESOLVED:
+    Picked (c) in issue 19, allowing determination of the number and types
+    of active resources.
+    Remove the shared and packed layouts and have the same behavior as in
+    Vulkan.
+    Atomic counter buffers don't have an associated name string already so
+    there should be no issue with figuring out the UNIFORM_ARRAY_STRIDE for
+    them.
+
+21. What do we need to say about various linking rules related to "named
+    uniform blocks" and "named shader storage blocks"?
+
+    RESOLVED. We don't need to say anything, as they won't have
+    names in SPIR-V shaders, so they aren't really "named". Instead of
+    being identified by name they are identified (and matched) by
+    uniform block index and/or binding.
+
+22. How do the program interface query APIs work when no name reflection
+    information is available?
+
+    RESOLVED: The following naturally follows from the specification:
+
+    GetProgramInterfaceiv(.., pname=MAX_NAME_LENGTH, ..) -> params = 1
+    GetProgramResourceIndex(.., name) -> INVALID_INDEX
+    GetProgramResourceName(.., length, name) -> length=0, name = ""
+    GetProgramResourceiv(.., props=NAME_LENGTH, ..) -> params = 1
+    GetProgramResourceLocation(.., name) -> -1
+    GetProgramResourceLocationIndex(.., name) -> -1
+    GetUniformLocation(.., name) -> -1
+    GetActiveUniformName(.., length, uniformName) -> length=0, uniformName = ""
+    GetUniformIndices(..,uniformNames, uniformIndices) -> uniformIndices=INVALID_INDEX
+    GetActiveUniform(..,length,.., name) -> length = 0, name = ""
+    GetActiveUniformsiv(..,pname=UNIFORM_NAME_LENGTH,..) -> params = 1
+    GetUniformBlockIndex(.., uniformBlockName) -> INVALID_INDEX
+    GetActiveUniformBlockName(..,length,uniformBlockName) -> length=0, uniformBlockName=""
+    GetActiveUniformBlockiv(.., pname=UNIFORM_BLOCK_NAME_LENGTH, ..) -> params = 1
+    GetActiveAttrib(..) -> length = 0, name = ""
+    GetAttribLocation(.., name) -> -1
+    GetTransformFeedbackVarying(..) -> length = 0, name = ""
+    GetFragDatatLocation(.., name) -> -1
+    GetFragDataIndex(.., name) -> -1
+    GetProgramiv(.., pname=ACTIVE_ATTRIBUTE_MAX_LENGTH, ..) -> params = 1
+    GetProgramiv(.., pname=ACTIVE_UNIFORM_MAX_LENGTH, ..) -> params = 1
+    GetProgramiv(.., pname=TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH, ..) -> params = 1
+    GetProgramiv(.., pname=ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH, ..) -> params = 1
+
+23. How does setting uniforms work if we can't query for locations based on
+    names?
+
+    RESOLVED. The shaders need to specify explicit locations for all uniform
+    variables. The application can use offline reflection (or a reflection
+    library) to know which variables are at which location, and then
+    use that to specify the values of uniforms by location, as normal
+    (e.g. Uniform*, ProgramUniform*).
+
+24. What about UniformBlockBinding and ShaderStorageBlockBinding?
+
+    RESOLVED. Because it is not possible to obtain the uniform block index
+    or storage block index from an unnamed block, the binding value remains
+    as specified in the shader by the layout qualifier or decoration.
+    If you are feeling lucky you could just guess and remap used index values
+    [0, #active blocks), but you won't really know what is going
+    where, so just treat it as an immutable binding, similar to the atomic
+    counter buffer binding point. Really.
+
+25. What about subroutine queries based on names?
+
+    RESOLVED. SPIR-V does not currently support subroutines, so it is not
+    possibly to have any active subroutines from a SPIR-V based shader,
+    and thus there is never anything to report.
+
+26. How do we change the location of samplers and images?
+
+    RESOLVED. You don't. Well you can using Uniform1i as usual, but you have
+    no way of knowing which location corresponds to which sampler or image
+    variable as GetUniformLocation won't work without a named variable. Best
+    to just treat them as immutable bindings which are specified in the
+    shader source or binary.
+
+27. Appendix A.spv.3 gives a list of required capabilities that correspond
+    to the core GL 4.5 features as well as for *some* of the ARB extensions
+    that require shading language support. What about the rest of the
+    ARB and vendor extensions that require shading language support?
+
+    RESOLVED: Extensions that can be represented in terms of core
+    SPIR-V 1.0 functionality don't need any specific consideration.
+    Other ARB or vendor extensions that require SPIR-V functionality that
+    can't be expressed in terms of SPIR-V 1.0 functionality will need to
+    have SPIR-V extensions defined to add the required functionality.
+    Further GL extensions can be defined to advertise support for
+    consuming such SPIR-V capabilities once they have been defined.
+
+    A (partial) list of extensions that are expected to need some form
+    of modification to SPIR-V follows.
+
+        ARB_shader_viewport_layer_array
+            - need to allow ViewportIndex and Layer to be output by VS
+              and TES.
+        ARB_shader_clock
+            - need clock() builtin function
+        ARB_shader_ballot
+            - use subgroup capability and add other builtins
+        ARB_shader_atomic_counter_ops
+            - need atomic counter builtin functions
+        ARB_post_depth_coverage
+            - need post_depth_coverage layout
+        ARB_fragment_shader_interlock
+            - need new layouts and interlock builtin functions
+        KHR_blend_equation_advanced
+            - need new layouts
+        ARB_shader_group_vote
+            - need new builtin functions
+        ARB_shader_draw_parameters
+            - need new builtin variables
+        ARB_bindless_texture
+            - need new layout qualifiers and probably other semantics
+        ARB_compute_variable_group_size
+            - need new layout qualifiers and builtin variables
+
+28. Should a SPIR-V binary linked through this extension work with
+    ARB_get_program_binary? Do we need to define what would happen
+    with specialization constants?
+
+    RESOLVED. Yes it should work seamlessly, and no, it shouldn't be
+    required to add more details on how to store specialization
+    constants. It is expected that GetProgramBinary should operate
+    irrespective of how the program was created.
+
+    (from GL 4.6 spec section 7.5, Program Binaries):
+
+        GetProgramBinary returns a binary representation of the
+        program object's compiled and linked executable source,
+        henceforth referred to as its program binary.
+
+    There are two ways you can end up with a linked executable.
+
+    GLSL sources:
+        ShaderSource() -> CompileShader() -> AttachShader() -> LinkProgram()
+    SPIR-V binaries:
+        ShaderBinary() -> SpecializeShader() -> AttachShader() -> LinkProgram()
+
+    Exactly what is stored in a program binary is not defined by the
+    GL spec.
+
+    If the driver is storing the final compiled machine assembly for
+    the program in the program binary, it clearly shouldn't matter
+    which path it takes to get to the LinkProgram step.
+
+    If instead the driver is storing some higher level representation
+    of the shaders (say the original sources, or some IR) then it's up
+    to the implementation to store whatever it needs to reconstitute
+    the linked binary. If the given implementation happened to choose
+    to store the SPIR-V code then it would also need to store any
+    relevant specialization information with it as well.
 
 
 Revision History

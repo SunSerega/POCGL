@@ -144,7 +144,7 @@ Additions to Chapter 3 of the 2.1 Specification (Rasterization)
     ----                       ----       -------------     ------------
     TEXTURE_SRGB_DECODE_EXT    enum        DECODE_EXT       DECODE_EXT, SKIP_DECODE_EXT
 
- -- OpenGL: Section 3.8.8, Texture Minification
+-- OpenGL: Section 3.8.8, Texture Minification
 
     Add to the end of the "Automatic Mipmap Generation" subsection:
 
@@ -175,7 +175,7 @@ Additions to Chapter 3 of the 2.1 Specification (Rasterization)
     SKIP_DECODE_EXT, the sRGB decode and encode steps are skipped during
     mipmap generation.
 
- -- OpenGL:  Section 3.8.15, sRGB Color Decoding
+-- OpenGL:  Section 3.8.15, sRGB Color Decoding
 
     (section was previously titled sRGB Color Conversion)
 
@@ -216,9 +216,9 @@ Additions to Chapter 3 of the 2.1 Specification (Rasterization)
     parameter state is ignored for any texture with an internal format
     not explicitly listed above, as no decoding needs to be done.
 
- -- OpenGL ES 3.2: Section 8.21, sRGB Texture Color Conversion
- -- OpenGL ES 3.0: Section 3.8.16, sRGB Texture Color Conversion
- -- OpenGL ES 2.0: Section 3.7.14, sRGB Texture Color Conversion
+--- OpenGL ES 3.2: Section 8.21, sRGB Texture Color Conversion
+--- OpenGL ES 3.0: Section 3.8.16, sRGB Texture Color Conversion
+--- OpenGL ES 2.0: Section 3.7.14, sRGB Texture Color Conversion
 
     Add after the first paragraph of the section:
 

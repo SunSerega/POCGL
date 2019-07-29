@@ -191,20 +191,20 @@ New State
 
     "Table 6.7  PN Triangles:
 
-	Get Value                             Get Command Type    Initial Value                              Attribute
-	---------                             ----------- ----    -------------                              --------- 
-	PN_TRIANGLES_ATI                      IsEnabled   B       False                                      PN Triangles/enable
-	PN_TRIANGLES_NORMAL_MODE_ATI          GetIntegerv Z2      PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI     PN Triangles
-	PN_TRIANGLES_POINT_MODE_ATI           GetIntegerv Z2      PN_TRIANGLES_POINT_MODE_CUBIC_ATI          PN Triangles
-	PN_TRIANGLES_TESSELATION_LEVEL_ATI    GetIntegerv Z+      1                                          PN Triangles
+Get Value                             Get Command Type    Initial Value                              Attribute
+---------                             ----------- ----    -------------                              --------- 
+PN_TRIANGLES_ATI                      IsEnabled   B       False                                      PN Triangles/enable
+PN_TRIANGLES_NORMAL_MODE_ATI          GetIntegerv Z2      PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI     PN Triangles
+PN_TRIANGLES_POINT_MODE_ATI           GetIntegerv Z2      PN_TRIANGLES_POINT_MODE_CUBIC_ATI          PN Triangles
+PN_TRIANGLES_TESSELATION_LEVEL_ATI    GetIntegerv Z+      1                                          PN Triangles
 
 
       Modified state in Table 6.25:
 
-	Get Value                               Get Command Type     Minimum Value  Attribute
-	---------                               ----------- ----     ------------   ---------
-	MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI  GetIntegerv Z+       1              -
-	"
+Get Value                               Get Command Type     Minimum Value  Attribute
+---------                               ----------- ----     ------------   ---------
+MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI  GetIntegerv Z+       1              -
+"
 
 
 New Implementation Dependent State

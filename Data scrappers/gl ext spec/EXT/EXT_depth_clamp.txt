@@ -114,12 +114,12 @@ Errors
 
 New State
 
-	Add to table 6.4, transformation state
+Add to table 6.4, transformation state
 
-	Get Value       Type  Get Command  Initial Value  Description     Sec    
-	--------------  ----  -----------  -------------  --------------  ------ 
-	DEPTH_CLAMP_EXT  B     IsEnabled    False          Depth clamping  12.5  
-													  on/off
+Get Value       Type  Get Command  Initial Value  Description     Sec    
+--------------  ----  -----------  -------------  --------------  ------ 
+DEPTH_CLAMP_EXT  B     IsEnabled    False          Depth clamping  12.5  
+                                                  on/off
 
 New Implementation Dependent State
 

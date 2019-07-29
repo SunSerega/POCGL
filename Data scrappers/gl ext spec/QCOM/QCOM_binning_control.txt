@@ -107,9 +107,9 @@ Additions to Section 5.1 (Hints) of the OpenGL ES 2.0 Specification
     
 New State
 
-	Get Value                                 Type          Command      Value
-	---------                                 ----          -------     -------
-	BINNING_CONTROL_HINT_QCOM                special      GetIntegerv   DONT_CARE
+Get Value                                 Type          Command      Value
+---------                                 ----          -------     -------
+BINNING_CONTROL_HINT_QCOM                special      GetIntegerv   DONT_CARE
 
 Revision History
 

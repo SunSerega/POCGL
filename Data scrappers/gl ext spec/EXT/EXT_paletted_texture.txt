@@ -449,20 +449,20 @@ New State
 
     In table 6.16, Texture Objects, p. 224, add the following:
 
-	Get Value               Type      Get Command                  Initial Value  Description       Sec.   Attribute
-	----------------------  --------  ---------------------------  -------------  ----------------  -----  ---------
-	TEXTURE_1D              I         GetColorTableEXT             empty          1D palette        3.8    -
-	TEXTURE_2D              I         GetColorTableEXT             empty          2D palette        3.8    -
-	TEXTURE_3D              I         GetColorTableEXT             empty          3D palette        3.8    -
-	TEXTURE_CUBE_MAP        I         GetColorTableEXT             empty          cube map palette  3.8    -
-	COLOR_TABLE_FORMAT_EXT  2x4xZn    GetColorTableParameterivEXT  RGBA           paletted texture  3.8    -
-																				  formats
-	COLOR_TABLE_WIDTH_EXT   2x4xZ+    GetColorTableParameteriv     0              paletted texture  3.8    -
-																				  width
-	COLOR_TABLE_x_SIZE_EXT  6x2x4xZ+  GetColorTableParameteriv     0              paletted texture  3.8    -
-																				  component sizes
-	TEXTURE_INDEX_SIZE_EXT  nxZ+      GetTexLevelParameter         0              texture image's   3.8    -
-																				  index resolution
+Get Value               Type      Get Command                  Initial Value  Description       Sec.   Attribute
+----------------------  --------  ---------------------------  -------------  ----------------  -----  ---------
+TEXTURE_1D              I         GetColorTableEXT             empty          1D palette        3.8    -
+TEXTURE_2D              I         GetColorTableEXT             empty          2D palette        3.8    -
+TEXTURE_3D              I         GetColorTableEXT             empty          3D palette        3.8    -
+TEXTURE_CUBE_MAP        I         GetColorTableEXT             empty          cube map palette  3.8    -
+COLOR_TABLE_FORMAT_EXT  2x4xZn    GetColorTableParameterivEXT  RGBA           paletted texture  3.8    -
+                                                                              formats
+COLOR_TABLE_WIDTH_EXT   2x4xZ+    GetColorTableParameteriv     0              paletted texture  3.8    -
+                                                                              width
+COLOR_TABLE_x_SIZE_EXT  6x2x4xZ+  GetColorTableParameteriv     0              paletted texture  3.8    -
+                                                                              component sizes
+TEXTURE_INDEX_SIZE_EXT  nxZ+      GetTexLevelParameter         0              texture image's   3.8    -
+                                                                              index resolution
 
 New Implementation Dependent State
 
@@ -470,65 +470,65 @@ New Implementation Dependent State
 
 Revision History
 
-	Original draft, revision 0.5, December 20, 1995 (drewb) Created
+Original draft, revision 0.5, December 20, 1995 (drewb) Created
 
-	Minor revisions and clarifications, revision 0.6, January 2, 1996 (drewb)
-		Replaced all request-for-comment blocks with final text
-		based on implementation.
+Minor revisions and clarifications, revision 0.6, January 2, 1996 (drewb)
+    Replaced all request-for-comment blocks with final text
+    based on implementation.
 
-	Minor revisions and clarifications, revision 0.7, Feburary 5, 1996 (drewb)
-		Specified the state of the palette color information
-		when existing data is replaced by new data.
+Minor revisions and clarifications, revision 0.7, Feburary 5, 1996 (drewb)
+    Specified the state of the palette color information
+    when existing data is replaced by new data.
 
-		Clarified behavior of TexPalette on inconsistent textures.
+    Clarified behavior of TexPalette on inconsistent textures.
 
-	Major changes due to ARB review, revision 0.8, March 1, 1996 (drewb)
-		Switched from using TexPaletteEXT and GetTexPaletteEXT
-		to using SGI's ColorTableEXT routines.  Added ColorSubTableEXT so
-		equivalent functionality is available.
+Major changes due to ARB review, revision 0.8, March 1, 1996 (drewb)
+    Switched from using TexPaletteEXT and GetTexPaletteEXT
+    to using SGI's ColorTableEXT routines.  Added ColorSubTableEXT so
+    equivalent functionality is available.
 
-		Allowed proxies in all targets.
+    Allowed proxies in all targets.
 
-		Changed PALETTE?_EXT values to COLOR_INDEX?_EXT.  Added
-		support for one and two bit palettes.  Removed PALETTE_INDEX_EXT in
-		favor of COLOR_INDEX.
+    Changed PALETTE?_EXT values to COLOR_INDEX?_EXT.  Added
+    support for one and two bit palettes.  Removed PALETTE_INDEX_EXT in
+    favor of COLOR_INDEX.
 
-		Decoupled palette size from texture data type.  Palette
-		size is controlled only by ColorTableEXT.
+    Decoupled palette size from texture data type.  Palette
+    size is controlled only by ColorTableEXT.
 
-	Changes due to ARB review, revision 1.0, May 23, 1997 (drewb)
-		Mentioned texture3D.
+Changes due to ARB review, revision 1.0, May 23, 1997 (drewb)
+    Mentioned texture3D.
 
-		Defined TEXTURE_INDEX_SIZE_EXT.
+    Defined TEXTURE_INDEX_SIZE_EXT.
 
-		Allowed implementations to return an index size of zero to indicate 
-		no support for a particular format.
+    Allowed implementations to return an index size of zero to indicate 
+    no support for a particular format.
 
-		Allowed usage of GL_COLOR_INDEX as a generic format in
-		proxy queries for determining an optimal index size for a particular
-		texture.
+    Allowed usage of GL_COLOR_INDEX as a generic format in
+    proxy queries for determining an optimal index size for a particular
+    texture.
 
-		Disallowed CopyTexImage and CopyTexSubImage to paletted
-		formats.
+    Disallowed CopyTexImage and CopyTexSubImage to paletted
+    formats.
 
-		Deleted mention of index transfer operations during GetTexImage with 
-		paletted formats.
+    Deleted mention of index transfer operations during GetTexImage with 
+    paletted formats.
 
-	Changes due to ARB_texture_cube_map, revision 1.1, June 27, 2002 (Mark Kilgard)
-		Add language to section 5.4 about proxy texture tokens for ColorTable
-		executing immediately.
+Changes due to ARB_texture_cube_map, revision 1.1, June 27, 2002 (Mark Kilgard)
+    Add language to section 5.4 about proxy texture tokens for ColorTable
+    executing immediately.
 
-		Document ARB_texture_cube_map interactions.
+    Document ARB_texture_cube_map interactions.
 
-		Document texture target usage for ColorTable API.
+    Document texture target usage for ColorTable API.
 
-		Add "New State" section with table and "New Implementation Dependent
-		State" sections.
+    Add "New State" section with table and "New Implementation Dependent
+    State" sections.
 
-	Changes when incorporating into the registry, September 4, 2002 (Jon Leech)
-		Added missing IP Status / Contact fields (without bumping the
-		revision) and incorporated Mark's changes into the registry.
+Changes when incorporating into the registry, September 4, 2002 (Jon Leech)
+    Added missing IP Status / Contact fields (without bumping the
+    revision) and incorporated Mark's changes into the registry.
 
-	Changes, revision 1.4, March 24, 2004 (Mark Kilgard)
-		Document vendor support for this extension; note that future NVIDIA
-		GPU designs will not support this extension.
+Changes, revision 1.4, March 24, 2004 (Mark Kilgard)
+    Document vendor support for this extension; note that future NVIDIA
+    GPU designs will not support this extension.

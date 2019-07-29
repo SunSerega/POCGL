@@ -321,23 +321,23 @@ Errors
 
 New State
 
-	(table 6.11, page 276) add the following entry:
+(table 6.11, page 276) add the following entry:
 
-	Get Value         Type  Get Command  Initial Value           Description       Sec     Attribute
-	----------------  ----  -----------  ----------------------  ----------------  ------  ---------
-	PROVOKING_VERTEX  Z2    GetIntegerv  LAST_VERTEX_CONVENTION  Provoking vertex  2.14.7  lighting
-																	convention
+Get Value         Type  Get Command  Initial Value           Description       Sec     Attribute
+----------------  ----  -----------  ----------------------  ----------------  ------  ---------
+PROVOKING_VERTEX  Z2    GetIntegerv  LAST_VERTEX_CONVENTION  Provoking vertex  2.14.7  lighting
+                                                                convention
 
 New Implementation Dependent State
 
-	(table 6.36, page 301) add the following entry:
+(table 6.36, page 301) add the following entry:
 
-	Get Value                      Type  Get Command  Initial Value  Description        Sec     Attribute
-	-----------------------------  ----  -----------  -------------  -----------------  ------  ---------
-	QUADS_FOLLOW_PROVOKING_VERTEX  B     GetBooleanv  -              True if quad       2.14.7  -
-																	 primitives follow
-																	 provoking vertex
-																	 convention
+Get Value                      Type  Get Command  Initial Value  Description        Sec     Attribute
+-----------------------------  ----  -----------  -------------  -----------------  ------  ---------
+QUADS_FOLLOW_PROVOKING_VERTEX  B     GetBooleanv  -              True if quad       2.14.7  -
+                                                                 primitives follow
+                                                                 provoking vertex
+                                                                 convention
 
 NVIDIA Implementation Details
 

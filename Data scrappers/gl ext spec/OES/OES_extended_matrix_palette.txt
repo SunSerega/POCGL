@@ -98,11 +98,11 @@ Errors
 
 New State
 
-	Get Value                   Type  Command      Value    Description 
-	---------                   ----  -------      -------  -----------
+Get Value                   Type  Command      Value    Description 
+---------                   ----  -------      -------  -----------
 
-	MAX_PALETTE_MATRICES_OES    Z+    GetIntegerv  32       size of matrix palette
-	MAX_VERTEX_UNITS_OES        Z+    GetIntegerv  4        number of matrices per vertex
+MAX_PALETTE_MATRICES_OES    Z+    GetIntegerv  32       size of matrix palette
+MAX_VERTEX_UNITS_OES        Z+    GetIntegerv  4        number of matrices per vertex
 
 Revision History
 

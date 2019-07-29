@@ -277,14 +277,14 @@ Errors
 
 New State
 
-	(table 6.15 "Pixel Operation)
+(table 6.15 "Pixel Operation)
 
-	Get Value              Type  Get Command  Initial Value  Description   Sec     Attribute
-	---------------------  ----  -----------  -------------  ------------  -----   -------------------
-	DEPTH_BOUNDS_TEST_EXT  B     IsEnabled    False          Depth bounds  4.1.X   depth-buffer/enable
-															test enable
-	DEPTH_BOUNDS_EXT       2xR+  GetFloatv    0,1            Depth bounds  4.1.X   depth-buffer
-															 zmin & zmax
+Get Value              Type  Get Command  Initial Value  Description   Sec     Attribute
+---------------------  ----  -----------  -------------  ------------  -----   -------------------
+DEPTH_BOUNDS_TEST_EXT  B     IsEnabled    False          Depth bounds  4.1.X   depth-buffer/enable
+                                                        test enable
+DEPTH_BOUNDS_EXT       2xR+  GetFloatv    0,1            Depth bounds  4.1.X   depth-buffer
+                                                         zmin & zmax
 
 New Implementation Dependent State
 

@@ -114,9 +114,9 @@ Errors
 
 New State
 
-	Get Value			Get Command		Type	Initial Value		Attribute
-	---------			-----------		----	-------------		---------
-	SHADOW_AMBIENT_SGIX		GetTexParameter[if]v	F	0.0			texture
+Get Value			Get Command		Type	Initial Value		Attribute
+---------			-----------		----	-------------		---------
+SHADOW_AMBIENT_SGIX		GetTexParameter[if]v	F	0.0			texture
 	
 New Implementation Dependent State
 

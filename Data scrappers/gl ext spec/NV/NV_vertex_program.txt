@@ -1542,24 +1542,24 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
     Table X.1 and further discussed below.
 
 
-	Vertex Result                                      Component
-	Register Name   Description                        Interpretation
-	--------------  ---------------------------------  --------------
-	 HPOS            Homogeneous clip space position    (x,y,z,w)
-	 COL0            Primary color (front-facing)       (r,g,b,a)
-	 COL1            Secondary color (front-facing)     (r,g,b,a)
-	 BFC0            Back-facing primary color          (r,g,b,a)
-	 BFC1            Back-facing secondary color        (r,g,b,a)
-	 FOGC            Fog coordinate                     (f,*,*,*)
-	 PSIZ            Point size                         (p,*,*,*)
-	 TEX0            Texture coordinate set 0           (s,t,r,q)
-	 TEX1            Texture coordinate set 1           (s,t,r,q)
-	 TEX2            Texture coordinate set 2           (s,t,r,q)
-	 TEX3            Texture coordinate set 3           (s,t,r,q)
-	 TEX4            Texture coordinate set 4           (s,t,r,q)
-	 TEX5            Texture coordinate set 5           (s,t,r,q)
-	 TEX6            Texture coordinate set 6           (s,t,r,q)
-	 TEX7            Texture coordinate set 7           (s,t,r,q)
+Vertex Result                                      Component
+Register Name   Description                        Interpretation
+--------------  ---------------------------------  --------------
+ HPOS            Homogeneous clip space position    (x,y,z,w)
+ COL0            Primary color (front-facing)       (r,g,b,a)
+ COL1            Secondary color (front-facing)     (r,g,b,a)
+ BFC0            Back-facing primary color          (r,g,b,a)
+ BFC1            Back-facing secondary color        (r,g,b,a)
+ FOGC            Fog coordinate                     (f,*,*,*)
+ PSIZ            Point size                         (p,*,*,*)
+ TEX0            Texture coordinate set 0           (s,t,r,q)
+ TEX1            Texture coordinate set 1           (s,t,r,q)
+ TEX2            Texture coordinate set 2           (s,t,r,q)
+ TEX3            Texture coordinate set 3           (s,t,r,q)
+ TEX4            Texture coordinate set 4           (s,t,r,q)
+ TEX5            Texture coordinate set 5           (s,t,r,q)
+ TEX6            Texture coordinate set 6           (s,t,r,q)
+ TEX7            Texture coordinate set 7           (s,t,r,q)
 
     Table X.1:  Vertex Result Registers.
 
@@ -1665,30 +1665,30 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
     Table X.2.  The table includes how the various conventional components
     map to the 4-component vertex attribute components.
 
-	Vertex
-	Attribute  Conventional                                           Conventional
-	Register   Per-vertex        Conventional                         Component
-	Number     Parameter         Per-vertex Parameter Command         Mapping
-	---------  ---------------   -----------------------------------  ------------
-	 0         vertex position   Vertex                               x,y,z,w
-	 1         vertex weights    VertexWeightEXT                      w,0,0,1
-	 2         normal            Normal                               x,y,z,1
-	 3         primary color     Color                                r,g,b,a
-	 4         secondary color   SecondaryColorEXT                    r,g,b,1
-	 5         fog coordinate    FogCoordEXT                          fc,0,0,1
-	 6         -                 -                                    -
-	 7         -                 -                                    -
-	 8         texture coord 0   MultiTexCoord(GL_TEXTURE0_ARB, ...)  s,t,r,q
-	 9         texture coord 1   MultiTexCoord(GL_TEXTURE1_ARB, ...)  s,t,r,q
-	 10        texture coord 2   MultiTexCoord(GL_TEXTURE2_ARB, ...)  s,t,r,q
-	 11        texture coord 3   MultiTexCoord(GL_TEXTURE3_ARB, ...)  s,t,r,q
-	 12        texture coord 4   MultiTexCoord(GL_TEXTURE4_ARB, ...)  s,t,r,q
-	 13        texture coord 5   MultiTexCoord(GL_TEXTURE5_ARB, ...)  s,t,r,q
-	 14        texture coord 6   MultiTexCoord(GL_TEXTURE6_ARB, ...)  s,t,r,q
-	 15        texture coord 7   MultiTexCoord(GL_TEXTURE7_ARB, ...)  s,t,r,q
+Vertex
+Attribute  Conventional                                           Conventional
+Register   Per-vertex        Conventional                         Component
+Number     Parameter         Per-vertex Parameter Command         Mapping
+---------  ---------------   -----------------------------------  ------------
+ 0         vertex position   Vertex                               x,y,z,w
+ 1         vertex weights    VertexWeightEXT                      w,0,0,1
+ 2         normal            Normal                               x,y,z,1
+ 3         primary color     Color                                r,g,b,a
+ 4         secondary color   SecondaryColorEXT                    r,g,b,1
+ 5         fog coordinate    FogCoordEXT                          fc,0,0,1
+ 6         -                 -                                    -
+ 7         -                 -                                    -
+ 8         texture coord 0   MultiTexCoord(GL_TEXTURE0_ARB, ...)  s,t,r,q
+ 9         texture coord 1   MultiTexCoord(GL_TEXTURE1_ARB, ...)  s,t,r,q
+ 10        texture coord 2   MultiTexCoord(GL_TEXTURE2_ARB, ...)  s,t,r,q
+ 11        texture coord 3   MultiTexCoord(GL_TEXTURE3_ARB, ...)  s,t,r,q
+ 12        texture coord 4   MultiTexCoord(GL_TEXTURE4_ARB, ...)  s,t,r,q
+ 13        texture coord 5   MultiTexCoord(GL_TEXTURE5_ARB, ...)  s,t,r,q
+ 14        texture coord 6   MultiTexCoord(GL_TEXTURE6_ARB, ...)  s,t,r,q
+ 15        texture coord 7   MultiTexCoord(GL_TEXTURE7_ARB, ...)  s,t,r,q
 
-	Table X.2:  Aliasing of vertex attributes with conventional per-vertex
-	parameters.
+Table X.2:  Aliasing of vertex attributes with conventional per-vertex
+parameters.
 
     Only vertex attribute zero is treated specially because it is
     the attribute that provokes the execution of the vertex program;
@@ -1908,25 +1908,25 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
     number and what the mnemonic abbreviates.
 
            Vertex Attribute
-	Mnemonic   Register Number     Meaning
-	--------   ----------------    --------------------
-	 "OPOS"     0                  object position
-	 "WGHT"     1                  vertex weight
-	 "NRML"     2                  normal
-	 "COL0"     3                  primary color
-	 "COL1"     4                  secondary color
-	 "FOGC"     5                  fog coordinate
-	 "TEX0"     8                  texture coordinate 0
-	 "TEX1"     9                  texture coordinate 1
-	 "TEX2"     10                 texture coordinate 2
-	 "TEX3"     11                 texture coordinate 3
-	 "TEX4"     12                 texture coordinate 4
-	 "TEX5"     13                 texture coordinate 5
-	 "TEX6"     14                 texture coordinate 6
-	 "TEX7"     15                 texture coordinate 7
+Mnemonic   Register Number     Meaning
+--------   ----------------    --------------------
+ "OPOS"     0                  object position
+ "WGHT"     1                  vertex weight
+ "NRML"     2                  normal
+ "COL0"     3                  primary color
+ "COL1"     4                  secondary color
+ "FOGC"     5                  fog coordinate
+ "TEX0"     8                  texture coordinate 0
+ "TEX1"     9                  texture coordinate 1
+ "TEX2"     10                 texture coordinate 2
+ "TEX3"     11                 texture coordinate 3
+ "TEX4"     12                 texture coordinate 4
+ "TEX5"     13                 texture coordinate 5
+ "TEX6"     14                 texture coordinate 6
+ "TEX7"     15                 texture coordinate 7
 
-	Table X.3:  The mapping between vertex attribute register numbers,
-	mnemonics, and meanings.
+Table X.3:  The mapping between vertex attribute register numbers,
+mnemonics, and meanings.
 
     A vertex programs fails to load if it does not write at least one
     component of the HPOS register.
@@ -2065,29 +2065,29 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
                              Output
          Inputs              (vector or
-	Opcode   (scalar or vector)  replicated scalar)   Operation
-	------   ------------------  ------------------   --------------------------
-	 ARL     s                   address register     address register load
-	 MOV     v                   v                    move
-	 MUL     v,v                 v                    multiply
-	 ADD     v,v                 v                    add
-	 MAD     v,v,v               v                    multiply and add
-	 RCP     s                   ssss                 reciprocal
-	 RSQ     s                   ssss                 reciprocal square root
-	 DP3     v,v                 ssss                 3-component dot product
-	 DP4     v,v                 ssss                 4-component dot product
-	 DST     v,v                 v                    distance vector
-	 MIN     v,v                 v                    minimum
-	 MAX     v,v                 v                    maximum
-	 SLT     v,v                 v                    set on less than
-	 SGE     v,v                 v                    set on greater equal than
-	 EXP     s                   v                    exponential base 2
-	 LOG     s                   v                    logarithm base 2
-	 LIT     v                   v                    light coefficients
+Opcode   (scalar or vector)  replicated scalar)   Operation
+------   ------------------  ------------------   --------------------------
+ ARL     s                   address register     address register load
+ MOV     v                   v                    move
+ MUL     v,v                 v                    multiply
+ ADD     v,v                 v                    add
+ MAD     v,v,v               v                    multiply and add
+ RCP     s                   ssss                 reciprocal
+ RSQ     s                   ssss                 reciprocal square root
+ DP3     v,v                 ssss                 3-component dot product
+ DP4     v,v                 ssss                 4-component dot product
+ DST     v,v                 v                    distance vector
+ MIN     v,v                 v                    minimum
+ MAX     v,v                 v                    maximum
+ SLT     v,v                 v                    set on less than
+ SGE     v,v                 v                    set on greater equal than
+ EXP     s                   v                    exponential base 2
+ LOG     s                   v                    logarithm base 2
+ LIT     v                   v                    light coefficients
 
-	Table X.4:  Summary of vertex program instructions.  "v" indicates a
-	vector input or output, "s" indicates a scalar input, and "ssss" indicates
-	a scalar output replicated across a 4-component vector.
+Table X.4:  Summary of vertex program instructions.  "v" indicates a
+vector input or output, "s" indicates a scalar input, and "ssss" indicates
+a scalar output replicated across a 4-component vector.
 
     Instructions use either scalar source values or swizzled source
     values, indicated in the grammar (see section 2.14.1.7) by the rules
@@ -4141,85 +4141,85 @@ Errors
     ExecuteProgramNV are called where <target> is not either
     VERTEX_PROGRAM_NV or VERTEX_STATE_PROGRAM_NV.
 
-	New State
+New State
 
-	update table 6.22 (page 212) so that all the "9"s are "25"s because there
-	are 9 conventional map targets and 16 vertex attribute map targets making
-	a total of 25.
+update table 6.22 (page 212) so that all the "9"s are "25"s because there
+are 9 conventional map targets and 16 vertex attribute map targets making
+a total of 25.
 
-	Get Value                     Type    Get Command                  Initial Value  Description         Sec       Attribute
-	----------------------------  ------  ---------------------------  -------------  ------------------  --------  ------------
-	VERTEX_PROGRAM_NV             B       IsEnabled                    False          vertex program      2.10      enable
-																					  enable
-	VERTEX_PROGRAM_POINT_SIZE_NV  B       IsEnabled                    False          program-specified   2.14.1.5  enable
-																					  point size mode
-	VERTEX_PROGRAM_TWO_SIDE_NV    B       IsEnabled                    False          two-sided color     2.14.1.5  enable
-																					  mode
-	PROGRAM_ERROR_POSITION_NV     Z       GetIntegerv                  -1             last program        2.14.1.7  -
-																					  error position
-	PROGRAM_PARAMETER_NV          96xR4   GetProgramParameterNV        (0,0,0,0)      program parameters  2.14.1.2  -
-	CURRENT_ATTRIB_NV             16xR4   GetVertexAttribNV            see 2.14.6     vertex attributes   2.14.1.1  current
-										  but zero cannot be queried,
-										  aliased with per-vertex
-										  parameters
-	TRACK_MATRIX_NV               24xZ8+  GetTrackMatrixivNV           NONE           track matrix        2.14.5    -
-	TRACK_MATRIX_TRANSFORM_NV     24xZ8+  GetTrackMatrixivNV           IDENTITY_NV    track matrix        2.14.5    -
-																					  transform
-	VERTEX_PROGRAM_BINDING_NV     Z+      GetIntegerv                  0              bound vertex        2.14.1.8  -
-																					  program
-	VERTEX_ATTRIB_ARRAYn_NV       16xB    IsEnabled                    False          vertex attrib       2.14.3    vertex-array
-																					  array enable
-	ATTRIB_ARRAY_SIZE_NV          16xZ    GetVertexAttribNV            4              vertex attrib       2.14.3    vertex-array
-																					  array size
-	ATTRIB_ARRAY_STRIDE_NV        16xZ+   GetVertexAttribNV            0              vertex attrib       2.14.3    vertex-array
-																					  array stride
-	ATTRIB_ARRAY_TYPE_NV          16xZ4   GetVertexAttribNV            FLOAT          vertex attrib       2.14.3    vertex-array
-																					  array type
+Get Value                     Type    Get Command                  Initial Value  Description         Sec       Attribute
+----------------------------  ------  ---------------------------  -------------  ------------------  --------  ------------
+VERTEX_PROGRAM_NV             B       IsEnabled                    False          vertex program      2.10      enable
+                                                                                  enable
+VERTEX_PROGRAM_POINT_SIZE_NV  B       IsEnabled                    False          program-specified   2.14.1.5  enable
+                                                                                  point size mode
+VERTEX_PROGRAM_TWO_SIDE_NV    B       IsEnabled                    False          two-sided color     2.14.1.5  enable
+                                                                                  mode
+PROGRAM_ERROR_POSITION_NV     Z       GetIntegerv                  -1             last program        2.14.1.7  -
+                                                                                  error position
+PROGRAM_PARAMETER_NV          96xR4   GetProgramParameterNV        (0,0,0,0)      program parameters  2.14.1.2  -
+CURRENT_ATTRIB_NV             16xR4   GetVertexAttribNV            see 2.14.6     vertex attributes   2.14.1.1  current
+                                      but zero cannot be queried,
+                                      aliased with per-vertex
+                                      parameters
+TRACK_MATRIX_NV               24xZ8+  GetTrackMatrixivNV           NONE           track matrix        2.14.5    -
+TRACK_MATRIX_TRANSFORM_NV     24xZ8+  GetTrackMatrixivNV           IDENTITY_NV    track matrix        2.14.5    -
+                                                                                  transform
+VERTEX_PROGRAM_BINDING_NV     Z+      GetIntegerv                  0              bound vertex        2.14.1.8  -
+                                                                                  program
+VERTEX_ATTRIB_ARRAYn_NV       16xB    IsEnabled                    False          vertex attrib       2.14.3    vertex-array
+                                                                                  array enable
+ATTRIB_ARRAY_SIZE_NV          16xZ    GetVertexAttribNV            4              vertex attrib       2.14.3    vertex-array
+                                                                                  array size
+ATTRIB_ARRAY_STRIDE_NV        16xZ+   GetVertexAttribNV            0              vertex attrib       2.14.3    vertex-array
+                                                                                  array stride
+ATTRIB_ARRAY_TYPE_NV          16xZ4   GetVertexAttribNV            FLOAT          vertex attrib       2.14.3    vertex-array
+                                                                                  array type
 
-	Table X.5.  New State Introduced by NV_vertex_program.
-
-
-	Get Value            Type    Get Command          Initial Value  Description         Sec       Attribute
-	-------------------  ------  ------------------   -------------  ------------------  --------  ---------
-	PROGRAM_TARGET_NV    Z2      GetProgramivNV       0              program target      6.1.13    -
-	PROGRAM_LENGTH_NV    Z+      GetProgramivNV       0              program length      6.1.13    -
-	PROGRAM_RESIDENT_NV  Z2      GetProgramivNV       False          program residency   6.1.13    -
-	PROGRAM_STRING_NV    ubxn    GetProgramStringNV   ""             program string      6.1.13    -
-
-	Table X.6.  Program Object State.
+Table X.5.  New State Introduced by NV_vertex_program.
 
 
-	Get Value    Type    Get Command   Initial Value  Description              Sec       Attribute
-	---------    ------  -----------   -------------  -----------------------  --------  ---------
-	-            12xR4   -             (0,0,0,0)      temporary registers      2.14.1.4  -
-	-            15xR4   -             (0,0,0,1)      vertex result registers  2.14.1.4  -
-				 Z4      -             (0,0,0,0)      vertex program           2.14.1.3  -
-													  address register
+Get Value            Type    Get Command          Initial Value  Description         Sec       Attribute
+-------------------  ------  ------------------   -------------  ------------------  --------  ---------
+PROGRAM_TARGET_NV    Z2      GetProgramivNV       0              program target      6.1.13    -
+PROGRAM_LENGTH_NV    Z+      GetProgramivNV       0              program length      6.1.13    -
+PROGRAM_RESIDENT_NV  Z2      GetProgramivNV       False          program residency   6.1.13    -
+PROGRAM_STRING_NV    ubxn    GetProgramStringNV   ""             program string      6.1.13    -
 
-	Table X.7.  Vertex Program Per-vertex Execution State.
+Table X.6.  Program Object State.
 
 
-	Get Value                         Type      Get Command      Initial Value  Description          Sec      Attribute
-	-----------------------------     --------  --------------   -------------  -------------------  -------  ---------
-	CURRENT_MATRIX_STACK_DEPTH_NV     m*Z+      GetIntegerv      1              current stack depth  6.1.14   -
-	CURRENT_MATRIX_NV                 m*n*xM^4  GetFloatv        Identity       current matrix       6.1.14   -
+Get Value    Type    Get Command   Initial Value  Description              Sec       Attribute
+---------    ------  -----------   -------------  -----------------------  --------  ---------
+-            12xR4   -             (0,0,0,0)      temporary registers      2.14.1.4  -
+-            15xR4   -             (0,0,0,1)      vertex result registers  2.14.1.4  -
+             Z4      -             (0,0,0,0)      vertex program           2.14.1.3  -
+                                                  address register
 
-	Table X.8.  Current matrix state where m is the total number of matrices
-	including texture matrices and tracking matrices and n is the number of
-	matrices on each particular matrix stack.  Note that this state is
-	aliased with existing matrix state.
+Table X.7.  Vertex Program Per-vertex Execution State.
+
+
+Get Value                         Type      Get Command      Initial Value  Description          Sec      Attribute
+-----------------------------     --------  --------------   -------------  -------------------  -------  ---------
+CURRENT_MATRIX_STACK_DEPTH_NV     m*Z+      GetIntegerv      1              current stack depth  6.1.14   -
+CURRENT_MATRIX_NV                 m*n*xM^4  GetFloatv        Identity       current matrix       6.1.14   -
+
+Table X.8.  Current matrix state where m is the total number of matrices
+including texture matrices and tracking matrices and n is the number of
+matrices on each particular matrix stack.  Note that this state is
+aliased with existing matrix state.
 
 
 New Implementation Dependent State
                                                         Minimum
-	Get Value                         Type    Get Command   Value       Description         Sec     Attribute
-	--------------------------------  ----    -----------   ----------  ------------------  ------  ---------
-	MAX_TRACK_MATRIX_STACK_DEPTH_NV   Z+      GetIntegerv   1           maximum tracking    2.14.5  -
-																		matrix stack depth
-	MAX_TRACK_MATRICES_NV             Z+      GetIntegerv   8 (not to   maximum number of   2.14.5  -
-															exceed 32)  tracking matrices
+Get Value                         Type    Get Command   Value       Description         Sec     Attribute
+--------------------------------  ----    -----------   ----------  ------------------  ------  ---------
+MAX_TRACK_MATRIX_STACK_DEPTH_NV   Z+      GetIntegerv   1           maximum tracking    2.14.5  -
+                                                                    matrix stack depth
+MAX_TRACK_MATRICES_NV             Z+      GetIntegerv   8 (not to   maximum number of   2.14.5  -
+                                                        exceed 32)  tracking matrices
 
-	Table X.9.  New Implementation-Dependent Values Introduced by NV_vertex_program.
+Table X.9.  New Implementation-Dependent Values Introduced by NV_vertex_program.
 
 
 Revision History

@@ -125,29 +125,28 @@ Errors
 
 New State
 
-	Get Value                        Type     Get Command                 Initial Value Description        Section
-	------------------------------   -------  --------------------------  ------------- -----------------  ------------
-	VERTEX_ATTRIB_MAP1_APPLE         16+xB    IsVertexAttribEnabledAPPLE  False         1D evaluator       enable, eval
-																						enabled
-	VERTEX_ATTRIB_MAP2_APPLE         16+xB    IsVertexAttribEnabledAPPLE  False         2D evaluator       enable, eval
-																						enabled
-	VERTEX_ATTRIB_MAP1_SIZE_APPLE    16+xZ4   GetVertexAttribivARB        4             1D evaluator       eval
-																						size
-	VERTEX_ATTRIB_MAP2_SIZE_APPLE    16+xZ4   GetVertexAttribivARB        4             2D evaluator       eval
-																						size
-	VERTEX_ATTRIB_MAP1_ORDER_APPLE   16+xZ+   GetVertexAttribivARB        1             1D evaluator       eval
-																						order
-	VERTEX_ATTRIB_MAP2_ORDER_APPLE   32+xZ+   GetVertexAttribivARB        1, 1          2D evaluator       eval
-																						order
-	VERTEX_ATTRIB_MAP1_COEFF_APPLE   N+xRn    GetVertexAttribfvARB        0, 0, 0, 1    1D evaluator       eval
-																						coefficients
-	VERTEX_ATTRIB_MAP2_COEFF_APPLE   N+xM+xRn GetVertexAttribfvARB        0, 0, 0, 1    2D evaluator       eval
-																						coefficients
-	VERTEX_ATTRIB_MAP1_DOMAIN_APPLE  2+xR     GetVertexAttribfvARB        0, 1          1D evaluator       eval
-																						domain
-	VERTEX_ATTRIB_MAP2_DOMAIN_APPLE  4+xR     GetVertexAttribfvARB        0, 1, 0, 1    2D evaluator       eval
-																						domain
-	
+Get Value                        Type     Get Command                 Initial Value Description        Section
+------------------------------   -------  --------------------------  ------------- -----------------  ------------
+VERTEX_ATTRIB_MAP1_APPLE         16+xB    IsVertexAttribEnabledAPPLE  False         1D evaluator       enable, eval
+                                                                                    enabled
+VERTEX_ATTRIB_MAP2_APPLE         16+xB    IsVertexAttribEnabledAPPLE  False         2D evaluator       enable, eval
+                                                                                    enabled
+VERTEX_ATTRIB_MAP1_SIZE_APPLE    16+xZ4   GetVertexAttribivARB        4             1D evaluator       eval
+                                                                                    size
+VERTEX_ATTRIB_MAP2_SIZE_APPLE    16+xZ4   GetVertexAttribivARB        4             2D evaluator       eval
+                                                                                    size
+VERTEX_ATTRIB_MAP1_ORDER_APPLE   16+xZ+   GetVertexAttribivARB        1             1D evaluator       eval
+                                                                                    order
+VERTEX_ATTRIB_MAP2_ORDER_APPLE   32+xZ+   GetVertexAttribivARB        1, 1          2D evaluator       eval
+                                                                                    order
+VERTEX_ATTRIB_MAP1_COEFF_APPLE   N+xRn    GetVertexAttribfvARB        0, 0, 0, 1    1D evaluator       eval
+                                                                                    coefficients
+VERTEX_ATTRIB_MAP2_COEFF_APPLE   N+xM+xRn GetVertexAttribfvARB        0, 0, 0, 1    2D evaluator       eval
+                                                                                    coefficients
+VERTEX_ATTRIB_MAP1_DOMAIN_APPLE  2+xR     GetVertexAttribfvARB        0, 1          1D evaluator       eval
+                                                                                    domain
+VERTEX_ATTRIB_MAP2_DOMAIN_APPLE  4+xR     GetVertexAttribfvARB        0, 1, 0, 1    2D evaluator       eval
+                                                                                    domain
 New Implementation Dependent State
 
     None

@@ -179,17 +179,17 @@ Additions to the GLX Specification
 
 New State
 
-	Get Value                   Type  Get Command                  Initial Value  Description     Sec    Attribute
-	--------------------------  ----  ---------------------------  -------------  --------------  -----  --------------
-	SHARED_TEXTURE_PALETTE_EXT  B     IsEnabled                    False          shared texture  3.8.6  texture/enable
-																				  palette enable
-	SHARED_TEXTURE_PALETTE_EXT  I     GetColorTableEXT             empty          shared texture  3.8    -
-																				  palette table
-	COLOR_TABLE_FORMAT_EXT      Zn    GetColorTableParameterivEXT  RGBA           shared texture  3.8    -
-																				  palette format
-	COLOR_TABLE_WIDTH_EXT       Z+    GetColorTableParameteriv     0              shared texture  3.8    -
-																				  palette width
-	COLOR_TABLE_x_SIZE_EXT      6xZ+  GetColorTableParameteriv     0              shared texture  3.8    -
+Get Value                   Type  Get Command                  Initial Value  Description     Sec    Attribute
+--------------------------  ----  ---------------------------  -------------  --------------  -----  --------------
+SHARED_TEXTURE_PALETTE_EXT  B     IsEnabled                    False          shared texture  3.8.6  texture/enable
+                                                                              palette enable
+SHARED_TEXTURE_PALETTE_EXT  I     GetColorTableEXT             empty          shared texture  3.8    -
+                                                                              palette table
+COLOR_TABLE_FORMAT_EXT      Zn    GetColorTableParameterivEXT  RGBA           shared texture  3.8    -
+                                                                              palette format
+COLOR_TABLE_WIDTH_EXT       Z+    GetColorTableParameteriv     0              shared texture  3.8    -
+                                                                              palette width
+COLOR_TABLE_x_SIZE_EXT      6xZ+  GetColorTableParameteriv     0              shared texture  3.8    -
                                                                               palette
                                                                               component sizes
 

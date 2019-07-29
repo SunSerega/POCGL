@@ -149,7 +149,7 @@ New Tokens
 
 Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
 
- --  Section 2.10.4 "Generating Texture Coordinates"
+--  Section 2.10.4 "Generating Texture Coordinates"
 
     Change the last sentence in the 1st paragraph to:
 
@@ -320,7 +320,7 @@ Errors
 
 New State
 
-	(table 6.14, p204) change the entry for TEXTURE_GEN_MODE to:
+(table 6.14, p204) change the entry for TEXTURE_GEN_MODE to:
 
     Get Value            Type    Get Command     Initial Value   Description        Sec    Attribute
     ---------            ----    -----------     -------------   -----------        ------ ---------
@@ -332,9 +332,9 @@ New State
     EMBOSS_LIGHT_NV      4xZ8*   GetTexGeniv     LIGHT0          Light used for     2.10.4 texture
                                                                  embossing.
 
-	When ARB_multitexture is supported, the Type column is per-texture unit.
+When ARB_multitexture is supported, the Type column is per-texture unit.
 
-	(the TEXTURE_GEN_MODE type changes from 4xZ3 to 4xZ5)
+(the TEXTURE_GEN_MODE type changes from 4xZ3 to 4xZ5)
 
 New Implementation State
 

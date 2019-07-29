@@ -258,20 +258,20 @@ Errors
 
 New State
 
-	(table 6.13, p203) add the entry:
+(table 6.13, p203) add the entry:
 
-	Get Value                   Type  Get Command        Initial Value   Description      Sec     Attribute
-	--------------------------  ----  -----------------  --------------  ---------------  -----   ---------
-	TEXTURE_MAX_ANISOTROPY_EXT   R    GetTexParameterfv  1.0             Maximum degree   3.8.5    texture
+Get Value                   Type  Get Command        Initial Value   Description      Sec     Attribute
+--------------------------  ----  -----------------  --------------  ---------------  -----   ---------
+TEXTURE_MAX_ANISOTROPY_EXT   R    GetTexParameterfv  1.0             Maximum degree   3.8.5    texture
                                                                      of anisotropy
 
 New Implementation State
 
-	(table 6.25, p215) add the entry:
+(table 6.25, p215) add the entry:
 
-	Get Value                       Type  Get Command   Minimum Value   Description      Sec     Attribute
-	------------------------------  ----  ------------  --------------  ---------------  -----   ---------
-	MAX_TEXTURE_MAX_ANISOTROPY_EXT   R    GetFloatv     2.0             Limit of         3.8.5    -
+Get Value                       Type  Get Command   Minimum Value   Description      Sec     Attribute
+------------------------------  ----  ------------  --------------  ---------------  -----   ---------
+MAX_TEXTURE_MAX_ANISOTROPY_EXT   R    GetFloatv     2.0             Limit of         3.8.5    -
                                                                     maximum degree
                                                                     of anisotropy
 

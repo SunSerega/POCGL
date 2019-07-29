@@ -596,23 +596,23 @@ Errors
 
 New State
 
-	Table 6.X.  Sync Objects.
+Table 6.X.  Sync Objects.
 
-	Get value           Type  Get command Initial value                 Description           Section
-	------------------  ----  ----------- ----------------------------  ---------------       -------
-	OBJECT_TYPE         Z_1   GetSynciv  SYNC_FENCE             Type of sync object    5.2
-	SYNC_STATUS         Z_2   GetSynciv  UNSIGNALED             Sync object status     5.2
-	SYNC_CONDITION      Z_1   GetSynciv  SYNC_GPU_COMMANDS_COMPLETE    Sync object condition  5.2
-	SYNC_FLAGS          Z     GetSynciv  SYNC_FLAGS             Sync object flags      5.2
+Get value           Type  Get command Initial value                 Description           Section
+------------------  ----  ----------- ----------------------------  ---------------       -------
+OBJECT_TYPE         Z_1   GetSynciv  SYNC_FENCE             Type of sync object    5.2
+SYNC_STATUS         Z_2   GetSynciv  UNSIGNALED             Sync object status     5.2
+SYNC_CONDITION      Z_1   GetSynciv  SYNC_GPU_COMMANDS_COMPLETE    Sync object condition  5.2
+SYNC_FLAGS          Z     GetSynciv  SYNC_FLAGS             Sync object flags      5.2
 
 New Implementation Dependent State
 
-	Table 40. Implementation Dependent Values (cont.)
+Table 40. Implementation Dependent Values (cont.)
 
-	Get value           Type  Get command   Minimum value                 Description           Section
-	------------------  ----  ------------- ----------------------------  ---------------       -------
-	MAX_SERVER_WAIT_    Z^+   GetInteger64v 0                             Maximum WaitSync      5.2
-		TIMEOUT                                                           timeout interval
+Get value           Type  Get command   Minimum value                 Description           Section
+------------------  ----  ------------- ----------------------------  ---------------       -------
+MAX_SERVER_WAIT_    Z^+   GetInteger64v 0                             Maximum WaitSync      5.2
+    TIMEOUT                                                           timeout interval
 
 Sample Code
 

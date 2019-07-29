@@ -454,39 +454,39 @@ Errors
 
 New State
 
-	(table 6.15, page 205) amend the following entries:
+(table 6.15, page 205) amend the following entries:
 
-	Get Value                  Type  Get Command  Initial Value  Description          Sec    Attribute
-	-------------------------  ----  -----------  -------------  -------------------  -----  --------------
-	STENCIL_FUNC               2xZ8  GetIntegerv  ALWAYS         Stencil function     4.1.4  stencil-buffer
-	STENCIL_VALUE_MASK         2xZ+  GetIntegerv  1's            Stencil mask         4.1.4  stencil-buffer
-	STENCIL_REF                2xZ+  GetIntegerv  0              Stencil reference    4.1.4  stencil-buffer
-																 value
-	STENCIL_FAIL               2xZ6  GetIntegerv  KEEP           Stencil fail action  4.1.4  stencil-buffer
-	STENCIL_PASS_DEPTH_FAIL    2xZ6  GetIntegerv  KEEP           Stencil depth        4.1.4  stencil-buffer
-																 buffer fail action
-	STENCIL_PASS_DEPTH_PASS    2xZ6  GetIntegerv  KEEP           Stencil depth        4.1.4  stencil-buffer
-																 buffer pass action
+Get Value                  Type  Get Command  Initial Value  Description          Sec    Attribute
+-------------------------  ----  -----------  -------------  -------------------  -----  --------------
+STENCIL_FUNC               2xZ8  GetIntegerv  ALWAYS         Stencil function     4.1.4  stencil-buffer
+STENCIL_VALUE_MASK         2xZ+  GetIntegerv  1's            Stencil mask         4.1.4  stencil-buffer
+STENCIL_REF                2xZ+  GetIntegerv  0              Stencil reference    4.1.4  stencil-buffer
+                                                             value
+STENCIL_FAIL               2xZ6  GetIntegerv  KEEP           Stencil fail action  4.1.4  stencil-buffer
+STENCIL_PASS_DEPTH_FAIL    2xZ6  GetIntegerv  KEEP           Stencil depth        4.1.4  stencil-buffer
+                                                             buffer fail action
+STENCIL_PASS_DEPTH_PASS    2xZ6  GetIntegerv  KEEP           Stencil depth        4.1.4  stencil-buffer
+                                                             buffer pass action
 
-	[Type field is amended with "2x" prefix.]
+[Type field is amended with "2x" prefix.]
 
-	(table 6.15, page 205) add the following entries:
+(table 6.15, page 205) add the following entries:
 
-	Get Value                  Type  Get Command  Initial Value  Description        Sec    Attribute
-	-------------------------  ----  -----------  -------------  -----------------  ------ ---------------------
-	STENCIL_TEST_TWO_SIDE_EXT  B     IsEnabled    False          Two-sided stencil  4.1.4  stencil-buffer/enable
-																 test enable 
-	ACTIVE_STENCIL_FACE_EXT    Z2    GetIntegerv  FRONT          Active stencil     4.1.4  stencil-buffer
-																 face selector
+Get Value                  Type  Get Command  Initial Value  Description        Sec    Attribute
+-------------------------  ----  -----------  -------------  -----------------  ------ ---------------------
+STENCIL_TEST_TWO_SIDE_EXT  B     IsEnabled    False          Two-sided stencil  4.1.4  stencil-buffer/enable
+                                                             test enable 
+ACTIVE_STENCIL_FACE_EXT    Z2    GetIntegerv  FRONT          Active stencil     4.1.4  stencil-buffer
+                                                             face selector
 
-	(table 6.16, page 205) ammend the following entry:
+(table 6.16, page 205) ammend the following entry:
 
-	Get Value                  Type  Get Command  Initial Value  Description        Sec    Attribute
-	-------------------------  ----  -----------  -------------  -----------------  ------ --------------
-	STENCIL_WRITE_MASK         2xZ+  GetIntegerv  1's            Stencil buffer     4.2.2  stencil-buffer
-																 writemask
+Get Value                  Type  Get Command  Initial Value  Description        Sec    Attribute
+-------------------------  ----  -----------  -------------  -----------------  ------ --------------
+STENCIL_WRITE_MASK         2xZ+  GetIntegerv  1's            Stencil buffer     4.2.2  stencil-buffer
+                                                             writemask
 
-	[Type field is amended with "2x" prefix.]
+[Type field is amended with "2x" prefix.]
 
 
 Revision History

@@ -530,24 +530,24 @@ Errors
 
 New State
 
-	Table 6.X.  Sync Objects.
+Table 6.X.  Sync Objects.
 
-	Get value             Type  Get command        Initial value                     Description            Section
-	--------------------  ----  -----------------  --------------------------------  ---------------------  -------
-	OBJECT_TYPE_APPLE     Z_1   GetSyncivAPPLE     SYNC_FENCE_APPLE                  Type of sync object    5.2
-	SYNC_STATUS_APPLE     Z_2   GetSyncivAPPLE     UNSIGNALED_APPLE                  Sync object status     5.2
-	SYNC_CONDITION_APPLE  Z_1   GetSyncivAPPLE     SYNC_GPU_COMMANDS_COMPLETE_APPLE  Sync object condition  5.2
-	SYNC_FLAGS_APPLE      Z     GetSyncivAPPLE     SYNC_FLAGS_APPLE                  Sync object flags      5.2
-	SYNC_OBJECT_APPLE     0*xc  GetObjectLabelEXT  empty                             Debug label            5.X
+Get value             Type  Get command        Initial value                     Description            Section
+--------------------  ----  -----------------  --------------------------------  ---------------------  -------
+OBJECT_TYPE_APPLE     Z_1   GetSyncivAPPLE     SYNC_FENCE_APPLE                  Type of sync object    5.2
+SYNC_STATUS_APPLE     Z_2   GetSyncivAPPLE     UNSIGNALED_APPLE                  Sync object status     5.2
+SYNC_CONDITION_APPLE  Z_1   GetSyncivAPPLE     SYNC_GPU_COMMANDS_COMPLETE_APPLE  Sync object condition  5.2
+SYNC_FLAGS_APPLE      Z     GetSyncivAPPLE     SYNC_FLAGS_APPLE                  Sync object flags      5.2
+SYNC_OBJECT_APPLE     0*xc  GetObjectLabelEXT  empty                             Debug label            5.X
 
 New Implementation Dependent State
 
-	Table 40. Implementation Dependent Values (cont.)
+Table 40. Implementation Dependent Values (cont.)
 
-	Get value           Type  Get command    Min. value  Description       Section
-	------------------  ----  -------------  ----------  ----------------  -------
-	MAX_SERVER_WAIT_    Z^+   GetInteger64v  0           Maximum WaitSync  5.2
-	TIMEOUT_APPLE                                         timeout interval
+Get value           Type  Get command    Min. value  Description       Section
+------------------  ----  -------------  ----------  ----------------  -------
+MAX_SERVER_WAIT_    Z^+   GetInteger64v  0           Maximum WaitSync  5.2
+TIMEOUT_APPLE                                         timeout interval
 
 Sample Code
 

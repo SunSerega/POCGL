@@ -136,33 +136,33 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
                              Output
          Inputs              (vector or
-	Opcode   (scalar or vector)  replicated scalar)   Operation
-	------   ------------------  ------------------   --------------------------
-	 ARL     s                   address register     address register load
-	 MOV     v                   v                    move
-	 MUL     v,v                 v                    multiply
-	 ADD     v,v                 v                    add
-	 MAD     v,v,v               v                    multiply and add
-	 RCP     s                   ssss                 reciprocal
-	 RSQ     s                   ssss                 reciprocal square root
-	 DP3     v,v                 ssss                 3-component dot product
-	 DP4     v,v                 ssss                 4-component dot product
-	 DST     v,v                 v                    distance vector
-	 MIN     v,v                 v                    minimum
-	 MAX     v,v                 v                    maximum
-	 SLT     v,v                 v                    set on less than
-	 SGE     v,v                 v                    set on greater equal than
-	 EXP     s                   v                    exponential base 2
-	 LOG     s                   v                    logarithm base 2
-	 LIT     v                   v                    light coefficients
-	 DPH     v,v                 ssss                 homogeneous dot product
-	 RCC     s                   ssss                 reciprocal clamped
-	 SUB     v,v                 v                    subtract
-	 ABS     v                   v                    absolute value
+Opcode   (scalar or vector)  replicated scalar)   Operation
+------   ------------------  ------------------   --------------------------
+ ARL     s                   address register     address register load
+ MOV     v                   v                    move
+ MUL     v,v                 v                    multiply
+ ADD     v,v                 v                    add
+ MAD     v,v,v               v                    multiply and add
+ RCP     s                   ssss                 reciprocal
+ RSQ     s                   ssss                 reciprocal square root
+ DP3     v,v                 ssss                 3-component dot product
+ DP4     v,v                 ssss                 4-component dot product
+ DST     v,v                 v                    distance vector
+ MIN     v,v                 v                    minimum
+ MAX     v,v                 v                    maximum
+ SLT     v,v                 v                    set on less than
+ SGE     v,v                 v                    set on greater equal than
+ EXP     s                   v                    exponential base 2
+ LOG     s                   v                    logarithm base 2
+ LIT     v                   v                    light coefficients
+ DPH     v,v                 ssss                 homogeneous dot product
+ RCC     s                   ssss                 reciprocal clamped
+ SUB     v,v                 v                    subtract
+ ABS     v                   v                    absolute value
 
-	Table X.4:  Summary of vertex program instructions.  "v" indicates a
-	vector input or output, "s" indicates a scalar input, and "ssss" indicates
-	a scalar output replicated across a 4-component vector.
+Table X.4:  Summary of vertex program instructions.  "v" indicates a
+vector input or output, "s" indicates a scalar input, and "ssss" indicates
+a scalar output replicated across a 4-component vector.
 
     Add four new sections describing the DPH, RCC, SUB, and ABS
     instructions.

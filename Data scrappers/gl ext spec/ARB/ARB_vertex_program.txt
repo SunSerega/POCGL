@@ -6382,139 +6382,139 @@ Errors
 New State
 
 
-	Get Value                        Type    Get Command    Initial Value Description         Section       Attribute
-	-------------------------------  ------  -------------  ------------- ------------------  ------------  ------------
-	VERTEX_PROGRAM_ARB               B       IsEnabled      False         vertex program      2.10          enable
-																		  enable
-	VERTEX_PROGRAM_POINT_SIZE_ARB    B       IsEnabled      False         program-specified   2.14.3.7      enable
-																		  point size mode
-	VERTEX_PROGRAM_TWO_SIDE_ARB      B       IsEnabled      False         two-sided color     2.14.3.7      enable
-																		  mode
-	-                                96+xR4  GetProgramEnv- (0,0,0,0)     program environment 2.14.1        -
-											 ParameterARB                 parameters
-	CURRENT_VERTEX_ATTRIB_ARB        16+xR4  GetVertex-     undefined     generic vertex      2.7           current
-											 AttribARB                    attributes
-	PROGRAM_ERROR_POSITION_ARB       Z       GetIntegerv    -1            last program error  2.14.1        -
-																		  position
-	PROGRAM_ERROR_STRING_ARB         0+xub   GetString      ""            last program error  2.14.1        -
-																		  string
+Get Value                        Type    Get Command    Initial Value Description         Section       Attribute
+-------------------------------  ------  -------------  ------------- ------------------  ------------  ------------
+VERTEX_PROGRAM_ARB               B       IsEnabled      False         vertex program      2.10          enable
+                                                                      enable
+VERTEX_PROGRAM_POINT_SIZE_ARB    B       IsEnabled      False         program-specified   2.14.3.7      enable
+                                                                      point size mode
+VERTEX_PROGRAM_TWO_SIDE_ARB      B       IsEnabled      False         two-sided color     2.14.3.7      enable
+                                                                      mode
+-                                96+xR4  GetProgramEnv- (0,0,0,0)     program environment 2.14.1        -
+                                         ParameterARB                 parameters
+CURRENT_VERTEX_ATTRIB_ARB        16+xR4  GetVertex-     undefined     generic vertex      2.7           current
+                                         AttribARB                    attributes
+PROGRAM_ERROR_POSITION_ARB       Z       GetIntegerv    -1            last program error  2.14.1        -
+                                                                      position
+PROGRAM_ERROR_STRING_ARB         0+xub   GetString      ""            last program error  2.14.1        -
+                                                                      string
 
-	Table X.6.  New Accessible State Introduced by ARB_vertex_program.
-
-
-	Get Value                        Type    Get Command    Initial Value Description         Section       Attribute
-	-------------------------------  ------  -------------  ------------- ------------------  ------------  ------------
-	VERTEX_ATTRIB_ARRAY_ENABLED_ARB  16+xB   GetVertex-     False         vertex attrib       2.8           vertex-array
-											 AttribARB                    array enable
-	VERTEX_ATTRIB_ARRAY_SIZE_ARB     16+xZ   GetVertex-     4             vertex attrib       2.8           vertex-array
-											 AttribARB                    array size
-	VERTEX_ATTRIB_ARRAY_STRIDE_ARB   16+xZ+  GetVertex-     0             vertex attrib       2.8           vertex-array
-											 AttribARB                    array stride
-	VERTEX_ATTRIB_ARRAY_TYPE_ARB     16+xZ4  GetVertex-     FLOAT         vertex attrib       2.8           vertex-array
-											 AttribARB                    array type
-	VERTEX_ATTRIB_ARRAY_             16+xB   GetVertex-     False         vertex attrib       2.8           vertex-array
-		NORMALIZED_ARB                       AttribARB                    array normalized
-	VERTEX_ATTRIB_ARRAY_POINTER_ARB  16+xP   GetVertex-     NULL          vertex attrib       2.8           vertex-array
-											 AttribPointerARB             array pointer
-
-	Table X.7.  New Accessible Client State Introduced by ARB_vertex_program.
+Table X.6.  New Accessible State Introduced by ARB_vertex_program.
 
 
-	Get Value                        Type   Get Command          Initial Value    Description             Sec       Attrib
-	--------------------             -----  -------------------  ---------------  ----------------------  --------  ------
-	PROGRAM_BINDING_ARB              Z+     GetProgramivARB      object-specific  bound program name      6.1.12    -
-	PROGRAM_LENGTH_ARB               Z+     GetProgramivARB      0                bound program length    6.1.12    -
-	PROGRAM_FORMAT_ARB               Z1     GetProgramivARB      PROGRAM_FORMAT_  bound program format    6.1.12    -
-																 ASCII_ARB
-	PROGRAM_STRING_ARB               ubxn   GetProgramStringARB  (empty)          bound program string    6.1.12    -
-	PROGRAM_INSTRUCTIONS_ARB         Z+     GetProgramivARB      0                bound program           6.1.12    -
-																				  instructions
-	PROGRAM_TEMPORARIES_ARB          Z+     GetProgramivARB      0                bound program           6.1.12    -
-																				  temporaries
-	PROGRAM_PARAMETERS_ARB           Z+     GetProgramivARB      0                bound program           6.1.12    -
-																				  parameter bindings
-	PROGRAM_ATTRIBS_ARB              Z+     GetProgramivARB      0                bound program           6.1.12    -
-																				  attribute bindings
-	PROGRAM_ADDRESS_REGISTERS_ARB    Z+     GetProgramivARB      0                bound program           6.1.12    -
-																				  address registers
-	PROGRAM_NATIVE_INSTRUCTIONS_ARB  Z+     GetProgramivARB      0                bound program native    6.1.12    -
-																				  instructions
-	PROGRAM_NATIVE_TEMPORARIES_ARB   Z+     GetProgramivARB      0                bound program native    6.1.12    -
-																				  temporaries
-	PROGRAM_NATIVE_PARAMETERS_ARB    Z+     GetProgramivARB      0                bound program native    6.1.12    -
-																				  parameter bindings
-	PROGRAM_NATIVE_ATTRIBS_ARB       Z+     GetProgramivARB      0                bound program native    6.1.12    -
-																				  attribute bindings
-	PROGRAM_NATIVE_ADDRESS_          Z+     GetProgramivARB      0                bound program native    6.1.12    -
-		REGISTERS_ARB                                                             address registers
-	PROGRAM_UNDER_NATIVE_LIMITS_ARB  B      GetProgramivARB      0                bound program under     6.1.12    -
-																				  native resource limits
-	-                                96+xR4 GetProgramLocal-     (0,0,0,0)        bound program local     2.14.1    -
-											ParameterARB                          parameter value
+Get Value                        Type    Get Command    Initial Value Description         Section       Attribute
+-------------------------------  ------  -------------  ------------- ------------------  ------------  ------------
+VERTEX_ATTRIB_ARRAY_ENABLED_ARB  16+xB   GetVertex-     False         vertex attrib       2.8           vertex-array
+                                         AttribARB                    array enable
+VERTEX_ATTRIB_ARRAY_SIZE_ARB     16+xZ   GetVertex-     4             vertex attrib       2.8           vertex-array
+                                         AttribARB                    array size
+VERTEX_ATTRIB_ARRAY_STRIDE_ARB   16+xZ+  GetVertex-     0             vertex attrib       2.8           vertex-array
+                                         AttribARB                    array stride
+VERTEX_ATTRIB_ARRAY_TYPE_ARB     16+xZ4  GetVertex-     FLOAT         vertex attrib       2.8           vertex-array
+                                         AttribARB                    array type
+VERTEX_ATTRIB_ARRAY_             16+xB   GetVertex-     False         vertex attrib       2.8           vertex-array
+    NORMALIZED_ARB                       AttribARB                    array normalized
+VERTEX_ATTRIB_ARRAY_POINTER_ARB  16+xP   GetVertex-     NULL          vertex attrib       2.8           vertex-array
+                                         AttribPointerARB             array pointer
 
-	Table X.8.  Program Object State.  Program object queries return attributes of
-	the program object currently bound to the program target <target>.
+Table X.7.  New Accessible Client State Introduced by ARB_vertex_program.
 
 
-	Get Value    Type    Get Command   Initial Value  Description              Sec       Attribute
-	---------    ------  -----------   -------------  -----------------------  --------  ---------
-	-            12+xR4  -             undefined      temporary registers      2.14.3.6  -
-	-            8+xR4   -             undefined      vertex result registers  2.14.3.7  -
-				 1+xZ1   -             undefined      vertex program           2.14.3.8  -
-													  address registers
+Get Value                        Type   Get Command          Initial Value    Description             Sec       Attrib
+--------------------             -----  -------------------  ---------------  ----------------------  --------  ------
+PROGRAM_BINDING_ARB              Z+     GetProgramivARB      object-specific  bound program name      6.1.12    -
+PROGRAM_LENGTH_ARB               Z+     GetProgramivARB      0                bound program length    6.1.12    -
+PROGRAM_FORMAT_ARB               Z1     GetProgramivARB      PROGRAM_FORMAT_  bound program format    6.1.12    -
+                                                             ASCII_ARB
+PROGRAM_STRING_ARB               ubxn   GetProgramStringARB  (empty)          bound program string    6.1.12    -
+PROGRAM_INSTRUCTIONS_ARB         Z+     GetProgramivARB      0                bound program           6.1.12    -
+                                                                              instructions
+PROGRAM_TEMPORARIES_ARB          Z+     GetProgramivARB      0                bound program           6.1.12    -
+                                                                              temporaries
+PROGRAM_PARAMETERS_ARB           Z+     GetProgramivARB      0                bound program           6.1.12    -
+                                                                              parameter bindings
+PROGRAM_ATTRIBS_ARB              Z+     GetProgramivARB      0                bound program           6.1.12    -
+                                                                              attribute bindings
+PROGRAM_ADDRESS_REGISTERS_ARB    Z+     GetProgramivARB      0                bound program           6.1.12    -
+                                                                              address registers
+PROGRAM_NATIVE_INSTRUCTIONS_ARB  Z+     GetProgramivARB      0                bound program native    6.1.12    -
+                                                                              instructions
+PROGRAM_NATIVE_TEMPORARIES_ARB   Z+     GetProgramivARB      0                bound program native    6.1.12    -
+                                                                              temporaries
+PROGRAM_NATIVE_PARAMETERS_ARB    Z+     GetProgramivARB      0                bound program native    6.1.12    -
+                                                                              parameter bindings
+PROGRAM_NATIVE_ATTRIBS_ARB       Z+     GetProgramivARB      0                bound program native    6.1.12    -
+                                                                              attribute bindings
+PROGRAM_NATIVE_ADDRESS_          Z+     GetProgramivARB      0                bound program native    6.1.12    -
+    REGISTERS_ARB                                                             address registers
+PROGRAM_UNDER_NATIVE_LIMITS_ARB  B      GetProgramivARB      0                bound program under     6.1.12    -
+                                                                              native resource limits
+-                                96+xR4 GetProgramLocal-     (0,0,0,0)        bound program local     2.14.1    -
+                                        ParameterARB                          parameter value
 
-	Table X.9.  Vertex Program Per-vertex Execution State.  All per-vertex
-	execution state registers are uninitialized at the beginning of program
-	execution.
+Table X.8.  Program Object State.  Program object queries return attributes of
+the program object currently bound to the program target <target>.
 
 
-	Get Value                          Type      Get Command      Initial Value  Description          Sec      Attribute
-	------------------------------     --------  --------------   -------------  -------------------  -------  ---------
-	CURRENT_MATRIX_ARB                 m*n*xM^4  GetFloatv        Identity       current matrix       6.1.2    -
-	CURRENT_MATRIX_STACK_DEPTH_ARB     m*Z+      GetIntegerv      1              current stack depth  6.1.2    -
+Get Value    Type    Get Command   Initial Value  Description              Sec       Attribute
+---------    ------  -----------   -------------  -----------------------  --------  ---------
+-            12+xR4  -             undefined      temporary registers      2.14.3.6  -
+-            8+xR4   -             undefined      vertex result registers  2.14.3.7  -
+             1+xZ1   -             undefined      vertex program           2.14.3.8  -
+                                                  address registers
 
-	Table X.10.  Current matrix state where m is the total number of matrices
-	including texture matrices and program matrices and n is the number of
-	matrices on each particular matrix stack.  Note that this state is aliased
-	with existing matrix state.
+Table X.9.  Vertex Program Per-vertex Execution State.  All per-vertex
+execution state registers are uninitialized at the beginning of program
+execution.
+
+
+Get Value                          Type      Get Command      Initial Value  Description          Sec      Attribute
+------------------------------     --------  --------------   -------------  -------------------  -------  ---------
+CURRENT_MATRIX_ARB                 m*n*xM^4  GetFloatv        Identity       current matrix       6.1.2    -
+CURRENT_MATRIX_STACK_DEPTH_ARB     m*Z+      GetIntegerv      1              current stack depth  6.1.2    -
+
+Table X.10.  Current matrix state where m is the total number of matrices
+including texture matrices and program matrices and n is the number of
+matrices on each particular matrix stack.  Note that this state is aliased
+with existing matrix state.
 
 
 New Implementation Dependent State
                                                               Minimum
-	Get Value                            Type    Get Command      Value       Description             Sec           Attrib
-	-----------------------------------  ----    ---------------  ----------  --------------------    ------------  ------
-	MAX_PROGRAM_ENV_PARAMETERS_ARB       Z+      GetProgramivARB  96          maximum program         2.14.1        -
-																			  env parameters
-	MAX_PROGRAM_LOCAL_PARAMETERS_ARB     Z+      GetProgramivARB  96          maximum program         2.14.1        -
-																			  local parameters
-	MAX_PROGRAM_MATRICES_ARB             Z+      GetIntegerv      8 (not to   maximum number of       2.14.6        -
-																  exceed 32)  program matrices
-	MAX_PROGRAM_MATRIX_STACK_DEPTH_ARB   Z+      GetIntegerv      1           maximum program         2.14.6        -
-																			  matrix stack depth
-	MAX_PROGRAM_INSTRUCTIONS_ARB         Z+      GetProgramivARB  128         maximum program         6.1.12        -
-																			  instructions
-	MAX_PROGRAM_TEMPORARIES_ARB          Z+      GetProgramivARB  12          maximum program         6.1.12        -
-																			  temporaries
-	MAX_PROGRAM_PARAMETERS_ARB           Z+      GetProgramivARB  96          maximum program         6.1.12        -
-																			  parameter bindings
-	MAX_PROGRAM_ATTRIBS_ARB              Z+      GetProgramivARB  16          maximum program         6.1.12        -
-																			  attribute bindings
-	MAX_PROGRAM_ADDRESS_REGISTERS_ARB    Z+      GetProgramivARB  1           maximum program         6.1.12        -
-																			  address registers
-	MAX_PROGRAM_NATIVE_INSTRUCTIONS_ARB  Z+      GetProgramivARB  -           maximum program native  6.1.12        -
-																			  instructions
-	MAX_PROGRAM_NATIVE_TEMPORARIES_ARB   Z+      GetProgramivARB  -           maximum program native  6.1.12        -
-																			  temporaries
-	MAX_PROGRAM_NATIVE_PARAMETERS_ARB    Z+      GetProgramivARB  -           maximum program native  6.1.12        -
-																			  parameter bindings
-	MAX_PROGRAM_NATIVE_ATTRIBS_ARB       Z+      GetProgramivARB  -           maximum program native  6.1.12        -
-																			  attribute bindings
-	MAX_PROGRAM_NATIVE_ADDRESS_          Z+      GetProgramivARB  -           maximum program native  6.1.12        -
-		REGISTERS_ARB                                                         address registers
+Get Value                            Type    Get Command      Value       Description             Sec           Attrib
+-----------------------------------  ----    ---------------  ----------  --------------------    ------------  ------
+MAX_PROGRAM_ENV_PARAMETERS_ARB       Z+      GetProgramivARB  96          maximum program         2.14.1        -
+                                                                          env parameters
+MAX_PROGRAM_LOCAL_PARAMETERS_ARB     Z+      GetProgramivARB  96          maximum program         2.14.1        -
+                                                                          local parameters
+MAX_PROGRAM_MATRICES_ARB             Z+      GetIntegerv      8 (not to   maximum number of       2.14.6        -
+                                                              exceed 32)  program matrices
+MAX_PROGRAM_MATRIX_STACK_DEPTH_ARB   Z+      GetIntegerv      1           maximum program         2.14.6        -
+                                                                          matrix stack depth
+MAX_PROGRAM_INSTRUCTIONS_ARB         Z+      GetProgramivARB  128         maximum program         6.1.12        -
+                                                                          instructions
+MAX_PROGRAM_TEMPORARIES_ARB          Z+      GetProgramivARB  12          maximum program         6.1.12        -
+                                                                          temporaries
+MAX_PROGRAM_PARAMETERS_ARB           Z+      GetProgramivARB  96          maximum program         6.1.12        -
+                                                                          parameter bindings
+MAX_PROGRAM_ATTRIBS_ARB              Z+      GetProgramivARB  16          maximum program         6.1.12        -
+                                                                          attribute bindings
+MAX_PROGRAM_ADDRESS_REGISTERS_ARB    Z+      GetProgramivARB  1           maximum program         6.1.12        -
+                                                                          address registers
+MAX_PROGRAM_NATIVE_INSTRUCTIONS_ARB  Z+      GetProgramivARB  -           maximum program native  6.1.12        -
+                                                                          instructions
+MAX_PROGRAM_NATIVE_TEMPORARIES_ARB   Z+      GetProgramivARB  -           maximum program native  6.1.12        -
+                                                                          temporaries
+MAX_PROGRAM_NATIVE_PARAMETERS_ARB    Z+      GetProgramivARB  -           maximum program native  6.1.12        -
+                                                                          parameter bindings
+MAX_PROGRAM_NATIVE_ATTRIBS_ARB       Z+      GetProgramivARB  -           maximum program native  6.1.12        -
+                                                                          attribute bindings
+MAX_PROGRAM_NATIVE_ADDRESS_          Z+      GetProgramivARB  -           maximum program native  6.1.12        -
+    REGISTERS_ARB                                                         address registers
 
-	Table X.11.  New Implementation-Dependent Values Introduced by
-	ARB_vertex_program.  Values queried by GetProgramivARB require a <pname> of
-	VERTEX_PROGRAM_ARB.
+Table X.11.  New Implementation-Dependent Values Introduced by
+ARB_vertex_program.  Values queried by GetProgramivARB require a <pname> of
+VERTEX_PROGRAM_ARB.
 
 
 Revision History

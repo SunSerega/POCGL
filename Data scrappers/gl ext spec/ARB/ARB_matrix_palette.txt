@@ -554,46 +554,46 @@ New State
 
       Modified State in Table 6.5 (p. 195):
                                             Initial 
-	Get Value                 Get Command Type  Value   Attribute Description
-	---------                 ----------- ----  ------- --------- -----------
-	CURRENT_MATRIX_INDEX_ARB  GetIntegerv n*Z+  0       current   array of current matrix indices
+Get Value                 Get Command Type  Value   Attribute Description
+---------                 ----------- ----  ------- --------- -----------
+CURRENT_MATRIX_INDEX_ARB  GetIntegerv n*Z+  0       current   array of current matrix indices
 
 
       Modified State in Table 6.6 (p. 196):
                                                        Initial
-	Get Value                         Type   Get Command   Value    Description           Sec.    Attribute
-	---------                         ----   -----------   -------  -----------           ----    ---------
-	MATRIX_INDEX_ARRAY_ARB            B      IsEnabled     False    Matrix indices enable  2.8    vertex-array
-	MATRIX_INDEX_ARRAY_SIZE_ARB       Z+     GetIntegerv   0        Indices per element    2.8    vertex-array
-	MATRIX_INDEX_ARRAY_TYPE_ARB       Z_3    GetIntegerv   UBYTE    Type of indices        2.8    vertex-array
-	MATRIX_INDEX_ARRAY_POINTER_ARB    Y      GetPointerv   False    Pointer to the Matrix  2.8    vertex-array
+Get Value                         Type   Get Command   Value    Description           Sec.    Attribute
+---------                         ----   -----------   -------  -----------           ----    ---------
+MATRIX_INDEX_ARRAY_ARB            B      IsEnabled     False    Matrix indices enable  2.8    vertex-array
+MATRIX_INDEX_ARRAY_SIZE_ARB       Z+     GetIntegerv   0        Indices per element    2.8    vertex-array
+MATRIX_INDEX_ARRAY_TYPE_ARB       Z_3    GetIntegerv   UBYTE    Type of indices        2.8    vertex-array
+MATRIX_INDEX_ARRAY_POINTER_ARB    Y      GetPointerv   False    Pointer to the Matrix  2.8    vertex-array
                                                                 indices array
 
       Modified state in Table 6.7 (p. 197) Transformation State:
                                           Initial 
-	Get Value            Get Command Type     Value     Attribute  Description
-	---------            ----------- ----     --------- ---------  -----------
-	MATRIX_PALETTE_ARB   GetFloatv   2*x1*xM4 Identity      -      stack of current modelview matrix in the palette
-	MATRIX_PALETTE_ARB   IsEnabled   B        FALSE     transform  Enable for ARB_matrix_palette
-	CURRENT_PALETTE_     GetIntegerv Z+       0         transform  index of current modelview matrix in the
-	MATRIX_ARB                                                     palette, as set by CurrentPaletteMatrixARB()
+Get Value            Get Command Type     Value     Attribute  Description
+---------            ----------- ----     --------- ---------  -----------
+MATRIX_PALETTE_ARB   GetFloatv   2*x1*xM4 Identity      -      stack of current modelview matrix in the palette
+MATRIX_PALETTE_ARB   IsEnabled   B        FALSE     transform  Enable for ARB_matrix_palette
+CURRENT_PALETTE_     GetIntegerv Z+       0         transform  index of current modelview matrix in the
+MATRIX_ARB                                                     palette, as set by CurrentPaletteMatrixARB()
 
                                              
 New Implementation Dependent State
 
       Modified state in Table 6.24 (p. 214) Implementation Dependant Values:
 
-	Get Value              Get Command Type Min Value  Description
-	---------              ----------- ---- ---------  -----------
-	MAX_MATRIX_PALETTE_    GetIntegerv Z+   1          Max matrix palette stack depth                     
-	STACK_DEPTH_ARB          
+Get Value              Get Command Type Min Value  Description
+---------              ----------- ---- ---------  -----------
+MAX_MATRIX_PALETTE_    GetIntegerv Z+   1          Max matrix palette stack depth                     
+STACK_DEPTH_ARB          
 
                          
       Modified state in Table 6.25 (p. 215):
 
-	Get Value                Get Command Type Min Value    Description
-	---------                ----------- ---- ---------    -----------
-	MAX_PALETTE_MATRICES_ARB GetIntegerv Z+   MAX_VERTEX_  Max size of the matrix palette
+Get Value                Get Command Type Min Value    Description
+---------                ----------- ---- ---------    -----------
+MAX_PALETTE_MATRICES_ARB GetIntegerv Z+   MAX_VERTEX_  Max size of the matrix palette
                                           UNITS_ARB
 
 Additions to Appendix A:

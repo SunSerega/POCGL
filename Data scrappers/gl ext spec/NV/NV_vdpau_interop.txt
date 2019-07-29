@@ -466,13 +466,13 @@ Errors
     named by entries within the <surfaces> parameter of
     VDPAUUnmapSurfacesNV is not SURFACE_MAPPED_NV.
 
-	New State
+New State
 
-	Table 6.X.  VDPAU Surface Objects.
+Table 6.X.  VDPAU Surface Objects.
 
-	Get value           Type  Get command          Initial value                 Description     Section
-	------------------  ----  -----------          ----------------------------  --------------- -------
-	SURFACE_STATE_NV    Z     VDPAUGetSurfaceivNV  GL_SURFACE_REGISTERED_NV      Surface state   3.8.3
+Get value           Type  Get command          Initial value                 Description     Section
+------------------  ----  -----------          ----------------------------  --------------- -------
+SURFACE_STATE_NV    Z     VDPAUGetSurfaceivNV  GL_SURFACE_REGISTERED_NV      Surface state   3.8.3
 
 New Implementation State
 

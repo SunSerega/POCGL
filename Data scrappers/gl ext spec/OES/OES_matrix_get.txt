@@ -119,16 +119,16 @@ Errors
 New State
 
 
-	Get Value                                 Type            Command      Value    
-	---------                                 ----            -------     -------  
-	MODELVIEW_MATRIX_FLOAT_AS_INT_BITS_OES    4* x 4* x Z    GetIntegerv    0     
-	PROJECTION_MATRIX_FLOAT_AS_INT_BITS_OES   4* x 4* x Z    GetIntegerv    0
-	TEXTURE_MATRIX_FLOAT_AS_INT_BITS_OES      4* x 4* x Z    GetIntegerv    0
+Get Value                                 Type            Command      Value    
+---------                                 ----            -------     -------  
+MODELVIEW_MATRIX_FLOAT_AS_INT_BITS_OES    4* x 4* x Z    GetIntegerv    0     
+PROJECTION_MATRIX_FLOAT_AS_INT_BITS_OES   4* x 4* x Z    GetIntegerv    0
+TEXTURE_MATRIX_FLOAT_AS_INT_BITS_OES      4* x 4* x Z    GetIntegerv    0
 
 
 Revision History
 
 
-	June 30, 2004    Aaftab Munshi    Initial version of document
-	July 16, 2004    Aaftab Munshi    Removed the description of NaN & denorms                                               
+June 30, 2004    Aaftab Munshi    Initial version of document
+July 16, 2004    Aaftab Munshi    Removed the description of NaN & denorms                                               
 
