@@ -74,7 +74,7 @@ Additions to OpenGLES 1.0 Specification
 
     Additions to Chapter 2.11 of the OpenGL ES 1.0 Specification (Clipping)    
 
-	(append after the last paragraph, after: "User-specified clipping [...]")
+    (append after the last paragraph, after: "User-specified clipping [...]")
         In the presence of IMG_user_clip_plane a number of 6 clip planes will be
         exported to the user. The clip planes will restrict the view volume by defining
         half spaces. The intersection between those half spaces and the view volume
@@ -129,8 +129,8 @@ Errors
 
 New State
 
-    Get Value			    Get Command    Type    Initial Value    Attribute
-    ---------			    -----------    ----    -------------    ---------
+    Get Value                Get Command    Type    Initial Value    Attribute
+    ---------                -----------    ----    -------------    ---------
     MAX_CLIP_PLANES_IMG      GetIntegerv    N+      6                user clip planes
  
 

@@ -175,7 +175,7 @@ New Tokens
     Accepted by the <pname> parameters of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-	ASYNC_MARKER_SGIX		0x8329
+    ASYNC_MARKER_SGIX        0x8329
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -196,11 +196,11 @@ Additions to Chapter 5 of the 1.1 Specification (Special Functions)
     
     The following commands are not included in display lists:
 
-	FinishAsyncSGIX
-	PollAsyncSGIX
+    FinishAsyncSGIX
+    PollAsyncSGIX
         GenAsyncMarkersSGIX
         DeleteAsyncMarkersSGIX
-	IsAsyncMarkerSGIX
+    IsAsyncMarkerSGIX
 
     Add a section 5.X prior to the Instruments section entitled
     "Asynchronous Commands":
@@ -324,8 +324,8 @@ Errors
 
 New State
 
-    Get Value			Get Command	Type	Value	Attrib
-    ---------			-----------	----	-------	------
+    Get Value            Get Command    Type    Value    Attrib
+    ---------            -----------    ----    -------    ------
     ASYNC_MARKER_SGIX           GetIntegerv     Z+      0       -
 
 New Implementation Dependent State

@@ -36,9 +36,9 @@ Overview
 New Procedures and Functions
 
     Status glXGetTransparentIndexSUN(Display *dpy,
-				    Window overlay,
-				    Window underlay,
-				    unsigned long *pTransparentIndex)
+                    Window overlay,
+                    Window underlay,
+                    unsigned long *pTransparentIndex)
 
 New Tokens
 
@@ -57,29 +57,29 @@ Additions to Chapter ??? of the GLX 1.3 Specification
     (the following needs to be restructured as changes to the spec,
     rather than a man page)
 
-	dpy			Specifies the connection to the X server
+    dpy            Specifies the connection to the X server
 
-	overlay			Specifies the overlay Window of an
-			    	overlay/underlay pair
+    overlay            Specifies the overlay Window of an
+                    overlay/underlay pair
 
-	underlay 	    	Specifies the underlay Window.
+    underlay             Specifies the underlay Window.
 
-	pTransparentIndex   	Specifies a pointer to the index to be returned
+    pTransparentIndex       Specifies a pointer to the index to be returned
 
     Return
     ------
 
-	If underlay is a Window that has previously been made
-	the current GLXDrawable by the client and a transparent index 
-	is available for the Window overlay, returns 1 and sets
-	*pTransparentIndex to the value of the index. Otherwise returns 0. 
+    If underlay is a Window that has previously been made
+    the current GLXDrawable by the client and a transparent index 
+    is available for the Window overlay, returns 1 and sets
+    *pTransparentIndex to the value of the index. Otherwise returns 0. 
 
-	If underlay is equal to None, and if a transparent 
-	index is available for overlay that is independent of the
-	underlying Windows returns 1 and sets *pTransparentIndex to
-	the index. Otherwise 0 is returned.
-	
-	
+    If underlay is equal to None, and if a transparent 
+    index is available for overlay that is independent of the
+    underlying Windows returns 1 and sets *pTransparentIndex to
+    the index. Otherwise 0 is returned.
+    
+    
 
     Description
     -----------
@@ -131,7 +131,7 @@ GLX Protocol
 Errors
 
      BadDrawable   if overlay is not a valid Window or if underlay is
-                   not a valid Window (except None).	
+                   not a valid Window (except None).    
 
 New State
 

@@ -85,7 +85,7 @@ Issues
     return an error) when the element array is disabled?
 
         No. It's very hard to ascertain the intent of the application
-	at this point, so it's probably best to not draw anything.
+    at this point, so it's probably best to not draw anything.
 
     
 New Procedures and Functions
@@ -105,16 +105,16 @@ New Tokens
     ATI_vertex_array_object is defined, the <array> parameter of
     ArrayObjectATI, GetArrayObjectivATI, GetArrayObjectfvATI:
     
-        ELEMENT_ARRAY_ATI		0x8768
+        ELEMENT_ARRAY_ATI        0x8768
     
     Accepted by the <value> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
     
-        ELEMENT_ARRAY_TYPE_ATI		0x8769
+        ELEMENT_ARRAY_TYPE_ATI        0x8769
 
     Accepted by the <pname> paramater of GetPointerv:
     
-        ELEMENT_ARRAY_POINTER_ATI	0x876A
+        ELEMENT_ARRAY_POINTER_ATI    0x876A
     
     
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)

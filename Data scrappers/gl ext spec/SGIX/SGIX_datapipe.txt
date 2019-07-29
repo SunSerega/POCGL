@@ -63,26 +63,26 @@ New Tokens
     Accepted by the <pname> parameters of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-	ADDRESS_SPACE		0x????
-	ADDRESS_CLASSES		0x????
-	DATAPIPE_MAX		0x????
+    ADDRESS_SPACE        0x????
+    ADDRESS_CLASSES        0x????
+    DATAPIPE_MAX        0x????
 
     Accepted by the <space> parameter of AddressSpace:
 
-	MEMORY			0x????
+    MEMORY            0x????
     
     Accepted by the <space> parameter of AddressSpace and the
     <space> parameter of DataPipe:
 
-	DATAPIPE_0			0x????
-	DATAPIPE_1			0x????
-	DATAPIPE_2			0x????
-	DATAPIPE_3			0x????
+    DATAPIPE_0            0x????
+    DATAPIPE_1            0x????
+    DATAPIPE_2            0x????
+    DATAPIPE_3            0x????
 
     Accepted by the <mask> parameter of AddressSpace:
 
-	GEOMETRY_BIT			0x1
-	IMAGE_BIT			0x2
+    GEOMETRY_BIT            0x1
+    IMAGE_BIT            0x2
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -109,115 +109,115 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     address pointers receive special interpretation are split into a
     set of classes as follows:
 
-	GEOMETRY
+    GEOMETRY
 
-	    Color*v
-	    Normal*v
-	    TexCoord*v
-	    EdgeFlag*v
-	    Vertex*v
-	    Index*v
-	    RasterPos*v
-	    Rect*v
-	    EvalCoord*v
-	    LoadMatrix*
-	    MultMatrix*
+        Color*v
+        Normal*v
+        TexCoord*v
+        EdgeFlag*v
+        Vertex*v
+        Index*v
+        RasterPos*v
+        Rect*v
+        EvalCoord*v
+        LoadMatrix*
+        MultMatrix*
 
-	    ColorPointerEXT
-	    EdgeFlagPointerEXT
-	    IndexPointerEXT
-	    NormalPointerEXT
-	    TexCoordPointerEXT
-	    VertexPointerEXT
+        ColorPointerEXT
+        EdgeFlagPointerEXT
+        IndexPointerEXT
+        NormalPointerEXT
+        TexCoordPointerEXT
+        VertexPointerEXT
 
-	    SpriteParameter[fi]vSGIX
+        SpriteParameter[fi]vSGIX
 
-	    ReferencePlaneSGIX
+        ReferencePlaneSGIX
 
-	IMAGE
+    IMAGE
 
-	    Bitmap
-	    TexImage*
-	    PixelMap*v
-	    ReadPixels
-	    DrawPixels
-	    GetTexImage
-	    TexSubImage*
-	    ConvolutionFilter*EXT
-	    SeparableFilter2DEXT
-	    GetHistogramEXT
-	    ColorTableSGI
+        Bitmap
+        TexImage*
+        PixelMap*v
+        ReadPixels
+        DrawPixels
+        GetTexImage
+        TexSubImage*
+        ConvolutionFilter*EXT
+        SeparableFilter2DEXT
+        GetHistogramEXT
+        ColorTableSGI
 
     The set of commands which continue to operate from normal client memory are
     as follows:
 
-	CallLists
-	ClipPlane
-	Fog*v
-	Light*v
-	LightModel*v
-	Material*v
-	PolygonStipple
-	TexParameter*v
-	TexEnv*v
-	TexGen*v
-	FeedbackBuffer
-	SelectBuffer
-	Map*
+    CallLists
+    ClipPlane
+    Fog*v
+    Light*v
+    LightModel*v
+    Material*v
+    PolygonStipple
+    TexParameter*v
+    TexEnv*v
+    TexGen*v
+    FeedbackBuffer
+    SelectBuffer
+    Map*
 
-	GetBooleanv
-	GetClipPlane
-	GetDoublev
-	GetFloatv
-	GetIntegerv
-	GetLight*v
-	GetMap*v
-	GetMaterial*v
-	GetPixelMap*v
-	GetPolygonStipple
-	GetTexEnv*v
-	GetTexGen*v
-	GetTexParameter*v
-	GetTexLevelParameter*v
+    GetBooleanv
+    GetClipPlane
+    GetDoublev
+    GetFloatv
+    GetIntegerv
+    GetLight*v
+    GetMap*v
+    GetMaterial*v
+    GetPixelMap*v
+    GetPolygonStipple
+    GetTexEnv*v
+    GetTexGen*v
+    GetTexParameter*v
+    GetTexLevelParameter*v
 
-	ConvolutionParameter*vEXT
-	GetConvolutionFilter*EXT
-	GetConvolutionParameter*vEXT
-	GetSeparableFilterEXT
+    ConvolutionParameter*vEXT
+    GetConvolutionFilter*EXT
+    GetConvolutionParameter*vEXT
+    GetSeparableFilterEXT
 
-	GetHistogramParameter*vEXT
-	GetMinmaxEXT
-	GetMinmaxParameter*vEXT
+    GetHistogramParameter*vEXT
+    GetMinmaxEXT
+    GetMinmaxParameter*vEXT
 
-	DetailTexFuncSGIS
-	GetDetailTexFuncSGIS
-	SharpenTexFuncSGIS
-	GetSharpenTexFuncSGIS
+    DetailTexFuncSGIS
+    GetDetailTexFuncSGIS
+    SharpenTexFuncSGIS
+    GetSharpenTexFuncSGIS
 
-	GetPointervEXT
+    GetPointervEXT
 
-	AreTexturesResidentEXT
-	DeleteTexturesEXT
-	GenTexturesEXT
-	PrioritizeTexturesEXT
+    AreTexturesResidentEXT
+    DeleteTexturesEXT
+    GenTexturesEXT
+    PrioritizeTexturesEXT
 
-	ColorTableParameter[fi]vSGI
-	GetColorTableSGI
-	GetColorTableParameter[fi]vSGI
+    ColorTableParameter[fi]vSGI
+    GetColorTableSGI
+    GetColorTableParameter[fi]vSGI
 
-	GetTexFilterFuncSGIS
-	TexFilterFuncSGIS
+    GetTexFilterFuncSGIS
+    TexFilterFuncSGIS
 
-	PointParameterfvSGIS
-	FogFuncSGIS
+    PointParameterfvSGIS
+    FogFuncSGIS
 
-	InstrumentsBufferSGIX
-	PollInstrumentsSGIX
+    InstrumentsBufferSGIX
+    PollInstrumentsSGIX
 
-	DeformationMap3dSGIX
+    DeformationMap3dSGIX
 
-	GetListParameter[fi]vSGIX
-	ListParameter[fi]vSGIX
+    GetListParameter[fi]vSGIX
+    ListParameter[fi]vSGIX
 
     The list of classes are specified as a bitmask parameter <mask>.  All
     commands in a class must be supported. Only the classes specified in
@@ -237,12 +237,12 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     A separate instance of client state is maintained for each address
     space for the following state:
 
-	VERTEX_ARRAY_POINTER_EXT
-	NORMAL_ARRAY_POINTER_EXT
-	COLOR_ARRAY_POINTER_EXT
-	INDEX_ARRAY_POINTER_EXT
-	TEXTURE_COORD_ARRAY_POINTER_EXT
-	EDGE_FLAG_ARRAY_POINTER_EXT
+    VERTEX_ARRAY_POINTER_EXT
+    NORMAL_ARRAY_POINTER_EXT
+    COLOR_ARRAY_POINTER_EXT
+    INDEX_ARRAY_POINTER_EXT
+    TEXTURE_COORD_ARRAY_POINTER_EXT
+    EDGE_FLAG_ARRAY_POINTER_EXT
 
 
     Datapipes

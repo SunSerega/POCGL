@@ -39,8 +39,8 @@ New Tokens
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled
 
-        GL_FOG_BLEND_ALPHA_SGIX		0x81FE
-        GL_FOG_BLEND_COLOR_SGIX		0x81FF
+        GL_FOG_BLEND_ALPHA_SGIX        0x81FE
+        GL_FOG_BLEND_COLOR_SGIX        0x81FF
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 

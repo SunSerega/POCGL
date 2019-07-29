@@ -33,9 +33,9 @@ Overview
 New Procedures and Functions
 
     Bool glXMakeCurrentReadSGI(Display* dpy,
-			       GLXDrawable draw,
-			       GLXDrawable read,
-			       GLXContext ctx);
+                   GLXDrawable draw,
+                   GLXDrawable read,
+                   GLXContext ctx);
 
     GLXDrawable glXGetCurrentReadDrawableSGI(void);
 
@@ -58,17 +58,17 @@ and the Frame buffer)
     the current rendering context, glXDrawable <draw> is used for all
     OpenGL operations except:
 
-    1.	Any pixel data that are sourced based on the value of READ_BUFFER.
+    1.    Any pixel data that are sourced based on the value of READ_BUFFER.
         Note, that accumulation operations use the value of READ_BUFFER, but
-	are not allowed when <draw> in not identical to <read>.
+    are not allowed when <draw> in not identical to <read>.
 
-    2.	Any depth values that are retrieved by glReadPixels, glCopyPixels,
-	or any OpenGL extension that sources depth images from the frame
-	buffer in the manner of glReadPixels and glCopyPixels.
+    2.    Any depth values that are retrieved by glReadPixels, glCopyPixels,
+    or any OpenGL extension that sources depth images from the frame
+    buffer in the manner of glReadPixels and glCopyPixels.
 
-    3.	Any stencil values that are retrieved by glReadPixels, glCopyPixels,
-	or any OpenGL extension that sources stencil images from the frame
-	buffer in the manner of glReadPixels and glCopyPixels.
+    3.    Any stencil values that are retrieved by glReadPixels, glCopyPixels,
+    or any OpenGL extension that sources stencil images from the frame
+    buffer in the manner of glReadPixels and glCopyPixels.
 
     These frame buffer values are taken from glXDrawable <read>.
 
@@ -117,53 +117,53 @@ Additions to the GLX Specification
 
     Notes:
 
-    *	glXMakeCurrentReadSGIX associates two GLXDrawables with a single
-	GLXContext.  BadMatch is generated if <draw> was not created with
-	the same X screen and visual as <ctx>.  BadMatch is also generated
-	if <read> was not created with the same X screen as <ctx>.  The color,
-	depth, stencil, and accumulation buffers of <read> need not match the
-	resources of <draw>.
+    *    glXMakeCurrentReadSGIX associates two GLXDrawables with a single
+    GLXContext.  BadMatch is generated if <draw> was not created with
+    the same X screen and visual as <ctx>.  BadMatch is also generated
+    if <read> was not created with the same X screen as <ctx>.  The color,
+    depth, stencil, and accumulation buffers of <read> need not match the
+    resources of <draw>.
 
-    *	glXMakeCurrentReadSGI returns True if it succeeds, and False if it
-	fails.  It can fail for myriad reasons, including refusal to accept
-	a window or a GLXPixmap as the <read> GLXDrawable, and refusal to
-	accept as the <read> a GLXDrawable or a GLXPbuffer with color, depth,
-	stencil, or accumulation storage facilities that differ from those
-	of <draw>.  This laxness may not be acceptable in a final
-	specification, but it will help allow early implementations to
-	be completed.
+    *    glXMakeCurrentReadSGI returns True if it succeeds, and False if it
+    fails.  It can fail for myriad reasons, including refusal to accept
+    a window or a GLXPixmap as the <read> GLXDrawable, and refusal to
+    accept as the <read> a GLXDrawable or a GLXPbuffer with color, depth,
+    stencil, or accumulation storage facilities that differ from those
+    of <draw>.  This laxness may not be acceptable in a final
+    specification, but it will help allow early implementations to
+    be completed.
 
     *   glXMakeCurrentReadSGI may return False if <draw> and <read> cannot 
         exist in framebuffer memory simultaneously.
 
-    *	glXGetCurrentReadDrawableSGI returns the name of the GLXDrawable
-	currently being used as a pixel query source.  If glXMakeCurrent
-	specified the current rendering context, then
-	glXGetCurrentReadDrawableSGI returns the drawable specified as
-	<draw> by that glXMakeCurrent call.  If glXMakeCurrentReadSGI
-	specified the current rendering context, then
-	glXGetCurrentReadDrawableSGI returns the drawable specified as
-	<read> by that glXMakeCurrentReadSGI call.  If there is no
-	current read drawable, None is returned.
+    *    glXGetCurrentReadDrawableSGI returns the name of the GLXDrawable
+    currently being used as a pixel query source.  If glXMakeCurrent
+    specified the current rendering context, then
+    glXGetCurrentReadDrawableSGI returns the drawable specified as
+    <draw> by that glXMakeCurrent call.  If glXMakeCurrentReadSGI
+    specified the current rendering context, then
+    glXGetCurrentReadDrawableSGI returns the drawable specified as
+    <read> by that glXMakeCurrentReadSGI call.  If there is no
+    current read drawable, None is returned.
 
 GLX Protocol
 
-	One new GLX protocol command is added.
+    One new GLX protocol command is added.
 
-	MakeCurrentRead
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		6		request length
-	    4		65537		vendor specific opcode
-	    4		GLX_CONTEXT_TAG	old context tag
-	    4		GLX_DRAWABLE	drawable
-	    4		GLX_DRAWABLE	read drawable
-	    4		GLX_CONTEXT	context id
-	   =>
-	    1		1		Reply
-	    1				unused
-	    2		CARD16		sequence number
-	    24				unused
+    MakeCurrentRead
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        6        request length
+        4        65537        vendor specific opcode
+        4        GLX_CONTEXT_TAG    old context tag
+        4        GLX_DRAWABLE    drawable
+        4        GLX_DRAWABLE    read drawable
+        4        GLX_CONTEXT    context id
+       =>
+        1        1        Reply
+        1                unused
+        2        CARD16        sequence number
+        24                unused
 
 Dependencies on EXT_copy_texture
 

@@ -10,7 +10,7 @@ Contributors
 
     Aaftab Munshi
     Benj Lipchak
-	
+    
 Contact
 
     Maurice Ribble, Qualcomm (mribble 'at' qualcomm.com)

@@ -160,7 +160,7 @@ Additions to Section 4.4.3 of the OpenGL ES 2.0 Specification
         enables multisampled rendering into the images of a texture object.
 
         target, textarget, texture, and level correspond to the same
-        parameters for FramebufferTexture2D and have the same restrictions.	
+        parameters for FramebufferTexture2D and have the same restrictions.    
         attachment must be COLOR_ATTACHMENT0. If samples is greater than the 
         value of MAX_SAMPLES_EXT, then the error INVALID_VALUE is generated. 
         An INVALID_OPERATION error is generated if samples is greater than
@@ -210,7 +210,7 @@ Additions to Section 4.4.3 of the OpenGL ES 2.0 Specification
             - BindFramebuffer while the texture is attached to the currently
               bound framebuffer.
 
-	
+    
 Additions to section 4.4.5 of the OpenGL ES 2.0 Specification
 (Framebuffer Completeness)
 
@@ -225,7 +225,7 @@ Additions to section 4.4.5 of the OpenGL ES 2.0 Specification
         * All attached images have the same width and height.
           FRAMEBUFFER_INCOMPLETE_DIMENSIONS
     on page 116:
-		
+        
         * The value of RENDERBUFFER_SAMPLES_EXT is the same for all 
           attached renderbuffers; the value of TEXTURE_SAMPLES_EXT 
           is the same for all texture attachments; and, if the attached 
@@ -262,7 +262,7 @@ Dependencies on GL and ES profiles, versions, and other extensions
         SAMPLE_BUFFERS is non-zero for renderbuffers created via Renderbuffer-
         StorageMultisampleEXT or textures attached via FramebufferTexture2D-
         MultisampleEXT.
-		
+        
         Also, FBOs cannot combine attachments that have associated multisample
         data specified by the mechanisms described in this extension with
         attachments allocated using the core OpenGL ES 3.1 mechanisms, such as
@@ -309,16 +309,16 @@ Errors
 
 New State
 
-	Changes to table 6.22, p. 154 (Renderbuffer State)
-	
+    Changes to table 6.22, p. 154 (Renderbuffer State)
+    
                                                      Initial
     Get Value                 Type  Get Command      Value   Description  Sec.
     ---------                 ----  ---------------- ------- ------------ -----
     RENDERBUFFER_SAMPLES_EXT  Z+    GetRenderbuffer- 0       Renderbuffer 4.4.3 
                                     Parameteriv              samples
-	
-	Changes to table 6.23, p. 155 (Framebuffer State)
-	
+    
+    Changes to table 6.23, p. 155 (Framebuffer State)
+    
                                                        Initial
     Get Value            Type    Get Command           Value   Description     Sec.
     ---------            ------  --------------------- ------- --------------- ----
@@ -337,63 +337,63 @@ New Implementation Dependent State
 
 Sample Code
 
-	GLsizei width  = ...;
-	GLsizei height = ...;
-	GLint samples;
-	glGetIntegerv(GL_MAX_SAMPLES_EXT, &samples);
+    GLsizei width  = ...;
+    GLsizei height = ...;
+    GLint samples;
+    glGetIntegerv(GL_MAX_SAMPLES_EXT, &samples);
 
-	/* Create multisampled depth renderbuffer */
-	GLuint depthbuffer;
-	glGenRenderbuffers(1, &depthbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
-	glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER, samples, 
-		GL_DEPTH_COMPONENT16, width, height);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	
-	/* Create RGBA texture with single mipmap level */
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, 
-		GL_UNSIGNED_SHORT_4_4_4_4, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glBindTexture(GL_TEXTURE_2D, 0);
+    /* Create multisampled depth renderbuffer */
+    GLuint depthbuffer;
+    glGenRenderbuffers(1, &depthbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER, samples, 
+        GL_DEPTH_COMPONENT16, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    
+    /* Create RGBA texture with single mipmap level */
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, 
+        GL_UNSIGNED_SHORT_4_4_4_4, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-	/* Create framebuffer object, attach texture and depth renderbuffer */
-	GLuint framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 
-		GL_RENDERBUFFER, depthbuffer);
-	glFramebufferTexture2DMultisampleEXT(GL_FRAMEBUFFER, 
-		GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0, samples);
-	
-	/* handle unsupported cases */
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != 
-			GL_FRAMEBUFFER_COMPLETE)
-	{
-		...
-	}
-	
-	/* draw to the texture */
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	...
-	
-	/* Discard the depth renderbuffer contents if possible */
-	if (extension_supported("GL_EXT_discard_framebuffer"))
-	{
-		GLenum discard_attachments[] = { GL_DEPTH_ATTACHMENT };
-		glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1,
-			discard_attachments);
-	}
-	
-	/* Draw to the default framebuffer using the antialiased texture */
-	/* Color data is implicitly resolved before the texture gets used */
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | 
-		GL_STENCIL_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	...
+    /* Create framebuffer object, attach texture and depth renderbuffer */
+    GLuint framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 
+        GL_RENDERBUFFER, depthbuffer);
+    glFramebufferTexture2DMultisampleEXT(GL_FRAMEBUFFER, 
+        GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0, samples);
+    
+    /* handle unsupported cases */
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != 
+            GL_FRAMEBUFFER_COMPLETE)
+    {
+        ...
+    }
+    
+    /* draw to the texture */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ...
+    
+    /* Discard the depth renderbuffer contents if possible */
+    if (extension_supported("GL_EXT_discard_framebuffer"))
+    {
+        GLenum discard_attachments[] = { GL_DEPTH_ATTACHMENT };
+        glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1,
+            discard_attachments);
+    }
+    
+    /* Draw to the default framebuffer using the antialiased texture */
+    /* Color data is implicitly resolved before the texture gets used */
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | 
+        GL_STENCIL_BUFFER_BIT);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    ...
 
 Conformance Tests
 

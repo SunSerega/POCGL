@@ -62,8 +62,8 @@ New Tokens
 
     Accepted by the <pname> parameter of PixelTexGenParameterSGIX:
 
-	PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX
-	
+    PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX
+    
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     None
@@ -116,9 +116,9 @@ New State
 
     The following is added to Table 6.16. Pixels.
 
-    Get Value				Get Command			Type	Initial Value			Attrib
-    ---------				-----------			----	-------------			------
-    PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX	GetPixelTexGenParameterivSGIX	Z2	ZERO				pixel
+    Get Value                Get Command            Type    Initial Value            Attrib
+    ---------                -----------            ----    -------------            ------
+    PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX    GetPixelTexGenParameterivSGIX    Z2    ZERO                pixel
 
 New Implementation Dependent State
 

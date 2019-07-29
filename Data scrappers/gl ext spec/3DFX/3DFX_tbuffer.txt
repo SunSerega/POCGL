@@ -115,8 +115,8 @@ Errors
 
 New State
 
-    Get Value		    Get Command Type	Initial Value	Attribute
-    ---------		    ----------- ----	-------------	---------
-    TBUFFER_WRITE_MASK_3DFX GetIntegerv Z+	1's		multisample
+    Get Value            Get Command Type    Initial Value    Attribute
+    ---------            ----------- ----    -------------    ---------
+    TBUFFER_WRITE_MASK_3DFX GetIntegerv Z+    1's        multisample
 
 Revision History

@@ -94,8 +94,8 @@ New Procedures and Functions
     HGLRC wglCreateAssociatedContextAMD(UINT id);
     
     HGLRC wglCreateAssociatedContextAttribsAMD(UINT id, HGLRC hShareContext,
-				                               const int *attribList);
-				     
+                                               const int *attribList);
+                     
     BOOL  wglDeleteAssociatedContextAMD(HGLRC hglrc);
 
     BOOL  wglMakeAssociatedContextCurrentAMD(HGLRC hglrc);

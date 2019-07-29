@@ -36,7 +36,7 @@ Overview
     re-tesselate clipped primitives.
 
     This extension introduces the notion of an extended rasterizable view
-    volume that is an expansion of the clip-space view volume.	This volume
+    volume that is an expansion of the clip-space view volume.    This volume
     is the space within which a particular graphics system is much more
     efficient at rejecting fragments that lie outside the view volume than
     it is at performing strict view volume clipping.
@@ -52,7 +52,7 @@ Issues
 
     Should more precise control be given, instead of just a hint?
 
-	NO. (Or not yet, anyway).
+    NO. (Or not yet, anyway).
 
 New Procedures and Functions
 
@@ -64,20 +64,20 @@ New Tokens
     and the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev:
 
-    VERTEX_PRECLIP_SGIX		    0x83EE
+    VERTEX_PRECLIP_SGIX            0x83EE
 
     Accepted by the <target> parameter of Hint and the <pname> parameter
     of GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
 
-    VERTEX_PRECLIP_HINT_SGIX	    0x83EF
+    VERTEX_PRECLIP_HINT_SGIX        0x83EF
 
 
 Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
-    At the end of section 2.11	Clipping  Add:
+    At the end of section 2.11    Clipping  Add:
 
     The precision of the arithmetic used in the clipping operation is
-    undefined.	Some implementations may be able to maintain full
+    undefined.    Some implementations may be able to maintain full
     accuracy for all primitives, while other implementations may have
     limits on the extent of a primitive, or retain full accuracy only
     within some rasterizable volume (larger than the clip volume).
@@ -127,17 +127,17 @@ Errors
 New State
 
   (table 6.7, Transformation State)
-								Initial
-    Get Value				Type	Get Command	Value	Description	 Sec.	 Attribute
-    ---------				----	-----------	------- -----------	 ----	 ---------
-    VERTEX_PRECLIP			 B	 IsEnabled	 False	Pre-clip On/Off  2.11  transform/enable
+                                Initial
+    Get Value                Type    Get Command    Value    Description     Sec.     Attribute
+    ---------                ----    -----------    ------- -----------     ----     ---------
+    VERTEX_PRECLIP             B     IsEnabled     False    Pre-clip On/Off  2.11  transform/enable
 
 
   (table 6.23, Hints)
-								Initial
-    Get Value				Type	Get Command	Value	Description	 Sec.	 Attribute
-    ---------				----	-----------	------- -----------	 ----	 ---------
-    VERTEX_PRECLIP_HINT			 Z3	GetIntegerv   DONT_CARE Pre-clip Hint	 5.6	   hint
+                                Initial
+    Get Value                Type    Get Command    Value    Description     Sec.     Attribute
+    ---------                ----    -----------    ------- -----------     ----     ---------
+    VERTEX_PRECLIP_HINT             Z3    GetIntegerv   DONT_CARE Pre-clip Hint     5.6       hint
 
 New Implementation Dependent State
 

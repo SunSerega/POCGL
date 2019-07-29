@@ -212,7 +212,7 @@ GLX Protocol
 
     DisableIndexedEXT
 
-        2      12    	       rendering length
+        2      12               rendering length
         2      354             rendering command opcode
         4      ENUM            target
         4      CARD32          index

@@ -22,7 +22,7 @@ Overview
 
     New texture environment function ADD is supported with the following 
     equation: 
-	 		Cv = Cf + CcCt + Cb
+             Cv = Cf + CcCt + Cb
 
     New function may be specified by calling glTexEnv with GL_ADD token.
     New parameter Cb (bias) may be specified by calling TexEnv with
@@ -38,7 +38,7 @@ New Tokens
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv, and
     TexEnvfi when the <pname> parameter value is GL_TEXTURE_ENV_MODE
 
-	ADD
+    ADD
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev, and by the <pname> parameter of TexEnvfv, and TexEnvfi
@@ -48,49 +48,49 @@ New Tokens
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)
 
-	None
+    None
 
 Additions to Chapter 3 of the GL Specification (Rasterization)
 
 
-				Texture Environment
-				-------------------
+                Texture Environment
+                -------------------
 
-	Base Texture Format	REPLACE  MODULATE  BLEND  DECAL  ADD  
-	-------------------	-------  --------  -----  -----  ---             
+    Base Texture Format    REPLACE  MODULATE  BLEND  DECAL  ADD  
+    -------------------    -------  --------  -----  -----  ---             
 
-	ALPHA			 ...      ...       ...    ...   Rv = Rf
-				 ...      ...       ...    ...   Gv = Gf
-				 ...      ...       ...    ...   Bv = Bf
-				 ...      ...       ...    ...   Av = AfAt
+    ALPHA             ...      ...       ...    ...   Rv = Rf
+                 ...      ...       ...    ...   Gv = Gf
+                 ...      ...       ...    ...   Bv = Bf
+                 ...      ...       ...    ...   Av = AfAt
 
-	LUMINANCE		 ...      ...       ...    ...   Rv = Rf+LtRc+Rb
-				 ...      ...       ...    ...   Gv = Gf+LtGc+Gb
-				 ...      ...       ...    ...   Bv = Bf+LtBc+Bb
-				 ...      ...       ...    ...   Av = Af
+    LUMINANCE         ...      ...       ...    ...   Rv = Rf+LtRc+Rb
+                 ...      ...       ...    ...   Gv = Gf+LtGc+Gb
+                 ...      ...       ...    ...   Bv = Bf+LtBc+Bb
+                 ...      ...       ...    ...   Av = Af
 
-	LUMINANCE_ALPHA		 ...      ...       ...    ...   Rv = Rf+LtRc+Rb
-				 ...      ...       ...    ...   Gv = Gf+LtGc+Gb
-				 ...      ...       ...    ...   Bv = Bf+LtBc+Bb
-				 ...      ...       ...    ...   Av = AfAt
+    LUMINANCE_ALPHA         ...      ...       ...    ...   Rv = Rf+LtRc+Rb
+                 ...      ...       ...    ...   Gv = Gf+LtGc+Gb
+                 ...      ...       ...    ...   Bv = Bf+LtBc+Bb
+                 ...      ...       ...    ...   Av = AfAt
 
-	INTENSITY		 ...      ...       ...    ...   Rv = Rf+ItRc+Rb
-				 ...      ...       ...    ...   Gv = Gf+ItGc+Gb
-				 ...      ...       ...    ...   Bv = Bf+ItBc+Bb
-				 ...      ...       ...    ...   Av = Af+ItAc+Ab
+    INTENSITY         ...      ...       ...    ...   Rv = Rf+ItRc+Rb
+                 ...      ...       ...    ...   Gv = Gf+ItGc+Gb
+                 ...      ...       ...    ...   Bv = Bf+ItBc+Bb
+                 ...      ...       ...    ...   Av = Af+ItAc+Ab
 
-	RGB			 ...      ...       ...    ...   Rv = Rf+RtRc+Rb
-				 ...      ...       ...    ...   Gv = Gf+GtGc+Gb
-				 ...      ...       ...    ...   Bv = Bf+BtBc+Bb
-				 ...      ...       ...    ...   Av = Af
+    RGB             ...      ...       ...    ...   Rv = Rf+RtRc+Rb
+                 ...      ...       ...    ...   Gv = Gf+GtGc+Gb
+                 ...      ...       ...    ...   Bv = Bf+BtBc+Bb
+                 ...      ...       ...    ...   Av = Af
 
-	RGBA			 ...      ...       ...    ...   Rv = Rf+RtRc+Rb
-				 ...      ...       ...    ...   Gv = Gf+GtGc+Gb
-				 ...      ...       ...    ...   Bv = Bf+BtBc+Bb
-				 ...      ...       ...    ...   Av = AfAt
+    RGBA             ...      ...       ...    ...   Rv = Rf+RtRc+Rb
+                 ...      ...       ...    ...   Gv = Gf+GtGc+Gb
+                 ...      ...       ...    ...   Bv = Bf+BtBc+Bb
+                 ...      ...       ...    ...   Av = AfAt
 
 
-	Table 3.11: Texture functions.
+    Table 3.11: Texture functions.
 
 
 Additions to Chapter 4 of the GL Specification (Per-Fragment Operations
@@ -123,9 +123,9 @@ Errors
 
 New State
 
-    Get Value			Get Command		Type		Initial Value	Attribute
-    ---------                   -----------		----		-------------	---------
-    TEXTURE_ENV_BIAS_SGIX	GetFloatv		  C		(0, 0, 0, 0)    texture
+    Get Value            Get Command        Type        Initial Value    Attribute
+    ---------                   -----------        ----        -------------    ---------
+    TEXTURE_ENV_BIAS_SGIX    GetFloatv          C        (0, 0, 0, 0)    texture
 
 
 New Implementation Dependent State

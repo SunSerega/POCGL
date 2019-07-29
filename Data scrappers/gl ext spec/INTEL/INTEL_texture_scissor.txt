@@ -109,9 +109,9 @@ TEXTURE_SCISSOR_R_INTEL [ returns two values : low and high ]
 
 by the <target> parameter of glTexScissorINTEL and glTexScissorFuncINTEL
 
-	GL_S
-	GL_T
-	GL_R
+    GL_S
+    GL_T
+    GL_R
 
 Additions to Chapter 2 of the GL 1.1 Specification
 

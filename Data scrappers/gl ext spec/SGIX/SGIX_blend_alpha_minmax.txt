@@ -38,8 +38,8 @@ New Tokens
 
     Accepted by the <mode> parameter of BlendEquationEXT:
 
-	ALPHA_MIN_SGIX			 0x8320
-	ALPHA_MAX_SGIX			 0x8321
+    ALPHA_MIN_SGIX             0x8320
+    ALPHA_MAX_SGIX             0x8321
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)
 
@@ -55,9 +55,9 @@ and the Framebuffer)
     Two additional blending equations are defined.  If BlendEquationEXT is
     called with <mode> set to ALPHA_MIN_EXT, the blending equation becomes
 
-	      /  Cs	As <  Ad
-	C' = (
-	      \  Cd     As >= Ad
+          /  Cs    As <  Ad
+    C' = (
+          \  Cd     As >= Ad
 
     where C' is the color resulting from the blending operation,
     Cs and Cd are the source and destination colors, and As and Ad
@@ -66,9 +66,9 @@ and the Framebuffer)
     If BlendEquationEXT is called with <mode> set to ALPHA_MAX_SGIX, the
     blending equation becomes
 
-	      /  Cs	As >  Ad
-	C' = (
-	      \  Cd     As <= Ad
+          /  Cs    As >  Ad
+    C' = (
+          \  Cd     As <= Ad
 
     In both cases the blending equation is evaluated separately for each
     color component in a quadruplet.
@@ -106,9 +106,9 @@ New State
 
     Two new values of BLEND_EQUATION_EXT:
 
-    Get Value		Get Command	Type	Initial Value	Attribute
-    ---------		-----------	----	-------------	---------
-    BLEND_EQUATION_EXT	GetIntegerv	Z7	FUNC_ADD_EXT	color-buffer
+    Get Value        Get Command    Type    Initial Value    Attribute
+    ---------        -----------    ----    -------------    ---------
+    BLEND_EQUATION_EXT    GetIntegerv    Z7    FUNC_ADD_EXT    color-buffer
 
 New Implementation Dependent State
 

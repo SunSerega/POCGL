@@ -198,9 +198,9 @@ Errors
     DONT_CARE, TRUE, FALSE, FRONT, BACK, or FRONT_AND_BACK.
 
 New State
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
 
     VERTEX_DATA_HINT_PGI                GetIntegerv      Z       FALSE    
 

@@ -35,15 +35,15 @@ New Tokens
     ConvolutionParameterivEXT and ConvolutionParameterfvEXT, when the
     <pname> parameter is CONVOLUTION_BORDER_MODE_EXT:
 
-	IGNORE_BORDER_HP
-	CONSTANT_BORDER_HP
-	REPLICATE_BORDER_HP
+    IGNORE_BORDER_HP
+    CONSTANT_BORDER_HP
+    REPLICATE_BORDER_HP
 
     Accepted by the <pname> parameter of ConvolutionParameterivEXT,
     ConvolutionParameterfvEXT, GetConvolutionParameterivEXT, and
     GetConvolutionParameterfvEXT:
 
-	CONVOLUTION_BORDER_COLOR_HP
+    CONVOLUTION_BORDER_COLOR_HP
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -167,10 +167,10 @@ Errors
     or CONVOLUTION_BORDER_COLOR_HP.
 
 New State
-									 Initial
-    Get Value				Get Command		Type	  Value 	Attrib
-    ---------				-----------		----	 -------	------
-    CONVOLUTION_BORDER_COLOR_HP	   GetConvolutionParameterfvHP	 C	(0,0,0,0)	pixel
+                                     Initial
+    Get Value                Get Command        Type      Value     Attrib
+    ---------                -----------        ----     -------    ------
+    CONVOLUTION_BORDER_COLOR_HP       GetConvolutionParameterfvHP     C    (0,0,0,0)    pixel
 
 New Implementation Dependent State
 

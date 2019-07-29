@@ -40,47 +40,47 @@ Issues
 New Procedures and Functions
 
     int glXBindChannelToWindowSGIX( Display *display,
-			 int screen,
-			 int channel,
-			 Window window )
+             int screen,
+             int channel,
+             Window window )
 
     int glXChannelRectSGIX(  Display *display,
-			 int screen,
-			 int channel,
-			 int x,
-			 int y,
-			 int w,
-			 int h )
+             int screen,
+             int channel,
+             int x,
+             int y,
+             int w,
+             int h )
 
     int glXQueryChannelRectSGIX( Display *display,
-			 int screen,
-			 int channel,
-			 int *dx,
-			 int *dy,
-			 int *dw,
-			 int *dh )
+             int screen,
+             int channel,
+             int *dx,
+             int *dy,
+             int *dw,
+             int *dh )
 
     int glXQueryChannelDeltasSGIX( Display *display,
-			 int screen,
-			 int channel,
-			 int *x,
-			 int *y,
-			 int *w,
-			 int *h )
+             int screen,
+             int channel,
+             int *x,
+             int *y,
+             int *w,
+             int *h )
 
 
     int glXChannelRectSyncSGIX( Display *display,
-			 int screen,
-			 int channel,
-			 GLenum synctype)
+             int screen,
+             int channel,
+             GLenum synctype)
 
 
 New Tokens
 
     Accepted by the <synctype> parameter of glXChannelRectSyncSGIX.
 
-    GLX_SYNC_FRAME_SGIX			0x00000000
-    GLX_SYNC_SWAP_SGIX			0x00000001
+    GLX_SYNC_FRAME_SGIX            0x00000000
+    GLX_SYNC_SWAP_SGIX            0x00000001
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -146,12 +146,12 @@ New State
 
     Get Value                   Get Command             Type    Initial Value
     ---------                   -----------             ----    -------------
-    [deltas]			glXQueryChannelDeltasSGIX Z+	dx=4,dy=1,dw=4,dh=1 
-    [resize rect]		glXQueryChannelRectSGIX	 Z+	current pan/zoom rect
+    [deltas]            glXQueryChannelDeltasSGIX Z+    dx=4,dy=1,dw=4,dh=1 
+    [resize rect]        glXQueryChannelRectSGIX     Z+    current pan/zoom rect
 
 
 New Implementation Dependent State
 
     Get Value                   Get Command             Type    Initial Value
     ---------                   -----------             ----    -------------
-    [bound]						B	false
+    [bound]                        B    false

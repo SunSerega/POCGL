@@ -49,17 +49,17 @@ Overview
 
 Issues
 
-    *	Should SamplePatternSGIS be eliminated?  Does anyone use this feature?
+    *    Should SamplePatternSGIS be eliminated?  Does anyone use this feature?
 
-    *	Should GLX_SAMPLE_BUFFERS_SGIS and SAMPLE_BUFFERS_SGIS be eliminated?
-	Given the current specification, applications that query only
-	GLX_SAMPLES_SGIS will be written, taking zero to mean that there is
-	no multisample buffer.
+    *    Should GLX_SAMPLE_BUFFERS_SGIS and SAMPLE_BUFFERS_SGIS be eliminated?
+    Given the current specification, applications that query only
+    GLX_SAMPLES_SGIS will be written, taking zero to mean that there is
+    no multisample buffer.
 
 New Procedures and Functions
 
     void SampleMaskSGIS(clampf value,
-		        boolean invert);
+                boolean invert);
 
     void SamplePatternSGIS(enum pattern);
 
@@ -82,7 +82,7 @@ New Tokens
 
     Accepted by the <mask> parameter of PushAttrib:
 
-	MULTISAMPLE_BIT_EXT		0x20000000
+    MULTISAMPLE_BIT_EXT        0x20000000
 
     Accepted by the <pattern> parameter of SamplePatternSGIS:
 
@@ -250,11 +250,11 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     mth row, consider the region in window coordinates bounded by the
     rectangle with corners
 
-	(Xrp + Zx*n, Yrp + Zy*m)
+    (Xrp + Zx*n, Yrp + Zy*m)
 
     and
 
-	(Xrp + Zx*(n+1), Yrp + Zy*(m+1))
+    (Xrp + Zx*(n+1), Yrp + Zy*(m+1))
 
     where Zx and Zy are the pixel zoom factors specified by PixelZoom,
     and may each be either positive or negative.  A fragment representing
@@ -406,7 +406,7 @@ and the Frame Buffer)
     more color buffers are cleared, as specified by the Clear mask bit
     COLOR_BUFFER_BIT and the DrawBuffers mode.  If the DrawBuffers mode is
     NONE, the color samples of the multisample buffer cannot be cleared.
-	
+    
     Clear mask bits DEPTH_BUFFER_BIT and STENCIL_BUFFER_BIT indicate that
     the depth and stencil samples of the multisample buffer are to be
     cleared.  If Clear mask bit DEPTH_BUFFER_BIT is specified, and if
@@ -503,19 +503,19 @@ Errors
 
 New State
 
-    Get Value			Get Command	Type	Initial Value	Attribute
-    ---------			-----------	----	-------------	---------
-    MULTISAMPLE_SGIS		IsEnabled	B	TRUE		multisample/enable
-    SAMPLE_ALPHA_TO_MASK_SGIS	IsEnabled	B	FALSE		multisample/enable
-    SAMPLE_ALPHA_TO_ONE_SGIS	IsEnabled	B	FALSE		multisample/enable
-    SAMPLE_MASK_SGIS		IsEnabled	B	FALSE		multisample/enable
-    SAMPLE_MASK_VALUE_SGIS	GetFloatv	R+	1		multisample
-    SAMPLE_MASK_INVERT_SGIS	GetBooleanv	B	FALSE		multisample
-    SAMPLE_PATTERN_SGIS		GetIntegerv	Z7	1PASS_SGIS	multisample
+    Get Value            Get Command    Type    Initial Value    Attribute
+    ---------            -----------    ----    -------------    ---------
+    MULTISAMPLE_SGIS        IsEnabled    B    TRUE        multisample/enable
+    SAMPLE_ALPHA_TO_MASK_SGIS    IsEnabled    B    FALSE        multisample/enable
+    SAMPLE_ALPHA_TO_ONE_SGIS    IsEnabled    B    FALSE        multisample/enable
+    SAMPLE_MASK_SGIS        IsEnabled    B    FALSE        multisample/enable
+    SAMPLE_MASK_VALUE_SGIS    GetFloatv    R+    1        multisample
+    SAMPLE_MASK_INVERT_SGIS    GetBooleanv    B    FALSE        multisample
+    SAMPLE_PATTERN_SGIS        GetIntegerv    Z7    1PASS_SGIS    multisample
 
 New Implementation Dependent State
 
-    Get Value		Get Command	Type	Minimum Value
-    ---------		-----------	----	-------------
-    SAMPLE_BUFFERS_SGIS	GetIntegerv	Z+	0
-    SAMPLES_SGIS	GetIntegerv	Z+	0
+    Get Value        Get Command    Type    Minimum Value
+    ---------        -----------    ----    -------------
+    SAMPLE_BUFFERS_SGIS    GetIntegerv    Z+    0
+    SAMPLES_SGIS    GetIntegerv    Z+    0

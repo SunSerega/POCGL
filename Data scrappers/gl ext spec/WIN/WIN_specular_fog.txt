@@ -218,9 +218,9 @@ Errors
 
 New State
                                                            Initial
-    Get Value                         Get Command   Type    Value 	Attrib
-    ---------                         -----------   ----    ------- 	------
-    FOG_SPECULAR_TEXTURE_WIN          IsEnabled     B       GL_FALSE 	WIN_specular_fog/enable
+    Get Value                         Get Command   Type    Value     Attrib
+    ---------                         -----------   ----    -------     ------
+    FOG_SPECULAR_TEXTURE_WIN          IsEnabled     B       GL_FALSE     WIN_specular_fog/enable
 
 New Implementation Dependent State
 

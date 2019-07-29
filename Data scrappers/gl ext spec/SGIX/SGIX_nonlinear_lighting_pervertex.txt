@@ -34,7 +34,7 @@ Overview
     The fundamental equation for nonlinear reflectance can be expressed
     as the following weighte dot-product:
 
-	Fr(u,v) = Ps*(Cx*ux*vx + Cy*uy*vy + Cz*uz*vz)^n
+    Fr(u,v) = Ps*(Cx*ux*vx + Cy*uy*vy + Cz*uz*vz)^n
 
     Where: u  = light vector at a vertex
            v  = eye vector at a vertex
@@ -52,13 +52,13 @@ Overview
     same format as Fr:
 
 
-	Fr(u,v) = Sum(i,N)(Cx,i*ux*vx + Cy,i*uy*vy + Cz,i*uz*vz)^ni
+    Fr(u,v) = Sum(i,N)(Cx,i*ux*vx + Cy,i*uy*vy + Cz,i*uz*vz)^ni
 
     Where the reflectance at a point is defined by the sum of N
     expressions.  Each dot product is characterized by the following
     coefficients:
 
-	Ci = coefficient vectors with with color absorbed
+    Ci = coefficient vectors with with color absorbed
         ni = specular exponents
 
     In the context of OpenGL, it makes sense to make the magnitude of
@@ -79,11 +79,11 @@ Issues
         to OpenGL 1.1 materials) with a material, should a "Material Object"
         extension be considered?
 
-    *	Should Nonlinear Lighting be allowed in Color_Index mode?
+    *    Should Nonlinear Lighting be allowed in Color_Index mode?
 
-    *	Should the vertex colors be clamped positive?  This will inhibit multipassing...
+    *    Should the vertex colors be clamped positive?  This will inhibit multipassing...
 
-    *	Are there any dependencies on other extensions?
+    *    Are there any dependencies on other extensions?
 
 
 New Procedures and Functions
@@ -175,7 +175,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     
     c = ecm + acm*acs +
 
-	sum<i=0,n-1>(sum<j=0,min(tnlm, tnll)-1>(acm*acli +
+    sum<i=0,n-1>(sum<j=0,min(tnlm, tnll)-1>(acm*acli +
                      (fi)(nx*hx*wcmx,j + ny*hy*wcmy,j + nz*hz*wcmzj)^srm,j *
                           ccm,j*ncli,j))
 
@@ -196,17 +196,17 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     ... <table 2.8>
 
     Nonlinear Material Parameters(NonlinMaterial)
-    wcm,j	WEIGHT		3*terms
-    ccm,j	COLOR		4*terms
-    srm,j	SHININESS       terms
-    tnlm	terms		1
+    wcm,j    WEIGHT        3*terms
+    ccm,j    COLOR        4*terms
+    srm,j    SHININESS       terms
+    tnlm    terms        1
 
     ...
 
     Nonlinear Light Source Parameters(NonlinLight)
     
-    ncli,j	COLOR		4*terms
-    tnll	terms		1
+    ncli,j    COLOR        4*terms
+    tnll    terms        1
 
     Section 2.13.3  ColorMaterial
 
@@ -301,24 +301,24 @@ Errors
     is not COLOR, SHININESS, or WEIGHT.
 
 New State
-									Initial
-    Get Value				Get Command		Type	Value		Attrib
-    ---------				-----------		----	-------		------
+                                    Initial
+    Get Value                Get Command        Type    Value        Attrib
+    ---------                -----------        ----    -------        ------
 
-    NONLINEAR_LIGHTING_SGIX		IsEnabled		B	False		lighting/enable
-    COLOR_SGIX				GetNonlinLightfvSGIX	1*xC    ()		lighting
-    COLOR_SGIX				GetNonlinMaterialfvSGIX	1*xC	()		lighting
-    WEIGHT_SGIX				GetNonlinMaterialfvSGIX	1*xW	(1.0,1.0,1.0)	lighting
-    SHININESS				GetNonlinMaterialfvSGIX 1*xR	1.0		lighting
-    (material color terms)		GetNonlinMaterialfvSGIX	Z+	0		lighting
-    (light color terms)			GetNonlinLightfvSGIX	Z+	0		lighting
-    (material weight terms)		GetNonlinMaterialfvSGIX	Z+	0		lighting
-    (material shininess terms)		GetNonlinMaterialfvSGIX	Z+	0		lighting
+    NONLINEAR_LIGHTING_SGIX        IsEnabled        B    False        lighting/enable
+    COLOR_SGIX                GetNonlinLightfvSGIX    1*xC    ()        lighting
+    COLOR_SGIX                GetNonlinMaterialfvSGIX    1*xC    ()        lighting
+    WEIGHT_SGIX                GetNonlinMaterialfvSGIX    1*xW    (1.0,1.0,1.0)    lighting
+    SHININESS                GetNonlinMaterialfvSGIX 1*xR    1.0        lighting
+    (material color terms)        GetNonlinMaterialfvSGIX    Z+    0        lighting
+    (light color terms)            GetNonlinLightfvSGIX    Z+    0        lighting
+    (material weight terms)        GetNonlinMaterialfvSGIX    Z+    0        lighting
+    (material shininess terms)        GetNonlinMaterialfvSGIX    Z+    0        lighting
 
 
 New Implementation Dependent State
-										Minimum
-    Get Value				Get Command		Type		Value
-    ---------				-----------		----		-------
-    MAX_NONLIN_LIGHTS_SGIX		GetInteger		Z+              1
-    MAX_NONLIN_TERMS_SGIX		GetIngeger		Z+		12
+                                        Minimum
+    Get Value                Get Command        Type        Value
+    ---------                -----------        ----        -------
+    MAX_NONLIN_LIGHTS_SGIX        GetInteger        Z+              1
+    MAX_NONLIN_TERMS_SGIX        GetIngeger        Z+        12

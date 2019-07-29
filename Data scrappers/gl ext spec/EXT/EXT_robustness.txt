@@ -290,8 +290,8 @@ Issues
     2.  How does this extension differ from Desktop GL's ARB_robustness?
 
         RESOLVED: Because EGL_EXT_create_context_robustness uses a
-	separate attribute to enable robust buffer access, a
-	corresponding query is added here.
+    separate attribute to enable robust buffer access, a
+    corresponding query is added here.
 
     3.  Should we provide a context creation mechanism to enable this extension?
 
@@ -299,8 +299,8 @@ Issues
 
         Currently, EGL_EXT_create_context_robustness provides this
         mechanism via two unique attributes. These attributes differ
-	from those specified by KHR_create_context to allow for
-	differences in what functionality those attributes define.
+    from those specified by KHR_create_context to allow for
+    differences in what functionality those attributes define.
         
     4. What can cause a graphics reset?
 

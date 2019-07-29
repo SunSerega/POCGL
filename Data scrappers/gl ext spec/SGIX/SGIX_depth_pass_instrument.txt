@@ -43,7 +43,7 @@ Issues
     *   Should we count fragments drawn when the depth test was
         disabled? 
 
-	A: Doesn't seem to be a strong reason to do this one way or
+    A: Doesn't seem to be a strong reason to do this one way or
            the other -- let's treat disabled depth test the same as a
            depth func of ALWAYS.
 
@@ -145,10 +145,10 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     DEPTH_PASS_INSTRUMENT_SGIX responses are formatted as follows
     (starting at the first word):
 
-	DEPTH_PASS_INSTRUMENT_SGIX
-	Number of int's in the response (4)
-	Counter value
-	Marker value
+    DEPTH_PASS_INSTRUMENT_SGIX
+    Number of int's in the response (4)
+    Counter value
+    Marker value
 
     The counter value is padded to the size of an unsigned int if
     necessary by zero-filling the most significant bits.
@@ -179,12 +179,12 @@ Errors
 
 New State
 
-    Get Value				Get Command		Type	Initial Value		Attribute
-    ---------				-----------		----	-------------		---------
-    DEPTH_PASS_INSTRUMENT_SGIX		ReadInstrumentsSGIX	1*xZ+	0			-
+    Get Value                Get Command        Type    Initial Value        Attribute
+    ---------                -----------        ----    -------------        ---------
+    DEPTH_PASS_INSTRUMENT_SGIX        ReadInstrumentsSGIX    1*xZ+    0            -
 
 New Implementation Dependent State
 
-    Get Value				Get Command		Type	Minimum Value
-    ---------				-----------		----	-------------
-    DEPTH_PASS_INSTRUMENT_COUNTERS_SGIX	GetIntegerv		Z+      1
+    Get Value                Get Command        Type    Minimum Value
+    ---------                -----------        ----    -------------
+    DEPTH_PASS_INSTRUMENT_COUNTERS_SGIX    GetIntegerv        Z+      1

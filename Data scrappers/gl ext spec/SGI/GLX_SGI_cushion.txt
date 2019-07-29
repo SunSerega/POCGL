@@ -52,22 +52,22 @@ Overview
     walk-through, and multimedia playback.
 
     WARNING - Silicon Graphics has filed for patent protection for some
-	      of the techniques described in this extension document.
+          of the techniques described in this extension document.
 
 Issues
 
-    *	This spec should talk about the vertical retrace interrupt, but I
-	can't find any mention of it in any other extension.  Where is such
-	an interrupt specified?
+    *    This spec should talk about the vertical retrace interrupt, but I
+    can't find any mention of it in any other extension.  Where is such
+    an interrupt specified?
 
-    *	Are additional queries of rendering performance required to make
-	extension useful?
+    *    Are additional queries of rendering performance required to make
+    extension useful?
 
-    *	How should this extension interact with SGI_video_sync?
+    *    How should this extension interact with SGI_video_sync?
 
-    *	How is the cushion value queried?
+    *    How is the cushion value queried?
 
-    *	Can this be implemented efficiently on current hardware systems?
+    *    Can this be implemented efficiently on current hardware systems?
 
 New Procedures and Functions
 
@@ -78,7 +78,7 @@ New Tokens
     Accepted by the <attribList> parameter of glXChooseVisual, and by the
     <attrib> parameter of glXGetConfig:
 
-	GLX_CUSHION_BUFFERS_SGI
+    GLX_CUSHION_BUFFERS_SGI
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -135,7 +135,7 @@ Additions to the GLX Specification
 
     The new command
 
-	voidglXCushionSGI(Display *dpy, Window window, float cushion)
+    voidglXCushionSGI(Display *dpy, Window window, float cushion)
 
     specifies a cushion value for a window.  This value is silently clamped
     to the continuous range [0,N], where N is the number of cushion buffers.
@@ -169,24 +169,24 @@ Additions to the GLX Specification
     Notes
     -----
 
-	*   This extension is designed so that cushion buffers can be added
-	    to existing visuals.  It is intended that the semantics of this
-	    extension be identical to the pre-extension semantics while the
-	    cushion value is zero.  Cushion buffers need not be allocated
-	    until the cushion is set greater than zero.
+    *   This extension is designed so that cushion buffers can be added
+        to existing visuals.  It is intended that the semantics of this
+        extension be identical to the pre-extension semantics while the
+        cushion value is zero.  Cushion buffers need not be allocated
+        until the cushion is set greater than zero.
 
-	*   The extension can be implemented with data copies, in which case
-	    a potentially large number of cushion buffers can be supported.
-	    Or it can be implemented using the 4 stereo buffers (and while
-	    holding the left/right signal constant at right).  Using the
-	    stereo buffers eliminates the need for data copies, thus
-	    increasing the performance.
+    *   The extension can be implemented with data copies, in which case
+        a potentially large number of cushion buffers can be supported.
+        Or it can be implemented using the 4 stereo buffers (and while
+        holding the left/right signal constant at right).  Using the
+        stereo buffers eliminates the need for data copies, thus
+        increasing the performance.
 
-	*   This specification applies to both mono and stereo visuals,
-	    but implementations will probably not support stereo visuals.
+    *   This specification applies to both mono and stereo visuals,
+        but implementations will probably not support stereo visuals.
 
-	*   An implementation can support the extension without providing
-	    any cushion buffer visuals.
+    *   An implementation can support the extension without providing
+        any cushion buffer visuals.
 
 GLX Protocol
 
@@ -209,10 +209,10 @@ Errors
     XXX - not done yet
 
 New State
-						Initial
-    Get Value		Get Command	Type	Value	Attrib
-    ---------		-----------	----	-------	------
-    GLX_CUSHION_SGI	?		Z+	0.0	window state
+                        Initial
+    Get Value        Get Command    Type    Value    Attrib
+    ---------        -----------    ----    -------    ------
+    GLX_CUSHION_SGI    ?        Z+    0.0    window state
 
 New Implementation Dependent State
 

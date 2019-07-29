@@ -152,7 +152,7 @@ New Procedures and Functions
   an object buffer:
 
     void VariantArrayObjectATI(uint id, enum type, sizei stride,
-			       uint buffer, uint offset)
+                   uint buffer, uint offset)
 
   If EXT_vertex_shader is defined, for querying variant arrays inside
   an object buffer:
@@ -161,7 +161,7 @@ New Procedures and Functions
                                     float *params)
 
     void GetVariantArrayObjectivATI(uint id, enum pname,
-				    int *params)
+                    int *params)
 
 
 New Tokens
@@ -307,8 +307,8 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     If EXT_vertex_shader is defined, then a client can define an array
     of variant data using the command:
 
-	void VariantArrayObjectATI(uint id, enum type, sizei stride,
-				   uint buffer, uint offset);
+    void VariantArrayObjectATI(uint id, enum type, sizei stride,
+                   uint buffer, uint offset);
 
     <id> indicates the variant that this array should be associated
     with.  The <type>, <stride>, <buffer>, and <offset> parameters

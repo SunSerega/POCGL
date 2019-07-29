@@ -45,7 +45,7 @@ New Tokens
     ConvolutionParameterivEXT and ConvolutionParameterfvEXT, when the
     <pname> parameter is CONVOLUTION_BORDER_MODE_EXT:
 
-	WRAP_BORDER_SUN				0x81D4
+    WRAP_BORDER_SUN                0x81D4
 
 Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
 

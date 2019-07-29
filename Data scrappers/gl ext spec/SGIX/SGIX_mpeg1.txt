@@ -144,22 +144,22 @@ Reasoning
 New Procedures and Functions
 
     void GenMPEGPredictorsSGIX(sizei n,
-			       uint *predictors);
+                   uint *predictors);
 
     void AllocMPEGPredictorsSGIX(sizei width, 
-				 sizei height, 
-				 sizei n,
-				 uint *predictors);
+                 sizei height, 
+                 sizei n,
+                 uint *predictors);
 
     void DeleteMPEGPredictorsSGIX(sizei n,
-				  uint *predictors);
+                  uint *predictors);
 
     boolean IsMPEGPredictorSGIX(uint predictor);
 
     void MPEGPredictorSGIX(enum target, 
-			   enum format,
-			   enum type,
-			   void *pixels);
+               enum format,
+               enum type,
+               void *pixels);
 
     void GetMPEGPredictorSGIX(enum target,
                               enum format,
@@ -167,21 +167,21 @@ New Procedures and Functions
                               void *pixels);
 
     void SwapMPEGPredictorsSGIX(enum target0, 
-				enum target1);
+                enum target1);
 
     void GetMPEGParameterfvSGIX(enum target,
-				enum pname,
-				float *params);
+                enum pname,
+                float *params);
 
     void GetMPEGParameterivSGIX(enum target, 
-				enum pname,
-				int *params);
+                enum pname,
+                int *params);
 
     void MPEGQuantTableubv(enum target,
-			   ubyte *values);
+               ubyte *values);
 
     void GetMPEGQuantTableubv(enum target,
-			      ubyte *values);
+                  ubyte *values);
 
 New Tokens
 
@@ -191,45 +191,45 @@ New Tokens
     and PixelStorei; and by the <pname> parameter of GetBooleanv,
     GetIntegerv, GetFloatv, and GetDoublev:
 
-        PACK_MPEG_PREDICTOR_FWD_SGIX			????
-        PACK_MPEG_PREDICTOR_BACK_SGIX			????
+        PACK_MPEG_PREDICTOR_FWD_SGIX            ????
+        PACK_MPEG_PREDICTOR_BACK_SGIX            ????
 
-        UNPACK_MPEG_PREDICTOR_FWD_SGIX			????
-        UNPACK_MPEG_PREDICTOR_BACK_SGIX			????
+        UNPACK_MPEG_PREDICTOR_FWD_SGIX            ????
+        UNPACK_MPEG_PREDICTOR_BACK_SGIX            ????
 
     Accepted by the <pname> parameter of PixelStoref, PixelStorei,
     GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
 
-        PACK_MPEG_PREDICTOR_STORE_SGIX			????
-	PACK_MPEG_PREDICTOR_STORE_SINK_SGIX		????
-	PACK_MPEG_PREDICTOR_READ_SGIX			????
-        UNPACK_MPEG_PREDICTOR_STORE_SGIX		????
-	UNPACK_MPEG_PREDICTOR_STORE_SINK_SGIX		????
-	UNPACK_MPEG_PREDICTOR_READ_SGIX			????
+        PACK_MPEG_PREDICTOR_STORE_SGIX            ????
+    PACK_MPEG_PREDICTOR_STORE_SINK_SGIX        ????
+    PACK_MPEG_PREDICTOR_READ_SGIX            ????
+        UNPACK_MPEG_PREDICTOR_STORE_SGIX        ????
+    UNPACK_MPEG_PREDICTOR_STORE_SINK_SGIX        ????
+    UNPACK_MPEG_PREDICTOR_READ_SGIX            ????
 
-        PACK_MPEG_PICTURE_TYPE_SGIX			????
-        PACK_MPEG_ADAPT_QUANT_SCALE			????
+        PACK_MPEG_PICTURE_TYPE_SGIX            ????
+        PACK_MPEG_ADAPT_QUANT_SCALE            ????
 
     Accepted by the <param> parameter of PixelStoref and PixelStorei:
 
-        MPEG1_SGIX					????
-        MPEG_IFRAME_SGIX				????
-        MPEG_PFRAME_SGIX				????
-        MPEG_BFRAME_SGIX				????
+        MPEG1_SGIX                    ????
+        MPEG_IFRAME_SGIX                ????
+        MPEG_PFRAME_SGIX                ????
+        MPEG_BFRAME_SGIX                ????
 
     Accepted by the <pname> parameter of GetMPEGParameterfvSGIX and
     GetMPEGParameterivSGIX:
 
-        MPEG_PREDICTOR_WIDTH_SGIX			????
-        MPEG_PREDICTOR_HEIGHT_SGIX			????
+        MPEG_PREDICTOR_WIDTH_SGIX            ????
+        MPEG_PREDICTOR_HEIGHT_SGIX            ????
 
     Accepted by the <target> parameter of MPEGQuantTableubv and
     GetMPEGQuantTableubv:
 
-	PACK_MPEG_INTRA_QUANT				????
-	PACK_MPEG_NON_INTRA_QUANT			????
-	UNPACK_MPEG_INTRA_QUANT				????
-	UNPACK_MPEG_NON_INTRA_QUANT			????
+    PACK_MPEG_INTRA_QUANT                ????
+    PACK_MPEG_NON_INTRA_QUANT            ????
+    UNPACK_MPEG_INTRA_QUANT                ????
+    UNPACK_MPEG_NON_INTRA_QUANT            ????
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -240,13 +240,13 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     The pixel storage modes are augmented to support MPEG compressed
     images in memory.  The following entries are added to Table 3.1:
 
-	Parameter Name				Type		Initial Value	Valid Range
-	--------------				----		-------------	-----------
-	UNPACK_MPEG_PREDICTOR_FWD_SGIX		integer		0	        [0, infinity]
-	UNPACK_MPEG_PREDICTOR_BACK_SGIX		integer		0	        [0, infinity]
-	UNPACK_MPEG_PREDICTOR_STORE_SGIX	Z3		NONE		NONE, UNPACK_MPEG_PREDICTOR_FWD_SGIX, UNPACK_MPEG_PREDICTOR_BACK_SGIX
-	UNPACK_MPEG_PREDICTOR_STORE_SINK_SGIX	boolean		FALSE		
-	UNPACK_MPEG_PREDICTOR_READ_SGIX		Z3		NONE		NONE, UNPACK_MPEG_PREDICTOR_FWD_SGIX, UNPACK_MPEG_PREDICTOR_BACK_SGIX
+    Parameter Name                Type        Initial Value    Valid Range
+    --------------                ----        -------------    -----------
+    UNPACK_MPEG_PREDICTOR_FWD_SGIX        integer        0            [0, infinity]
+    UNPACK_MPEG_PREDICTOR_BACK_SGIX        integer        0            [0, infinity]
+    UNPACK_MPEG_PREDICTOR_STORE_SGIX    Z3        NONE        NONE, UNPACK_MPEG_PREDICTOR_FWD_SGIX, UNPACK_MPEG_PREDICTOR_BACK_SGIX
+    UNPACK_MPEG_PREDICTOR_STORE_SINK_SGIX    boolean        FALSE        
+    UNPACK_MPEG_PREDICTOR_READ_SGIX        Z3        NONE        NONE, UNPACK_MPEG_PREDICTOR_FWD_SGIX, UNPACK_MPEG_PREDICTOR_BACK_SGIX
 
     Additionally, the value MPEG1_SGIX is added to the valid range of
     PACK_COMPRESSION_TYPE_SGIX and UNPACK_COMPRESSION_TYPE_SGIX.
@@ -296,7 +296,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     the command:
 
         AllocMPEGPredictorsSGIX( sizei width, sizei height, 
-				 sizei n, uint *predictors );
+                 sizei n, uint *predictors );
 
     This function associates an image of size <width> by <height> with
     each of the <n> predictors whose names are in <predictors>.  The
@@ -337,7 +337,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     The command
 
         MPEGPredictorSGIX(enum target, enum format, enum type, 
-			  void *pixels);
+              void *pixels);
 
     is used to download images from client memory to the predictor
     bound to the bind point <target>.  If <target> is not the name of
@@ -502,15 +502,15 @@ and the Frame Buffer)
 
     The following entries are added to Table 4.5:
 
-	Parameter Name				Type		Initial Value	Valid Range
-	--------------				----		-------------	-----------
-	PACK_MPEG_PREDICTOR_FWD_SGIX		integer		0	        [0, infinity]
-	PACK_MPEG_PREDICTOR_BACK_SGIX		integer		0	        [0, infinity]
-	PACK_MPEG_PREDICTOR_STORE_SGIX		Z3		NONE    	NONE, PACK_MPEG_PREDICTOR_FWD_SGIX, PACK_MPEG_PREDICTOR_BACK_SGIX
-	PACK_MPEG_PREDICTOR_STORE_SINK_SGIX	boolean		FALSE		TRUE/FALSE
-	PACK_MPEG_PREDICTOR_READ_SGIX		Z3		NONE		NONE, PACK_MPEG_PREDICTOR_FWD_SGIX, PACK_MPEG_PREDICTOR_BACK_SGIX
-	PACK_MPEG_PICTURE_TYPE_SGIX		Z3		NONE		MPEG_IFRAME_SGIX, MPEG_PFRAME_SGIX, MPEG_BFRAME_SGIX
-	PACK_MPEG_ADAPT_QUANT_SCALE		b		FALSE		TRUE/FALSE
+    Parameter Name                Type        Initial Value    Valid Range
+    --------------                ----        -------------    -----------
+    PACK_MPEG_PREDICTOR_FWD_SGIX        integer        0            [0, infinity]
+    PACK_MPEG_PREDICTOR_BACK_SGIX        integer        0            [0, infinity]
+    PACK_MPEG_PREDICTOR_STORE_SGIX        Z3        NONE        NONE, PACK_MPEG_PREDICTOR_FWD_SGIX, PACK_MPEG_PREDICTOR_BACK_SGIX
+    PACK_MPEG_PREDICTOR_STORE_SINK_SGIX    boolean        FALSE        TRUE/FALSE
+    PACK_MPEG_PREDICTOR_READ_SGIX        Z3        NONE        NONE, PACK_MPEG_PREDICTOR_FWD_SGIX, PACK_MPEG_PREDICTOR_BACK_SGIX
+    PACK_MPEG_PICTURE_TYPE_SGIX        Z3        NONE        MPEG_IFRAME_SGIX, MPEG_PFRAME_SGIX, MPEG_BFRAME_SGIX
+    PACK_MPEG_ADAPT_QUANT_SCALE        b        FALSE        TRUE/FALSE
 
     The following is added to the "Packing of Compressed Images"
     subsection following the paragraph beginning "If image compression
@@ -632,7 +632,7 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
     The routines
     
         void GetMPEGParameterfvSGIX(enum target, enum pname, 
-		                    float *params);
+                            float *params);
 
     and
 
@@ -747,60 +747,60 @@ Errors
     corresponding execution of End.
 
 New State
-										Initial
-    Get Value					Get Command		Type	Value				Attrib
-    ---------					-----------		----	-------				------
-    PACK_MPEG_PREDICTOR_DST_SGIX		GetIntegerv		Z+	0				client
-    PACK_MPEG_PREDICTOR_SRC_SGIX		GetIntegerv		Z+	0				client
-    PACK_MPEG_PREDICTOR_FWD_SGIX		GetIntegerv		Z+	0				client
-    PACK_MPEG_PREDICTOR_BACK_SGIX		GetIntegerv		Z+	0				client
-    UNPACK_MPEG_PREDICTOR_DST_SGIX		GetIntegerv		Z+	0				client
-    UNPACK_MPEG_PREDICTOR_SRC_SGIX		GetIntegerv		Z+	0				client
-    UNPACK_MPEG_PREDICTOR_FWD_SGIX		GetIntegerv		Z+	0				client
-    UNPACK_MPEG_PREDICTOR_BACK_SGIX		GetIntegerv		Z+	0				client
+                                        Initial
+    Get Value                    Get Command        Type    Value                Attrib
+    ---------                    -----------        ----    -------                ------
+    PACK_MPEG_PREDICTOR_DST_SGIX        GetIntegerv        Z+    0                client
+    PACK_MPEG_PREDICTOR_SRC_SGIX        GetIntegerv        Z+    0                client
+    PACK_MPEG_PREDICTOR_FWD_SGIX        GetIntegerv        Z+    0                client
+    PACK_MPEG_PREDICTOR_BACK_SGIX        GetIntegerv        Z+    0                client
+    UNPACK_MPEG_PREDICTOR_DST_SGIX        GetIntegerv        Z+    0                client
+    UNPACK_MPEG_PREDICTOR_SRC_SGIX        GetIntegerv        Z+    0                client
+    UNPACK_MPEG_PREDICTOR_FWD_SGIX        GetIntegerv        Z+    0                client
+    UNPACK_MPEG_PREDICTOR_BACK_SGIX        GetIntegerv        Z+    0                client
 
-    PACK_MPEG_PREDICTOR_TO_DST_SGI		GetIntegerv		B	0				client
-    PACK_MPEG_PREDICTOR_FROM_SRC_SGIX		GetIntegerv		B	0				client
-    PACK_MPEG_PREDICTOR_TO_DST_SINK_SGIX	GetIntegerv		B	0				client
-    UNPACK_MPEG_PREDICTOR_TO_DST_SGIX		GetIntegerv		B	0				client
-    UNPACK_MPEG_PREDICTOR_FROM_SRC_SGIX		GetIntegerv		B	0				client
-    UNPACK_MPEG_PREDICTOR_TO_DST_SINK_SGIX	GetIntegerv		B	0				client
+    PACK_MPEG_PREDICTOR_TO_DST_SGI        GetIntegerv        B    0                client
+    PACK_MPEG_PREDICTOR_FROM_SRC_SGIX        GetIntegerv        B    0                client
+    PACK_MPEG_PREDICTOR_TO_DST_SINK_SGIX    GetIntegerv        B    0                client
+    UNPACK_MPEG_PREDICTOR_TO_DST_SGIX        GetIntegerv        B    0                client
+    UNPACK_MPEG_PREDICTOR_FROM_SRC_SGIX        GetIntegerv        B    0                client
+    UNPACK_MPEG_PREDICTOR_TO_DST_SINK_SGIX    GetIntegerv        B    0                client
 
-    PACK_MPEG_INTRA_QUANT			GetMPEGQuantTableubv	64*Z+	( 8,16,19,22,26,27,29,34,	client
-										 16,16,22,24,47,49,34,37,
-										 19,22,26,27,29,34,34,38,
-										 22,22,26,27,29,34,37,40,
-										 22,26,27,29,32,35,40,48,
-										 26,27,29,32,35,40,48,58,
-										 26,27,29,34,38,46,56,69,
-										 27,29,35,38,46,56,69,83)
-    PACK_MPEG_NON_INTRA_QUANT			GetMPEGQuantTableubv	64*Z+	(16,16,16,16,16,16,16,16,	client
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16)
-    UNPACK_MPEG_INTRA_QUANT			GetMPEGQuantTableubv	64*Z+	( 8,16,19,22,26,27,29,34,	client
-										 16,16,22,24,47,49,34,37,
-										 19,22,26,27,29,34,34,38,
-										 22,22,26,27,29,34,37,40,
-										 22,26,27,29,32,35,40,48,
-										 26,27,29,32,35,40,48,58,
-										 26,27,29,34,38,46,56,69,
-										 27,29,35,38,46,56,69,83)
-    UNPACK_MPEG_NON_INTRA_QUANT			GetMPEGQuantTableubv	64*Z+	(16,16,16,16,16,16,16,16,	client
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16,
-										 16,16,16,16,16,16,16,16)
-    MPEG_PREDICTOR_WIDTH_SGIX			GetMPEGParameterivSGIX	3 x Z+	0				client
-    MPEG_PREDICTOR_HEIGHT_SGIX			GetMPEGParameterivSGIX	3 x Z+	0				client
+    PACK_MPEG_INTRA_QUANT            GetMPEGQuantTableubv    64*Z+    ( 8,16,19,22,26,27,29,34,    client
+                                         16,16,22,24,47,49,34,37,
+                                         19,22,26,27,29,34,34,38,
+                                         22,22,26,27,29,34,37,40,
+                                         22,26,27,29,32,35,40,48,
+                                         26,27,29,32,35,40,48,58,
+                                         26,27,29,34,38,46,56,69,
+                                         27,29,35,38,46,56,69,83)
+    PACK_MPEG_NON_INTRA_QUANT            GetMPEGQuantTableubv    64*Z+    (16,16,16,16,16,16,16,16,    client
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16)
+    UNPACK_MPEG_INTRA_QUANT            GetMPEGQuantTableubv    64*Z+    ( 8,16,19,22,26,27,29,34,    client
+                                         16,16,22,24,47,49,34,37,
+                                         19,22,26,27,29,34,34,38,
+                                         22,22,26,27,29,34,37,40,
+                                         22,26,27,29,32,35,40,48,
+                                         26,27,29,32,35,40,48,58,
+                                         26,27,29,34,38,46,56,69,
+                                         27,29,35,38,46,56,69,83)
+    UNPACK_MPEG_NON_INTRA_QUANT            GetMPEGQuantTableubv    64*Z+    (16,16,16,16,16,16,16,16,    client
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16,
+                                         16,16,16,16,16,16,16,16)
+    MPEG_PREDICTOR_WIDTH_SGIX            GetMPEGParameterivSGIX    3 x Z+    0                client
+    MPEG_PREDICTOR_HEIGHT_SGIX            GetMPEGParameterivSGIX    3 x Z+    0                client
 
 New Implementation Dependent State
 
-	None.
+    None.

@@ -48,40 +48,40 @@ Overview
 New Procedures and Functions
 
     void TexImage4DSGIS(enum target,
-		        int level,
-		        enum internalformat,
-		        sizei width,
-		        sizei height,
-		        sizei depth,
-		        sizei extent,
-		        int border,
-		        enum format,
-		        enum type,
-		        const void* pixels);
+                int level,
+                enum internalformat,
+                sizei width,
+                sizei height,
+                sizei depth,
+                sizei extent,
+                int border,
+                enum format,
+                enum type,
+                const void* pixels);
 
     void TexSubImage4DSGIS(enum target,
-		 	   int level,
-			   int xoffset,
-		 	   int yoffset,
-			   int zoffset,
-			   int woffset,
-			   sizei width,
-			   sizei height,
-			   sizei depth,
-			   sizei extent,
-			   enum format,
-			   enum type,
-			   const void* pixels);
+                int level,
+               int xoffset,
+                int yoffset,
+               int zoffset,
+               int woffset,
+               sizei width,
+               sizei height,
+               sizei depth,
+               sizei extent,
+               enum format,
+               enum type,
+               const void* pixels);
 
 New Tokens
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev, and by the <pname> parameter of PixelStore:
 
-	PACK_SKIP_VOLUMES_SGIS
-	PACK_IMAGE_DEPTH_SGIS
-	UNPACK_SKIP_VOLUMES_SGIS
-	UNPACK_IMAGE_DEPTH_SGIS
+    PACK_SKIP_VOLUMES_SGIS
+    PACK_IMAGE_DEPTH_SGIS
+    UNPACK_SKIP_VOLUMES_SGIS
+    UNPACK_IMAGE_DEPTH_SGIS
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled, by
     the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv, and
@@ -89,28 +89,28 @@ New Tokens
     GetTexLevelParameteriv, GetTexLevelParameterfv, GetTexParameteriv, and
     GetTexParameterfv:
 
-	TEXTURE_4D_SGIS
+    TEXTURE_4D_SGIS
 
     Accepted by the <target> parameter of TexImage4DSGIS,
     GetTexLevelParameteriv, and GetTexLevelParameterfv:
 
-	PROXY_TEXTURE_4D_SGIS
+    PROXY_TEXTURE_4D_SGIS
 
     Accepted by the <pname> parameter of GetTexLevelParameteriv and
     GetTexLevelParameterfv:
 
-	TEXTURE_4DSIZE_SGIS
+    TEXTURE_4DSIZE_SGIS
 
     Accepted by the <pname> parameter of TexParameteriv, TexParameterfv,
     GetTexParameteriv, and GetTexParameterfv:
 
-	TEXTURE_WRAP_Q_SGIS
+    TEXTURE_WRAP_Q_SGIS
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-	MAX_4D_TEXTURE_SIZE_SGIS
-	TEXTURE_4D_BINDING_SGIS
+    MAX_4D_TEXTURE_SIZE_SGIS
+    TEXTURE_4D_BINDING_SGIS
 
 
 
@@ -158,46 +158,46 @@ GLX Protocol
         TexImage4DSGIS
             2           84+n+p          rendering command length
             2           2057            rendering command opcode
- 	    1		BOOL		swap_bytes
-	    1		BOOL		lsb_first
-	    2 				unused
-	    4		CARD32		row_length
-	    4		CARD32		image_height
-	    4		CARD32		image_depth
-	    4		CARD32		skip_rows
-	    4		CARD32		skip_images
-	    4		CARD32		skip_volumes
-	    4		CARD32		skip_pixels
-	    4		CARD32		alignment
-            4		ENUM		target
-	    4		INT32		level
-            4		ENUM		internalformat
-            4		INT32		width
-            4		INT32		height
-            4		INT32		depth
-            4		INT32		size4d
-            4		INT32		border
-            4		ENUM		format
-            4		ENUM		type
-	    4		CARD32		null_image
+         1        BOOL        swap_bytes
+        1        BOOL        lsb_first
+        2                 unused
+        4        CARD32        row_length
+        4        CARD32        image_height
+        4        CARD32        image_depth
+        4        CARD32        skip_rows
+        4        CARD32        skip_images
+        4        CARD32        skip_volumes
+        4        CARD32        skip_pixels
+        4        CARD32        alignment
+            4        ENUM        target
+        4        INT32        level
+            4        ENUM        internalformat
+            4        INT32        width
+            4        INT32        height
+            4        INT32        depth
+            4        INT32        size4d
+            4        INT32        border
+            4        ENUM        format
+            4        ENUM        type
+        4        CARD32        null_image
             n           LISTofBYTE      pixels
             p                           unused, p=pad(n)
 
             If the command is encoded in a glXRenderLarge request, the command 
             opcode and command length fields above are expanded to 4 bytes each:
 
-	    4           88+n+p          rendering command length
+        4           88+n+p          rendering command length
             4           2057            rendering command opcode
 
-	If <width> < 0, <height> < 0, <depth> < 0, <size4d> < 0, <format> is invalid i
-	or <type> is invalid, then the command is erroneous and n=0.
+    If <width> < 0, <height> < 0, <depth> < 0, <size4d> < 0, <format> is invalid i
+    or <type> is invalid, then the command is erroneous and n=0.
 
         <pixels> is arranged as a sequence of adjacent volumes. Each volume is a
         3-dimensional image, whose structure is determined by the image depth and the 
         parameters <image_height>, <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>,
-	<skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request. 
-	If <image_depth> is not positive then the number of images (i.e., the image 
-	depth) is <depth>; otherwise the number of images is <image_depth>.
+    <skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request. 
+    If <image_depth> is not positive then the number of images (i.e., the image 
+    depth) is <depth>; otherwise the number of images is <image_depth>.
 
         <skip_volumes> allows a sub-piece of the 4-dimensional image to be selected.
         If <skip_volumes> is positive, then the pointer is advanced by <skip_volumes> 
@@ -231,7 +231,7 @@ GLX Protocol
             4           INT32           size4d
             4           ENUM            format
             4           ENUM            type
-            4           CARD32		unused
+            4           CARD32        unused
             n           LISTofBYTE      image
             p                           unused, p=pad(n)
 
@@ -241,15 +241,15 @@ GLX Protocol
             4           92+n+p          rendering command length
             4           2058            rendering command opcode
 
-	If <width> < 0, <height> < 0, <depth> < 0, <size4d>, <format> is invalid 
-	or <type> is invalid, then the command is erroneous and n=0.
+    If <width> < 0, <height> < 0, <depth> < 0, <size4d>, <format> is invalid 
+    or <type> is invalid, then the command is erroneous and n=0.
 
         <pixels> is arranged as a sequence of adjacent volumes. Each volume is a
         3-dimensional image, whose structure is determined by the image height, image 
-	depth and the parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>, 
-	<skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request. 
-	If <image_depth> is not positive then the number of 2Dimages (i.e., the volume
-	depth) is <depth>; otherwise the number of 2Dimages is <image_depth>.
+    depth and the parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>, 
+    <skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request. 
+    If <image_depth> is not positive then the number of 2Dimages (i.e., the volume
+    depth) is <depth>; otherwise the number of 2Dimages is <image_depth>.
 
         <skip_volumes> allows a sub-volume of the 4-dimensional image to be selected.
         If <skip_volumes> is positive, then the pointer is advanced by <skip_volumes>
@@ -333,10 +333,10 @@ Errors
     <yoffset>, <zoffset>, or <woffset> is less than -TEXTURE_BORDER.
 
     INVALID_VALUE is generated by TexSubImage4DSGIS if
-	(xoffset + width) > (TEXTURE_WIDTH - TEXTURE_BORDER), or if
-	(yoffset + height) > (TEXTURE_HEIGHT - TEXTURE_BORDER), or if
-	(zoffset + depth) > (TEXTURE_DEPTH_EXT - TEXTURE_BORDER), or if
-	(woffset + extent) > (TEXTURE_4DSIZE_SGIS - TEXTURE_BORDER).
+    (xoffset + width) > (TEXTURE_WIDTH - TEXTURE_BORDER), or if
+    (yoffset + height) > (TEXTURE_HEIGHT - TEXTURE_BORDER), or if
+    (zoffset + depth) > (TEXTURE_DEPTH_EXT - TEXTURE_BORDER), or if
+    (woffset + extent) > (TEXTURE_4DSIZE_SGIS - TEXTURE_BORDER).
 
     INVALID_ENUM is generated if TexSubImage4DSGIS parameter <format> is not
     COLOR_INDEX, RED, GREEN, BLUE, ALPHA, RGB, RGBA, LUMINANCE, or
@@ -350,38 +350,38 @@ Errors
 
 New State
 
-    Get Value				Get Command		Type			Initial Value		Attribute
-    ---------				-----------		----			-------------		---------
-    UNPACK_SKIP_VOLUMES_SGIS		GetIntegerv		Z+			0			    -
-    UNPACK_IMAGE_DEPTH_SGIS		GetIntegerv		Z+			0			    -
-    PACK_SKIP_VOLUMES_SGIS		GetIntegerv		Z+			0			    -
-    PACK_IMAGE_DEPTH_SGIS		GetIntegerv		Z+			0			    -
-    TEXTURE_4D_SGIS			IsEnabled		B			FALSE			texture/enable
-    TEXTURE_WRAP_Q_SGIS			GetTexParameteriv	1 x Z2			REPEAT			texture
-    TEXTURE_4DSIZE_SGIS			GetTexLevelParameteriv	1 x 2 x Z+		0			    -
+    Get Value                Get Command        Type            Initial Value        Attribute
+    ---------                -----------        ----            -------------        ---------
+    UNPACK_SKIP_VOLUMES_SGIS        GetIntegerv        Z+            0                -
+    UNPACK_IMAGE_DEPTH_SGIS        GetIntegerv        Z+            0                -
+    PACK_SKIP_VOLUMES_SGIS        GetIntegerv        Z+            0                -
+    PACK_IMAGE_DEPTH_SGIS        GetIntegerv        Z+            0                -
+    TEXTURE_4D_SGIS            IsEnabled        B            FALSE            texture/enable
+    TEXTURE_WRAP_Q_SGIS            GetTexParameteriv    1 x Z2            REPEAT            texture
+    TEXTURE_4DSIZE_SGIS            GetTexLevelParameteriv    1 x 2 x Z+        0                -
 
-    TEXTURE				GetTexImage		4 x 1 x levels x I	null			    -
-    TEXTURE_RED_SIZE_EXT		GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_GREEN_SIZE_EXT		GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_BLUE_SIZE_EXT		GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_ALPHA_SIZE_EXT		GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_LUMINANCE_SIZE_EXT		GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_INTENSITY_SIZE_EXT		GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_WIDTH			GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_HEIGHT			GetTexLevelParameteriv	3 x 2 x levels x Z+	0			    -
-    TEXTURE_DEPTH_EXT			GetTexLevelParameteriv	2 x 2 x levels x Z+	0			    -
-    TEXTURE_BORDER			GetTexLevelParameteriv	4 x 2 x levels x Z+	0			    -
-    TEXTURE_COMPONENTS (1D and 2D)	GetTexLevelParameteriv	2 x 2 x levels x Z42	1			    -
-    TEXTURE_COMPONENTS (3D and 4D)	GetTexLevelParameteriv	2 x 2 x levels x Z38	LUMINANCE		    -
-    TEXTURE_BORDER_COLOR		GetTexParameteriv	4 x C			0, 0, 0, 0		texture
-    TEXTURE_MIN_FILTER			GetTexParameteriv	4 x Z7			NEAREST_MIPMAP_LINEAR	texture
-    TEXTURE_MAG_FILTER			GetTexParameteriv	4 x Z3			LINEAR			texture
-    TEXTURE_WRAP_S			GetTexParameteriv	4 x Z2			REPEAT			texture
-    TEXTURE_WRAP_T			GetTexParameteriv	3 x Z2			REPEAT			texture
-    TEXTURE_WRAP_R_EXT			GetTexParameteriv	2 x Z2			REPEAT			texture
+    TEXTURE                GetTexImage        4 x 1 x levels x I    null                -
+    TEXTURE_RED_SIZE_EXT        GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_GREEN_SIZE_EXT        GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_BLUE_SIZE_EXT        GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_ALPHA_SIZE_EXT        GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_LUMINANCE_SIZE_EXT        GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_INTENSITY_SIZE_EXT        GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_WIDTH            GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_HEIGHT            GetTexLevelParameteriv    3 x 2 x levels x Z+    0                -
+    TEXTURE_DEPTH_EXT            GetTexLevelParameteriv    2 x 2 x levels x Z+    0                -
+    TEXTURE_BORDER            GetTexLevelParameteriv    4 x 2 x levels x Z+    0                -
+    TEXTURE_COMPONENTS (1D and 2D)    GetTexLevelParameteriv    2 x 2 x levels x Z42    1                -
+    TEXTURE_COMPONENTS (3D and 4D)    GetTexLevelParameteriv    2 x 2 x levels x Z38    LUMINANCE            -
+    TEXTURE_BORDER_COLOR        GetTexParameteriv    4 x C            0, 0, 0, 0        texture
+    TEXTURE_MIN_FILTER            GetTexParameteriv    4 x Z7            NEAREST_MIPMAP_LINEAR    texture
+    TEXTURE_MAG_FILTER            GetTexParameteriv    4 x Z3            LINEAR            texture
+    TEXTURE_WRAP_S            GetTexParameteriv    4 x Z2            REPEAT            texture
+    TEXTURE_WRAP_T            GetTexParameteriv    3 x Z2            REPEAT            texture
+    TEXTURE_WRAP_R_EXT            GetTexParameteriv    2 x Z2            REPEAT            texture
 
 New Implementation Dependent State
 
-    Get Value			Get Command	Type		Minimum Value
-    ---------			-----------	----		-------------
-    MAX_4D_TEXTURE_SIZE_SGIS	GetIntegerv	Z+		16
+    Get Value            Get Command    Type        Minimum Value
+    ---------            -----------    ----        -------------
+    MAX_4D_TEXTURE_SIZE_SGIS    GetIntegerv    Z+        16

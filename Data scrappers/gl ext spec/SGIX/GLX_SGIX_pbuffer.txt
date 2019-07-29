@@ -26,23 +26,23 @@ Overview
     OpenGL renderer.  GLXPbuffers are equivalent to GLXPixmaps with the
     following exceptions:
 
-    1.	There is no associated X pixmap. Also, since a GLXPbuffer is a GLX
+    1.    There is no associated X pixmap. Also, since a GLXPbuffer is a GLX
         resource, it may not be possible to render to it using X or an 
-   	X extension other than GLX.
+       X extension other than GLX.
 
-    2.	The format of the color buffers and the type and size of any
-     	associated ancillary buffers for a GLXPbuffer can only be
+    2.    The format of the color buffers and the type and size of any
+         associated ancillary buffers for a GLXPbuffer can only be
         described with a GLXFBConfig -- an X Visual cannot be used.
 
-    3.	It is possible to create a GLXPbuffer whose contents may be 
-	asynchronously lost at any time.
+    3.    It is possible to create a GLXPbuffer whose contents may be 
+    asynchronously lost at any time.
 
     4.  GLXPbuffers can be rendered to using either direct or indirect
         rendering contexts.
 
     5.  The allocation of a GLXPbuffer can fail if there are insufficient
-	resources (i.e., all the pbuffer memory has been allocated and 
-	the implementation does not virtualize pbuffer memory.)
+    resources (i.e., all the pbuffer memory has been allocated and 
+    the implementation does not virtualize pbuffer memory.)
 
     The intent of the pbuffer semantics is to enable implementations to
     allocate pbuffers in non-visible frame buffer memory.  These
@@ -69,88 +69,88 @@ Issues
  
     *   When a pbuffer interferes with a window's ancillary buffer should
         the action -- swapped or saved -- be specified or left as
-	implementation dependent?
+    implementation dependent?
     
 
 New Procedures and Functions
 
     GLXPbuffer glXCreateGLXPbufferSGIX(Display *dpy,
-				       GLXFBConfig config,
-				       unsigned int width,
-				       unsigned int height,
-				       int *attrib_list);
+                       GLXFBConfig config,
+                       unsigned int width,
+                       unsigned int height,
+                       int *attrib_list);
 
     void glXDestroyGLXPbufferSGIX(Display *dpy,
-			          GLXPbuffer pbuf);
+                      GLXPbuffer pbuf);
 
     void glXQueryGLXPbufferSGIX(Display *dpy,
-			        GLXPbuffer pbuf,
-			        int attribute,
-			        unsigned int *value);
+                    GLXPbuffer pbuf,
+                    int attribute,
+                    unsigned int *value);
 
     void glXSelectEventSGIX(Display *dpy,
-	  		    GLXDrawable drawable,
-			    unsigned long mask);
+                  GLXDrawable drawable,
+                unsigned long mask);
 
     void glXGetSelectedEventSGIX(Display *dpy,
-  		                 GLXDrawable drawable,
-			         unsigned long *mask);
+                           GLXDrawable drawable,
+                     unsigned long *mask);
 
 
 New Tokens
 
     Accepted by the <attribute> parameter of glXGetFBConfigAttribSGIX:
 
-        GLX_MAX_PBUFFER_WIDTH_SGIX		0x8016
-        GLX_MAX_PBUFFER_HEIGHT_SGIX		0x8017
-        GLX_MAX_PBUFFER_PIXELS_SGIX		0x8018
-        GLX_OPTIMAL_PBUFFER_WIDTH_SGIX		0x8019
-        GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX		0x801A
+        GLX_MAX_PBUFFER_WIDTH_SGIX        0x8016
+        GLX_MAX_PBUFFER_HEIGHT_SGIX        0x8017
+        GLX_MAX_PBUFFER_PIXELS_SGIX        0x8018
+        GLX_OPTIMAL_PBUFFER_WIDTH_SGIX        0x8019
+        GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX        0x801A
 
     Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to 
     GLX_DRAWABLE_TYPE_SGIX) and accepted by the <attrib_list> parameter of 
     glXChooseFBConfigSGIX (following the GLX_DRAWABLE_TYPE_SGIX token):
 
-	GLX_PBUFFER_BIT_SGIX			0x00000004
+    GLX_PBUFFER_BIT_SGIX            0x00000004
 
     Accepted by the <attrib_list> parameter of glXCreateGLXPbufferSGIX
     and by the <attribute> parameter of glXQueryGLXPbufferSGIX:
 
-        GLX_PRESERVED_CONTENTS_SGIX		0x801B
-        GLX_LARGEST_PBUFFER_SGIX		0x801C
+        GLX_PRESERVED_CONTENTS_SGIX        0x801B
+        GLX_LARGEST_PBUFFER_SGIX        0x801C
 
     Accepted by the <attribute> parameter of glXQueryGLXPbufferSGIX:
 
-        GLX_WIDTH_SGIX 				0x801D
-        GLX_HEIGHT_SGIX				0x801E
-	GLX_EVENT_MASK_SGIX			0x801F
+        GLX_WIDTH_SGIX                 0x801D
+        GLX_HEIGHT_SGIX                0x801E
+    GLX_EVENT_MASK_SGIX            0x801F
 
     Accepted by the <mask> parameter of glXSelectEventSGIX and returned
     in the <mask> parameter of glXGetSelectedEventSGIX:
 
-	GLX_BUFFER_CLOBBER_MASK_SGIX  		0x08000000
+    GLX_BUFFER_CLOBBER_MASK_SGIX          0x08000000
 
     Returned in the <event_type> field of a "buffer clobber" event:
 
-	GLX_DAMAGED_SGIX 			0x8020
-	GLX_SAVED_SGIX				0x8021
+    GLX_DAMAGED_SGIX             0x8020
+    GLX_SAVED_SGIX                0x8021
 
     Returned in the <draw_type> field of a "buffer clobber" event:
 
-        GLX_WINDOW_SGIX				0x8022
-	GLX_PBUFFER_SGIX			0x8023
+        GLX_WINDOW_SGIX                0x8022
+    GLX_PBUFFER_SGIX            0x8023
 
     Returned in the <mask> field of a "buffer clobber" event:
 
-	GLX_FRONT_LEFT_BUFFER_BIT_SGIX		0x00000001
-	GLX_FRONT_RIGHT_BUFFER_BIT_SGIX		0x00000002
-	GLX_BACK_LEFT_BUFFER_BIT_SGIX		0x00000004
-	GLX_BACK_RIGHT_BUFFER_BIT_SGIX		0x00000008
-	GLX_AUX_BUFFERS_BIT_SGIX		0x00000010
-	GLX_DEPTH_BUFFER_BIT_SGIX		0x00000020
-	GLX_STENCIL_BUFFER_BIT_SGIX		0x00000040
-	GLX_ACCUM_BUFFER_BIT_SGIX		0x00000080
-	GLX_SAMPLE_BUFFERS_BIT_SGIX		0x00000100
+    GLX_FRONT_LEFT_BUFFER_BIT_SGIX        0x00000001
+    GLX_FRONT_RIGHT_BUFFER_BIT_SGIX        0x00000002
+    GLX_BACK_LEFT_BUFFER_BIT_SGIX        0x00000004
+    GLX_BACK_RIGHT_BUFFER_BIT_SGIX        0x00000008
+    GLX_AUX_BUFFERS_BIT_SGIX        0x00000010
+    GLX_DEPTH_BUFFER_BIT_SGIX        0x00000020
+    GLX_STENCIL_BUFFER_BIT_SGIX        0x00000040
+    GLX_ACCUM_BUFFER_BIT_SGIX        0x00000080
+    GLX_SAMPLE_BUFFERS_BIT_SGIX        0x00000100
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -207,36 +207,36 @@ Additions to the GLX Specification
       GLX_BUFFER_SIZE                 integer     depth of the color buffer
       GLX_LEVEL                       integer     frame buffer level
       GLX_DOUBLEBUFFER                boolean     True if color buffers have
-						  front/back pairs
+                          front/back pairs
       GLX_STEREO                      boolean     True if color buffers have
-				      		  left/right pairs
+                                left/right pairs
       GLX_AUX_BUFFERS                 integer     number of auxiliary color
-						  buffers 
+                          buffers 
       GLX_RED_SIZE                    integer     number of bits of Red if in
-      						  RGB mode
+                                RGB mode
       GLX_GREEN_SIZE                  integer     number of bits of Green if in
-      						  RGB mode
+                                RGB mode
       GLX_BLUE_SIZE                   integer     number of bits of Blue if in
-      						  RGB mode
+                                RGB mode
       GLX_ALPHA_SIZE                  integer     number of bits of Alpha if in
-      						  RGB mode
+                                RGB mode
       GLX_DEPTH_SIZE                  integer     number of bits in the depth
-      						  buffer
+                                buffer
       GLX_STENCIL_SIZE                integer     number of bits in the stencil
-      						  buffer
+                                buffer
       GLX_ACCUM_RED_SIZE              integer     number of bits of Red in the
-       						  accumulation buffer
+                                 accumulation buffer
       GLX_ACCUM_GREEN_SIZE            integer     number of bits of Green in the
-      						  accumulation buffer
+                                accumulation buffer
       GLX_ACCUM_BLUE_SIZE             integer     number of bits of Blue in the
       accumulation buffer
       GLX_ACCUM_ALPHA_SIZE            integer     number of bits of Alpha in the
-      						  accumulation buffer
+                                accumulation buffer
       GLX_SAMPLE_BUFFERS_SGIS         integer     number of multisample buffers
       GLX_SAMPLES_SGIS                integer     number of samples stored in
-						  each multisample buffer
+                          each multisample buffer
       GLX_X_VISUAL_TYPE_EXT           integer     X visual type of the
-						  associated visual
+                          associated visual
       GLX_TRANSPARENT_TYPE_EXT        enum        GLX_NONE_EXT,
                                                   TRANSPARENT_RGB_EXT, or 
                                                   TRANSPARENT_INDEX_EXT
@@ -246,25 +246,25 @@ Additions to the GLX Specification
       GLX_TRANSPARENT_BLUE_VALUE_EXT  color       transparent color value.
       GLX_TRANSPARENT_ALPHA_VALUE_EXT color       transparent color value.
       GLX_VISUAL_CAVEAT_EXT           enum        GLX_NONE_EXT or
-      						  GLX_SLOW_VISUAL_EXT
+                                GLX_SLOW_VISUAL_EXT
       GLX_DRAWABLE_TYPE_SGIX          bitmask     mask indicating which GLX
-      						  drawables are supported. Valid
-						  bits are GLX_WINDOW_BIT_SGIX and
+                                drawables are supported. Valid
+                          bits are GLX_WINDOW_BIT_SGIX and
                                                   GLX_PIXMAP_BIT_SGIX
       GLX_RENDER_TYPE_SGIX            bitmask     mask indicating which OpenGL
-      						  rendering modes are supported.
-						  Valid bits are GLX_RGBA_BIT_SGIX
-						  and GLX_COLOR_INDEX_SGIX.
+                                rendering modes are supported.
+                          Valid bits are GLX_RGBA_BIT_SGIX
+                          and GLX_COLOR_INDEX_SGIX.
       GLX_X_RENDERABLE_SGIX           boolean     True if X can render to drawable
-      GLX_MAX_PBUFFER_WIDTH_SGIX      integer	  maximum width of GLXPbuffer
-      GLX_MAX_PBUFFER_HEIGHT_SGIX     integer	  maximum height of GLXPbuffer
-      GLX_MAX_PBUFFER_PIXELS_SGIX     integer	  maximum size of GLXPbuffer
+      GLX_MAX_PBUFFER_WIDTH_SGIX      integer      maximum width of GLXPbuffer
+      GLX_MAX_PBUFFER_HEIGHT_SGIX     integer      maximum height of GLXPbuffer
+      GLX_MAX_PBUFFER_PIXELS_SGIX     integer      maximum size of GLXPbuffer
       GLX_OPTIMAL_PBUFFER_WIDTH_SGIX  integer     best width to use when
-						  creating pbuffer, or zero if
-						  all widths are equally good.
+                          creating pbuffer, or zero if
+                          all widths are equally good.
       GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX integer     best height to use when creating 
-						  pbuffer, or zero if all
-						  heights are equally good.
+                          pbuffer, or zero if all
+                          heights are equally good.
 
       Table 3: GLX configuration attributes for GLXFBConfigs (Note that
                GLX_RGBA and GLX_USE_GL are not supported)
@@ -300,11 +300,11 @@ Additions to the GLX Specification
       GLX_RENDER_TYPE_SGIX                    GLX_RGBA_BIT_SGIX   minimum
       GLX_X_RENDERABLE_SGIX                   don't care          exact
       GLX_FBCONFIG_ID_SGIX                    don't care          exact
-      GLX_MAX_PBUFFER_WIDTH_SGIX      	      0 		  minimum
-      GLX_MAX_PBUFFER_HEIGHT_SGIX    	      0			  minimum
-      GLX_MAX_PBUFFER_PIXELS_SGIX             0 		  minimum
-      GLX_OPTIMAL_PBUFFER_WIDTH_SGIX          ignored		  ignored
-      GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX         ignored		  ignored
+      GLX_MAX_PBUFFER_WIDTH_SGIX                0           minimum
+      GLX_MAX_PBUFFER_HEIGHT_SGIX              0              minimum
+      GLX_MAX_PBUFFER_PIXELS_SGIX             0           minimum
+      GLX_OPTIMAL_PBUFFER_WIDTH_SGIX          ignored          ignored
+      GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX         ignored          ignored
 
       Table 4: Default values and match criteria for GLX configuration
                attributes for GLXFBConfigs 
@@ -315,10 +315,10 @@ Additions to the GLX Specification
     To create a GLXPbuffer call:
 
         GLXPbuffer glXCreateGLXPbufferSGIX(Display *dpy,
-				           GLXFBConfig config,
-				           unsigned int width,
-				           unsigned int height,
-				           int *attrib_list);
+                           GLXFBConfig config,
+                           unsigned int width,
+                           unsigned int height,
+                           int *attrib_list);
 
     This creates a single GLXPbuffer and returns its XID. <width> and <height>
     specify the pixel width and height of the rectangular pbuffer and
@@ -393,7 +393,7 @@ Additions to the GLX Specification
     A GLXPbuffer is destroyed by calling:
 
         void glXDestroyGLXPbufferSGIX(Display *dpy,
-			              GLXPbuffer pbuf);
+                          GLXPbuffer pbuf);
 
     The GLXPbuffer will be destroyed once it is no longer current to any
     client. When a GLXPbuffer is destroyed, any memory resources that are
@@ -405,9 +405,9 @@ Additions to the GLX Specification
     To query an attribute associated with a GLXPbuffer call
 
         void glXQueryGLXPbufferSGIX(Display* dpy,
-			            GLXPbuffer pbuf,
-			            int attribute,
-			            unsigned int *value);
+                        GLXPbuffer pbuf,
+                        int attribute,
+                        unsigned int *value);
 
     <attribute> must be set to one of GLX_WIDTH_SGIX, GLX_HEIGHT_SGIX,
     GLX_PRESERVED_CONTENTS_SGIX, GLX_LARGEST_PBUFFER_SGIX, or
@@ -425,16 +425,16 @@ Additions to the GLX Specification
     A client can ask to receive GLX events on a window or GLXPbuffer.
 
       void glXSelectEventSGIX(Display *dpy,
-	  		      GLXDrawable drawable,
-			      unsigned long mask);
+                    GLXDrawable drawable,
+                  unsigned long mask);
 
     Currently only one GLX event, GLX_BUFFER_CLOBBER_MASK_SGIX, can be selected:
 
       typdef struct {
-	int event_type;	      /* GLX_DAMAGED_SGIX or GLX_SAVED_SGIX */
+    int event_type;          /* GLX_DAMAGED_SGIX or GLX_SAVED_SGIX */
         int draw_type;        /* GLX_WINDOW_SGIX or GLX_PBUFFER_SGIX */
-	unsigned long serial; /* # of last request processed by server */
-	Bool send_event;      /* event was generated by a SendEvent request */
+    unsigned long serial; /* # of last request processed by server */
+    Bool send_event;      /* event was generated by a SendEvent request */
         Display *display;     /* display the event was read from */
         GLXDrawable drawable; /* i.d. of Drawable */
         unsigned int mask;    /* mask indicating which buffers are affected*/
@@ -480,98 +480,98 @@ Additions to the GLX Specification
     To find out which GLX events are selected for a window or GLXPbuffer call
 
       void glXGetSelectedEventSGIX(Display *dpy,
-	  		           GLXDrawable drawable,
-			           unsigned long *mask);
+                         GLXDrawable drawable,
+                       unsigned long *mask);
 
 
 GLX Protocol
 
-	Four new GLX protocol commands are added.
+    Four new GLX protocol commands are added.
 
-	CreateGLXPbufferSGIX
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		8 + 2n		request length
-	    4		65543		vendor specific opcode
-	    4				unused
-	    4		CARD32		screen
-	    4		GLX_FBCONFIG	fbconfig
-	    4		GLX_PBUFFER	pbuffer
-	    4		CARD32		width
-	    4		CARD32		height
-	    8 * n	LISTofATTRIB	properties
-	   
-	     Where n is the number of token/value pairs.  Each token value is
-	     either a CARD32, BOOL32, or INT32, followed by an attribute
-	     value which is also either a CARD32, BOOL32, or INT32.
-
-
-	DestroyGLXPbufferSGIX
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		4		request length
-	    4		65544		vendor specific opcode
-	    4				unused
-	    4		GLX_PBUFFER	pbuffer
-
-	
-	ChangeDrawableAttributesSGIX
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		4 + 2*n		request length
-	    4		65545		vendor specific opcode
-	    4				unused
-	    4		GLX_DRAWABLE	drawable
-	    8 * n	LISTofATTRIB	properties
-
-	     Where n is the number of token/value pairs.  Each token value is
-	     either a CARD32, BOOL32, or INT32, followed by an attribute
-	     value which is also either a CARD32, BOOL32, or INT32.
+    CreateGLXPbufferSGIX
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        8 + 2n        request length
+        4        65543        vendor specific opcode
+        4                unused
+        4        CARD32        screen
+        4        GLX_FBCONFIG    fbconfig
+        4        GLX_PBUFFER    pbuffer
+        4        CARD32        width
+        4        CARD32        height
+        8 * n    LISTofATTRIB    properties
+       
+         Where n is the number of token/value pairs.  Each token value is
+         either a CARD32, BOOL32, or INT32, followed by an attribute
+         value which is also either a CARD32, BOOL32, or INT32.
 
 
-	GetDrawableAttributesSGIX
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		4 + 2n		request length
-	    4		65546		vendor specific opcode
-	    4				unused
-	    4		GLX_DRAWABLE	drawable
-	  =>
-	    1		1		reply
-	    1				unused
-	    2		CARD16		sequence number
-	    4		2*n		length
-	    4		CARD32		numAttribs
-	    20				unused
-	    8 * n	LISTofATTRIB	properties
-	
-	     Where n is the number of token/value pairs.  Each token value is
-	     either a CARD32, BOOL32, or INT32, followed by an attribute
-	     value which is also either a CARD32, BOOL32, or INT32.
+    DestroyGLXPbufferSGIX
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        4        request length
+        4        65544        vendor specific opcode
+        4                unused
+        4        GLX_PBUFFER    pbuffer
+
+    
+    ChangeDrawableAttributesSGIX
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        4 + 2*n        request length
+        4        65545        vendor specific opcode
+        4                unused
+        4        GLX_DRAWABLE    drawable
+        8 * n    LISTofATTRIB    properties
+
+         Where n is the number of token/value pairs.  Each token value is
+         either a CARD32, BOOL32, or INT32, followed by an attribute
+         value which is also either a CARD32, BOOL32, or INT32.
+
+
+    GetDrawableAttributesSGIX
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        4 + 2n        request length
+        4        65546        vendor specific opcode
+        4                unused
+        4        GLX_DRAWABLE    drawable
+      =>
+        1        1        reply
+        1                unused
+        2        CARD16        sequence number
+        4        2*n        length
+        4        CARD32        numAttribs
+        20                unused
+        8 * n    LISTofATTRIB    properties
+    
+         Where n is the number of token/value pairs.  Each token value is
+         either a CARD32, BOOL32, or INT32, followed by an attribute
+         value which is also either a CARD32, BOOL32, or INT32.
 
     One new event is added:
 
-	BEC is the base event code for the extension, as returned by
-	XQueryExtension.
+    BEC is the base event code for the extension, as returned by
+    XQueryExtension.
 
-	GLX_BUFFER_CLOBBER_MASK_SGIX
-	    1		BEC+16		code
-	    1				unused
-	    2		CARD16		sequence number
-	    2		CARD16		event_type
-			0x8017		GLX_DAMAGED_SGIX
-			0x8018		GLX_SAVED_SGIX
-	    2		CARD16		draw_type
-			0x8019		GLX_WINDOW_SGIX
-                        0x801A		GLX_PBUFFER_SGIX
-	    4		GLX_DRAWABLE    drawable
-            4		BITFIELD	mask
-	    2		CARD16		x
-	    2		CARD16		y
-	    2		CARD16		width
-	    2		CARD16		height
-	    2		CARD16		count
-	    6				unused
+    GLX_BUFFER_CLOBBER_MASK_SGIX
+        1        BEC+16        code
+        1                unused
+        2        CARD16        sequence number
+        2        CARD16        event_type
+            0x8017        GLX_DAMAGED_SGIX
+            0x8018        GLX_SAVED_SGIX
+        2        CARD16        draw_type
+            0x8019        GLX_WINDOW_SGIX
+                        0x801A        GLX_PBUFFER_SGIX
+        4        GLX_DRAWABLE    drawable
+            4        BITFIELD    mask
+        2        CARD16        x
+        2        CARD16        y
+        2        CARD16        width
+        2        CARD16        height
+        2        CARD16        count
+        6                unused
 
 Dependencies on SGIS_multisample
 

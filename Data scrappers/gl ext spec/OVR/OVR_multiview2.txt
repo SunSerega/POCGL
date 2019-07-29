@@ -44,9 +44,9 @@ Dependencies
 Overview
 
  
-	This extension relaxes the restriction in OVR_multiview that only gl_Position
-	can depend on ViewID in the vertex shader.  With this change, view-dependent
-	outputs like reflection vectors and similar are allowed.
+    This extension relaxes the restriction in OVR_multiview that only gl_Position
+    can depend on ViewID in the vertex shader.  With this change, view-dependent
+    outputs like reflection vectors and similar are allowed.
 
 New Tokens
 
@@ -58,8 +58,8 @@ New Procedures and Functions
 
 Modifications to The OpenGL ES Shading Language Specification, Version 3.00.04
 
-	Including the following line in a shader can be used to control the language
-	features described in this extension:
+    Including the following line in a shader can be used to control the language
+    features described in this extension:
 
       #extension GL_OVR_multiview2 : <behavior>
 

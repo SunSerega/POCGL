@@ -106,22 +106,22 @@ New Tokens
     Accepted by the <internalformat> parameter of TexImage2D,
     TexImage3DEXT, and TexImage4DSGIS:
 
-    RGB_ICC_SGIX			0x8460
-    RGBA_ICC_SGIX			0x8461
-    ALPHA_ICC_SGIX			0x8462
-    LUMINANCE_ICC_SGIX			0x8463
-    INTENSITY_ICC_SGIX			0x8464
-    LUMINANCE_ALPHA_ICC_SGIX		0x8465
+    RGB_ICC_SGIX            0x8460
+    RGBA_ICC_SGIX            0x8461
+    ALPHA_ICC_SGIX            0x8462
+    LUMINANCE_ICC_SGIX            0x8463
+    INTENSITY_ICC_SGIX            0x8464
+    LUMINANCE_ALPHA_ICC_SGIX        0x8465
 
     Accepted by the <internalformat> and <format> parameters of
     TexImage2D, TexImage3DEXT, and TexImage4DSGIS:
 
-    R5_G6_B5_ICC_SGIX			0x8466
-    R5_G6_B5_A8_ICC_SGIX		0x8467
-    ALPHA16_ICC_SGIX			0x8468
-    LUMINANCE16_ICC_SGIX		0x8469
-    INTENSITY16_ICC_SGIX		0x846A
-    LUMINANCE16_ALPHA8_ICC_SGIX		0x846B
+    R5_G6_B5_ICC_SGIX            0x8466
+    R5_G6_B5_A8_ICC_SGIX        0x8467
+    ALPHA16_ICC_SGIX            0x8468
+    LUMINANCE16_ICC_SGIX        0x8469
+    INTENSITY16_ICC_SGIX        0x846A
+    LUMINANCE16_ALPHA8_ICC_SGIX        0x846B
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -203,13 +203,13 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     The following is added to the end of table 3.5:
 
-					Element Meaning		Target
-	Name				and Order		Buffer
-	----				---------------		--------
-	RGB_ICC_SGIX			R, G, B Components	Color
-	RGBA_ICC_SGIX			R, G, B, A Components	Color
-	LUMINANCE_ICC_SGIX		Luminance Component	Color
-	LUMINANCE_ALPHA_ICC_SGIX	Luminance, A Components	Color
+                    Element Meaning        Target
+    Name                and Order        Buffer
+    ----                ---------------        --------
+    RGB_ICC_SGIX            R, G, B Components    Color
+    RGBA_ICC_SGIX            R, G, B, A Components    Color
+    LUMINANCE_ICC_SGIX        Luminance Component    Color
+    LUMINANCE_ALPHA_ICC_SGIX    Luminance, A Components    Color
 
     The following subsection is added to section 3.6.3 just prior to
     the subsection entitled "Conversion to floating-point":
@@ -379,13 +379,13 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     The following is added to Table 3.8:
 
-    Sized				Base            R       G       B       A       L       I
-    Internal Format		Internal Format Bits    Bits    Bits    Bits    Bits    Bits
-    ---------------		--------------- ----    ----    ----    ----    ----    ----
-    R5_G6_B5_ICC_SGIX		RGB             	5       6       5
-    R5_G6_B5_A8_ICC_SGIX	RGBA            	5       6       5       8
-    LUMINANCE16_ICC_SGIX	LUMINANCE                               		16
-    LUMINANCE16_ALPHA8_ICC_SGIX	LUMINANCE_ALPHA                         	8	16
+    Sized                Base            R       G       B       A       L       I
+    Internal Format        Internal Format Bits    Bits    Bits    Bits    Bits    Bits
+    ---------------        --------------- ----    ----    ----    ----    ----    ----
+    R5_G6_B5_ICC_SGIX        RGB                 5       6       5
+    R5_G6_B5_A8_ICC_SGIX    RGBA                5       6       5       8
+    LUMINANCE16_ICC_SGIX    LUMINANCE                                       16
+    LUMINANCE16_ALPHA8_ICC_SGIX    LUMINANCE_ALPHA                             8    16
 
     The caption for Table 3.8 is updated as follows:
     

@@ -29,49 +29,49 @@ Overview
 
 Issues
 
-    *	Should we also add some hints to guide compilation strategies
-    	For example a hint could give us the equivalent of the iris gl
-	compactify command.  Generally hints could control compilation
-	speed versus memory consumption, degree of optimization, etc.
+    *    Should we also add some hints to guide compilation strategies
+        For example a hint could give us the equivalent of the iris gl
+    compactify command.  Generally hints could control compilation
+    speed versus memory consumption, degree of optimization, etc.
 
-	yes, in another spec
+    yes, in another spec
     
     *   Should we go ahead and add a ListParameter command rather than a
-	PrioritorizeList command just in case some other list attribute
-	needs to be added.  Do we go ahead and finish the job with
-	f,i,iv functions?
+    PrioritorizeList command just in case some other list attribute
+    needs to be added.  Do we go ahead and finish the job with
+    f,i,iv functions?
 
-	yes
+    yes
     
-    *	Is 1.0 a reasonable default?
+    *    Is 1.0 a reasonable default?
 
-    *	Should it be an SGI rather than SGIX extension?
+    *    Should it be an SGI rather than SGIX extension?
     
 New Procedures and Functions
 
     ListParameterfSGIX(uint list,
-		        enum pname,
-		        float params;
+                enum pname,
+                float params;
 
     ListParameterfvSGIX(uint list,
-		        enum pname,
-		        float *params);
+                enum pname,
+                float *params);
 
     ListParameteriSGIX(uint list,
-		        enum pname,
-		        int param);
+                enum pname,
+                int param);
 
     ListParameterivSGIX(uint list,
-		        enum pname,
-		        int *params);
+                enum pname,
+                int *params);
 
     GetListParameterfvSGIX(uint list,
-		           enum pname,
-		           float *params);
+                   enum pname,
+                   float *params);
 
     GetListParameterivSGIX(uint list,
-		           enum pname,
-		           int *params);
+                   enum pname,
+                   int *params);
 
 New Tokens
 
@@ -79,7 +79,7 @@ New Tokens
     ListParameterfvSGIX, ListParameteriSGIX, ListParameterivSGIX,
     GetListParameterfvSGIX, and GetListParameterivSGIX:
 
-	LIST_PRIORITY_SGIX
+    LIST_PRIORITY_SGIX
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -142,9 +142,9 @@ Errors
 
 New State
 
-								          Initial
-    Get Value				Get Command	        Type	  Value	    Attrib
-    ---------				-----------	        ----	  -------   ------
+                                          Initial
+    Get Value                Get Command            Type      Value        Attrib
+    ---------                -----------            ----      -------   ------
     LIST_PRIORITY_SGIX                  GetListParameterfvSGIX  n x Z+    1           -
 
 

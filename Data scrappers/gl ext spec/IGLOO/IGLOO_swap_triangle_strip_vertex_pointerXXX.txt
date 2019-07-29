@@ -22,61 +22,61 @@ Number
 
     None
 
-	Igloo extensions should be compatible with *ALL* other extensions.
-	(i.e. igloo extensions must document their interactions with subsequent
-	extensions preceding it, so there is no number).
+    Igloo extensions should be compatible with *ALL* other extensions.
+    (i.e. igloo extensions must document their interactions with subsequent
+    extensions preceding it, so there is no number).
 
 Dependencies
 
-	None
+    None
 
 Overview
 
-	This extensions allows a single triangle fan to be generated within
-	a glBegin(GL_TRIANGLE_STRIP) . . .glEnd();
+    This extensions allows a single triangle fan to be generated within
+    a glBegin(GL_TRIANGLE_STRIP) . . .glEnd();
 
 New Procedures and Functions
 
-	void SwapTriangleStripVertexPointerXXX(void);
+    void SwapTriangleStripVertexPointerXXX(void);
 
 New Tokens
 
-	None
+    None
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
-	Note: It is not explicitely stated but glGetError returns INVALID OPERATION
-	when this is called between glBegin and glEnd if this extension is not supported.
+    Note: It is not explicitely stated but glGetError returns INVALID OPERATION
+    when this is called between glBegin and glEnd if this extension is not supported.
 
-	Section 2.6.3 -- GL Commands within Begin/End
-	    The only GL command that are allowed within any Begin/End Pairs are the
-	commands for specifying vertex coordinates, vertex color, normal coordinates,
-	and texture coordinates (Vertex, Color, Index, Normal, TexCoord),
-	EvalCoord and EvalPoint commands (see section 5.1)
-	commands for specifying lighting material parameters
-	(Material commnads: see section 2.12.2) display list invocation commands
-	(callList and CallLists: see section 5.4), *SwapTriangleStripVertexPointerXXX*
-	(see section 2.7) and the EdgeFlag command.
+    Section 2.6.3 -- GL Commands within Begin/End
+        The only GL command that are allowed within any Begin/End Pairs are the
+    commands for specifying vertex coordinates, vertex color, normal coordinates,
+    and texture coordinates (Vertex, Color, Index, Normal, TexCoord),
+    EvalCoord and EvalPoint commands (see section 5.1)
+    commands for specifying lighting material parameters
+    (Material commnads: see section 2.12.2) display list invocation commands
+    (callList and CallLists: see section 5.4), *SwapTriangleStripVertexPointerXXX*
+    (see section 2.7) and the EdgeFlag command.
 
-	Section 2.6.1 --- Begin and End Objects
-	Triangle strips.  second paragraph
-	    The state required to support triangle strips consists of a flag
-	indicating if the first triangle has been completed, two stored
-	processed vertices, (called vertex A and vertex B), and a one bit pointer
-	indicating which stored vertex will be replaced with the next vertex.
-	After a Begin(TRIANGLE_STRIP), the pointer is initialized to point to
-	vertex A. Each vertex set between a Begin/End pair toggles the pointer.
-	Therefore, the first vertex is stored as vertex A, the second stored
-	as vertex B, the third stored as vertex A, and so on.
-	***SwapTriangleStripVertexPointerXXX
-	causes the pointer to point to the vertex it is not pointing to. Therefore
-	if the pointer points to vertex A then SwapTriangleStripVertexPointerXXX will
-	cause it to point to vertex B and vice-versa. ***  Any vertex after the second one sent
-	forms a triangle from vertex A, vertex B, and the current vertex (in that order).
+    Section 2.6.1 --- Begin and End Objects
+    Triangle strips.  second paragraph
+        The state required to support triangle strips consists of a flag
+    indicating if the first triangle has been completed, two stored
+    processed vertices, (called vertex A and vertex B), and a one bit pointer
+    indicating which stored vertex will be replaced with the next vertex.
+    After a Begin(TRIANGLE_STRIP), the pointer is initialized to point to
+    vertex A. Each vertex set between a Begin/End pair toggles the pointer.
+    Therefore, the first vertex is stored as vertex A, the second stored
+    as vertex B, the third stored as vertex A, and so on.
+    ***SwapTriangleStripVertexPointerXXX
+    causes the pointer to point to the vertex it is not pointing to. Therefore
+    if the pointer points to vertex A then SwapTriangleStripVertexPointerXXX will
+    cause it to point to vertex B and vice-versa. ***  Any vertex after the second one sent
+    forms a triangle from vertex A, vertex B, and the current vertex (in that order).
 
-	same section the following should be appended to the end.
-	    SwapTriangleStripVertexPointerXXX has no effect unless it is called between
-	a Begin with the argument TRIANGLE_STRIP, and the corresponding call to End.
+    same section the following should be appended to the end.
+        SwapTriangleStripVertexPointerXXX has no effect unless it is called between
+    a Begin with the argument TRIANGLE_STRIP, and the corresponding call to End.
 
 Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     None
@@ -87,16 +87,16 @@ and the Frame Buffer)
 
 Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 
-	Currently Igloo doesn't use OpenGL display lists. But this command
-	should be display listable. So it is *NOT* included in the set of
-	commands which are *NOT* display listable.
+    Currently Igloo doesn't use OpenGL display lists. But this command
+    should be display listable. So it is *NOT* included in the set of
+    commands which are *NOT* display listable.
 
-	The way this is spec'd this will *NOT* generate an extra feedback vertex,
-	or selection hit.  So nothing is added here regarding feedback and selection.
-	HOWEVER,  if this is implemented in the future in software it is
-	likely to be implemented by redundantly re-issuing the	second
-	to the last vertex issued,  and this *WILL* generate a couple of
-	feedback or selection vertices.
+    The way this is spec'd this will *NOT* generate an extra feedback vertex,
+    or selection hit.  So nothing is added here regarding feedback and selection.
+    HOWEVER,  if this is implemented in the future in software it is
+    likely to be implemented by redundantly re-issuing the    second
+    to the last vertex issued,  and this *WILL* generate a couple of
+    feedback or selection vertices.
 
 
 Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
@@ -121,7 +121,7 @@ Errors
     the Error state knows if you are within Begin/End. and
     worse it means that it knows if you are generating a Triangle
     Strip.  I'm assuming that if it is possible to flag
-    an error it is also possible to ignore it.	SO. . .there is
+    an error it is also possible to ignore it.    SO. . .there is
     no error generated outside of glBegin(GL_TRIANGLE_STRIP) glEnd()
     and so nothing is written into this section.
 
@@ -132,21 +132,21 @@ Errors
 
 New State
 
-*	Description of all state values in table format.  Note that client
-*	state should have "client" listed in the Attrib column.
+*    Description of all state values in table format.  Note that client
+*    state should have "client" listed in the Attrib column.
 
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	------- ------
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    ------- ------
 None
 
 New Implementation Dependent State
 
-*	Description of all implementation dependent state in table format.
+*    Description of all implementation dependent state in table format.
 
-									Minimum
-    Get Value				Get Command	Type		Value
-    ---------				-----------	----		-------
+                                    Minimum
+    Get Value                Get Command    Type        Value
+    ---------                -----------    ----        -------
 
 None
 

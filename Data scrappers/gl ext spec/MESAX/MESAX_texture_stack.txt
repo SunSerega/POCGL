@@ -114,12 +114,12 @@ Issues
     (5) How are texture stacks exposed in GLSL?
     
         RESOLVED.  For now, they're not exposed at all.  Mesa doesn't
-	currently support GLSL, so it's somewhat moot.
-	
-	When this extension is converted to MESA, EXT, or ARB, it is
-	expected that an additional samplers (e.g., sampler1DStack and
-	sampler2DStack) and texture lookup functions (e.g., texture1DStack and
-	texture2Dstack) will be added.
+    currently support GLSL, so it's somewhat moot.
+    
+    When this extension is converted to MESA, EXT, or ARB, it is
+    expected that an additional samplers (e.g., sampler1DStack and
+    sampler2DStack) and texture lookup functions (e.g., texture1DStack and
+    texture2Dstack) will be added.
         
     (6) Should a 1D texture stack also be exposed?
 

@@ -42,7 +42,7 @@ New Tokens
     Accepted by the <target> parameter of glHint and by the <pname>
     parameter of GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
 
-	CONVOLUTION_HINT_SGIX		0x8316
+    CONVOLUTION_HINT_SGIX        0x8316
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -91,9 +91,9 @@ Errors
 
 New State
 
-    Get Value		    Get Command     Type    Value	    Attrib
-    ---------		    -----------     ----    -------	    ------
-    CONVOLUTION_HINT_SGIX   GetIntegerv     Z3	    DONT_CARE	    hint
+    Get Value            Get Command     Type    Value        Attrib
+    ---------            -----------     ----    -------        ------
+    CONVOLUTION_HINT_SGIX   GetIntegerv     Z3        DONT_CARE        hint
 
 New Implementation Dependent State
 

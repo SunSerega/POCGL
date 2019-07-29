@@ -23,10 +23,10 @@ SCRIPTS = registry.py makeindex.py
 all: arbext.php esext.php glext.php
 
 arbext.php: $(SCRIPTS)
-	$(PYTHON) makeindex.py arbnumber >$@
+    $(PYTHON) makeindex.py arbnumber >$@
 
 esext.php: $(SCRIPTS)
-	$(PYTHON) makeindex.py esnumber >$@
+    $(PYTHON) makeindex.py esnumber >$@
 
 glext.php: $(SCRIPTS)
-	$(PYTHON) makeindex.py number >$@
+    $(PYTHON) makeindex.py number >$@

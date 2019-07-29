@@ -57,7 +57,7 @@ New Tokens
 
     Returned as the instrument name in an instrument buffer:
 
-	INSTRUMENT_FAILED_SGIX			XXXX
+    INSTRUMENT_FAILED_SGIX            XXXX
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 

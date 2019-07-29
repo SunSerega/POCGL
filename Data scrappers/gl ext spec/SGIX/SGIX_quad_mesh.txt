@@ -70,8 +70,8 @@ New Tokens
     Accepted by the <mode> parameter of Begin, and 
     also accepted by the <mode> parameter of DrawArrays:
 
-	QUAD_MESH_SGIX	     0x????
-	LINE_MESH_SGIX	     0x????
+    QUAD_MESH_SGIX         0x????
+    LINE_MESH_SGIX         0x????
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -139,8 +139,8 @@ Dependencies on EXT_vertex_array
 
     If neither OpenGL 1.1 nor EXT_vertex_array are present, then the following
     should be omited:
-	all references to MeshStrideSGIX,
-	all references to DrawArrays.
+    all references to MeshStrideSGIX,
+    all references to DrawArrays.
 
 Errors
 
@@ -154,29 +154,29 @@ New State
 
   Replace beginning of table 6.4:  GL Internal begin-end state variables (inaccessible)
 
-    Get Value				Get Command	Type	Value	Attrib	Description
-    ---------				-----------	----	-------	------  -----------
-							Z_13	0		When != 0, indicates begin/end object
+    Get Value                Get Command    Type    Value    Attrib    Description
+    ---------                -----------    ----    -------    ------  -----------
+                            Z_13    0        When != 0, indicates begin/end object
 
   Append to table 6.4:  GL Internal begin-end state variables (inaccessible)
 
-    Get Value				Get Command	Type	Value	Attrib	Description
-    ---------				-----------	----	-------	------  -----------
-							513*XV			MAX_MESH_BREADTH + 1 vertices.
-										First entries are from current row.
-										Last entries are from previous row.
-							Z512*	0		Number of vertices accumulated for
-										current row of mesh in the array above.
-							B	0		True if not in first row of quad mesh.
+    Get Value                Get Command    Type    Value    Attrib    Description
+    ---------                -----------    ----    -------    ------  -----------
+                            513*XV            MAX_MESH_BREADTH + 1 vertices.
+                                        First entries are from current row.
+                                        Last entries are from previous row.
+                            Z512*    0        Number of vertices accumulated for
+                                        current row of mesh in the array above.
+                            B    0        True if not in first row of quad mesh.
 
   Append to table 6.5:  Current Values and Associated Data
 
-    Get Value				Get Command	Type	Value	Attrib	Description
-    ---------				-----------	----	-------	------  -----------
-    MESH_BREADTH			glGetIntegerv	Z+	2	current	Breadth of quad and line meshes
+    Get Value                Get Command    Type    Value    Attrib    Description
+    ---------                -----------    ----    -------    ------  -----------
+    MESH_BREADTH            glGetIntegerv    Z+    2    current    Breadth of quad and line meshes
 
 New Implementation Dependent State
 
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
-    MAX_MESH_BREADTH			glGetIntegerv	Z+	512*
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
+    MAX_MESH_BREADTH            glGetIntegerv    Z+    512*

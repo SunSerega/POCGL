@@ -42,7 +42,7 @@ Overview
 
 Issues
 
-    *	Should "bias" be changed to "offset"?
+    *    Should "bias" be changed to "offset"?
 
 New Procedures and Functions
 
@@ -53,9 +53,9 @@ New Tokens
     Accepted by the <pname> parameter of TexParameteri, TexParameterf,
     TexParameteriv, TexParameterfv, GetTexParameteriv, and GetTexParameterfv:
 
-	TEXTURE_LOD_BIAS_S_SGIX
-	TEXTURE_LOD_BIAS_T_SGIX
-	TEXTURE_LOD_BIAS_R_SGIX
+    TEXTURE_LOD_BIAS_S_SGIX
+    TEXTURE_LOD_BIAS_T_SGIX
+    TEXTURE_LOD_BIAS_R_SGIX
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -65,60 +65,60 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     GL Specification Table 3.7 is updated as follows:
 
-	Name				Type	    Legal Values
-	----				----	    ------------
-	TEXTURE_WRAP_S			integer	    CLAMP, REPEAT
-	TEXTURE_WRAP_T			integer	    CLAMP, REPEAT
-	TEXTURE_WRAP_R_EXT		integer	    CLAMP, REPEAT
-	TEXTURE_MIN_FILTER		integer	    NEAREST, LINEAR,
-						    NEAREST_MIPMAP_NEAREST,
-						    NEAREST_MIPMAP_LINEAR,
-						    LINEAR_MIPMAP_NEAREST,
-						    LINEAR_MIPMAP_LINEAR,
-						    FILTER4_SGIS
-	TEXTURE_MAG_FILTER		integer	    NEAREST, LINEAR,
-						    FILTER4_SGIS,
-						    LINEAR_DETAIL_SGIS,
-						    LINEAR_DETAIL_ALPHA_SGIS,
-						    LINEAR_DETAIL_COLOR_SGIS,
-						    LINEAR_SHARPEN_SGIS,
-						    LINEAR_SHARPEN_ALPHA_SGIS,
-						    LINEAR_SHARPEN_COLOR_SGIS
-	TEXTURE_BORDER_COLOR		4 floats    any 4 values in [0,1]
-	DETAIL_TEXTURE_LEVEL_SGIS	integer	    any non-negative integer
-	DETAIL_TEXTURE_MODE_SGIS	integer	    ADD, MODULATE
-	TEXTURE_MIN_LOD_SGIS		float	    any value
-	TEXTURE_MAX_LOD_SGIS		float	    any value
-	TEXTURE_BASE_LEVEL_SGIS		integer	    any non-negative integer
-	TEXTURE_MAX_LEVEL_SGIS		integer	    any non-negative integer
-	TEXTURE_LOD_BIAS_S_SGIX	float	    any value
-	TEXTURE_LOD_BIAS_T_SGIX	float	    any value
-	TEXTURE_LOD_BIAS_R_SGIX	float	    any value
+    Name                Type        Legal Values
+    ----                ----        ------------
+    TEXTURE_WRAP_S            integer        CLAMP, REPEAT
+    TEXTURE_WRAP_T            integer        CLAMP, REPEAT
+    TEXTURE_WRAP_R_EXT        integer        CLAMP, REPEAT
+    TEXTURE_MIN_FILTER        integer        NEAREST, LINEAR,
+                            NEAREST_MIPMAP_NEAREST,
+                            NEAREST_MIPMAP_LINEAR,
+                            LINEAR_MIPMAP_NEAREST,
+                            LINEAR_MIPMAP_LINEAR,
+                            FILTER4_SGIS
+    TEXTURE_MAG_FILTER        integer        NEAREST, LINEAR,
+                            FILTER4_SGIS,
+                            LINEAR_DETAIL_SGIS,
+                            LINEAR_DETAIL_ALPHA_SGIS,
+                            LINEAR_DETAIL_COLOR_SGIS,
+                            LINEAR_SHARPEN_SGIS,
+                            LINEAR_SHARPEN_ALPHA_SGIS,
+                            LINEAR_SHARPEN_COLOR_SGIS
+    TEXTURE_BORDER_COLOR        4 floats    any 4 values in [0,1]
+    DETAIL_TEXTURE_LEVEL_SGIS    integer        any non-negative integer
+    DETAIL_TEXTURE_MODE_SGIS    integer        ADD, MODULATE
+    TEXTURE_MIN_LOD_SGIS        float        any value
+    TEXTURE_MAX_LOD_SGIS        float        any value
+    TEXTURE_BASE_LEVEL_SGIS        integer        any non-negative integer
+    TEXTURE_MAX_LEVEL_SGIS        integer        any non-negative integer
+    TEXTURE_LOD_BIAS_S_SGIX    float        any value
+    TEXTURE_LOD_BIAS_T_SGIX    float        any value
+    TEXTURE_LOD_BIAS_R_SGIX    float        any value
 
-	Table 3.7: Texture parameters and their values.
+    Table 3.7: Texture parameters and their values.
 
    Level of Detail Bias
    ------------------------
 
    This extensions redefines the equations 3.8 and 3.9 for P in Section 3.8.1 
    (Texture Minification) of the GL Specification as follows:
-	
-	P = max { sqrt((dlodu/dx)^2 + (dlodv/dx)^2 + (dlodw/dx)^2), 
-			    sqrt((dlodu/dy)^2 + (dlodv/dy)^2 + (dlodw/dy)^2) }	(3.8)	
+    
+    P = max { sqrt((dlodu/dx)^2 + (dlodv/dx)^2 + (dlodw/dx)^2), 
+                sqrt((dlodu/dy)^2 + (dlodv/dy)^2 + (dlodw/dy)^2) }    (3.8)    
 
-	where 
-		dlodu/dx = 2^TEXTURE_LOD_BIAS_S_SGIX * du/dx
-		dlodv/dx = 2^TEXTURE_LOD_BIAS_T_SGIX * dv/dx
-		dlodw/dx = 2^TEXTURE_LOD_BIAS_R_SGIX * dw/dx
-		dlodu/dy = 2^TEXTURE_LOD_BIAS_S_SGIX * du/dy
-		dlodv/dy = 2^TEXTURE_LOD_BIAS_T_SGIX * dv/dy
-		dlodw/dy = 2^TEXTURE_LOD_BIAS_R_SGIX * dw/dy
+    where 
+        dlodu/dx = 2^TEXTURE_LOD_BIAS_S_SGIX * du/dx
+        dlodv/dx = 2^TEXTURE_LOD_BIAS_T_SGIX * dv/dx
+        dlodw/dx = 2^TEXTURE_LOD_BIAS_R_SGIX * dw/dx
+        dlodu/dy = 2^TEXTURE_LOD_BIAS_S_SGIX * du/dy
+        dlodv/dy = 2^TEXTURE_LOD_BIAS_T_SGIX * dv/dy
+        dlodw/dy = 2^TEXTURE_LOD_BIAS_R_SGIX * dw/dy
 
     For a line the equation is redefined as:
-		
-	P = sqrt((dlodu/dx * deltaX + dlodu/dy * deltaY)^2 + 
-		(dlodv/dx * deltaX + dlodv/dy * deltaY)^2 +
-		(dlodw/dx * deltaX + dlodw/dy * deltaY)^2) / l		(3.9)
+        
+    P = sqrt((dlodu/dx * deltaX + dlodu/dy * deltaY)^2 + 
+        (dlodv/dx * deltaX + dlodv/dy * deltaY)^2 +
+        (dlodw/dx * deltaX + dlodw/dy * deltaY)^2) / l        (3.9)
 
     The conditions for f(x,y) in section 3.8.1 are similarly changed:
     
@@ -126,10 +126,10 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
        |dlodu/dy|, |dlodv/dx|, |dlodv/dy|, |dlodw/dx|, and |dlodw/dy|,
 
     2. Let
-	Mu = max {|dlodu/dx|, |dlodu/dy|}, Mv = max {|dlodv/dx|, |dlodv/dy|},
-	and Mw = max {|dlodw/dx|, |dlodw/dy|}.
+    Mu = max {|dlodu/dx|, |dlodu/dy|}, Mv = max {|dlodv/dx|, |dlodv/dy|},
+    and Mw = max {|dlodw/dx|, |dlodw/dy|}.
 
-	Then max{Mu,Mv,Mw} <= f(x,y) < Mu + Mv + Mw.
+    Then max{Mu,Mv,Mw} <= f(x,y) < Mu + Mv + Mw.
 
     By default TEXTURE_LOD_BIAS_S_SGIX, TEXTURE_LOD_BIAS_T_SGIX, and 
     TEXTURE_LOD_BIAS_R_SGIX are 0, so they do not interfere with the normal 
@@ -169,9 +169,9 @@ Dependencies on EXT_texture_object
 
     If EXT_texture_object is implemented, the state values named
 
-	TEXTURE_LOD_BIAS_S_SGIX	float	    any value
-	TEXTURE_LOD_BIAS_T_SGIX	float	    any value
-	TEXTURE_LOD_BIAS_R_SGIX	float	    any value
+    TEXTURE_LOD_BIAS_S_SGIX    float        any value
+    TEXTURE_LOD_BIAS_T_SGIX    float        any value
+    TEXTURE_LOD_BIAS_R_SGIX    float        any value
 
     are added to the state vector of each texture object. When an attribute
     set that includes texture information is popped, the bindings and
@@ -185,12 +185,12 @@ Errors
 
 New State
 
-								Initial
-    Get Value			Get Command	    Type	Value	Attrib
-    ---------			-----------	    ----	-------	------
-    TEXTURE_LOD_BIAS_S_SGIX	GetTexParameterfv   n x R 	    0   texture
-    TEXTURE_LOD_BIAS_T_SGIX	GetTexParameterfv   n x R 	    0   texture
-    TEXTURE_LOD_BIAS_R_SGIX	GetTexParameterfv   n x R 	    0   texture
+                                Initial
+    Get Value            Get Command        Type    Value    Attrib
+    ---------            -----------        ----    -------    ------
+    TEXTURE_LOD_BIAS_S_SGIX    GetTexParameterfv   n x R         0   texture
+    TEXTURE_LOD_BIAS_T_SGIX    GetTexParameterfv   n x R         0   texture
+    TEXTURE_LOD_BIAS_R_SGIX    GetTexParameterfv   n x R         0   texture
 
 New Implementation Dependent State
 

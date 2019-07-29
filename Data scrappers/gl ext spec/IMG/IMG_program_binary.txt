@@ -61,7 +61,7 @@ New Tokens
 
     Accepted by the <binaryFormat> parameter of ProgramBinaryOES:
 
-        SGX_PROGRAM_BINARY_IMG				0x9130
+        SGX_PROGRAM_BINARY_IMG                0x9130
 
 Additions to Chapter 2 of the OpenGL-ES 2.0 Specification (OpenGL Operation)
 

@@ -33,16 +33,16 @@ Overview
 Issues
 
     *   Should this single parameter be included in the fragment_light
-	spec (and thus removing the requirement of this spec)?
+    spec (and thus removing the requirement of this spec)?
 
-    *	Do we want this to apply to per-vertex lights too?  I would say
-	yes at this point because this feature can be used for visual
-	effects like those of area light sources.  Vertex lights can
-	benefit almost as much as fragment lights in this situation.
+    *    Do we want this to apply to per-vertex lights too?  I would say
+    yes at this point because this feature can be used for visual
+    effects like those of area light sources.  Vertex lights can
+    benefit almost as much as fragment lights in this situation.
 
     *   Do we want to force a certain falloff function or leave it up to
-	the implementation?  I think we should leave it open, but force
-	it to be monotonic.
+    the implementation?  I think we should leave it open, but force
+    it to be monotonic.
 
 New Procedures and Functions
 
@@ -53,16 +53,16 @@ New Tokens
     Accepted by the <pname> parameter of Lightf, Lighti, Lightfv, and
     Lightiv and by the <pname> parameter of GetLightfv and GetLightiv:
 
-    SPOT_CUTOFF_DELTA_SGIX		0x8193
+    SPOT_CUTOFF_DELTA_SGIX        0x8193
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
     Insert in Table 2.7 (need to replicate whole table...):
 
-    Param	Type	Default		Description
+    Param    Type    Default        Description
     ----------------------------------------------------------------
-    d_rli	real	0.0		spotlight delta cutoff angle
-					(range:  [0.0,90.0])
+    d_rli    real    0.0        spotlight delta cutoff angle
+                    (range:  [0.0,90.0])
 
     Equation 2.5 becomes:
 
@@ -90,9 +90,9 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
     Insert in Table 2.8 (need to replicate whole table...):
 
-    Param	Name			Number of Values
+    Param    Name            Number of Values
     ----------------------------------------------------
-    d_rli	SPOT_CUTOFF_DELTA_SGIX	1
+    d_rli    SPOT_CUTOFF_DELTA_SGIX    1
 
 Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
@@ -146,9 +146,9 @@ Errors
 
 New State
 
-    Get Value			Get Command	Type		Initial Value		Attribute
-    ---------			-----------	----		-------------		---------
-    SPOT_CUTOFF_DELTA_SGIX	GetLightfv	1*xR+		0.0			lighting
+    Get Value            Get Command    Type        Initial Value        Attribute
+    ---------            -----------    ----        -------------        ---------
+    SPOT_CUTOFF_DELTA_SGIX    GetLightfv    1*xR+        0.0            lighting
 
 New Implementation Dependent State
 

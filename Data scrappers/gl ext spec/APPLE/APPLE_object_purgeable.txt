@@ -347,7 +347,7 @@ New Tokens
     
     (Note: BUFFER_OBJECT_APPLE is also defined in APPLE_fence extension
     with the same value.)
-	
+    
 Additions to Chapter 2 of the OpenGL 1.5 Specification
 (OpenGL Operation)
 

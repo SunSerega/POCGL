@@ -83,17 +83,17 @@ New Procedures and Functions
     BOOL wglGetMscRateOML(HDC hdc, INT32 *numerator, INT32 *denominator)
 
     INT64 wglSwapBuffersMscOML(HDC hdc, INT64 target_msc, INT64 divisor,
-			       INT64 remainder)
+                   INT64 remainder)
 
     INT64 wglSwapLayerBuffersMscOML(HDC hdc, INT fuPlanes, INT64 target_msc,
-				    INT64 divisor, INT64 remainder)
+                    INT64 divisor, INT64 remainder)
 
     BOOL wglWaitForMscOML(HDC hdc, INT64 target_msc, INT64 divisor,
-			  INT64 remainder, INT64 *ust, INT64 *msc,
-			  INT64 *sbc)
+              INT64 remainder, INT64 *ust, INT64 *msc,
+              INT64 *sbc)
 
     BOOL wglWaitForSbcOML(HDC hdc, INT64 target_sbc, INT64 *ust, INT64 *msc,
-			  INT64 *sbc)
+              INT64 *sbc)
 
 New Tokens
 
@@ -173,7 +173,7 @@ Additions to the WGL Specification
     <target_msc>.
 
     Once wglSwapBuffersMscOML has been called, subsequent OpenGL commands
-    can be issued immediately.	If the thread's current context is made
+    can be issued immediately.    If the thread's current context is made
     current to another drawable, or if the thread makes another context
     current on another drawable, rendering can proceed immediately.
 
@@ -238,16 +238,16 @@ Additions to the WGL Specification
     called to cause a swap at a particular MSC, an application process
     would observe the following order of execution for that MSC:
 
-	1. The window for which a wglSwapBuffersMscOML call has been
-	   issued has been completely scanned out to the display for
-	   the previous MSC
-	2. The swap buffer action for that window begins
-	3. All the swap buffer actions for all the windows for the
-	   application process are completed
-	4. SBC and MSC values are atomically incremented
-	5. Any calls to wglWaitForMscOML or wglWaitForSbcOML that
-	   are satisfied by the new values for SBC and graphics
-	   MSC are released
+    1. The window for which a wglSwapBuffersMscOML call has been
+       issued has been completely scanned out to the display for
+       the previous MSC
+    2. The swap buffer action for that window begins
+    3. All the swap buffer actions for all the windows for the
+       application process are completed
+    4. SBC and MSC values are atomically incremented
+    5. Any calls to wglWaitForMscOML or wglWaitForSbcOML that
+       are satisfied by the new values for SBC and graphics
+       MSC are released
 
     The functions wglGetSyncValuesOML, wglGetMscRateOML, wglWaitForMscOML,
     and wglWaitForSbcOML will each return TRUE if the function completed
@@ -267,7 +267,7 @@ Errors
     To get extended error information, call GetLastError. Each of the
     functions defined by this extension may generate the following error:
 
-    ERROR_DC_NOT_FOUND		 The <hDC> parameter was not valid.
+    ERROR_DC_NOT_FOUND         The <hDC> parameter was not valid.
 
     The following error will be generated for the functions
     wglSwapBuffersMscOML, wglSwapLayerBuffersMscOML, and
@@ -276,15 +276,15 @@ Errors
     a non-zero <divisor>, or if <target_msc> is less than zero; and
     for the function wglWaitForSbcOML if <target_sbc> is less than zero:
 
-    ERROR_INVALID_DATA		 A parameter is incorrect.
+    ERROR_INVALID_DATA         A parameter is incorrect.
 
 New State
 
-    Get Value		Get Command	   Type     Initial Value
-    ---------		-----------	   ----     -------------
-      [UST]	     wglGetSyncValuesOML     Z	     unspecified
-      [MSC]	     wglGetSyncValuesOML     Z		  0
-      [SBC]	     wglGetSyncValuesOML     Z		  0
+    Get Value        Get Command       Type     Initial Value
+    ---------        -----------       ----     -------------
+      [UST]         wglGetSyncValuesOML     Z         unspecified
+      [MSC]         wglGetSyncValuesOML     Z          0
+      [SBC]         wglGetSyncValuesOML     Z          0
 
 New Implementation Dependent State
 

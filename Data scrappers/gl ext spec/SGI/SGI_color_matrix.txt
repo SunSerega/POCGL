@@ -23,14 +23,14 @@ Overview
     This extension adds a 4x4 matrix stack to the pixel transfer path.  The
     matrix operates on RGBA pixel groups, using the equation
 
-	C' = MC,
+    C' = MC,
 
     where
 
-	    |R|
-	C = |G|
-	    |B|
-	    |A|
+        |R|
+    C = |G|
+        |B|
+        |A|
 
     and M is the 4x4 matrix on the top of the color matrix stack.  After
     the matrix multiplication, each resulting color component is scaled
@@ -50,21 +50,21 @@ New Tokens
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-	COLOR_MATRIX_SGI		 	0x80B1
-	COLOR_MATRIX_STACK_DEPTH_SGI		0x80B2
-	MAX_COLOR_MATRIX_STACK_DEPTH_SGI	0x80B3
+    COLOR_MATRIX_SGI             0x80B1
+    COLOR_MATRIX_STACK_DEPTH_SGI        0x80B2
+    MAX_COLOR_MATRIX_STACK_DEPTH_SGI    0x80B3
 
     Accepted by the <pname> parameter of PixelTransfer*, and by the <pname>
     parameter of GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
 
-	POST_COLOR_MATRIX_RED_SCALE_SGI		0x80B4
-	POST_COLOR_MATRIX_GREEN_SCALE_SGI	0x80B5
-	POST_COLOR_MATRIX_BLUE_SCALE_SGI	0x80B6
-	POST_COLOR_MATRIX_ALPHA_SCALE_SGI	0x80B7
-	POST_COLOR_MATRIX_RED_BIAS_SGI		0x80B8
-	POST_COLOR_MATRIX_GREEN_BIAS_SGI	0x80B9
-	POST_COLOR_MATRIX_BLUE_BIAS_SGI		0x80BA
-	POST_COLOR_MATRIX_ALPHA_BIAS_SGI	0x80BB
+    POST_COLOR_MATRIX_RED_SCALE_SGI        0x80B4
+    POST_COLOR_MATRIX_GREEN_SCALE_SGI    0x80B5
+    POST_COLOR_MATRIX_BLUE_SCALE_SGI    0x80B6
+    POST_COLOR_MATRIX_ALPHA_SCALE_SGI    0x80B7
+    POST_COLOR_MATRIX_RED_BIAS_SGI        0x80B8
+    POST_COLOR_MATRIX_GREEN_BIAS_SGI    0x80B9
+    POST_COLOR_MATRIX_BLUE_BIAS_SGI        0x80BA
+    POST_COLOR_MATRIX_ALPHA_BIAS_SGI    0x80BB
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -90,10 +90,10 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     section 2.9.2 of the GL Specification (Matrices) the color matrix
     arithmetic is:
 
-	R' = ((m1 * R) + (m5 * G) +  (m9 * B) + (m13 * A)) * Rscale + Rbias
-	G' = ((m2 * R) + (m6 * G) + (m10 * B) + (m14 * A)) * Gscale + Gbias
-	B' = ((m3 * R) + (m7 * G) + (m11 * B) + (m15 * A)) * Bscale + Bbias
-	A' = ((m4 * R) + (m8 * G) + (m12 * B) + (m16 * A)) * Ascale + Abias
+    R' = ((m1 * R) + (m5 * G) +  (m9 * B) + (m13 * A)) * Rscale + Rbias
+    G' = ((m2 * R) + (m6 * G) + (m10 * B) + (m14 * A)) * Gscale + Gbias
+    B' = ((m3 * R) + (m7 * G) + (m11 * B) + (m15 * A)) * Bscale + Bbias
+    A' = ((m4 * R) + (m8 * G) + (m12 * B) + (m16 * A)) * Ascale + Abias
 
     where R, G, B, and A are the color component values of the incoming
     pixel group, m1 through m16 are the components of the matrix at the top
@@ -148,23 +148,23 @@ Errors
 
 New State
 
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
-    COLOR_MATRIX_SGI			GetFloatv	2* x M4	Identity  -
-    COLOR_MATRIX_STACK_DEPTH_SGI	GetIntegerv	Z+	1	  -
-    POST_COLOR_MATRIX_RED_SCALE_SGI	GetFloatv	R	1	pixel
-    POST_COLOR_MATRIX_GREEN_SCALE_SGI	GetFloatv	R	1	pixel
-    POST_COLOR_MATRIX_BLUE_SCALE_SGI	GetFloatv	R	1	pixel
-    POST_COLOR_MATRIX_ALPHA_SCALE_SGI	GetFloatv	R	1	pixel
-    POST_COLOR_MATRIX_RED_BIAS_SGI	GetFloatv	R	0	pixel
-    POST_COLOR_MATRIX_GREEN_BIAS_SGI	GetFloatv	R	0	pixel
-    POST_COLOR_MATRIX_BLUE_BIAS_SGI	GetFloatv	R	0	pixel
-    POST_COLOR_MATRIX_ALPHA_BIAS_SGI	GetFloatv	R	0	pixel
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
+    COLOR_MATRIX_SGI            GetFloatv    2* x M4    Identity  -
+    COLOR_MATRIX_STACK_DEPTH_SGI    GetIntegerv    Z+    1      -
+    POST_COLOR_MATRIX_RED_SCALE_SGI    GetFloatv    R    1    pixel
+    POST_COLOR_MATRIX_GREEN_SCALE_SGI    GetFloatv    R    1    pixel
+    POST_COLOR_MATRIX_BLUE_SCALE_SGI    GetFloatv    R    1    pixel
+    POST_COLOR_MATRIX_ALPHA_SCALE_SGI    GetFloatv    R    1    pixel
+    POST_COLOR_MATRIX_RED_BIAS_SGI    GetFloatv    R    0    pixel
+    POST_COLOR_MATRIX_GREEN_BIAS_SGI    GetFloatv    R    0    pixel
+    POST_COLOR_MATRIX_BLUE_BIAS_SGI    GetFloatv    R    0    pixel
+    POST_COLOR_MATRIX_ALPHA_BIAS_SGI    GetFloatv    R    0    pixel
 
 New Implementation Dependent State
 
-								Minimum
-    Get Value				Get Command	Type	Value
-    ---------				-----------	----	-------
-    MAX_COLOR_MATRIX_STACK_DEPTH_SGI	GetIntegerv	Z+	2
+                                Minimum
+    Get Value                Get Command    Type    Value
+    ---------                -----------    ----    -------
+    MAX_COLOR_MATRIX_STACK_DEPTH_SGI    GetIntegerv    Z+    2

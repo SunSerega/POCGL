@@ -45,7 +45,7 @@ New Tokens
 
     Accepted by the <cap> parameter of Enable, Disable and IsEnabled:
 
-	OCCLUSION_INSTRUMENT_SGIX		0x6060
+    OCCLUSION_INSTRUMENT_SGIX        0x6060
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 

@@ -50,15 +50,15 @@ New Procedures and Functions
     There are no new Procedures for this extension
 New Tokens
 
-*	This list should be complete.  It should separate the new tokens
-*	based on which procedures and parameters accept them, and explicitly
-*	list those procedures and parameters.  Token suffixes must match the
-*	prefix chosen for the extension name.  For example:
+*    This list should be complete.  It should separate the new tokens
+*    based on which procedures and parameters accept them, and explicitly
+*    list those procedures and parameters.  Token suffixes must match the
+*    prefix chosen for the extension name.  For example:
 *
-*	Accepted by the <pname> parameters of GetBooleanv, GetIntegerv,
-*	GetFloatv, and GetDoublev:
+*    Accepted by the <pname> parameters of GetBooleanv, GetIntegerv,
+*    GetFloatv, and GetDoublev:
 *
-*	    NEW_TOKEN_SGI
+*        NEW_TOKEN_SGI
 
     IGLOO_OFFSET_VIEWPORT_XXX Is accepted by glEnable and glDisable.
 
@@ -79,8 +79,8 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     now reads:
 
     "The vertex's window coordinates, (x_w) are given by
-				      (y_w)
-				      (z_w),
+                      (y_w)
+                      (z_w),
 
     (x_w)   ((p_x/2)x_d + o_x + offset)     )
     (y_w) = ((p_y/2)y_d + o_y + offset)     )
@@ -100,8 +100,8 @@ and the Frame Buffer)
 
 Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 
-*	List commands that are not included in display lists (typically Get*
-*	commands)
+*    List commands that are not included in display lists (typically Get*
+*    commands)
 
     glGet(IGLOO_OFFSET_VIEWPORT_XXX)  will probably not be part of any real implementation.
     glEnable is already display listable and remains so.
@@ -125,11 +125,11 @@ Errors
 
 New State
 
-*	Description of all state values in table format.  Note that client
-*	state should have "client" listed in the Attrib column.
+*    Description of all state values in table format.  Note that client
+*    state should have "client" listed in the Attrib column.
 
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	------- ------
-    IGLOO_OFFSET_VIEWPORT_XXX		glGetBooleanv	Bool	FALSE	enable
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    ------- ------
+    IGLOO_OFFSET_VIEWPORT_XXX        glGetBooleanv    Bool    FALSE    enable
 

@@ -70,7 +70,7 @@ Overview
 
 Issues
 
-    *	Should GLXFBConfigs apply to all GLX drawables or just GLXPbuffers?
+    *    Should GLXFBConfigs apply to all GLX drawables or just GLXPbuffers?
 
         A: For consistency, all GLX drawables should be supported. (And if this 
         extension is incorporated in a future release of GLX then the existing 
@@ -80,7 +80,7 @@ Issues
         to those which can be supported by on-screen windows.
 
     *   Should the selection of an FBConfig differ from glXChooseVisual? If 
-	so, how? 
+    so, how? 
 
         Yes. For some attributes, the default value (that is, the value that is
         used if the attribute is not specified in the list) should be "don't 
@@ -89,15 +89,15 @@ Issues
         determine the best GLXFBConfig.
 
     *   Do we want to introduce the notion of "compatible" GLXFBConfigs and 
-	visuals? (GLX currently uses the term "similar". GLXContexts and 
-	GLXDrawables are similar iff they have been created with respect 
-	to the same VisualID and root window.)
+    visuals? (GLX currently uses the term "similar". GLXContexts and 
+    GLXDrawables are similar iff they have been created with respect 
+    to the same VisualID and root window.)
    
         A: Yes. The GLX definition of similar visuals is too restrictive 
-	(and the glXMakeCurrentRead extension already relaxes it.) This 
-	is the right time to agree on a definition since we need to define 
-	how GLXFBConfigs match up to X Visuals. Note, that we do not 
-	redefine similar; instead a new term, compatible, is introduced.
+    (and the glXMakeCurrentRead extension already relaxes it.) This 
+    is the right time to agree on a definition since we need to define 
+    how GLXFBConfigs match up to X Visuals. Note, that we do not 
+    redefine similar; instead a new term, compatible, is introduced.
         In the future, we may want to remove this restriction and allow
         a context to be bound to any drawable. (But a context would still
         be created to do either RGBA or color index rendering.)
@@ -106,24 +106,24 @@ Issues
 New Procedures and Functions
 
     int glXGetFBConfigAttribSGIX(Display *dpy, 
-			         GLXFBConfigSGIX config,
-			         int attribute,
-			         int *value);
-					   
+                     GLXFBConfigSGIX config,
+                     int attribute,
+                     int *value);
+                       
     GLXFBConfigSGIX *glXChooseFBConfigSGIX(Display *dpy, 
-				           int screen,
-				           const int *attrib_list,
-				           int *nelements);
-					   
+                           int screen,
+                           const int *attrib_list,
+                           int *nelements);
+                       
     GLXPixmap glXCreateGLXPixmapWithConfigSGIX(Display *dpy, 
-		                   	       GLXFBConfig config,
-				   	       Pixmap pixmap);
+                                      GLXFBConfig config,
+                              Pixmap pixmap);
 
     GLXContext glXCreateContextWithConfigSGIX(Display *dpy,  
                                               GLXFBConfig config,
-					      int render_type,
+                          int render_type,
                                               GLXContext share_list,
-				 	      Bool direct);
+                           Bool direct);
 
     XVisualInfo *glXGetVisualFromFBConfigSGIX(Display *dpy,
                                               GLXFBConfig config);
@@ -136,39 +136,39 @@ New Tokens
     Accepted by the <attribute> parameter of glXGetFBConfigAttribSGIX, and 
     by the <attrib_list> parameter of glXChooseFBConfigSGIX:
 
-        GLX_DRAWABLE_TYPE_SGIX		0x8010
-        GLX_RENDER_TYPE_SGIX		0x8011
-        GLX_X_RENDERABLE_SGIX		0x8012
+        GLX_DRAWABLE_TYPE_SGIX        0x8010
+        GLX_RENDER_TYPE_SGIX        0x8011
+        GLX_X_RENDERABLE_SGIX        0x8012
 
     Accepted by the <attribute> parameter of glXGetFBConfigAttribSGIX, the
     <attrib_list> parameter of glXChooseFBConfigSGIX, by the <attribute> 
     parameter of glXQueryGLXPbufferSGIX and by the <attribute> parameter
     of glXQueryContextInfoEXT:
 
-	GLX_FBCONFIG_ID_SGIX		0x8013
+    GLX_FBCONFIG_ID_SGIX        0x8013
 
     Accepted by the <attribute> parameter of glXGetFBConfigAttribSGIX:
  
-        GLX_SCREEN_EXT			0x800C
+        GLX_SCREEN_EXT            0x800C
     
     Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to 
     GLX_DRAWABLE_TYPE_SGIX) and accepted by the <attrib_list> parameter of 
     glXChooseFBConfigSGIX (following the GLX_DRAWABLE_TYPE_SGIX token):
 
-        GLX_WINDOW_BIT_SGIX		0x00000001
-	GLX_PIXMAP_BIT_SGIX		0x00000002
+        GLX_WINDOW_BIT_SGIX        0x00000001
+    GLX_PIXMAP_BIT_SGIX        0x00000002
 
     Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to 
     GLX_RENDER_TYPE_SGIX) and accepted by the <attrib_list> parameter of 
     glXChooseFBConfigSGIX (following the GLX_RENDER_TYPE_SGIX token):
 
-        GLX_RGBA_BIT_SGIX		0x00000001
-	GLX_COLOR_INDEX_BIT_SGIX	0x00000002
+        GLX_RGBA_BIT_SGIX        0x00000001
+    GLX_COLOR_INDEX_BIT_SGIX    0x00000002
 
     Accepted by the <render_type> parameter of glXCreateContextWithConfigSGIX:
 
-        GLX_RGBA_TYPE_SGIX		0x8014
-	GLX_COLOR_INDEX_TYPE_SGIX	0x8015
+        GLX_RGBA_TYPE_SGIX        0x8014
+    GLX_COLOR_INDEX_TYPE_SGIX    0x8015
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -214,9 +214,9 @@ Additions to the GLX Specification
     available on the specified screen.
 
         GLXFBConfigSGIX *glXChooseFBConfigSGIX(Display *dpy, 
-					  int screen,
-					  const int *attrib_list,
-				          int *nelements);
+                      int screen,
+                      const int *attrib_list,
+                          int *nelements);
 
     If <attrib_list> is NULL then glXChooseFBConfigSGIX returns an array of 
     GLXFBConfigSGIXs that are available on the specified screen; otherwise this
@@ -243,7 +243,7 @@ Additions to the GLX Specification
     If GLX_RENDER_TYPE_SGIX is in <attrib_list> then the value that follows
     is a mask indicating which type of GLXContexts drawables created with
     the corresponding GLXFBConfigSGIXs be bound to. For example, if 
-		GLX_RGBA_BIT_SGIX | GLX_COLOR_INDEX_BIT_SGIX 
+        GLX_RGBA_BIT_SGIX | GLX_COLOR_INDEX_BIT_SGIX 
     is specified as the mask then glXChooseFBConfigSGIX will search for 
     GLXFBConfigSGIXs that can be used to create drawables that can be bound to both 
     RGBA and color index rendering contexts. The default value for
@@ -297,32 +297,32 @@ Additions to the GLX Specification
     that are considered equal by lower numbered rule are sorted by the higher
     numbered rule):
 
-	 1. by GLX_VISUAL_RATING_EXT where the precedence is GLX_NONE_EXT,
-	    GLX_SLOW_VISUAL.
-	 2. larger total number of RGBA color components (GLX_RED_BITS,
-	    GLX_GREEN_BITS, GLX_BLUE_BITS, and GLX_ALPHA_BITS) that have higher
-	    number of bits,
-	 3. smaller GLX_INDEX_BITS,
-	 4. single buffered configuration (GLX_DOUBLE_BUFFER being False)
-	    precedes a double buffered one,
-	 5. smaller GLX_AUX_BUFFERS,
-	 6. smaller GLX_SAMPLE_BUFFERS_SGIS,
-	 7. smaller GLX_SAMPLES_SGIS,
-	 8. larger GLX_DEPTH_BITS,
-	 9. smaller GLX_STENCIL_BITS,
-	10. larger total number of accumulation buffer color components
-	    (GLX_ACCUM_RED_BITS, GLX_ACCUM_GREEN_BITS, GLX_ACCUM_BLUE_BITS, and
-	    GLX_ACCUM_ALPHA_BITS) that have higher number of bits;
-	11. sort by GLX_VISUAL_TYPE_EXT where the precedence order is
-	    GLX_TRUE_COLOR_EXT, GLX_DIRECT_COLOR_EXT, GLX_PSEUDO_COLOR_EXT,
-	    GLX_STATIC_COLOR_EXT, GLX_GRAY_SCALE_EXT, GLX_STATIC_GRAY_EXT,
+     1. by GLX_VISUAL_RATING_EXT where the precedence is GLX_NONE_EXT,
+        GLX_SLOW_VISUAL.
+     2. larger total number of RGBA color components (GLX_RED_BITS,
+        GLX_GREEN_BITS, GLX_BLUE_BITS, and GLX_ALPHA_BITS) that have higher
+        number of bits,
+     3. smaller GLX_INDEX_BITS,
+     4. single buffered configuration (GLX_DOUBLE_BUFFER being False)
+        precedes a double buffered one,
+     5. smaller GLX_AUX_BUFFERS,
+     6. smaller GLX_SAMPLE_BUFFERS_SGIS,
+     7. smaller GLX_SAMPLES_SGIS,
+     8. larger GLX_DEPTH_BITS,
+     9. smaller GLX_STENCIL_BITS,
+    10. larger total number of accumulation buffer color components
+        (GLX_ACCUM_RED_BITS, GLX_ACCUM_GREEN_BITS, GLX_ACCUM_BLUE_BITS, and
+        GLX_ACCUM_ALPHA_BITS) that have higher number of bits;
+    11. sort by GLX_VISUAL_TYPE_EXT where the precedence order is
+        GLX_TRUE_COLOR_EXT, GLX_DIRECT_COLOR_EXT, GLX_PSEUDO_COLOR_EXT,
+        GLX_STATIC_COLOR_EXT, GLX_GRAY_SCALE_EXT, GLX_STATIC_GRAY_EXT,
 
     To get the value of a GLX attribute for a GLXFBConfigSGIX use
 
         int glXGetFBConfigAttribSGIX(Display *dpy, 
-			             GLXFBConfigSGIX config,
-			             int attribute,
-			             int *value);
+                         GLXFBConfigSGIX config,
+                         int attribute,
+                         int *value);
 
     If glXGetFBConfigAttribSGIX succeeds then it returns Success and the 
     value for the specified attribute is returned in <value>; otherwise 
@@ -356,118 +356,118 @@ Additions to the GLX Specification
     [Change Table 1 caption to read: "GLX Configuration attributes for Visuals" 
      and add the tables below]
 
-    Attribute  		  	    Type     Description
-    ---------                 	    ----     -----------
-    GLX_BUFFER_SIZE           	    integer  depth of the color buffer
-    GLX_LEVEL                 	    integer  frame buffer level
-    GLX_DOUBLEBUFFER		    boolean  True if color buffers have
-    					     front/back pairs
-    GLX_STEREO			    boolean  True if color buffers have
-    					     left/right pairs
-    GLX_AUX_BUFFERS           	    integer  number of auxiliary color buffers
-    GLX_RED_SIZE              	    integer  number of bits of Red in the
-    					     framebuffer
-    GLX_GREEN_SIZE            	    integer  number of bits of Green in the
-    					     framebuffer
-    GLX_BLUE_SIZE             	    integer  number of bits of Blue in the
-    					     framebuffer
-    GLX_ALPHA_SIZE            	    integer  number of bits of Alpha in the
-    					     framebuffer
-    GLX_DEPTH_SIZE            	    integer  number of bits in the depth buffer
-    GLX_STENCIL_SIZE          	    integer  number of bits in the stencil buffer
-    GLX_ACCUM_RED_SIZE        	    integer  number of bits of Red in the 
-					     accumulation buffer
-    GLX_ACCUM_GREEN_SIZE      	    integer  number of bits of Green in the
-					     accumulation buffer
-    GLX_ACCUM_BLUE_SIZE       	    integer  number of bits of Blue in the 
-					     accumulation buffer
-    GLX_ACCUM_ALPHA_SIZE      	    integer  number of bits of Alpha in the
-					     accumulation buffer
-    GLX_SAMPLE_BUFFERS_SGIS   	    integer  number of multisample buffers
-    GLX_SAMPLES_SGIS          	    integer  number of samples stored in each
-					     multisample buffer
-    GLX_X_VISUAL_TYPE_EXT	    integer  X visual type of the associated visual
-    GLX_TRANSPARENT_TYPE_EXT 	    enum     GLX_NONE_EXT,
-			                     TRANSPARENT_RGB_EXT, or 
-			                     TRANSPARENT_INDEX_EXT
+    Attribute                    Type     Description
+    ---------                         ----     -----------
+    GLX_BUFFER_SIZE                   integer  depth of the color buffer
+    GLX_LEVEL                         integer  frame buffer level
+    GLX_DOUBLEBUFFER            boolean  True if color buffers have
+                             front/back pairs
+    GLX_STEREO                boolean  True if color buffers have
+                             left/right pairs
+    GLX_AUX_BUFFERS                   integer  number of auxiliary color buffers
+    GLX_RED_SIZE                      integer  number of bits of Red in the
+                             framebuffer
+    GLX_GREEN_SIZE                    integer  number of bits of Green in the
+                             framebuffer
+    GLX_BLUE_SIZE                     integer  number of bits of Blue in the
+                             framebuffer
+    GLX_ALPHA_SIZE                    integer  number of bits of Alpha in the
+                             framebuffer
+    GLX_DEPTH_SIZE                    integer  number of bits in the depth buffer
+    GLX_STENCIL_SIZE                  integer  number of bits in the stencil buffer
+    GLX_ACCUM_RED_SIZE                integer  number of bits of Red in the 
+                         accumulation buffer
+    GLX_ACCUM_GREEN_SIZE              integer  number of bits of Green in the
+                         accumulation buffer
+    GLX_ACCUM_BLUE_SIZE               integer  number of bits of Blue in the 
+                         accumulation buffer
+    GLX_ACCUM_ALPHA_SIZE              integer  number of bits of Alpha in the
+                         accumulation buffer
+    GLX_SAMPLE_BUFFERS_SGIS           integer  number of multisample buffers
+    GLX_SAMPLES_SGIS                  integer  number of samples stored in each
+                         multisample buffer
+    GLX_X_VISUAL_TYPE_EXT        integer  X visual type of the associated visual
+    GLX_TRANSPARENT_TYPE_EXT         enum     GLX_NONE_EXT,
+                                 TRANSPARENT_RGB_EXT, or 
+                                 TRANSPARENT_INDEX_EXT
     GLX_TRANSPARENT_INDEX_VALUE_EXT integer  transparent index value.
     GLX_TRANSPARENT_RED_VALUE_EXT   integer  transparent red value.
     GLX_TRANSPARENT_GREEN_VALUE_EXT integer  transparent green value.
     GLX_TRANSPARENT_BLUE_VALUE_EXT  integer  transparent blue value.
     GLX_TRANSPARENT_ALPHA_VALUE_EXT integer  transparent alpha value.
-    GLX_VISUAL_CAVEAT_EXT	    enum     GLX_NONE_EXT or GLX_SLOW_VISUAL_EXT
-    GLX_DRAWABLE_TYPE_SGIX	    bitmask  mask indicating which GLX drawables
-					     are supported.  Valid bits are
-					     GLX_WINDOW_BIT_SGIX and
-					     GLX_PIXMAP_BIT_SGIX
-    GLX_RENDER_TYPE_SGIX	    bitmask  mask indicating which OpenGL
-					     rendering modes are
-					     supported. Valid bits are
-					     GLX_RGBA_BIT_SGIX and
-					     GLX_COLOR_INDEX_SGIX.
-    GLX_X_RENDERABLE_SGIX     	    boolean  True if X can render to drawable
-    GLX_FBCONFIG_ID_SGIX	    XID      i.d. of GLXFBConfigSGIX
+    GLX_VISUAL_CAVEAT_EXT        enum     GLX_NONE_EXT or GLX_SLOW_VISUAL_EXT
+    GLX_DRAWABLE_TYPE_SGIX        bitmask  mask indicating which GLX drawables
+                         are supported.  Valid bits are
+                         GLX_WINDOW_BIT_SGIX and
+                         GLX_PIXMAP_BIT_SGIX
+    GLX_RENDER_TYPE_SGIX        bitmask  mask indicating which OpenGL
+                         rendering modes are
+                         supported. Valid bits are
+                         GLX_RGBA_BIT_SGIX and
+                         GLX_COLOR_INDEX_SGIX.
+    GLX_X_RENDERABLE_SGIX             boolean  True if X can render to drawable
+    GLX_FBCONFIG_ID_SGIX        XID      i.d. of GLXFBConfigSGIX
 
     Table 3: GLXFBConfigSGIX attributes (Note that GLX_RGBA and GLX_USE_GL
              are not supported for GLXFBConfigSGIXs)
 
-    Attribute  		  	     Default		        Sorting Criterion
-    ---------                 	     -------			-----------------
-    GLX_BUFFER_SIZE		     0				smaller
-    GLX_LEVEL			     0				exact
-    GLX_DOUBLEBUFFER		     don't care			smaller
-    GLX_STEREO			     False			exact
-    GLX_AUX_BUFFERS		     0				smaller
-    GLX_RED_SIZE		     0				larger
-    GLX_GREEN_SIZE		     0				larger
-    GLX_BLUE_SIZE		     0				larger
-    GLX_ALPHA_SIZE		     0				larger
-    GLX_DEPTH_SIZE		     0				larger
-    GLX_STENCIL_SIZE		     0				larger
-    GLX_ACCUM_RED_SIZE		     0				larger
-    GLX_ACCUM_GREEN_SIZE	     0				larger
-    GLX_ACCUM_BLUE_SIZE		     0				larger
-    GLX_ACCUM_ALPHA_SIZE	     0				larger
-    GLX_SAMPLE_BUFFERS_SGIS	     0				smaller
-    GLX_SAMPLES_SGIS		     0				smaller
-    GLX_X_VISUAL_TYPE_EXT	     don't care			exact
-    GLX_TRANSPARENT_TYPE_EXT	     GLX_NONE_EXT		exact
-    GLX_TRANSPARENT_INDEX_VALUE_EXT  don't care			exact
-    GLX_TRANSPARENT_RED_VALUE_EXT    don't care			exact
-    GLX_TRANSPARENT_GREEN_VALUE_EXT  don't care			exact
-    GLX_TRANSPARENT_BLUE_VALUE_EXT   don't care			exact
-    GLX_TRANSPARENT_ALPHA_VALUE_EXT  don't care			exact
-    GLX_VISUAL_CAVEAT_EXT	     don't care			exact
-    GLX_DRAWABLE_TYPE_SGIX	     GLX_WINDOW_BIT_SGIX	mask
-    GLX_RENDER_TYPE_SGIX	     GLX_RGBA_BIT_SGIX          mask
-    GLX_X_RENDERABLE_SGIX	     don't care			exact
-    GLX_FBCONFIG_ID_SGIX	     don't care			exact
+    Attribute                     Default                Sorting Criterion
+    ---------                          -------            -----------------
+    GLX_BUFFER_SIZE             0                smaller
+    GLX_LEVEL                 0                exact
+    GLX_DOUBLEBUFFER             don't care            smaller
+    GLX_STEREO                 False            exact
+    GLX_AUX_BUFFERS             0                smaller
+    GLX_RED_SIZE             0                larger
+    GLX_GREEN_SIZE             0                larger
+    GLX_BLUE_SIZE             0                larger
+    GLX_ALPHA_SIZE             0                larger
+    GLX_DEPTH_SIZE             0                larger
+    GLX_STENCIL_SIZE             0                larger
+    GLX_ACCUM_RED_SIZE             0                larger
+    GLX_ACCUM_GREEN_SIZE         0                larger
+    GLX_ACCUM_BLUE_SIZE             0                larger
+    GLX_ACCUM_ALPHA_SIZE         0                larger
+    GLX_SAMPLE_BUFFERS_SGIS         0                smaller
+    GLX_SAMPLES_SGIS             0                smaller
+    GLX_X_VISUAL_TYPE_EXT         don't care            exact
+    GLX_TRANSPARENT_TYPE_EXT         GLX_NONE_EXT        exact
+    GLX_TRANSPARENT_INDEX_VALUE_EXT  don't care            exact
+    GLX_TRANSPARENT_RED_VALUE_EXT    don't care            exact
+    GLX_TRANSPARENT_GREEN_VALUE_EXT  don't care            exact
+    GLX_TRANSPARENT_BLUE_VALUE_EXT   don't care            exact
+    GLX_TRANSPARENT_ALPHA_VALUE_EXT  don't care            exact
+    GLX_VISUAL_CAVEAT_EXT         don't care            exact
+    GLX_DRAWABLE_TYPE_SGIX         GLX_WINDOW_BIT_SGIX    mask
+    GLX_RENDER_TYPE_SGIX         GLX_RGBA_BIT_SGIX          mask
+    GLX_X_RENDERABLE_SGIX         don't care            exact
+    GLX_FBCONFIG_ID_SGIX         don't care            exact
 
     Table 4: Default values and match criteria for GLXFBConfigSGIX attributes.  The
              definition of the sorting criteria is as follow:
-	     smaller - configs with attribute value that meets or exceeds the
-	       specified value are returned, with precedence given to smaller
-	       values (when a value is not explicitly requested, the default is
-	       implied);
-	     larger - when the value is requested explicitly, only configs
-	       with a corresponding attribute value that meet or exceed the
-	       specified value are returned, with precedence given to larger
-	       values.  When the value is not requested explicitly behaves exactly
-	       like the ``smaller'' criterion.
-	     exact - only configs whose corresponding attribute value exactly
-	       matches the requested value are considered.
-	     mask - only configs for which the set bits of corresponding
-	       attribute include all the bits that are set in the requested
-	       value are considered (Additional bits might be set in the
-	       attribute).
+         smaller - configs with attribute value that meets or exceeds the
+           specified value are returned, with precedence given to smaller
+           values (when a value is not explicitly requested, the default is
+           implied);
+         larger - when the value is requested explicitly, only configs
+           with a corresponding attribute value that meet or exceed the
+           specified value are returned, with precedence given to larger
+           values.  When the value is not requested explicitly behaves exactly
+           like the ``smaller'' criterion.
+         exact - only configs whose corresponding attribute value exactly
+           matches the requested value are considered.
+         mask - only configs for which the set bits of corresponding
+           attribute include all the bits that are set in the requested
+           value are considered (Additional bits might be set in the
+           attribute).
 
     [Add the following to section 3.2.3 on Offscreen Rendering]
 
     To create a GLX pixmap using a GLXFBConfigSGIX use 
 
       GLXPixmap glXCreateGLXPixmapWithConfigSGIX(Display *dpy, 
-		                   	         GLXFBConfigSGIX config,
-				   	         Pixmap pixmap);
+                                        GLXFBConfigSGIX config,
+                                Pixmap pixmap);
 
     This call is identical to glXCreateGLXPixmap except that the GLXPixmap 
     is created with color buffers and ancillary buffers as specified by 
@@ -481,9 +481,9 @@ Additions to the GLX Specification
 
       GLXContext glXCreateContextWithConfigSGIX(Display *dpy,  
                                                 GLXFBConfigSGIX config,
-					        int render_type,
-						GLXContext share_list,
-						Bool direct);
+                            int render_type,
+                        GLXContext share_list,
+                        Bool direct);
 
     This call is identical to glXCreateContext except that the resulting 
     GLXContext can be used to render to any "compatible" GLXDrawable. A
@@ -494,12 +494,12 @@ Additions to the GLX Specification
           the GLXFBConfigSGIX's GLX_RENDER_TYPE_SGIX attribute must have
           the GLX_RGBA_BIT_SGIX bit set.)
         - all color buffers and ancillary buffers that exist in both 
-	  GLXFBConfigSGIXs have the same depth. For example, a GLXDrawable that 
-	  had a front left buffer and a back left buffer with red, green and 
-	  blue sizes of 4 would not be compatible with a GLXFBConfigSGIX that had 
-	  only a front left buffer with red, green and blue sizes of 8. However,
-    	  it would be compatible with a GLXFBConfigSGIX that had only a front left 
- 	  buffer if the red, green and blue sizes were 4.
+      GLXFBConfigSGIXs have the same depth. For example, a GLXDrawable that 
+      had a front left buffer and a back left buffer with red, green and 
+      blue sizes of 4 would not be compatible with a GLXFBConfigSGIX that had 
+      only a front left buffer with red, green and blue sizes of 8. However,
+          it would be compatible with a GLXFBConfigSGIX that had only a front left 
+       buffer if the red, green and blue sizes were 4.
 
     glXCreateContextWithConfigSGIX can generate the following errors: 
     GLXBadContext if <share_list> is neither zero nor a valid GLX
@@ -537,56 +537,56 @@ Additions to the GLX Specification
 
 GLX Protocol
 
-	Three newGLX protocol commands are added.
+    Three newGLX protocol commands are added.
 
-	GetFBConfigsSGIX
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		4		request length
-	    4		65540		vendor specific opcode
-	    4				unused
-	    4		CARD32		screen
-	  =>
-	    1		1		reply
-	    1				unused
-	    2		CARD16		sequence number
-	    4		n*m		length
-	    4		n		numFBConfigs
-	    4		m		numAttribs
-	    20				unused
-	    8 * n	LISTofATTRIB	properties
-	
-	     Where n is the number of FBConfigs returned and m is the number
-	     of attributes returned for each FBConfig.  Both m and n are
-	     of type CARD32.
+    GetFBConfigsSGIX
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        4        request length
+        4        65540        vendor specific opcode
+        4                unused
+        4        CARD32        screen
+      =>
+        1        1        reply
+        1                unused
+        2        CARD16        sequence number
+        4        n*m        length
+        4        n        numFBConfigs
+        4        m        numAttribs
+        20                unused
+        8 * n    LISTofATTRIB    properties
+    
+         Where n is the number of FBConfigs returned and m is the number
+         of attributes returned for each FBConfig.  Both m and n are
+         of type CARD32.
 
 
-	CreateContextWithConfigSGIX
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		9		request length
-	    4		65541		vendor specific opcode
-	    4				unused
-	    4		GLX_CONTEXT	context
-	    4		GLX_FBCONFIG	fbconfig
-	    4		CARD32		screen
-	    4		CARD32		renderType
-	    4		GLX_CONTEXT	shareList
-	    1		BOOL		isDirect
-	    1		CARD8		reserved1
-	    1		CARD16		reserved2
-	    
+    CreateContextWithConfigSGIX
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        9        request length
+        4        65541        vendor specific opcode
+        4                unused
+        4        GLX_CONTEXT    context
+        4        GLX_FBCONFIG    fbconfig
+        4        CARD32        screen
+        4        CARD32        renderType
+        4        GLX_CONTEXT    shareList
+        1        BOOL        isDirect
+        1        CARD8        reserved1
+        1        CARD16        reserved2
+        
 
-	CreateGLXPixmapWithConfigSGIX
-	    1		CARD8		opcode (X assigned)
-	    1		17		GLX opcode (glXVendorPrivateWithReply)
-	    2		7		request length
-	    4		65542		vendor specific opcode
-	    4				unused
-	    4		CARD32		screen
-	    4		GLX_FBCONFIG	fbconfig
-	    4		CARD32		pixmap
-	    4		GLX_PIXMAP	glxpixmap
+    CreateGLXPixmapWithConfigSGIX
+        1        CARD8        opcode (X assigned)
+        1        17        GLX opcode (glXVendorPrivateWithReply)
+        2        7        request length
+        4        65542        vendor specific opcode
+        4                unused
+        4        CARD32        screen
+        4        GLX_FBCONFIG    fbconfig
+        4        CARD32        pixmap
+        4        GLX_PIXMAP    glxpixmap
 
 
 Dependencies on SGIS_multisample
@@ -626,7 +626,7 @@ Errors
 
     One new GLX error is introduced: 
 
-	GLXBadFBConfigSGIX
+    GLXBadFBConfigSGIX
 
 New State
 

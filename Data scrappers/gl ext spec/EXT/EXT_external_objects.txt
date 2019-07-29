@@ -269,7 +269,7 @@ New Tokens
         [[ The following are available when GL_EXT_protected_textures is
            available ]]
 
-	PROTECTED_MEMORY_OBJECT_EXT                0x959B
+    PROTECTED_MEMORY_OBJECT_EXT                0x959B
 
     Accepted by the <pname> parameter of GetInternalFormativ or
     GetInternalFormati64v:

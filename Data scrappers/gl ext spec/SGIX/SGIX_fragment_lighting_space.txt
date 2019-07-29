@@ -70,14 +70,14 @@ New Tokens
 
     Accepted by the <space> parameter of FragmentLightSpaceSGIX:
 
-	EYE_SPACE_SGIX			0x8436
-	TANGENT_SPACE_SGIX		0x8437
-	OBJECT_SPACE_SGIX		0x8438
+    EYE_SPACE_SGIX            0x8436
+    TANGENT_SPACE_SGIX        0x8437
+    OBJECT_SPACE_SGIX        0x8438
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-	FRAGMENT_LIGHT_SPACE_SGIX	0x843D
+    FRAGMENT_LIGHT_SPACE_SGIX    0x843D
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
  
@@ -100,21 +100,21 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     The matrix is constructed as follows:
 
     if NORMALIZE is enabled,
-	b = cross(normal,tangent);
-	t = cross(b,n);
-	t = normalize(t);
-	b = normalize(b);
-	n = normalize(normal);
+    b = cross(normal,tangent);
+    t = cross(b,n);
+    t = normalize(t);
+    b = normalize(b);
+    n = normalize(normal);
     else
-	t = tangent
-	b = binormal
-	n = normal
+    t = tangent
+    b = binormal
+    n = normal
 
     the matrix
 
     M  = ( t - - )
-	 ( b - - )
-	 ( n - - )
+     ( b - - )
+     ( n - - )
 
     maps (1,0,0) to t,
          (0,1,0) to b,
@@ -123,8 +123,8 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     Because it is an orthogonal matrix, its inverse is its transpose:
 
     Mi = ( t b n )
-	 ( | | | )
-	 ( | | | )
+     ( | | | )
+     ( | | | )
 
     and maps t to (1,0,0),
              b to (0,1,0),
@@ -177,9 +177,9 @@ Errors
     between the execution of Begin and the corresponding execution of End.
 
 New State
-    Get Value			Get Command	Type	Initial Value	Attribute
-    ---------			-----------	----	-------------	---------
-    FRAGMENT_LIGHT_SPACE_SGIX	GetIntegerv	Z3	EYE_SPACE_SGIX	lighting/enable
+    Get Value            Get Command    Type    Initial Value    Attribute
+    ---------            -----------    ----    -------------    ---------
+    FRAGMENT_LIGHT_SPACE_SGIX    GetIntegerv    Z3    EYE_SPACE_SGIX    lighting/enable
 
 New Implementation Dependent State
 

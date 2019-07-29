@@ -49,12 +49,12 @@ Issues
 
     Should we use Lock and Unlock terminology?
     
-	UNRESOLVED: This could be confusing. D3D uses "Lock" to mean
- 	that something is available for the application to update and
- 	won't be changed by the driver. However, in the compiled
- 	vertex array extension, "Lock" is used to mean that the
- 	application will not be changing the contents of a vertex
- 	buffer.
+    UNRESOLVED: This could be confusing. D3D uses "Lock" to mean
+     that something is available for the application to update and
+     won't be changed by the driver. However, in the compiled
+     vertex array extension, "Lock" is used to mean that the
+     application will not be changing the contents of a vertex
+     buffer.
 
     
 New Procedures and Functions
@@ -85,7 +85,7 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     updated, the overhead of memory copies can degrade overall
     application performance. The command
 
-	void *MapObjectBufferATI(uint buffer)
+    void *MapObjectBufferATI(uint buffer)
 
     allows the application to obtain a pointer to the object buffer
     named <buffer>. If <buffer> is not the name of an existing object
@@ -110,7 +110,7 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     When an application is finished updating an object buffer, it uses
     the command
 
-	void UnmapObjectBufferATI(uint buffer)
+    void UnmapObjectBufferATI(uint buffer)
 
     to indicate to the driver that it has completed updating the
     object buffer specified by <buffer>. An application must call

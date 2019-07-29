@@ -155,7 +155,7 @@ New Tokens
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev:
 
-        PIXEL_TRANSFORM_OPERATOR_SGI		0x81C4
+        PIXEL_TRANSFORM_OPERATOR_SGI        0x81C4
     
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled,
     and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
@@ -368,8 +368,8 @@ New State
     POST_TRANSFORM_GREEN_BIAS_SGI       GetFloatv                       R               0                       pixel
     POST_TRANSFORM_BLUE_BIAS_SGI        GetFloatv                       R               0                       pixel
     POST_TRANSFORM_ALPHA_BIAS_SGI       GetFloatv                       R               0                       pixel
-    PIXEL_TRANSFORM_OPERATOR_SGI	GetIntegerv			Z2		CONVOLUTION		pixel
-    PIXEL_TRANSFORM_SGI			IsEnabled			B		TRUE			pixel/enable
+    PIXEL_TRANSFORM_OPERATOR_SGI    GetIntegerv            Z2        CONVOLUTION        pixel
+    PIXEL_TRANSFORM_SGI            IsEnabled            B        TRUE            pixel/enable
 
 New Implementation Dependent State
 

@@ -45,11 +45,11 @@ Issues
 New Procedures and Functions
 
     void JoinWaitGroupSGIX(Display *dpy, 
-			   GLXContext context, 
-			   GLXContext member);
+               GLXContext context, 
+               GLXContext member);
 
     void WaitGroupSGIX(Display *dpy, 
-			   GLXContext context);
+               GLXContext context);
 
 New Tokens
 
@@ -76,8 +76,8 @@ Additions to the GLX Specification
     The following must be satisfied before a WaitGroupSGIX command 
     can complete:
 
-	1. All contexts in the wait group must have issued a 
-	   WaitGroupSGIX command
+    1. All contexts in the wait group must have issued a 
+       WaitGroupSGIX command
 
     OpenGL rendering commands issued by all of the member contexts
     in the wait group will complete before any of the member contexts
@@ -97,9 +97,9 @@ Errors
 
 New State
 
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
-    <whether context is in a wait group>	??		B	False
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
+    <whether context is in a wait group>    ??        B    False
 
 New Implementation Dependent State
 

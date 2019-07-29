@@ -49,7 +49,7 @@ New Tokens
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled
 
-    GL_FOG_FACTOR_TO_ALPHA_SGIX                       	0xXXXX
+    GL_FOG_FACTOR_TO_ALPHA_SGIX                           0xXXXX
 
 
 Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
@@ -69,7 +69,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     blending factor. This substitution occurs after the alpha test is
     performed. If fog is disabled but fog-factor-to-alpha is enabled, the
     fragment alpha coming out of the fog-factor-to-alpha in undefined.
-	
+    
 Additions to Chapter 4 of the 1.2 Specification (Per-Fragment Operations
 and the Framebuffer)
 
@@ -97,6 +97,6 @@ New State
 
 New Implementation Dependent State
 
-    Get Value			Get Command		Type		Initial Value	Attribute
-    ---------			-----------		----		-------------	---------
-    FOG_FACTOR_TO_ALPHA_SGIX	IsEnabled		B		FALSE		fog
+    Get Value            Get Command        Type        Initial Value    Attribute
+    ---------            -----------        ----        -------------    ---------
+    FOG_FACTOR_TO_ALPHA_SGIX    IsEnabled        B        FALSE        fog

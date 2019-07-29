@@ -44,7 +44,7 @@ Issues
 
     (1) Should this extension mandate the algorithm used to perform 
         tessellation?
-	
+    
         RESOLVED: Yes, both for performance and so that the resultant 
         geometry is consistent across implementations.
 

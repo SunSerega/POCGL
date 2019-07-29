@@ -113,8 +113,8 @@ set in the given mask.  mask is a bitfield made up of any combination of
 bits taken from the GL_TEXCOORDn_BIT values. Other parameters are as for
 glTexCoord.  glMultiTexCoord(n, ...) can be replaced by the code
 sequence
-	glCurrentTextureIndex(n);
-	glTexCoord(...);
+    glCurrentTextureIndex(n);
+    glTexCoord(...);
 for each bit n set in the mask.  It is included for performance and
 programming convenience.
 
@@ -149,19 +149,19 @@ from the first enabled texture and then modified by following enabled
 textures using the texture combine functions.
 
 In the following equation:
-	Tc is the current combined texture color.
-	Ta is the current combined texture alpha.
-	texColor(n) is the n'th texture's color.
-	texAlpha(n) is the n'th texture's alpha.  If the texture has no
+    Tc is the current combined texture color.
+    Ta is the current combined texture alpha.
+    texColor(n) is the n'th texture's color.
+    texAlpha(n) is the n'th texture's alpha.  If the texture has no
 alpha the value is one.
 
-	n = 0
-				Tc = texColor(0), Ta = texAlpha(0).
+    n = 0
+                Tc = texColor(0), Ta = texAlpha(0).
 
-	n > 0
-				Tc = (Tc * combineColorFactor) colorOp
+    n > 0
+                Tc = (Tc * combineColorFactor) colorOp
 (texColor(n) * texColorFactor).
-				Ta = (Ta * combineAlphaFactor) alphaOp
+                Ta = (Ta * combineAlphaFactor) alphaOp
 (texAlpha(n) * texAlphaFactor).
 
 combineColorFactor and texColorFactor are one of GL_ZERO, GL_ONE,
@@ -290,52 +290,52 @@ information for the currently selected texture.
 Change History
 
 04/15/97
-				Changed 'left' to 'combine' and 'right'
+                Changed 'left' to 'combine' and 'right'
 to 'tex' to try and make names more descriptive.
-				Changed all enumerants ending in _n to
+                Changed all enumerants ending in _n to
 just n to match existing style for consecutive enumerants.
-				Changed TEXCOORD_BIT_n to TEXCOORDn_BIT
+                Changed TEXCOORD_BIT_n to TEXCOORDn_BIT
 for consistency.
 
 02/06/97
-				Changed glNthTexCoord to glMultiTexCoord
+                Changed glNthTexCoord to glMultiTexCoord
 to allow multiple texture coordinates to be set with a single call.  It
 is expected that texture coordinates will commonly be the same for
 multiple textures and there is some hardware that supports texture
 coordinate broadcasting so this is an important programming and
 performance issue.
 
-02/04/97	
-				Added GL_TEXCOMBINE_NATURAL_CLAMP to
+02/04/97    
+                Added GL_TEXCOMBINE_NATURAL_CLAMP to
 give applications a way to determine whether texcombine clamping should
 be enabled or not for maximum performance.
 
 01/27/97
-				Added GL_*_ALPHA_REPLACES_COLOR so that
+                Added GL_*_ALPHA_REPLACES_COLOR so that
 alpha values can override color values when doing texture combining.
 
 01/21/97
-				Chose sixteen as the maximum number of
+                Chose sixteen as the maximum number of
 current textures possibly supported.
-				glBindNthTexture added.
-				glNthTexBlendFunc changed to
+                glBindNthTexture added.
+                glNthTexBlendFunc changed to
 glNthTexCombineFunc.
-				Scaling factors split into separate
+                Scaling factors split into separate
 color and alpha factors in glNthTexCombineFunc.  New scaling factors
 added and all scaling factors explicitly specified.
-				Combine function query enumerants
+                Combine function query enumerants
 changed and extended to match glNthTexCombineFunc.
-				GL_MULT deleted as an allowed operator
+                GL_MULT deleted as an allowed operator
 in glNthTexCombineFunc.
-				GL_TEXCOMBINE_CLAMP added.
-				Changed texture enabled/disable to be
+                GL_TEXCOMBINE_CLAMP added.
+                Changed texture enabled/disable to be
 bulk operations rather than affecting a single texture.
-				Specified that multiple texture
+                Specified that multiple texture
 transforms and stacks must be kept.
-				Encouraged implementations to support
+                Encouraged implementations to support
 mixing texture types in the current texture vector.
-				Deleted Questions section as all
+                Deleted Questions section as all
 previously open issues have been closed.
 
 01/16/97
-				Initial release.
+                Initial release.

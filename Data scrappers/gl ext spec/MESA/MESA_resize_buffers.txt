@@ -56,7 +56,7 @@ New Tokens
 Additions to the OpenGL Specification (no particular section)
 
     The glResizeBuffersMESA command may be called when the client
-    determines that a window has been resized.	Calling
+    determines that a window has been resized.    Calling
     glResizeBuffersMESA causes Mesa to query the current window size
     and adjust its internal data structures.  This may include
     reallocating depth, stencil, alpha and accumulation buffers.

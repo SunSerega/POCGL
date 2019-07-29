@@ -240,9 +240,9 @@ Errors
     is not one of the GLenums discussed above.
 
 New State
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
 
     STRICT_DEPTHFUNC_HINT_PGI           GetIntegerv      Z       TRUE    hint
 
@@ -276,9 +276,9 @@ New State
 
 
 New Implementation Dependent State
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
 
     PREFER_DOUBLEBUFFER_HINT_PGI        GetIntegerv      Z        +++   client
 

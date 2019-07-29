@@ -42,44 +42,44 @@ Overview
 
 Issues
 
-    *	Should a minimum maximum-table-size be imposed?  That is, should all
-	implementations support a table size of 256 entries?
+    *    Should a minimum maximum-table-size be imposed?  That is, should all
+    implementations support a table size of 256 entries?
 
 New Procedures and Functions
 
     void ColorTableSGI(enum target,
-		       enum internalformat,
-		       sizei width,
-		       enum format,
-		       enum type,
-		       const void* table);
+               enum internalformat,
+               sizei width,
+               enum format,
+               enum type,
+               const void* table);
 
     void CopyColorTableSGI(enum target,
-			   enum internalformat,
-			   int x,
-			   int y,
-			   sizei width);
+               enum internalformat,
+               int x,
+               int y,
+               sizei width);
 
     void ColorTableParameterivSGI(enum target,
-				  enum pname,
-				  const int* params);
+                  enum pname,
+                  const int* params);
 
     void ColorTableParameterfvSGI(enum target,
-				  enum pname,
-				  const float* params);
+                  enum pname,
+                  const float* params);
 
     void GetColorTableSGI(enum target,
-			  enum format,
-			  enum type,
-			  void* table);
+              enum format,
+              enum type,
+              void* table);
 
     void GetColorTableParameterivSGI(enum target,
-				     enum pname,
-				     int* params);
+                     enum pname,
+                     int* params);
 
     void GetColorTableParameterfvSGI(enum target,
-				     enum pname,
-				     float* params);
+                     enum pname,
+                     float* params);
 
 New Tokens
 
@@ -89,35 +89,35 @@ New Tokens
     ColorTableParameterivSGI, ColorTableParameterfvSGI, GetColorTableSGI,
     GetColorTableParameterivSGI, and GetColorTableParameterfvSGI:
 
-	COLOR_TABLE_SGI					0x80D0
-	POST_CONVOLUTION_COLOR_TABLE_SGI		0x80D1
-	POST_COLOR_MATRIX_COLOR_TABLE_SGI		0x80D2
+    COLOR_TABLE_SGI                    0x80D0
+    POST_CONVOLUTION_COLOR_TABLE_SGI        0x80D1
+    POST_COLOR_MATRIX_COLOR_TABLE_SGI        0x80D2
 
     Accepted by the <target> parameter of ColorTableSGI,
     GetColorTableParameterivSGI, and GetColorTableParameterfvSGI:
 
-	PROXY_COLOR_TABLE_SGI				0x80D3
-	PROXY_POST_CONVOLUTION_COLOR_TABLE_SGI		0x80D4
-	PROXY_POST_COLOR_MATRIX_COLOR_TABLE_SGI		0x80D5
+    PROXY_COLOR_TABLE_SGI                0x80D3
+    PROXY_POST_CONVOLUTION_COLOR_TABLE_SGI        0x80D4
+    PROXY_POST_COLOR_MATRIX_COLOR_TABLE_SGI        0x80D5
 
     Accepted by the <pname> parameter of ColorTableParameterivSGI,
     ColorTableParameterfvSGI, GetColorTableParameterivSGI, and
     GetColorTableParameterfvSGI:
 
-	COLOR_TABLE_SCALE_SGI				0x80D6
-	COLOR_TABLE_BIAS_SGI				0x80D7
+    COLOR_TABLE_SCALE_SGI                0x80D6
+    COLOR_TABLE_BIAS_SGI                0x80D7
 
     Accepted by the <pname> parameter of GetColorTableParameterivSGI and
     GetColorTableParameterfvSGI:
 
-	COLOR_TABLE_FORMAT_SGI				0x80D8
-	COLOR_TABLE_WIDTH_SGI				0x80D9
-	COLOR_TABLE_RED_SIZE_SGI			0x80DA
-	COLOR_TABLE_GREEN_SIZE_SGI			0x80DB
-	COLOR_TABLE_BLUE_SIZE_SGI			0x80DC
-	COLOR_TABLE_ALPHA_SIZE_SGI			0x80DD
-	COLOR_TABLE_LUMINANCE_SIZE_SGI			0x80DE
-	COLOR_TABLE_INTENSITY_SIZE_SGI			0x80DF
+    COLOR_TABLE_FORMAT_SGI                0x80D8
+    COLOR_TABLE_WIDTH_SGI                0x80D9
+    COLOR_TABLE_RED_SIZE_SGI            0x80DA
+    COLOR_TABLE_GREEN_SIZE_SGI            0x80DB
+    COLOR_TABLE_BLUE_SIZE_SGI            0x80DC
+    COLOR_TABLE_ALPHA_SIZE_SGI            0x80DD
+    COLOR_TABLE_LUMINANCE_SIZE_SGI            0x80DE
+    COLOR_TABLE_INTENSITY_SIZE_SGI            0x80DF
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -169,12 +169,12 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
       Base Internal      ----------------------------------------
       Format             red green blue alpha luminance intensity
       ----------------   --- ----- ---- ----- --------- ---------
-      ALPHA				  A
-      LUMINANCE				          R
-      LUMINANCE_ALPHA			  A	  R
-      INTENSITY					            R
-      RGB		  R    G     B
-      RGBA		  R    G     B    A
+      ALPHA                  A
+      LUMINANCE                          R
+      LUMINANCE_ALPHA              A      R
+      INTENSITY                                R
+      RGB          R    G     B
+      RGBA          R    G     B    A
 
     (The relationship of internal format tokens to "base internal formats" is
     described in EXT_texture.)
@@ -230,17 +230,17 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     based on the internal format of the table.  The mappings that are applied
     are:
 
-				      Components of a Pixel
-      Base Internal Format	-------------------------------------
-      of the Color Table	R	    G		B	    A
-      --------------------	-	    -		-	    -
+                      Components of a Pixel
+      Base Internal Format    -------------------------------------
+      of the Color Table    R        G        B        A
+      --------------------    -        -        -        -
 
-      ALPHA							    alpha
-      LUMINANCE		        luminance   luminance	luminance
-      LUMINANCE_ALPHA		luminance   luminance	luminance   alpha
-      INTENSITY		        intensity   intensity	intensity   intensity
-      RGB			red	    green	blue
-      RGBA			red	    green	blue	    alpha
+      ALPHA                                alpha
+      LUMINANCE                luminance   luminance    luminance
+      LUMINANCE_ALPHA        luminance   luminance    luminance   alpha
+      INTENSITY                intensity   intensity    intensity   intensity
+      RGB            red        green    blue
+      RGBA            red        green    blue        alpha
 
       Table E14.2 - Assignment of table component to pixel group
       components.  When there is no assignment, the pixel group component
@@ -323,14 +323,14 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     assignments of internal color components to the components requested by
     <format> are:
 
-		internal component	resulting component
-		------------------	-------------------
-		red			red
-		green			green
-		blue			blue
-		alpha			alpha
-		luminance		red
-		intensity		red
+        internal component    resulting component
+        ------------------    -------------------
+        red            red
+        green            green
+        blue            blue
+        alpha            alpha
+        luminance        red
+        intensity        red
 
 Additions to the GLX Specification
 
@@ -358,17 +358,17 @@ GLX Protocol
             2           2055            rendering command opcode
             4           ENUM            target
             4           ENUM            pname
-			0x80D6    n=4	COLOR_TABLE_SCALE_SGI
-			0x80D7    n=4	COLOR_TABLE_BIAS_SGI
-            4*n         LISTofINT32   	params
+            0x80D6    n=4    COLOR_TABLE_SCALE_SGI
+            0x80D7    n=4    COLOR_TABLE_BIAS_SGI
+            4*n         LISTofINT32       params
 
         ColorTableParameterfvSGI
             2           12+4*n          rendering command length
             2           2054            rendering command opcode
             4           ENUM            target
             4           ENUM            pname
-			0x80D6    n=4	COLOR_TABLE_SCALE_SGI
-			0x80D7    n=4	COLOR_TABLE_BIAS_SGI
+            0x80D6    n=4    COLOR_TABLE_SCALE_SGI
+            0x80D7    n=4    COLOR_TABLE_BIAS_SGI
             4*n         LISTofFLOAT32   params
 
     The following rendering command contain pixel data and is thus
@@ -394,17 +394,17 @@ GLX Protocol
             p                           unused, p=pad(n)
 
             If the command is encoded in a glXRenderLarge request, the
-	    command opcode and command length fields above are expanded to
-	    4 bytes each:
+        command opcode and command length fields above are expanded to
+        4 bytes each:
             4           48+n+p          rendering command length
             4           2053            rendering command opcode
 
         If <width> < 0, <format> is invalid or <type> is invalid, then the
-	command is erroneous and n=0. The structure of <table> is described
-	in Appendix A of the GLX Protocol Specification, "Pixel Data", using
-	the parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>,
-	<skip_pixels>, <alignment>, <width>, <format>, and <type> as given
-	in the request, and a height of 1.
+    command is erroneous and n=0. The structure of <table> is described
+    in Appendix A of the GLX Protocol Specification, "Pixel Data", using
+    the parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>,
+    <skip_pixels>, <alignment>, <width>, <format>, and <type> as given
+    in the request, and a height of 1.
 
 
     The remaining commands are non-rendering commands. These commands are
@@ -415,7 +415,7 @@ GLX Protocol
             1           CARD8           opcode (X assigned)
             1           17              GLX opcode (glXVendorPrivateWithReply)
             2           5               request length
-            4           4100     	vendor specific opcode
+            4           4100         vendor specific opcode
             4           GLX_CONTEXT_TAG context tag
             4           ENUM            target
             4           ENUM            pname
@@ -475,18 +475,18 @@ GLX Protocol
             1                           unused
             2           CARD16          sequence number
             4           n               reply length
-	    8				unused
-            4           INT32		width
-            4           INT32		height
+        8                unused
+            4           INT32        width
+            4           INT32        height
             8                           unused
             4*n         LISTofBYTE      table
 
-	Note that n may be zero, indicating that a GL error occurred.
+    Note that n may be zero, indicating that a GL error occurred.
 
         If <format> or <type> is invalid then the command is erroneous and
-	n=0. The structure of <table> is described in Appendix A of the GLX
-	Protocol Specification, "Pixel Data", using the parameters
-	<swap_bytes>, <format>, and <type>. No extra padding is needed after
+    n=0. The structure of <table> is described in Appendix A of the GLX
+    Protocol Specification, "Pixel Data", using the parameters
+    <swap_bytes>, <format>, and <type>. No extra padding is needed after
         <pixels> because the image format already pads to 32 bits.
 
  
@@ -610,22 +610,22 @@ Errors
 
 New State
 
-    Get Value				Get Command			Type		Initial Value	Attribute
-    ---------				-----------			----		-------------	---------
-    COLOR_TABLE_SGI			IsEnabled			B		False		pixel/enable
-    POST_CONVOLUTION_COLOR_TABLE_SGI	IsEnabled			B		False		pixel/enable
-    POST_COLOR_MATRIX_COLOR_TABLE_SGI	IsEnabled			B		False		pixel/enable
-    COLOR_TABLE				GetColorTableSGI		3 x I		empty		    -
-    COLOR_TABLE_FORMAT_SGI		GetColorTableParameterivSGI	2 x 3 x Z38	RGBA		    -
-    COLOR_TABLE_WIDTH_SGI		GetColorTableParameterivSGI	2 x 3 x Z+	0		    -
-    COLOR_TABLE_RED_SIZE_SGI		GetColorTableParameterivSGI	2 x 3 x Z+	0		    -
-    COLOR_TABLE_GREEN_SIZE_SGI		GetColorTableParameterivSGI	2 x 3 x Z+	0		    -
-    COLOR_TABLE_BLUE_SIZE_SGI		GetColorTableParameterivSGI	2 x 3 x Z+	0		    -
-    COLOR_TABLE_ALPHA_SIZE_SGI		GetColorTableParameterivSGI	2 x 3 x Z+	0		    -
-    COLOR_TABLE_LUMINANCE_SIZE_SGI	GetColorTableParameterivSGI	2 x 3 x Z+	0		    -
-    COLOR_TABLE_INTENSITY_SIZE_SGI	GetColorTableParameterivSGI	2 x 3 x Z+	0		    -
-    COLOR_TABLE_SCALE_SGI		GetColorTableParameterfvSGI	3 x R4		(1,1,1,1)	pixel
-    COLOR_TABLE_BIAS_SGI		GetColorTableParameterfvSGI	3 x R4		(0,0,0,0)	pixel
+    Get Value                Get Command            Type        Initial Value    Attribute
+    ---------                -----------            ----        -------------    ---------
+    COLOR_TABLE_SGI            IsEnabled            B        False        pixel/enable
+    POST_CONVOLUTION_COLOR_TABLE_SGI    IsEnabled            B        False        pixel/enable
+    POST_COLOR_MATRIX_COLOR_TABLE_SGI    IsEnabled            B        False        pixel/enable
+    COLOR_TABLE                GetColorTableSGI        3 x I        empty            -
+    COLOR_TABLE_FORMAT_SGI        GetColorTableParameterivSGI    2 x 3 x Z38    RGBA            -
+    COLOR_TABLE_WIDTH_SGI        GetColorTableParameterivSGI    2 x 3 x Z+    0            -
+    COLOR_TABLE_RED_SIZE_SGI        GetColorTableParameterivSGI    2 x 3 x Z+    0            -
+    COLOR_TABLE_GREEN_SIZE_SGI        GetColorTableParameterivSGI    2 x 3 x Z+    0            -
+    COLOR_TABLE_BLUE_SIZE_SGI        GetColorTableParameterivSGI    2 x 3 x Z+    0            -
+    COLOR_TABLE_ALPHA_SIZE_SGI        GetColorTableParameterivSGI    2 x 3 x Z+    0            -
+    COLOR_TABLE_LUMINANCE_SIZE_SGI    GetColorTableParameterivSGI    2 x 3 x Z+    0            -
+    COLOR_TABLE_INTENSITY_SIZE_SGI    GetColorTableParameterivSGI    2 x 3 x Z+    0            -
+    COLOR_TABLE_SCALE_SGI        GetColorTableParameterfvSGI    3 x R4        (1,1,1,1)    pixel
+    COLOR_TABLE_BIAS_SGI        GetColorTableParameterfvSGI    3 x R4        (0,0,0,0)    pixel
 
 New Implementation Dependent State
 

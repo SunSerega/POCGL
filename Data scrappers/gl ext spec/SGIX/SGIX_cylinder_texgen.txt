@@ -33,17 +33,17 @@ New Tokens
     Accepted by the <params> parameters of TexGeni, TexGenf, TexGend,
     TexGeniv, TexGenfv, and TexGendv:
 
-	EYE_CYLINDER_SGIX
-	OBJECT_CYLINDER_SGIX
-	EYE_CYLINDER_RADIUS_SGIX
-	OBJECT_CYLINDER_RADIUS_SGIX
+    EYE_CYLINDER_SGIX
+    OBJECT_CYLINDER_SGIX
+    EYE_CYLINDER_RADIUS_SGIX
+    OBJECT_CYLINDER_RADIUS_SGIX
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     If TEXTURE_GEN_MODE indicates OBJECT_CYLINDER_SGIX, then the
     generating function for the coordinate indicated by <coord> is
 
-	XXX
+    XXX
 
     In other words, compute the reflection vector in object space from
     the point P in object space, and find the intersection of this
@@ -62,7 +62,7 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     generating function for the coordinate indicated by <coord> is the
     same as above, but ...
 
-	XXX
+    XXX
 
     In other words, compute the reflection vector in eye space from the
     point P in eye space, and find the intersection of this reflection
@@ -95,12 +95,12 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
     None
 
 New State
-							Initial
-    Get Value			Get Command	Type	Value			Attrib
-    ---------			-----------	----	-------			------
-    EYE_CYLINDER_SGIX		GetTexGeniv	1 x R	{0}			texture
-    OBJECT_CYLINDER_SGIX	GetTexGeniv	1 x R	{0}			texture
-    EYE_CYLINDER_RADIUS_SGIX	GetTexGeniv	1 x R	{1}			texture
-    OBJECT_CYLINDER_RADIUS_SGIX	GetTexGeniv	1 x R	{1}			texture
+                            Initial
+    Get Value            Get Command    Type    Value            Attrib
+    ---------            -----------    ----    -------            ------
+    EYE_CYLINDER_SGIX        GetTexGeniv    1 x R    {0}            texture
+    OBJECT_CYLINDER_SGIX    GetTexGeniv    1 x R    {0}            texture
+    EYE_CYLINDER_RADIUS_SGIX    GetTexGeniv    1 x R    {1}            texture
+    OBJECT_CYLINDER_RADIUS_SGIX    GetTexGeniv    1 x R    {1}            texture
 
 

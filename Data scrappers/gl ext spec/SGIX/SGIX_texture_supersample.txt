@@ -59,12 +59,12 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     GL Specification Table 3.9 is updated with the addition of:
 
-	Name				Type	    Legal Values
-	----				----	    ------------
-	TEXTURE_MIN_FILTER		integer	    LINEAR_SUPERSAMPLE_SGIX,
-						    FILTER4_SUPERSAMPLE_SGIX
+    Name                Type        Legal Values
+    ----                ----        ------------
+    TEXTURE_MIN_FILTER        integer        LINEAR_SUPERSAMPLE_SGIX,
+                            FILTER4_SUPERSAMPLE_SGIX
 
-        TEXTURE_SUPERSAMPLE_WIDTH_SGIX  integer	    1, 2, or 4
+        TEXTURE_SUPERSAMPLE_WIDTH_SGIX  integer        1, 2, or 4
 
    Texture Minification
    ------------------------
@@ -99,9 +99,9 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
                   i=Nx,j=Ny
                   ---
    Tau =1/(Nx*Ny) \ Tau( u_sub_ij, v_sub_ij);
-	          /          
-                  ---	       
-         	  i=1,j=1
+              /          
+                  ---           
+               i=1,j=1
     where:
 
     u_sub_ij = u(x - 0.5 + i/(Nx+1), y - 0.5 + j/(Ny+1));
@@ -162,9 +162,9 @@ Errors
 
 New State
 
-								Initial
-    Get Value			    Get Command	     Type	Value	  Attrib
-    ---------			    -----------	     ----	-------	  ------
+                                Initial
+    Get Value                Get Command         Type    Value      Attrib
+    ---------                -----------         ----    -------      ------
     TEXTURE_SUPERSAMPLE_WIDTH_SGIX  GetTexParameteriv Z1*         1        texture
 
 New Implementation Dependent State

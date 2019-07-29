@@ -17,7 +17,7 @@ Status
 Version
 
     $Date: 2002/08/23 00:31:45 $ $Revision: 1.3 $
-	
+    
 Number
 
     272
@@ -78,15 +78,15 @@ Overview
     
 Issues
 
-	How is TestObjectAPPLE or FinishObjectAPPLE used with DRAW_PIXELS_APPLE?
-		
-		Resolution:  Currently there is no support DrawPixels with storage using
-		the APPLE_client_storage extension and thus this option has no utility,
-		due to implementation specifics, which always copy the DrawPixels
-		buffer, thus allowing the client to immediately modify the data used by
-		DrawPixels.  Once the APPLE_client_storage extension is supported,
-		DrawPixels modification synchronization will be required after drawing
-		with a buffer, which resides in client space.
+    How is TestObjectAPPLE or FinishObjectAPPLE used with DRAW_PIXELS_APPLE?
+        
+        Resolution:  Currently there is no support DrawPixels with storage using
+        the APPLE_client_storage extension and thus this option has no utility,
+        due to implementation specifics, which always copy the DrawPixels
+        buffer, thus allowing the client to immediately modify the data used by
+        DrawPixels.  Once the APPLE_client_storage extension is supported,
+        DrawPixels modification synchronization will be required after drawing
+        with a buffer, which resides in client space.
 
     Do we need an IsFenceAPPLE command?
 
@@ -123,21 +123,21 @@ Issues
 
 New Procedures and Functions
 
-	void GenFencesAPPLE(sizei n, uint *fences);
+    void GenFencesAPPLE(sizei n, uint *fences);
 
-	void DeleteFencesAPPLE(sizei n, const uint *fences);
+    void DeleteFencesAPPLE(sizei n, const uint *fences);
 
-	void SetFenceAPPLE(uint fence);
+    void SetFenceAPPLE(uint fence);
 
-	boolean IsFenceAPPLE(uint fence);
+    boolean IsFenceAPPLE(uint fence);
 
-	boolean TestFenceAPPLE(uint fence);
+    boolean TestFenceAPPLE(uint fence);
 
-	void FinishFenceAPPLE(uint fence);
+    void FinishFenceAPPLE(uint fence);
 
-	boolean TestObjectAPPLE(enum object, uint name);
+    boolean TestObjectAPPLE(enum object, uint name);
 
-	void FinishObjectAPPLE(enum object, int name);
+    void FinishObjectAPPLE(enum object, int name);
 
 New Tokens
 
@@ -289,8 +289,8 @@ Errors
     called where n is negative.
 
 New State
-	
-	None
+    
+    None
 
 New Implementation Dependent State
 
@@ -307,5 +307,5 @@ Implementation Details
 
 Revision History
 
-	None
+    None
 

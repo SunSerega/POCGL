@@ -13,7 +13,7 @@ Version
 
 Number
 
-    64	
+    64    
 
 Dependencies
 
@@ -174,11 +174,11 @@ Errors
 
 New State
 
-    Get Value			Get Command		Type		Initial Value	Attribute
-    ---------			-----------		----		-------------	---------
-    MAX_FOG_FUNC_POINTS_SGIS	GetIntegerv		Z+		XXX
-    FOG_FUNC_POINTS_SGIS	GetIntegerv		Z+		1		fog
-    FOG_FUNC_SGIS		GetFloatv		2 x n x R+	(0.0, 1.0)
+    Get Value            Get Command        Type        Initial Value    Attribute
+    ---------            -----------        ----        -------------    ---------
+    MAX_FOG_FUNC_POINTS_SGIS    GetIntegerv        Z+        XXX
+    FOG_FUNC_POINTS_SGIS    GetIntegerv        Z+        1        fog
+    FOG_FUNC_SGIS        GetFloatv        2 x n x R+    (0.0, 1.0)
 
 New Implementation Dependent State
 

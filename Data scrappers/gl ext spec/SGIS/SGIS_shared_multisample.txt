@@ -207,15 +207,15 @@ Issues
 New Procedures and Functions
 
     void glMultisampleSubRectPosSGIS(GLint x,
-				     GLint y);
+                     GLint y);
 
 New Tokens
 
     Accepted by the <pname> parameter of GetBooleanv, GetDoublev,
     GetIntegerv, and GetFloatv:
 
-	MULTISAMPLE_SUB_RECT_POSITION_SGIS
-	MULTISAMPLE_SUB_RECT_DIMS_SGIS
+    MULTISAMPLE_SUB_RECT_POSITION_SGIS
+    MULTISAMPLE_SUB_RECT_DIMS_SGIS
 
     Accepted by the <attrib> parameter of glXGetConfig, and by the
     <attrib_list> parameter of glXChooseVisual: 
@@ -256,7 +256,7 @@ the Framebuffer)
     The state of MULTISAMPLE_SUB_RECT_POSITION_SGIS is set by:
 
        void MultisampleSubRectPosSGIS(GLint x,
-				      GLint y);
+                      GLint y);
 
     If either MULTISAMPLE_SUB_RECT_DIMS_SGIS width or height is zero or
     the GL is in color index mode, MultisampleSubRectPosSGIS generates

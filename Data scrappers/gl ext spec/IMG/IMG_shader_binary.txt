@@ -14,7 +14,7 @@ Contributors
 
     Ben Bowman, Imagination Techonologies
     Graham Connor, Imagination Techonologies
-	David Garcia
+    David Garcia
 
 Contacts
 
@@ -36,7 +36,7 @@ Number
 Dependencies 
 
     None.
-	
+    
     The extension is written against the OpenGL-ES 2.0 Specification.
 
 Overview 

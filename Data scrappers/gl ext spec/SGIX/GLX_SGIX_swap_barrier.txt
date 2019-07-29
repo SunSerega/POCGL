@@ -41,12 +41,12 @@ Issues
 New Procedures and Functions
 
     void BindSwapBarrierSGIX(Display *dpy, 
-			     GLXDrawable drawable,
-			     int barrier);
+                 GLXDrawable drawable,
+                 int barrier);
 
     Bool QueryMaxSwapBarriersSGIX(Display *dpy, 
- 				  int screen,
-				  int *max);
+                   int screen,
+                  int *max);
 
 New Tokens
 
@@ -77,23 +77,23 @@ Additions to the GLX Specification
 
     When a window is mapped, it is ready when all of the following are true:
 
-	1. A buffer swap command has been issued for it.
+    1. A buffer swap command has been issued for it.
 
-	2. Its swap interval has elapsed.
+    2. Its swap interval has elapsed.
 
     A group is ready when the following is true:
 
-	1. All windows in the group are ready.
+    1. All windows in the group are ready.
 
     All of the following must be satisfied before a buffer swap for a window
     can take place:
 
-	1. The window is ready.
+    1. The window is ready.
 
-	2. If the window belongs to a group, the group is ready.
+    2. If the window belongs to a group, the group is ready.
 
-	3. If the window belongs to a group and that group is bound to a 
-	   barrier, all groups using that barrier are ready.
+    3. If the window belongs to a group and that group is bound to a 
+       barrier, all groups using that barrier are ready.
 
     Buffer swaps for all windows in a swap group will take place concurrently
     after the conditions are satisfied for every window in the group.
@@ -124,9 +124,9 @@ Errors
     screen.
 
 New State
-								Initial
-    Get Value			Get Command		Type	Value	Attrib
-    ---------			-----------		----	-------	------
+                                Initial
+    Get Value            Get Command        Type    Value    Attrib
+    ---------            -----------        ----    -------    ------
     <current barrier bound to group> ??
 
 New Implementation Dependent State

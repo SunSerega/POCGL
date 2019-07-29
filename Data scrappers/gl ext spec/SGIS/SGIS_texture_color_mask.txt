@@ -35,7 +35,7 @@ Overview
     (the analog for glIndexMask) should be supported by a separate extension.
 
     The extension allows an application to update a subset of
-    components in an existing texture.	The masks are applied after
+    components in an existing texture.    The masks are applied after
     all pixel transfer operations have been performed, immediately
     prior to writing the texel value into texture memory.  They
     apply to all texture updates.
@@ -64,7 +64,7 @@ New Tokens
     Accepted by the <pname> parameter of GetBooleanv, GetDoublev,
     GetIntegerv, and GetFloatv:
 
-	TEXTURE_COLOR_WRITEMASK_SGIS		= 0x81EF
+    TEXTURE_COLOR_WRITEMASK_SGIS        = 0x81EF
 
 Additions to Chapter 2 of the OpenGL 1.1 Specification (OpenGL Operation)
 
@@ -90,8 +90,8 @@ Additions to Chapter 3 of the OpenGL 1.1 Specification (Rasterization)
 
     The command
 
-	void TextureColorMaskSGIS( boolean r, boolean g, boolean, b,
-	     boolean a );
+    void TextureColorMaskSGIS( boolean r, boolean g, boolean, b,
+         boolean a );
 
     is used to control updates to texture images with non-indexed
     internal formats.
@@ -143,13 +143,13 @@ GLX Protocol
     TextureColorMaskSGIS(). The following command is sent to the server
     as part of a glXRender request:
 
-	TextureColorMaskSGIS
-	    2		8		rendering command length
-	    2		2082		rendering command opcode
-	    1		BOOL		r
-	    1		BOOL		g
-	    1		BOOL		b
-	    1		BOOL		a
+    TextureColorMaskSGIS
+        2        8        rendering command length
+        2        2082        rendering command opcode
+        1        BOOL        r
+        1        BOOL        g
+        1        BOOL        b
+        1        BOOL        a
 
 Errors
 
@@ -161,10 +161,10 @@ New State
 
 (table 6.?, p. ???)
 
-    Get Value			    Type    Get Command     Initial Value   Description     Sec Attribute
-    ---------			    ----    -----------     -------------   -----------     --- ---------
-    TEXTURE_COLOR_WRITEMASK_SGIS    4xB     GetIntegerv     (T,T,T,T)	    Texture color   3.? texture
-									    writemask
+    Get Value                Type    Get Command     Initial Value   Description     Sec Attribute
+    ---------                ----    -----------     -------------   -----------     --- ---------
+    TEXTURE_COLOR_WRITEMASK_SGIS    4xB     GetIntegerv     (T,T,T,T)        Texture color   3.? texture
+                                        writemask
 
 Revision History
 

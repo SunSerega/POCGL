@@ -281,7 +281,7 @@ Issues
 Revision History
 
     #3, July 10, 2009: Jon Leech
-	Assign extension number, minor formatting cleanup for registry.
+    Assign extension number, minor formatting cleanup for registry.
 
     #2, March 26, 2009: myoung
         Tightened up language. Resolved some issues.

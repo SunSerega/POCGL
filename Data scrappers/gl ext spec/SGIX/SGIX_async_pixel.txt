@@ -44,16 +44,16 @@ New Tokens
     and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev:
 
-        ASYNC_TEX_IMAGE_SGIX		0x835C
-	ASYNC_DRAW_PIXELS_SGIX		0x835D
-	ASYNC_READ_PIXELS_SGIX		0x835E
+        ASYNC_TEX_IMAGE_SGIX        0x835C
+    ASYNC_DRAW_PIXELS_SGIX        0x835D
+    ASYNC_READ_PIXELS_SGIX        0x835E
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-        MAX_ASYNC_TEX_IMAGE_SGIX	0x835F
-        MAX_ASYNC_DRAW_PIXELS_SGIX	0x8360
-        MAX_ASYNC_READ_PIXELS_SGIX	0x8361
+        MAX_ASYNC_TEX_IMAGE_SGIX    0x835F
+        MAX_ASYNC_DRAW_PIXELS_SGIX    0x8360
+        MAX_ASYNC_READ_PIXELS_SGIX    0x8361
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -179,17 +179,17 @@ Errors
 
 New State
 
-    Get Value			Get Command	Type	Value	Attrib
-    ---------			-----------	----	-------	------
+    Get Value            Get Command    Type    Value    Attrib
+    ---------            -----------    ----    -------    ------
     ASYNC_TEX_IMAGE_SGIX        IsEnabled       B       False   enable
     ASYNC_DRAW_PIXELS_SGIX      IsEnabled       B       False   enable
     ASYNC_READ_PIXELS_SGIX      IsEnabled       B       False   enable
 
 New Implementation Dependent State
 
-								Minimum
-    Get Value			Get Command	Type		Value
-    ---------			-----------	----		-------
+                                Minimum
+    Get Value            Get Command    Type        Value
+    ---------            -----------    ----        -------
     MAX_ASYNC_TEX_IMAGE_SGIX    GetIntegerv     Z+              1
     MAX_ASYNC_DRAW_PIXELS_SGIX  GetIntegerv     Z+              1
     MAX_ASYNC_READ_PIXELS_SGIX  GetIntegerv     Z+              1

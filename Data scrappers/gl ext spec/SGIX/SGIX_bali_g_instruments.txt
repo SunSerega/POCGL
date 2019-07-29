@@ -33,7 +33,7 @@ Overview
 
 Issues
 
-    *	Are there any other G instruments we should add?
+    *    Are there any other G instruments we should add?
 
     *   Synchronization issues when G and R instruments are used simultaneously.
 

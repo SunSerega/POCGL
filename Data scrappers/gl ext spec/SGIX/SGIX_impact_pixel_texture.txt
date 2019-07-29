@@ -30,7 +30,7 @@ Overview
 
 Issues
 
-    *	Will this extension be needed/utilized by other platforms?
+    *    Will this extension be needed/utilized by other platforms?
 
 New Procedures and Functions
 
@@ -40,11 +40,11 @@ New Tokens
 
     Accepted by the <mode> parameter of PixelTexGenSGIX:
 
-	PIXEL_TEX_GEN_Q_CEILING_SGIX
-	PIXEL_TEX_GEN_Q_FLOOR_SGIX
-	PIXEL_TEX_GEN_Q_ROUND_SGIX
-	PIXEL_TEX_GEN_ALPHA_LS_SGIX
-	PIXEL_TEX_GEN_ALPHA_MS_SGIX
+    PIXEL_TEX_GEN_Q_CEILING_SGIX
+    PIXEL_TEX_GEN_Q_FLOOR_SGIX
+    PIXEL_TEX_GEN_Q_ROUND_SGIX
+    PIXEL_TEX_GEN_ALPHA_LS_SGIX
+    PIXEL_TEX_GEN_ALPHA_MS_SGIX
 
 Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
@@ -89,11 +89,11 @@ Errors
 
 New State
 
-    Get Value			 Get Command	 Type Initial Value Attrib
-    ---------			 -----------	 ---- ------------- ------
-    PIXEL_TEX_GEN_Q_CEILING_SGIX GetTexParameter  Z3     NONE	     pixel
-    PIXEL_TEX_GEN_Q_FLOOR_SGIX   GetTexParameter  Z3     NONE	     pixel
-    PIXEL_TEX_GEN_Q_ROUND_SGIX   GetTexParameter  Z3     NONE	     pixel
+    Get Value             Get Command     Type Initial Value Attrib
+    ---------             -----------     ---- ------------- ------
+    PIXEL_TEX_GEN_Q_CEILING_SGIX GetTexParameter  Z3     NONE         pixel
+    PIXEL_TEX_GEN_Q_FLOOR_SGIX   GetTexParameter  Z3     NONE         pixel
+    PIXEL_TEX_GEN_Q_ROUND_SGIX   GetTexParameter  Z3     NONE         pixel
 
 New Implementation Dependent State
 

@@ -177,11 +177,11 @@ Issues
     (4) Why does this extension delay before execution of SwapBuffers rather
         than on a potential swap period?
 
-	RESOLVED. Given that the expected use case is to wait until before the
-	SwapBuffers would execute to sample input, having any cases where the
-	behavior of the delay mismatches the behavior of the swap (such as
-	swap_control_tear or swap_interval!=1) can cause significant issues in
-	when the input is sampled.
+    RESOLVED. Given that the expected use case is to wait until before the
+    SwapBuffers would execute to sample input, having any cases where the
+    behavior of the delay mismatches the behavior of the swap (such as
+    swap_control_tear or swap_interval!=1) can cause significant issues in
+    when the input is sampled.
 
 Revision History
 

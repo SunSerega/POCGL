@@ -21,7 +21,7 @@ Dependencies
 
 Overview
 
-    The OpenGL specification requires that data be bound at call time.	The
+    The OpenGL specification requires that data be bound at call time.    The
     IBM_static_data extension relaxes the bind-at-call semantics allowing
     an implementation to dereference pointers some time after the
     corresponding calls.
@@ -30,7 +30,7 @@ Overview
     implementation is required to either copy or fully process data at the
     time it is provided by the application.  Copying data substantially
     increases the demands on the memory subsystem; processing the data may
-    result in ineffective amortization of fixed costs.	Neither copying nor
+    result in ineffective amortization of fixed costs.    Neither copying nor
     processing allows multiple rendering threads to operate on the original
     data.
 
@@ -58,12 +58,12 @@ New Tokens
 
     Accepted by the <target> parameter of FlushStaticDataIBM:
 
-	ALL_STATIC_DATA_IBM			103060
+    ALL_STATIC_DATA_IBM            103060
 
     Accepted by the <cap> parameter of EnableClientState, DisableClientState,
     and IsEnabled, and the <target> parameter of FlushStaticDataIBM:
 
-	STATIC_VERTEX_ARRAY_IBM			103061
+    STATIC_VERTEX_ARRAY_IBM            103061
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)
 
@@ -77,7 +77,7 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     vertex array data are changed, freed, or reallocated while
     STATIC_VERTEX_ARRAY_IBM is enabled, the results of any glArrayElement,
     glDrawArrays, or glDrawElements calls using such an array are
-    undefined.	In order to free, change or reallocate the vertex array
+    undefined.    In order to free, change or reallocate the vertex array
     data specified while STATIC_VERTEX_ARRAY_IBM was enabled, either
     glFinish or glFlushStaticDataIBM must be used.
 
@@ -127,9 +127,9 @@ Errors
 
 New State
 
-    Get Value			  Type Get Command  Value Sec	Attrib
-    ----------------------------- ---- -----------  ----- ----	-------
-    STATIC_VERTEX_ARRAY_IBM	  B    IsEnabled    False 2.8	vertex-array
+    Get Value              Type Get Command  Value Sec    Attrib
+    ----------------------------- ---- -----------  ----- ----    -------
+    STATIC_VERTEX_ARRAY_IBM      B    IsEnabled    False 2.8    vertex-array
 
 New Implementation Dependent State
 

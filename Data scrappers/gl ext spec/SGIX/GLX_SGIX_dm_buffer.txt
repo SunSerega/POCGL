@@ -76,7 +76,7 @@ Issues
 New Procedures and Functions
 
     Bool glXAssociateDMPbufferSGIX(Display *dpy,
-				   GLXPbufferSGIX pbuffer,
+                   GLXPbufferSGIX pbuffer,
                                    DMparams *params,
                                    DMbuffer dmbuffer);
 

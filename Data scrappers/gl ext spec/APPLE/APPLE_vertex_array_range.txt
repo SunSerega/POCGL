@@ -131,20 +131,20 @@ Overview
     The following pseudo-code represents the treatment of a vertex array range
     memory depending on the hint setting and whether vertex array range is
     enabled for the client context:
-	
+    
     if (VERTEX_ARRAY_STORAGE_HINT_APPLE == STORAGE_CACHED_APPLE)
         vertex array is treated as cached
     else if (VERTEX_ARRAY_STORAGE_HINT_APPLE == STORAGE_SHARED_APPLE)
-    	vertex array is treated as shared
+        vertex array is treated as shared
     else if (VERTEX_ARRAY_RANGE_APPLE enabled)
-    	vertex array is treated as shared
+        vertex array is treated as shared
     else 
-    	vertex array is treated as client
-    	
+        vertex array is treated as client
+        
     Note, these hints can affect how array flushes are handled and the overhead
     associated with flushing the array, it is recommended that data be handled
     as shared unless it really is static and there are no plans to modify it.
-	
+    
     To summarize the vertex array range extension provides relaxed
     synchronization rules for handling vertex array data allowing high bandwidth
     asynchronous data transfer from client memory to graphics hardware.
@@ -154,11 +154,11 @@ Overview
 
 Issues
 
-	How does one get the current VERTEX_ARRAY_STORAGE_HINT_APPLE (storage hint)
-	for a vertex array range?
-	
-	   RESOLUTION: The current VERTEX_ARRAY_STORAGE_HINT_APPLE can be retrieved
-	   via GetIntegerv with VERTEX_ARRAY_STORAGE_HINT_APPLE as the pname.
+    How does one get the current VERTEX_ARRAY_STORAGE_HINT_APPLE (storage hint)
+    for a vertex array range?
+    
+       RESOLUTION: The current VERTEX_ARRAY_STORAGE_HINT_APPLE can be retrieved
+       via GetIntegerv with VERTEX_ARRAY_STORAGE_HINT_APPLE as the pname.
 
     How does this extension interact with the compiled_vertex_array extension?
 
@@ -212,7 +212,7 @@ New Tokens
         VERTEX_ARRAY_RANGE_POINTER_APPLE      0x8521
 
     Accepted by the <pname> parameter of VertexArrayParameteriAPPLE,
-	GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
+    GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
 
         VERTEX_ARRAY_STORAGE_HINT_APPLE       0x851F
 

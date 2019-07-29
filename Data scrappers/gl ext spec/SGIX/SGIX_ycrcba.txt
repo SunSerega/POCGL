@@ -70,8 +70,8 @@ New Tokens
     SeparableFilter2DEXT, SeparableFilter3DEXT, GetSeparableFilterEXT,
     GetHistogramEXT, and GetMinmaxEXT:
 
-	YCRCB_SGIX				0x8318
-	YCRCBA_SGIX				0x8319
+    YCRCB_SGIX                0x8318
+    YCRCBA_SGIX                0x8319
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -81,21 +81,21 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     Two entries are added to table 3.5 (DrawPixels and ReadPixels formats):
 
-									Target
-	Name			Type		Elements		Buffer
-	----			----		--------		------
-	YCRCB_SGIX		Component	Cb chroma value,	Color
-						Y luminance value,
-						Cr chroma value
+                                    Target
+    Name            Type        Elements        Buffer
+    ----            ----        --------        ------
+    YCRCB_SGIX        Component    Cb chroma value,    Color
+                        Y luminance value,
+                        Cr chroma value
 
-	YCRCBA_SGIX		Component	Cb chroma value,	Color
-						Y luminance value,
-						Cr chroma value,
-						A
+    YCRCBA_SGIX        Component    Cb chroma value,    Color
+                        Y luminance value,
+                        Cr chroma value,
+                        A
 
-	Table 3.5: DrawPixels and ReadPixels formats.  The third column
-	gives a description of and the number and order of elements in a
-	group.
+    Table 3.5: DrawPixels and ReadPixels formats.  The third column
+    gives a description of and the number and order of elements in a
+    group.
 
     The new formats YCRCB_SGIX and YCRCBA_SGIX are added to the
     discussion of Conversion to RGB.  If the format is either of these two

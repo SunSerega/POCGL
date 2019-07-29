@@ -126,8 +126,8 @@ Errors
 
 New State
 
-    Get Value			  Type Get Command  Value Sec	Attrib
-    ----------------------------- ---- -----------  ----- ----	-------
+    Get Value              Type Get Command  Value Sec    Attrib
+    ----------------------------- ---- -----------  ----- ----    -------
     CULL_VERTEX_IBM               B    IsEnabled    FALSE --    transform/
                                                                 enable
 

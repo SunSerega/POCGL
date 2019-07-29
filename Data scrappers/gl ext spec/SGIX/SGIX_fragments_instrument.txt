@@ -77,13 +77,13 @@ New Tokens
 
     Accepted by the <cap> parameter of Enable, Disable and IsEnabled:
 
-        FRAGMENTS_INSTRUMENT_SGIX			0x8313
+        FRAGMENTS_INSTRUMENT_SGIX            0x8313
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-	FRAGMENTS_INSTRUMENT_COUNTERS_SGIX		0x8314
-	FRAGMENTS_INSTRUMENT_MAX_SGIX			0x8315
+    FRAGMENTS_INSTRUMENT_COUNTERS_SGIX        0x8314
+    FRAGMENTS_INSTRUMENT_MAX_SGIX            0x8315
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -147,10 +147,10 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     FRAGMENTS_INSTRUMENT_SGIX responses are formatted as follows
     (starting at the first word):
 
-	FRAGMENTS_INSTRUMENT_SGIX
-	Number of int's in the response (4)
-	Counter value
-	Marker value
+    FRAGMENTS_INSTRUMENT_SGIX
+    Number of int's in the response (4)
+    Counter value
+    Marker value
 
     The counter value is padded to the size of an int if necessary by
     zero-filling the most significant bits.
@@ -182,13 +182,13 @@ Errors
 
 New State
 
-    Get Value				Get Command		Type	Initial Value		Attribute
-    ---------				-----------		----	-------------		---------
-    FRAGMENTS_INSTRUMENT_SGIX		ReadInstrumentsSGIX	1*xZ+	0			-
+    Get Value                Get Command        Type    Initial Value        Attribute
+    ---------                -----------        ----    -------------        ---------
+    FRAGMENTS_INSTRUMENT_SGIX        ReadInstrumentsSGIX    1*xZ+    0            -
 
 New Implementation Dependent State
 
-    Get Value				Get Command		Type	Minimum Value
-    ---------				-----------		----	-------------
-    FRAGMENTS_INSTRUMENT_COUNTERS_SGIX	GetIntegerv		Z+      1
+    Get Value                Get Command        Type    Minimum Value
+    ---------                -----------        ----    -------------
+    FRAGMENTS_INSTRUMENT_COUNTERS_SGIX    GetIntegerv        Z+      1
 

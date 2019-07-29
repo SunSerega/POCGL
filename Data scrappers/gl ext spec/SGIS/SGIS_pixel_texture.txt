@@ -125,12 +125,12 @@ New Tokens
 
     Accepted by the <pname> parameter of PixelTexGenParameteriSGIS
     and GetPixelTexGenParameterivSGIS:
-	
+    
         PIXEL_FRAGMENT_RGB_SOURCE_SGIS          = 0x8354
         PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS        = 0x8355
 
     Accepted by the <param> parameter of PixelTexGenParameteriSGIS:
-	
+    
         PIXEL_GROUP_COLOR_SGIS                  = 0x8356
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
@@ -175,8 +175,8 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     the pixel group when PIXEL_TEXTURE_SGIS is enabled.  
     Each parameter is set by calling
 
-	PixelTexGenParameter{if}(enum pname, T param) ;
-	PixelTexGenParameter{if}v(enum pname, T params) ;
+    PixelTexGenParameter{if}(enum pname, T param) ;
+    PixelTexGenParameter{if}v(enum pname, T params) ;
 
     The parameter pname is a symbolic constant indicating the parameter to be
     set.  In the first form of the command, params is value to which
@@ -195,13 +195,13 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
       PIXEL_FRAGMENT_RGB_SOURCE_SGIS       Resulting fragment RGB
       ------------------------------       ----------------------
-      CURRENT_RASTER_COLOR			CRP's RGB
-      PIXEL_GROUP_COLOR_SGIS			PG's RGB
+      CURRENT_RASTER_COLOR            CRP's RGB
+      PIXEL_GROUP_COLOR_SGIS            PG's RGB
 
       PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS     Resulting fragment A
-      -------------------------------- 	   --------------------
-      CURRENT_RASTER_COLOR			CRP's A
-      PIXEL_GROUP_COLOR_SGIS			PG's A
+      --------------------------------        --------------------
+      CURRENT_RASTER_COLOR            CRP's A
+      PIXEL_GROUP_COLOR_SGIS            PG's A
 
       PG, CRP, R, G, B, A are abbreviations of "current raster
       position", "pixel group", "red", "green", "blue", and "alpha"
@@ -220,7 +220,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 
     The following commands are not included in display lists:
 
-	GetPixelTexGenParameter{if}vSGIS
+    GetPixelTexGenParameter{if}vSGIS
 
 Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 
@@ -228,7 +228,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     with "Other commands exist to obtain state variables that are 
     indexed by a target...":
 
-	GetPixelTexGenParameter{if}vSGIS( enum value, T data );
+    GetPixelTexGenParameter{if}vSGIS( enum value, T data );
 
     Change the phrase a few paragraph later "GetMaterial, GetTexGen, 
     GetTexEnv, and GetTexParameter are similar to GetLight, 
@@ -259,11 +259,11 @@ New State
 
     The following is added to Table 6.16. Pixels.
 
-    Get Value				Get Command			Type	Initial Value			Attrib
-    ---------				-----------			----	-------------			------
-    PIXEL_TEXTURE_SGIS			IsEnabled			B	FALSE				pixel/enable
-    PIXEL_FRAGMENT_RGB_SOURCE_SGIS	GetPixelTexGenParameterivSGIS	Z2	PIXEL_GROUP_COLOR_SGIS		pixel
-    PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS	GetPixelTexGenParameterivSGIS	Z2	PIXEL_GROUP_COLOR_SGIS		pixel
+    Get Value                Get Command            Type    Initial Value            Attrib
+    ---------                -----------            ----    -------------            ------
+    PIXEL_TEXTURE_SGIS            IsEnabled            B    FALSE                pixel/enable
+    PIXEL_FRAGMENT_RGB_SOURCE_SGIS    GetPixelTexGenParameterivSGIS    Z2    PIXEL_GROUP_COLOR_SGIS        pixel
+    PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS    GetPixelTexGenParameterivSGIS    Z2    PIXEL_GROUP_COLOR_SGIS        pixel
 
 New Implementation Dependent State
 

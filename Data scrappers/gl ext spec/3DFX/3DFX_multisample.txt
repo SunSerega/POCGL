@@ -65,8 +65,8 @@ Overview
 
        * Fragment alpha values are not affected by the fragment sample mask
        * The sample locations may or may not be fixed. Thus, there is no
-	 support for rendering the scene multiple times with different
-	 sample points.
+     support for rendering the scene multiple times with different
+     sample points.
        * Fragment masks are not computed for images or for bitmasks.
 
     Because of these differences a new extension was created. However,
@@ -112,32 +112,32 @@ New Tokens
     glXChooseVisual and by the <attribute> parameter of
     glXGetFBConfigAttrib and glXGetConfig:
 
-	GLX_SAMPLE_BUFFERS_3DFX			    0x8050
-	GLX_SAMPLES_3DFX			    0x8051
+    GLX_SAMPLE_BUFFERS_3DFX                0x8050
+    GLX_SAMPLES_3DFX                0x8051
 
     Accepted in the <piAttributes> parameter array of
     wglGetPixelFormatAttribivARB, and wglGetPixelFormatAttribfvARB, and
     in the <piAttribIList> and <pfAttribFList> parameter arrays of
     wglChoosePixelFormatARB:
 
-	WGL_SAMPLE_BUFFERS_3DFX			    0x2060
-	WGL_SAMPLES_3DFX			    0x2061
+    WGL_SAMPLE_BUFFERS_3DFX                0x2060
+    WGL_SAMPLES_3DFX                0x2061
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled,
     and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev:
 
-	MULTISAMPLE_3DFX			    0x86B2
+    MULTISAMPLE_3DFX                0x86B2
 
     Accepted by the <pname> parameter of GetBooleanv, GetDoublev,
     GetIntegerv, and GetFloatv:
 
-	SAMPLE_BUFFERS_3DFX			    0x86B3
-	SAMPLES_3DFX				    0x86B4
+    SAMPLE_BUFFERS_3DFX                0x86B3
+    SAMPLES_3DFX                    0x86B4
 
     Accepted by the <mask> parameter of PushAttrib:
 
-	MULTISAMPLE_BIT_3DFX			    0x20000000
+    MULTISAMPLE_BIT_3DFX                0x20000000
 
 Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
 
@@ -280,11 +280,11 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     mth row, consider the region in window coordinates bounded by the
     rectangle with corners
 
-	    (Xrp + Zx*n, Yrp + Zy*m)
+        (Xrp + Zx*n, Yrp + Zy*m)
 
     and
 
-	    (Xrp + Zx*(n+1), Yrp + Zy*(m+1))
+        (Xrp + Zx*(n+1), Yrp + Zy*(m+1))
 
     where Zx and Zy are the pixel zoom factors specified by PixelZoom,
     and may each be either positive or negative. A fragment representing
@@ -460,10 +460,10 @@ Additions to the GLX 1.3 Specification
 
     The multisample FBConfig attributes are added to table 3.4 as follows:
 
-    Attribute		    Default Selection Criteria	Sort Priority
-    ---------		    ------- ------------------	-------------
-    GLX_SAMPLE_BUFFERS_3DFX 0	    Smaller
-    GLX_SAMPLES_3DFX	    0	    Smaller
+    Attribute            Default Selection Criteria    Sort Priority
+    ---------            ------- ------------------    -------------
+    GLX_SAMPLE_BUFFERS_3DFX 0        Smaller
+    GLX_SAMPLES_3DFX        0        Smaller
 
     If the GLX implementation is 1.2 or less, then
     GLX_SAMPLE_BUFFERS_3DFX and GLX_SAMPLES_3DFX are accepted by
@@ -512,16 +512,16 @@ Errors
 New State
 
 
-    Get Value		Get Command Type    Initial Value   Attribute
-    ---------		----------- ----    -------------   ---------
-    MULTISAMPLE_3DFX	IsEnabled   B	    TRUE	    multisample/enable
+    Get Value        Get Command Type    Initial Value   Attribute
+    ---------        ----------- ----    -------------   ---------
+    MULTISAMPLE_3DFX    IsEnabled   B        TRUE        multisample/enable
 
 New Implementation Dependent State
 
-    Get Value		Get Command Type    Minimum Value
-    ---------		----------- ----    -------------
-    SAMPLE_BUFFERS_3DFX GetIntegerv Z+	    0
-    SAMPLES_3DFX	GetIntegerv Z+	    0
+    Get Value        Get Command Type    Minimum Value
+    ---------        ----------- ----    -------------
+    SAMPLE_BUFFERS_3DFX GetIntegerv Z+        0
+    SAMPLES_3DFX    GetIntegerv Z+        0
 
 Dependencies on GLX 1.3 and GLX_EXT_fbconfig
 
@@ -533,6 +533,6 @@ Revision History
 
     Version 1.1 - April 18, 2000 (Jon Leech, SGI)
 
-	Specified value of MULTISAMPLE_BIT_3DFX. Assigned values to
-	GLX_SAMPLE_BUFFERS_3DFX and GLX_SAMPLES_3DFX. Conversion from
-	HTML -> text and formatting cleanup.
+    Specified value of MULTISAMPLE_BIT_3DFX. Assigned values to
+    GLX_SAMPLE_BUFFERS_3DFX and GLX_SAMPLES_3DFX. Conversion from
+    HTML -> text and formatting cleanup.

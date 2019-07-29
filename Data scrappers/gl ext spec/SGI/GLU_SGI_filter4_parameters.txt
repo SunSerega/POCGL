@@ -52,15 +52,15 @@ Issues
 
     Should TexFilterFuncSGIS be called for the user?
 
-	- yes, TexFilterFuncSGIS should be called instead of having the user
-	  do this. This is to be consistent with the rest of GLU, i.e., 
-    	  mipmap utilities. Note that GLU was designed this way so that it
-	  could be accelerated.   
+    - yes, TexFilterFuncSGIS should be called instead of having the user
+      do this. This is to be consistent with the rest of GLU, i.e., 
+          mipmap utilities. Note that GLU was designed this way so that it
+      could be accelerated.   
 
 New Procedures and Functions
 
     GLint gluTexFilterFuncSGI(GLenum target, GLenum filtertype, 
-			      const GLfloat *parms, GLint n, GLfloat *weights)
+                  const GLfloat *parms, GLint n, GLfloat *weights)
 
 New Tokens
 
@@ -96,7 +96,7 @@ Additions to the GLU Specification
 
     Also see the TexFilterFuncSGIS specification. 
 
-	GLenum target= GL_TEXTURE_2D;
+    GLenum target= GL_TEXTURE_2D;
         GLfloat *weights, control[2];
         GLint n, rc;
 
@@ -105,34 +105,34 @@ Additions to the GLU Specification
         rc= gluTexFilterFuncSGI(target, GLU_LAGRANGIAN_SGI,(const GLfloat *)0,
                                 n, weights);
         if (rc == 0) {
-	   printf("Success!\n");    
-	   /* glTexFilterFuncSGIS(target, GL_FILTER4_SGIS, n, 
-	    *                     (const float *)weights);
-	    * has been called within gluTexFilterFuncSGI.
-	    */
+       printf("Success!\n");    
+       /* glTexFilterFuncSGIS(target, GL_FILTER4_SGIS, n, 
+        *                     (const float *)weights);
+        * has been called within gluTexFilterFuncSGI.
+        */
         }
-	else {
-	   printf("Failure! %s\n",gluErrorString(rc));
+    else {
+       printf("Failure! %s\n",gluErrorString(rc));
         }
-	/* enable filter4 */
+    /* enable filter4 */
         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_FILTER4_SGIS);
         glTexParameteri(target, GL_TEXTURE_MAX_FILTER, GL_FILTER4_SGIS);
 
-	...
+    ...
 
         control[0] = 0.45; /* Set "B" control value */
         control[1] = 0.35; /* Set "C" control value */
         rc= gluTexFilterFuncSGI(target, GLU_MITCHELL_NETRAVALI_SGI,
-	                        (const GLfloat *)control, n, weights);
+                            (const GLfloat *)control, n, weights);
         if (rc == 0) {
-	   printf("Success!\n");    
-	   /* glTexFilterFuncSGIS(target, GL_FILTER4_SGIS, n,
-	    *                     (const float *)weights);
-	    * has been called within gluTexFilterFuncSGI.
-	    */
+       printf("Success!\n");    
+       /* glTexFilterFuncSGIS(target, GL_FILTER4_SGIS, n,
+        *                     (const float *)weights);
+        * has been called within gluTexFilterFuncSGI.
+        */
         }
-	else {
-	   printf("Failure! %s\n",gluErrorString(rc));
+    else {
+       printf("Failure! %s\n",gluErrorString(rc));
         }
     
 Errors
@@ -141,7 +141,7 @@ Errors
     GLU_SGI_filter4_parameters is not supported.
 
     GLU_INVALID_ENUM is returned if target is neither GL_TEXTURE_1D nor
-    GL_TEXTURE_2D.	
+    GL_TEXTURE_2D.    
 
     GLU_INVALID_ENUM is returned if filtertype is neither GLU_LAGRANGIAN_SGI
     nor GLU_MITCHELL_NETRAVALI_SGI.

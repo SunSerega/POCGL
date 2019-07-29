@@ -143,8 +143,8 @@ Errors
 New State
 
     Initial                       Initial
-    Get Value                   Get Command	Type    Value   Attrib
-    ---------				    -----------	----	-----	------
+    Get Value                   Get Command    Type    Value   Attrib
+    ---------                    -----------    ----    -----    ------
     INSTRUMENT_TIME_UNIT_SGIX   GetInteger    Z       0        -
 
 New Implementation Dependent State

@@ -38,7 +38,7 @@ New Tokens
 
     Accepted by the <mode> parameter of BlendEquationEXT:
 
-	FUNC_COMPLEX_ADD_EXT        0x601C
+    FUNC_COMPLEX_ADD_EXT        0x601C
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)
 
@@ -55,8 +55,8 @@ and the Framebuffer)
     called with <mode> set to FUNC_COMPLEX_ADD_EXT, the blending equation
     becomes
 
-	C_real' = Cs_real + Cd_real
-	C_imaginary' = Cs_imaginary + Cd_imaginary
+    C_real' = Cs_real + Cd_real
+    C_imaginary' = Cs_imaginary + Cd_imaginary
 
 
     where Cs_real and Cs_imaginary are the source real and imaginary
@@ -108,9 +108,9 @@ Errors
 
 New State
 
-    Get Value		Get Command	Type	Initial Value	Attribute
-    ---------		-----------	----	-------------	---------
-    BLEND_EQUATION_EXT	GetIntegerv	??	FUNC_ADD_EXT	color-buffer
+    Get Value        Get Command    Type    Initial Value    Attribute
+    ---------        -----------    ----    -------------    ---------
+    BLEND_EQUATION_EXT    GetIntegerv    ??    FUNC_ADD_EXT    color-buffer
 
 New Implementation Dependent State
 

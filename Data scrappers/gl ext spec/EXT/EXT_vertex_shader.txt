@@ -1189,14 +1189,14 @@ OP_MULTIPLY_MATRIX_EXT 2              V   M,V      r[0] = a2[0] * a1[0] +
     software implementation may be queried by calling GetIntegerv,
     GetFloatv, and GetDoublev with MAX_VERTEX_SHADER_INSTRUCTIONS_EXT,
     MAX_VERTEX_SHADER_VARIANTS_EXT, MAX_VERTEX_SHADER_INVARIANTS_EXT,
-	MAX_VERTEX_SHADER_LOCAL_CONSTANTS_EXT, and
-	MAX_VERTEX_SHADER_LOCALS_EXT respectively. Since a software
+    MAX_VERTEX_SHADER_LOCAL_CONSTANTS_EXT, and
+    MAX_VERTEX_SHADER_LOCALS_EXT respectively. Since a software
     implementation may co-exist with a hardware implementation with
     stricter resource limitations the resources available for a
     hardware implementation may be queried separately using
     MAX_OPTIMIZED_VERTEX_SHADER_INSTRUCTIONS_EXT,
     MAX_OPTIMIZED_VERTEX_SHADER_VARIANTS_EXT,
-	MAX_OPTIMIZED_VERTEX_SHADER_INVARIANTS_EXT,
+    MAX_OPTIMIZED_VERTEX_SHADER_INVARIANTS_EXT,
     MAX_OPTIMIZED_VERTEX_SHADER_LOCAL_CONSTANTS_EXT, and
     MAX_OPTIMIZED_VERTEX_SHADER_LOCALS_EXT. In implementations that
     operate purely in SW or purely in HW, these numbers may be
@@ -1205,7 +1205,7 @@ OP_MULTIPLY_MATRIX_EXT 2              V   M,V      r[0] = a2[0] * a1[0] +
     calling GetIntegerv, GetFloatv, and GetDoublev with
     VERTEX_SHADER_INSTRUCTIONS_EXT, VERTEX_SHADER_VARIANTS_EXT,
     VERTEX_SHADER_LOCAL_CONSTANTS_EXT, VERTEX_SHADER_INVARIANTS_EXT,
-	and VERTEX_SHADER_LOCALS_EXT.
+    and VERTEX_SHADER_LOCALS_EXT.
         Additionally, an implementation reports where a vertex shader
     program falls within all the optimized limits by a query of 
     VERTEX_SHADER_OPTIMIZED_EXT. This boolean value will be true
@@ -1312,7 +1312,7 @@ Added after Table 6.27 Vertex Shader State:
     VERTEX_SHADER_INSTRUCTIONS_EXT    GetIntegerv         Z+           0                 -
     VERTEX_SHADER_VARIANTS_EXT        GetIntegerv         Z+           0                 -
     VERTEX_SHADER_INVARIANTS_EXT      GetIntegerv         Z+           0                 -
-	VERTEX_SHADER_LOCAL_CONSTANTS_EXT GetIntegerv         Z+           0                 -
+    VERTEX_SHADER_LOCAL_CONSTANTS_EXT GetIntegerv         Z+           0                 -
     VERTEX_SHADER_LOCALS_EXT          GetIntegerv         Z+           0                 -
     VERTEX_SHADER_OPTIMIZED_EXT       GetBooleanv         Z+          False              -
     VERTEX_SHADER_EXT                 IsEnabled           B           False              -

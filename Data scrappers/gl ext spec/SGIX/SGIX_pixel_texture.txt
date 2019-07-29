@@ -30,7 +30,7 @@ Overview
 
 Issues
 
-    *	Should LOD be supported?
+    *    Should LOD be supported?
 
 New Procedures and Functions
 
@@ -48,7 +48,7 @@ New Tokens
     and GetDoublev:
 
         PIXEL_TEX_GEN_MODE_SGIX                 = 0x832B
-	
+    
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     None
@@ -87,12 +87,12 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     PIXEL_TEX_GEN_MODE_SGIX as defined as defined by the following table:
 
       PIXEL_TEX_GEN_MODE_SGIX    Fragment's color component value 
-      value		            R          G         B          A
+      value                    R          G         B          A
       -----------------------    -------    -------   -------    -------
-      NONE         	         PG's R     PG's G    PG's B     PG's A
-      ALPHA      	         PG's R     PG's G    PG's B     CRP's A
-      RGB			 CRP's R    CRP's G   CRP's B    PG's A
-      RGBA       	         CRP's R    CRP's G   CRP's B    CRP's A
+      NONE                      PG's R     PG's G    PG's B     PG's A
+      ALPHA                   PG's R     PG's G    PG's B     CRP's A
+      RGB             CRP's R    CRP's G   CRP's B    PG's A
+      RGBA                    CRP's R    CRP's G   CRP's B    CRP's A
 
       Assignment of pixel group and current raster position color data to a
       fragment arising from an RGBA color pixel group when pixel texgen is
@@ -135,10 +135,10 @@ Errors
 
 New State
 
-    Get Value			Get Command	Type	Initial Value	Attrib
-    ---------			-----------	----	-------------	------
-    PIXEL_TEX_GEN_SGIX		IsEnabled	B	FALSE		pixel
-    PIXEL_TEX_GEN_MODE_SGIX	GetIntegerv	Z4	NONE		pixel
+    Get Value            Get Command    Type    Initial Value    Attrib
+    ---------            -----------    ----    -------------    ------
+    PIXEL_TEX_GEN_SGIX        IsEnabled    B    FALSE        pixel
+    PIXEL_TEX_GEN_MODE_SGIX    GetIntegerv    Z4    NONE        pixel
 
 New Implementation Dependent State
 

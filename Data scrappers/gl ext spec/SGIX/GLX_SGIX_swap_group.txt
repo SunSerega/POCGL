@@ -39,8 +39,8 @@ Issues
 New Procedures and Functions
 
     void JoinSwapGroupSGIX(Display *dpy, 
-			   GLXDrawable drawable, 
-			   GLXDrawable member);
+               GLXDrawable drawable, 
+               GLXDrawable member);
 
 New Tokens
 
@@ -68,20 +68,20 @@ Additions to the GLX Specification
 
     When a window is mapped, it is ready when all of the following are true:
 
-	1. A buffer swap command has been issued for it.
+    1. A buffer swap command has been issued for it.
 
-	2. Its swap interval has elapsed.
+    2. Its swap interval has elapsed.
 
     A group is ready when the following is true:
 
-	1. All windows in the group are ready.
+    1. All windows in the group are ready.
 
     All of the following must be satisfied before a buffer swap for a window
     can take place:
 
-	1. The window is ready.
+    1. The window is ready.
 
-	2. If the window belongs to a group, the group is ready.
+    2. If the window belongs to a group, the group is ready.
 
     Buffer swaps for all windows in a swap group will take place concurrently
     after the conditions are satisfied for every window in the group.
@@ -97,9 +97,9 @@ Errors
 
 New State
 
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
-    <whether window is in a group>	??		B	False
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
+    <whether window is in a group>    ??        B    False
 
 New Implementation Dependent State
 

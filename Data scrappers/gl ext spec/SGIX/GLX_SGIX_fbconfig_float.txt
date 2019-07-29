@@ -40,16 +40,16 @@ Issues
 New Procedures and Functions
 
     int glXGetFBConfigFltAttribSGIX(Display *dpy, 
-			            GLXFBConfigSGIX config,
-			            int attribute,
-			            double *value);
+                        GLXFBConfigSGIX config,
+                        int attribute,
+                        double *value);
 
     GLXFBConfigSGIX *glXChooseFBConfigWithFltSGIX(
-		Display *dpy,
-		int screen,
-		const int *int_attrib_list,
-		const double *flt_attrib_list,
-		int *nelements);
+        Display *dpy,
+        int screen,
+        const int *int_attrib_list,
+        const double *flt_attrib_list,
+        int *nelements);
 
 New Tokens
 
@@ -68,11 +68,11 @@ Additions to the GLX Specification
     floating point attributes.
 
         GLXFBConfigSGIX *glXChooseFBConfigWithFltSGIX(
-		Display *dpy,
-		int screen,
-		const int *attrib_list,
-		const double *flt_attrib_list,
-		int *nelements);
+        Display *dpy,
+        int screen,
+        const int *attrib_list,
+        const double *flt_attrib_list,
+        int *nelements);
 
     If <flt_attrib_list> is NULL then glXChooseFBConfigWithFltSGIX behaves
     identically to glXChooseFBConfigSGIX; otherwise, the attributes
@@ -96,9 +96,9 @@ Additions to the GLX Specification
     GLXFBConfigSGIX use:
 
         int glXGetFBConfigFltAttribSGIX(Display *dpy, 
-			                GLXFBConfigSGIX config,
-			                int attribute,
-			                double *value);
+                            GLXFBConfigSGIX config,
+                            int attribute,
+                            double *value);
 
     glXGetFBConfigFltAttribSGIX has the same semantics as 
     glXGetFBConfigAttribSGIX, although it returns a double value

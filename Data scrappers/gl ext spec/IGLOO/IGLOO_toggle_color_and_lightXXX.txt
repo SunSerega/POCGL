@@ -20,9 +20,9 @@ Number
 
     None
 
-	Igloo extensions should be compatible with *ALL* other extensions.
-	(i.e. igloo extensions must document their interactions with subsequent
-	extensions preceding it, so there is no number).
+    Igloo extensions should be compatible with *ALL* other extensions.
+    (i.e. igloo extensions must document their interactions with subsequent
+    extensions preceding it, so there is no number).
 
 Dependencies
 
@@ -39,7 +39,7 @@ Issues
        on RE and EXPRESS. Lit and unlit primitives would both be very slow.
 
        Should this be a glEnable?  The only reason it isn't an Enable is that
-       it should be callable within glBegin and glEnd.	Currently
+       it should be callable within glBegin and glEnd.    Currently
        we've architected lmcolor with the assumption that it *WILL NOT* be
        called within glBegin/glEnd anyway.
 
@@ -50,18 +50,18 @@ Issues
 
 New Procedures and Functions
 
-	void IGLOOToggleColorAndLightXXX(GLboolean switch);
+    void IGLOOToggleColorAndLightXXX(GLboolean switch);
 
 
 New Tokens
 
-	Accepted by the <pname> parameters of GetBooleanv, GetIntegerv,
-	GetFloatv, and GetDoublev:
+    Accepted by the <pname> parameters of GetBooleanv, GetIntegerv,
+    GetFloatv, and GetDoublev:
 
-	TOGGLE_COLOR_AND_LIGHTXXX
+    TOGGLE_COLOR_AND_LIGHTXXX
 
-	If it is decided that this should be implemented using glEnable, then glIsEnabled
-	and glEnable/glDisable should accept this token.
+    If it is decided that this should be implemented using glEnable, then glIsEnabled
+    and glEnable/glDisable should accept this token.
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     Section 2.12.1 first section.
@@ -69,7 +69,7 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     commands with the symbol LIGHT." becomes
 
     "If TOGGLE_COLOR_AND_LIGHTXXX is False, then lighting may be turned on or off using
-    the generic glEnable or glDisable.	If TOGGLE_COLOR_AND_LIGHTXXX is True, then lighting
+    the generic glEnable or glDisable.    If TOGGLE_COLOR_AND_LIGHTXXX is True, then lighting
     is on after each 'normal' command, if it is turned on with glEnable.
     lighting is off after each 'color' command.
     Lighting is always off if it
@@ -136,23 +136,23 @@ Dependencies on SGI_extension_name
     None
 
 Errors
-*	Calling glNormal or glColor when TOGGLECOLORANDLIGHTXXX is TRUE and
-*	ColorMaterial is Enabled results in indeterminate behavior.
+*    Calling glNormal or glColor when TOGGLECOLORANDLIGHTXXX is TRUE and
+*    ColorMaterial is Enabled results in indeterminate behavior.
 
 New State
 
-*	It is unknown whether this is client state since it is not useful on the
-*	client side, but glX needn't recognize it.
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	------- ------
-    TOGGLE_COLOR_AND_LIGHTXXX		glGet		Boolean  FALSE	lighting
+*    It is unknown whether this is client state since it is not useful on the
+*    client side, but glX needn't recognize it.
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    ------- ------
+    TOGGLE_COLOR_AND_LIGHTXXX        glGet        Boolean  FALSE    lighting
 
     (I've chosen not to make this a glEnable,  so it isn't part of the Enable Attribute
     This is perhaps controversial)
 
 New Implementation Dependent State
 
-*	Description of all implementation dependent state in table format.
+*    Description of all implementation dependent state in table format.
 
     None

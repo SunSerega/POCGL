@@ -47,13 +47,13 @@ New Tokens
     SeparableFilter2DEXT, SeparableFilter3DEXT, GetSeparableFilterEXT,
     GetHistogramEXT, and GetMinmaxEXT:
 
-    COMPLEX_UNSIGNED_BYTE_SGI		0x81BD
-    COMPLEX_BYTE_SGI			0x81BE
-    COMPLEX_UNSIGNED_SHORT_SGI		0x81BF
-    COMPLEX_SHORT_SGI			0x81C0
-    COMPLEX_UNSIGNED_INT_SGI		0x81C1
-    COMPLEX_INT_SGI			0x81C2
-    COMPLEX_FLOAT_SGI			0x81C3
+    COMPLEX_UNSIGNED_BYTE_SGI        0x81BD
+    COMPLEX_BYTE_SGI            0x81BE
+    COMPLEX_UNSIGNED_SHORT_SGI        0x81BF
+    COMPLEX_SHORT_SGI            0x81C0
+    COMPLEX_UNSIGNED_INT_SGI        0x81C1
+    COMPLEX_INT_SGI            0x81C2
+    COMPLEX_FLOAT_SGI            0x81C3
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -63,34 +63,34 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     The seven tokens defined by this extension are added to Table 3.4:
 
-	<type> Parameter		Corresponding	Special
-	Token Value			GL Data Type	Interpretation
-	----------------		-------------	--------------
-	UNSIGNED_BYTE			ubyte		No
-	BYTE				byte		No
-	UNSIGNED_SHORT			ushort		No
-	SHORT				short		No
-	UNSIGNED_INT			uint		No
-	INT				int		No
-	FLOAT				float		No
-	BITMAP				ubyte		Yes
-	UNSIGNED_BYTE_3_3_2_EXT		ubyte		Yes
-	UNSIGNED_SHORT_4_4_4_4_EXT	ushort		Yes
-	UNSIGNED_SHORT_5_5_5_1_EXT	ushort		Yes
-	UNSIGNED_INT_8_8_8_8_EXT	uint		Yes
-	UNSIGNED_INT_10_10_10_2_EXT	uint		Yes
-	COMPLEX_UNSIGNED_BYTE_SGI	ubyte		No
-	COMPLEX_BYTE_SGI		byte		No
-	COMPLEX_UNSIGNED_SHORT_SGI	ushort		No
-	COMPLEX_SHORT_SGI		short		No
-	COMPLEX_UNSIGNED_INT_SGI	uint		No
-	COMPLEX_INT_SGI			int		No
-	COMPLEX_FLOAT_SGI		float		No
+    <type> Parameter        Corresponding    Special
+    Token Value            GL Data Type    Interpretation
+    ----------------        -------------    --------------
+    UNSIGNED_BYTE            ubyte        No
+    BYTE                byte        No
+    UNSIGNED_SHORT            ushort        No
+    SHORT                short        No
+    UNSIGNED_INT            uint        No
+    INT                int        No
+    FLOAT                float        No
+    BITMAP                ubyte        Yes
+    UNSIGNED_BYTE_3_3_2_EXT        ubyte        Yes
+    UNSIGNED_SHORT_4_4_4_4_EXT    ushort        Yes
+    UNSIGNED_SHORT_5_5_5_1_EXT    ushort        Yes
+    UNSIGNED_INT_8_8_8_8_EXT    uint        Yes
+    UNSIGNED_INT_10_10_10_2_EXT    uint        Yes
+    COMPLEX_UNSIGNED_BYTE_SGI    ubyte        No
+    COMPLEX_BYTE_SGI        byte        No
+    COMPLEX_UNSIGNED_SHORT_SGI    ushort        No
+    COMPLEX_SHORT_SGI        short        No
+    COMPLEX_UNSIGNED_INT_SGI    uint        No
+    COMPLEX_INT_SGI            int        No
+    COMPLEX_FLOAT_SGI        float        No
 
-	Table 3.4: DrawPixels and ReadPixels <type> parameter values and the
-	corresponding GL data types.  Refer to table 2.2 for definitions of
-	GL data types.  Special interpretations are described near the end
-	of section 3.6.3.
+    Table 3.4: DrawPixels and ReadPixels <type> parameter values and the
+    corresponding GL data types.  Refer to table 2.2 for definitions of
+    GL data types.  Special interpretations are described near the end
+    of section 3.6.3.
 
     [Section 3.6.3 of the GL Specification (Rasterization of Pixel
     Rectangles) has the following paragraphs added immediately before
@@ -123,7 +123,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     Unsigned integer bitfields extracted from packed pixels are interpreted
     using the formula
 
-    	f = c / ((2**N)-1)
+        f = c / ((2**N)-1)
 
     where c is the value of the bitfield (interpreted as an unsigned
     integer), N is the number of bits in the bitfield, and the division is
@@ -153,54 +153,54 @@ and the Frame Buffer)
     the appropriate conversion formula from Table 4.7 is applied to the
     component.
 
-	<type> Parameter	Index Mask
-	----------------	----------
-	UNSIGNED_BYTE		2**8 - 1
-	BITMAP			1
-	BYTE			2**7 - 1
-	UNSIGNED_SHORT		2**16 - 1
-	SHORT			2**15 - 1
-	UNSIGNED_INT		2**32 - 1
-	INT			2**31 - 1
+    <type> Parameter    Index Mask
+    ----------------    ----------
+    UNSIGNED_BYTE        2**8 - 1
+    BITMAP            1
+    BYTE            2**7 - 1
+    UNSIGNED_SHORT        2**16 - 1
+    SHORT            2**15 - 1
+    UNSIGNED_INT        2**32 - 1
+    INT            2**31 - 1
 
-	Table 4.6: Index masks used by ReadPixels.  Floating point data
-	are not masked.
+    Table 4.6: Index masks used by ReadPixels.  Floating point data
+    are not masked.
 
-	<type>				GL Data		Component/Subcomponent
-	Parameter			Type		Conversion Formula
-	---------			-------		------------------
-	UNSIGNED_BYTE			ubyte		c = ((2**8)-1)*f
-	BYTE				byte		c = (((2**8)-1)*f-1)/2
-	UNSIGNED_SHORT			ushort		c = ((2**16)-1)*f
-	SHORT				short		c = (((2**16)-1)*f-1)/2
-	UNSIGNED_INT			uint		c = ((2**32)-1)*f
-	INT				int		c = (((2**32)-1)*f-1)/2
-	FLOAT				float		c = f
-	UNSIGNED_BYTE_3_3_2_EXT		ubyte		c = ((2**N)-1)*f
-	UNSIGNED_SHORT_4_4_4_4_EXT	ushort		c = ((2**N)-1)*f
-	UNSIGNED_SHORT_5_5_5_1_EXT	ushort		c = ((2**N)-1)*f
-	UNSIGNED_INT_8_8_8_8_EXT	uint		c = ((2**N)-1)*f
-	UNSIGNED_INT_10_10_10_2_EXT	uint		c = ((2**N)-1)*f
-	COMPLEX_UNSIGNED_BYTE		ubyte		cs = ((2**8)-1)*fs
-	COMPLEX_BYTE			byte		cs = (((2**8)-1)*fs-1)/2
-	COMPLEX_UNSIGNED_SHORT		ushort		cs = ((2**16)-1)*fs
-	COMPLEX_SHORT			short		cs = (((2**16)-1)*fs-1)/2
-	COMPLEX_UNSIGNED_INT		uint		cs = ((2**32)-1)*fs
-	COMPLEX_INT			int		cs = (((2**32)-1)*fs-1)/2
-	COMPLEX_FLOAT			float		cs = fs
+    <type>                GL Data        Component/Subcomponent
+    Parameter            Type        Conversion Formula
+    ---------            -------        ------------------
+    UNSIGNED_BYTE            ubyte        c = ((2**8)-1)*f
+    BYTE                byte        c = (((2**8)-1)*f-1)/2
+    UNSIGNED_SHORT            ushort        c = ((2**16)-1)*f
+    SHORT                short        c = (((2**16)-1)*f-1)/2
+    UNSIGNED_INT            uint        c = ((2**32)-1)*f
+    INT                int        c = (((2**32)-1)*f-1)/2
+    FLOAT                float        c = f
+    UNSIGNED_BYTE_3_3_2_EXT        ubyte        c = ((2**N)-1)*f
+    UNSIGNED_SHORT_4_4_4_4_EXT    ushort        c = ((2**N)-1)*f
+    UNSIGNED_SHORT_5_5_5_1_EXT    ushort        c = ((2**N)-1)*f
+    UNSIGNED_INT_8_8_8_8_EXT    uint        c = ((2**N)-1)*f
+    UNSIGNED_INT_10_10_10_2_EXT    uint        c = ((2**N)-1)*f
+    COMPLEX_UNSIGNED_BYTE        ubyte        cs = ((2**8)-1)*fs
+    COMPLEX_BYTE            byte        cs = (((2**8)-1)*fs-1)/2
+    COMPLEX_UNSIGNED_SHORT        ushort        cs = ((2**16)-1)*fs
+    COMPLEX_SHORT            short        cs = (((2**16)-1)*fs-1)/2
+    COMPLEX_UNSIGNED_INT        uint        cs = ((2**32)-1)*fs
+    COMPLEX_INT            int        cs = (((2**32)-1)*fs-1)/2
+    COMPLEX_FLOAT            float        cs = fs
 
-	Table 4.7: Reversed component conversions - used when component data
-	are being returned to client memory.  Color, normal, and depth
-	components are converted from the internal floating-point
-	representation (f) to a datum of the specified GL data type (c) using
-	the equations in this table.  All arithmetic is done in the internal
-	floating point format.  These conversions apply to component data
-	returned by GL query commands and to components of pixel data returned
-	to client memory.  The equations remain the same even if the
-	implemented ranges of the GL data types are greater than the minimum
-	required ranges.  (Refer to table 2.2.)  Equations with N as the
-	exponent are performed for each bitfield of the packed data type,
-	with N set to the number of bits in the bitfield.
+    Table 4.7: Reversed component conversions - used when component data
+    are being returned to client memory.  Color, normal, and depth
+    components are converted from the internal floating-point
+    representation (f) to a datum of the specified GL data type (c) using
+    the equations in this table.  All arithmetic is done in the internal
+    floating point format.  These conversions apply to component data
+    returned by GL query commands and to components of pixel data returned
+    to client memory.  The equations remain the same even if the
+    implemented ranges of the GL data types are greater than the minimum
+    required ranges.  (Refer to table 2.2.)  Equations with N as the
+    exponent are performed for each bitfield of the packed data type,
+    with N set to the number of bits in the bitfield.
 
     Placement in Client Memory
 

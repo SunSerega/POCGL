@@ -63,7 +63,7 @@ New Procedures and Functions
 
 New Tokens
 
-    GLX_LATE_SWAPS_TEAR_EXT	 0x20F3
+    GLX_LATE_SWAPS_TEAR_EXT     0x20F3
 
 Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL
 Operation)
@@ -148,4 +148,4 @@ Usage Examples
 Version History
 
     1. 04 Nov 2011 - BrianN
-	-Initial version
+    -Initial version

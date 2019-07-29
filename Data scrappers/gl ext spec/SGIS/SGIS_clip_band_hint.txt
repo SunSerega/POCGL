@@ -72,14 +72,14 @@ New Tokens
    Accepted by the <target> parameter of Hint and the <pname>
    parameter of GetBooleanv, GetDoublev, GetFloatv and GetIntegerv:
 
-        CLIP_CHECK_HINT_SGIS	XXXXX
+        CLIP_CHECK_HINT_SGIS    XXXXX
 
    Accepted by the <pname> parameter of GetBooleanv, GetIntegerv, 
    GetFloatv, and GetDoublev:
 
-        CLIP_BAND_FACTOR_X_SGIS	XXXXX
-        CLIP_BAND_FACTOR_Y_SGIS	XXXXX
-        CLIP_BAND_FACTOR_Z_SGIS	XXXXX
+        CLIP_BAND_FACTOR_X_SGIS    XXXXX
+        CLIP_BAND_FACTOR_Y_SGIS    XXXXX
+        CLIP_BAND_FACTOR_Z_SGIS    XXXXX
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -93,9 +93,9 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     that extend past the view volume but are still within some rasterizable
     volume.  This extended clip volume is defined in clip coordinates by,
 
-		-(w_c * bf_x) <= x_c <= (w_c * bf_x)
-		-(w_c * bf_y) <= y_c <= (w_c * bf_y)
-		-(w_c * bf_z) <= z_c <= (w_c * bf_z)
+        -(w_c * bf_x) <= x_c <= (w_c * bf_x)
+        -(w_c * bf_y) <= y_c <= (w_c * bf_y)
+        -(w_c * bf_z) <= z_c <= (w_c * bf_z)
 
     where bf_x, bf_y and bf_z are implementation dependent values (greater
     than or equal to 1.0) and can be queried by calling glGet with a 
@@ -147,19 +147,19 @@ Errors
 
 New State
 
-								Initial
-    Get Value				Get Command	Type	Value		Attrib
-    ---------				-----------	----	-------		------
+                                Initial
+    Get Value                Get Command    Type    Value        Attrib
+    ---------                -----------    ----    -------        ------
 
-    CLIP_CHECK_HINT_SGIS		GetIntegerv	Z3	DONT_CARE	Hint
+    CLIP_CHECK_HINT_SGIS        GetIntegerv    Z3    DONT_CARE    Hint
 
 
 New Implementation Dependent State
 
-									Minimum
-    Get Value				Get Command	Type		Value
-    ---------				-----------	----		-------
+                                    Minimum
+    Get Value                Get Command    Type        Value
+    ---------                -----------    ----        -------
     
-    CLIP_BAND_FACTOR_X_SGIS		GetFloatv	R		1.0
-    CLIP_BAND_FACTOR_Y_SGIS		GetFloatv	R		1.0
-    CLIP_BAND_FACTOR_Z_SGIS		GetFloatv	R		1.0
+    CLIP_BAND_FACTOR_X_SGIS        GetFloatv    R        1.0
+    CLIP_BAND_FACTOR_Y_SGIS        GetFloatv    R        1.0
+    CLIP_BAND_FACTOR_Z_SGIS        GetFloatv    R        1.0

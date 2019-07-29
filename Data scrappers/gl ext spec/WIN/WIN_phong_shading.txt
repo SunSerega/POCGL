@@ -171,9 +171,9 @@ Errors
 
 New State
                                                 Initial
-    Get Value				Get Command	Type	Value 	    Attrib
-    ---------				-----------	----	-------	    ------
-    PHONG_HINT_WIN          		GetIntegerv 	Z3      DONT_CARE   hint
+    Get Value                Get Command    Type    Value         Attrib
+    ---------                -----------    ----    -------        ------
+    PHONG_HINT_WIN                  GetIntegerv     Z3      DONT_CARE   hint
 
 New Implementation Dependent State
 

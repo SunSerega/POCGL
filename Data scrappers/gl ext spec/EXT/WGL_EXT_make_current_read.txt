@@ -36,7 +36,7 @@ New Tokens
 
     Returned by GetLastError (when wglMakeContextCurrentEXT fails):
 
-	ERROR_INVALID_PIXEL_TYPE_EXT		0x2043
+    ERROR_INVALID_PIXEL_TYPE_EXT        0x2043
 
 Additions to Chapter 2 of the 1.2 GL Specification (OpenGL Operation)
 

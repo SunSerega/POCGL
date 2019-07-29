@@ -86,9 +86,9 @@ New Tokens
     
       RGB_422_APPLE                 0x8A1F
       
-	Accepted by the <internalformat> parameter of TexImage2D, TexImage3D,
-	CopyTexImage2D, TexStorage2D, and TexStorage3D:
-	
+    Accepted by the <internalformat> parameter of TexImage2D, TexImage3D,
+    CopyTexImage2D, TexStorage2D, and TexStorage3D:
+    
       RGB_RAW_422_APPLE             0x8A51      
 
     Accepted by the <type> parameter of DrawPixels, ReadPixels, TexImage1D,

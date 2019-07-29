@@ -51,62 +51,62 @@ Overview
 
 Issues
 
-    1.	Should the scale, bias, and clamp that is applied to texels
-	be moved to a separate SGIX extension?
+    1.    Should the scale, bias, and clamp that is applied to texels
+    be moved to a separate SGIX extension?
 
-	Done.  See GL_SGIX_texture_scale_bias.
+    Done.  See GL_SGIX_texture_scale_bias.
 
     2.  It should be clarified that this state is NOT part of
-	EXT_texture_object.  The color table state is per texture unit.
+    EXT_texture_object.  The color table state is per texture unit.
 
-    3. 	Can the texture format change while passing thru the texture
-	color table?
+    3.     Can the texture format change while passing thru the texture
+    color table?
 
-	This possibility is mentioned in the overview.  An example of
-	when this is useful is an RGBA table applied to a LUMINANCE
-	texture.  This expands LUMINANCE to full RGBA.  The table
-	defined below does not account for this.
+    This possibility is mentioned in the overview.  An example of
+    when this is useful is an RGBA table applied to a LUMINANCE
+    texture.  This expands LUMINANCE to full RGBA.  The table
+    defined below does not account for this.
 
-	The specification has been changed to map all texture components
-	to Rt, Gt, Bt, At and now the table is always applied to all 4
-	components.
+    The specification has been changed to map all texture components
+    to Rt, Gt, Bt, At and now the table is always applied to all 4
+    components.
 
-    4. 	Do we want to query MAX_TEXTURE_COLOR_TABLE_WIDTH_SGI in
-	addition to PROXY method?
+    4.     Do we want to query MAX_TEXTURE_COLOR_TABLE_WIDTH_SGI in
+    addition to PROXY method?
 
-	No, this should be done with PROXY.
+    No, this should be done with PROXY.
 
     5.  Is one texture color table shared by all texture units or is
-	there a separate color table for each texture unit?
+    there a separate color table for each texture unit?
 
-	Vendors shipping both ARB_multitexture and SGI_texture_color_table
-	report that they've implemented per-texture unit tables.
+    Vendors shipping both ARB_multitexture and SGI_texture_color_table
+    report that they've implemented per-texture unit tables.
 
-	The texure color table enable flag is also per-texture unit.
+    The texure color table enable flag is also per-texture unit.
 
-    6.	Is the proxy texture color table per context or per texture unit
-	state?
+    6.    Is the proxy texture color table per context or per texture unit
+    state?
 
-	After talking to IBM and 3Dlabs, the consensus is that there is a
-	separate proxy texture color table for each texture unit.
+    After talking to IBM and 3Dlabs, the consensus is that there is a
+    separate proxy texture color table for each texture unit.
 
-    7.	Is the texture color table scale and bias values per context or
-	per texture unit?
+    7.    Is the texture color table scale and bias values per context or
+    per texture unit?
 
-	Consensus is that there is one set of scale and bias values shared
-	for all texture units.  It's part of the pixel state group.
+    Consensus is that there is one set of scale and bias values shared
+    for all texture units.  It's part of the pixel state group.
 
     8.  What if there is a different number of texture image units and
-	texture coordinate units (ala NV_fragment_program)?
+    texture coordinate units (ala NV_fragment_program)?
 
-	The number of texture image units determines the number of texture
-	color tables.  All occurances of "texture unit" should be read as
-	"texture image unit".
+    The number of texture image units determines the number of texture
+    color tables.  All occurances of "texture unit" should be read as
+    "texture image unit".
 
     9.  Has this extension specification changed recently?
 
-	It's been updated to clarify how it interacts with multitexture.
-	Also, various cosmetic clean-ups have been made.
+    It's been updated to clarify how it interacts with multitexture.
+    Also, various cosmetic clean-ups have been made.
 
 
 
@@ -123,12 +123,12 @@ New Tokens
     ColorTableParameterivSGI, GetColorTableParameterfvSGI,
     GetColorTableParameterivSGI:
 
-	TEXTURE_COLOR_TABLE_SGI		0x80BC
+    TEXTURE_COLOR_TABLE_SGI        0x80BC
 
     Accepted by the <target> parameter of ColorTableSGI,
     GetColorTableParameterivSGI, and GetColorTableParameterfvSGI:
 
-	PROXY_TEXTURE_COLOR_TABLE_SGI	0x80BD
+    PROXY_TEXTURE_COLOR_TABLE_SGI    0x80BD
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -164,23 +164,23 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     Rt, Gt, Bt, and At according to the following table:
 
 
-				Modification of Texture Components
-				----------------------------------
-	Base Table		
-	Internal Format		Rt	Gt	Bt	At
-	---------------		--	--	--	--
+                Modification of Texture Components
+                ----------------------------------
+    Base Table        
+    Internal Format        Rt    Gt    Bt    At
+    ---------------        --    --    --    --
 
-	ALPHA			Rt	Gt	Bt	A(At)
+    ALPHA            Rt    Gt    Bt    A(At)
 
-	LUMINANCE		L(Rt)	L(Gt)	L(Bt)	At
+    LUMINANCE        L(Rt)    L(Gt)    L(Bt)    At
 
-	LUMINANCE_ALPHA		L(Rt)	L(Gt)	L(Bt)	A(At)
+    LUMINANCE_ALPHA        L(Rt)    L(Gt)    L(Bt)    A(At)
 
-	INTENSITY		I(Rt)	I(Gt)	I(Bt)	I(At)
+    INTENSITY        I(Rt)    I(Gt)    I(Bt)    I(At)
 
-	RGB			R(Rt)	G(Gt)	B(Bt)	At
+    RGB            R(Rt)    G(Gt)    B(Bt)    At
 
-	RGBA			R(Rt)	G(Gt)	B(Bt)	A(At)
+    RGBA            R(Rt)    G(Gt)    B(Bt)    A(At)
 
 
     If multiple texture units are supported, there is a texture color
@@ -240,20 +240,20 @@ Errors
 
 New State
 
-    Get Value				Get Command			Type		Initial Value	Attribute
-    ---------				-----------			----		-------------	---------
-    TEXTURE_COLOR_TABLE_SGI		IsEnabled			1* x B		False		texture/enable
-    TEXTURE_COLOR_TABLE_SGI		GetColorTableSGI		1* x I		empty		texture*
-    COLOR_TABLE_FORMAT_SGI		GetColorTableParameterivSGI	2 x 1* x Z38	RGBA		texture*
-    COLOR_TABLE_WIDTH_SGI		GetColorTableParameterivSGI	2 x 1* x Z+	0		texture*
-    COLOR_TABLE_RED_SIZE_SGI		GetColorTableParameterivSGI	2 x 1* x Z+	0		texture*
-    COLOR_TABLE_GREEN_SIZE_SGI		GetColorTableParameterivSGI	2 x 1* x Z+	0		texture*
-    COLOR_TABLE_BLUE_SIZE_SGI		GetColorTableParameterivSGI	2 x 1* x Z+	0		texture*
-    COLOR_TABLE_ALPHA_SIZE_SGI		GetColorTableParameterivSGI	2 x 1* x Z+	0		texture*
-    COLOR_TABLE_LUMINANCE_SIZE_SGI	GetColorTableParameterivSGI	2 x 1* x Z+	0		texture*
-    COLOR_TABLE_INTENSITY_SIZE_SGI	GetColorTableParameterivSGI	2 x 1* x Z+	0		texture*
-    COLOR_TABLE_SCALE_SGI		GetColorTableParameterfvSGI	R4		(1,1,1,1)	pixel
-    COLOR_TABLE_BIAS_SGI		GetColorTableParameterfvSGI	R4		(0,0,0,0)	pixel
+    Get Value                Get Command            Type        Initial Value    Attribute
+    ---------                -----------            ----        -------------    ---------
+    TEXTURE_COLOR_TABLE_SGI        IsEnabled            1* x B        False        texture/enable
+    TEXTURE_COLOR_TABLE_SGI        GetColorTableSGI        1* x I        empty        texture*
+    COLOR_TABLE_FORMAT_SGI        GetColorTableParameterivSGI    2 x 1* x Z38    RGBA        texture*
+    COLOR_TABLE_WIDTH_SGI        GetColorTableParameterivSGI    2 x 1* x Z+    0        texture*
+    COLOR_TABLE_RED_SIZE_SGI        GetColorTableParameterivSGI    2 x 1* x Z+    0        texture*
+    COLOR_TABLE_GREEN_SIZE_SGI        GetColorTableParameterivSGI    2 x 1* x Z+    0        texture*
+    COLOR_TABLE_BLUE_SIZE_SGI        GetColorTableParameterivSGI    2 x 1* x Z+    0        texture*
+    COLOR_TABLE_ALPHA_SIZE_SGI        GetColorTableParameterivSGI    2 x 1* x Z+    0        texture*
+    COLOR_TABLE_LUMINANCE_SIZE_SGI    GetColorTableParameterivSGI    2 x 1* x Z+    0        texture*
+    COLOR_TABLE_INTENSITY_SIZE_SGI    GetColorTableParameterivSGI    2 x 1* x Z+    0        texture*
+    COLOR_TABLE_SCALE_SGI        GetColorTableParameterfvSGI    R4        (1,1,1,1)    pixel
+    COLOR_TABLE_BIAS_SGI        GetColorTableParameterfvSGI    R4        (0,0,0,0)    pixel
 
     *Note: if ARB_multitexture is supported, the state is per-texture unit,
     else the state is per-context.

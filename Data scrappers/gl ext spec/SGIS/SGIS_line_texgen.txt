@@ -31,32 +31,32 @@ New Tokens
     Accepted by the <params> parameters of TexGeni, TexGenf, TexGend,
     TexGeniv, TexGenfv, and TexGendv:
 
-	EYE_DISTANCE_TO_LINE_SGIS
-	OBJECT_DISTANCE_TO_LINE_SGIS
+    EYE_DISTANCE_TO_LINE_SGIS
+    OBJECT_DISTANCE_TO_LINE_SGIS
 
     Accepted by the <pname> parameters of TexGeniv, TexGenfv, and TexGendv:
 
-	EYE_LINE_SGIS
-	OBJECT_LINE_SGIS
+    EYE_LINE_SGIS
+    OBJECT_LINE_SGIS
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     If TEXTURE_GEN_MODE indicates OBJECT_DISTANCE_TO_LINE_SGIS, then the
     generating function for the coordinate indicated by <coord> is
 
-	g = || O - (O (dot) D') * D' ||
+    g = || O - (O (dot) D') * D' ||
 
     where
 
-	P is a point (px/pw, py/pw, pz/pw)
+    P is a point (px/pw, py/pw, pz/pw)
 
         D is a vector (dx, dy, dz) 
 
-	D' is the normalized form of D
+    D' is the normalized form of D
 
         V' is (xo/wo, yo/wo, zo/wo)
 
-	O = V' - P
+    O = V' - P
 
     In other words, g is the distance in object coordinates from the 
     vertex to the line defined by point P and direction D.
@@ -71,24 +71,24 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     generating function for the coordinate indicated by <coord> is the 
     same as above, but P, D, and V' are redefined as:
 
-	P is a point (px'/pw', py'/pw', pz'/pw') where
+    P is a point (px'/pw', py'/pw', pz'/pw') where
 
-					 |px|
-					 |py|
-		(px', py', pz', pw') = M |pz|
-					 |pw|
+                     |px|
+                     |py|
+        (px', py', pz', pw') = M |pz|
+                     |pw|
 
-	D is a direction vector (dx', dy', dz') where
+    D is a direction vector (dx', dy', dz') where
 
-						-1
-		(dx', dy', dz') = (dx, dy, dz) M
-						u
+                        -1
+        (dx', dy', dz') = (dx, dy, dz) M
+                        u
 
-		and M  is the upper leftmost 3x3 matrix taken from the
-		     u
-		modelview matrix.
+        and M  is the upper leftmost 3x3 matrix taken from the
+             u
+        modelview matrix.
 
-	V' is (xe/we, ye/we, ze/we)
+    V' is (xe/we, ye/we, ze/we)
 
     In other words, g is the distance in eye coordinates from the 
     vertex to the line defined by point P and direction D.
@@ -113,10 +113,10 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     None
 
 New State
-							Initial
-    Get Value			Get Command	Type	Value			Attrib
-    ---------			-----------	----	-------			------
-    EYE_LINE_SGIS		GetTexGeniv	7 x R	{0,0,0,1,0,0,1}		texture
-    OBJECT_LINE_SGIS		GetTexGeniv	7 x R	{0,0,0,1,0,0,1}		texture
+                            Initial
+    Get Value            Get Command    Type    Value            Attrib
+    ---------            -----------    ----    -------            ------
+    EYE_LINE_SGIS        GetTexGeniv    7 x R    {0,0,0,1,0,0,1}        texture
+    OBJECT_LINE_SGIS        GetTexGeniv    7 x R    {0,0,0,1,0,0,1}        texture
 
 

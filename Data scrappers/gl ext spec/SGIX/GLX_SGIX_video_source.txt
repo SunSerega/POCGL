@@ -41,14 +41,14 @@ New Procedures and Functions
     typedef XID GLXVideoSourceSGIX;
 
     GLXVideoSourceSGIX glXCreateGLXVideoSourceSGIX(Display *display,
-						   int screen,
-						   VLServer server,
-						   VLPath path,
-						   int nodeClass,
-						   VLNode drainNode);
+                           int screen,
+                           VLServer server,
+                           VLPath path,
+                           int nodeClass,
+                           VLNode drainNode);
 
     void glXDestroyGLXVideoSourceSGIX(Display *dpy,
-				      GLXVideoSourceSGIX glxvideosource);
+                      GLXVideoSourceSGIX glxvideosource);
 
 New Tokens
 

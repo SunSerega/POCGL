@@ -34,20 +34,20 @@ Overview
 New Procedures and Functions
 
     void ImageTransformParameteriHP(enum target,
-				    enum pname,
-				    const int param)
+                    enum pname,
+                    const int param)
 
     void ImageTransformParameterfHP(enum target,
-				    enum pname,
-				    const float param)
+                    enum pname,
+                    const float param)
 
     void ImageTransformParameterivHP(enum target,
-				     enum pname,
-				     const int* params)
+                     enum pname,
+                     const int* params)
 
     void ImageTransformParameterfvHP(enum target,
-				     enum pname,
-				     const float* params)
+                     enum pname,
+                     const float* params)
 
     These routines are used to set image transformation attributes.
     The only allowable value for <target> at this time is
@@ -58,12 +58,12 @@ New Procedures and Functions
     IMAGE_MIN_FILTER_HP, and IMAGE_CUBIC_WEIGHT_HP.
 
     void GetImageTransformParameterivHP(enum target,
-				        enum pname,
-				        const int* params)
+                        enum pname,
+                        const int* params)
 
     void GetImageTransformParameterfvHP(enum target,
-				        enum pname,
-				        const float* params)
+                        enum pname,
+                        const float* params)
 
     These routines are used to query image transformation attributes.
     The only allowable value for <target> at this time is
@@ -80,48 +80,48 @@ New Tokens
     ImageTransformParameterfv, GetImageTransformParameteriv and
     GetImageTransformParameterfv:
 
-	IMAGE_SCALE_X_HP
-	IMAGE_SCALE_Y_HP
-	IMAGE_TRANSLATE_X_HP
-	IMAGE_TRANSLATE_Y_HP
-	IMAGE_ROTATE_ANGLE_HP
-	IMAGE_ROTATE_ORIGIN_X_HP
-	IMAGE_ROTATE_ORIGIN_Y_HP
-	IMAGE_MAG_FILTER_HP
-	IMAGE_MIN_FILTER_HP
-    	IMAGE_CUBIC_WEIGHT_HP
+    IMAGE_SCALE_X_HP
+    IMAGE_SCALE_Y_HP
+    IMAGE_TRANSLATE_X_HP
+    IMAGE_TRANSLATE_Y_HP
+    IMAGE_ROTATE_ANGLE_HP
+    IMAGE_ROTATE_ORIGIN_X_HP
+    IMAGE_ROTATE_ORIGIN_Y_HP
+    IMAGE_MAG_FILTER_HP
+    IMAGE_MIN_FILTER_HP
+        IMAGE_CUBIC_WEIGHT_HP
 
     Accepted by the <params> parameter of ImageTransformParameteriHP,
     ImageTransformParameterfHP, ImageTransformParameterivHP, and
     ImageTransformParameterfvHP when <pname> is IMAGE_MAG_FILTER_HP
     or IMAGE_MIN_FILTER_HP:
 
-	CUBIC_HP
+    CUBIC_HP
 
     Accepted by the <params> parameter of ImageTransformParameteriHP,
     ImageTransformParameterfHP, ImageTransformParameterivHP, and
     ImageTransformParameterfvHP when <pname> is IMAGE_MIN_FILTER_HP:
 
-	AVERAGE_HP
+    AVERAGE_HP
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled,
     and by the <target> parameter of ImageTransformParameterivHP,
     ImageTransformParameterfvHP, GetImageTransformParameterivHP,
     and GetImageTransformParameterfvHP:
 
-	IMAGE_TRANSFORM_2D_HP
+    IMAGE_TRANSFORM_2D_HP
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled, and
     by the <target> parameter of ColorTableSGI, ColorTableParameterivSGI,
     ColorTableParameterfvSGI, GetColorTableSGI, GetColorTableParameterivSGI,
     and GetColorTableParameterfvSGI:
 
-	POST_IMAGE_TRANSFORM_COLOR_TABLE_HP
+    POST_IMAGE_TRANSFORM_COLOR_TABLE_HP
 
     Accepted by the <target> parameter of ColorTableSGI,
     GetColorTableParameterivSGI, and GetColorTableParameterfvSGI:
 
-	PROXY_POST_IMAGE_TRANSFORM_COLOR_TABLE_HP
+    PROXY_POST_IMAGE_TRANSFORM_COLOR_TABLE_HP
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -314,22 +314,22 @@ Errors
     Begin and the corresponding execution of End.
 
 New State
-										Initial
-    Get Value					Get Command		Type	Value 	  Attrib
-    ---------					-----------		----	-------   ------
-    IMAGE_TRANSFORM_2D_HP		IsEnabled			 B	   False  pixel/enable
-    IMAGE_SCALE_X_HP			GetImageTransformParameterf	 R	   1 	  pixel
-    IMAGE_SCALE_Y_HP			GetImageTransformParameterf	 R	   1 	  pixel
-    IMAGE_TRANSLATE_X_HP		GetImageTransformParameterf	 R	   0 	  pixel
-    IMAGE_TRANSLATE_Y_HP		GetImageTransformParameterf	 R	   0 	  pixel
-    IMAGE_ROTATE_ANGLE_HP		GetImageTransformParameterf	 R	   0 	  pixel
-    IMAGE_ROTATE_ORIGIN_X_HP		GetImageTransformParameterf	 R	   0 	  pixel
-    IMAGE_ROTATE_ORIGIN_Y_HP		GetImageTransformParameterf	 R	   0 	  pixel
-    IMAGE_MAG_FILTER_HP			GetImageTransformParameteri	 Z3	NEAREST   pixel
-    IMAGE_MIN_FILTER_HP			GetImageTransformParameteri	 Z4	NEAREST   pixel
-    IMAGE_CUBIC_WEIGHT_HP		GetImageTransformParameterf	 R	   -1 	  pixel
-    POST_IMAGE_TRANSFORM_COLOR_TABLE_HP	IsEnabled		  	 B	 False	  pixel/enable
-    POST_IMAGE_TRANSFORM_COLOR_TABLE_HP	GetColorTableHP		       3 x I	 empty	    -
+                                        Initial
+    Get Value                    Get Command        Type    Value       Attrib
+    ---------                    -----------        ----    -------   ------
+    IMAGE_TRANSFORM_2D_HP        IsEnabled             B       False  pixel/enable
+    IMAGE_SCALE_X_HP            GetImageTransformParameterf     R       1       pixel
+    IMAGE_SCALE_Y_HP            GetImageTransformParameterf     R       1       pixel
+    IMAGE_TRANSLATE_X_HP        GetImageTransformParameterf     R       0       pixel
+    IMAGE_TRANSLATE_Y_HP        GetImageTransformParameterf     R       0       pixel
+    IMAGE_ROTATE_ANGLE_HP        GetImageTransformParameterf     R       0       pixel
+    IMAGE_ROTATE_ORIGIN_X_HP        GetImageTransformParameterf     R       0       pixel
+    IMAGE_ROTATE_ORIGIN_Y_HP        GetImageTransformParameterf     R       0       pixel
+    IMAGE_MAG_FILTER_HP            GetImageTransformParameteri     Z3    NEAREST   pixel
+    IMAGE_MIN_FILTER_HP            GetImageTransformParameteri     Z4    NEAREST   pixel
+    IMAGE_CUBIC_WEIGHT_HP        GetImageTransformParameterf     R       -1       pixel
+    POST_IMAGE_TRANSFORM_COLOR_TABLE_HP    IsEnabled               B     False      pixel/enable
+    POST_IMAGE_TRANSFORM_COLOR_TABLE_HP    GetColorTableHP               3 x I     empty        -
 
 New Implementation Dependent State
 
@@ -362,11 +362,11 @@ Notes
     2D image transformation parameters.  However, SGI's convolution,
     color table, and histogram extension all use FooParameter{i,f}v calls
     to set the state.  I've mimicked their API for three reasons:
-	1. For consistency with those extensions
-	2. To maximize the likelihood of industry acceptance
-	   of this extension
-	3. To allow for the possibility of 1D and 3D image
-	   transforms at a future time.
+    1. For consistency with those extensions
+    2. To maximize the likelihood of industry acceptance
+       of this extension
+    3. To allow for the possibility of 1D and 3D image
+       transforms at a future time.
 
     I have not excluded the ability to scale, rotate, and translate
     depth component values.  I thought that image transformation might

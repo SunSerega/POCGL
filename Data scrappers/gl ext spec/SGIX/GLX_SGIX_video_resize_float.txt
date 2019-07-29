@@ -35,28 +35,28 @@ Issues
 New Procedures and Functions
 
     int glXChannelRectfSGIX(  Display *display,
-			 int screen,
-			 int channel,
-			 float x,
-			 float y,
-			 float w,
-			 float h )
+             int screen,
+             int channel,
+             float x,
+             float y,
+             float w,
+             float h )
 
     int glXQueryChannelRectfSGIX( Display *display,
-			 int screen,
-			 int channel,
-			 float *dx,
-			 float *dy,
-			 float *dw,
-			 float *dh )
+             int screen,
+             int channel,
+             float *dx,
+             float *dy,
+             float *dw,
+             float *dh )
 
     int glXQueryChannelDeltasfSGIX( Display *display,
-			 int screen,
-			 int channel,
-			 float *x,
-			 float *y,
-			 float *w,
-			 float *h )
+             int screen,
+             int channel,
+             float *x,
+             float *y,
+             float *w,
+             float *h )
 
 
 New Tokens
@@ -111,12 +111,12 @@ Errors
 New State
      Get Value                   Get Command             Type    Initial Value
      ---------                   -----------             ----    -------------
-     [deltas]			glXQueryChannelDeltasfSGIX Z+	dx=4,dy=1,dw=4,dh=1 
-     [resize rect]		glXQueryChannelRectfSGIX   Z+	current pan/zoom rect
+     [deltas]            glXQueryChannelDeltasfSGIX Z+    dx=4,dy=1,dw=4,dh=1 
+     [resize rect]        glXQueryChannelRectfSGIX   Z+    current pan/zoom rect
 
 
 New Implementation Dependent State
 
     Get Value                   Get Command             Type    Initial Value
     ---------                   -----------             ----    -------------
-    [bound]						B	false
+    [bound]                        B    false

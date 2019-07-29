@@ -47,49 +47,49 @@ Overview
 Issues
 
     * What do we do for devices that support the extension, but don't allow
-	changing their default ramp?
+    changing their default ramp?
 
     * We probably want LUT 0 to be whatever is defined by the system, not
        default to a linear ramp.
 
     * Are tables persistent (or would we like them to be persistent) across
-	application invocations, ala the XSGIvcSetChannelGammaMap calls?
+    application invocations, ala the XSGIvcSetChannelGammaMap calls?
 
     * How do we signal errors in WGL? For the moment, I assume they return a
-	status value which is WGL_OK or an error indicating the problem.
+    status value which is WGL_OK or an error indicating the problem.
 
     * Use GL or Windows types for parameters? Consistency with
-	existing WGL calls indicates we should use Windows types.
+    existing WGL calls indicates we should use Windows types.
 
     * How are table IDs obtained (defined by the system or arbitrary app
-	choice)? How many tables are allowed?
+    choice)? How many tables are allowed?
 
     * What should the format and mapping of table entries be? GLfloat (or
-	perhaps GLclampf?) would be easiest, but might present performance
-	issues. Rendition suggests that most devices use 8-bit LUTs, for
-	which unsigned byte entries is sufficient. It may make sense to
-	allow two formats (ubyte and ushort), like the XSGIvc GLX extension.
+    perhaps GLclampf?) would be easiest, but might present performance
+    issues. Rendition suggests that most devices use 8-bit LUTs, for
+    which unsigned byte entries is sufficient. It may make sense to
+    allow two formats (ubyte and ushort), like the XSGIvc GLX extension.
 
     * Do we want some sort of enable/disable to make a drawable start using
-	the table?
+    the table?
 
     * Do we need query functions to identify the table bound to the current
-	drawable and its contents?
+    drawable and its contents?
 
     * How much math describing the table lookup process is needed?
 
     * What's the relative order of retrace, display table update, and buffer
-	swap? What happens when a drawable is rebound several times prior to
-	retrace (sure, the latest one takes effect, but should we be
-	precise?)
+    swap? What happens when a drawable is rebound several times prior to
+    retrace (sure, the latest one takes effect, but should we be
+    precise?)
 
     * What happens when we have a frame buffer with different numbers of
-	bits for R, G, and B (e.g. 565 RGB)? Resampling as defined will
-	ensure that we get the right number of table entries, but the
-	definition implies that table entries for different color components
-	of the same intensity will actually be found at different indices!
-	This seems non-intuitive. Maybe specify tables for each component
-	separately?
+    bits for R, G, and B (e.g. 565 RGB)? Resampling as defined will
+    ensure that we get the right number of table entries, but the
+    definition implies that table entries for different color components
+    of the same intensity will actually be found at different indices!
+    This seems non-intuitive. Maybe specify tables for each component
+    separately?
 
 New Procedures and Functions
 
@@ -134,7 +134,7 @@ Additions to the WGL Specification (assuming WGL ever gets a spec)
 
     To create a display color table, call
 
-	wglStatus wglCreateDisplayColorTableEXT(GLuint id);
+    wglStatus wglCreateDisplayColorTableEXT(GLuint id);
 
     <id> is an identifier for the new table. If the table is successfully
     created, TRUE is returned. The initial state of the table is a
@@ -149,7 +149,7 @@ Additions to the WGL Specification (assuming WGL ever gets a spec)
 
     To bind a display color table, call
 
-	wglStatus wglBindDisplayColorTableEXT(GLuint id);
+    wglStatus wglBindDisplayColorTableEXT(GLuint id);
 
     <id> is the identifier of a display color table created by
     wglCreateDisplayColorTableEXT, or 0. If the table exists and can be
@@ -175,7 +175,7 @@ Additions to the WGL Specification (assuming WGL ever gets a spec)
     To redefine the contents of the display color table bound to the
     drawable associated with the current rendering context, call
 
-	wglStatus wglLoadDisplayColorTableEXT(GLushort *table, GLuint length);
+    wglStatus wglLoadDisplayColorTableEXT(GLushort *table, GLuint length);
 
     <table> points to an array of <length> 3-element entries. Each entry
     defines color intensities for red, green, and blue components in that
@@ -192,7 +192,7 @@ Additions to the WGL Specification (assuming WGL ever gets a spec)
 
     To destroy a display color table, call
 
-	wglStatus wglDestroyDisplayColorTableEXT(GLushort id);
+    wglStatus wglDestroyDisplayColorTableEXT(GLushort id);
 
     <id> is the identifier of a display color table. If the table exists and
     is not bound to a drawable, it is removed and WGL_OK is returned. All
@@ -236,24 +236,24 @@ Additions to the WGL Specification (assuming WGL ever gets a spec)
     table is defined by rescaling the corresponding element of the
     application table, according to the following algorithm:
 
-	for (i = 0; i < N; i++) {
-	    for (c = 0; c < 3; c++)
-		hw_table[i][c] = app_table[i][c] * 2**B / 65535;
-	}
+    for (i = 0; i < N; i++) {
+        for (c = 0; c < 3; c++)
+        hw_table[i][c] = app_table[i][c] * 2**B / 65535;
+    }
 
     If 2**B != N, then there are more or fewer application table elements
     than hardware table elements. Hardware elements are generated by
     linearly interpolating the two closest application table elements
     according to the following algorithm:
 
-	for (i = 0; i < 2**B; i++) {
-	    float index = i * (N / (float)2**B);
-	    float frac = index - floor(index);
+    for (i = 0; i < 2**B; i++) {
+        float index = i * (N / (float)2**B);
+        float frac = index - floor(index);
 
-	    for (c = 0; c < 3; c++)
-		hw_table[i][c] = app_table[floor(index)][c] * (1-frac) +
-				 app_table[ceil(index)][c] * frac;
-	}
+        for (c = 0; c < 3; c++)
+        hw_table[i][c] = app_table[floor(index)][c] * (1-frac) +
+                 app_table[ceil(index)][c] * frac;
+    }
 
 Errors
 
@@ -261,12 +261,12 @@ Errors
 
 New State
 
-					Initial
-    Get Value	Get Command	Type	Value	Attrib
-    ---------	-----------	----	------- ------
-    -		-		N*Z+	2	-	    [table size]
-    -		-		N*table 0,0,0	-	    [tables]
-					65535,65535,65535
+                    Initial
+    Get Value    Get Command    Type    Value    Attrib
+    ---------    -----------    ----    ------- ------
+    -        -        N*Z+    2    -        [table size]
+    -        -        N*table 0,0,0    -        [tables]
+                    65535,65535,65535
 
 New Implementation Dependent State
 

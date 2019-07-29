@@ -47,51 +47,51 @@ Overview
 New Procedures and Functions
 
     void glMultiDrawArraysEXT( GLenum mode,
-			       const GLint *first,
-			       const GLsizei *count,
-			       GLsizei primcount)
+                   const GLint *first,
+                   const GLsizei *count,
+                   GLsizei primcount)
     Parameters
     ----------
-	mode		Specifies what kind of primitives to
-			render. Symbolic constants GL_POINTS,
-			GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES,
-			GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN,
-			GL_TRIANGLES, GL_QUAD_STRIP, GL_QUADS,
-			and GL_POLYGON are accepted.
+    mode        Specifies what kind of primitives to
+            render. Symbolic constants GL_POINTS,
+            GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES,
+            GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN,
+            GL_TRIANGLES, GL_QUAD_STRIP, GL_QUADS,
+            and GL_POLYGON are accepted.
 
-	first		Points to an array of starting indices in
-			the enabled arrays.
+    first        Points to an array of starting indices in
+            the enabled arrays.
 
-	count		Points to an array of the number of indices
-			to be rendered.
+    count        Points to an array of the number of indices
+            to be rendered.
 
-	primcount	Specifies the size of first and count
+    primcount    Specifies the size of first and count
 
 
     void glMultiDrawElementsEXT( GLenum mode,
-				 GLsizei *count,
-				 GLenum type,
-				 const void * const *indices,
-				 GLsizei primcount)
+                 GLsizei *count,
+                 GLenum type,
+                 const void * const *indices,
+                 GLsizei primcount)
 
     Parameters
     ----------
-	mode		Specifies what kind of primitives to render.
-			Symbolic constants GL_POINTS, GL_LINE_STRIP,
-			GL_LINE_LOOP, GL_LINES, GL_TRIANGLE_STRIP,
-			GL_TRIANGLE_FAN, GL_TRIANGLES, GL_QUAD_STRIP,
-			GL_QUADS, and GL_POLYGON are accepted.
+    mode        Specifies what kind of primitives to render.
+            Symbolic constants GL_POINTS, GL_LINE_STRIP,
+            GL_LINE_LOOP, GL_LINES, GL_TRIANGLE_STRIP,
+            GL_TRIANGLE_FAN, GL_TRIANGLES, GL_QUAD_STRIP,
+            GL_QUADS, and GL_POLYGON are accepted.
 
-	count		Points to and array of the element counts
+    count        Points to and array of the element counts
 
-	type		Specifies the type of the values in indices.
-			Must be  one  of GL_UNSIGNED_BYTE,
-			GL_UNSIGNED_SHORT, or GL_UNSIGNED_INT.
+    type        Specifies the type of the values in indices.
+            Must be  one  of GL_UNSIGNED_BYTE,
+            GL_UNSIGNED_SHORT, or GL_UNSIGNED_INT.
 
-	indices		Specifies a  pointer to the location where
-			the indices are stored.
+    indices        Specifies a  pointer to the location where
+            the indices are stored.
 
-	primcount	Specifies the size of the count array
+    primcount    Specifies the size of the count array
 
 New Tokens
 
@@ -103,35 +103,35 @@ Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
 
     The command
 
-	void glMultiDrawArraysEXT( GLenum mode,
-				   const GLint* first,
-				   const GLsizei *count,
-				   GLsizei primcount)
+    void glMultiDrawArraysEXT( GLenum mode,
+                   const GLint* first,
+                   const GLsizei *count,
+                   GLsizei primcount)
 
     Behaves identically to DrawArrays except that a list of arrays is
     specified instead. The number of lists is specified in the primcount
     parameter. It has the same effect as:
 
-	for(i=0; i<primcount; i++) {
-	   if (*(count+i)>0) DrawArrays(mode, *(first+i), *(count+i));
-	}
+    for(i=0; i<primcount; i++) {
+       if (*(count+i)>0) DrawArrays(mode, *(first+i), *(count+i));
+    }
 
     The command
 
-	void glMultiDrawElementsEXT( GLenum mode,
-				     GLsizei *count,
-				     GLenum type,
-				     const void **indices,
-				     GLsizei primcount)
+    void glMultiDrawElementsEXT( GLenum mode,
+                     GLsizei *count,
+                     GLenum type,
+                     const void **indices,
+                     GLsizei primcount)
 
     Behaves identically to DrawElements except that a list of arrays is
     specified instead. The number of lists is specified in the primcount
     parameter. It has the same effect as:
 
-	for(i=0; i<primcount; i++) {
-	    if (*(count+i)>0) DrawElements(mode, *(count+i), type,
-					   *(indices+i));
-	}
+    for(i=0; i<primcount; i++) {
+        if (*(count+i)>0) DrawElements(mode, *(count+i), type,
+                       *(indices+i));
+    }
 
 Additions to Chapter 3 of the 1.2 Specification (Rasterization)
 
@@ -173,8 +173,8 @@ New State
 
 OpenGL ES interactions
     This extension can also be implemented against OpenGL ES 1.x or
-	OpenGL ES 2.0. In those cases, remove references to glBegin, glEnd,
-	and to GL_QUAD_STRIP, GL_QUADS, and GL_POLYGON.
+    OpenGL ES 2.0. In those cases, remove references to glBegin, glEnd,
+    and to GL_QUAD_STRIP, GL_QUADS, and GL_POLYGON.
 
 
 Revision History
@@ -182,9 +182,9 @@ Revision History
     Version 5, 2013/09/08 (Jon Leech) - Changed GLvoid -> void
         (Bug 10412).
     Version 4, 2013/06/18 (Jon Leech) - Added 'const' to
-	MultiDrawElementsEXT, too, based on feedback from Mesa.
+    MultiDrawElementsEXT, too, based on feedback from Mesa.
     Version 3, 2010/08/06 - Added 'const' to MultiDrawArraysEXT pointer
-	arguments to match the core GL entry point.
+    arguments to match the core GL entry point.
     30/09/09 - Added fields from the new extension template and
-	interactions with OpenGL ES.
+    interactions with OpenGL ES.
     6/24/99 - Added fields from the new extension template.

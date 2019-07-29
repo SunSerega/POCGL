@@ -60,22 +60,22 @@ New Tokens
     Accepted by the <param> parameter of PixelStoref, PixelStorei,
     GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
 
-        MPEG2_SGIX					????
+        MPEG2_SGIX                    ????
 
-        MPEG_IFIELD_TOP_SGIX				????
-        MPEG_IFIELD_BOTTOM_SGIX				????
-        MPEG_PFIELD_TOP_SGIX				????
-        MPEG_PFIELD_BOTTOM_SGIX				????
-        MPEG_BFIELD_TOP_SGIX				????
-        MPEG_BFIELD_BOTTOM_SGIX				????
+        MPEG_IFIELD_TOP_SGIX                ????
+        MPEG_IFIELD_BOTTOM_SGIX                ????
+        MPEG_PFIELD_TOP_SGIX                ????
+        MPEG_PFIELD_BOTTOM_SGIX                ????
+        MPEG_BFIELD_TOP_SGIX                ????
+        MPEG_BFIELD_BOTTOM_SGIX                ????
 
     Accepted by the <target> parameter of MPEGQuantTableubv and
     GetMPEGQuantTableubv:
 
-	PACK_MPEG_INTRA_QUANT_CHROMA			????
-	PACK_MPEG_NON_INTRA_QUANT_CHROMA		????
-	UNPACK_MPEG_INTRA_QUANT_CHROMA			????
-	UNPACK_MPEG_NON_INTRA_QUANT_CHROMA		????
+    PACK_MPEG_INTRA_QUANT_CHROMA            ????
+    PACK_MPEG_NON_INTRA_QUANT_CHROMA        ????
+    UNPACK_MPEG_INTRA_QUANT_CHROMA            ????
+    UNPACK_MPEG_NON_INTRA_QUANT_CHROMA        ????
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -302,14 +302,14 @@ Errors
 
 New State
 
-										Initial
-    Get Value					Get Command		Type	Value			Attrib
-    ---------					-----------		----	-------			------
-    PACK_MPEG_INTRA_QUANT_CHROMA		GetMPEGQuantTableubv	64*Z+	XXX			client
-    PACK_MPEG_NON_INTRA_QUANT_CHROMA		GetMPEGQuantTableubv	64*Z+	XXX			client
-    UNPACK_MPEG_INTRA_QUANT_CHROMA		GetMPEGQuantTableubv	64*Z+	XXX			client
-    UNPACK_MPEG_NON_INTRA_QUANT_CHROMA		GetMPEGQuantTableubv	64*Z+	XXX			client
+                                        Initial
+    Get Value                    Get Command        Type    Value            Attrib
+    ---------                    -----------        ----    -------            ------
+    PACK_MPEG_INTRA_QUANT_CHROMA        GetMPEGQuantTableubv    64*Z+    XXX            client
+    PACK_MPEG_NON_INTRA_QUANT_CHROMA        GetMPEGQuantTableubv    64*Z+    XXX            client
+    UNPACK_MPEG_INTRA_QUANT_CHROMA        GetMPEGQuantTableubv    64*Z+    XXX            client
+    UNPACK_MPEG_NON_INTRA_QUANT_CHROMA        GetMPEGQuantTableubv    64*Z+    XXX            client
 
 New Implementation Dependent State
 
-	None.
+    None.

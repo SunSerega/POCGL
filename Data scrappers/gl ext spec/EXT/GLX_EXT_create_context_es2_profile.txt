@@ -56,8 +56,8 @@ New Tokens
     Accepted as a bit in the attribute value for
     GLX_CONTEXT_PROFILE_MASK_ARB in <*attrib_list>:
 
-	GLX_CONTEXT_ES_PROFILE_BIT_EXT		0x00000004
-	GLX_CONTEXT_ES2_PROFILE_BIT_EXT		0x00000004
+    GLX_CONTEXT_ES_PROFILE_BIT_EXT        0x00000004
+    GLX_CONTEXT_ES2_PROFILE_BIT_EXT        0x00000004
 
 Additions to the OpenGL / WGL Specifications
 
@@ -112,11 +112,11 @@ Additions to the GLX 1.4 Specification
     defined only by the core or compatibility profiles, unless such
     functionality is defined by extensions that are themselves specified
     relative to that specific OpenGL ES version[*].
-	[*] Such functionality should have a corresponding extension
-	specification in the OpenGL ES Registry. In some
-	implementations, vendor extensions defined relative to the OpenGL ES
-	version, but not yet added to the OpenGL ES Registry, may also be
-	supported."
+    [*] Such functionality should have a corresponding extension
+    specification in the OpenGL ES Registry. In some
+    implementations, vendor extensions defined relative to the OpenGL ES
+    version, but not yet added to the OpenGL ES Registry, may also be
+    supported."
 
     Replace the bullet point starting "* If attribute
     GLX_CONTEXT_PROFILE_MASK_ARB has no bits set;..." with
@@ -167,14 +167,14 @@ Issues
 Revision History
 
     Version 4, 2012/04/06 - Specify that both name strings must be
-	exported for backwards compatibility. Restore GLXBadProfileARB
-	error that was mistakenly changed in version 3.
+    exported for backwards compatibility. Restore GLXBadProfileARB
+    error that was mistakenly changed in version 3.
 
     Version 3, 2012/03/28 - Add support for any OpenGL-ES version, not
-	just version 2.0. Alias GLX_CONTEXT_ES2_PROFILE_BIT_EXT with
-	GLX_CONTEXT_ES_PROFILE_BIT_EXT and the extension name
-	GLX_EXT_create_context_es2_profile with
-	GLX_EXT_create_context_es_profile.
+    just version 2.0. Alias GLX_CONTEXT_ES2_PROFILE_BIT_EXT with
+    GLX_CONTEXT_ES_PROFILE_BIT_EXT and the extension name
+    GLX_EXT_create_context_es2_profile with
+    GLX_EXT_create_context_es_profile.
 
     Version 2, 2010/08/04 - Fix typos and assign extension number.
 

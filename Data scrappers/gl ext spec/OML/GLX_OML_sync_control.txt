@@ -80,37 +80,37 @@ IP Status
 New Procedures and Functions
 
     Bool glXGetSyncValuesOML(Display* dpy,
-			     GLXDrawable drawable,
-			     int64_t* ust,
-			     int64_t* msc,
-			     int64_t* sbc)
+                 GLXDrawable drawable,
+                 int64_t* ust,
+                 int64_t* msc,
+                 int64_t* sbc)
 
     Bool glXGetMscRateOML(Display* dpy,
-			  GLXDrawable drawable,
-			  int32_t* numerator,
-			  int32_t* denominator)
+              GLXDrawable drawable,
+              int32_t* numerator,
+              int32_t* denominator)
 
     int64_t glXSwapBuffersMscOML(Display* dpy,
-				 GLXDrawable drawable,
-				 int64_t target_msc,
-				 int64_t divisor,
-				 int64_t remainder)
+                 GLXDrawable drawable,
+                 int64_t target_msc,
+                 int64_t divisor,
+                 int64_t remainder)
 
     Bool glXWaitForMscOML(Display* dpy,
-			  GLXDrawable drawable,
-			  int64_t target_msc,
-			  int64_t divisor,
-			  int64_t remainder,
-			  int64_t* ust,
-			  int64_t* msc,
-			  int64_t* sbc)
+              GLXDrawable drawable,
+              int64_t target_msc,
+              int64_t divisor,
+              int64_t remainder,
+              int64_t* ust,
+              int64_t* msc,
+              int64_t* sbc)
 
     Bool glXWaitForSbcOML(Display* dpy,
-			  GLXDrawable drawable,
-			  int64_t target_sbc,
-			  int64_t* ust,
-			  int64_t* msc,
-			  int64_t* sbc)
+              GLXDrawable drawable,
+              int64_t target_sbc,
+              int64_t* ust,
+              int64_t* msc,
+              int64_t* sbc)
 
 New Tokens
 
@@ -189,7 +189,7 @@ Additions to the GLX 1.3 Specification
     <target_msc>.
 
     Once glXSwapBuffersMscOML has been called, subsequent OpenGL commands
-    can be issued immediately.	If the thread's current context is made
+    can be issued immediately.    If the thread's current context is made
     current to another drawable, or if the thread makes another context
     current on another drawable, rendering can proceed immediately.
 
@@ -240,23 +240,23 @@ Additions to the GLX 1.3 Specification
     will return immediately with the current values for UST, MSC, and
     SBC. If <target_sbc> = 0, the function will block until all previous
     swaps requested with glXSwapBuffersMscOML for that window have
-    completed.	It will then return the current values for UST, MSC,
+    completed.    It will then return the current values for UST, MSC,
     and SBC.
 
     When glXSwapBuffersMscOML has been called to cause a swap at a
     particular MSC, an application process would observe the following
     order of execution for that MSC:
 
-	1. The window for which a glXSwapBuffersMscOML call has been
-	   issued has been completely scanned out to the display for
-	   the previous MSC
-	2. The swap buffer action for that window begins
-	3. All the swap buffer actions for all the windows for the
-	   application process are completed
-	4. SBC and MSC values are atomically incremented
-	5. Any calls to glXWaitForMscOML or glXWaitForSbcOML that
-	   are satisfied by the new values for SBC and graphics
-	   MSC are released
+    1. The window for which a glXSwapBuffersMscOML call has been
+       issued has been completely scanned out to the display for
+       the previous MSC
+    2. The swap buffer action for that window begins
+    3. All the swap buffer actions for all the windows for the
+       application process are completed
+    4. SBC and MSC values are atomically incremented
+    5. Any calls to glXWaitForMscOML or glXWaitForSbcOML that
+       are satisfied by the new values for SBC and graphics
+       MSC are released
 
     The functions glXGetSyncValuesOML, glXGetMscRateOML, glXWaitForMscOML,
     and glXWaitForSbcOML will each return TRUE if the function completed
@@ -285,11 +285,11 @@ GLX Protocol
 
 New State
 
-    Get Value		 Get Command	    Type    Initial Value
-    ---------		 -----------	    ----    -------------
-      [UST]	     glXGetSyncValuesOML      Z      unspecified
-      [MSC]	     glXGetSyncValuesOML      Z		  0
-      [SBC]	     glXGetSyncValuesOML      Z		  0
+    Get Value         Get Command        Type    Initial Value
+    ---------         -----------        ----    -------------
+      [UST]         glXGetSyncValuesOML      Z      unspecified
+      [MSC]         glXGetSyncValuesOML      Z          0
+      [SBC]         glXGetSyncValuesOML      Z          0
 
 New Implementation Dependent State
 

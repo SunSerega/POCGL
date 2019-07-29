@@ -43,7 +43,7 @@ New Tokens
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled, by the
     <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev:
 
-	COMPLEX_POLAR_EXT        0x????
+    COMPLEX_POLAR_EXT        0x????
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -60,8 +60,8 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     signal is added to the GL Specification in section X.X.X.  The resulting
     fragment will be:
 
-	C_real' = SQRT((Cs_real * Cs_real) + (Cd_imaginary * Cd_imaginary))
-	C_imaginary' = arctan(Cs_real / Cs_imaginary)
+    C_real' = SQRT((Cs_real * Cs_real) + (Cd_imaginary * Cd_imaginary))
+    C_imaginary' = arctan(Cs_real / Cs_imaginary)
 
     where Cs_real and Cs_imaginary are the source fragment real and imaginary
     subcomponents and C_real' and C_imaginary' are the result fragment
@@ -97,9 +97,9 @@ Errors
 
 New State
 
-    Get Value		Get Command	Type	Initial Value	Attribute
-    ---------		-----------	----	-------------	---------
-    COMPLEX_POLAR_EXT	IsEnabled	 B	False      	color-buffer
+    Get Value        Get Command    Type    Initial Value    Attribute
+    ---------        -----------    ----    -------------    ---------
+    COMPLEX_POLAR_EXT    IsEnabled     B    False          color-buffer
 
 New Implementation Dependent State
 

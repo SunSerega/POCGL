@@ -69,12 +69,12 @@ New Tokens
     Accepted by the <format> parameter of GetTexImage and TexImage2D
 
         DUDV_ATI                       0x8779
-	DU8DV8_ATI                     0x877A
+    DU8DV8_ATI                     0x877A
 
     Accepted by the <components> parameter of TexImage2D
 
         DUDV_ATI
-	DU8DV8_ATI
+    DU8DV8_ATI
 
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv,
     and TexEnviv when the <pname> parameter value is COMBINE_RGB_EXT
@@ -156,7 +156,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
      ---------------    ----------------   ----------------
      DUDV_ATI           undefined          undefined"
 
-	
+    
         Table 3.23: Correspondence of texture components to source
         components for COMBINE_RGB_EXT and COMBINE_ALPHA_EXT arguments"
 
@@ -220,8 +220,8 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
      
     - Change to table 3.23 in EXT_texture_env_combine:
     
-    "Base Internal Format		RGB Values	Alpha Value
-     --------------------		----------	-----------
+    "Base Internal Format        RGB Values    Alpha Value
+     --------------------        ----------    -----------
      ALPHA                              0,  0,  0       At
      LUMINANCE                          Lt, Lt, Lt      1
      LUMINANCE_ALPHA                    Lt, Lt, Lt      At

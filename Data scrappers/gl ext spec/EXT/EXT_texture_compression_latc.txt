@@ -786,5 +786,5 @@ Revision History
           Thanks to Emil Persson for finding this issue.
 
     Revision 2, July 30, 2017: dgkoch
-	- replace references to COMPRESSED_LUMINANCE_LACT1_EXT with references
+    - replace references to COMPRESSED_LUMINANCE_LACT1_EXT with references
           to the correct spelling COMPRESSED_LUMINANCE_LATC1_EXT.

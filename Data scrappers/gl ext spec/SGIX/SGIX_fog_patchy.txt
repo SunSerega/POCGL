@@ -90,7 +90,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     fragment using the fog blending equation. In this first pass,
     the fog patchiness is ignored (p=1).
 
-	[RGBl] = f1 x [RGBs] + (1-f1) x  [RGBfog]
+    [RGBl] = f1 x [RGBs] + (1-f1) x  [RGBfog]
 
     where,
       - [RGBl] is the intermediate color stored in the frame buffer.
@@ -105,17 +105,17 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     result of the previous pass. In the second pass, the fog
     patchiness is taken into account (p=patchy fog texture)
  
-	Destination = f2 * [RGBl] + (1-f2) * [RGBcloud],
+    Destination = f2 * [RGBl] + (1-f2) * [RGBcloud],
 
     where,
       - Destination is the final fragment color
       - f2 is the fog blending factor. It is a function of the fog
-	density (d), the distance between the viewpoint and the fragment in eye
-	space (r), and the patchy fog texture (p). In the hardware, the density
-	is first multiplied by the patchy fog texture and then
-	multiplied by the range r.
+    density (d), the distance between the viewpoint and the fragment in eye
+    space (r), and the patchy fog texture (p). In the hardware, the density
+    is first multiplied by the patchy fog texture and then
+    multiplied by the range r.
       - [RGBl] is the intermediate color. Color that we would get
-	without patchy fog.
+    without patchy fog.
       - [RGBcloud] is the patchy fog color.
   
 

@@ -31,14 +31,14 @@ Overview
 
 Issues
 
-    *	better name
+    *    better name
 
-    *	it has no effect on rasterization, it only causes fragment information
-	to be sent out an additional interface.  How does this get described?
+    *    it has no effect on rasterization, it only causes fragment information
+    to be sent out an additional interface.  How does this get described?
 
-    *	Should it disable the writing of fragments to the framebuffer (may make
-	it easier to describe in one of the sections if it actually effects
-	the framebuffer).
+    *    Should it disable the writing of fragments to the framebuffer (may make
+    it easier to describe in one of the sections if it actually effects
+    the framebuffer).
 
 
 New Procedures and Functions
@@ -49,7 +49,7 @@ New Tokens
 
     Accepted by the <pname> parameters of Enable and Disable
 
-	CALLIGRAPHIC_FRAGMENT_SGIX
+    CALLIGRAPHIC_FRAGMENT_SGIX
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
@@ -96,9 +96,9 @@ Errors
 
 New State
 
-								Initial
-    Get Value				Get Command	Type	Value	Attrib
-    ---------				-----------	----	-------	------
+                                Initial
+    Get Value                Get Command    Type    Value    Attrib
+    ---------                -----------    ----    -------    ------
     CALLIGRAPHIC_FRAGMENT_SGIX            IsEnabled      B       False  enable
 
 

@@ -391,11 +391,11 @@ New State
 
     Get Value                           Get Command     Type    Value   Attrib
     ---------                           -----------     ----    ------- ------
-    PIXEL_TILE_WIDTH_SGIX		GetIntegerv     Z+      0       client
-    PIXEL_TILE_HEIGHT_SGIX		GetIntegerv     Z+      0       client
-    PIXEL_TILE_GRID_WIDTH_SGIX		GetIntegerv     Z+      0       client
-    PIXEL_TILE_GRID_HEIGHT_SGIX		GetIntegerv     Z+      0       client
-    PIXEL_TILE_GRID_DEPTH_SGIX		GetIntegerv     Z+      0       client
+    PIXEL_TILE_WIDTH_SGIX        GetIntegerv     Z+      0       client
+    PIXEL_TILE_HEIGHT_SGIX        GetIntegerv     Z+      0       client
+    PIXEL_TILE_GRID_WIDTH_SGIX        GetIntegerv     Z+      0       client
+    PIXEL_TILE_GRID_HEIGHT_SGIX        GetIntegerv     Z+      0       client
+    PIXEL_TILE_GRID_DEPTH_SGIX        GetIntegerv     Z+      0       client
  
 New Implementation Dependent State
 

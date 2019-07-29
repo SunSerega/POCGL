@@ -100,89 +100,89 @@ New Procedures and Functions
     The following structure definitions are used by the extension:
 
     /*
-     *	pipeName uniquely names a pipe in the form ":display.screen"
-     *	networkId is a unique physical hyperpipe network ID.
+     *    pipeName uniquely names a pipe in the form ":display.screen"
+     *    networkId is a unique physical hyperpipe network ID.
      */
     typedef struct {
-	char  pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
-	int  networkId;
+    char  pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+    int  networkId;
     } GLXHyperpipeNetworkSGIX;
 
     /*
-     *	pipeName uniquely names a pipe in the form ":display.screen"
-     *	channel is the channel number associated with the display pipe.
-     *	participationType is a bitmask describing the attributes of a
-     *	    participating pipe. It may contain one or more of the
-     *	    attribute bits
-     *		GLX_HYPERPIPE_DISPLAY_PIPE_SGIX
-     *		GLX_HYPERPIPE_RENDERING_PIPE_SGIX
-     *	timeSlice is ignored for GLX_HYPERPIPE_DISPLAY_PIPE_SGIX only.
+     *    pipeName uniquely names a pipe in the form ":display.screen"
+     *    channel is the channel number associated with the display pipe.
+     *    participationType is a bitmask describing the attributes of a
+     *        participating pipe. It may contain one or more of the
+     *        attribute bits
+     *        GLX_HYPERPIPE_DISPLAY_PIPE_SGIX
+     *        GLX_HYPERPIPE_RENDERING_PIPE_SGIX
+     *    timeSlice is ignored for GLX_HYPERPIPE_DISPLAY_PIPE_SGIX only.
      */
     typedef struct {
-	char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
-	int channel;
-	unsigned int participationType;
-	int timeSlice;
+    char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+    int channel;
+    unsigned int participationType;
+    int timeSlice;
     } GLXHyperpipeConfigSGIX;
 
     /*
-     *	pipeName uniquely names a pipe in the form ":display.screen"
-     *	src origin/size are in managed area coordinates (pixels).
-     *	dest origin/size are in output channel display coordinates.
+     *    pipeName uniquely names a pipe in the form ":display.screen"
+     *    src origin/size are in managed area coordinates (pixels).
+     *    dest origin/size are in output channel display coordinates.
      */
     typedef struct {
-	char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
-	int srcXOrigin;
-	int srcYOrigin;
-	int srcWidth;
-	int srcHeight;
-	int destXOrigin;
-	int destYOrigin;
-	int destWidth;
-	int destHeight;
+    char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+    int srcXOrigin;
+    int srcYOrigin;
+    int srcWidth;
+    int srcHeight;
+    int destXOrigin;
+    int destYOrigin;
+    int destWidth;
+    int destHeight;
     } GLXPipeRect;
 
     /*
-     *	pipeName uniquely names a pipe in the form ":display.screen"
-     *	origin/size are in managed area coordinates (pixels)
+     *    pipeName uniquely names a pipe in the form ":display.screen"
+     *    origin/size are in managed area coordinates (pixels)
      */
     typedef struct {
-	char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
-	int XOrigin; /* pixels in managed area */
-	int YOrigin;
-	int maxHeight;
-	int maxWidth;
+    char pipeName[GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX];
+    int XOrigin; /* pixels in managed area */
+    int YOrigin;
+    int maxHeight;
+    int maxWidth;
     } GLXPipeRectLimits;
 
     GLXHyperpipeNetworkSGIX *
-	glXQueryHyperpipeNetworkSGIX(
-	    Display *dpy, int *npipes);
+    glXQueryHyperpipeNetworkSGIX(
+        Display *dpy, int *npipes);
 
     int glXHyperpipeConfigSGIX(
-	    Display *dpy, int networkId, int npipes,
-	    GLXHyperpipeConfigSGIX *cfg, int *hpId);
+        Display *dpy, int networkId, int npipes,
+        GLXHyperpipeConfigSGIX *cfg, int *hpId);
 
     GLXHyperpipeConfigSGIX *
-	glXQueryHyperpipeConfigSGIX(
-	    Display *dpy, int hpId, int *npipes);
+    glXQueryHyperpipeConfigSGIX(
+        Display *dpy, int hpId, int *npipes);
 
     int glXDestroyHyperpipeConfigSGIX(
-	    Display * dpy, int hpId);
+        Display * dpy, int hpId);
 
     int glXBindHyperpipeSGIX(
-	    Display *dpy, int hpId);
+        Display *dpy, int hpId);
 
     int glXQueryHyperpipeBestAttribSGIX(
-	    Display *dpy, int timeSlice, int attrib, int size,
-	    void *attribList, void *returnAttribList);
+        Display *dpy, int timeSlice, int attrib, int size,
+        void *attribList, void *returnAttribList);
 
     int glXHyperpipeAttribSGIX(
-	    Display *dpy, int timeSlice, int attrib, int size,
-	    void *attribList);
+        Display *dpy, int timeSlice, int attrib, int size,
+        void *attribList);
 
     int glXQueryHyperpipeAttribSGIX(
-	    Display *dpy, int timeSlice, int attrib, int size,
-	    void *returnAttribList);
+        Display *dpy, int timeSlice, int attrib, int size,
+        void *returnAttribList);
 
 
 
@@ -190,42 +190,42 @@ New Tokens
 
     Accepted by the <attribute> parameter of glXQueryContextInfoEXT:
 
-	GLX_HYPERPIPE_ID_SGIX		    0x8030
+    GLX_HYPERPIPE_ID_SGIX            0x8030
 
     Maximum length of the string naming a hyperpipe:
 
-	GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX 80
+    GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX 80
 
     Bits that may be set in the <participationType> bitfield of the
     GLXHyperpipeConfigSGIX argument passed into glXHyperpipeConfigSGIX
     and returned by glXQueryHyperpipeConfigSGIX:
 
-	GLX_HYPERPIPE_DISPLAY_PIPE_SGIX     0x00000001
-	GLX_HYPERPIPE_RENDER_PIPE_SGIX	    0x00000002
+    GLX_HYPERPIPE_DISPLAY_PIPE_SGIX     0x00000001
+    GLX_HYPERPIPE_RENDER_PIPE_SGIX        0x00000002
 
     Accepted by the <attrib> parameter of glXQueryHyperpipeAttribSGIX:
 
-	GLX_PIPE_RECT_SGIX		    0x00000001
-	GLX_PIPE_RECT_LIMITS_SGIX	    0x00000002
-	GLX_HYPERPIPE_STEREO_SGIX	    0x00000003
-	GLX_HYPERPIPE_PIXEL_AVERAGE_SGIX    0x00000004
+    GLX_PIPE_RECT_SGIX            0x00000001
+    GLX_PIPE_RECT_LIMITS_SGIX        0x00000002
+    GLX_HYPERPIPE_STEREO_SGIX        0x00000003
+    GLX_HYPERPIPE_PIXEL_AVERAGE_SGIX    0x00000004
 
     Accepted by the <attrib> parameters of and glXHyperpipeAttribSGIX:
 
-	GLX_PIPE_RECT_SGIX
-	GLX_HYPERPIPE_STEREO_SGIX
-	GLX_HYPERPIPE_PIXEL_AVERAGE_SGIX
+    GLX_PIPE_RECT_SGIX
+    GLX_HYPERPIPE_STEREO_SGIX
+    GLX_HYPERPIPE_PIXEL_AVERAGE_SGIX
 
     Accepted by the <attrib> parameter of
     glXQueryHyperpipeBestAttribSGIX:
 
-	GLX_PIPE_RECT_SGIX
-	GLX_PIPE_RECT_LIMITS_SGIX
+    GLX_PIPE_RECT_SGIX
+    GLX_PIPE_RECT_LIMITS_SGIX
 
     New error codes:
 
-	GLX_BAD_HYPERPIPE_CONFIG_SGIX	    91
-	GLX_BAD_HYPERPIPE_SGIX		    92
+    GLX_BAD_HYPERPIPE_CONFIG_SGIX        91
+    GLX_BAD_HYPERPIPE_SGIX            92
 
 
 Additions to the GLX 1.3 Specification
@@ -243,8 +243,8 @@ Additions to the GLX 1.3 Specification
     To determine the physical connectivity of hyperpipes in a system,
     call
 
-	GLXHyperpipeNetworkSGIX *glXQueryHyperpipeNetworkSGIX(
-	    Display *dpy, int *npipes)
+    GLXHyperpipeNetworkSGIX *glXQueryHyperpipeNetworkSGIX(
+        Display *dpy, int *npipes)
 
     There may be more than one hyperpipe network in the system. The
     networks are numbered sequentially.
@@ -265,8 +265,8 @@ Additions to the GLX 1.3 Specification
 
     To specify the logical configuration of a hyperpipe, call
 
-	int glXHyperpipeConfigSGIX(Display *dpy, int networkId,
-	    int npipes, GLXHyperpipeConfigSGIX *cfg, int *hpId);
+    int glXHyperpipeConfigSGIX(Display *dpy, int networkId,
+        int npipes, GLXHyperpipeConfigSGIX *cfg, int *hpId);
 
     The physical connectivity of a hyperpipe is determined by the
     cabling of the hardware. It is possible to use only a subset of the
@@ -318,8 +318,8 @@ Additions to the GLX 1.3 Specification
 
     To query the details of a hyperpipe configuration, call
 
-	GLXHyperpipeConfigSGIX *glXQueryHyperpipeConfigSGIX(
-	    Display *dpy, int hpId, int *npipes);
+    GLXHyperpipeConfigSGIX *glXQueryHyperpipeConfigSGIX(
+        Display *dpy, int hpId, int *npipes);
 
     <hpId> is the ID of the hyperpipe configuration to query. It must
     have been obtained from a previous call to glXHyperpipeConfigSGIX.
@@ -336,7 +336,7 @@ Additions to the GLX 1.3 Specification
 
     To destroy a hyperpipe configuration, call
 
-	int glXDestroyHyperpipeConfigSGIX(Display * dpy, int hpId);
+    int glXDestroyHyperpipeConfigSGIX(Display * dpy, int hpId);
 
     <hpId> is the ID of the hyperpipe configuration to destroy. It must
     have been obtained from a previous call to glXHyperpipeConfigSGIX.
@@ -355,7 +355,7 @@ Additions to the GLX 1.3 Specification
 
     To bind the current rendering context to a hyperpipe, call
 
-	int glXBindHyperpipeSGIX(Display *dpy, int hpId);
+    int glXBindHyperpipeSGIX(Display *dpy, int hpId);
 
     This establishes an association between the calling process, the
     current context, and the hyperpipe configuration with ID <hpId>.
@@ -387,9 +387,9 @@ Additions to the GLX 1.3 Specification
     To determine the best possible hyperpipe attributes subject to
     constraints imposed by the hyperpipe implementation, call
 
-	int glXQueryHyperpipeBestAttribSGIX(Display *dpy,
-	    int timeSlice, int attrib, int size, void *attribList,
-	    void *returnAttribList);
+    int glXQueryHyperpipeBestAttribSGIX(Display *dpy,
+        int timeSlice, int attrib, int size, void *attribList,
+        void *returnAttribList);
 
     <timeSlice> specifies the time slice for which <attrib> is queried.
     Its value may range from 0 to the maximum number of time slices for
@@ -445,8 +445,8 @@ Additions to the GLX 1.3 Specification
 
     To set hyperpipe attribute values, call
 
-	int glXHyperpipeAttribSGIX(Display *dpy, int timeSlice,
-	    int attrib, int size, void *attribList);
+    int glXHyperpipeAttribSGIX(Display *dpy, int timeSlice,
+        int attrib, int size, void *attribList);
 
     <timeSlice>, <attrib>, and <size> have the same meaning as the
     corresponding attributes of glXQueryHyperpipeBestAttribSGIX.
@@ -487,8 +487,8 @@ Additions to the GLX 1.3 Specification
 
     To query hyperpipe attribute values, call
 
-	int glXQueryHyperpipeAttribSGIX(Display *dpy, int timeSlice,
-	    int attrib, int size, void *returnAttribList);
+    int glXQueryHyperpipeAttribSGIX(Display *dpy, int timeSlice,
+        int attrib, int size, void *returnAttribList);
 
     <timeSlice>, <attrib>, and <size> have the same meaning as the
     corresponding attributes of glXHyperpipeAttribSGIX.
@@ -544,10 +544,10 @@ Additions to the GLX 1.3 Specification
 
     [Add to table listing GLX context attributes for glXQueryContextInfoEXT]
 
-    GLX context attribute	type	context information
-    ---------------------	----	-------------------
-    GLX_HYPERPIPE_ID_SGIX	XID	hyperpipe id, if the rendering context
-					is associated with a hyperpipe
+    GLX context attribute    type    context information
+    ---------------------    ----    -------------------
+    GLX_HYPERPIPE_ID_SGIX    XID    hyperpipe id, if the rendering context
+                    is associated with a hyperpipe
 
 
 Errors

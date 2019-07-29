@@ -146,7 +146,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     COMPRESSED_RGBA_PVRTC_2BPPV1_IMG, the compressed texture is stored using one
     of several PVRTC compressed texture image formats.  The PVRTC texture
     compression algorithm supports only 2D images without borders.
-	CompressedTexImage2D will produce an INVALID_VALUE if <border> is non-zero.
+    CompressedTexImage2D will produce an INVALID_VALUE if <border> is non-zero.
 
     Add to Section 3.8.3, Compressed Texture Images (adding to the end of
     the CompressedTexSubImage section)

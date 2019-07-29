@@ -77,35 +77,35 @@ New Tokens
     GetFloatv, and GetDoublev and accepted by the <attrib_list> parameter of
     glXChooseFBConfigSGIX:
 
-	MIN_RED_SGIX			0x????
-	MAX_RED_SGIX			0x????
-	MIN_GREEN_SGIX			0x????
-	MAX_GREEN_SGIX			0x????
-	MIN_BLUE_SGIX			0x????
-	MAX_BLUE_SGIX			0x????
-	MIN_ALPHA_SGIX			0x????
-	MAX_ALPHA_SGIX			0x????
+    MIN_RED_SGIX            0x????
+    MAX_RED_SGIX            0x????
+    MIN_GREEN_SGIX            0x????
+    MAX_GREEN_SGIX            0x????
+    MIN_BLUE_SGIX            0x????
+    MAX_BLUE_SGIX            0x????
+    MIN_ALPHA_SGIX            0x????
+    MAX_ALPHA_SGIX            0x????
     
     Accepted by the <attributes> parameter of glXGetFBConfigAttribSGIX, and 
     by the <attrib_list> parameter of glXChooseFBConfigSGIX:
 
-        GLX_COLOR_TYPE_SGIX		0x????
+        GLX_COLOR_TYPE_SGIX        0x????
 
-	GLX_MIN_RED_SGIX		0x????
-	GLX_MAX_RED_SGIX		0x????
-	GLX_MIN_GREEN_SGIX		0x????
-	GLX_MAX_GREEN_SGIX		0x????
-	GLX_MIN_BLUE_SGIX		0x????
-	GLX_MAX_BLUE_SGIX		0x????
-	GLX_MIN_ALPHA_SGIX		0x????
-	GLX_MAX_ALPHA_SGIX		0x????
+    GLX_MIN_RED_SGIX        0x????
+    GLX_MAX_RED_SGIX        0x????
+    GLX_MIN_GREEN_SGIX        0x????
+    GLX_MAX_GREEN_SGIX        0x????
+    GLX_MIN_BLUE_SGIX        0x????
+    GLX_MAX_BLUE_SGIX        0x????
+    GLX_MIN_ALPHA_SGIX        0x????
+    GLX_MAX_ALPHA_SGIX        0x????
 
     Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to 
     GLX_COLOR_TYPE_SGIX) and accepted by the <attrib_list> parameter of 
     glXChooseFBConfigSGIX (following the GLX_COLOR_TYPE_SGIX token):
 
-        GLX_REAL_COLOR_SGIX		0x????
-        GLX_COMPLEX_COLOR_SGIX		0x????
+        GLX_REAL_COLOR_SGIX        0x????
+        GLX_COMPLEX_COLOR_SGIX        0x????
 
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
@@ -305,25 +305,25 @@ Additions to the GLX Specification
     If GLX_COLOR_TYPE_SGIX is in <attrib_list> then the value that follows
     indicates how color values are represented in the framebuffer:
 
-	GLX_REAL_COLOR_SGIX specifies that only the real value of each color
-	component is stored in the color and accumulation buffers.
-	The actual representation of the data is unspecified, but the
-	range that can be represented can be queried using the color
-	component min and max requests.
+    GLX_REAL_COLOR_SGIX specifies that only the real value of each color
+    component is stored in the color and accumulation buffers.
+    The actual representation of the data is unspecified, but the
+    range that can be represented can be queried using the color
+    component min and max requests.
 
-	GLX_COMPLEX_COLOR_SGIX specifies that each color component
-	is stored as a complex number.  The distribution of bits
-	used to represent the real and imaginary portions of the
-	complex number are unspecified as is the actual representation
-	of the data (two's complement, sign magnitude, floating point etc).
-	GLX_RED_SIZE, GLX_GREEN_SIZE, GLX_BLUE_SIZE, GLX_ALPHA_SIZE
-	are equal to the sum of the number of framebuffer bits used to store
-	both the real and imaginary parts.
-	If an accumulation buffer is present, then it also stores both
-	real and imaginary parts for each color component present.
-	GLX_ACCUM_RED_SIZE, GLX_ACCUM_GREEN_SIZE, GLX_ACCUM_BLUE_SIZE, and
-	GLX_ACCUM_ALPHA_SIZE are equal to the total number of bits used to
-	store each complex component.
+    GLX_COMPLEX_COLOR_SGIX specifies that each color component
+    is stored as a complex number.  The distribution of bits
+    used to represent the real and imaginary portions of the
+    complex number are unspecified as is the actual representation
+    of the data (two's complement, sign magnitude, floating point etc).
+    GLX_RED_SIZE, GLX_GREEN_SIZE, GLX_BLUE_SIZE, GLX_ALPHA_SIZE
+    are equal to the sum of the number of framebuffer bits used to store
+    both the real and imaginary parts.
+    If an accumulation buffer is present, then it also stores both
+    real and imaginary parts for each color component present.
+    GLX_ACCUM_RED_SIZE, GLX_ACCUM_GREEN_SIZE, GLX_ACCUM_BLUE_SIZE, and
+    GLX_ACCUM_ALPHA_SIZE are equal to the total number of bits used to
+    store each complex component.
     
     In general, only non-displayable drawable types (e.g. GLXPbuffers) will
     be able to be created with FBConfigs which support extended range real or

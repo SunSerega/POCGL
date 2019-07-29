@@ -49,8 +49,8 @@ New Procedures and Functions
     int glXGetVideoSyncSGI(uint *count);
 
     int glXWaitVideoSyncSGI(int divisor, 
-			    int remainder, 
-			    unsigned int *count);
+                int remainder, 
+                unsigned int *count);
 
 New Tokens
 
@@ -78,7 +78,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     None
 
 Additions to the GLX Specification
-	
+    
     [Add to Section 3.2.5 of the 1.0 GLX Specification (Synchronization
      Primititives)]
 
@@ -94,7 +94,7 @@ Additions to the GLX Specification
 
     glXWaitVideoSyncSGI puts the calling process to sleep until
 
-	(C mod D) = R
+    (C mod D) = R
 
     where C is the video sync counter, D is specified by the <divisor>
     parameter of glXWaitVideoSyncSGI, and R is specified by the <remainder>
@@ -117,9 +117,9 @@ Errors
 
 New State
 
-    Get Value			Get Command		Type	Initial Value
-    ---------			-----------		----	-------------
-    [video sync counter]	glXGetVideoSyncSGI	Z+	unknown
+    Get Value            Get Command        Type    Initial Value
+    ---------            -----------        ----    -------------
+    [video sync counter]    glXGetVideoSyncSGI    Z+    unknown
 
 New Implementation Dependent State
 

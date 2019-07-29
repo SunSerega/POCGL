@@ -44,20 +44,20 @@ Overview
 
 New Procedures and Functions
 
-	void MultiDrawArraysIndirectBindlessCountNV(enum mode,
-						    const void *indirect,
-						    intptr drawCount,
-						    sizei maxDrawCount,
-						    sizei stride,
-						    int   vertexBufferCount);
+    void MultiDrawArraysIndirectBindlessCountNV(enum mode,
+                            const void *indirect,
+                            intptr drawCount,
+                            sizei maxDrawCount,
+                            sizei stride,
+                            int   vertexBufferCount);
 
-	void MultiDrawElementsIndirectBindlessCountNV(enum mode,
-						      enum type,
-						      const void *indirect,
-						      intptr drawCount,
-						      sizei maxDrawCount,
-						      sizei stride,
-						      int   vertexBufferCount);
+    void MultiDrawElementsIndirectBindlessCountNV(enum mode,
+                              enum type,
+                              const void *indirect,
+                              intptr drawCount,
+                              sizei maxDrawCount,
+                              sizei stride,
+                              int   vertexBufferCount);
 
 New Tokens
 
@@ -70,14 +70,14 @@ Additions to Chapter 10 of the OpenGL 4.3 (Core) Specification (OpenGL Operation
     After the description of MultiDrawArraysIndirectBindlessNV and before the
     introduction of DrawElementsOneInstance, insert the following on p.311:
 
-	The command
+    The command
 
-	void MultiDrawArraysIndirectBindlessCountNV(enum mode,
-						    const void *indirect,
-						    intptr drawCount,
-						    sizei maxDrawCount,
-						    sizei stride,
-						    int   vertexBufferCount);
+    void MultiDrawArraysIndirectBindlessCountNV(enum mode,
+                            const void *indirect,
+                            intptr drawCount,
+                            sizei maxDrawCount,
+                            sizei stride,
+                            int   vertexBufferCount);
 
     behaves similarly to MultiDrawArraysIndirectBindlessNV, except that <drawCount>
     defines an offset (in bytes) into the buffer object bound to the
@@ -98,15 +98,15 @@ Additions to Chapter 10 of the OpenGL 4.3 (Core) Specification (OpenGL Operation
     After the description of MultiDrawElementsIndirectBindlessNV  and before the
     introduction of MultiDrawElementsBaseVertex, insert the following on p.316:
 
-	The command
+    The command
 
-	void MultiDrawElementsIndirectBindlessCountNV(enum mode,
-						      enum type,
-						      const void *indirect,
-						      intptr drawCount,
-						      sizei maxDrawCount,
-						      sizei stride,
-						      int   vertexBufferCount);
+    void MultiDrawElementsIndirectBindlessCountNV(enum mode,
+                              enum type,
+                              const void *indirect,
+                              intptr drawCount,
+                              sizei maxDrawCount,
+                              sizei stride,
+                              int   vertexBufferCount);
 
     behaves similarly to MultiDrawElementsIndirectBindlessNV, except that
     <drawCount> defines an offset (in bytes) into the buffer object bound
@@ -174,9 +174,9 @@ Issues
 
 Revision History
 
-    Rev.    Date      Author	Changes
-    ----  --------    --------	-----------------------------------------
+    Rev.    Date      Author    Changes
+    ----  --------    --------    -----------------------------------------
      3    07/06/2015  ckubisch  stress that indirect buffer must be able to 
                                 store <maxDrawCount> commands
-     2	  06/24/2013  ckubisch	Sync to ARB_indirect_parameters
-     1	  06/14/2013  ckubisch	Initial draft
+     2      06/24/2013  ckubisch    Sync to ARB_indirect_parameters
+     1      06/14/2013  ckubisch    Initial draft

@@ -84,13 +84,13 @@ New Tokens
   <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv, and 
   GetDoublev:
 
-    LIGHT_MODEL_COLOR_CONTROL_EXT	0x81F8
+    LIGHT_MODEL_COLOR_CONTROL_EXT    0x81F8
 
   Accepted by the <param> parameter of LightModel* when <pname> is 
   LIGHT_MODEL_COLOR_CONTROL_EXT:
 
-    SINGLE_COLOR_EXT			0x81F9
-    SEPARATE_SPECULAR_COLOR_EXT		0x81FA
+    SINGLE_COLOR_EXT            0x81F9
+    SEPARATE_SPECULAR_COLOR_EXT        0x81FA
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 

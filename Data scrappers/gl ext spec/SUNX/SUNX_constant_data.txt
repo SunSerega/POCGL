@@ -45,11 +45,11 @@ New Tokens
 
    Accepted by the <pname> parameter PixelStore*()
 
-	UNPACK_CONSTANT_DATA_SUNX		0x81D5
-	
+    UNPACK_CONSTANT_DATA_SUNX        0x81D5
+    
    Accepted by <pname> parameter of GetTexLevelParameter()
 
-	TEXTURE_CONSTANT_DATA_SUNX		0x81D6
+    TEXTURE_CONSTANT_DATA_SUNX        0x81D6
 
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)

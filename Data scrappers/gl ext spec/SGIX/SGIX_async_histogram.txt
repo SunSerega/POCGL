@@ -38,7 +38,7 @@ New Tokens
     and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev:
 
-        ASYNC_HISTOGRAM_SGIX		0x832C
+        ASYNC_HISTOGRAM_SGIX        0x832C
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
@@ -112,13 +112,13 @@ Errors
 
 New State
 
-    Get Value			Get Command	Type	Value	Attrib
-    ---------			-----------	----	-------	------
+    Get Value            Get Command    Type    Value    Attrib
+    ---------            -----------    ----    -------    ------
     ASYNC_HISTOGRAM_SGIX        IsEnabled       B       False   enable
 
 New Implementation Dependent State
 
-								Minimum
-    Get Value			Get Command	Type		Value
-    ---------			-----------	----		-------
+                                Minimum
+    Get Value            Get Command    Type        Value
+    ---------            -----------    ----        -------
     MAX_ASYNC_HISTOGRAM_SGIX    GetIntegerv     Z+              1

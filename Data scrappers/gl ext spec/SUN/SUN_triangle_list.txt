@@ -71,61 +71,61 @@ Overview
 
 Issues
 
-    1.	Two types of restarts: CW/CCW
+    1.    Two types of restarts: CW/CCW
 
-	Compressed geometry supports the notion of RESTART_CW versus
-	RESTART_CCW.  These two types of restart are supported by all
-	of Sun's hardware and this capability was exposed via XGL.  We
-	need to decide whether we want to expose this in OpenGL.  In a
-	sense, we already have exposed it with the compressed geometry
-	extension, since the compressed geometry spec allows both types
-	of restart.
+    Compressed geometry supports the notion of RESTART_CW versus
+    RESTART_CCW.  These two types of restart are supported by all
+    of Sun's hardware and this capability was exposed via XGL.  We
+    need to decide whether we want to expose this in OpenGL.  In a
+    sense, we already have exposed it with the compressed geometry
+    extension, since the compressed geometry spec allows both types
+    of restart.
 
-	It is worth noting that these modes are somewhat misnamed.
-	They really don't override the meaning of the GL_FRONT_FACE
-	flag (nor did they override the equivalent XGL mode, either).
-	Rather, the type of restart either inverts the GL_FRONT_FACE
-	state, in the case of RESTART_CW, or it uses the GL_FRONT_FACE
-	flag unmodified, in the case of RESTART_CCW.  This should be
-	the case for compressed geometry today (although it may be
-	broken), and it would be true for triangle lists if we decided
-	to expose this capability.  My preference would be to not
-	expose this, since all it really does is create a documentation
-	headache.  The user can always define a generalized triangle list
-	with consistently wound triangles using the CCW variant of restart.
+    It is worth noting that these modes are somewhat misnamed.
+    They really don't override the meaning of the GL_FRONT_FACE
+    flag (nor did they override the equivalent XGL mode, either).
+    Rather, the type of restart either inverts the GL_FRONT_FACE
+    state, in the case of RESTART_CW, or it uses the GL_FRONT_FACE
+    flag unmodified, in the case of RESTART_CCW.  This should be
+    the case for compressed geometry today (although it may be
+    broken), and it would be true for triangle lists if we decided
+    to expose this capability.  My preference would be to not
+    expose this, since all it really does is create a documentation
+    headache.  The user can always define a generalized triangle list
+    with consistently wound triangles using the CCW variant of restart.
         Supporting both types of restart just doesn't fit into OpenGL's
-	(or Java 3D's) model cleanly.
+    (or Java 3D's) model cleanly.
 
-	[NOTE: a decision has been made to not expose the CW/CCW feature]
+    [NOTE: a decision has been made to not expose the CW/CCW feature]
 
-    2.	Enumerated values for replacement codes
+    2.    Enumerated values for replacement codes
 
-	Enumerated values used for extensions are typically defined as
-	integers in a specified range.  This range depends on whether
-	they are vendor private (_SUN) or multi-vendor (_EXT or _ARB)
-	extensions.  For this extension, we are defining a new
-	replacement code attribute that is part of the vertex state
-	and is expected to be processed directly by hardware.  Given
-	this, we have defined the replacement codes as small integer
-	values (1, 2, and 3) that correspond with what the hardware
-	wants to see.  The cost for having these values be different,
-	especially for replacement codes in a vertex array, are too
-	great.
+    Enumerated values used for extensions are typically defined as
+    integers in a specified range.  This range depends on whether
+    they are vendor private (_SUN) or multi-vendor (_EXT or _ARB)
+    extensions.  For this extension, we are defining a new
+    replacement code attribute that is part of the vertex state
+    and is expected to be processed directly by hardware.  Given
+    this, we have defined the replacement codes as small integer
+    values (1, 2, and 3) that correspond with what the hardware
+    wants to see.  The cost for having these values be different,
+    especially for replacement codes in a vertex array, are too
+    great.
 
-	Another reason for not using constants in the range of
-	extension enums is that if this ever became part of the core
-	after first being an extension, or even if it became a
-	multi-vendor extension after first being a Sun-private
-	extension, then the codes would change.  This would be
-	unworkable for an attribute such as this, since it is part of
-	the vertex pipeline.
+    Another reason for not using constants in the range of
+    extension enums is that if this ever became part of the core
+    after first being an extension, or even if it became a
+    multi-vendor extension after first being a Sun-private
+    extension, then the codes would change.  This would be
+    unworkable for an attribute such as this, since it is part of
+    the vertex pipeline.
 
-	We need to ensure that our current plan of defining
-	replacement codes outside the range of extension enums is not
-	violating any rules.  I think that this shouldn't be a problem
-	since the replacement codes themselves are really just
-	parameters to the replacement code command.  As such, they are
-	just bit patterns and shouldn't need to be unique.
+    We need to ensure that our current plan of defining
+    replacement codes outside the range of extension enums is not
+    violating any rules.  I think that this shouldn't be a problem
+    since the replacement codes themselves are really just
+    parameters to the replacement code command.  As such, they are
+    just bit patterns and shouldn't need to be unique.
 
 
 New Procedures and Functions
@@ -143,8 +143,8 @@ New Procedures and Functions
     void ReplacementCodeubvSUN(const ubyte *code);
 
     void ReplacementCodePointerSUN(enum type,
-				   sizei stride,
-				   const void *pointer);
+                   sizei stride,
+                   const void *pointer);
 
 
 New Tokens
@@ -153,45 +153,45 @@ New Tokens
     DrawElements, MultiDrawArraysSUN, MultiDrawArraysEXT,
     MultiDrawElementsSUN, and MultiDrawElementsEXT:
 
-	TRIANGLE_LIST_SUN			0x81D7
+    TRIANGLE_LIST_SUN            0x81D7
 
     Accepted by the by the <pname> parameter of GetBooleanv,
     GetIntegerv, GetFloatv, and GetDoublev:
 
-	REPLACEMENT_CODE_SUN			0x81D8
+    REPLACEMENT_CODE_SUN            0x81D8
 
     Accepted by the <code> parameter of ReplacementCode{ui,us,ub}[v]SUN:
 
-	RESTART_SUN				0x01
-	REPLACE_MIDDLE_SUN			0x02
-	REPLACE_OLDEST_SUN			0x03
+    RESTART_SUN                0x01
+    REPLACE_MIDDLE_SUN            0x02
+    REPLACE_OLDEST_SUN            0x03
 
     Accepted by the <array> parameter of EnableClientState and
     DisableClientState, and by the <cap> parameter of IsEnabled:
 
-	REPLACEMENT_CODE_ARRAY_SUN		0x85C0
+    REPLACEMENT_CODE_ARRAY_SUN        0x85C0
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
-	REPLACEMENT_CODE_ARRAY_TYPE_SUN		0x85C1
-	REPLACEMENT_CODE_ARRAY_STRIDE_SUN	0x85C2
+    REPLACEMENT_CODE_ARRAY_TYPE_SUN        0x85C1
+    REPLACEMENT_CODE_ARRAY_STRIDE_SUN    0x85C2
 
     Accepted by the <pname> parameter of GetPointerv:
 
-	REPLACEMENT_CODE_ARRAY_POINTER_SUN	0x85C3
+    REPLACEMENT_CODE_ARRAY_POINTER_SUN    0x85C3
 
 
     Accepted by the <format> parameter of InterleavedArrays:
 
-	R1UI_V3F_SUN				0x85C4
-	R1UI_C4UB_V3F_SUN			0x85C5
-	R1UI_C3F_V3F_SUN			0x85C6
-	R1UI_N3F_V3F_SUN			0x85C7
-	R1UI_C4F_N3F_V3F_SUN			0x85C8
-	R1UI_T2F_V3F_SUN			0x85C9
-	R1UI_T2F_N3F_V3F_SUN			0x85CA
-	R1UI_T2F_C4F_N3F_V3F_SUN		0x85CB
+    R1UI_V3F_SUN                0x85C4
+    R1UI_C4UB_V3F_SUN            0x85C5
+    R1UI_C3F_V3F_SUN            0x85C6
+    R1UI_N3F_V3F_SUN            0x85C7
+    R1UI_C4F_N3F_V3F_SUN            0x85C8
+    R1UI_T2F_V3F_SUN            0x85C9
+    R1UI_T2F_N3F_V3F_SUN            0x85CA
+    R1UI_T2F_C4F_N3F_V3F_SUN        0x85CB
 
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)
@@ -242,45 +242,45 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     The rules for determining when to draw a triangle and what vertices
     to use and in what order are as follows:
 
-    1.	When a BEGIN command is called with TRIANGLE_LIST, the vertex
-	counter is set to 0.
+    1.    When a BEGIN command is called with TRIANGLE_LIST, the vertex
+    counter is set to 0.
 
-    2.	When a new vertex is completed, the following logic is used to
-	process the vertex:
+    2.    When a new vertex is completed, the following logic is used to
+    process the vertex:
 
-	    if (vertex_counter == 0) {
-		vertex_counter = 1
-		drawing_order = 0
-		vertexA = currentVertex
-	    }
-	    else if (vertex_counter == 1) {
-		vertex_counter = 2
-		vertexB = currentVertex
-	    }
-	    else if (vertex_counter == 2) {
-		vertex_counter = 3
-		draw(vertexA, vertexB, currentVertex)
-	    }
-	    else {
-		if (repl_code == RESTART) {
-		    vertex_counter = 1
-		    drawing_order = 0
-		    vertexA = currentVertex
-		}
-		else {
-		    if (repl_code == REPLACE_OLDEST)
-			drawing_order = !drawing_order
+        if (vertex_counter == 0) {
+        vertex_counter = 1
+        drawing_order = 0
+        vertexA = currentVertex
+        }
+        else if (vertex_counter == 1) {
+        vertex_counter = 2
+        vertexB = currentVertex
+        }
+        else if (vertex_counter == 2) {
+        vertex_counter = 3
+        draw(vertexA, vertexB, currentVertex)
+        }
+        else {
+        if (repl_code == RESTART) {
+            vertex_counter = 1
+            drawing_order = 0
+            vertexA = currentVertex
+        }
+        else {
+            if (repl_code == REPLACE_OLDEST)
+            drawing_order = !drawing_order
 
-		    if (drawing_order == 0)
-			draw(vertexA, vertexB, currentVertex)
-		    else
-			draw(vertexB, vertexA, currentVertex)
+            if (drawing_order == 0)
+            draw(vertexA, vertexB, currentVertex)
+            else
+            draw(vertexB, vertexA, currentVertex)
 
-		    if (repl_code == REPLACE_OLDEST)
-			vertexA = vertexB
-		    vertexB = currentVertex
-		}
-	    }
+            if (repl_code == REPLACE_OLDEST)
+            vertexA = vertexB
+            vertexB = currentVertex
+        }
+        }
 
     If a triangle list has fewer than 3 vertices then no triangles are
     drawn.  If a triangle list has fewer than 2 vertices following a
@@ -367,9 +367,9 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     The following function defines the type, stride, and pointer for
     the replacement code data.
 
-	void ReplacementCodePointerSUN(enum type,
-				       sizei stride,
-				       const void *pointer);
+    void ReplacementCodePointerSUN(enum type,
+                       sizei stride,
+                       const void *pointer);
 
     Legal values for type are UNSIGNED_BYTE, UNSIGNED_SHORT, and
     UNSIGNED_INT.  As with other vertex state, the value of the
@@ -380,16 +380,16 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     array types.  These new types may be used as the format parameter
     of the InterleavedArrays function.
 
-	format			pt	pc	pn	pv	s
-	---------------------	------	------	------	------	------
-	R1UI_V3F					i	i+3f
-	R1UI_C4UB_V3F			i		i+c	i+c+3f
-	R1UI_C3F_V3F			i		i+3f	i+6f
-	R1UI_N3F_V3F				i	i+3f	i+6f
-	R1UI_C4F_N3F_V3F		i	i+4f	i+7f	i+10f
-	R1UI_T2F_V3F		i			i+2f	i+5f
-	R1UI_T2F_N3F_V3F	i		i+2f	i+5f	i+8f
-	R1UI_T2F_C4F_N3F_V3F	i	i+2f	i+6f	i+9f	i+12f
+    format            pt    pc    pn    pv    s
+    ---------------------    ------    ------    ------    ------    ------
+    R1UI_V3F                    i    i+3f
+    R1UI_C4UB_V3F            i        i+c    i+c+3f
+    R1UI_C3F_V3F            i        i+3f    i+6f
+    R1UI_N3F_V3F                i    i+3f    i+6f
+    R1UI_C4F_N3F_V3F        i    i+4f    i+7f    i+10f
+    R1UI_T2F_V3F        i            i+2f    i+5f
+    R1UI_T2F_N3F_V3F    i        i+2f    i+5f    i+8f
+    R1UI_T2F_C4F_N3F_V3F    i    i+2f    i+6f    i+9f    i+12f
 
 Where i is sizeof(UNSIGNED_INT) rounded up to the nearest multiple of
 f.  The replacement code pointer always starts at offset 0 from the
@@ -425,23 +425,23 @@ GLX Protocol
     Three rendering commands are sent to the server as part of
     the glXRender request:
 
-	ReplacementCodeuiSUN
-	  2		8		rendering command length
-	  2		16388		rendering command opcode
-	  4		CARD32		code
+    ReplacementCodeuiSUN
+      2        8        rendering command length
+      2        16388        rendering command opcode
+      4        CARD32        code
 
-	ReplacementCodeubSUN
-	  2		8		rendering command length
-	  2		16389		rendering command opcode
-	  1		CARD8		code
-	  1		CARD8		pad
-  	  2		CARD16		pad
+    ReplacementCodeubSUN
+      2        8        rendering command length
+      2        16389        rendering command opcode
+      1        CARD8        code
+      1        CARD8        pad
+        2        CARD16        pad
 
-	ReplacementCodeusSUN
-	  2		8		rendering command length
-	  2		16390		rendering command opcode
-	  2		CARD16		code
-	  2		CARD16		pad
+    ReplacementCodeusSUN
+      2        8        rendering command length
+      2        16390        rendering command opcode
+      2        CARD16        code
+      2        CARD16        pad
 
 
 Errors
@@ -455,21 +455,21 @@ Errors
 
 New State
 
-    Get Value				Get Command	Type	Initial Value
-    ---------				-----------	----	-------------
-    REPLACEMENT_CODE_SUN		GetIntegerv	Z4	REPLACE_OLDEST
-    REPLACEMENT_CODE_ARRAY_SUN		IsEnabled	B	False
-    REPLACEMENT_CODE_ARRAY_TYPE_SUN	GetIntegerv	Z3	UNSIGNED_INT
-    REPLACEMENT_CODE_ARRAY_STRIDE_SUN	GetIntegerv	Z+	0
-    REPLACEMENT_CODE_ARRAY_POINTER_SUN	GetPointerv	Y	0
+    Get Value                Get Command    Type    Initial Value
+    ---------                -----------    ----    -------------
+    REPLACEMENT_CODE_SUN        GetIntegerv    Z4    REPLACE_OLDEST
+    REPLACEMENT_CODE_ARRAY_SUN        IsEnabled    B    False
+    REPLACEMENT_CODE_ARRAY_TYPE_SUN    GetIntegerv    Z3    UNSIGNED_INT
+    REPLACEMENT_CODE_ARRAY_STRIDE_SUN    GetIntegerv    Z+    0
+    REPLACEMENT_CODE_ARRAY_POINTER_SUN    GetPointerv    Y    0
 
-    Get Value				Attribute
-    ---------				---------
-    REPLACEMENT_CODE_SUN		current
-    REPLACEMENT_CODE_ARRAY_SUN		vertex-array
-    REPLACEMENT_CODE_ARRAY_TYPE_SUN	vertex-array
-    REPLACEMENT_CODE_ARRAY_STRIDE_SUN	vertex-array
-    REPLACEMENT_CODE_ARRAY_POINTER_SUN	vertex-array
+    Get Value                Attribute
+    ---------                ---------
+    REPLACEMENT_CODE_SUN        current
+    REPLACEMENT_CODE_ARRAY_SUN        vertex-array
+    REPLACEMENT_CODE_ARRAY_TYPE_SUN    vertex-array
+    REPLACEMENT_CODE_ARRAY_STRIDE_SUN    vertex-array
+    REPLACEMENT_CODE_ARRAY_POINTER_SUN    vertex-array
 
 New Implementation Dependent State
  

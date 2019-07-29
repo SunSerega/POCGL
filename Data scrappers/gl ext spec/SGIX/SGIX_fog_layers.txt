@@ -48,25 +48,25 @@ New Tokens
     Accepted by the <pname> parameter of Fogf, Fogi, Fogiv, Fogfv,
     GetBooleanv, GetDoublev, GetIntegerv, and GetFloatv:
 
-	FOG_TYPE_SGIX			0x8323
+    FOG_TYPE_SGIX            0x8323
 
     Accepted by the <param> parameter of Fogf and Fogi, and by the
     <params> parameter of Fogiv and Fogfv, when their <pname>
     parameter is FOG_TYPE_SGIX:
 
-	UNIFORM_SGIX			0x8324
-	LAYERED_SGIX			0x8325
+    UNIFORM_SGIX            0x8324
+    LAYERED_SGIX            0x8325
 
     Accepted by the <pname> parameter of Fogfv, Fogiv, GetBooleanv,
     GetDoublev, GetIntegerv, and GetFloatv:
 
-	FOG_GROUND_PLANE_SGIX		0x8326
+    FOG_GROUND_PLANE_SGIX        0x8326
 
     Accepted by the <pname> parameter of GetBooleanv, GetDoublev,
     GetIntegerv, and GetFloatv:
 
-	FOG_LAYERS_POINTS_SGIX		0x8327
-	MAX_FOG_LAYERS_POINTS_SGIX	0x8328
+    FOG_LAYERS_POINTS_SGIX        0x8327
+    MAX_FOG_LAYERS_POINTS_SGIX    0x8328
 
 Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
 
@@ -102,9 +102,9 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     FOG_GROUND_PLANE_SGIX. Let the ground plane be defined by a
     four-component plane equation in object-coordinates
 
-	G = (a, b, c, d).
+    G = (a, b, c, d).
 
-	where a, b, c and d are specified in order in the <params>
+    where a, b, c and d are specified in order in the <params>
     argument for Fogfv or Fogiv.
 
     The ground plane is transformed into eye-coordinate space usi
@@ -112,24 +112,24 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     of point A (in eye-coordinate space) is the dot product A . G'
     (G' - ground plane in eye-coordinate space):
 
-	elevation = a*x + b*y + c*z + d*w
+    elevation = a*x + b*y + c*z + d*w
 
     Since the eye-point is defined to be at (0,0,0,1) in camera-space,
     the elevation of the eye-point is the same as 'd' (the fourth
     component of the ground plane).
 
 
-		    ___________
-		    |         |	 S  |\
-	elevation --| Layered |-----| \	      _____
-		    |   Fog   |	    |  \     | 	   |	   To fog equation
-		    |_________|	    |  |_____|  *  |-------
-	    	 		    |  |   __|     |	   (r*S)
-	    	 		    |  /  |  |_____|
-    		 uniform density ---| /	  |
-		        	    |/	  |
-		        		  |
-		   range   _______________|
+            ___________
+            |         |     S  |\
+    elevation --| Layered |-----| \          _____
+            |   Fog   |        |  \     |        |       To fog equation
+            |_________|        |  |_____|  *  |-------
+                         |  |   __|     |       (r*S)
+                         |  /  |  |_____|
+             uniform density ---| /      |
+                        |/      |
+                          |
+           range   _______________|
 
 
 
@@ -181,12 +181,12 @@ Errors
 
 New State
 
-    Get Value			Get Command		Type		Initial Value	Attribute
-    ---------			-----------		----		-------------	---------
-    MAX_FOG_LAYERS_POINTS_SGIX	GetIntegerv		Z+		XXX
-    FOG_LAYERS_POINTS_SGIX	GetIntegerv		Z+		1		fog
-    FOG_GROUND_PLANE_SGIX	GetFloatv		V		(0,0,0,0)	fog
-    FOG_TYPE_SGIX		GetIntegerv		Z+		UNIFORM_SGIX    fog
+    Get Value            Get Command        Type        Initial Value    Attribute
+    ---------            -----------        ----        -------------    ---------
+    MAX_FOG_LAYERS_POINTS_SGIX    GetIntegerv        Z+        XXX
+    FOG_LAYERS_POINTS_SGIX    GetIntegerv        Z+        1        fog
+    FOG_GROUND_PLANE_SGIX    GetFloatv        V        (0,0,0,0)    fog
+    FOG_TYPE_SGIX        GetIntegerv        Z+        UNIFORM_SGIX    fog
 
 
 New Implementation Dependent State

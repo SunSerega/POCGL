@@ -23,8 +23,8 @@ Status
 
 Version
 
-     Last Modified Date:	March 13, 2014
-     NVIDIA Revision:		2
+     Last Modified Date:    March 13, 2014
+     NVIDIA Revision:        2
 
 Number
 
@@ -79,7 +79,7 @@ Modifications to the OpenGL Shading Language Specification, Version 4.40
 
     New preprocessor #defines are added to the OpenGL Shading Language:
 
-       #define GL_NV_shader_atomic_int64	 1
+       #define GL_NV_shader_atomic_int64     1
 
     Modify Section 8.11, Atomic Memory Functions, p. 168
 
@@ -130,9 +130,9 @@ NV_shader_storage_buffer_object
     specified in an assembly program, new combinations of atomic operations
     and storage modifiers are supported for the ATOM, ATOMB, and ATOMS
     instructions.  (Note:  ATOMB comes from NV_shader_storage_buffer_object
-    and ATOMS comes from NV_compute_program5.)	"S64" should be allowed as a
+    and ATOMS comes from NV_compute_program5.)    "S64" should be allowed as a
     storage modifier for the atomic operations "MIN', "MAX", "AND", "OR",
-    "XOR", "ADD", "EXCH", and "CSWAP".	"U64" should be allowed a s storage
+    "XOR", "ADD", "EXCH", and "CSWAP".    "U64" should be allowed a s storage
     modifier for the atomic operations "MIN", "MAX", "AND", "OR", and "XOR".
 
     (Add to "Section 2.X.6, Program Options" of the NV_gpu_program4 extension,
@@ -140,28 +140,28 @@ NV_shader_storage_buffer_object
 
       + Extended 64-bit Atomic Operations (NV_shader_atomic_uint64)
 
-	If a program specifies the "NV_shader_atomic_uint64" option, it may
-	use the "S64" storage modifier with the atomic operations "MIN',
-	"MAX", "AND", "OR", "XOR", "ADD", "EXCH", and "CSWAP", and the "U64"
-	storage modifier with the atomic operations "MIN", "MAX", "AND", "OR",
-	and "XOR".
+    If a program specifies the "NV_shader_atomic_uint64" option, it may
+    use the "S64" storage modifier with the atomic operations "MIN',
+    "MAX", "AND", "OR", "XOR", "ADD", "EXCH", and "CSWAP", and the "U64"
+    storage modifier with the atomic operations "MIN", "MAX", "AND", "OR",
+    and "XOR".
 
     (Add "U64" and or "S64" opcode modifiers to the table in "Section 2.X.8.Z:
      ATOM" in NV_gpu_program5, "Section 2.X.8.Z: ATOMS" in
      NV_compute_program5, and "Section 2.X.8.Z: ATOMB" in
      NV_shader_storage_buffer_object)
 
-      atomic	 storage
-      modifier	 modifiers	      operation
-      --------	 ------------------   --------------------------------------
-       ADD	 U32, S32, U64, S64   compute a sum
-       MIN	 U32, S32, U64, S64   compute minimum
-       MAX	 U32, S32, U64, S64   compute maximum
-       AND	 U32, S32, U64, S64   compute bit-wise AND
-       OR	 U32, S32, U64, S64   compute bit-wise OR
-       XOR	 U32, S32, U64, S64   compute bit-wise XOR
-       EXCH	 U32, S32, U64, S64   exchange memory with operand
-       CSWAP	 U32, S32, U64, S64   compare-and-swap
+      atomic     storage
+      modifier     modifiers          operation
+      --------     ------------------   --------------------------------------
+       ADD     U32, S32, U64, S64   compute a sum
+       MIN     U32, S32, U64, S64   compute minimum
+       MAX     U32, S32, U64, S64   compute maximum
+       AND     U32, S32, U64, S64   compute bit-wise AND
+       OR     U32, S32, U64, S64   compute bit-wise OR
+       XOR     U32, S32, U64, S64   compute bit-wise XOR
+       EXCH     U32, S32, U64, S64   exchange memory with operand
+       CSWAP     U32, S32, U64, S64   compare-and-swap
 
     No new support is provided for the IWRAP and DWRAP atomic operations.
 

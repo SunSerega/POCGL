@@ -89,8 +89,8 @@ New Tokens
     and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev:
 
-	INTERLACE_OML				0x8980
-	INTERLACE_READ_OML			0x8981
+    INTERLACE_OML                0x8980
+    INTERLACE_READ_OML            0x8981
 
 Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
@@ -162,10 +162,10 @@ Errors
 
 New State
 
-    Get Value		Type Get Command Initial Value Attribute
-    ---------		---- ----------- ------------- ---------
-    INTERLACE_OML	B    IsEnabled	 False	       pixel/enable
-    INTERLACE_READ_OML	B    IsEnabled	 False	       pixel/enable
+    Get Value        Type Get Command Initial Value Attribute
+    ---------        ---- ----------- ------------- ---------
+    INTERLACE_OML    B    IsEnabled     False           pixel/enable
+    INTERLACE_READ_OML    B    IsEnabled     False           pixel/enable
 
 New Implementation Dependent State
 

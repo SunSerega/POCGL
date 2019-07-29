@@ -616,7 +616,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     If multiple source modifiers are applied, the order of operations is
     COMP, BIAS, SCALE, then NEGATE.  The following equation shows the 
     order of operations if all modifiers were to be applied:
-	  
+      
          s = -(2 * ((1.0 - s) - 0.5))
      
     In order to set the constants that can be used by shader 

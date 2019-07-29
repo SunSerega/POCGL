@@ -76,8 +76,8 @@ NAME
 glGetBooleanv - extension to state
 
 C SPECIFICATION
-void glGetBooleanv (	GLenum pname,
-	GLboolean *params )
+void glGetBooleanv (    GLenum pname,
+    GLboolean *params )
 
 DESCRIPTION
 GL_SCENE_REQUIRED

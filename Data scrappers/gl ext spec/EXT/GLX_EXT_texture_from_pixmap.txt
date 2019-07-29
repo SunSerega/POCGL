@@ -789,4 +789,4 @@ Version History
         -Fix ordering of GLX protocol
 
     17. 10 Feb 2009 - Jon Leech
-	-Fix typo reported by Jonathan Knispel.
+    -Fix typo reported by Jonathan Knispel.

@@ -50,7 +50,7 @@ New Tokens
     parameters of GetBooleanv, GetDoublev, GetFloatv and
     GetIntegerv :
 
-    TRANSFORM_HINT_APPLE			0x85B1
+    TRANSFORM_HINT_APPLE            0x85B1
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
@@ -88,7 +88,7 @@ Errors
 
 New State
 
-    Get Value		 Get Command Type Value	    Attrib
+    Get Value         Get Command Type Value        Attrib
     -------------------- ----------- ---- --------  ------
     TRANSFORM_HINT_APPLE GetIntegerv  Z3  DONT_CARE hint
 

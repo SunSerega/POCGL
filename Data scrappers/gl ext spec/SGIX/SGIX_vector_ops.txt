@@ -36,8 +36,8 @@ Overview
 
 Issues
 
-    *	Should these two vector operations be separated into two
-	independent specifications?
+    *    Should these two vector operations be separated into two
+    independent specifications?
 
 
 New Procedures and Functions
@@ -50,13 +50,13 @@ New Tokens
     Accepted by the <operation> parameter of VectorOperationSGIX
     and GetVectorOperationSGIX,
 
-    VECTOR_NORMALIZATION_SGIX		0x????
-    VECTOR_CROSS_PRODUCT_SGIX		0x????
+    VECTOR_NORMALIZATION_SGIX        0x????
+    VECTOR_CROSS_PRODUCT_SGIX        0x????
 
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled,
 
-    VECTOR_OPERATIONS_SGIX		0x????
+    VECTOR_OPERATIONS_SGIX        0x????
 
 
 Additions to the chapter on per fragment lighting
@@ -67,7 +67,7 @@ Additions to the chapter on per fragment lighting
     components of the vector operation specified by VectorOperationSGIX.
 
     The vector normal operation computes a new unit vector in the direction
-    of the current per-fragment normal vector.	This normal vector is
+    of the current per-fragment normal vector.    This normal vector is
     the result of interpolating the per-vertex supplied normal.
 
     The vector cross-product operation computed a new unit vector in
@@ -107,9 +107,9 @@ Errors
 
 New State
 
-    Get Value			Get Command		Type	Initial Value	Attribute
-    ---------			-----------		----	-------------	---------
-    VECTOR_OPERATIONS_SGIX	GetVectorOperationfv	?????	?????		lighting
+    Get Value            Get Command        Type    Initial Value    Attribute
+    ---------            -----------        ----    -------------    ---------
+    VECTOR_OPERATIONS_SGIX    GetVectorOperationfv    ?????    ?????        lighting
 
 New Implementation Dependent State
 

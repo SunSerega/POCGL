@@ -81,9 +81,9 @@ New State
 
     None
 
-    Get Value		Get Command	Type	    Initial Value
-    ---------		-----------	----	    -------------
-    [swap interval]	[none]		Z+	    1
+    Get Value        Get Command    Type        Initial Value
+    ---------        -----------    ----        -------------
+    [swap interval]    [none]        Z+        1
 
 New Implementation Dependent State
 

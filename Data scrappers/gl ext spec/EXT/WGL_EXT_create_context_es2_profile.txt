@@ -56,8 +56,8 @@ New Tokens
     Accepted as a bit in the attribute value for
     WGL_CONTEXT_PROFILE_MASK_ARB in <*attribList>:
 
-	WGL_CONTEXT_ES_PROFILE_BIT_EXT		0x00000004
-	WGL_CONTEXT_ES2_PROFILE_BIT_EXT		0x00000004
+    WGL_CONTEXT_ES_PROFILE_BIT_EXT        0x00000004
+    WGL_CONTEXT_ES2_PROFILE_BIT_EXT        0x00000004
 
 Additions to the OpenGL / GLX / GLX Protocol Specificaitons
 
@@ -111,11 +111,11 @@ Additions to the WGL specification
     defined only by the core or compatibility profiles, unless such
     functionality is defined by extensions that are themselves specified
     relative to that specific OpenGL ES version[*].
-	[*] Such functionality should have a corresponding extension
-	specification in the OpenGL ES Registry. In some
-	implementations, vendor extensions defined relative to the OpenGL ES
-	version, but not yet added to the OpenGL ES Registry, may also be
-	supported."
+    [*] Such functionality should have a corresponding extension
+    specification in the OpenGL ES Registry. In some
+    implementations, vendor extensions defined relative to the OpenGL ES
+    version, but not yet added to the OpenGL ES Registry, may also be
+    supported."
 
     Replace the bullet point starting "* If attribute
     WGL_CONTEXT_PROFILE_MASK_ARB has no bits set;..." with
@@ -222,14 +222,14 @@ Issues
 Revision History
 
     Version 5, 2012/04/06 - Specify that both name strings must be
-	exported for backwards compatibility and expand issue 5
-	accordingly.
+    exported for backwards compatibility and expand issue 5
+    accordingly.
 
     Version 4, 2012/03/28 - Add support for any OpenGL-ES version, not just
-	version 2.0. Alias WGL_CONTEXT_ES2_PROFILE_BIT_EXT with
-	WGL_CONTEXT_ES_PROFILE_BIT_EXT and the extension name
-	WGL_EXT_create_context_es2_profile with
-	WGL_EXT_create_context_es_profile. Added issue 5.
+    version 2.0. Alias WGL_CONTEXT_ES2_PROFILE_BIT_EXT with
+    WGL_CONTEXT_ES_PROFILE_BIT_EXT and the extension name
+    WGL_EXT_create_context_es2_profile with
+    WGL_EXT_create_context_es_profile. Added issue 5.
 
     Version 3, 2010/08/09 - Added issue 4 resolution.
 
