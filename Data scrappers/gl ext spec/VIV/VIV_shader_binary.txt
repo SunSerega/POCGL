@@ -1,8 +1,8 @@
-Name 
+Name
 
     VIV_shader_binary
 
-Name Strings 
+Name Strings
 
     GL_VIV_shader_binary
 
@@ -18,11 +18,11 @@ Contacts
 
     Frido Garritsen, Vivante Corporation (frido 'at' vivantecorp 'dot' com)
 
-Status 
+Status
 
     Complete
 
-Version 
+Version
 
     1.0, 12 June 2010
 
@@ -30,30 +30,30 @@ Number
 
     OpenGL ES Extension #85
 
-Dependencies 
+Dependencies
 
     None.
-    
+
     The extension is written against the OpenGL-ES 2.0 Specification.
 
-Overview 
-    
+Overview
+
     This extension enables loading precompiled binary shaders compatible with
-    chips designed by Vivante Corporation. 
-     
-IP Status 
+    chips designed by Vivante Corporation.
+
+IP Status
 
     Unknown.
 
-Issues 
+Issues
 
     None.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     None.
 
-New Tokens 
+New Tokens
 
     Accepted by the <binaryformat> parameter of ShaderBinary:
 
@@ -71,7 +71,7 @@ GLX Protocol
 
     None
 
-Errors 
+Errors
 
     None
 
@@ -86,4 +86,4 @@ New Implementation Dependent State
 Revision History
 
     #01    06/12/2010    Frido Garritsen    First draft.
-    
+

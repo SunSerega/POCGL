@@ -39,7 +39,7 @@ New Procedures and Functions
     None
 
 New Tokens
-        
+
     Accepted by the <target> parameter of Enable and Disable and the <value>
     parameter of IsEnabled, GetBooleanv, GetIntegerv, GetFloatv, GetDoublev:
 
@@ -104,7 +104,7 @@ New State
     Get Value                     Type Get Command  Value Sec   Attrib
     ----------------------------- ---- -----------  ----- ----  -------
     RASTER_POSITION_UNCLIPPED_IBM   B  IsEnabled    False 2.12  transform/
-                                                                enable 
+                                                                enable
 
 New Implementation Dependent State
 

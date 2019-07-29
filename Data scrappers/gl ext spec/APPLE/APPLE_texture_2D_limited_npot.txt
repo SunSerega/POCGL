@@ -45,7 +45,7 @@ Dependencies
 Overview
 
     Conventional OpenGL ES 1.X texturing is limited to images with
-    power-of-two (POT) dimensions.  APPLE_texture_2D_limited_npot extension 
+    power-of-two (POT) dimensions.  APPLE_texture_2D_limited_npot extension
     relaxes these size restrictions for 2D textures.  The restrictions remain
     in place for cube map and 3D textures, if supported.
 
@@ -55,12 +55,12 @@ Overview
     not be a power of two.
 
     In the absence of OES_texture_npot, which lifts these restrictions, neither
-    mipmapping nor wrap modes other than CLAMP_TO_EDGE are supported in 
+    mipmapping nor wrap modes other than CLAMP_TO_EDGE are supported in
     conjunction with NPOT 2D textures.  A NPOT 2D texture with a wrap mode that
-    is not CLAMP_TO_EDGE or a minfilter that is not NEAREST or LINEAR is 
-    considered incomplete.  If such a texture is bound to a texture unit, it is 
+    is not CLAMP_TO_EDGE or a minfilter that is not NEAREST or LINEAR is
+    considered incomplete.  If such a texture is bound to a texture unit, it is
     as if texture mapping were disabled for that texture unit.
-    
+
 New Procedures and Functions
 
     None
@@ -81,14 +81,14 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
     "If w_s and h_s are the specified image width and height, and if w_s or h_s
     is less than zero, then the error INVALID_VALUE is generated."
-    
+
     Replace the discussion of image decoding with:
-    
+
     "We shall refer to the decoded image as the texture array.  A texture array
     has width and height w_s and h_s as defined above."
-    
+
     Update Figure 3.8's caption:
-    
+
     "... This is a texture with w_t = 8 and h_t = 4.  ..."
 
  -- Section 3.7.7 "Texture Minification"
@@ -132,10 +132,10 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     In the subsection "Mipmapping"...
 
     Insert paragraph after the second paragraph:
-    
+
     "If any dimension of any array in a mipmap is not a power of two (e.g. if
-    rounding down as described above is performed), then the mipmap is 
-    described as a non-power-of-two texture.  Non-power-of-two textures have 
+    rounding down as described above is performed), then the mipmap is
+    described as a non-power-of-two texture.  Non-power-of-two textures have
     restrictions on the allowed texture wrap modes and filters, as described in
     section 3.7.9."
 
@@ -145,8 +145,8 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
     Add a bullet item to the list of conditions for completeness:
 
-    "Each dimension of the zero level array is a power of two or both the 
-    texture wrap mode is CLAMP_TO_EDGE and the minification filter is NEAREST 
+    "Each dimension of the zero level array is a power of two or both the
+    texture wrap mode is CLAMP_TO_EDGE and the minification filter is NEAREST
     or LINEAR."
 
 Additions to Chapter 4 of the GL Specification (Per-Fragment Operations

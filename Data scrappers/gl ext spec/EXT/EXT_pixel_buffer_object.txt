@@ -48,7 +48,7 @@ Dependencies
 Overview
 
     This extension expands on the interface provided by buffer objects.
-    It is intended to permit buffer objects to be used not only with 
+    It is intended to permit buffer objects to be used not only with
     vertex array data, but also with pixel data.
     Buffer objects were promoted from the ARB_vertex_buffer_object
     extension in OpenGL 1.5.
@@ -188,7 +188,7 @@ Issues
     and glTexImage3D for allocating textures with undefined
     content also apply when a non-zero buffer object is bound to
     PIXEL_UNPACK_BUFFER_BINDING_EXT ?
-        
+
         RESOLVED: NO. The null pointer is interpreted as a non-zero
         pointer to the data storage whose contents may be still
         undefined. This data will be used to create the texture array.
@@ -201,8 +201,8 @@ New Procedures and Functions
 
 New Tokens
 
-    Accepted by the <target> parameters of BindBuffer, BufferData, 
-    BufferSubData, MapBuffer, UnmapBuffer, GetBufferSubData, 
+    Accepted by the <target> parameters of BindBuffer, BufferData,
+    BufferSubData, MapBuffer, UnmapBuffer, GetBufferSubData,
     GetBufferParameteriv, and GetBufferPointerv:
 
         PIXEL_PACK_BUFFER_EXT                        0x88EB
@@ -266,7 +266,7 @@ Additions to Chapter 6 of the 1.2.1 Specification (State and State
 Requests)
 
     Additions to subsection 6.1.13 (Buffer Object Queries) in chapter 6
-    
+
     In unextended OpenGL 1.5 with ARB_imaging support, the commands
     glGetColorTable, glGetCompressedTexImage, glGetConvolutionFilter,
     glGetHistogram, glGetMinmax, glGetPixelMapfv, glGetPixelMapuiv,
@@ -306,7 +306,7 @@ Usage Examples
 
     Example 1: Render to vertex array
 
-        // create a buffer object for a number of vertices consisting of 
+        // create a buffer object for a number of vertices consisting of
         // 4 float values per vertex
         GenBuffers(1, vertexBuffer);
         BindBuffer(PIXEL_PACK_BUFFER_EXT, vertexBuffer);
@@ -333,7 +333,7 @@ Usage Examples
 
     Example 2: Streaming textures
 
-    streaming textures using NV_pixel_data_range 
+    streaming textures using NV_pixel_data_range
 
         void *pdrMemory, *texData;
 
@@ -344,7 +344,7 @@ Usage Examples
         EnableClientState(GL_WRITE_PIXEL_DATA_RANGE_NV);
 
         // setup texture environment
-        ...     
+        ...
 
         texData = getNextImage();
 
@@ -368,7 +368,7 @@ Usage Examples
         DisableClientState(GL_WRITE_PIXEL_DATA_RANGE_NV);
 
         FreeMemoryNV(pdrMemory);
-    
+
     streaming textures using EXT_pixel_buffer_object:
 
         void *pboMemory, *texData;
@@ -384,7 +384,7 @@ Usage Examples
 
             // map the texture image buffer
             pboMemory = MapBuffer(PIXEL_UNPACK_BUFFER_EXT, WRITE_ONLY);
-            
+
             // modify (sub-)buffer data
             memcpy(pboMemory, texData, texsize);
 
@@ -394,7 +394,7 @@ Usage Examples
             }
 
             // update (sub-)teximage from texture image buffer
-            TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texWidth, texHeight, 
+            TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texWidth, texHeight,
                           GL_BGRA, GL_UNSIGNED_BYTE, BUFFER_OFFSET(0));
 
             // draw textured geometry
@@ -416,9 +416,9 @@ Usage Examples
         // render to framebuffer
         DrawBuffer(GL_BACK);
         renderScene()
-        
+
         // read image from framebuffer
-        ReadBuffer(GL_BACK); 
+        ReadBuffer(GL_BACK);
         ReadPixels();
 
         // process image when ReadPixels returns after reading the whole buffer
@@ -438,18 +438,18 @@ Usage Examples
         DrawBuffer(GL_BACK);
         renderScene();
 
-        // Bind two different buffer objects and start the ReadPixels 
-        // asynchronously. Each call will return directly after starting the 
+        // Bind two different buffer objects and start the ReadPixels
+        // asynchronously. Each call will return directly after starting the
         // DMA transfer.
         BindBuffer(PIXEL_PACK_BUFFER_EXT, imageBuffers[0]);
         ReadPixels(0, 0, width, height/2,
             GL_BGRA, GL_UNSIGNED_BYTE, BUFFER_OFFSET(0));
 
         BindBuffer(PIXEL_PACK_BUFFER_EXT, imageBuffers[1]);
-        ReadPixels(0, height/2, width, height/2, GL_BGRA, GL_UNSIGNED_BYTE, 
+        ReadPixels(0, height/2, width, height/2, GL_BGRA, GL_UNSIGNED_BYTE,
                    BUFFER_OFFSET(0));
-        
-        // process partial images 
+
+        // process partial images
         pboMemory1 = MapBuffer(PIXEL_PACK_BUFFER_EXT, READ_ONLY);
         processImage(pboMemory1);
         pboMemory2 = MapBuffer(PIXEL_PACK_BUFFER_EXT, READ_ONLY);

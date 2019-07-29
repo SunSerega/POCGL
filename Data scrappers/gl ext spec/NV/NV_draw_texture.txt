@@ -65,10 +65,10 @@ Overview
 New Procedures and Functions
 
     void DrawTextureNV(GLuint texture, GLuint sampler,
-                       GLfloat x0, GLfloat y0, 
+                       GLfloat x0, GLfloat y0,
                        GLfloat x1, GLfloat y1,
                        GLfloat z,
-                       GLfloat s0, GLfloat t0, 
+                       GLfloat s0, GLfloat t0,
                        GLfloat s1, GLfloat t1);
 
 New Tokens
@@ -106,10 +106,10 @@ Operations and the Frame Buffer)
     The command:
 
       void DrawTextureNV(GLuint texture, GLuint sampler,
-                         GLfloat x0, GLfloat y0, 
+                         GLfloat x0, GLfloat y0,
                          GLfloat x1, GLfloat y1,
                          GLfloat z,
-                         GLfloat s0, GLfloat t0, 
+                         GLfloat s0, GLfloat t0,
                          GLfloat s1, GLfloat t1);
 
     is used to draw a screen-aligned rectangle displaying a portion of the
@@ -254,7 +254,7 @@ Issues
       access client memory or a pixel buffer object.  If the data to be drawn
       on-screen come from a texture, it would be necessary to read the
       contents of the texture back to client memory or a pixel buffer object
-      before drawing.  
+      before drawing.
 
       Additionally, the rendering process for DrawPixels has several
       limitations.  Addressing a subset of the source data requires either
@@ -309,20 +309,20 @@ Issues
     (6) What sort of coordinates should be used to access the texture?
 
       RESOLVED:  We use the same coordinate system as is used for normal
-      texture lookups for a given texture target.  
+      texture lookups for a given texture target.
 
       For textures with a TEXTURE_RECTANGLE target, we use non-normalized
       coordinates -- to draw a 640x480 rectangle texture on top of a 640x480
       window, you would call:
 
-        glDrawTexture(texture, sampler, 
+        glDrawTexture(texture, sampler,
                       0, 0, 640, 480,  /* destination */
                       0, 0, 640, 480   /* texture */);
 
       For textures with a TEXTURE_2D target, we use normalized coordinates.
       The same example as above with a 640x480 2D texture would use:
 
-        glDrawTexture(texture, sampler, 
+        glDrawTexture(texture, sampler,
                       0, 0, 640, 480,  /* destination */
                       0, 0, 1, 1       /* texture */);
 
@@ -400,7 +400,7 @@ Issues
     (15) How does DrawTextureNV interact with RASTERIZER_DISCARD?
 
       UNRESOLVED:  If RASTERIZER_DISCARD is enabled, DrawTextureNV will be
-      discarded.  This is consistent with the behavior of DrawPixels.  
+      discarded.  This is consistent with the behavior of DrawPixels.
 
       Note:  It appears that BlitFramebuffer is not affected by
       RASTERIZER_DISCARD, though the extensions that introduced this command
@@ -427,7 +427,7 @@ Issues
       Note that if depth testing is disabled, the depth clamp enable has no
       effect on DrawTextureNV, since (a) doesn't apply because DrawTextureNV
       doesn't generate a geometric primitive that could be clipped.
-      
+
     (18) How does the rectangle rendered by DrawTextureNV interact with
          polygon rasterization features (culling, polygon smooth, polygon
          mode, polygon offset)?
@@ -446,7 +446,7 @@ Issues
 
 
 Revision History
-    
+
     Rev.    Date    Author    Changes
     ----  --------  --------  -----------------------------------------
      1              pbrown    Internal revisions.

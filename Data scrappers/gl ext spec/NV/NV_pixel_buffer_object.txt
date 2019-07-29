@@ -13,7 +13,7 @@ Contributors
 
 Contact
 
-    Mathias Heyer, NVIDIA Corporation (mheyer 'at' nvidia.com) 
+    Mathias Heyer, NVIDIA Corporation (mheyer 'at' nvidia.com)
 
 Status
 
@@ -31,9 +31,9 @@ Number
 Dependencies
 
     Written based on the wording of the OpenGL ES 2.0 specification.
-    
+
     OES_mapbuffer affects the definition of this specification
-    EXT_map_buffer_range affects the definition of this specification 
+    EXT_map_buffer_range affects the definition of this specification
 
 Overview
 
@@ -239,7 +239,7 @@ Additions to Chapter 3 of the OpenGL ES 2.0 Specification (Rasterization)
     "Data are taken from the currently bound pixel unpack buffer or
     client memory as a sequence of..."
 
-    Insert this paragraph after the 1st paragraph in subsection 
+    Insert this paragraph after the 1st paragraph in subsection
     "Unpacking":
 
     "If a pixel unpack buffer is bound (as indicated by a non-zero
@@ -293,7 +293,7 @@ Additions to Chapter 3 of the OpenGL ES 2.0 Specification (Rasterization)
     relative to this offset; otherwise, <data> is a pointer to a block
     client memory and the compressed data is read from the client memory
     relative to the pointer."
-    
+
     Replace the 2nd sentence in the 3rd paragraph with:
 
     "Compressed texture images are treated as an array of <imageSize>
@@ -307,8 +307,8 @@ Operations and the Frame Buffer)
  -- Section 4.3 "Reading Pixels", page 104.
 
     Replace the first paragraph with:
-    
-    "Pixels may be read from the framebuffer to pixel pack buffer or 
+
+    "Pixels may be read from the framebuffer to pixel pack buffer or
      client memory using the ReadPixels commands, as described below.
      Pixels may also be copied from pixel unpack buffer, client memory or
      the framebuffer to texture images in the GL using the TexImage2D and
@@ -370,7 +370,7 @@ Requests)
 
  -- Section 6.1.13 "Buffer Object Queries".
 
-    (description of glGetBufferPointervOES)  
+    (description of glGetBufferPointervOES)
     Change the 2nd sentence of the 2nd paragraph to read:
     "<target> is ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, PIXEL_PACK_BUFFER_NV,
     or PIXEL_UNPACK_BUFFER_NV."
@@ -384,13 +384,13 @@ Errors
     one of ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, PIXEL_PACK_BUFFER_NV,
     or PIXEL_UNPACK_BUFFER_NV.
 
-    INVALID_OPERATION is generated if CompressedTexImage2D, 
+    INVALID_OPERATION is generated if CompressedTexImage2D,
     CompressedTexSubImage2D, TexImage2D or TexSubImage2D would unpack
     (read) data from the currently bound PIXEL_UNPACK_BUFFER_NV buffer
     object such that the memory reads required for the command would exceed
     the memory (data store) size of the buffer object.
 
-    INVALID_OPERATION is generated if ReadPixels or ReadnPixelsEXT 
+    INVALID_OPERATION is generated if ReadPixels or ReadnPixelsEXT
     would pack (write) data to the currently bound PIXEL_PACK_BUFFER_NV
     buffer object such that the memory writes required for the command would
     exceed the memory (data store) size of the buffer object.
@@ -408,25 +408,25 @@ Errors
     parameter.
 
 Dependencies on OES_mapbuffer
-    
+
     If OES_mapbuffer is not present, references to MapBufferOES and
     UnmapBufferOES should be ignored and language referring to mapped
     buffer objects should be removed.
 
 Dependencies on EXT_map_buffer_range
-    
+
     If EXT_map_buffer_range is not present, references to
     MapBufferRangeEXT anf FlushMappedBufferRangeEXT should be ignored.
-    
+
 New State
 
 (table 6.13, Pixels, p. 147)
 
                                                          Initial
-    Get Value                        Type   Get Command  Value    Sec    
-    -------------------------------  ----   -----------  -------  ------ 
-    PIXEL_PACK_BUFFER_BINDING_NV    Z+     GetIntegerv  0        4.3.1  
-    PIXEL_UNPACK_BUFFER_BINDING_NV  Z+     GetIntegerv  0        3.6.1  
+    Get Value                        Type   Get Command  Value    Sec
+    -------------------------------  ----   -----------  -------  ------
+    PIXEL_PACK_BUFFER_BINDING_NV    Z+     GetIntegerv  0        4.3.1
+    PIXEL_UNPACK_BUFFER_BINDING_NV  Z+     GetIntegerv  0        3.6.1
 
 
 
@@ -604,7 +604,7 @@ Issues
         an appropriate memory space for the buffer?
 
         RESOLVED: YES, as long as such behavior is transparent to the
-        application. Some implementations may choose different memory 
+        application. Some implementations may choose different memory
         spaces for different targets.
         In fact, one can imagine arbitrarily complicated heuristics for
         selecting the memory space, based on factors such as the target,
@@ -654,7 +654,7 @@ Issues
 
         This means an implementation is NOT allowed to detect out of
         bounds accesses in the middle of performing the command.
-  
+
      5) Should an INVALID_OPERATION error be generated if the offset
         within a pixel buffer to a datum comprising of N basic machine
         units is not a multiple of N?
@@ -737,7 +737,7 @@ Issues
         object to a new target type, configuring a source (or sink) for
         data (video frames, motion capture vertex sets, etc.), and then
         commands to initiate data transfers to the bound buffer object.
-        
+
     11) Is this the "right" way to expose render-to-vertex-array?
 
         DISCUSSION:  You can use this extension to render an image
@@ -747,12 +747,12 @@ Issues
         from the framebuffer to the buffer object.  Future extensions
         may provide mechanisms for copy-free render-to-vertex-array
         capabilities but that is not a design goal of this extension.
-        
+
 Revision History
 
     2   10/23/2012 more cleanup, interaction with EXT_map_buffer_range
     1   04/19/2012 initial revision
-        - took ARB_pixel_buffer_object, stripped everything not applicable to 
+        - took ARB_pixel_buffer_object, stripped everything not applicable to
           ES, changed references to tables and sections; changed all wording
           to fit ES' language.
 

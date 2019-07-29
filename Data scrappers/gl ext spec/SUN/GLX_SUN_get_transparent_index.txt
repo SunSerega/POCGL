@@ -14,11 +14,11 @@ Contact
 
 Status
 
-    Shipping 
+    Shipping
 
 Version
 
-    $Date: 1999/12/28 01:40:37 $ $Revision: 1.5 $  
+    $Date: 1999/12/28 01:40:37 $ $Revision: 1.5 $
     SUN Date: 99/06/25 15:07:02  Revision: 1.2
 
 Number
@@ -70,16 +70,16 @@ Additions to Chapter ??? of the GLX 1.3 Specification
     ------
 
     If underlay is a Window that has previously been made
-    the current GLXDrawable by the client and a transparent index 
+    the current GLXDrawable by the client and a transparent index
     is available for the Window overlay, returns 1 and sets
-    *pTransparentIndex to the value of the index. Otherwise returns 0. 
+    *pTransparentIndex to the value of the index. Otherwise returns 0.
 
-    If underlay is equal to None, and if a transparent 
+    If underlay is equal to None, and if a transparent
     index is available for overlay that is independent of the
     underlying Windows returns 1 and sets *pTransparentIndex to
     the index. Otherwise 0 is returned.
-    
-    
+
+
 
     Description
     -----------
@@ -87,7 +87,7 @@ Additions to Chapter ??? of the GLX 1.3 Specification
     there is a particular color index that when drawn to the framebuffer
     causes pixels in the Window to be transparent. That is, pixels in the overlay
     drawn with the transparent index are invisible and the pixels of window(s)
-    beneath the overlay are displayed. 
+    beneath the overlay are displayed.
 
     On some systems, the transparent pixel index is a constant.
 
@@ -131,7 +131,7 @@ GLX Protocol
 Errors
 
      BadDrawable   if overlay is not a valid Window or if underlay is
-                   not a valid Window (except None).    
+                   not a valid Window (except None).
 
 New State
 

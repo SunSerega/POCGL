@@ -138,7 +138,7 @@ Issues
       cube map textures (all supported by OpenGL 1.4) but this extension
       does NOT extend or otherwise affect the EXT_texture_rectangle
       extension's TEXTURE_RECTANGLE_EXT target.
- 
+
       One early point of debate was whether we should have a single
       unified extension which lifted the power of two restrictions from
       all targets, or whether we should have individual target specific
@@ -150,7 +150,7 @@ Issues
       to choose which pieces of functionality to support independently.
       The advantages of the single extension approach is to have a
       simpler and more forward looking extension.
-      
+
     4. Are cube map texture images still required to be square when this
     extension is supported?
 
@@ -215,7 +215,7 @@ Issues
       sampling artifacts.  However, it's probably not worth diverging
       from the Direct3D convention just for this.  A more sophisticated
       downsampling algorithm (using a larger kernel perhaps) during
-      mipmap level generation can help reduce artifacts related to using 
+      mipmap level generation can help reduce artifacts related to using
       the "floor" convention.
 
       The "floor" convention has a relatively straightforward way to
@@ -311,7 +311,7 @@ Issues
       RESOLUTION:  It does not.  If both this extension and
       EXT_texture_compression_s3tc are supported, applications can safely
       load NPOT S3TC-compressed textures.
-      
+
       Textures are still decomposed into an array of 4x4 blocks.
       The compressed data for any texels outside the specified image
       dimensions are irrelevant and are effectively ignored, just as they
@@ -323,7 +323,7 @@ Issues
 
       RESOLUTION:  It is not directly affected.   If an implementation
       supports automatic mipmap generation, then mipmap generation must
-      be supported even for NPOT textures.  
+      be supported even for NPOT textures.
 
       Note however, that the OpenGL 1.4 specification recommends a
       "2x2 box filter" for the default filter.  This is typo since
@@ -583,7 +583,7 @@ Revision History
 
     Date: 05/21/2003
     Revision: 0.9
-        - fixed typo: ARB/IBM_mirrored_repeat should have been 
+        - fixed typo: ARB/IBM_mirrored_repeat should have been
           ARB/IBM_texture_mirrored_repeat
         - fixed various other minor typos, duplicated words, etc.
         - added a line to issue #6 regarding suggesting use of a

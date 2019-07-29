@@ -1983,7 +1983,7 @@ GLX Protocol
         2           8                rendering command length
         2           242              rendering command opcode
         4           CARD32           programObj
-    
+
     UseProgramObjectARB
 
         2           8                rendering command length
@@ -2034,7 +2034,7 @@ GLX Protocol
         2           12               rendering command length
         2           249              rendering command opcode
         4           INT32            location
-        4           INT32            v0 
+        4           INT32            v0
 
     Uniform2iARB
 
@@ -2318,7 +2318,7 @@ GLX Protocol
       =>
         1           1                reply
         1                            unused
-        1           CARD16           sequence number 
+        1           CARD16           sequence number
         4           m                reply length, m = ((n == 1) ? 0 : n)
         4                            unused
         4           CARD32           n
@@ -2346,7 +2346,7 @@ GLX Protocol
       =>
         1           1                reply
         1                            unused
-        2           CARD16           sequence number 
+        2           CARD16           sequence number
         4           m                reply length, m = ((n == 1) ? 0 : n)
         4                            unused
         4           CARD32           n
@@ -3027,5 +3027,5 @@ Revision History
         in the Errors section, listed for glBegin().
       - ARB-GL2 workgroup approved version.
     Revision: 0.90 12/14/2009
-      - Added GLX protocol 
+      - Added GLX protocol
 

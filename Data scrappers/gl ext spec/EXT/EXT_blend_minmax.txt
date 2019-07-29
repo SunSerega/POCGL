@@ -38,7 +38,7 @@ Issues
         equation includes the parameters specified by BlendFunc.  (The min
         and max equations don't.)  Is this necessary?  Is it too ugly?
         Is there a better way to accomplish the same thing?
-    
+
 New Procedures and Functions
 
     void BlendEquationEXT(enum mode);
@@ -109,7 +109,7 @@ Additions to the GLX Specification
 
 GLX Protocol
 
-    A new GL rendering command is added. The following command is sent to the 
+    A new GL rendering command is added. The following command is sent to the
     server as part of a glXRender request:
 
         BlendEquationEXT

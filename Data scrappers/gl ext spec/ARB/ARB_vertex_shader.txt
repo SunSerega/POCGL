@@ -1750,7 +1750,7 @@ GLX Protocol
     The ARB_vertex_program extension defines GLX protocol for the following
     rendering commands.
 
-        VertexAttrib1fvARB, VertexAttrib1svARB, VertexAttrib1dvARB, 
+        VertexAttrib1fvARB, VertexAttrib1svARB, VertexAttrib1dvARB,
         VertexAttrib2fvARB, VertexAttrib2svARB, VertexAttrib2dvARB,
         VertexAttrib3fvARB, VertexAttrib3svARB, VertexAttrib3dvARB,
         VertexAttrib4fvARB, VertexAttrib4svARB, VertexAttrib4dvARB,

@@ -53,11 +53,11 @@ New Procedures and Functions
 
 New Tokens
 
-    Accepted by the <cap> parameter of Disable, Enable, and IsEnabled, 
-    by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv, 
+    Accepted by the <cap> parameter of Disable, Enable, and IsEnabled,
+    by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev, and by the <target> parameter of ProgramStringARB,
     BindProgramARB, ProgramEnvParameter4[df][v]ARB,
-    ProgramLocalParameter4[df][v]ARB, GetProgramEnvParameter[df]vARB, 
+    ProgramLocalParameter4[df][v]ARB, GetProgramEnvParameter[df]vARB,
     GetProgramLocalParameter[df]vARB, GetProgramivARB and
     GetProgramStringARB:
 
@@ -135,7 +135,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
     <namingStatement>       ::= <SHARED_statement>
 
     <SHARED_statement>      ::= "SHARED" <establishName> <sharedSingleInit>
-                              | "SHARED" <establishName> <optArraySize> 
+                              | "SHARED" <establishName> <optArraySize>
                                 <sharedMultipleInit>
 
     <sharedSingleInit>      ::= "=" <sharedUseDS>
@@ -155,11 +155,11 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
     <sharedBaseBinding>     ::= "program" "." "sharedmem"
 
     <SpecialInstruction>    ::= "BAR"
-                              | "ATOMS" <opModifiers> <instResult> "," 
+                              | "ATOMS" <opModifiers> <instResult> ","
                                 <instOperandV> "," <sharedUseV>
-                              | "LDS" <opModifiers> <instResult> "," 
+                              | "LDS" <opModifiers> <instResult> ","
                                 <sharedUseV>
-                              | "STS" <opModifiers> <instOperandV> "," 
+                              | "STS" <opModifiers> <instOperandV> ","
                                 <sharedUseV>
 
     <declaration>           ::= "GROUP_SIZE" <int>
@@ -205,7 +205,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
                 | group |       |       |       |       |
                 | (0,0) |       |       |       |       |
                 +-------+-------+-------+-------+-------+
-              (0,0)   (8,0)   (16,0)  (24,0)  (32,0)   
+              (0,0)   (8,0)   (16,0)  (24,0)  (32,0)
 
       Figure X.1, Compute Dispatch.  The single invocation at the location
       labeled "*" has a location (invocation.globalid) of (10,9).  The offset
@@ -350,7 +350,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
 
     (add to the opcode table)
 
-                  Modifiers 
+                  Modifiers
       Instruction F I C S H D  Out Inputs    Description
       ----------- - - - - - -  --- --------  --------------------------------
       ATOMS       - - X - - -  s   v,su      atomic transaction to shared mem
@@ -371,7 +371,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
     For the MEMBAR (memory barrier) instruction, the "CTA" modifier specifies
     that memory transactions before and after the barrier are strongly ordered
     as observed by any other shader invocation in the local work group.
-    
+
 
     Modify Section 2.X.4.5, Program Memory Access, from NV_gpu_program5
 
@@ -477,7 +477,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
         writeval = max(tmp0.x, result);
         break;
       case IWRAP:
-        writeval = (result >= tmp0.x) ? 0 : result+1; 
+        writeval = (result >= tmp0.x) ? 0 : result+1;
         break;
       case DWRAP:
         writeval = (result == 0 || result > tmp0.x) ? tmp0.x : result-1;
@@ -505,7 +505,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
 
     ATOMS performs a scalar atomic operation.  The <y>, <z>, and <w>
     components of the result vector are undefined.
-      
+
     ATOMS supports no base data type modifiers, but requires exactly one
     storage modifier.  The base data types of the result vector, and the first
     (vector) operand are derived from the storage modifier.  The second

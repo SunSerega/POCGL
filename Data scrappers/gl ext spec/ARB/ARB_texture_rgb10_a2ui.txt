@@ -48,7 +48,7 @@ Number
 
 Dependencies
 
-    This extension is written against the OpenGL 3.2 specification, 
+    This extension is written against the OpenGL 3.2 specification,
     compatibility profile, but it can apply against previous versions
     of OpenGL.
 
@@ -58,11 +58,11 @@ Overview
 
     This extension adds support for the following data format:
 
-    A new texturing format for unsigned 10.10.10.2 integer textures. 
+    A new texturing format for unsigned 10.10.10.2 integer textures.
 
-    OpenGL has supported RGB10 and RGB10_A2 formats for a very long time.  
-    This extension provides a variant of RGB10_A2 which supports unsigned 
-    integer data (in contrast to the above "unsigned normalized integer" 
+    OpenGL has supported RGB10 and RGB10_A2 formats for a very long time.
+    This extension provides a variant of RGB10_A2 which supports unsigned
+    integer data (in contrast to the above "unsigned normalized integer"
     formats).
 
 IP Status
@@ -76,7 +76,7 @@ New Procedures and Functions
 New Tokens
 
     Accepted by the <internalFormat> parameter of TexImage1D, TexImage2D,
-    TexImage3D, CopyTexImage1D, CopyTexImage2D, RenderbufferStorage and 
+    TexImage3D, CopyTexImage1D, CopyTexImage2D, RenderbufferStorage and
     RenderbufferStorageMultisample:
 
         RGB10_A2UI                           0x906F
@@ -95,21 +95,21 @@ Additions to Chapter 3 of the OpenGL 3.2 Specification (Compatibility Profile) (
       UNSIGNED_BYTE_2_3_3_REV      ubyte    3   RGB, RGB_INTEGER
       UNSIGNED_SHORT_5_6_5         ushort   3   RGB, RGB_INTEGER
       UNSIGNED_SHORT_5_6_5_REV     ushort   3   RGB, RGB_INTEGER
-      UNSIGNED_SHORT_4_4_4_4       ushort   4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_SHORT_4_4_4_4       ushort   4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
-      UNSIGNED_SHORT_4_4_4_4_REV   ushort   4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_SHORT_4_4_4_4_REV   ushort   4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
-      UNSIGNED_SHORT_5_5_5_1       ushort   4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_SHORT_5_5_5_1       ushort   4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
-      UNSIGNED_SHORT_1_5_5_5_REV   ushort   4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_SHORT_1_5_5_5_REV   ushort   4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
-      UNSIGNED_INT_8_8_8_8         uint     4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_INT_8_8_8_8         uint     4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
-      UNSIGNED_INT_8_8_8_8_REV     uint     4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_INT_8_8_8_8_REV     uint     4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
-      UNSIGNED_INT_10_10_10_2      uint     4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_INT_10_10_10_2      uint     4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
-      UNSIGNED_INT_2_10_10_10_REV  uint     4   RGBA, BGRA, RGBA_INTEGER, 
+      UNSIGNED_INT_2_10_10_10_REV  uint     4   RGBA, BGRA, RGBA_INTEGER,
                                                   BGRA_INTEGER
       <other rows unchanged>
 
@@ -117,10 +117,10 @@ Additions to Chapter 3 of the OpenGL 3.2 Specification (Compatibility Profile) (
     Modify Section 3.9.1 (Texture Image Specification), p 212
 
     (add the following required Texture and renderbuffer color formats, p 216)
-     
+
     - RGB10_A2UI
 
-    (add the following to Table 3.17: "Correspondence of sized internal color 
+    (add the following to Table 3.17: "Correspondence of sized internal color
     formats to base internal formats...", beginning on p 218)
 
      Sized                     Base                     R    G    B    A    Shared
@@ -141,30 +141,30 @@ Issues
 
     1. What should the new enumerant be called?
 
-       Possibilities include: 
+       Possibilities include:
        RGB10A2UI - difficult to read
        RGB10_A2UI - follows precedence of RGB10_A2 and other UI texture formats,
-         however it could difficult to know at a glace if the the UI applies to 
+         however it could difficult to know at a glace if the the UI applies to
          both the RGB and A components, or just the A component.
        RGB10UI_A2UI - follows the precedence of R11F_G11F_B10F
        RGB10_A2_UI - along the same lines as the _SNORM formats, but divergent
          from other UI formats.
-      
+
        RESOLVED. Using RGB10_A2UI.  The UI applies to all 4 components.
 
     2. What should this extension be called?
 
-       RESOLVED: ARB_texture_rgb10_a2ui, after the new internal format that is 
-       added. Early drafts used the name texture_unsigned_10_10_10_2, but this 
+       RESOLVED: ARB_texture_rgb10_a2ui, after the new internal format that is
+       added. Early drafts used the name texture_unsigned_10_10_10_2, but this
        is only somewhat related type that isn't added by this extension.
 
     3. Should this new format be required to be renderable?
 
-       RESOLVED: Yes. It appears to be renderable in other APIs that are 
+       RESOLVED: Yes. It appears to be renderable in other APIs that are
        supported by the same hardware, and no hardware vendors have objected.
 
-    4. It is possible to load packed 10_10_10_2 unsigned integer data into GL 
-       via TexImage without this extension?  
+    4. It is possible to load packed 10_10_10_2 unsigned integer data into GL
+       via TexImage without this extension?
 
        RESOLVED:  No.  The EXT_texture_integer extension, as later
        incorporated into OpenGL 3.0, added new integer pixel format enums

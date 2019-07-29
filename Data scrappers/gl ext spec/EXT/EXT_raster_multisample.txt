@@ -284,7 +284,7 @@ Additions to Chapter 17 of the OpenGL 4.3 (Compatibility Profile) Specification
     samples-passed count by the value of EFFECTIVE_RASTER_SAMPLES_EXT if any
     sample in the fragment is covered.  Additionally, if
     RASTER_MULTISAMPLE_EXT is enabled, implementations may instead increase
-    the samples-passed count by one for the entire fragment if any sample 
+    the samples-passed count by one for the entire fragment if any sample
     is covered.
 
 

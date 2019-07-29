@@ -77,7 +77,7 @@ Overview
     This ensures that the vertex data memory corresponding to the issued
     vertex indices can be safely modified (assuming no other outstanding
     vertex indices are issued subsequent to the fence).
-    
+
 Issues
 
     Do we need an IsFenceNV command?
@@ -247,7 +247,7 @@ Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
     "5.X  Fences
 
-    The command 
+    The command
 
        void SetFenceNV(uint fence, enum condition);
 

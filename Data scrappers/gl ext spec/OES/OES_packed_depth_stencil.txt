@@ -35,7 +35,7 @@ Status
     Ratified by the Khronos BOP, March 20, 2008.
 
 Version
-    
+
     Last Modified Date: September 17, 2009
     Revision: #3
 
@@ -57,22 +57,22 @@ Overview
 
     Many OpenGL implementations have chosen to interleave the depth and stencil
     buffers into one buffer, often with 24 bits of depth precision and 8 bits of
-    stencil data.  32 bits is more than is needed for the depth buffer much of 
+    stencil data.  32 bits is more than is needed for the depth buffer much of
     the time; a 24-bit depth buffer, on the other hand, requires that reads and
     writes of depth data be unaligned with respect to power-of-two boundaries.
     On the other hand, 8 bits of stencil data is more than sufficient for most
-    applications, so it is only natural to pack the two buffers into a single 
-    buffer with both depth and stencil data.  OpenGL never provides direct 
+    applications, so it is only natural to pack the two buffers into a single
+    buffer with both depth and stencil data.  OpenGL never provides direct
     access to the buffers, so the OpenGL implementation can provide an interface
     to applications where it appears the one merged buffer is composed of two
     logical buffers.
 
     One disadvantage of this scheme is that OpenGL lacks any means by which this
     packed data can be handled efficiently.  For example, when an application
-    reads from the 24-bit depth buffer, using the type GL_UNSIGNED_SHORT will 
-    lose 8 bits of data, while GL_UNSIGNED_INT has 8 too many.  Both require 
-    expensive format conversion operations.  A 24-bit format would be no more 
-    suitable, because it would also suffer from the unaligned memory accesses 
+    reads from the 24-bit depth buffer, using the type GL_UNSIGNED_SHORT will
+    lose 8 bits of data, while GL_UNSIGNED_INT has 8 too many.  Both require
+    expensive format conversion operations.  A 24-bit format would be no more
+    suitable, because it would also suffer from the unaligned memory accesses
     that made the standalone 24-bit depth buffer an unattractive proposition in
     the first place.
 
@@ -81,7 +81,7 @@ Overview
     with glTex[Sub]Image2D.  This provides an efficient way to supply data for a
     24-bit depth texture.  When a texture with DEPTH_STENCIL_OES data is bound
     for texturing, only the depth component is accessible through the texture
-    fetcher.  
+    fetcher.
 
     This extension also provides a new sized internal format,
     DEPTH24_STENCIL8_OES, which can be used for renderbuffer storage.  When a
@@ -97,7 +97,7 @@ New Procedures and Functions
 
 New Tokens
 
-    Accepted by the <format> parameter of TexImage2D and TexSubImage2D and by the 
+    Accepted by the <format> parameter of TexImage2D and TexSubImage2D and by the
     <internalformat> parameter of TexImage2D:
 
         DEPTH_STENCIL_OES                              0x84F9
@@ -106,8 +106,8 @@ New Tokens
 
         UNSIGNED_INT_24_8_OES                          0x84FA
 
-    Accepted by the <internalformat> parameter of RenderbufferStorage, and 
-    returned in the <params> parameter of GetRenderbufferParameteriv when 
+    Accepted by the <internalformat> parameter of RenderbufferStorage, and
+    returned in the <params> parameter of GetRenderbufferParameteriv when
     <pname> is RENDERBUFFER_INTERNAL_FORMAT:
 
         DEPTH24_STENCIL8_OES                           0x88F0
@@ -174,7 +174,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     "The selected groups are processed exactly as for DrawPixels, stopping just
     before final conversion.  Each R, G, B, A, or depth value so generated is
     clamped to [0, 1], while the stencil index values are masked by 2^n-1, where
-    n is the number of stencil bits in the internal format resolution (see 
+    n is the number of stencil bits in the internal format resolution (see
     below).
 
     Components are then selected from the resulting R, G, B, A, depth, or
@@ -247,14 +247,14 @@ Additions to Chapter 4 of the OpenGL ES 2.0 Specification
     In section 4.4.5 "Framebuffer Completeness", modify the definition of
     "depth-renderable" and "stencil-renderable" to say:
 
-       "* An internal format is depth-renderable if it is one of the sized 
+       "* An internal format is depth-renderable if it is one of the sized
           internal formats that has a depth-renderable internal format value of
           DEPTH_COMPONENT16 or DEPTH24_STENCIL8_OES. No other formats are depth-
           renderable.
 
-        * An internal format is stencil-renderable if it is one of the sized 
-          internal formats that has a stencil-renderable internal format value 
-          of STENCIL_INDEX8 or DEPTH24_STENCIL8_OES. No other formats are 
+        * An internal format is stencil-renderable if it is one of the sized
+          internal formats that has a stencil-renderable internal format value
+          of STENCIL_INDEX8 or DEPTH24_STENCIL8_OES. No other formats are
           stencil-renderable."
 
 Additions to Chapter 5 of the OpenGL 2.0 Specification (Special
@@ -280,9 +280,9 @@ Interactions with OES_depth_texture
 Errors
 
     The error INVALID_ENUM is generated if RenderbufferStorage is called with an
-    <internalformat> that is not RGB, RGBA, DEPTH_COMPONENT, STENCIL_INDEX, 
-    DEPTH_STENCIL_OES, or one of the internal formats from table 3.16 or table 
-    2.nnn that has a base internal format of RGB, RGBA, DEPTH_COMPONENT, 
+    <internalformat> that is not RGB, RGBA, DEPTH_COMPONENT, STENCIL_INDEX,
+    DEPTH_STENCIL_OES, or one of the internal formats from table 3.16 or table
+    2.nnn that has a base internal format of RGB, RGBA, DEPTH_COMPONENT,
     STENCIL_INDEX, or DEPTH_STENCIL_OES."
 
 New State
@@ -313,7 +313,7 @@ Usage Example
         glBindTexture(GL_TEXTURE_2D, tex_depthstencil);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_STENCIL_OES,
-                     512, 512, 0, GL_DEPTH_STENCIL_OES, 
+                     512, 512, 0, GL_DEPTH_STENCIL_OES,
                      GL_UNSIGNED_INT_24_8_OES, NULL);
         glFramebufferTexture2D(GL_FRAMEBUFFER,
                                GL_DEPTH_ATTACHMENT,
@@ -340,7 +340,7 @@ Usage Example
 
 Issues
 
-    1) What are the differences between this extension and 
+    1) What are the differences between this extension and
        EXT_packed_depth_stencil?
 
        RESOLVED: The following are the only differences:
@@ -352,13 +352,13 @@ Issues
        * No support for DrawPixels, ReadPixels, CopyPixels,
          CopyTexImage2D, or CopyTexSubImage2D
        * No support for GetTexLevelParameter, so no TEXTURE_STENCIL_SIZE_EXT
-       * No support for GetTexImage 
+       * No support for GetTexImage
 
 Revision History
 
     #03    09/17/2009    Jon Leech       Add glCopyTexSubImage2D to
                                          exclusions from OpenGL in
-                                         issue 1 (bug 5335).    
+                                         issue 1 (bug 5335).
     #02    01/20/2009    Benj Lipchak    Make the OES_depth_texture interactions
                                          more explicit.
     #01    10/02/2007    Benj Lipchak    Start with EXT_packed_depth_stencil,

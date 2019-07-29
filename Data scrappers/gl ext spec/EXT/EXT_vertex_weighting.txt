@@ -26,7 +26,7 @@ Status
 Version
 
     NVIDIA Date: January 3, 2003
-    $Date$ $Revision$  
+    $Date$ $Revision$
 
 Number
 
@@ -68,7 +68,7 @@ Issues
       another extension.
 
     Should the weighting factor be GLclampf instead of GLfloat?
-    
+
       RESOLUTION:  GLfloat.  Though the value of a weighting factors
       outside the range of zero to one (and even weights that do not add
       to one) is dubious, there is no reason to limit the implementation
@@ -208,7 +208,7 @@ Issues
       normalize to implement rescaling, the rescaling factor can be
       concatenated into each particular inverse modelview matrix.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     void VertexWeightfEXT(float weight);
 
@@ -216,7 +216,7 @@ New Procedures and Functions
 
     void VertexWeightPointerEXT(int size, enum type, sizei stride, void *pointer);
 
-New Tokens 
+New Tokens
 
     Accepted by the <target> parameter of Enable:
 
@@ -249,14 +249,14 @@ New Tokens
 
 Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
- --  Section 2.6.  2nd paragraph changed: 
+ --  Section 2.6.  2nd paragraph changed:
 
      "Each vertex is specified with two, three, or four coordinates.
      In addition, a current normal, current texture coordinates, current
      color, and current vertex weight may be used in processing each
      vertex."
 
- --  Section 2.6.  New paragraph after the 3rd paragraph: 
+ --  Section 2.6.  New paragraph after the 3rd paragraph:
 
      "A vertex weight is associated with each vertex.  When vertex
      weighting is enabled, this weight is used as a blending factor
@@ -272,16 +272,16 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
      coordinates, and texture coordinates (Vertex, Color, VertexWeightEXT,
      Index, Normal, TexCoord)..."
 
- --  Section 2.7.  New paragraph after the 4th paragraph: 
+ --  Section 2.7.  New paragraph after the 4th paragraph:
 
-     "The current vertex weight is set using 
+     "The current vertex weight is set using
 
          void VertexWeightfEXT(float weight);
          void VertexWeightfvEXT(float *weight);
 
      This weight is used when vertex weighting is enabled."
 
- --  Section 2.7.  The last paragraph changes from 
+ --  Section 2.7.  The last paragraph changes from
 
      "... and one floating-point value to store the current color index."
 
@@ -290,11 +290,11 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
      "... one floating-point number to store the vertex weight, and one
      floating-point value to store the current color index."
 
- --  Section 2.8.  Change 1st paragraph to say: 
+ --  Section 2.8.  Change 1st paragraph to say:
 
      "The client may specify up to seven arrays: one each to store edge
      flags, texture coordinates, colors, color indices, vertex weights,
-     normals, and vertices. The commands" 
+     normals, and vertices. The commands"
 
      Add to functions listed following first paragraph:
 
@@ -346,7 +346,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
      Substitute "seven" for every occurrence of "six" in the final
      paragraph on p. 27.
 
- --  Section 2.10.  Change the sentence: 
+ --  Section 2.10.  Change the sentence:
 
     "The model-view matrix is applied to these coordinates to yield eye
      coordinates."
@@ -384,7 +384,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
      where M1 is the secondary modelview matrix and vw is the current
      vertex weight."
 
- --  Section 2.10.2  Change the 1st paragraph to say: 
+ --  Section 2.10.2  Change the 1st paragraph to say:
 
      "The projection matrix and the primary and secondary modelview
      matrices are set and modified with a variety of commands. The
@@ -417,7 +417,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
      Initially, there is only one matrix on each stack, and all matrices
      are set to the identity.  The initial matrix mode is MODELVIEW0."
 
- --  Section 2.10.3  Change the 2nd and 7th paragraphs to say: 
+ --  Section 2.10.3  Change the 2nd and 7th paragraphs to say:
 
      "For a modelview matrix M, the normal for this matrix is transformed
      to eye coordinates by:
@@ -498,7 +498,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
      normal transformed as described above using the secondary modelview matrix for
      M, and vw is the current pver-vertex weight."
 
- --  Section 2.12.  Changes the 3rd paragraph: 
+ --  Section 2.12.  Changes the 3rd paragraph:
 
      "The coordinates are treated as if they were specified in a
      Vertex command.  The x, y, z, and w coordinates are transformed
@@ -507,16 +507,16 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
      color and texture coordinates just as done for a vertex, except
      that vertex weighting is always treated as if it is disabled."
 
-Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     None
 
 Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment Operations
-and the Framebuffer) 
+and the Framebuffer)
 
     None
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
     None
 
@@ -564,7 +564,7 @@ GLX Protocol
     index, texture, edge, vertex, and vertex weight array elements,
     respectively."
 
-Errors 
+Errors
 
     The current vertex weight can be updated at any time.  In particular
     WeightVertexEXT can be called between a call to Begin and the

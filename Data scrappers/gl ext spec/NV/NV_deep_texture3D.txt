@@ -70,7 +70,7 @@ Additions to Chapter 4 of the OpenGL 3.2 Specification (Per-Fragment Operations
 and the Frame Buffer)
 
     (modify the discussion of FramebufferTexture in 4.4 on p. 228)
-    
+
     If textarget is TEXTURE_3D, then level must be greater than or equal to zero
     and less than or equal to log2 of the larger of the values of
     MAX_3D_TEXTURE_SIZE and MAX_DEEP_3D_TEXTURE_DEPTH_NV.

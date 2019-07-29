@@ -27,7 +27,7 @@ Dependencies
 
     OpenGL 1.5 is required.
 
-    NV_transform_feedback or EXT_transform_feedback is required.  
+    NV_transform_feedback or EXT_transform_feedback is required.
 
     This extension is written against the OpenGL 2.1 Specification.
 
@@ -100,7 +100,7 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification (OpenGL Operation)
     shader or program is active, the vertices recorded are those emitted from
     the geometry shader.  The transformed vertices may be optionally discarded
     after being stored into one or more buffer objects, or they can be passed
-    on down to the clipping stage for further processing.  
+    on down to the clipping stage for further processing.
 
 
     Section 2.Y.1, Transform Feedback Objects
@@ -294,7 +294,7 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification (OpenGL Operation)
     transformed vertex attributes, the individual components are written in
     order.  The value for any attribute specified to be streamed to a buffer
     object but not actually written by a vertex or geometry shader is
-    undefined.  
+    undefined.
 
     When transform feedback is paused, no vertices are recorded.  When
     transform feedback is resumed, subsequent vertices are appended to the
@@ -417,7 +417,7 @@ Additions to Chapter 5 of the OpenGL 2.1 Specification (Special Functions)
     into a display list:
 
       Transform feedback objects:  GenTransformFeedbacksNV,
-      DeleteTransformFeedbacksNV, 
+      DeleteTransformFeedbacksNV,
 
     (note:  IsTransformFeedbackNV is covered by the "Other queries" rule.)
 
@@ -542,7 +542,7 @@ New State
       BUFFER_BINDING_NV                                         generic bind point for
                                                                 transform feedback.
     TRANSFORM_FEEDBACK_   nx3*Z+  GetInteger-          0        Name, component count,    6.1.14   -
-      RECORD_NV                   IndexedvEXT                   and index of each 
+      RECORD_NV                   IndexedvEXT                   and index of each
                                                                 attribute captured
     TRANSFORM_FEEDBACK_   nxZ+    GetInteger-          0        Buffer object bound to    6.1.13   -
       BUFFER_BINDING_NV           IndexedvEXT                   each transform feedback
@@ -626,7 +626,7 @@ Issues
         the buffer mode (interleaved or separate) were assigned to the program
         object in the original NV_transform_feedback specification.  That
         seems sensible given that the varyings themselves belong to the
-        program object.  
+        program object.
 
         In the original extension, implementations are forbidden to unbind or
         relink a program object or reassign the set of varyings to capture
@@ -684,7 +684,7 @@ Issues
         provided to the GL?
 
         RESOLVED:  The approach chosen by this extension is to have
-        DrawTransformFeedbackNV() accept a transform feedback object ID.  
+        DrawTransformFeedbackNV() accept a transform feedback object ID.
 
         An alternate approach would have been to provide a second binding
         point (TRANSFORM_FEEDBACK_RENDER_NV?) whose bound object would be used
@@ -693,7 +693,7 @@ Issues
     9.  Can a single transform feedback object be used for both capture and
         drawing (via DrawTransformFeedback) at the same time?
 
-        RESOLVED:  Yes.  
+        RESOLVED:  Yes.
 
         DrawTransformFeedbackNV is defined to use the vertex count established
         when the previous transform feedback operation on that object
@@ -737,7 +737,7 @@ Issues
    13.  How does the ability to pause/resume transform feedback interact with
         the TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN_NV query object?
 
-        RESOLVED:  There is no explicit interaction in this case.  
+        RESOLVED:  There is no explicit interaction in this case.
 
         The transform feedback-related query objects and transform feedback
         objects are completely independent.  If multiple transform feedback

@@ -201,7 +201,7 @@ New Implementation Dependent State
                                                                                  from a fragment
                                                                                  shader when more than
                                                                                  one color attachment
-                                                                                 point has an image attached 
+                                                                                 point has an image attached
                                                                                  gives defined results.
 
 Issues

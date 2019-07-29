@@ -44,13 +44,13 @@ Issues
         updated?  Updating would give a less accurate idea of
         fragments generated from a GL spec point of view, but would
         give a more accurate idea of rasterizer load during a given
-        interval. 
+        interval.
 
         A:  It's better to keep the single meaning of GL fragments
             generated.  Counting internal fragments wouldn't always be
             a good measure of rasterizer load and more accurate
             mechanisms can be imagined easily.
-            
+
     *   Having each counter response appear as an independent
         instrument is awkward and wastes space in the buffer.  Could
         we have GL combine them?
@@ -63,7 +63,7 @@ Issues
         implementation can not rasterize it and not count the
         fragments it contains.  From a GL point of view, these
         fragments *were* generated, but counting them would require
-        really generating them (in most implementations anyway).  
+        really generating them (in most implementations anyway).
 
         A:  This extension is aimed at performance-sensitive applications,
             so slowing stuff down is not a good idea.  Just don't
@@ -124,7 +124,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     fragment (or set of fragments) will not
     effect the contents of the frame buffer, the implementation can
     transparently avoid rasterizing the .  It is legal for an implementation to not increment the
-    fragment counter in this case.  
+    fragment counter in this case.
 
 Additions to Chapter 4 of the 1.0 Specification (Per-Fragment Operations
 and the Frame Buffer)
@@ -143,7 +143,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     more than one instrument is enabled, the responses from the depth
     pass instrument will be placed successively (as opposed to
     possibly being interrupted by responses from other instruments).
-    
+
     FRAGMENTS_INSTRUMENT_SGIX responses are formatted as follows
     (starting at the first word):
 

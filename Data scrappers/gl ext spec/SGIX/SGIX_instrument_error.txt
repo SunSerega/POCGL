@@ -40,13 +40,13 @@ Issues
         may have padding and won't be longer?
 
     *   Returning failure due to a context switch seems to break
-        GL's invariance requirement.  
+        GL's invariance requirement.
 
         A: This is unfortunate but we can't think of any way to make
            some instruments work across context switches.  We either
            return the error in GL or we silently fail or we have some
            non-GL way to indicate failure.  Using GL seems the most
-           useful.  
+           useful.
 
     *   If an instrument defined in another extension may return
         failure, do we have to mention that in the new extension?  Or

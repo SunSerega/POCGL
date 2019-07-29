@@ -105,7 +105,7 @@ Issues
       unpack case.  The non-compressed unpack case is a little
       harder -- it can be done by setting ROW_LEGNTH to one half
       the width, but bytes past the end of the last scan line are
-      written. 
+      written.
 
     - What about three- and four-dimensional images?
 
@@ -119,14 +119,14 @@ New Tokens
 
     Accepted by the <pname> parameter of PixelStoref, PixelStorei,
     GetBooleanv, GetIntegerv, GetFloatv and GetDoublev:
-    
+
         PACK_COMPRESSION_TYPE_SGIX
         UNPACK_COMPRESSION_TYPE_SGIX
         UNPACK_COMPRESSED_SIZE_SGIX
         PACK_MAX_COMPRESSED_SIZE_SGIX
         PACK_SAMPLE_SGIX
         UNPACK_SAMPLE_SGIX
-    
+
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv and GetDoublev:
 
@@ -135,7 +135,7 @@ New Tokens
     Accepted by the <param> parameter of PixelStoref and PixelStorei
     when the <pname> parameter is PACK_SAMPLE_SGIX or
     UNPACK_SAMPLE_SGIX:
-    
+
         SAMPLE_444_SGIX
         SAMPLE_422_SGIX
         SAMPLE_411_SGIX
@@ -145,7 +145,7 @@ New Tokens
     PixelStorei with a <param> parameter of TRUE or FALSE and by
     the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv
     and GetDoublev:
-    
+
         PACK_FROM_RGB_SGIX
         UNPACK_TO_RGB_SGIX
 
@@ -156,16 +156,16 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     3.6.1 Pixel Storage Modes
-    
+
     The following is added to Table 3.1:
-    
+
     Parameter Name            Type        Initial Value        Valid Range
     --------------            ----        -------------        -----------
     UNPACK_COMPRESSION_TYPE_SGIX    integer        NONE            NONE
     UNPACK_COMPRESSED_SIZE_SGIX    integer        0            [0,inf)
     UNPACK_SAMPLE_SGIX        integer        SAMPLE_444_SGIX        SAMPLE_444_SGIX, SAMPLE_422_SGIX, SAMPLE_411_SGIX, SAMPLE_420_SGIX
     UNPACK_TO_RGB_SGIX        boolean        TRUE            TRUE/FALSE
-        
+
     3.6.3 Rasterization of Pixel Rectangles
 
     The following is added to the introduction to section 3.6.3:
@@ -259,7 +259,7 @@ Additions to Chapter 4 of the 1.0 Specification (Per-Fragment Operations
 and the Frame Buffer)
 
     4.3.2 Reading Pixels
-    
+
     The following entries are added to Table 4.5:
 
     Parameter Name            Type        Initial Value        Valid Range
@@ -268,7 +268,7 @@ and the Frame Buffer)
     PACK_MAX_COMPRESSED_SIZE_SGIX    integer        0            [0,inf)
     PACK_SAMPLE_SGIX        integer        SAMPLE_444_SGIX        SAMPLE_444_SGIX, SAMPLE_422_SGIX, SAMPLE_411_SGIX, SAMPLE_420_SGIX
     PACK_FROM_RGB_SGIX        boolean        TRUE            TRUE/FALSE
-    
+
     The following needs to be added to the end of the "Final
     Conversion" subsection: If image compression is on
     (PACK_COMPRESSION_TYPE_SGIX is set to other than NONE), no
@@ -311,7 +311,7 @@ and the Frame Buffer)
     PACK_MAX_COMPRESSED_SIZE_SGIX bytes after the <data> pointer
     are undefined, but bytes outside this range are guaranteed to
     be left unchanged.
-    
+
 Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 
     None.
@@ -326,13 +326,13 @@ Additions to the GLX Specification
 Errors
 
     XXX
-    
+
     INVALID_OPERATION is generated if the compressed data requested by a
     ReadPixels or GetTexImage will occupy more than
     PACK_MAX_COMPRESSED_SIZE bytes.
 
 
-    
+
 
 New State
 
@@ -347,7 +347,7 @@ New State
     PACK_MAX_COMPRESSED_SIZE    GetIntegerv            Z+        0            client
     PACK_SAMPLE_SGIX        GetIntegerv            Z4        SAMPLE_444_SGIX        client
     PACK_FROM_RGB_SGIX        GetBooleanv            B        TRUE            client
-    
+
 
 New Implementation Dependent State
 

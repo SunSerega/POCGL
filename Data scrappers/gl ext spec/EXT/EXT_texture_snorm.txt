@@ -84,7 +84,7 @@ New Tokens
          RG16_SNORM                              0x8F99
          RGB16_SNORM                             0x8F9A
          RGBA16_SNORM                            0x8F9B
-         ALPHA16_SNORM                           0x9018                           
+         ALPHA16_SNORM                           0x9018
          LUMINANCE16_SNORM                       0x9019
          LUMINANCE16_ALPHA16_SNORM               0x901A
          INTENSITY16_SNORM                       0x901B
@@ -167,7 +167,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
      ALPHA8_SNORM              ALPHA8_SNORM                               8
      LUMINANCE8_SNORM          LUMINANCE8_SNORM                                8
      LUMINANCE8_ALPHA8_SNORM   LUMINANCE8_ALPHA8_SNORM                    8    8
-     INTENSITY8_SNORM          INTENSITY8_SNORM                                     8   
+     INTENSITY8_SNORM          INTENSITY8_SNORM                                     8
 
      R16_SNORM                 R_SNORM                    16
      RG16_SNORM                RG_SNORM                   16   16
@@ -176,7 +176,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
      ALPHA8_SNORM              ALPHA8_SNORM                              16
      LUMINANCE16_SNORM         LUMINANCE16_SNORM                              16
      LUMINANCE16_ALPHA16_SNORM LUMINANCE16_ALPHA16_SNORM                 16   16
-     INTENSITY16_SNORM         INTENSITY16_SNORM                                   16  
+     INTENSITY16_SNORM         INTENSITY16_SNORM                                   16
 
      Table 3.16: Correspondence of sized internal formats to base
      internal formats, internal data type and desired component
@@ -295,7 +295,7 @@ Revision History:
    Date: 2009-04-29
    Revision: 4 (gsellers)
          Add contributors.
- 
+
    Date: 2009-04-22
    Revision: 3 (wwlk)
          Add token values, for R,RG,RGB, RGBA and for "legacy" formats
@@ -314,4 +314,4 @@ Revision History:
          Initial version
 
 
- 
+

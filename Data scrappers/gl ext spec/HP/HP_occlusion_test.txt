@@ -8,7 +8,7 @@ Name
 
 Name Strings
 
-    GL_HP_occlusion_test 
+    GL_HP_occlusion_test
 
 Number
 
@@ -75,7 +75,7 @@ New Tokens
 
         OCCLUSION_TEST_HP           0x????
 
-    Accepted by the <pname> of GetBooleanv, GetIntegerv, GetFloatv, and 
+    Accepted by the <pname> of GetBooleanv, GetIntegerv, GetFloatv, and
     GetDoublev :
 
         OCCLUSION_TEST_RESULT_HP    0x????
@@ -92,7 +92,7 @@ Issue
             add MAX_OCCLUSION_TESTS
             add OCCLUSION_TESTn_HP where n is 1 to MAX_OCCLUSION_TESTS
             add OCCLUSION_TEST_RESULTn_HP where n is 1 to MAX_OCCLUSION_TESTS
-            define semantics of multiple tests enables (ex. there exists 
+            define semantics of multiple tests enables (ex. there exists
                 precedence of tests, ie. TEST7 overrides TEST1 thru 6)
             define how mulitple test results returned (ex. bit encoded in
                 return word, 32 per word)
@@ -110,7 +110,7 @@ Issue
                 disable all occlusion tests
                 enable updates to color and depth buffer
                 read occlusion test results
-                for each result 
+                for each result
                     if (result) render internal geometry
                     else don't render
 

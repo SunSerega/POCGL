@@ -1,5 +1,5 @@
 Name
-    
+
     NV_texture_shader3
 
 Name Strings
@@ -394,7 +394,7 @@ DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV           shader result type must    -      
                                                be one of signed HILO,
                                                unsigned HILO, all
                                                signed RGBA, or all
-                                               unsigned RGBA 
+                                               unsigned RGBA
 --------------------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
 
      Table 3.B:
@@ -404,11 +404,11 @@ texture shader operation i                    texture unit i
 OFFSET_PROJECTIVE_TEXTURE_2D_NV               2D target must be consistent
 OFFSET_PROJECTIVE_TEXTURE_2D_SCALE_NV         2D target must be consistent
                                                and 2D texture target type must
-                                               be unsigned RGBA 
+                                               be unsigned RGBA
 OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_NV        rectangle target must be consistent
 OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_SCALE_NV  rectangle target must be consistent
                                                and rectangle texture target type must
-                                               be unsigned RGBA 
+                                               be unsigned RGBA
 --------------------------------------------  ---------------------------------------
 OFFSET_HILO_TEXTURE_2D_NV                     2D target must be consistent
 OFFSET_HILO_TEXTURE_RECTANGLE_NV              rectangle target must be consistent
@@ -466,32 +466,32 @@ texture shader operation i         shader stage result type       shader stage r
 =================================  =============================  ===================================  ======================================
 OFFSET_TEXTURE_2D_NV               matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
                                                                                                         filtered 2D target texel,
-                                                                                                        else (0,0,0,0) 
+                                                                                                        else (0,0,0,0)
 OFFSET_TEXTURE_2D_SCALE_NV         unsigned RGBA                  filtered 2D target texel             scaled filtered 2D target texel
 OFFSET_TEXTURE_RECTANGLE_NV        matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
                                                                                                         RGBA, filtered rectangle target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 OFFSET_TEXTURE_RECTANGLE_SCALE_NV  unsigned RGBA                  filtered rectangle target texel      scaled filtered rectangle target texel
 OFFSET_PROJECTIVE_TEXTURE_2D_NV    matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
                                                                                                         filtered 2D target texel,
-                                                                                                        else (0,0,0,0) 
+                                                                                                        else (0,0,0,0)
 OFFSET_PROJECTIVE_-                unsigned RGBA                  filtered 2D target texel             scaled filtered 2D target texel
   TEXTURE_2D_SCALE_NV
 OFFSET_PROJECTIVE_-                matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
   TEXTURE_RECTANGLE_NV                                                                                  RGBA, filtered rectangle target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 OFFSET_PROJECTIVE_-                unsigned RGBA                  filtered rectangle target texel      scaled filtered rectangle target texel
   TEXTURE_RECTANGLE_SCALE_NV
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 DEPENDENT_HILO_TEXTURE_2D_NV       matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
                                                                                                         filtered 2D target texel,
-                                                                                                        else (0,0,0,0)  
+                                                                                                        else (0,0,0,0)
 DEPENDENT_RGB_TEXTURE_3D_NV        matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA,
                                                                                                         filtered 3D target texel,
-                                                                                                        else (0,0,0,0)  
+                                                                                                        else (0,0,0,0)
 DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV  matches cube map target type   filtered cube map target texel       if cube map target texture type is
                                                                                                         RGBA,  filtered cube map target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 DOT_PRODUCT_PASS_THROUGH_NV        unsigned RGBA                  (max(0,min(1,[s,t,r]dot[a,b,c])),    (max(0,min(1,[s,t,r]dot[a,b,c])),
                                                                    max(0,min(1,[s,t,r]dot[a,b,c])),     max(0,min(1,[s,t,r]dot[a,b,c])),
@@ -500,7 +500,7 @@ DOT_PRODUCT_PASS_THROUGH_NV        unsigned RGBA                  (max(0,min(1,[
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 DOT_PRODUCT_TEXTURE_1D_NV          matches 1D target type         filtered 1D target texel             if 1D target texture type is RGBA,
                                                                                                         filtered 1D target texel,
-                                                                                                        else (0,0,0,0)  
+                                                                                                        else (0,0,0,0)
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 DOT_PRODUCT_-                      unsigned RGBA                  invalid                              (0,0,0,0)
   AFFINE_DEPTH_REPLACE_NV
@@ -731,7 +731,7 @@ DOT_PRODUCT_-                      unsigned RGBA                  invalid       
      value has a texture shader result type other than RGBA (the
      DSDT_MAG_INTENSITY_NV base internal format does not count as an
      RGBA format type in this context), then this texture shader stage
-     is not consistent.  
+     is not consistent.
 
      If the previous texture input's texture shader result specified
      by the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV
@@ -790,7 +790,7 @@ DOT_PRODUCT_-                      unsigned RGBA                  invalid       
      value has a texture shader result type other than RGBA (the
      DSDT_MAG_INTENSITY_NV base internal format does not count as an
      RGBA format type in this context), then this texture shader stage
-     is not consistent.  
+     is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -841,7 +841,7 @@ DOT_PRODUCT_-                      unsigned RGBA                  invalid       
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -888,7 +888,7 @@ DOT_PRODUCT_-                      unsigned RGBA                  invalid       
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value

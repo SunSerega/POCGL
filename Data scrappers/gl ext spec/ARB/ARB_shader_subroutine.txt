@@ -65,10 +65,10 @@ Dependencies
 
 Overview
 
-    This extension adds support to shaders for "indirect subroutine calls", 
+    This extension adds support to shaders for "indirect subroutine calls",
     where a single shader can include many subroutines and dynamically select
-    through the API which subroutine is called from each call site. 
-    Switching subroutines dynamically in this fashion can avoid the cost of 
+    through the API which subroutine is called from each call site.
+    Switching subroutines dynamically in this fashion can avoid the cost of
     recompiling and managing multiple shaders, while still retaining most of
     the performance of specialized shaders.
 
@@ -78,7 +78,7 @@ IP Status
 
 New Procedures and Functions
 
-    int GetSubroutineUniformLocation(uint program, enum shadertype, 
+    int GetSubroutineUniformLocation(uint program, enum shadertype,
                                      const char *name);
     uint GetSubroutineIndex(uint program, enum shadertype,
                             const char *name);
@@ -87,18 +87,18 @@ New Procedures and Functions
     void GetActiveSubroutineUniformName(uint program, enum shadertype,
                                         uint index, sizei bufsize,
                                         sizei *length, char *name);
-    void GetActiveSubroutineName(uint program, enum shadertype, uint index, 
+    void GetActiveSubroutineName(uint program, enum shadertype, uint index,
                                  sizei bufsize, sizei *length, char *name);
     void UniformSubroutinesuiv(enum shadertype, sizei count,
                                const uint *indices);
     void GetUniformSubroutineuiv(enum shadertype, int location,
                                  uint *params);
-    void GetProgramStageiv(uint program, enum shadertype, 
+    void GetProgramStageiv(uint program, enum shadertype,
                            enum pname, int *values);
 
 New Tokens
 
-    Accepted by the <pname> parameter of GetProgramStageiv: 
+    Accepted by the <pname> parameter of GetProgramStageiv:
 
         ACTIVE_SUBROUTINES                              0x8DE5
         ACTIVE_SUBROUTINE_UNIFORMS                      0x8DE6
@@ -107,7 +107,7 @@ New Tokens
         ACTIVE_SUBROUTINE_UNIFORM_MAX_LENGTH            0x8E49
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
-    GetFloatv, GetDoublev, and GetInteger64v: 
+    GetFloatv, GetDoublev, and GetInteger64v:
 
         MAX_SUBROUTINES                                 0x8DE7
         MAX_SUBROUTINE_UNIFORM_LOCATIONS                0x8DE8
@@ -118,7 +118,7 @@ New Tokens
         COMPATIBLE_SUBROUTINES                          0x8E4B
         UNIFORM_SIZE
         UNIFORM_NAME_LENGTH
-        
+
 
 Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
 
@@ -133,9 +133,9 @@ Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
 
     The command
 
-        int GetSubroutineUniformLocation(uint program, enum shadertype, 
+        int GetSubroutineUniformLocation(uint program, enum shadertype,
                                          const char *name);
-        
+
     will return the location of the subroutine uniform variable <name> in the
     shader stage of type <shadertype> attached to <program>, with behavior otherwise
     identical to GetUniformLocation.  The value -1 will be returned if <name>
@@ -282,8 +282,8 @@ State Requests)
     Add to Section 6.1.15 (Shader and Program Queries)
 
     The command
-    
-        void GetUniformSubroutineuiv(enum shadertype, int location, 
+
+        void GetUniformSubroutineuiv(enum shadertype, int location,
                                      uint *params);
 
     returns the value of the subroutine uniform at location <location> for
@@ -295,7 +295,7 @@ State Requests)
 
     The command
 
-        void GetProgramStageiv(uint program, enum shadertype, 
+        void GetProgramStageiv(uint program, enum shadertype,
                                enum pname, int *values);
 
     returns properties of the program object <program> specific to the
@@ -353,19 +353,19 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     the subroutine variable.  Subroutine variables are assigned to specific
     functions only through commands (UniformSubroutinesuiv) in the OpenGL API.
 
-    Subroutine types can be declared using a statement similar to a function 
+    Subroutine types can be declared using a statement similar to a function
     declaration, as follows:
 
         subroutine returnType subroutineTypeName(type0 arg0, type1 arg1,
                                                  ..., typen argn);
 
-    Functions may be associated to subroutine types that have a matching 
+    Functions may be associated to subroutine types that have a matching
     prototype by prepending the subroutine types to the function definition:
 
         subroutine(subroutineTypeName0, ..., subroutineTypeNameN)
         returnType functionName (type0 arg0, type1 arg1, ..., typen argn)
         ... // function body
-    
+
     Subroutine declarations cannot be prototyped. It is an error to prepend
     subroutine(...) to a function declaration. It is an error to declare
     two distinct functions with the same function name within the same shader
@@ -378,14 +378,14 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     shader includes two or more functions with the same name, at least one of
     which is associated with a subroutine type.
 
-    Subroutine variables are required to be "subroutine uniforms", and 
-    are declared with a specific subroutine type in a subroutine uniform 
+    Subroutine variables are required to be "subroutine uniforms", and
+    are declared with a specific subroutine type in a subroutine uniform
     variable declaration:
 
         subroutine uniform subroutineTypeName subroutineVarName;
 
     and are called the same way simple functions are called. Subroutine
-    variables may be declared as explicitly-sized arrays, which can be 
+    variables may be declared as explicitly-sized arrays, which can be
     dynamically indexed at use.
 
     Subroutine variables are associated to functions declared with the
@@ -445,7 +445,7 @@ New State
     (add to table 6.28, Program Object State, p. 293)
 
                                                                Initial
-    Get Value                     Type        Get Command       Value  Description                  Sec.  
+    Get Value                     Type        Get Command       Value  Description                  Sec.
     ---------------------------   ----------  -----------      ------- ---------------------------  ------
     ACTIVE_SUBROUTINE_UNIFORM_    5xZ+        GetProgram-         0    Number of subroutine unif.   2.11.4
       LOCATIONS                               Stageiv                  locations in the shader
@@ -481,7 +481,7 @@ New Implementation Dependent State
                                                           Minimum
     Get Value                      Type  Get Command       Value   Description           Sec.   Attrib
     -----------------------------  ----  ---------------  -------  --------------------- ------ ------
-    MAX_SUBROUTINES                 Z+   GetIntegerv        256    Maximum number of     2.14.1   -   
+    MAX_SUBROUTINES                 Z+   GetIntegerv        256    Maximum number of     2.14.1   -
                                                                    subroutines per
                                                                    shader stage
     MAX_SUBROUTINE_UNIFORM_         Z+   GetIntegerv       1024    Maximum number of     2.X.5    -
@@ -499,14 +499,14 @@ Dependencies on NV_gpu_program5:
 
     New Procedures and Functions
 
-    void ProgramSubroutineParametersuivNV(enum target, sizei count, 
+    void ProgramSubroutineParametersuivNV(enum target, sizei count,
                                           const uint *params);
     void GetProgramSubroutineParameteruivNV(enum target, uint index,
                                             uint *param);
 
     New Tokens
 
-    Accepted by the <pname> parameter of GetProgramivARB: 
+    Accepted by the <pname> parameter of GetProgramivARB:
 
         MAX_PROGRAM_SUBROUTINE_PARAMETERS_NV            0x8F44
         MAX_PROGRAM_SUBROUTINE_NUM_NV                   0x8F45
@@ -522,22 +522,22 @@ Dependencies on NV_gpu_program5:
     implementation-dependent value MAX_PROGRAM_SUBROUTINE_PARAMETERS_NV.
     The command
 
-        void ProgramSubroutineParametersuivNV(enum target, sizei count, 
+        void ProgramSubroutineParametersuivNV(enum target, sizei count,
                                               const uint *params);
 
-    updates the values of all program subroutine parameters used by the 
-    currently bound program for the given program target <target>. <params> 
-    points to an array of <count> values, where the first value is used to 
-    update the program subroutine parameter numbered zero and the last value 
-    is used to update the program subroutine parameter numbered <count> - 1. 
-    The error INVALID_VALUE is generated if <count> is not equal to one plus 
-    the maximum program subroutine parameter index used in the currently bound 
+    updates the values of all program subroutine parameters used by the
+    currently bound program for the given program target <target>. <params>
+    points to an array of <count> values, where the first value is used to
+    update the program subroutine parameter numbered zero and the last value
+    is used to update the program subroutine parameter numbered <count> - 1.
+    The error INVALID_VALUE is generated if <count> is not equal to one plus
+    the maximum program subroutine parameter index used in the currently bound
     program.
 
-    Program subroutine parameters for a given target are reset to arbitrary 
-    defaults when the program string is respecified, and when BindProgram is 
+    Program subroutine parameters for a given target are reset to arbitrary
+    defaults when the program string is respecified, and when BindProgram is
     called to bind a program to that target, even if the specified program is
-    already bound. 
+    already bound.
 
     The error INVALID_OPERATION is generated by
     ProgramSubroutineParametersuivNV if, for any number <i> in [0, <count>),
@@ -547,7 +547,7 @@ Dependencies on NV_gpu_program5:
 
     Modify Section 2.X.2 of NV_gpu_program4, Program Grammar
 
-    If a program begins with a header string defined by GL_NV_gpu_program5, 
+    If a program begins with a header string defined by GL_NV_gpu_program5,
     the following modifications apply to the program grammar:
 
     <FlowInstruction>       ::= <BRAop_instruction>
@@ -572,7 +572,7 @@ Dependencies on NV_gpu_program5:
     <labelInitList>         ::= /* empty */
                               | <labelList>
 
-    <SUBROUTINETYPE_statement> ::= "SUBROUTINETYPE" <establishName> "{" 
+    <SUBROUTINETYPE_statement> ::= "SUBROUTINETYPE" <establishName> "{"
                                 <labelInitList> "}"
 
     <progSubroutineParam>   ::= "program" "." "subroutine" <arrayMemAbs>
@@ -581,18 +581,18 @@ Dependencies on NV_gpu_program5:
                               | "program" "." "subroutine" <arrayRange>
 
     <progSubroutineInitList>::= <progSubroutineParams>
-                              | <progSubroutineParams> "," 
+                              | <progSubroutineParams> ","
                                 <progSubroutineInitList>
 
-    <SUBROUTINE_statement>  ::= "SUBROUTINE" <establishedName> <establishName> 
+    <SUBROUTINE_statement>  ::= "SUBROUTINE" <establishedName> <establishName>
                                 "=" <progSubroutineParam>
-                              | "SUBROUTINE" <establishedName> <establishName> 
-                                <optArraySize> "=" "{" <progSubroutineInitList> 
+                              | "SUBROUTINE" <establishedName> <establishName>
+                                <optArraySize> "=" "{" <progSubroutineInitList>
                                 "}"
 
     <CALIop>                ::= "CALI"
 
-    <CALI_instruction>      ::= <CALIop> <opModifiers> <subroutineVarName> 
+    <CALI_instruction>      ::= <CALIop> <opModifiers> <subroutineVarName>
                                 <optArrayMem> <optBranchCond>
 
     <instLabel>             ::= <identifier>
@@ -603,7 +603,7 @@ Dependencies on NV_gpu_program5:
 
     (Update the instruction set table to add CALI)
 
-      Instr-      Modifiers 
+      Instr-      Modifiers
       uction  V  F I C S H D  Out Inputs    Description
       ------- -- - - - - - -  --- --------  --------------------------------
       CALI    50 - - - - - -  -   c         indirect subroutine call
@@ -613,14 +613,14 @@ Dependencies on NV_gpu_program5:
 
     (Add after the description of subroutines)
 
-    Subroutines may be called indirectly using the CALI instruction. An 
+    Subroutines may be called indirectly using the CALI instruction. An
     "indirect" call will transfer control to one of a set of labels, where
     the specific label that is used in a particular program invocation is
     set through a "subroutine" parameter (see Section 2.14.1).
 
     Functions that will be used for indirect subroutine calls must all be
     assigned a unique unsigned integer SUBROUTINENUM using the modified
-    <instLabel> grammar rule. 
+    <instLabel> grammar rule.
 
     A <SUBROUTINETYPE_statement> associates one or more subroutine labels with
     a "type". For example:
@@ -629,7 +629,7 @@ Dependencies on NV_gpu_program5:
 
     creates a SUBROUTINETYPE named "Hero" (if it does not already exist) and
     adds the subroutines whose labels are "batman" and "robin" to the
-    SUBROUTINETYPE. 
+    SUBROUTINETYPE.
 
     A "subroutine" parameter is a special type of program parameter whose value
     refers to one of a set of subroutines, selected by the API. A subroutine is
@@ -653,26 +653,26 @@ Dependencies on NV_gpu_program5:
         ...
       wolverine SUBROUTINENUM(3):
         ...
-      
+
       main:
       # could call any of the four heros
       CALI anyHero;
       # could call either batman or robin
       CALI gothamHero;
 
-    Program subroutine parameters are assigned to labels by setting the 
+    Program subroutine parameters are assigned to labels by setting the
     corresponding SUBROUTINENUMs via ProgramSubroutineParametersuivNV. For
-    example, 
-    
+    example,
+
       uint params[2] = {2, 0};
       ProgramSubroutineParametersuivNV(target, 2, params);
 
     would assign program.subroutine[0] (and therefore "anyHero") to "superman",
     and program.subroutine[1] (and therefore "gothamHero") to "batman".
 
-    All SUBROUTINENUMs must be greater than or equal to zero, and less than the 
-    value of MAX_PROGRAM_SUBROUTINE_NUM_NV. A label may be assigned to multiple 
-    SUBROUTINETYPEs. A program subroutine parameter may only be assigned to 
+    All SUBROUTINENUMs must be greater than or equal to zero, and less than the
+    value of MAX_PROGRAM_SUBROUTINE_NUM_NV. A label may be assigned to multiple
+    SUBROUTINETYPEs. A program subroutine parameter may only be assigned to
     subroutine variables of a single SUBROUTINETYPE.
 
     Programs that may potentially cause infinite recursion through indirect
@@ -693,22 +693,22 @@ Dependencies on NV_gpu_program5:
                                               uint *params);
 
     obtains the current value for the program subroutine parameter numbered
-    <index> for the given program target <target>, and places the single 
-    unsigned integer value in the array <params>.  The error INVALID_ENUM is 
-    generated if <target> specifies a nonexistent program target or a program 
-    target that does not support program environment parameters.  The error 
+    <index> for the given program target <target>, and places the single
+    unsigned integer value in the array <params>.  The error INVALID_ENUM is
+    generated if <target> specifies a nonexistent program target or a program
+    target that does not support program environment parameters.  The error
     INVALID_VALUE is generated if <index> is greater than or equal to the
     implementation-dependent number of supported program subroutine parameters
     for the program target.
 
     Add various new conditions by which a program string would fail to load.
 
-    The error INVALID_ENUM is generated by GetProgramSubroutineParameteruivNV 
-    and ProgramSubroutineParametersuivNV if <target> specifies a nonexistent 
+    The error INVALID_ENUM is generated by GetProgramSubroutineParameteruivNV
+    and ProgramSubroutineParametersuivNV if <target> specifies a nonexistent
     program target.
 
     The error INVALID_VALUE is generated by GetProgramSubroutineParameteruivNV
-    if <index> is greater than or equal to the max number of program subroutine 
+    if <index> is greater than or equal to the max number of program subroutine
     parameters, and by ProgramSubroutineParametersuivNV if <count> is <count>
     is not equal to one plus the maximum program subroutine parameter index used
     in the currently bound program.
@@ -723,7 +723,7 @@ Dependencies on NV_gpu_program5:
                                                              Minimum
     Get Value                         Type  Get Command       Value   Description           Sec.   Attrib
     --------------------------------  ----  ---------------  -------  --------------------- ------ ------
-    MAX_PROGRAM_SUBROUTINE_            Z+   GetProgramivARB   1024    Maximum number of     2.14.1   -   
+    MAX_PROGRAM_SUBROUTINE_            Z+   GetProgramivARB   1024    Maximum number of     2.14.1   -
       PARAMETERS_NV                                                   program subroutine
                                                                       parameters
     MAX_PROGRAM_SUBROUTINENUM_NV       Z+   GetProgramivARB    256    Maximum SUBROUTINENUM 2.X.5    -
@@ -758,7 +758,7 @@ Issues
 
     (2) What happens if you try to link a program that has active subroutines
     that have no subroutines that can be assigned ot them?
-    
+
     RESOLVED: Attempting to link a program that calls a function pointer
     with no potential associations produces a link error.
 
@@ -786,10 +786,10 @@ Issues
     same operation that binds the shader.
 
     (6) Why is the new "subroutine" state owned by the context rather than
-    by the assembly program or GLSL program/shader? 
+    by the assembly program or GLSL program/shader?
 
-    RESOLVED: We expect that a common usage of this extension 
-    would be to create a so-called "uber-shader" -- a program that can 
+    RESOLVED: We expect that a common usage of this extension
+    would be to create a so-called "uber-shader" -- a program that can
     support many different state configurations.  If an application uses
     such a program in multiple contexts, it likely it would not want changes
     to linkage for one context to affect the other context.
@@ -797,13 +797,13 @@ Issues
     (7) Does that mean other types of uniforms also need to be context state?
 
     RESOLVED: Apps can choose to share or not share numeric uniform types at
-    their discretion using UBO, however for more "opaque" uniform types like 
+    their discretion using UBO, however for more "opaque" uniform types like
     samplers it may be desirable to have context state. Such a change is
     beyond the scope of this extension. No effort was made to make subroutine
     uniforms generic enough to support other potential usages. Should such
     emerge, they will define their own unique uniform types.
 
-    (8) GLSL allows function name overloading, how can you query a 
+    (8) GLSL allows function name overloading, how can you query a
     subroutine location in that case?
 
     RESOLVED:  Disallow overloading of function names used for subroutine
@@ -878,7 +878,7 @@ Revision History
 
     Rev.    Date      Author    Changes
     ----  ----------  --------  ----------------------------------------------
-    19    02/28/2014  Jon Leech Restrict error for UniformSubroutinesuiv to  
+    19    02/28/2014  Jon Leech Restrict error for UniformSubroutinesuiv to
                                 the case where no program stage is active for
                                 the shader stage identified by <shadertype>
                                 (Bug 11306).
@@ -886,7 +886,7 @@ Revision History
     18    02/10/2011  pbrown    Add a clarification to the GLSL spec language
                                 prohibiting potential recursion via subroutine
                                 uniforms; a program will fail to link if there
-                                is any possible combination of subroutine 
+                                is any possible combination of subroutine
                                 uniform values that would result in recursion
                                 (bug 7327).
 
@@ -902,7 +902,7 @@ Revision History
     14    01/30/2010  pbrown    Specify that implementations are not permitted
                                 to chop unreferenced elements off the end of
                                 a subroutine uniform array like they are with
-                                regular uniforms (bug 5978).  Minor 
+                                regular uniforms (bug 5978).  Minor
                                 clarification on the meaning of "active
                                 subroutines".
 
@@ -952,7 +952,7 @@ Revision History
                                 can call them (bug 5859).  Update state tables
                                 and some issues.
 
-     9    01/14/2010  pbrown    Add some more text to the introduction to 
+     9    01/14/2010  pbrown    Add some more text to the introduction to
                                 subroutines in the GLSL spec section.
 
      8    12/10/2009  groth     ARBify.

@@ -31,7 +31,7 @@ Overview
     EXT_texture3D is required, this extension utilizes the 3-dimensional
     image support defined in by EXT_texture3D as a base for 4-dimensional
     image manipulation.
-    
+
     The 4th dimension has an abstract, rather than physical, reference
     and will be called "extent", since the definition of extent is "that which
     specifies the range or magnitude of an area or volume."
@@ -183,7 +183,7 @@ GLX Protocol
             n           LISTofBYTE      pixels
             p                           unused, p=pad(n)
 
-            If the command is encoded in a glXRenderLarge request, the command 
+            If the command is encoded in a glXRenderLarge request, the command
             opcode and command length fields above are expanded to 4 bytes each:
 
         4           88+n+p          rendering command length
@@ -193,16 +193,16 @@ GLX Protocol
     or <type> is invalid, then the command is erroneous and n=0.
 
         <pixels> is arranged as a sequence of adjacent volumes. Each volume is a
-        3-dimensional image, whose structure is determined by the image depth and the 
+        3-dimensional image, whose structure is determined by the image depth and the
         parameters <image_height>, <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>,
-    <skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request. 
-    If <image_depth> is not positive then the number of images (i.e., the image 
+    <skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request.
+    If <image_depth> is not positive then the number of images (i.e., the image
     depth) is <depth>; otherwise the number of images is <image_depth>.
 
         <skip_volumes> allows a sub-piece of the 4-dimensional image to be selected.
-        If <skip_volumes> is positive, then the pointer is advanced by <skip_volumes> 
-        times the number of elements in one 3-dimensional image. Then <size4d> 
-        3-dimensional images are read, each having a subimage extracted in the 
+        If <skip_volumes> is positive, then the pointer is advanced by <skip_volumes>
+        times the number of elements in one 3-dimensional image. Then <size4d>
+        3-dimensional images are read, each having a subimage extracted in the
         manner described in Appendix A of the GLX Protocol Specification.
 
         TexSubImage4DSGIS
@@ -241,13 +241,13 @@ GLX Protocol
             4           92+n+p          rendering command length
             4           2058            rendering command opcode
 
-    If <width> < 0, <height> < 0, <depth> < 0, <size4d>, <format> is invalid 
+    If <width> < 0, <height> < 0, <depth> < 0, <size4d>, <format> is invalid
     or <type> is invalid, then the command is erroneous and n=0.
 
         <pixels> is arranged as a sequence of adjacent volumes. Each volume is a
-        3-dimensional image, whose structure is determined by the image height, image 
-    depth and the parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>, 
-    <skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request. 
+        3-dimensional image, whose structure is determined by the image height, image
+    depth and the parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>,
+    <skip_pixels>, <alignment>, <width>, <format>, and <type> given in the request.
     If <image_depth> is not positive then the number of 2Dimages (i.e., the volume
     depth) is <depth>; otherwise the number of 2Dimages is <image_depth>.
 
@@ -328,7 +328,7 @@ Errors
 
     INVALID_VALUE is generated if TexSubImage4DSGIS parameter <width>,
     <height>, <depth>, or <extent> is negative.
-    
+
     INVALID_VALUE is generated if TexSubImage4DSGIS parameter <xoffset>,
     <yoffset>, <zoffset>, or <woffset> is less than -TEXTURE_BORDER.
 

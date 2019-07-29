@@ -70,19 +70,19 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
                               | <LDBop_instruction>
                               | <STBop_instruction>
 
-    <ATOMBop_instruction>   ::= "ATOMB" <opModifiers> <instResult> "," 
+    <ATOMBop_instruction>   ::= "ATOMB" <opModifiers> <instResult> ","
                                 <instOperandV> "," <storageUseV>
 
-    <LDBop_instruction>     ::= "LDB" <opModifiers> <instResult> "," 
+    <LDBop_instruction>     ::= "LDB" <opModifiers> <instResult> ","
                                 <storageUseV>
 
-    <STBop_instruction>     ::= "STB" <opModifiers> <instOperandV> "," 
+    <STBop_instruction>     ::= "STB" <opModifiers> <instOperandV> ","
                                 <storageUseV>
 
     <namingStatement>       ::= <STORAGE_statement>
 
     <STORAGE_statement>     ::= "STORAGE" <establishName> <storageSingleInit>
-                              | "STORAGE" <establishName> <optArraySize> 
+                              | "STORAGE" <establishName> <optArraySize>
                                 <storageMultipleInit>
 
     <storageSingleInit>     ::= "=" <storageUseDS>
@@ -120,7 +120,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
 
       Binding                    Components  Underlying State
       -------------------------  ----------  -------------------------------
-      program.storagelen[a]      (x,-,-,-)   program storage buffer a, 
+      program.storagelen[a]      (x,-,-,-)   program storage buffer a,
                                                variable-size array length
       program.storagelen[a..b]   (x,-,-,-)   program storage buffer a..b,
                                                variable-size array length
@@ -239,7 +239,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
 
     (add to the opcode table)
 
-      Instr-       Modifiers 
+      Instr-       Modifiers
       uction F I C S H D  Out Inputs    Description
       ------ - - - - - -  --- --------  --------------------------------
       ATOMB  - - X - - -  s   v,su      atomic transaction to storage buffer
@@ -249,7 +249,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
 
     Modify Section 2.X.4.5, Program Memory Access, from NV_gpu_program5
 
-    (modify first paragraph) 
+    (modify first paragraph)
 
     Programs may load from or store to buffer object memory via the ATOM
     (atomic global memory operation), ATOMB (atomic storage buffer memory
@@ -328,7 +328,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
         writeval = max(tmp0.x, result);
         break;
       case IWRAP:
-        writeval = (result >= tmp0.x) ? 0 : result+1; 
+        writeval = (result >= tmp0.x) ? 0 : result+1;
         break;
       case DWRAP:
         writeval = (result == 0 || result > tmp0.x) ? tmp0.x : result-1;
@@ -356,7 +356,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Compatibility Profile) Specification
 
     ATOMB performs a scalar atomic operation.  The <y>, <z>, and <w>
     components of the result vector are undefined.
-      
+
     ATOMB supports no base data type modifiers, but requires exactly one
     storage modifier.  The base data types of the result vector, and the first
     (vector) operand are derived from the storage modifier.

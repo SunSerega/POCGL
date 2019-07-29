@@ -35,7 +35,7 @@ Specification Update Policy
 
 Status
 
-    Complete. 
+    Complete.
     Approved by the OpenGL ES Working Group on June 25, 2014.
     Approved by the ARB on June 26, 2014.
     Ratified by the Khronos Board of Promoters on August 7, 2014.
@@ -54,7 +54,7 @@ Dependencies
     OpenGL ES 2.0 or OpenGL 3.2 are required.
 
     GL_KHR_robustness is required.
-    
+
     This extension is written against the OpenGL ES 3.1 Specification
     (version of June 4, 2014) and the OpenGL ES 3.10.3 Shading Language
     Specification (version of June 6, 2014)
@@ -88,7 +88,7 @@ Additions to the OpenGL ES 3.1 Specification
 
     Append to section 6.4 "Effects of Accessing Outside Buffer Bounds" on p.
     58:
-    
+
    "Robust buffer access can be enabled by creating a context with robust
     access enabled through the window system binding APIs. When enabled, any
     command unable to generate a GL error as described above, such as buffer
@@ -133,7 +133,7 @@ Additions to the OpenGL ES 3.1 Specification
 
     Replace the last paragraph of section 11.1.3.2 "Texel Fetches", on p.
     265:
-    
+
     "In all the above cases, if the context was created with robust buffer
     access enabled (see section 10.3.4rob), the result of the texture fetch
     is zero, or a texture source color of (0,0,0,1) in the case of a texel
@@ -143,7 +143,7 @@ Additions to the OpenGL ES 3.1 Specification
 
     Replace the last paragraph of section 11.1.3.12 "Undefined Behavior" on
     p. 272:
-    
+
    "Robust buffer access can be enabled by creating a context with
     robust access enabled through the window system binding APIs. When
     enabled, out-of-bounds accesses will be bounded within the working
@@ -154,13 +154,13 @@ Additions to the OpenGL ES 3.1 Specification
     return another value from the active program's working memory or
     zero. An out-of-bounds write may overwrite a value from the active
     program's working memory or be discarded.
-    
+
     Out-of-bounds accesses to resources backed by buffer objects cannot read
     or modify data outside of the buffer object. For resources bound to
     buffer ranges, access is restricted within the buffer object from which
     the buffer range was created, and not within the buffer range itself.
     Out-of-bounds reads and writes behave as described in section 6.4.
-    
+
     Out-of-bounds accesses to arrays of resources, such as an array of
     textures, can only access the data of bound resources. Reads from
     unbound resources return zero and writes are discarded. It is not
@@ -176,7 +176,7 @@ version 3.10.3
 
     Add a new section 5.12 "Out-of-Bounds Access and Robust Buffer Access
     Behavior" on p. 84:
-    
+
    "In the sections described above for array, vector, matrix and structure
     accesses, any out-of-bounds access produces undefined behavior. However,
     if robust buffer access is enabled via the GL API, such accesses will be
@@ -226,15 +226,15 @@ Issues
     1) Why are out-of-bounds reads of buffer object backed resources defined
        to allow returning "a value from the current buffer object" in
        addition to one of several possible defined values?
-       
+
        RESOLVED: This is necessary to allow the implementation to either
        range check, apply a mask/modulus or apply a clamp to the index.
-       
+
     2) Why do out-of-bounds writes to buffer object backed resources have a
        stronger guarantee than reads? The spec says that writes outside of
        the bounded range are discarded but reads are only protected within
        the buffer object.
-       
+
        RESOLVED: This stronger guarantee for writes can be made because
        GPUs made since around 2008 (DX10) already implement this behavior.
 
@@ -292,13 +292,13 @@ Revision History
                                   Add issue 5 on enabling the extension
                                   at context creation time.
       5   2014/06/09   Jon Leech  Update values-returned language to allow
-                                  returning any of 0, 1, or the maximum 
+                                  returning any of 0, 1, or the maximum
                                   representable positive value for integer
                                   types (Bug 12104).
       4   2014/06/02   Jon Leech  Incorporate new language on values returned
                                   from reads inside a buffer object (Bug
                                   12104 comment #31).
-      3   2014/05/14   Jon Leech  Revert language on disabled attribute 
+      3   2014/05/14   Jon Leech  Revert language on disabled attribute
                                   reads mistakenly included from bug 10695.
       2   2014/05/07   Jon Leech  Add issue 4 on values to be returned
                                   from out of bounds reads (Bug 12104).

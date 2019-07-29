@@ -82,19 +82,19 @@ Additions to Chapter 11 of the OpenGL 4.3 (Compatibility Profile) Specification
 
     Add to Section 11.1.3.10 (Shader Outputs)
 
-    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and 
+    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and
     gl_Layer hold the viewport index/mask and render target layer, as described
     in Section 11.4 (Viewport Index and Layer).
 
     Add to Section 11.2.1.2.3 (Tessellation Control Shader Outputs)
 
-    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and 
+    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and
     gl_Layer hold the viewport index/mask and render target layer, as described
     in Section 11.4 (Viewport Index and Layer).
 
     Add to Section 11.2.3.4 (Tessellation Evaluation Shader Outputs)
 
-    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and 
+    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and
     gl_Layer hold the viewport index/mask and render target layer, as described
     in Section 11.4 (Viewport Index and Layer).
 
@@ -102,7 +102,7 @@ Additions to Chapter 11 of the OpenGL 4.3 (Compatibility Profile) Specification
 
     Replace the paragraph about gl_ViewportIndex:
 
-    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and 
+    The built-in output variables gl_ViewportIndex, gl_ViewportMask[], and
     gl_Layer hold the viewport index/mask and render target layer, as described
     in Section 11.4 (Viewport Index and Layer).
 
@@ -118,13 +118,13 @@ Additions to Chapter 11 of the OpenGL 4.3 (Compatibility Profile) Specification
     layer to render to in shader code. The layer to render to is specified by
     writing to the built-in output variable gl_Layer.  Layered rendering
     requires the use of framebuffer objects (see section 9.8).
-    
-    Shaders may also direct each primitive to zero or more viewports. The 
-    destination viewports for a primitive may be selected in the shader by 
-    writing to the built-in output variable gl_ViewportIndex (selecting a 
-    single viewport) or gl_ViewportMask[] (selecting multiple viewports). 
-    This functionality allows a shader to direct its output to different 
-    viewports for each primitive, or to draw multiple versions of a primitive 
+
+    Shaders may also direct each primitive to zero or more viewports. The
+    destination viewports for a primitive may be selected in the shader by
+    writing to the built-in output variable gl_ViewportIndex (selecting a
+    single viewport) or gl_ViewportMask[] (selecting multiple viewports).
+    This functionality allows a shader to direct its output to different
+    viewports for each primitive, or to draw multiple versions of a primitive
     into several different viewports.
 
     The specific vertex of a primitive used to select the rendering layer or
@@ -144,14 +144,14 @@ Additions to Chapter 11 of the OpenGL 4.3 (Compatibility Profile) Specification
     primitive. The vertex considered the provoking vertex for particular
     primitive types is given in table 13.2.
 
-    The layer selection may be made a function of the viewport index, as 
+    The layer selection may be made a function of the viewport index, as
     described in Section 7.1 of the GLSL specification.
 
-    The viewport index, viewport mask, and layer outputs are available in 
-    vertex, tessellation control, tessellation evaluation, and geometry 
+    The viewport index, viewport mask, and layer outputs are available in
+    vertex, tessellation control, tessellation evaluation, and geometry
     shaders. Only the last active shader stage (in pipeline order) from this
-    list controls the viewport index/mask and layer; outputs in previous 
-    shader stages are not used, even if the last stage fails to write one of 
+    list controls the viewport index/mask and layer; outputs in previous
+    shader stages are not used, even if the last stage fails to write one of
     the outputs.
 
 
@@ -167,7 +167,7 @@ Additions to Chapter 13 of the OpenGL 4.3 (Compatibility Profile) Specification
 
 
     Modify Section 13.6.1 (Controlling the Viewport)
-    
+
     Multiple viewports are available and are numbered zero through the value
     of MAX_VIEWPORTS minus one.  If last active vertex, tessellation, or
     geometry shader writes to gl_ViewportIndex, the primitive is emitted to
@@ -177,7 +177,7 @@ Additions to Chapter 13 of the OpenGL 4.3 (Compatibility Profile) Specification
     of the viewport index is outside the range zero to the value of
     MAX_VIEWPORTS minus one, the results of the viewport transformation are
     undefined.
-    
+
     If last active vertex, tessellation, or geometry shader writes to
     gl_ViewportMask[], the primitive is emitted to zero or more viewports.  If
     bit <i> is set in the mask, the primitive is emitted to viewport <i> and
@@ -219,7 +219,7 @@ Additions to the AGL/GLX/WGL Specifications
 GLX Protocol
 
     None.
-    
+
 Modifications to the OpenGL Shading Language Specification, Version 4.30
 
     Including the following line in a shader can be used to control the
@@ -265,63 +265,63 @@ Modifications to the OpenGL Shading Language Specification, Version 4.30
 
     Modify descriptions of gl_Layer and gl_ViewportIndex as follows:
 
-    The variable gl_Layer is available as an output variable in the vertex, 
-    tessellation, and geometry (VTG) languages and an input variable in the 
-    fragment language. In the VTG languages, it is used to select a specific 
-    layer (or face and layer of a cube map) of a multi-layer framebuffer 
-    attachment. The actual layer used will come from one of the vertices in 
+    The variable gl_Layer is available as an output variable in the vertex,
+    tessellation, and geometry (VTG) languages and an input variable in the
+    fragment language. In the VTG languages, it is used to select a specific
+    layer (or face and layer of a cube map) of a multi-layer framebuffer
+    attachment. The actual layer used will come from one of the vertices in
     the primitive being shaded. Which vertex the layer comes from is undefined,
-    so it is best to write the same layer value for all vertices of a 
-    primitive. If a shader statically assigns a value to gl_Layer, layered 
-    rendering mode is enabled. See section 11.4 "Layer and Viewport Selection" 
-    and section 9.4.9 "Layered Framebuffers" of the OpenGL Graphics System 
-    Specification for more information. If a shader statically assigns a value 
-    to gl_Layer, and there is an execution path through the shader that does 
-    not set gl_Layer, then the value of gl_Layer is undefined for executions 
+    so it is best to write the same layer value for all vertices of a
+    primitive. If a shader statically assigns a value to gl_Layer, layered
+    rendering mode is enabled. See section 11.4 "Layer and Viewport Selection"
+    and section 9.4.9 "Layered Framebuffers" of the OpenGL Graphics System
+    Specification for more information. If a shader statically assigns a value
+    to gl_Layer, and there is an execution path through the shader that does
+    not set gl_Layer, then the value of gl_Layer is undefined for executions
     of the shader that take that path.
 
     ...
 
-    The input variable gl_Layer in the fragment language will have the same 
-    value that was written to the output variable gl_Layer in the VTG 
-    languages. If the final VTG stage does not dynamically assign a value to 
-    gl_Layer, the value of gl_Layer in the fragment stage will be undefined. 
-    If the final VTG stage makes no static assignment to gl_Layer, the input 
-    gl_Value in the fragment stage will be zero. Otherwise, the fragment stage 
+    The input variable gl_Layer in the fragment language will have the same
+    value that was written to the output variable gl_Layer in the VTG
+    languages. If the final VTG stage does not dynamically assign a value to
+    gl_Layer, the value of gl_Layer in the fragment stage will be undefined.
+    If the final VTG stage makes no static assignment to gl_Layer, the input
+    gl_Value in the fragment stage will be zero. Otherwise, the fragment stage
     will read the same value written by the final VTG stage, even if that value
     is out of range. If a fragment shader contains a static access to gl_Layer,
-    it will count against the implementation defined limit for the maximum 
+    it will count against the implementation defined limit for the maximum
     number of inputs to the fragment stage.
 
-    The variable gl_ViewportIndex is available as an output variable in the 
-    VTG languages and an input variable in the fragment language. In the 
-    geometry language, it provides the index of the viewport to which the next 
-    primitive emitted from the geometry shader should be drawn. In the vertex 
-    and tessellation languages, it provides the index of the viewport 
-    associated with the vertex being shaded. Primitives will undergo viewport 
-    transformation and scissor testing using the viewport transformation and 
-    scissor rectangle selected by the value of gl_ViewportIndex. The viewport 
-    index used will come from one of the vertices in the primitive being 
-    shaded. However, which vertex the viewport index comes from is 
-    implementation-dependent, so it is best to use the same viewport index for 
-    all vertices of the primitive. If the final VTG stage does not assign a 
-    value to gl_ViewportIndex or gl_ViewportMask[], viewport transform and 
+    The variable gl_ViewportIndex is available as an output variable in the
+    VTG languages and an input variable in the fragment language. In the
+    geometry language, it provides the index of the viewport to which the next
+    primitive emitted from the geometry shader should be drawn. In the vertex
+    and tessellation languages, it provides the index of the viewport
+    associated with the vertex being shaded. Primitives will undergo viewport
+    transformation and scissor testing using the viewport transformation and
+    scissor rectangle selected by the value of gl_ViewportIndex. The viewport
+    index used will come from one of the vertices in the primitive being
+    shaded. However, which vertex the viewport index comes from is
+    implementation-dependent, so it is best to use the same viewport index for
+    all vertices of the primitive. If the final VTG stage does not assign a
+    value to gl_ViewportIndex or gl_ViewportMask[], viewport transform and
     scissor rectangle zero will be used. If a shader statically assigns a value
-    to gl_ViewportIndex and there is a path through the shader that does not 
-    assign a value to gl_ViewportIndex, the value of gl_ViewportIndex is 
-    undefined for executions of the shader that take that path. See section 
-    11.4 "Layer and Viewport Selection" of the OpenGL Graphics System 
+    to gl_ViewportIndex and there is a path through the shader that does not
+    assign a value to gl_ViewportIndex, the value of gl_ViewportIndex is
+    undefined for executions of the shader that take that path. See section
+    11.4 "Layer and Viewport Selection" of the OpenGL Graphics System
     Specification for more information.
 
-    The input variable gl_ViewportIndex in the fragment stage will have the 
-    same value that was written to the output variable gl_ViewportIndex in the 
-    final VTG stage. If the final VTG stage does not dynamically assign to 
+    The input variable gl_ViewportIndex in the fragment stage will have the
+    same value that was written to the output variable gl_ViewportIndex in the
+    final VTG stage. If the final VTG stage does not dynamically assign to
     gl_ViewportIndex, the value of gl_ViewportIndex in the fragment shader will
-    be undefined. If the final VTG stage makes no static assignment to 
-    gl_ViewportIndex, the fragment stage will read zero. Otherwise, the 
-    fragment stage will read the same value written by the final VTG stage, 
-    even if that value is out of range. If a fragment shader contains a static 
-    access to gl_ViewportIndex, it will count against the implementation 
+    be undefined. If the final VTG stage makes no static assignment to
+    gl_ViewportIndex, the fragment stage will read zero. Otherwise, the
+    fragment stage will read the same value written by the final VTG stage,
+    even if that value is out of range. If a fragment shader contains a static
+    access to gl_ViewportIndex, it will count against the implementation
     defined limit for the maximum number of inputs to the fragment stage.
 
     The variable gl_ViewportMask[] is available as an output variable in the
@@ -343,7 +343,7 @@ Modifications to the OpenGL Shading Language Specification, Version 4.30
     one of these variables.  These incorrect usages all generate compile-time
     or link-time errors.
 
-    The shader output gl_Layer may be redeclared with a layout qualifer 
+    The shader output gl_Layer may be redeclared with a layout qualifer
     <viewport_relative> as follows:
 
         layout (viewport_relative) out highp int gl_Layer;
@@ -392,8 +392,8 @@ Interactions with NV_geometry_shader_passthrough
 Interactions with NV_gpu_program4
 
     If NV_gpu_program4 is supported and the "NV_viewport_array2" program
-    option is specified, vertex, tessellation control/evaluation, and geometry 
-    program result variable "result.viewportmask" can be used to specify the 
+    option is specified, vertex, tessellation control/evaluation, and geometry
+    program result variable "result.viewportmask" can be used to specify the
     mask of viewports that the primitive will be emitted to, "result.viewport"
     can be used to specify the index of the viewport that the primitive will
     be emitted to, and "result.layer" can be used to specify the layer of a
@@ -406,7 +406,7 @@ Interactions with NV_gpu_program4
                          | <resPrefix> "viewport"
                          | <resPrefix> "layer"
 
-    (add the following to the tables of Vertex, Geometry, and Tessellation 
+    (add the following to the tables of Vertex, Geometry, and Tessellation
     Control/Eval Program Result Variable Bindings)
 
       Binding                        Components  Description
@@ -417,32 +417,32 @@ Interactions with NV_gpu_program4
 
     (add the following to Section 2.X.2, Program Grammar)
 
-    If a result variable binding matches "result.viewportmask", updates to the 
-    "x" component of the result variable provide a single integer that serves 
-    as a mask of viewport indices. The mask must be written as an integer 
-    value; writing a floating-point value will produce undefined results. 
+    If a result variable binding matches "result.viewportmask", updates to the
+    "x" component of the result variable provide a single integer that serves
+    as a mask of viewport indices. The mask must be written as an integer
+    value; writing a floating-point value will produce undefined results.
     If the value has bits greater than or equal to MAX_VIEWPORTS set, the
-    number of viewports the primitive is emitted to and which viewports are 
-    used are undefined. If the "NV_viewport_array2" program option is not 
+    number of viewports the primitive is emitted to and which viewports are
+    used are undefined. If the "NV_viewport_array2" program option is not
     specified, the "result.viewportmask" binding is unavailable.
 
-    If both "result.viewport" and "result.viewportmask" are written, 
+    If both "result.viewport" and "result.viewportmask" are written,
     compilation will fail.
 
     (add the following to Section 2.X.6.Y, Program Options)
 
     + Viewport Mask (NV_viewport_array2)
 
-    If a vertex, geometry, tessellation control, or tessellation evaluation 
-    program specifies the "NV_viewport_array2" option, the result binding 
+    If a vertex, geometry, tessellation control, or tessellation evaluation
+    program specifies the "NV_viewport_array2" option, the result binding
     "result.viewportmask" will be available to specify the mask of viewports
-    to use for primitive viewport transformations and scissoring as described 
+    to use for primitive viewport transformations and scissoring as described
     in section 2.X.2. Additionally, the "result.viewport" and "result.layer"
     result bindings will be available in these same shader stages.
 
-    If a program specifies the "NV_layer_viewport_relative" option, the 
+    If a program specifies the "NV_layer_viewport_relative" option, the
     result.layer will have the viewport index automatically added to it. If
-    the result.viewportmask is used, the result.layer will be different for 
+    the result.viewportmask is used, the result.layer will be different for
     each viewport the primitive is emitted to.
 
 Issues

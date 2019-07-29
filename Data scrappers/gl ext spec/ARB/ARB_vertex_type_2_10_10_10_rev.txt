@@ -500,7 +500,7 @@ Revision History
     14    Mar 8, 2010   pbrown    Added language clarifying that NormalP*,
                                   ColorP*, and SecondaryColorP* are always
                                   normalized.  Also added issue 7.
-    13    Mar 5, 2010   pbrown    Expand the list of new functions to 
+    13    Mar 5, 2010   pbrown    Expand the list of new functions to
                                   enumerate each function individually.
     12    Feb 12, 2010  Jon Leech Change errors for invalid combinations of
                                   otherwise legal parameters to

@@ -14,7 +14,7 @@ Contributors
     Yanjun Zhang, S3
     Attila Barsi, Holografika
     Daniel Koch, NVIDIA
-     
+
 Contact
 
     Mark J. Kilgard, NVIDIA Corporation (mjk 'at' nvidia.com)
@@ -96,7 +96,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     "If the internal format of the texture image being modified is
     COMPRESSED_LUMINANCE_LATC1_EXT, COMPRESSED_SIGNED_LUMINANCE_LATC1_EXT,
     COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT, or
-    COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2_EXT, the texture is stored 
+    COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2_EXT, the texture is stored
     using one of the two LATC compressed texture image encodings (see
     appendix).  Such images are easily edited along 4x4 texel boundaries,
     so the limitations on TexSubImage2D or CopyTexSubImage2D parameters
@@ -126,7 +126,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     "If <internalformat> is COMPRESSED_LUMINANCE_LATC1_EXT,
     COMPRESSED_SIGNED_LUMINANCE_LATC1_EXT,
     COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT, or
-    COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2_EXT, the compressed texture is 
+    COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2_EXT, the compressed texture is
     stored using one of several LATC compressed texture image formats.
     The LATC texture compression algorithm supports only 2D images
     without borders.  CompressedTexImage1D and CompressedTexImage3D
@@ -309,13 +309,13 @@ Appendix
     where each block contains 64 or 128 bits of texel data.  The image
     is encoded as a normal 2D raster image in which each 4x4 block is
     treated as a single pixel.  If an LATC image has a width or height
-    that is not a multiple of four, the data corresponding to texels 
+    that is not a multiple of four, the data corresponding to texels
     outside the image are irrelevant and undefined.
 
     When an LATC image with a width of <w>, height of <h>, and block
     size of <blocksize> (8 or 16 bytes) is decoded, the corresponding
     image size (in bytes) is:
-    
+
         ceil(<w>/4) * ceil(<h>/4) * blocksize.
 
     When decoding an LATC image, the block containing the texel at offset
@@ -326,14 +326,14 @@ Appendix
 
     The data corresponding to a specific texel (<x>, <y>) are extracted
     from a 4x4 texel block using a relative (x,y) value of
-    
+
         (<x> modulo 4, <y> modulo 4).
 
     There are four distinct LATC image formats:
 
 
     COMPRESSED_LUMINANCE_LATC1:  Each 4x4 block of texels consists of
-    64 bits of unsigned luminance image data.  
+    64 bits of unsigned luminance image data.
 
     Each luminance image data block is encoded as a sequence of 8 bytes,
     called (in order of increasing address):
@@ -347,9 +347,9 @@ Appendix
                      256 * (bits_1 +
                             256 * (bits_2 +
                                    256 * (bits_3 +
-                                          256 * (bits_4 + 
+                                          256 * (bits_4 +
                                                  256 * bits_5))))
-        
+
         lum0 and lum1 are 8-bit unsigned integers that are unpacked to
         luminance values LUM0 and LUM1 as though they were pixels with
         a <format> of LUMINANCE and a type of UNSIGNED_BTYE.
@@ -359,7 +359,7 @@ Appendix
         using:
 
             code(x,y) = bits[3*(4*y+x)+2..3*(4*y+x)+0]
-        
+
         where bit 47 is the most significant and bit 0 is the least
         significant bit.
 
@@ -532,7 +532,7 @@ Issues
         slightly more negative than -1.0.
 
         This conversion is intentionally NOT the "byte" conversion listed
-        in Table 2.9 for component conversions.  That conversion says: 
+        in Table 2.9 for component conversions.  That conversion says:
 
             Xf = (2*X + 1) / 255.0
 
@@ -778,7 +778,7 @@ Revision History
     Revision 1.2, January 21, 2008: mjk
         -  Add issues #15 and #16.
 
-    Revision 1.3, April 14, 2009: pbrown 
+    Revision 1.3, April 14, 2009: pbrown
         - Add interaction with non-power-of-two textures from OpenGL 2.0 /
           ARB_texture_non_power_of_two.  Allow CompressedTexSubImage2D to
           perform edits that include partial tiles at the edge of the image as

@@ -12,7 +12,7 @@ Contact
 
 Status
 
-    Shipping for GeForce 8 Series (November 2006) 
+    Shipping for GeForce 8 Series (November 2006)
 
 Version
 
@@ -25,7 +25,7 @@ Number
 
 Dependencies
 
-    This extension is written against to OpenGL 2.0 specification.  
+    This extension is written against to OpenGL 2.0 specification.
 
     OpenGL 2.0 is not required, but we expect all implementations of this
     extension will also support OpenGL 2.0.
@@ -60,7 +60,7 @@ Overview
 
     This specification documents the common instruction set and basic
     functionality provided by NVIDIA's 4th generation of assembly instruction
-    sets supporting programmable graphics pipeline stages.  
+    sets supporting programmable graphics pipeline stages.
 
     The instruction set builds upon the basic framework provided by the
     ARB_vertex_program and ARB_fragment_program extensions to expose
@@ -96,30 +96,30 @@ Overview
 
 New Procedures and Functions
 
-    void ProgramLocalParameterI4iNV(enum target, uint index, 
+    void ProgramLocalParameterI4iNV(enum target, uint index,
                                     int x, int y, int z, int w);
-    void ProgramLocalParameterI4ivNV(enum target, uint index, 
+    void ProgramLocalParameterI4ivNV(enum target, uint index,
                                      const int *params);
-    void ProgramLocalParametersI4ivNV(enum target, uint index, 
+    void ProgramLocalParametersI4ivNV(enum target, uint index,
                                       sizei count, const int *params);
-    void ProgramLocalParameterI4uiNV(enum target, uint index, 
+    void ProgramLocalParameterI4uiNV(enum target, uint index,
                                      uint x, uint y, uint z, uint w);
-    void ProgramLocalParameterI4uivNV(enum target, uint index, 
+    void ProgramLocalParameterI4uivNV(enum target, uint index,
                                       const uint *params);
-    void ProgramLocalParametersI4uivNV(enum target, uint index, 
+    void ProgramLocalParametersI4uivNV(enum target, uint index,
                                        sizei count, const uint *params);
 
-    void ProgramEnvParameterI4iNV(enum target, uint index, 
+    void ProgramEnvParameterI4iNV(enum target, uint index,
                                   int x, int y, int z, int w);
-    void ProgramEnvParameterI4ivNV(enum target, uint index, 
+    void ProgramEnvParameterI4ivNV(enum target, uint index,
                                    const int *params);
-    void ProgramEnvParametersI4ivNV(enum target, uint index, 
+    void ProgramEnvParametersI4ivNV(enum target, uint index,
                                     sizei count, const int *params);
-    void ProgramEnvParameterI4uiNV(enum target, uint index, 
+    void ProgramEnvParameterI4uiNV(enum target, uint index,
                                    uint x, uint y, uint z, uint w);
-    void ProgramEnvParameterI4uivNV(enum target, uint index, 
+    void ProgramEnvParameterI4uivNV(enum target, uint index,
                                     const uint *params);
-    void ProgramEnvParametersI4uivNV(enum target, uint index, 
+    void ProgramEnvParametersI4uivNV(enum target, uint index,
                                      sizei count, const uint *params);
 
     void GetProgramLocalParameterIivNV(enum target, uint index,
@@ -135,7 +135,7 @@ New Tokens
 
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
-    GetFloatv, and GetDoublev: 
+    GetFloatv, and GetDoublev:
 
         MIN_PROGRAM_TEXEL_OFFSET_EXT                    0x8904
         MAX_PROGRAM_TEXEL_OFFSET_EXT                    0x8905
@@ -150,7 +150,7 @@ New Tokens
         MAX_PROGRAM_RESULT_COMPONENTS_NV                0x8909
         MAX_PROGRAM_GENERIC_ATTRIBS_NV                  0x8DA5
         MAX_PROGRAM_GENERIC_RESULTS_NV                  0x8DA6
-      
+
 Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     (Modify "Section 2.14.1" of the ARB_vertex_program specification,
@@ -166,20 +166,20 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
       void ProgramLocalParameter4fARB(enum target, uint index,
                                       float x, float y, float z, float w);
-      void ProgramLocalParameter4fvARB(enum target, uint index, 
+      void ProgramLocalParameter4fvARB(enum target, uint index,
                                        const float *params);
       void ProgramLocalParameter4dARB(enum target, uint index,
                                       double x, double y, double z, double w);
-      void ProgramLocalParameter4dvARB(enum target, uint index, 
+      void ProgramLocalParameter4dvARB(enum target, uint index,
                                        const double *params);
 
-      void ProgramLocalParameterI4iNV(enum target, uint index, 
+      void ProgramLocalParameterI4iNV(enum target, uint index,
                                       int x, int y, int z, int w);
-      void ProgramLocalParameterI4ivNV(enum target, uint index, 
+      void ProgramLocalParameterI4ivNV(enum target, uint index,
                                        const int *params);
-      void ProgramLocalParameterI4uiNV(enum target, uint index, 
+      void ProgramLocalParameterI4uiNV(enum target, uint index,
                                        uint x, uint y, uint z, uint w);
-      void ProgramLocalParameterI4uivNV(enum target, uint index, 
+      void ProgramLocalParameterI4uivNV(enum target, uint index,
                                         const uint *params);
 
     update the values of the program local parameter numbered <index>
@@ -193,11 +193,11 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     The commands
 
-      void ProgramLocalParameters4fvNV(enum target, uint index, 
+      void ProgramLocalParameters4fvNV(enum target, uint index,
                                        sizei count, const float *params);
-      void ProgramLocalParametersI4ivNV(enum target, uint index, 
+      void ProgramLocalParametersI4ivNV(enum target, uint index,
                                         sizei count, const int *params);
-      void ProgramLocalParametersI4uivNV(enum target, uint index, 
+      void ProgramLocalParametersI4uivNV(enum target, uint index,
                                          sizei count, const uint *params);
 
     update the values of the program local parameters numbered <index> through
@@ -231,13 +231,13 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                                     double x, double y, double z, double w);
       void ProgramEnvParameter4dvARB(enum target, uint index,
                                      const double *params);
-      void ProgramEnvParameterI4iNV(enum target, uint index, 
+      void ProgramEnvParameterI4iNV(enum target, uint index,
                                     int x, int y, int z, int w);
-      void ProgramEnvParameterI4ivNV(enum target, uint index, 
+      void ProgramEnvParameterI4ivNV(enum target, uint index,
                                      const int *params);
-      void ProgramEnvParameterI4uiNV(enum target, uint index, 
+      void ProgramEnvParameterI4uiNV(enum target, uint index,
                                      uint x, uint y, uint z, uint w);
-      void ProgramEnvParameterI4uivNV(enum target, uint index, 
+      void ProgramEnvParameterI4uivNV(enum target, uint index,
                                       const uint *params);
 
     update the values of the program environment parameter numbered <index>
@@ -251,11 +251,11 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     The commands
 
-      void ProgramEnvParameters4fvNV(enum target, uint index, 
+      void ProgramEnvParameters4fvNV(enum target, uint index,
                                      sizei count, const float *params);
-      void ProgramEnvParametersI4ivNV(enum target, uint index, 
+      void ProgramEnvParametersI4ivNV(enum target, uint index,
                                       sizei count, const int *params);
-      void ProgramEnvParametersI4uivNV(enum target, uint index, 
+      void ProgramEnvParametersI4uivNV(enum target, uint index,
                                        sizei count, const uint *params);
 
     update the values of the program environment parameters numbered <index>
@@ -284,7 +284,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     a fully programmable model or use a program to control aspects of the GL
     pipeline that previously had only hard-wired behavior.
 
-    A common base instruction set is available for all program types, 
+    A common base instruction set is available for all program types,
     providing both integer and floating-point operations.  Structured
     branching operations and subroutine calls are available.  Texture
     mapping (loading data from external images) is supported for all
@@ -316,7 +316,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     specific vertex, fragment, and geometry program types.
 
 
-    <program>               ::= <optionSequence> <declSequence> 
+    <program>               ::= <optionSequence> <declSequence>
                                 <statementSequence> "END"
 
     <optionSequence>        ::= <option> <optionSequence>
@@ -354,7 +354,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | <REPop_instruction>
                               | <ENDFLOWop_instruction>
 
-    <VECTORop_instruction>  ::= <VECTORop> <opModifiers> <instResult> "," 
+    <VECTORop_instruction>  ::= <VECTORop> <opModifiers> <instResult> ","
                                 <instOperandV>
 
     <VECTORop>              ::= "ABS"
@@ -374,7 +374,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "SSG"
                               | "TRUNC"
 
-    <SCALARop_instruction>  ::= <SCALARop> <opModifiers> <instResult> "," 
+    <SCALARop_instruction>  ::= <SCALARop> <opModifiers> <instResult> ","
                                 <instOperandS>
 
     <SCALARop>              ::= "COS"
@@ -390,12 +390,12 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "UP4B"
                               | "UP4UB"
 
-    <BINSCop_instruction>   ::= <BINSCop> <opModifiers> <instResult> "," 
+    <BINSCop_instruction>   ::= <BINSCop> <opModifiers> <instResult> ","
                                 <instOperandS> "," <instOperandS>
 
     <BINSCop>               ::= "POW"
 
-    <VECSCAop_instruction>  ::= <VECSCAop> <opModifiers> <instResult> "," 
+    <VECSCAop_instruction>  ::= <VECSCAop> <opModifiers> <instResult> ","
                                 <instOperandV> "," <instOperandS>
 
     <VECSCAop>              ::= "DIV"
@@ -403,7 +403,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "SHR"
                               | "MOD"
 
-    <BINop_instruction>     ::= <BINop> <opModifiers> <instResult> "," 
+    <BINop_instruction>     ::= <BINop> <opModifiers> <instResult> ","
                                 <instOperandV> "," <instOperandV>
 
     <BINop>                 ::= "ADD"
@@ -430,8 +430,8 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "DP2"
                               | "XOR"
 
-    <TRIop_instruction>     ::= <TRIop> <opModifiers> <instResult> "," 
-                                <instOperandV> "," <instOperandV> "," 
+    <TRIop_instruction>     ::= <TRIop> <opModifiers> <instResult> ","
+                                <instOperandV> "," <instOperandV> ","
                                 <instOperandV>
 
     <TRIop>                 ::= "CMP"
@@ -441,12 +441,12 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "SAD"
                               | "X2D"
 
-    <SWZop_instruction>     ::= <SWZop> <opModifiers> <instResult> "," 
+    <SWZop_instruction>     ::= <SWZop> <opModifiers> <instResult> ","
                                 <instOperandVNS> "," <extendedSwizzle>
 
     <SWZop>                 ::= "SWZ"
 
-    <TEXop_instruction>     ::= <TEXop> <opModifiers> <instResult> "," 
+    <TEXop_instruction>     ::= <TEXop> <opModifiers> <instResult> ","
                                 <instOperandV> "," <texAccess>
 
     <TEXop>                 ::= "TEX"
@@ -456,13 +456,13 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "TXP"
                               | "TXQ"
 
-    <TXDop_instruction>     ::= <TXDop> <opModifiers> <instResult> "," 
-                                <instOperandV> "," <instOperandV> "," 
+    <TXDop_instruction>     ::= <TXDop> <opModifiers> <instResult> ","
+                                <instOperandV> "," <instOperandV> ","
                                 <instOperandV> "," <texAccess>
 
     <TXDop>                 ::= "TXD"
 
-    <BRAop_instruction>     ::= <BRAop> <opModifiers> <instTarget> 
+    <BRAop_instruction>     ::= <BRAop> <opModifiers> <instTarget>
                                 <optBranchCond>
 
     <BRAop>                 ::= "CAL"
@@ -527,7 +527,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     <texOffset>             ::= "(" <texOffsetComp> ")"
                               | "(" <texOffsetComp> "," <texOffsetComp> ")"
-                              | "(" <texOffsetComp> "," <texOffsetComp> "," 
+                              | "(" <texOffsetComp> "," <texOffsetComp> ","
                                 <texOffsetComp> ")"
 
     <texOffsetComp>         ::= <optSign> <int>
@@ -586,7 +586,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     <PARAM_singleStmt>      ::= "PARAM" <establishName> <paramSingleInit>
 
-    <PARAM_multipleStmt>    ::= "PARAM" <establishName> <optArraySize> 
+    <PARAM_multipleStmt>    ::= "PARAM" <establishName> <optArraySize>
                                 <paramMultipleInit>
 
     <paramSingleInit>       ::= "=" <paramUseDB>
@@ -611,9 +611,9 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     <ALIAS_statement>       ::= "ALIAS" <establishName> "=" <establishedName>
 
-    <BUFFER_statement>      ::= <bufferDeclType> <establishName> "=" 
+    <BUFFER_statement>      ::= <bufferDeclType> <establishName> "="
                                 <bufferSingleInit>
-                              | <bufferDeclType> <establishName> 
+                              | <bufferDeclType> <establishName>
                                 <optArraySize> "=" <bufferMultInit>
 
     <bufferDeclType>        ::= "BUFFER"
@@ -696,7 +696,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "state" "." <stateDepthItem>
 
     <stateMaterialItem>     ::= "material" "." <stateMatProperty>
-                              | "material" "." <faceType> "." 
+                              | "material" "." <faceType> "."
                                 <stateMatProperty>
 
     <stateMatProperty>      ::= "ambient"
@@ -723,9 +723,9 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "scenecolor"
                               | <faceType> "." "scenecolor"
 
-    <stateLightProdItem>    ::= "lightprod" <arrayMemAbs> "." 
+    <stateLightProdItem>    ::= "lightprod" <arrayMemAbs> "."
                                 <stateLProdProperty>
-                              | "lightprod" <arrayMemAbs> "." <faceType> "." 
+                              | "lightprod" <arrayMemAbs> "." <faceType> "."
                                 <stateLProdProperty>
 
     <stateLProdProperty>    ::= "ambient"
@@ -740,11 +740,11 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     <stateMatrixRows>       ::= <stateMatrixItem>
                               | <stateMatrixItem> "." <stateMatModifier>
                               | <stateMatrixItem> "." "row" <arrayRange>
-                              | <stateMatrixItem> "." <stateMatModifier> "." 
+                              | <stateMatrixItem> "." <stateMatModifier> "."
                                 "row" <arrayRange>
 
     <stateMatrixRow>        ::= <stateMatrixItem> "." "row" <arrayMemAbs>
-                              | <stateMatrixItem> "." <stateMatModifier> "." 
+                              | <stateMatrixItem> "." <stateMatModifier> "."
                                 "row" <arrayMemAbs>
 
     <stateMatrixItem>       ::= "matrix" "." <stateMatrixName>
@@ -759,7 +759,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "texture" <optArrayMemAbs>
                               | "program" <arrayMemAbs>
 
-    <stateTexGenItem>       ::= "texgen" <optArrayMemAbs> "." 
+    <stateTexGenItem>       ::= "texgen" <optArrayMemAbs> "."
                                 <stateTexGenType> "." <stateTexGenCoord>
 
     <stateTexGenType>       ::= "eye"
@@ -777,7 +777,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     <statePointProperty>    ::= "size"
                               | "attenuation"
 
-    <stateTexEnvItem>       ::= "texenv" <optArrayMemAbs> "." 
+    <stateTexEnvItem>       ::= "texenv" <optArrayMemAbs> "."
                                 <stateTexEnvProperty>
 
     <stateTexEnvProperty>   ::= "color"
@@ -805,14 +805,14 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     <constantVector>        ::= "{" <constantVectorList> "}"
 
     <constantVectorList>    ::= <signedConstantScalar>
-                              | <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
                                 <signedConstantScalar>
-                              | <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
+                                <signedConstantScalar> ","
                                 <signedConstantScalar>
-                              | <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
+                                <signedConstantScalar> ","
+                                <signedConstantScalar> ","
                                 <signedConstantScalar>
 
     <signedConstantScalar>  ::= <optSign> <constantScalar>
@@ -977,7 +977,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
                               | "." <xyzwSwizzle>
                               | "." <rgbaSwizzle>
 
-    <extendedSwizzle>       ::= <extSwizComp> "," <extSwizComp> "," 
+    <extendedSwizzle>       ::= <extSwizComp> "," <extSwizComp> ","
                                 <extSwizComp> "," <extSwizComp>
 
     <extSwizComp>           ::= <optSign> <xyzwExtSwizSel>
@@ -1072,7 +1072,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     Programs may operate on a number of different variables during their
     execution.  The following sections define the different classes of
-    variables that can be declared and used by a program.  
+    variables that can be declared and used by a program.
 
     Some variable classes require variable bindings.  Variable classes with
     bindings refer to state that is either generated or consumed outside the
@@ -1296,9 +1296,9 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       -------------------------  ----------  -------------------------------
       program.env[a]             (x,y,z,w)   program environment parameter a
       program.local[a]           (x,y,z,w)   program local parameter a
-      program.env[a..b]          (x,y,z,w)   program environment parameters 
+      program.env[a..b]          (x,y,z,w)   program environment parameters
                                              a through b
-      program.local[a..b]        (x,y,z,w)   program local parameters 
+      program.local[a..b]        (x,y,z,w)   program local parameters
                                              a through b
 
       Table X.1:  Program Environment/Local Parameter Bindings.  <a> and <b>
@@ -1412,7 +1412,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     "y", "z", and "w" components of the program parameter variable are filled
     with the "x", "y", "z", and "w" components, respectively, of the light
     position.
-    
+
     If a program parameter binding matches "state.light[n].attenuation", the
     "x", "y", and "z" components of the program parameter variable are filled
     with the constant, linear, and quadratic attenuation parameters of the
@@ -1519,7 +1519,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       state.fog.color                (r,g,b,a)   RGB fog color (section 3.10)
       state.fog.params               (d,s,e,r)   fog density, linear start
                                                  and end, and 1/(end-start)
-                                                 (section 3.10) 
+                                                 (section 3.10)
 
       Table X.6:  Fog Property Bindings
 
@@ -1557,7 +1557,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       -----------------------------  ----------  ----------------------------
       state.point.size               (s,n,x,f)   point size, min and max size
                                                  clamps, and fade threshold
-                                                 (section 3.3) 
+                                                 (section 3.3)
       state.point.attenuation        (a,b,c,1)   point size attenuation consts
 
       Table X.8:  Point Property Bindings
@@ -1880,7 +1880,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     the program will fail to load unless the "NTC" (no type checking)
     instruction modifier is specified.
 
-                  Modifiers 
+                  Modifiers
       Instruction F I C S H D  Out Inputs    Description
       ----------- - - - - - -  --- --------  --------------------------------
       ABS         X X X X X F  v   v         absolute value
@@ -1939,7 +1939,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       SGE         X X X X X F  v   v,v       set on greater than or equal
       SGT         X X X X X F  v   v,v       set on greater than
       SHL         - X X - - S  v   v,s       shift left
-      SHR         - X X - - S  v   v,s       shift right 
+      SHR         - X X - - S  v   v,s       shift right
       SIN         X - X X X F  s   s         sine with reduction to [-PI,PI]
       SLE         X X X X X F  v   v,v       set on less than or equal
       SLT         X X X X X F  v   v,v       set on less than
@@ -1951,7 +1951,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       TEX         X X X X - F  v   vf        texture sample
       TRUNC       X X X X X F  v   vf        truncate (round toward zero)
       TXB         X X X X - F  v   vf        texture sample with bias
-      TXD         X X X X - F  v   vf,vf,vf  texture sample w/partials      
+      TXD         X X X X - F  v   vf,vf,vf  texture sample w/partials
       TXF         X X X X - F  v   vs        texel fetch
       TXL         X X X X - F  v   vf        texture sample w/LOD
       TXP         X X X X - F  v   vf        texture sample w/projection
@@ -2281,7 +2281,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
          NSF, NSF0, NSF1   no sign flag             !SF
          AB,  AB0,  AB1    above                    CF && !ZF
          BLE, BLE0, BLE1   below or equal           !CF || ZF
-       
+
       Table X.16, Condition Code Tests.  The allowed rules are specified in
       the "mask rule" column.  If "0" or "1" is appended to the rule name
       (e.g., "EQ1"), the corresponding condition code register (CC1 in this
@@ -2355,7 +2355,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     These descriptions use the function
 
       result_t_vec
-        TextureSample(float_vec coord, float lod, float_vec ddx, 
+        TextureSample(float_vec coord, float lod, float_vec ddx,
                       float_vec ddy, int_vec offset);
 
     which obtains a filtered texel value <tau> as described in Section 3.8.8
@@ -2505,7 +2505,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     The TXF instruction provides the ability to extract a single texel from a
     specified texture image using the function
-    
+
       result_t_vec TexelFetch(int_vec coord, int_vec offset);
 
     The extracted texel is converted to an (R,G,B,A) vector according to Table
@@ -2566,8 +2566,8 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       * if the texel at (i,j,k) coordinates refer to a border texel outside
         the defined extents of the specified LOD, where
 
-         i < -b_s, j < -b_s, k < -b_s, 
-         i >= w_s - b_s, j >= h_s - b_s, or k >= d_s - b_s, 
+         i < -b_s, j < -b_s, k < -b_s,
+         i >= w_s - b_s, j >= h_s - b_s, or k >= d_s - b_s,
 
         where the size parameters (w_s, h_s, d_s, and b_s) refer to the width,
         height, depth, and border size of the image, as in equations 3.15,
@@ -2726,7 +2726,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     Section 2.X.8, Program Instruction Set
 
     The following sections enumerate the set of instructions supported for GPU
-    programs.  
+    programs.
 
     Some instructions allow the use of one of the three basic data type
     modifiers (floating point, signed integer, and unsigned integer).  Unless
@@ -2746,7 +2746,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     The ABS instruction performs a component-wise absolute value operation on
     the single operand to yield a result vector.
 
-      tmp = VectorLoad(op0); 
+      tmp = VectorLoad(op0);
       result.x = abs(tmp.x);
       result.y = abs(tmp.y);
       result.z = abs(tmp.z);
@@ -2768,7 +2768,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       result.z = tmp0.z + tmp1.z;
       result.w = tmp0.w + tmp1.w;
 
-    ADD supports all three data type modifiers.    
+    ADD supports all three data type modifiers.
 
 
     Section 2.X.8.Z, AND:  Bitwise AND
@@ -2796,7 +2796,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     The following pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         continue execution at instruction following the next ENDREP;
       }
@@ -2811,7 +2811,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     matching RET instruction.  The following pseudocode describes the
     operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         if (callStackDepth >= MAX_PROGRAM_CALL_DEPTH_NV) {
           // undefined results
@@ -2875,7 +2875,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     The CMP instructions performs a component-wise comparison of the first
     operand against zero, and copies the values of the second or third
     operands based on the results of the compare.
-    
+
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1);
       tmp2 = VectorLoad(op2);
@@ -2896,7 +2896,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     The following pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         continue execution at the next ENDREP;
       }
@@ -2954,7 +2954,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     The results of an signed or unsigned integer division by zero are
     undefined.
 
-    
+
     Section 2.X.8.Z, DP2:  2-Component Dot Product
 
     The DP2 instruction computes a two-component dot product of the two
@@ -2999,7 +2999,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1);
-      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
             (tmp0.z * tmp1.z);
       result.x = dot;
       result.y = dot;
@@ -3017,7 +3017,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
             (tmp0.z * tmp1.z) + (tmp0.w * tmp1.w);
       result.x = dot;
       result.y = dot;
@@ -3037,7 +3037,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
             (tmp0.z * tmp1.z) + tmp1.w;
       result.x = dot;
       result.y = dot;
@@ -3118,7 +3118,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     Section 2.X.8.Z, ENDREP:  End of Repeat Block
 
-    The ENDREP instruction specifies the end of a REP block.  
+    The ENDREP instruction specifies the end of a REP block.
 
     When used with in conjunction with a REP instruction with a loop count,
     ENDREP decrements the loop counter.  If the decremented loop counter is
@@ -3231,8 +3231,8 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     MAX_PROGRAM_IF_DEPTH_NV or higher, a program will fail to compile.
 
       // Evaluate the condition.  If the condition is true, continue at the
-      // next instruction.  Otherwise, continue at the 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      // next instruction.  Otherwise, continue at the
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         continue execution at the next instruction;
       } else if (IF block contains an ELSE statement) {
@@ -3317,7 +3317,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     The LRP instruction performs a component-wise linear interpolation between
     the second and third operands using the first operand as the blend factor.
-    
+
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1);
       tmp2 = VectorLoad(op2);
@@ -3395,7 +3395,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     MOD supports both signed and unsigned integer data type modifiers.  If no
     data type modifier is specified, both operands and the result are treated
     as signed integers.
-    
+
     A result component is undefined if the corresponding component of the
     first operand is negative or if the second operand is less than or equal
     to zero.
@@ -3437,7 +3437,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     most significant bits of the 64-bit product.  Integer multiplies without
     the "HI" modifier normally return the least significant bits of the
     product.  If "HI" is specified, either of the "S" or "U" integer data type
-    modifiers must also be specified.  
+    modifiers must also be specified.
 
     Note that if condition code updates are performed on integer multiplies,
     the overflow or carry flags are always cleared, even if the product
@@ -3756,7 +3756,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     call stack and transferring control to the referenced instruction.  The
     following pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         if (callStackDepth <= 0) {
           // terminate program
@@ -3790,7 +3790,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       axis = VectorLoad(op0);
       direction = VectorLoad(op1);
       tmp.w = (axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
-      tmp.x = (axis.x * direction.x + axis.y * direction.y + 
+      tmp.x = (axis.x * direction.x + axis.y * direction.y +
                axis.z * direction.z);
       tmp.x = 2.0 * tmp.x;
       tmp.x = tmp.x / tmp.w;
@@ -4190,7 +4190,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
     "xSelect", "xNegate", "ySelect", "yNegate", "zSelect", "zNegate",
     "wSelect", and "wNegate" correspond to the "select" and "negate" values
-    above for the four <extSwizComp> matches.  
+    above for the four <extSwizComp> matches.
 
     Since this instruction allows for component selection and negation for
     each individual component, the grammar does not allow the use of the
@@ -4268,7 +4268,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     to the data type modifier.
 
 
-    Section 2.X.8.Z, TXD:  Texture Sample with Partials      
+    Section 2.X.8.Z, TXD:  Texture Sample with Partials
 
     The TXD instruction takes the four components of the first floating-point
     source vector and performs a filtered texture access as described in
@@ -4427,7 +4427,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
     is expected (but not required) that the operand was produced by a previous
     pack instruction.  The result is always written as a floating-point
     vector.
-    
+
     A program will fail to load if it contains a UP2H instruction whose
     operand is a variable declared as "SHORT".
 
@@ -4609,7 +4609,7 @@ Additions to Chapter 3 of the OpenGL 1.5 Specification (Rasterization)
     Let
 
       u(x,y) = w_t * s(x,y) + offsetu_shader,
-      v(x,y) = h_t * t(x,y) + offsetv_shader, 
+      v(x,y) = h_t * t(x,y) + offsetv_shader,
       w(x,y) = d_t * r(x,y) + offsetw_shader, and
 
     where w_t, h_t, and d_t are as defined by equations 3.15, 3.16, and 3.17
@@ -4672,16 +4672,16 @@ Additions to Chapter 3 of the OpenGL 1.5 Specification (Rasterization)
       --------------------------  ------------------------------------------
       CLAMP_TO_EDGE               clamp(coord, 0, size-1)
       CLAMP_TO_BORDER             clamp(coord, -1, size)
-      CLAMP                       { clamp(coord, 0, size-1), 
+      CLAMP                       { clamp(coord, 0, size-1),
                                   {         for NEAREST filtering
-                                  { clamp(coord, -1, size), 
+                                  { clamp(coord, -1, size),
                                   {         for LINEAR filtering
       REPEAT                      mod(coord, size)
       MIRROR_CLAMP_TO_EDGE_EXT    clamp(mirror(coord), 0, size-1)
       MIRROR_CLAMP_TO_BORDER_EXT  clamp(mirror(size), 0, size)
-      MIRROR_CLAMP_EXT            { clamp(mirror(coord), 0, size-1), 
+      MIRROR_CLAMP_EXT            { clamp(mirror(coord), 0, size-1),
                                   {         for NEAREST filtering
-                                  { clamp(mirror(size), 0, size), 
+                                  { clamp(mirror(size), 0, size),
                                   {         for LINEAR filtering
       MIRRORED_REPEAT             (size-1) - mirror(mod(coord, 2*size)-size)
 
@@ -4697,12 +4697,12 @@ Additions to Chapter 3 of the OpenGL 1.5 Specification (Rasterization)
     that satisfies any of the following conditions:
 
       i < -b_s,
-      j < -b_s, 
-      k < -b_s, 
-      i >= w_t + b_s, 
+      j < -b_s,
+      k < -b_s,
+      i >= w_t + b_s,
       j >= h_t + b_s, or
       j >= d_t + b_s,
- 
+
     then the border values defined by TEXTURE_BORDER_COLOR are used in place
     of the non-existent texel. If the texture contains color components, the
     values of TEXTURE_BORDER_COLOR are interpreted as an RGBA color to match
@@ -4823,7 +4823,7 @@ State Requests)
       void GetProgramivARB(enum target, enum pname, int *params);
 
     obtains program state for the program target <target>, writing ...
-    
+
     (add new paragraphs describing the new supported queries)
 
     If <pname> is PROGRAM_ATTRIB_COMPONENTS_NV or
@@ -4896,7 +4896,7 @@ GLX Protocol
         4           CARD32           params[2]
         4           CARD32           params[3]
 
-    Following new rendering commands are added. These can be sent as a 
+    Following new rendering commands are added. These can be sent as a
     glXRender or glXRenderLarge request.
 
     ProgramLocalParametersI4ivNV
@@ -5425,7 +5425,7 @@ Issues
       overhead cost is substantial.  Given that current CPUs often have a hard
       time keeping up with high-end GPUs, adding more overhead is a step in
       the wrong direction.  We expect developer tools, such as instrumented
-      drivers, to be able to provide type checking on most interfaces.  
+      drivers, to be able to provide type checking on most interfaces.
 
       The diagram below depicts assembly programmability.  Using vertex,
       geometry, and fragment shaders provided by the OpenGL Shading Language
@@ -5558,7 +5558,7 @@ Issues
                                       color                   color
                                     attachment              attachment
                                         0                       1
-         
+
 
     (5) Instructions can operate on signed integer, unsigned integer, and
     floating-point values.  Some operations make sense on all three data
@@ -5717,7 +5717,7 @@ Issues
     sufficient?
 
       RESOLVED:  While texture coordinates have been used in the past, generic
-      attributes should be provided.  
+      attributes should be provided.
 
       The assembler provides a large set of bindings and automatically
       eliminates generic attributes or components that are unused.  At each
@@ -5825,11 +5825,11 @@ Issues
     perspective-corrected attributes, and centroid-sampled attributes.
 
       RESOLVED:  Yes.  Fragment program attribute variable declarations may
-      specify the "FLAT", "NOPERSPECTIVE", and "CENTROID" modifiers.  
+      specify the "FLAT", "NOPERSPECTIVE", and "CENTROID" modifiers.
 
       These modifiers are documented in detail in the NV_fragment_program4
       specification.
-      
+
     (20) Should vertex and primitive identifiers be supported?  If so, how?
 
       RESOLVED:  A vertex identifier is available as "vertex.id" in a vertex
@@ -5880,7 +5880,7 @@ Issues
       modifier.  Examples include:
 
         ADD.S.CC  R0, R1, R2;       # add signed integers R1 and R2, update
-                                    #   CC0 based on the result, write the 
+                                    #   CC0 based on the result, write the
                                     #   final value to R0
         ADD.F.CC1 R3, R4, R5;       # add floats R4 and R5, update CC1 based
                                     #   on the result, write the final value
@@ -5898,12 +5898,12 @@ Issues
         MOV R0 (GT.x), R1;          # move R1 to R0 only if the x component of
                                     #   CC0 indicates a result of ">0"
         MOV R2 (NE1), R3;           # component-wise move of R3 to R2 if the
-                                    #   corresponding component of CC1 
+                                    #   corresponding component of CC1
                                     #   indicates a result of "!=0"
         IF LE0.xyxy;                # execute the block of code if the x or
           ...                       #   y components of CC0 indicate a result
         ENDIF;                      #   of "<=0"
-        REP;                        
+        REP;
           ...
           BRK EQ1.xyzx;             # break out of loop if the x, y, or z
         ENDREP;                     #   components of CC1 indicate a result of
@@ -5922,7 +5922,7 @@ Issues
       treated as equal to zero.
 
       Condition codes are implemented as a set of flags, which are set
-      depending on the type of operation, as described in the spec.  
+      depending on the type of operation, as described in the spec.
 
       For instructions that return floating-point or signed integer values,
       the normal condition code tests reliably indicate the relationship of
@@ -5935,7 +5935,7 @@ Issues
       unsigned integer is ">0", use a sequence like:
 
         MOV.U.CC R0, R1;            # move R1 to R0, set condition code
-        IF NE;                      # test if the result is "!=0", a very 
+        IF NE;                      # test if the result is "!=0", a very
           ...                       #   large value might fail "GT"!
         ENDIF;
 
@@ -6094,7 +6094,7 @@ Issues
         TEMP stack[256];                # 256 4-component vectors
         INT TEMP sp;                    # sp.x == stack pointer
         INT TEMP cc;                    # condition code results
-        
+
         function:
           SGE.S.CC cc.x, sp.x, 256;     # compute stackPointer >= 256
           RET NE.x;                     # return if TRUE
@@ -6169,7 +6169,7 @@ Issues
       implementation-dependent constant MAX_PROGRAM_CALL_DEPTH, and when a the
       call stack is full, the results of further CAL instructions is
       undefined.  In the initial implementation of this extension, such
-      instructions will have no effect.  
+      instructions will have no effect.
 
       Note that no stack is provided to hold local registers; a program may
       implement its own via a temporary array and integer stack "pointer".
@@ -6266,14 +6266,14 @@ Revision History
      9    10/29/09  pbrown    Add language for previously undocumented errors
                               when using "SHORT" and "LONG" modifiers on
                               variable declarations.  They're allowed only on
-                              "TEMP" statements, except that "SHORT" is 
+                              "TEMP" statements, except that "SHORT" is
                               allowed for "OUTPUT" as well.
 
-     8    08/11/08  jbreton   Clarified that when a MOD instruction is 
-                              performed on negative operands the result is 
+     8    08/11/08  jbreton   Clarified that when a MOD instruction is
+                              performed on negative operands the result is
                               undefined.
-                               
-     7    07/29/08  pbrown    Discovered additional issues with texture wrap 
+
+     7    07/29/08  pbrown    Discovered additional issues with texture wrap
                               handling, replaced with logic that applies wrap
                               modes per sample.  Add a few instruction
                               pseudo-code lines explicitly identifying
@@ -6282,7 +6282,7 @@ Revision History
      6    05/02/08  pbrown    Fix the prototype for the internal TexelFetch()
                               function used in the spec language; texel
                               coordinates are signed integers.
-                              
+
      5    02/22/08  pbrown    Clarified that when counting attribute/result
                               components, irrelevant/undefined components
                               can still count against the limits.
@@ -6299,7 +6299,7 @@ Revision History
                               EXT_gpu_shader4.  Clarify what happens on a
                               negate of an unsigned value.  Fix typo in data
                               type modifier description.  Add missing
-                              description of the "BUFFER4" declaration 
+                              description of the "BUFFER4" declaration
                               keyword.
 
      1              pbrown    Internal spec development.

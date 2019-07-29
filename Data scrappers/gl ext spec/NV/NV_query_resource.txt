@@ -55,7 +55,7 @@ Overview
 
 New Procedures and Functions
 
-    int QueryResourceNV(enum queryType, int pname, unsigned int bufSize, 
+    int QueryResourceNV(enum queryType, int pname, unsigned int bufSize,
                         int *buffer);
 
 New Tokens

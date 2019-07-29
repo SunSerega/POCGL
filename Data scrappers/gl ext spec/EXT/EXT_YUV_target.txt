@@ -305,18 +305,18 @@ specification
     - Add to the list of keywords:
 
         __samplerExternal2DY2YEXT
-        yuvCscStandardExt 
-        itu_601 
-        itu_601_full_range 
+        yuvCscStandardExt
+        itu_601
+        itu_601_full_range
         itu_709
-        
-        
+
+
 
 Changes to section 4.1 ("Basic Types") of the OpenGL ES Shading Language
 specification
     - Add to the list of Transparent types:
-        "yuvCscStandardExt    a value type to specify color space standard formula for 
-        transformation between yuv and rgb, taking values of itu_601, itu_601_full_range, 
+        "yuvCscStandardExt    a value type to specify color space standard formula for
+        transformation between yuv and rgb, taking values of itu_601, itu_601_full_range,
         itu_709"
 
     - Add to the list of Floating Point Sampler Types (opaque):
@@ -326,15 +326,15 @@ specification
 
     - Add a paragraph at the end of the section:
 
-        "The __samplerExternal2DY2YEXT and yuvCscStandardExt types are optional and must 
+        "The __samplerExternal2DY2YEXT and yuvCscStandardExt types are optional and must
         be enabled by
 
          #extension GL_EXT_YUV_target : enable
-         
+
          No type constructor or type conversion is allowed on yuvCscStandardExt. A value
-         of itu_601, itu_601_full_range, itu_709, or a variable typed as yuvCscStandardExt 
-         can be used as an argument to user-defined functions and the built-in functions yuv_2_rgb and 
-         rgb_2_yuv. Other than the assignment operator, any other operations on this type 
+         of itu_601, itu_601_full_range, itu_709, or a variable typed as yuvCscStandardExt
+         can be used as an argument to user-defined functions and the built-in functions yuv_2_rgb and
+         rgb_2_yuv. Other than the assignment operator, any other operations on this type
          of values or variables will be treated as a compilation error."
 
 Changes to section 4.5.4 ("Default Precision Qualifiers") of the OpenGL ES
@@ -364,15 +364,15 @@ Language specification
 Add a new section 8.10 "Conversion Functions between YUV and RGB"
 
     - Add a new table containing 2 entries:
-        
+
         vec3 rgb_2_yuv(vec3 color, yuvCscStandardEXT conv_standard);
-        apply rgb to yuv color conversion transformation on "color" value 
-        using the formula specified by conv_standard. 
+        apply rgb to yuv color conversion transformation on "color" value
+        using the formula specified by conv_standard.
 
         vec3 yuv_2_rgb(vec3 color, yuvCscStandardEXT conv_standard);
         apply yuv to rgb color conversion transformation on "color" value
         using the formula specified by conv_standard.
-    
+
 Compatibility with OpenGL ES 3.1 and ESSL 3.10
 
     This extension is expected to work without modification with OpenGL ES 3.1

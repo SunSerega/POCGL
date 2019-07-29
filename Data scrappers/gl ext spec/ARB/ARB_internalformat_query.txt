@@ -41,7 +41,7 @@ Status
 Version
 
     Last Modified Date: June 13, 2011
-    Revision: 7 
+    Revision: 7
 
 Number
 
@@ -441,7 +441,7 @@ Issues
     9) Can we query additional properties supported for an internal format
     in addition to multisample-related information with this API?
 
-    RESOLVED: DEFERRED. Yes this API is suitable for that, but the 
+    RESOLVED: DEFERRED. Yes this API is suitable for that, but the
     specification is left for a layered extension.
 
     Other possible <pnames> include:
@@ -449,76 +449,76 @@ Issues
         - maximum width of object
       MAX_HEIGHT
         - maximum height of object
-      MAX_DEPTH   
+      MAX_DEPTH
         - maximum depth/# of layers of object
-      MAX_COMBINED_SIZE   
+      MAX_COMBINED_SIZE
         - maximum size of object (w*h*d) (due to implementation-specific
           limitations)
-      FRAMEBUFFER_RENDERABLE  
+      FRAMEBUFFER_RENDERABLE
         - can be rendered to via FBO attachment
-      FRAMEBUFFER_RENDERABLE_BLEND    
+      FRAMEBUFFER_RENDERABLE_BLEND
         - can be rendered to via FBO attachment when blending is enabled
-      MIPMAPS 
+      MIPMAPS
         - more than one mipmap can be supported
-      GENERATE_MIPMAPS    
+      GENERATE_MIPMAPS
         - is generate mipmaps supported
-      READPIXEL   
-        - framebuffers with this internal format can be read directly with 
+      READPIXEL
+        - framebuffers with this internal format can be read directly with
           an appropriate format/type by ReadPixels
-      FILTER_LINEAR   
-        - can the MIN/MAG filter be set to LINEAR values? Are filters other 
+      FILTER_LINEAR
+        - can the MIN/MAG filter be set to LINEAR values? Are filters other
           than NEAREST supported?
-      SRGB_READ   
+      SRGB_READ
         - texture reads from this internalformat occur in SRGB colorspace
-      SRGB_WRITE  
-        - framebuffers with this internalformat can be rendered to with 
+      SRGB_WRITE
+        - framebuffers with this internalformat can be rendered to with
           FRAMEBUFFER_SRGB enabled
-      SRGB_DECODE 
-        - textures of this format support toggling TEXTURE_SRGB_DECODE 
+      SRGB_DECODE
+        - textures of this format support toggling TEXTURE_SRGB_DECODE
           (ie EXT_texture_sRGB_decode)
-      VERTEX_TEXTURE  
+      VERTEX_TEXTURE
         - textures with this internalformat can be sampled from vertex shaders
-      TESS_CONTROL_TEXTURE    
+      TESS_CONTROL_TEXTURE
         - textures with this internalformat can be sampled from tessellation
           control shaders
-      TESS_EVALUATION_TEXTURE 
+      TESS_EVALUATION_TEXTURE
         - textures with this internalformat can be sampled from tessellation
           evaluation shaders
-      GEOMETRY_TEXTURE    
+      GEOMETRY_TEXTURE
         - textures with this internalformat can be sampled from geometry shaders
-      FRAGMENT_TEXTURE    
+      FRAGMENT_TEXTURE
         - textures with this internalformat can be sampled from fragment shaders
-      TEXTURE_SHADOW  
+      TEXTURE_SHADOW
         - textures with this internalformat support shadow samplers
-      TEXTURE_GATHER  
+      TEXTURE_GATHER
         - textures with this internalformat support texture gather operations
-      TEXTURE_GATHER_SHADOW   
+      TEXTURE_GATHER_SHADOW
         - textures with this internalformat support texture gather operations
           with shadow samplers
-      SHADER_IMAGE_LOAD   
+      SHADER_IMAGE_LOAD
         - textures with this internalformat support image load operations
           from shaders
-      SHADER_IMAGE_STORE  
+      SHADER_IMAGE_STORE
         - textures with this internalformat support image store operations
           from shaders
-      SHADER_IMAGE_ATOMIC 
+      SHADER_IMAGE_ATOMIC
         - textures with this internalformat support atomic memory operations
           from shaders
-      FORMAT_SUPPORTED    
+      FORMAT_SUPPORTED
         - the requested internal format is known and supported for at least
           some subset of the possible operations
-      ACTUAL_INTERNALFORMAT   
+      ACTUAL_INTERNALFORMAT
         - the actual internalformat used by the implementation when the
           specified internalformat is requested
-      PERFORMANCE_HINT    
+      PERFORMANCE_HINT
         - an indication that this format will or may operate at reduced
-          performance in some cases (should this be a bitfield, array, 
+          performance in some cases (should this be a bitfield, array,
           or a specific bit on each of the other queries?)
 
     Possible values for some of the above pnames:
         - HARDWARE (or SUPPORTED), SOFTWARE (or CAVEAT), UNSUPPORTED.
 
-    Additional Values for <target> that would be valid for 
+    Additional Values for <target> that would be valid for
       TEXTURE_1D
       TEXTURE_1D_ARRAY
       TEXTURE_2D
@@ -528,7 +528,7 @@ Issues
       TEXTURE_CUBE_MAP_ARRAY
       TEXTURE_RECTANGLE
       TEXTURE_BUFFER
-    Could also consider meta targets such as: 
+    Could also consider meta targets such as:
       ALL
       ANY
       TEXTURE
@@ -537,14 +537,14 @@ Issues
     10) Is the <target> parameter required?  If so, should it be the first or
     second parameter?
 
-    RESOLVED: 
+    RESOLVED:
     a) Yes. It is possible that in some implementations and for some of the possible
     uses of this query, that the results will depend on the texture target.
     b) First parameter. All other entry points that take a <target> have it as the
-    first parameter. 
+    first parameter.
 
 Revision History
-    
+
     Revision 7, 2011/06/13 dgkoch
       - recast as ARB extension
 
@@ -561,7 +561,7 @@ Revision History
       - updates to issue 9, added issue 10
 
     Revision 3, 2011/05/05 dgkoch
-      - rename the formal parameter from 'format' to 'internalformat' 
+      - rename the formal parameter from 'format' to 'internalformat'
         to match the spec body.
       - changed SAMPLES_LENGTH to NUM_SAMPLE_COUNTS
       - added issue 9

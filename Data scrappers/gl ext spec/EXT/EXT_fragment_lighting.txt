@@ -48,7 +48,7 @@ Overview
                     |              -----------------  |
                     |              |               |  v
                     Cf'            | FragmentLight |<-o-<- Material {Am,Em,Dm,Sm,Nm,...}
-                    |              |               |          
+                    |              |               |
                     |              -----------------
                     |                      |
                     |                  ---------
@@ -56,7 +56,7 @@ Overview
                     |                  ---------
                     |       Cl             |
                     |      +----------------
-                    v      v 
+                    v      v
                   ------------
                   |          |
                   | LightEnv |
@@ -108,7 +108,7 @@ Issues
         growth for OpenGL.  I think we owe it to our developers
         to force a consistent growth direction by trying to look
         ahead a little.
-    
+
     *   We apply texture environment before lighting so that decals
         can be lighted correctly.  The spec does not provide a
         mechanism for applying texture after lighting.  There are
@@ -118,15 +118,15 @@ Issues
         extension to allow textures to be bound to the attenuation
         term, specular exponent, environment term, normal perturbation,
         etc.
-    
+
     *   Should the FragmentColorMaterial command really be done through
         texture binding posts and TexEnv moved after lighting?
 
-        No. 
-    
+        No.
+
     *   New LightModel parameters?
         yes, NORMAL_INTERPOLATION control
-    
+
     *   We deliberately chose to decouple the control of normal interpolation
         for fragment lighting from ShadeModel, choosing to put it in the
         FragmentLightModel command.  We chose not to provide any mechanism to
@@ -140,7 +140,7 @@ Issues
         to per-vertex materials.  If a material change occurs between a
         Begin/End sequence, then only the last material specified before the
         provoking vertex will affect the shading computation.
-    
+
     *   overload ColorMaterial & Material face param with FRAGMENT_FRONT,
         FRAGMENT_BACK, and FRAGMENT_FRONT_AND_BACK rather than separate commands?
 
@@ -174,18 +174,18 @@ Issues
         (vimal).
 
         Yes.  MAX_ACTIVE_LIGHTS_EXT
-    
+
     *   is the flatshading definition correct?  unlike flatshading for
         vertex lighting, the color will not be constant, just the normal
         so N.L will vary across the face.  Yes, it is what we want.
         There is now a mechanism which allows flat or smooth color with
         flat or smooth fragment lighting (flat or smooth normals).
-    
+
     *   treatment of alpha?
 
         alpha comes from the diffuse material if fragment lighting
         is enabled.
-    
+
     *   the state of FrontFace affects the interpretation of two-sided
         lighting.  Should there be separate state for vertex and fragment
         lighting?
@@ -326,7 +326,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     Section 3.9 Fragment Lighting
 
-    If enabled, fragment lighting computes a color for each rasterized fragment 
+    If enabled, fragment lighting computes a color for each rasterized fragment
     by applying an equation defined by a client-specified lighting model to
     a collection of parameters that can include the fragment coordinates, the
     coordinates of one or more light sources, the fragment normal, and
@@ -338,13 +338,13 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     1. Lighting Off.  In this state the color assigned to a fragment is the
        rasterized fragment's post-texturing color.
-    
+
     2. Lighting On.  In this state the color assigned to a fragment is the
        result of combining the rasterized fragment's post-texturing color and
        a color computed from the current fragment lighting parameters.  The
        two colors are combined according to the function defined
        by Lighting Environment described below.
-    
+
     Fragment lighting is turned either on or off using the generic Enable or
     Disable commands with the symbolic value FRAGMENT_LIGHTING_EXT.
 
@@ -389,14 +389,14 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
             + Sm*Sl_i*(f_i)(N.H_i)^n    specular material*specular light
           }
         }
-    
+
         Nf is the number of fragment light sources
-        N is the fragment normal vector 
+        N is the fragment normal vector
         L_i is the direction vector from the fragment position to the light source
         H_i is the half angle vector
         f_i is as defined in equation (2.2)
         n is the specular exponent (shininess)
-    
+
     Rewrite the equation as:
 
     I[i] = Atten_i*SpotL_i*(Am*Al_i + Dm*Dl_i*(N.L_i) + Sm*Sl*(f_i)(N.H_i)^n) (3.1)
@@ -441,7 +441,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     fragment lighting.  The lighting model state is described in section
     2.13.1.  Fragment lighting model state includes one additional parameter,
     FRAGMENT_LIGHT_MODEL_NORMAL_INTERPOLATION_EXT, which controls how normals
-    are selected for use in the fragment lighting computations for a primitive. 
+    are selected for use in the fragment lighting computations for a primitive.
     If FLAT is selected for the lighting model, the normal from the provoking
     vertex (as described in Section 2.13.7 Flatshading) of the primitive for all
     fragment lighting computations for the primitive.  If SMOOTH is specified
@@ -495,7 +495,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     The command that controls which of these modes is selected is
 
         void FragmentColorMaterial(enum face, enum mode);
-    
+
     <face> is one of FRONT, BACK, or FRONT_AND_BACK, indicating whether
     the front material, back material, or both are affected by the
     pre-texturing color.  <mode> is one of EMISSION, AMBIENT, DIFFUSE,
@@ -508,7 +508,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     3.9.5 Interactions with Vertex Lighting
 
-    In order to allow implementions to share resources for vertex lighting and 
+    In order to allow implementions to share resources for vertex lighting and
     fragment lighting, an implementation may limit the maximum number of combined
     vertex and fragment lights to a number less than the sum of MAX_LIGHTS and
     MAX_FRAGMENT_LIGHTS_EXT.  This limit can be queried using the Get command

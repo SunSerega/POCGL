@@ -22,9 +22,9 @@ Dependencies
 
 Overview
 
-    This extension introduces named vertex array objects.  This extension is 
+    This extension introduces named vertex array objects.  This extension is
     primarily useful when coupled with the EXT_compiled_vertex_array extension,
-    although that extension is not strictly required.  
+    although that extension is not strictly required.
 
     A significant problem with compiled vertex arrays is that they allow only
     one set of arrays to be locked at one time.  This means that
@@ -94,7 +94,7 @@ Issues
     different display lists could not be shared by such a mechanism.
 
     * Should we add a general object mechanism?
-    
+
     Yes
 
 Reasoning
@@ -102,7 +102,7 @@ Reasoning
     * Note that PrioritizeVertexArraysSGIX and AreVertexArraysResidentSGIX do
     take zero as a valid argument, which differs with the EXT_texture_object.
 
-    * Regarding display lists on Odyssey:  
+    * Regarding display lists on Odyssey:
 
 New Procedures and Functions
 
@@ -127,7 +127,7 @@ New Procedures and Functions
 New Tokens
 
     Accepted by the <value> parameters of GetBooleanv, GetDoublev, GetFloatv,
-    GetIntegerv: 
+    GetIntegerv:
 
     VERTEX_ARRAY_PRIORITY_SGIX    0x????
 
@@ -262,7 +262,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     The name of the vertex array object currently bound is returned in
     <params> when GetIntegerv is called with <value> set to
     VERTEX_ARRAY_BINDING_SGIX.  If no vertex array object is currently bound,
-    zero is returned.  
+    zero is returned.
 
     A vertex array object comprises the vertex array priority, element size,
     type, stride, and client array pointters that are associated with that
@@ -313,7 +313,7 @@ Dependencies on EXT_compiled_vertex_array
 
     If EXT_compiled_vertex_array is not supported, section 2.8.2 should
     be omited, and the ARRAY_ELEMENT_XXX constants in the Chapter 6 addition
-    should be omitted. 
+    should be omitted.
 
 Errors
 

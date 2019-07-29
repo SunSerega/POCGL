@@ -58,9 +58,9 @@ Issues
     well.  Since this function might be useful, it should be revisited
     in a separate spec that allows this for all internal formats, not
     just the ones defined here.  Additionally, any porting document
-    should mention this subtle point.  
+    should mention this subtle point.
 
-    *    Should we include versions of these new internal formats that don't 
+    *    Should we include versions of these new internal formats that don't
     specify bit resolution?  (e.g. DUAL_ALPHA_SGIS)  It would add the
     ability to be vague about the actual resolution and would make it
     appear consistent with internal formats from EXT_texture.  Can
@@ -77,8 +77,8 @@ Issues
     *    Is there an easy way to know whether this extension is actually
     "enabled"?  A. This extension is enabled when the current texture
     format is one of the new internal formats defined here.  An
-    additional query is required to determine which group of components 
-    is selected. 
+    additional query is required to determine which group of components
+    is selected.
 
 
 New Procedures and Functions
@@ -112,7 +112,7 @@ New Tokens
     QUAD_INTENSITY8_SGIS
 
     Accepted by the <pname> parameter of TexParameterf, TexParameteri,
-    TexParameterfv, TexParameteriv, GetTexParameterfv, and 
+    TexParameterfv, TexParameteriv, GetTexParameterfv, and
     GetTexParameteriv:
 
     DUAL_TEXTURE_SELECT_SGIS
@@ -125,8 +125,8 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
 Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
-    The selection of a group of components is specified by using 
-    TexParameterf, TexParameteri, TexParameterfv, or TexParameteriv with 
+    The selection of a group of components is specified by using
+    TexParameterf, TexParameteri, TexParameterfv, or TexParameteriv with
     a <pname> parameter of DUAL_TEXTURE_SELECT_SGIS or QUAD_TEXTURE_SELECT_SGIS.
 
     The value of DUAL_TEXTURE_SELECT_SGIS selects one of two groups of
@@ -140,7 +140,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     groups of components in the case that the texture internal format is one
     of the QUAD* formats.  The <param> value must be 0, 1, 2 or 3.
     Otherwise, an INVALID_VALUE error is set.
-    
+
     There is always a selection defined for both DUAL_TEXTURE_SELECT_SGIS
     and QUAD_TEXTURE_SELECT_SGIS formats.  It becomes active when the
     current texture format becomes one of the DUAL* or QUAD* formats,
@@ -158,7 +158,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     GREEN component to the second group, the BLUE component to the third
     group, and the ALPHA component to the fourth group.
 
-    The interpretation of the bit resolutions of the new internal formats 
+    The interpretation of the bit resolutions of the new internal formats
     is implementation dependent.  (Similar to EXT_texture.)  The actual
     resolution granted can be queried using Get*.  The bit resolution of
     similar type components in a group, such as multiple LUMINANCE
@@ -238,7 +238,7 @@ New State
     QUAD_TEXTURE_SELECT_SGIS        GetTexParameter        n x 3 x Z4        0        texture
 
 
-    Note:  The "Type" column shows "n x ..." since this state will appear 
+    Note:  The "Type" column shows "n x ..." since this state will appear
     in each of "n" objects defined by EXT_texture_object.
 
 New Implementation Dependent State

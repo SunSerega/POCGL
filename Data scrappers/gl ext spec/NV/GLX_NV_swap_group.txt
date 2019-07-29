@@ -24,7 +24,7 @@ Number
 
 Dependencies
 
-    Written based on the wording of the GLX_SGIX_swap_group and 
+    Written based on the wording of the GLX_SGIX_swap_group and
     GLX_SGIX_swap_barrier specifications.
 
     SGIX_swap_control affects the definition of this extension
@@ -48,7 +48,7 @@ Issues
 
     An implementation can not guarantee that the initialization of the swap
     groups or barriers will succeed because the state of the window system may
-    restrict the usage of these features. Once a swap group or barrier has 
+    restrict the usage of these features. Once a swap group or barrier has
     been sucessfully initialized, the implementation can only guarantee to
     sustain swap group functionality as long as the state of the window system
     does not restrict this. An example for a state that does typically not
@@ -70,7 +70,7 @@ New Procedures and Functions
                              GLuint *group,
                              GLuint *barrier);
 
-    Bool glXQueryMaxSwapGroupsNV(Display *dpy, 
+    Bool glXQueryMaxSwapGroupsNV(Display *dpy,
                                  int screen,
                                  GLuint *maxGroups,
                                  GLuint *maxBarriers);
@@ -153,7 +153,7 @@ Additions to the GLX Specification
 
     2. If the window belongs to a group, the group is ready.
 
-    3. If the window belongs to a group and that group is bound to a 
+    3. If the window belongs to a group and that group is bound to a
        barrier, all groups using that barrier are ready.
 
     Buffer swaps for all windows in a swap group will take place

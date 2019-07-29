@@ -163,10 +163,10 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
 
     <ARLop>                 ::= "ARR"
 
-    <ARLop_src>             ::= <instOperandV>  
+    <ARLop_src>             ::= <instOperandV>
                                   (*** instead of <instOperandS>)
 
-    <ARAop_instruction>     ::= <ARAop> <instResultAddr> "," 
+    <ARAop_instruction>     ::= <ARAop> <instResultAddr> ","
                                 <instOperandAddrVNS>
 
     <ARAop>                 ::= "ARA"
@@ -204,11 +204,11 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
 
     <branchLabel>           ::= <identifier>
 
-    <paramUseV>             ::= <constantScalar> 
+    <paramUseV>             ::= <constantScalar>
                                   (*** instead of <constantScalar>
                                        <swizzleSuffix>)
 
-    <paramUseS>             ::= <constantScalar> 
+    <paramUseS>             ::= <constantScalar>
                                   (*** instead of <constantScalar>
                                        <scalarSuffix>)
 
@@ -217,7 +217,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     <addrUseVNS>            ::= <addrVarName>
 
     <addrUseW>              ::= <addrVarName> <optAddrWriteMask>
-                                  (*** instead of <addrVarName> 
+                                  (*** instead of <addrVarName>
                                        <addrWriteMask>)
 
     <ccMask>                ::= "(" <ccTest> ")"
@@ -233,14 +233,14 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
                               | "TR"
                               | "FL"
 
-    <optAddrWriteMask>      ::= <optWriteMask> 
+    <optAddrWriteMask>      ::= <optWriteMask>
                                   (*** instead of "." "x")
 
-    <addrComponent>         ::= <xyzwComponent> 
+    <addrComponent>         ::= <xyzwComponent>
                                   (*** instead of "x")
 
     (modify description of reserved identifiers)
-    
+
     ... The following strings are reserved keywords and may not be used
     as identifiers:
 
@@ -417,7 +417,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
           return operand;
       }
 
-      float ScalarLoad(floatVec source) 
+      float ScalarLoad(floatVec source)
       {
           float operand;
 
@@ -646,7 +646,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     (modify 3rd paragraph) Transformed vertices are then assembled into
     primitives and clipped as described in section 2.11.  Clip distance
     results are used to control user clip planes.
-    
+
     Add to Section 2.14.4.5, Vertex Program Options:
 
     Section 2.14.4.5.2, NV_vertex_program2 Option
@@ -656,20 +656,20 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     NV_vertex_program2 extension not present in the ARB_vertex_program
     extension, including:
 
-      * the availability of the following instructions:  
+      * the availability of the following instructions:
 
-          - ARA (address register add, useful for looping), 
-          - ARR (address register load with round), 
-          - BRA (branch), 
-          - CAL (subroutine call), 
-          - COS (cosine), 
-          - RET (subroutine return), 
-          - SEQ (set on equal), 
-          - SFL (set on false), 
-          - SGT (set on greater than), 
-          - SIN (sine), 
-          - SLE (set on less than or equal), 
-          - SNE (set on not equal), 
+          - ARA (address register add, useful for looping),
+          - ARR (address register load with round),
+          - BRA (branch),
+          - CAL (subroutine call),
+          - COS (cosine),
+          - RET (subroutine return),
+          - SEQ (set on equal),
+          - SFL (set on false),
+          - SGT (set on greater than),
+          - SIN (sine),
+          - SLE (set on less than or equal),
+          - SNE (set on not equal),
           - SSG (set sign), and
           - STR (set on true).
 
@@ -715,7 +715,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     and floor(+3.7) = +3.0.
 
     Note that in the unextended ARB_vertex_program specification, the ARL
-    instruction loads a scalar operand and generates a scalar result.  
+    instruction loads a scalar operand and generates a scalar result.
 
     Add to Section 2.14.5,  Vertex Program Instruction Set
 
@@ -758,7 +758,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     following the label specified in the instruction.  The following
     pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         // continue execution at instruction following <branchLabel>
       } else {
@@ -777,7 +777,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     the matching RET instruction.  The following pseudocode describes
     the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         if (callStackDepth >= MAX_PROGRAM_CALL_DEPTH_NV) {
           // terminate vertex program
@@ -842,7 +842,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     instruction.  The following pseudocode describes the operation of
     the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         if (callStackDepth <= 0) {
           // terminate vertex program
@@ -1043,12 +1043,12 @@ Dependencies on ARB_vertex_program
                               | "RCP"
                               | "RSQ"
 
-    <BINSCop_instruction>   ::= <BINSCop> <instResult> "," <instOperandS> "," 
+    <BINSCop_instruction>   ::= <BINSCop> <instResult> "," <instOperandS> ","
                                 <instOperandS>
 
     <BINSCop>               ::= "POW"
 
-    <BINop_instruction>     ::= <BINop> <instResult> "," <instOperandV> "," 
+    <BINop_instruction>     ::= <BINop> <instResult> "," <instOperandV> ","
                                 <instOperandV>
 
     <BINop>                 ::= "ADD"
@@ -1064,12 +1064,12 @@ Dependencies on ARB_vertex_program
                               | "SUB"
                               | "XPD"
 
-    <TRIop_instruction>     ::= <TRIop> <instResult> "," <instOperandV> "," 
+    <TRIop_instruction>     ::= <TRIop> <instResult> "," <instOperandV> ","
                                 <instOperandV> "," <instOperandV>
 
     <TRIop>                 ::= "MAD"
 
-    <SWZop_instruction>     ::= <SWZop> <instResult> "," <instOperandVNS> "," 
+    <SWZop_instruction>     ::= <SWZop> <instResult> "," <instOperandVNS> ","
                                 <extendedSwizzle>
 
     <SWZop>                 ::= "SWZ"
@@ -1119,7 +1119,7 @@ Dependencies on ARB_vertex_program
 
     <PARAM_singleStmt>      ::= "PARAM" <establishName> <paramSingleInit>
 
-    <PARAM_multipleStmt>    ::= "PARAM" <establishName> "[" <optArraySize> "]" 
+    <PARAM_multipleStmt>    ::= "PARAM" <establishName> "[" <optArraySize> "]"
                                 <paramMultipleInit>
 
     <optArraySize>          ::= /* empty */
@@ -1184,7 +1184,7 @@ Dependencies on ARB_vertex_program
     <attribColor>           ::= "vertex" "." "color"
 
     <paramUseV>             ::= <paramSingleVarName> <swizzleSuffix>
-                              | <paramArrayVarName> "[" <arrayMem> "]" 
+                              | <paramArrayVarName> "[" <arrayMem> "]"
                                 <swizzleSuffix>
                               | <stateSingleItem> <swizzleSuffix>
                               | <programSingleItem> <swizzleSuffix>
@@ -1192,7 +1192,7 @@ Dependencies on ARB_vertex_program
                               | <constantScalar> <swizzleSuffix>
 
     <paramUseS>             ::= <paramSingleVarName> <scalarSuffix>
-                              | <paramArrayVarName> "[" <arrayMem> "]" 
+                              | <paramArrayVarName> "[" <arrayMem> "]"
                                 <scalarSuffix>
                               | <stateSingleItem> <scalarSuffix>
                               | <programSingleItem> <scalarSuffix>
@@ -1230,7 +1230,7 @@ Dependencies on ARB_vertex_program
                               | "state" "." <statePointItem>
 
     <stateMaterialItem>     ::= "material" "." <stateMatProperty>
-                              | "material" "." <faceType> "." 
+                              | "material" "." <faceType> "."
                                 <stateMatProperty>
 
     <stateMatProperty>      ::= "ambient"
@@ -1239,7 +1239,7 @@ Dependencies on ARB_vertex_program
                               | "emission"
                               | "shininess"
 
-    <stateLightItem>        ::= "light" "[" <stateLightNumber> "]" "." 
+    <stateLightItem>        ::= "light" "[" <stateLightNumber> "]" "."
                                 <stateLightProperty>
 
     <stateLightProperty>    ::= "ambient"
@@ -1258,9 +1258,9 @@ Dependencies on ARB_vertex_program
                               | "." "scenecolor"
                               | "." <faceType> "." "scenecolor"
 
-    <stateLightProdItem>    ::= "lightprod" "[" <stateLightNumber> "]" "." 
+    <stateLightProdItem>    ::= "lightprod" "[" <stateLightNumber> "]" "."
                                 <stateLProdProperty>
-                              | "lightprod" "[" <stateLightNumber> "]" "." 
+                              | "lightprod" "[" <stateLightNumber> "]" "."
                                 <faceType> "." <stateLProdProperty>
 
     <stateLProdProperty>    ::= "ambient"
@@ -1276,16 +1276,16 @@ Dependencies on ARB_vertex_program
 
     <stateMatrixRows>       ::= <stateMatrixItem>
                               | <stateMatrixItem> "." <stateMatModifier>
-                              | <stateMatrixItem> "." "row" "[" 
-                                <stateMatrixRowNum> ".." <stateMatrixRowNum> 
+                              | <stateMatrixItem> "." "row" "["
+                                <stateMatrixRowNum> ".." <stateMatrixRowNum>
                                 "]"
-                              | <stateMatrixItem> "." <stateMatModifier> "." 
-                                "row" "[" <stateMatrixRowNum> ".." 
+                              | <stateMatrixItem> "." <stateMatModifier> "."
+                                "row" "[" <stateMatrixRowNum> ".."
                                 <stateMatrixRowNum> "]"
 
-    <stateMatrixRow>        ::= <stateMatrixItem> "." "row" "[" 
+    <stateMatrixRow>        ::= <stateMatrixItem> "." "row" "["
                                 <stateMatrixRowNum> "]"
-                              | <stateMatrixItem> "." <stateMatModifier> "." 
+                              | <stateMatrixItem> "." <stateMatModifier> "."
                                 "row" "[" <stateMatrixRowNum> "]"
 
     <stateMatrixItem>       ::= "matrix" "." <stateMatrixName>
@@ -1312,7 +1312,7 @@ Dependencies on ARB_vertex_program
 
     <stateProgramMatNum>    ::= <integer> /*[0,MAX_PROGRAM_MATRICES_ARB-1]*/
 
-    <stateTexGenItem>       ::= "texgen" <optTexCoordNum> "." 
+    <stateTexGenItem>       ::= "texgen" <optTexCoordNum> "."
                                 <stateTexGenType> "." <stateTexGenCoord>
 
     <stateTexGenType>       ::= "eye"
@@ -1343,32 +1343,32 @@ Dependencies on ARB_vertex_program
 
     <progEnvParam>          ::= "program" "." "env" "[" <progEnvParamNum> "]"
 
-    <progLocalParams>       ::= "program" "." "local" "[" <progLocalParamNums> 
+    <progLocalParams>       ::= "program" "." "local" "[" <progLocalParamNums>
                                 "]"
 
     <progLocalParamNums>    ::= <progLocalParamNum>
                               | <progLocalParamNum> ".." <progLocalParamNum>
 
-    <progLocalParam>        ::= "program" "." "local" "[" <progLocalParamNum> 
+    <progLocalParam>        ::= "program" "." "local" "[" <progLocalParamNum>
                                 "]"
 
-    <progEnvParamNum>       ::= <integer> 
+    <progEnvParamNum>       ::= <integer>
                                 /*[0,MAX_PROGRAM_ENV_PARAMETERS_ARB-1]*/
 
-    <progLocalParamNum>     ::= <integer> 
+    <progLocalParamNum>     ::= <integer>
                                 /*[0,MAX_PROGRAM_LOCAL_PARAMETERS_ARB-1]*/
 
     <constantVector>        ::= "{" <constantVectorList> "}"
 
     <constantVectorList>    ::= <signedConstantScalar>
-                              | <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
                                 <signedConstantScalar>
-                              | <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
+                                <signedConstantScalar> ","
                                 <signedConstantScalar>
-                              | <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
+                                <signedConstantScalar> ","
+                                <signedConstantScalar> ","
                                 <signedConstantScalar>
 
     <signedConstantScalar>  ::= <optSign> <constantScalar>
@@ -1388,17 +1388,17 @@ Dependencies on ARB_vertex_program
     <resultUseW>            ::= <resultBasic> <optWriteMask>
                               | <resultVarName> <optWriteMask>
                               | <resultVtxColor> <optWriteMask>
-                              | <resultVtxColor> "." <colorType> 
+                              | <resultVtxColor> "." <colorType>
                                 <optWriteMask>
                               | <resultVtxColor> "." <faceType> <optWriteMask>
-                              | <resultVtxColor> "." <faceType> "." 
+                              | <resultVtxColor> "." <faceType> "."
                                 <colorType> "." <optWriteMask>
 
     <resultUseD>            ::= <resultBasic>
                               | <resultVtxColor>
                               | <resultVtxColor> "." <colorType>
                               | <resultVtxColor> "." <faceType>
-                              | <resultVtxColor> "." <faceType> "." 
+                              | <resultVtxColor> "." <faceType> "."
                                 <colorType>
 
     <resultBasic>           ::= "result" "." <resultVtxBasic>
@@ -1448,10 +1448,10 @@ Dependencies on ARB_vertex_program
 
     <swizzleSuffix>         ::= /* empty */
                               | "." <component>
-                              | "." <xyzwComponent> <xyzwComponent> 
+                              | "." <xyzwComponent> <xyzwComponent>
                                 <xyzwComponent> <xyzwComponent>
 
-    <extendedSwizzle>       ::= <extSwizComp> "," <extSwizComp> "," 
+    <extendedSwizzle>       ::= <extSwizComp> "," <extSwizComp> ","
                                 <extSwizComp> "," <extSwizComp>
 
     <extSwizComp>           ::= <optSign> <xyzwExtSwizSel>
@@ -1488,7 +1488,7 @@ Dependencies on ARB_vertex_program
     <vtxOptWeightNum>       ::= /* empty */
                               | "[" <vtxWeightNum> "]"
 
-    <vtxWeightNum>          ::= <integer> /*[0,MAX_VERTEX_UNITS_ARB-1] must be 
+    <vtxWeightNum>          ::= <integer> /*[0,MAX_VERTEX_UNITS_ARB-1] must be
                                 divisible by four */
 
     <optTexCoordNum>        ::= /* empty */
@@ -1546,6 +1546,6 @@ Revision History
                              RET with an empty call stack is not an error.
 
     2     05/16/04  pbrown   Documented terminals in modified vertex program
-                             grammar. 
+                             grammar.
 
     1     --------  pbrown   Internal pre-release revisions.

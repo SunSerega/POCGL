@@ -1,24 +1,24 @@
-Name 
+Name
 
-    IMG_read_format 
+    IMG_read_format
 
-Name Strings 
+Name Strings
 
-    GL_IMG_read_format 
+    GL_IMG_read_format
 
 Notice
 
     Copyright Imagination Technologies Limited, 2005, 2008.
 
-Contact 
+Contact
 
     Imagination Technologies (devtech 'at' imgtec 'dot' com)
 
-Status 
+Status
 
     Complete
 
-Version 
+Version
 
     Version 1.0
 
@@ -26,17 +26,17 @@ Number
 
     OpenGL ES Extension #53
 
-Dependencies 
+Dependencies
 
     GL_OES_read_format is required
 
-    The extension is written against the OpenGLES 1.0 Specification, 
-    which in turn is based OpenGL 1.3. Thus this spec is effectively 
-    written against OpenGL 1.3 but does not address sections explicitly 
+    The extension is written against the OpenGLES 1.0 Specification,
+    which in turn is based OpenGL 1.3. Thus this spec is effectively
+    written against OpenGL 1.3 but does not address sections explicitly
     removed or reduced by OpenGL-ES 1.0.
 
-Overview 
-    
+Overview
+
     This extension is intended to supplement the GL_OES_read_format
     extension by adding support for more format/type combinations to be used
     when calling ReadPixels.  ReadPixels currently accepts one fixed
@@ -56,20 +56,20 @@ Overview
     IMPLEMENTATION_COLOR_READ_FORMAT_OES can now return BGRA, with the
     corresponding call to GetIntegerv using a <pname> parameter of
     IMPLEMENTATION_COLOR_READ_TYPE_OES returning UNSIGNED_BYTE;
-     
-IP Status 
+
+IP Status
 
     Unknown
 
-Issues 
+Issues
 
     None.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     None.
 
-New Tokens 
+New Tokens
 
     Accepted by the <format> parameter of ReadPixels:
 
@@ -96,7 +96,7 @@ Additions to Chapter 6 of the OpenGL 1.3 Specification (State and State Requests
 
     None
 
-Errors 
+Errors
 
     None
 

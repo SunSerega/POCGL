@@ -83,20 +83,20 @@ Operations and the Frame Buffer)
         "Blending is controlled by the blend equation.  This equation can be
         simultaneously set to the same value for all draw buffers using the
         commands:
-    
+
            void BlendEquation(enum mode);
-    
+
            void BlendEquationSeparate(enum modeRGB, enum modeAlpha);
-    
+
         or for an individual draw buffer using the indexed versions of the
         same commands:
-    
+
             void BlendEquationIndexedAMD(uint buf, enum mode);
-    
+
             void BlendEquationSeparateIndexedAMD(uint buf
                                                  enum modeRGB,
                                                  enum modeAlpha);
-    
+
         BlendEquationSeparate and BlendEquationSeparateIndexedAMD separate
         out the blend equations into an RGB argument and an Alpha argument.
         <modeRGB> determine the RGB blend function while <modeAlpha>
@@ -124,13 +124,13 @@ Operations and the Frame Buffer)
 
         or for an individual draw buffer using the indexed versions of the
         same commands:
-    
+
             void BlendFuncIndexedAMD(uint buf, enum src, enum dst);
-    
+
             void BlendFuncSeparateIndexedAMD(uint buf, enum srcRGB,
                                              enum dstRGB, enum srcAlpha,
                                              enum dstAlpha);
-    
+
         BlendFuncSeparate and BlendFuncSeparateIndexedAMD arguments <srcRGB>
         and <dstRGB> determine the source and destination RGB blend functions,
         respectively, while <srcAlpha> and <dstAlpha> determine the source and

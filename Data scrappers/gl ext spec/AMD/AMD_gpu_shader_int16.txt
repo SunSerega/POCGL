@@ -566,7 +566,7 @@ Dependencies on ARB_gpu_shader_int64:
 
     If the shader enables only AMD_gpu_shader_int16, but not ARB_gpu_shader_int64
     then:
-    
+
     * all references to int64_t and uint64_t should be ignored.
 
 Dependencies on KHR_vulkan_glsl:
@@ -624,7 +624,7 @@ Issues
 
     (1) Should the new int16_t and uint16_t types support types as members of
         uniform blocks and shader storage buffer blocks?
-        
+
     RESOLVED: Yes, both types can be used in both SSBOs and UBOs, each consuming
               2 basic machine units.
 
@@ -671,11 +671,11 @@ Issues
                                 //          takes offsets 40-55, v[1] takes
                                 //          offsets 56-71
           };
-          
+
     (3) Are interactions with GL_AMD_shader_ballot supported?
     (4) Are interactions with GL_AMD_shader_explicit_vertex_parameter supported?
     (5) Are interactions with GL_AMD_shader_trinary_minmax supported?
-    
+
     RESOLVED: Not yet. These will be resolved at a later time.
 
     (6) Does this extension provide a new subpassLoad() function prototype which

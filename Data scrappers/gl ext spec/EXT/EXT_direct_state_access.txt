@@ -1,5 +1,5 @@
 Name
- 
+
     EXT_direct_state_access
 
 Name Strings
@@ -321,7 +321,7 @@ Overview
     is not zero so the current pixel unpack buffer, rather than client
     memory, will be read?  Or what if the application has modified
     the GL_UNPACK_ROW_LENGTH pixel store state before loadTexture
-    is called?  
+    is called?
 
     We can fix the routine by calling glBindBuffer(GL_PIXEL_UNPACK_BUFFER,
     0) and setting all the pixel store unpack state to the initial state
@@ -650,7 +650,7 @@ New Procedures and Functions
     prefix to name and adds initial "uint program" parameter>
 
         void NamedProgramStringEXT(uint program, enum target, enum format,
-                                   sizei len, const void *string); 
+                                   sizei len, const void *string);
 
         void NamedProgramLocalParameter4dEXT(uint program, enum target,
                                              uint index,
@@ -914,27 +914,27 @@ New Procedures and Functions
 
         void NamedProgramLocalParameters4fvEXT(uint program, enum target,
                                                uint index, sizei count,
-                                               const float *params); 
+                                               const float *params);
 
     <NV_gpu_program4: New program commands and queries add "Named"
     prefix to name and replace "enum target" with "uint program">
 
         void NamedProgramLocalParameterI4iEXT(uint program, enum target,
-                                              uint index, 
+                                              uint index,
                                               int x, int y,
                                               int z, int w);
         void NamedProgramLocalParameterI4ivEXT(uint program, enum target,
-                                               uint index, 
+                                               uint index,
                                                const int *params);
         void NamedProgramLocalParametersI4ivEXT(uint program, enum target,
                                                 uint index, sizei count,
                                                 const int *params);
         void NamedProgramLocalParameterI4uiEXT(uint program, enum target,
-                                               uint index, 
+                                               uint index,
                                                uint x, uint y,
                                                uint z, uint w);
         void NamedProgramLocalParameterI4uivEXT(uint program, enum target,
-                                                uint index, 
+                                                uint index,
                                                 const uint *params);
         void NamedProgramLocalParametersI4uivEXT(uint program, enum target,
                                                  uint index, sizei count,
@@ -970,7 +970,7 @@ New Procedures and Functions
     renderbuffer">
 
         void NamedRenderbufferStorageMultisampleCoverageEXT(uint renderbuffer,
-                                                            sizei coverageSamples, 
+                                                            sizei coverageSamples,
                                                             sizei colorSamples,
                                                             enum internalformat,
                                                             sizei width,
@@ -1028,7 +1028,7 @@ New Procedures and Functions
                                           int *param);
 
     <OpenGL 3.0: New buffer data copy command>
-        void NamedCopyBufferSubDataEXT(uint readBuffer, uint writeBuffer, 
+        void NamedCopyBufferSubDataEXT(uint readBuffer, uint writeBuffer,
                                        intptr readOffset, intptr writeOffset,
                                        sizeiptr size);
 
@@ -1036,10 +1036,10 @@ New Procedures and Functions
     add "Named" prefix to name and replace "enum target" with "uint
     framebuffer">
 
-        void NamedFramebufferTextureEXT(uint framebuffer, enum attachment, 
+        void NamedFramebufferTextureEXT(uint framebuffer, enum attachment,
                                         uint texture, int level);
         void NamedFramebufferTextureLayerEXT(uint framebuffer,
-                                             enum attachment, 
+                                             enum attachment,
                                              uint texture,
                                              int level, int layer);
         void NamedFramebufferTextureFaceEXT(uint framebuffer, enum attachment,
@@ -1048,7 +1048,7 @@ New Procedures and Functions
 
     <NV_explicit_multisample:  New texture renderbuffer object command
     replaces "Tex" in name with "Texture" and add initial "uint texture"
-    parameter> 
+    parameter>
 
         void TextureRenderbufferEXT(uint texture, enum target,
                                     uint renderbuffer);
@@ -1231,7 +1231,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
                                      sizeiptr length, bitfield access);
         void FlushMappedNamedBufferRangeEXT(uint buffer, intptr offset,
                                             sizeiptr length);
-        void NamedCopyBufferSubDataEXT(uint readBuffer, uint writeBuffer, 
+        void NamedCopyBufferSubDataEXT(uint readBuffer, uint writeBuffer,
                                        intptr readOffset, intptr writeOffset,
                                        sizeiptr size);
 
@@ -1906,7 +1906,7 @@ Operations and the Frame Buffer)
                                                     sizei width, sizei height);
 
         void NamedRenderbufferStorageMultisampleCoverageEXT(uint renderbuffer,
-                                                            sizei coverageSamples, 
+                                                            sizei coverageSamples,
                                                             sizei colorSamples,
                                                             enum internalformat,
                                                             sizei width,
@@ -1948,10 +1948,10 @@ Operations and the Frame Buffer)
                                              enum renderbuffertarget,
                                              uint renderbuffer);
 
-        void NamedFramebufferTextureEXT(uint framebuffer, enum attachment, 
+        void NamedFramebufferTextureEXT(uint framebuffer, enum attachment,
                                         uint texture, int level);
         void NamedFramebufferTextureLayerEXT(uint framebuffer,
-                                             enum attachment, 
+                                             enum attachment,
                                              uint texture,
                                              int level, int layer);
         void NamedFramebufferTextureFaceEXT(uint framebuffer, enum attachment,
@@ -2081,7 +2081,7 @@ Additions to Chapter 5 of the OpenGL 3.0 Specification (Special Functions)
 
     Add to the list (page 310) of "Vertex Buffer Objects" commands
     "not compiled into the display list but are executed immediately":
-    
+
          NamedCopyBufferSubDataEXT
 
 Additions to Chapter 6 of the OpenGL 3.0 Specification (State and
@@ -2492,7 +2492,7 @@ Additions to the ARB_vertex_program specification
     "This command
 
         void NamedProgramStringEXT(uint program, enum target, enum format,
-                                   sizei len, const void *string); 
+                                   sizei len, const void *string);
 
     operates identically to ProgramStringARB except, rather than
     specifying the string for the currently bound program for the program
@@ -2587,7 +2587,7 @@ Additions to the EXT_gpu_program_parameters specification
 
         void NamedProgramLocalParameters4fvEXT(uint program, enum target,
                                                uint index, sizei count,
-                                               const float *params); 
+                                               const float *params);
 
     operate identically to ProgramLocalParameters4fvEXT except, rather
     than updating the currently bound program for the program target
@@ -2614,7 +2614,7 @@ Additions to the NV_gpu_program4 specification
     "These commands
 
         void NamedProgramLocalParameterI4iEXT(uint program, enum target,
-                                              uint index, 
+                                              uint index,
                                               int x, int y,
                                               int z, int w);
         void NamedProgramLocalParameterI4ivEXT(uint program, enum target,
@@ -2624,11 +2624,11 @@ Additions to the NV_gpu_program4 specification
                                                 uint index, sizei count,
                                                 const int *params);
         void NamedProgramLocalParameterI4uiEXT(uint program, enum target,
-                                               uint index, 
+                                               uint index,
                                                uint x, uint y,
                                                uint z, uint w);
         void NamedProgramLocalParameterI4uivEXT(uint program, enum target,
-                                                uint index, 
+                                                uint index,
                                                 const uint *params);
         void NamedProgramLocalParametersI4uivEXT(uint program, enum target,
                                                  uint index, sizei count,
@@ -2997,7 +2997,7 @@ Errors
 
     INVALID_OPERATION is generated by FramebufferDrawBuffersEXT if <n>
     is greater than the state MAX_DRAW_BUFFERS.
-    
+
     INVALID_OPERATION is generated by FramebufferDrawBuffersEXT if value
     in <bufs> does not correspond to one of the allowed buffers.
 
@@ -3017,10 +3017,10 @@ NVIDIA Implementation Details
     NVIDIA drivers prior to 330.00 (August 2013) have a bug where
     glMultiTexGeniEXT acts identically to glTexGeni (so glMultiTexGeniEXT
     ignores its texture unit parameter).
-    
+
     As a workaround, use glMultiTexGenivEXT.  So problematic code written
     as:
-    
+
       glMultiTexGeniEXT(texUnit, coord, pname, value);
 
     can be rewritten as:
@@ -3951,7 +3951,7 @@ Issues
 
         If so, there should also be a query
         glGetFramebufferMultisamplefvEXT for NV_explicit_multisample
-        for similar reasons. 
+        for similar reasons.
 
             void GetFramebufferMultisamplefvEXT(uint framebuffer,
                                                 enum pname, uint index,

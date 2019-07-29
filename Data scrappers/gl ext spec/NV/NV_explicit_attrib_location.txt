@@ -36,7 +36,7 @@ Dependencies
     (November 2, 2010).
 
     Written based on the wording of The OpenGL ES Shading Language 1.0.17
-    Specification (May 12, 2009).    
+    Specification (May 12, 2009).
 
 Overview
 
@@ -53,7 +53,7 @@ New Procedures and Functions
 New Tokens
 
     None
-    
+
 Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation)
 
     Section 2.10.4 "Shader Variables", subsection "Vertex Attributes"
@@ -68,7 +68,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation)
     automatically assigned by the GL when the program is linked."
 
     Modify the third paragraph describing BindAttribLocation to read:
- 
+
     "When a program is linked, any active attributes without a binding
     specified either through BindAttribLocation or explicitly set within
     the shader text will automatically be bound to vertex attributes by
@@ -161,10 +161,10 @@ Issues
 
     1. How should the error be reported when the attribute location
        specified in the shader source is larger than MAX_VERTEX_ATTRIBUTES?
-       
+
        RESOLVED.  Generate a link error.  The existing spec language already
        covers this case:
-       
+
        "LinkProgram will fail if the assigned binding of an active attribute
        variable would cause the GL to reference a non-existent generic
        attribute (one greater than or equal to MAX_VERTEX_ATTRIBS)."

@@ -375,7 +375,7 @@ Additions to the GLX, WGL, and AGL Specification
 
 GLX Protocol
 
-    A new GL rendering command is added. The following command is sent to the 
+    A new GL rendering command is added. The following command is sent to the
     server as part of a glXRender request:
 
         ActiveStencilFaceEXT
@@ -475,7 +475,7 @@ STENCIL_PASS_DEPTH_PASS    2xZ6  GetIntegerv  KEEP           Stencil depth      
 Get Value                  Type  Get Command  Initial Value  Description        Sec    Attribute
 -------------------------  ----  -----------  -------------  -----------------  ------ ---------------------
 STENCIL_TEST_TWO_SIDE_EXT  B     IsEnabled    False          Two-sided stencil  4.1.4  stencil-buffer/enable
-                                                             test enable 
+                                                             test enable
 ACTIVE_STENCIL_FACE_EXT    Z2    GetIntegerv  FRONT          Active stencil     4.1.4  stencil-buffer
                                                              face selector
 

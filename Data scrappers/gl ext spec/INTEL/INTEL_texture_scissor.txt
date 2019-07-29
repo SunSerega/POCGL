@@ -21,7 +21,7 @@ Dependencies
 
 Overview
 
-This extension enables one to render with clipping based on texture 
+This extension enables one to render with clipping based on texture
 coordinates. The only way to clip a primitive while rendering in GL 1.1 is
 to define a Clipping Plane. Clipping of the primitive is then  effected
 based on the spatial coordinates of the primitive with reference to the user
@@ -64,7 +64,7 @@ inherently non-linear different points in the original volume (identified
 by a unique 'z' and an unique 'w') are mapped to different locations in the
 target and in the process lose their linear relationship. Thus no one set
 of clipping planes can be defined for all the primitives that result when
-rendering morphed volumes. 
+rendering morphed volumes.
 
 Third, even if one were to try and define clip planes for each of the
 resulting primitives when rendering morphed volumes, the equations are not
@@ -72,14 +72,14 @@ easy to determine - both in terms of speed and ease of     implementation!
 One has to first determine the intersection points where the texture
 coordinate goes out of bounds, i.e. below 0.0 or above 1.0, and then define
 a planes that would encapsulte those parts of the primitive that have
-texture coordinates in the correct range. 
+texture coordinates in the correct range.
 
 Finally, the fact that all this has to be done in software slows down the
-process tremendously. 
+process tremendously.
 
 An easier solution would be to enable, a simple test in hardware that checks
 to see if a fragments texel coordinates are within a  user defined range. If
-it passes this test the fragment is rendered, if not it is discarded. 
+it passes this test the fragment is rendered, if not it is discarded.
 
 Besides the immediate advantage in performance, this solution would also
 enable one to simplify application code considerably.
@@ -87,9 +87,9 @@ enable one to simplify application code considerably.
 An added benefit of this extension is that it provides one with the facility
 of tiling 2D textures in 1D, 2D or 3D.
 
-New Procedures and Functions 
+New Procedures and Functions
 
-void    TexScissorINTEL(GLenum    target, 
+void    TexScissorINTEL(GLenum    target,
                         GLclampf   tlow,
                         GLclampf   thigh);
 void    TexScissorFuncINTEL(GLenum    target, Glenum lfunc, Glenum hfunc)
@@ -101,7 +101,7 @@ Accepted by the <cap> parameter of  Enable, Disable, IsEnabled :
 TEXTURE_SCISSOR_INTEL
 
 Accepted by the <pname> parameter of parameter of GetBooleanv, GetIntegerv,
-GetFloatv, and GetDoublev 
+GetFloatv, and GetDoublev
 
 TEXTURE_SCISSOR_S_INTEL [ returns two values : low and high ]
 TEXTURE_SCISSOR_T_INTEL [ returns two values : low and high ]
@@ -128,7 +128,7 @@ and the Framebuffer)
 The INTEL_texturescissor conditionally discards a fragment based on the
 outcome of a comparison between the texture coordinate value of the incoming
 fragment and the texture bounds set by the TexScissorINTEL() function. The
-test is controlled with 
+test is controlled with
 
 void TexScissorINTEL(GLenum target, GLclampf tlow, GLclampf thigh)
 

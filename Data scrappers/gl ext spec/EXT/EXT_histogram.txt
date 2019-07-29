@@ -162,7 +162,7 @@ Additions to Chapter 3 of the 1.0 specification (Rasterization)
     specified internal format.  The entries are indexed zero through N-1,
     where N is the <width> of the table.  Each value in each entry is set
     to zero.  The values in the previous histogram table, if any, are lost.
-    
+
     It is acceptable for an implementation to vary its allocation of
     internal component resolution based any HistogramEXT parameter, but the
     allocation must not be a function of any other factor, and cannot be
@@ -259,7 +259,7 @@ Additions to Chapter 3 of the 1.0 specification (Rasterization)
                 blue                    blue
                 alpha                   alpha
                 luminance               red
-    
+
     <reset> is either TRUE or FALSE.  If TRUE, each component counter that
     is actually returned is reset to zero.  Counters that are not returned
     are not modified.  All counters of all elements of histogram <target>

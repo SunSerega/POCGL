@@ -155,7 +155,7 @@ Additions to the GLX Specification
     displayable buffer is deferred, and the calling process is either not
     allowed to proceed (glXSwapBuffers doesn't return) or the subsequent GL
     command is not allowed to be issued.
-    
+
     (An interrupt could be generated at the moment that Q becomes equal to
     the product of the current cushion value and the current swap interval.)
 

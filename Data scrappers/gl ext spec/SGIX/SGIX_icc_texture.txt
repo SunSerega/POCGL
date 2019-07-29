@@ -35,18 +35,18 @@ Overview
     and RGBA images, two RGB colors and a single index per pixel are
     used to store the R, G, and B channels.  For RGBA and
     LUMINANCE_ALPHA formats, the alpha channel is encoded
-    independently using two alpha values and an index per pixel.  
+    independently using two alpha values and an index per pixel.
 
 Issues
 
     - Do we really want compressed textures to be a full-blown host
       format that may be used to specify things like color tables?
-      Orthogonality says yes, simplicity says no.  
+      Orthogonality says yes, simplicity says no.
 
       A: ICC formats don't seem useful for things other than textures
       so limit it to that.
 
-    - What about one, three, and four dimensional textures?  
+    - What about one, three, and four dimensional textures?
 
       A: Three and four should work as stacks of 2D textures.  One
       could be made to work but the natural hardware implementation
@@ -57,7 +57,7 @@ Issues
     - Method of dealing with width & height of host image is awkward
       when downloading small mipmap levels since UNPACK_ROW_LENGTH
       must be set.  Should we say that the rounding up happens
-      automatically? 
+      automatically?
 
       A:  Yes.
 
@@ -83,7 +83,7 @@ Issues
       can "fake it?"  With the "no compressor" limitation this might
       require the texture manager to maintain a shadowed copy of the
       compressed texture and put decompressed versions in texture
-      memory. 
+      memory.
 
     - Need to document behavior when interlacing is on.  Won't work
       but should it be ignored or an error?
@@ -353,7 +353,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     level, internalformat, and border are specified using the same
     values, with the same meanings, as the equivalent arguments of
     TexImage2D, except that internalformat may not be specified as 1,
-    2, 3, 4, or any of the ICC internal formats."  
+    2, 3, 4, or any of the ICC internal formats."
 
     The following is added to the end of the paragraph which describes
     the subtexture download and copy commands: "CopyTexSubImage1D and
@@ -388,7 +388,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     LUMINANCE16_ALPHA8_ICC_SGIX    LUMINANCE_ALPHA                             8    16
 
     The caption for Table 3.8 is updated as follows:
-    
+
     Correspondence of sized internal formats to base internal formats
     and desired component resolutions for each sized internal format.
     For ICC compressed formats, the component resolutions do not
@@ -396,7 +396,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     resolution of the two color values stored for each 4x4 pixel
     block.
 
-    
+
 Additions to Chapter 4 of the 1.1 Specification (Per-Fragment Operations
 and the Frame Buffer)
 

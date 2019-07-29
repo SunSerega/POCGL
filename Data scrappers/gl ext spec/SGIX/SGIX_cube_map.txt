@@ -37,9 +37,9 @@ Overview
 Issues
 
     * What is the best way to enable environment mapping in the fragment
-    lighting equation? 
-    
-    I chose to use 
+    lighting equation?
+
+    I chose to use
 
     ApplyTextureEXT(ENV_MAP_SGIX);
     Enable(CUBE_MAP_SGIX);
@@ -47,12 +47,12 @@ Issues
     * can cube map environment mapping be used with per-vertex lighting?
 
     Sure, but it is simply a texture in this case, it is not multiplied
-    by the specular material. 
-    If SGIX_texture_add_env is supported, the cube map environment 
+    by the specular material.
+    If SGIX_texture_add_env is supported, the cube map environment
     term can be added to the color computed in per-vertex lighting.
 
-    Use 
-    Enable(CUBE_MAP_SGIX); 
+    Use
+    Enable(CUBE_MAP_SGIX);
     TexEnvi(TEXTURE_ENV,TEXTURE_ENV_MODE,ADD);
 
     * do we want a way to transform the Reflection vectors by a matrix somehow?
@@ -61,7 +61,7 @@ Issues
     The idea is if we are simulating thin film reflections or something like
     that we want to use the environment map as a lighting map.
 
-    This is handled easily but clumsily with a call to 
+    This is handled easily but clumsily with a call to
     TexParameteri(CUBE_MAP_SGIX, ENV_MAP_SGIX, EYE_SPACE_SGIX) or
     TexParameteri(CUBE_MAP_SGIX, ENV_MAP_SGIX, OBJECT_SPACE_SGIX)
 
@@ -71,7 +71,7 @@ Issues
 
     An alternative is to introduce a fragment_environment spec and
     perhaps a call like
-    EnvironmentMapSpace({ EYE_SPACE_SGIX  | 
+    EnvironmentMapSpace({ EYE_SPACE_SGIX  |
               OBJECT_SPACE_SGIX })
     This spec could also add the notion of multiplying the
     reflected environment value by the specular material to the
@@ -104,23 +104,23 @@ New Procedures and Functions
 New Tokens
 
     Accepted by the <mode> parameter of ApplyTextureEXT, and
-    the <pname> parameter of 
+    the <pname> parameter of
     TexParameterf, TexParameterfv, Texparameteri, and TexParameteriv,
     GetTexParameterfv, GetTexParameteriv:
 
     ENV_MAP_SGIX        0x8340
 
-    Accepted by the <cap> parameter of Enable, Disable and IsEnabled, 
-    the <target> parameter of 
+    Accepted by the <cap> parameter of Enable, Disable and IsEnabled,
+    the <target> parameter of
     TexParameterf, TexParameterfv, Texparameteri, and TexParameteriv,
     GetTexParameterfv, GetTexParameteriv,
-    BindTextureEXT, 
+    BindTextureEXT,
     accepted by the <pname> parameters of GetBooleanv, GetIntegerv:
 
     CUBE_MAP_SGIX        0x8341
 
     Accepted by the <target> parameters of GetTexImage,
-    GetTexLevelParameterfv, GetTexLevelParameteriv, 
+    GetTexLevelParameterfv, GetTexLevelParameteriv,
     TexImage2D, TexSubImage2D, CopyTexImage2D, and CopyTexSubImage2D:
 
     CUBE_MAP_ZP_SGIX    0x8342
@@ -141,7 +141,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     In section 3.8 we should add text that specifies that each of
-    the 6 faces of the cube map should be legal textures 
+    the 6 faces of the cube map should be legal textures
     based on the filtering mode before cube mapping can be enabled
     If they are not it is as if texturing is disabled.
 
@@ -149,10 +149,10 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     Environment Map Address Calculation.
 
     Environment map address calculation may be used to compute texture coordinates
-    in an environment map texture. 
-    
+    in an environment map texture.
+
     The Reflection vector 'r' is computed on
-    a per-fragment basis from interpolated view vector(VPe) and 
+    a per-fragment basis from interpolated view vector(VPe) and
     interpolated normal 'n' vectors as
 
     r = (X,Y,Z) = 2*n*dot(n,VPe) - VPe
@@ -165,10 +165,10 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     unchanged before the calculation of the reflection vector.
 
     The calculation of 'r' may be approximated by computing it on a
-    per-vertex basis, transforming by the inverse of the modelview matrix 
-    if necessary, optionally normalizing it for numerical purposes 
-    and then interpolating it on a per-pixel basis. 
-    This will lead to unacceptable distortion effects if r varies greatly on a 
+    per-vertex basis, transforming by the inverse of the modelview matrix
+    if necessary, optionally normalizing it for numerical purposes
+    and then interpolating it on a per-pixel basis.
+    This will lead to unacceptable distortion effects if r varies greatly on a
     per-vertex basis and will also prevent the use of reflection vector generation
     from a texture derived normal since the calculation of R occurs before
     the texture stage.
@@ -177,14 +177,14 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     If the environment map is implemented with a cube map, one of the six faces of
     the cube is selected by the major axis of the reflection vector on a per-pixel
-    basis. 
+    basis.
 
     major axis   X                Y                Z
     -----------------------------------------------------------
     <= 0      CUBE_MAP_XN_SGIX CUBE_MAP_YN_SGIX CUBE_MAP_ZN_SGIX
     > 0       CUBE_MAP_XP_SGIX CUBE_MAP_YP_SGIX CUBE_MAP_ZN_SGIX
 
-    Once the face is selected, the s,t texture coordinates are computed 
+    Once the face is selected, the s,t texture coordinates are computed
     from the (X,Y,Z) coordinates of the reflection vector and replace
     any texture coordinates specified with TexCoord or generated by TexGen as:
 
@@ -205,10 +205,10 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     the specification of level of detail for two-dimensional texturing.
 
     Note that the chain rule can be applied using the above formulas and
-    slope information for X,Y,Z (dX/dx, dY/dx, dZ/dx, dX/dy, dY/dy, dZ/dy) 
+    slope information for X,Y,Z (dX/dx, dY/dx, dZ/dx, dX/dy, dY/dy, dZ/dy)
     to obtain ds/dx, ds/dy, dt/dx, dt/dy.
 
-    e.g.  ds/dx = dX/dx*ds/dX + dY/dx*ds/dY + dZ/dx*ds/dZ 
+    e.g.  ds/dx = dX/dx*ds/dX + dY/dx*ds/dY + dZ/dx*ds/dZ
 
     We add an enviroment map term to the equation in section 3.9.2 from the
     fragment_lighting spec:
@@ -225,15 +225,15 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
       }
     }
     +Sm*Ev
-    
+
     Nf is the number of fragment light sources
-    N is the fragment normal vector 
+    N is the fragment normal vector
     L_i is the direction vector from the fragment position to the light source
     H_i is the half angle vector
     n is the specular exponent (shininess)
     Ev is the environment map value.
 
-    Ev is defined to be 0 unless 
+    Ev is defined to be 0 unless
     ApplyTextureEXT(ENV_MAP_SGIX) has been called in conjunction
     with an enabled texture in which case the value is
     the value determined from the cube map access as specified above.
@@ -252,12 +252,12 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
     Although many of the parameter values of a set of cube map textures have no
     effect on texture operation, they are maintained and may be queried.
     There is no value associated with the binding points
-    CUBE_MAP_ZP_2D_SGIX, 
-    CUBE_MAP_ZN_2D_SGIX, 
-    CUBE_MAP_XN_2D_SGIX, 
-    CUBE_MAP_XP_2D_SGIX, 
-    CUBE_MAP_YN_2D_SGIX, 
-    CUBE_MAP_YP_2D_SGIX, 
+    CUBE_MAP_ZP_2D_SGIX,
+    CUBE_MAP_ZN_2D_SGIX,
+    CUBE_MAP_XN_2D_SGIX,
+    CUBE_MAP_XP_2D_SGIX,
+    CUBE_MAP_YN_2D_SGIX,
+    CUBE_MAP_YP_2D_SGIX,
     so they are not accepted as the <pname> parameter
     of GetBooleanv, GetIntegerv, GetFloatv, or GetDoublev.  The name of
     the set of cube map textures that are bound to the above binding posts are queried
@@ -291,7 +291,7 @@ New State
     ENV_MAP_SGIX        GetTexParameteriv    Z2    OBJECT_SPACE_SGIX    texture
     CUBE_MAP                    IsEnabled               XXX?
 
-    
+
     CUBE_MAP_ZP_2D_SGIX etc XXX (how do we specify this?)
 
 New Implementation Dependent State

@@ -118,7 +118,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     is LINEAR_CLIPMAP_LINEAR_SGIX.  We could define other clipmap
     filters with NEAREST sampling, but it probably isn't worth the
     trouble.
-    
+
     *    Clipmap filtering is supported with all magnification filters
     except FILTER4_SGIS.  Detail and sharpen filtering are performed
     only when the texture data are supplied by the level 0 image.
@@ -225,7 +225,7 @@ N=12                                    0
 
     where Soffset and Toffset are specified by the application.  Note that
     Soffset and Toffset for the top level defines the offsets for
-    subsequent levels by a simple shift just as with the center. 
+    subsequent levels by a simple shift just as with the center.
 
     Soffset and Toffset are specified by calling TexParameteriv or
     TexParameterfv with <target> set to TEXTURE_2D, <pname> set to

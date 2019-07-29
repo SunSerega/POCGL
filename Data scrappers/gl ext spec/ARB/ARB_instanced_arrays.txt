@@ -57,38 +57,38 @@ Dependencies
     This extension is written against the OpenGL 2.1 Specification.
 
     ARB_draw_instanced affects the definition of this extension.
-    
+
     EXT_draw_instanced affects the definition of this extension.
-    
+
     EXT_gpu_shader4 affects the definition of this extension.
 
 Overview
 
     A common use case in GL for some applications is to be able to
     draw the same object, or groups of similar objects that share
-    vertex data, primitive count and type, multiple times.  This 
-    extension provides a means of accelerating such use cases while 
-    restricting the number of API calls, and keeping the amount of 
+    vertex data, primitive count and type, multiple times.  This
+    extension provides a means of accelerating such use cases while
+    restricting the number of API calls, and keeping the amount of
     duplicate data to a minimum.
-    
-    In particular, this extension specifies an alternative to the 
+
+    In particular, this extension specifies an alternative to the
     read-only shader variable introduced by ARB_draw_instanced.  It
-    uses the same draw calls introduced by that extension, but 
-    redefines them so that a vertex shader can instead use vertex 
+    uses the same draw calls introduced by that extension, but
+    redefines them so that a vertex shader can instead use vertex
     array attributes as a source of instance data.
-    
+
     This extension introduces an array "divisor" for generic
     vertex array attributes, which when non-zero specifies that the
     attribute is "instanced."  An instanced attribute does not
     advance per-vertex as usual, but rather after every <divisor>
     conceptual draw calls.
-    
+
     (Attributes which aren't instanced are repeated in their entirety
     for every conceptual draw call.)
-    
+
     By specifying transform data in an instanced attribute or series
-    of instanced attributes, vertex shaders can, in concert with the 
-    instancing draw calls, draw multiple instances of an object with 
+    of instanced attributes, vertex shaders can, in concert with the
+    instancing draw calls, draw multiple instances of an object with
     one draw call.
 
 IP Status
@@ -114,9 +114,9 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification
 (OpenGL Operation)
 
     Modify section 2.8 (Vertex Arrays), p. 23
-    
+
     (remove modifications to section 2.8 made by ARB_draw_instanced
-    and EXT_draw_instanced, and replace everything from the second 
+    and EXT_draw_instanced, and replace everything from the second
     paragraph, p. 27 through the second paragraph, p. 30)
     The internal counter <instanceID> is a 32-bit integer value which
     may be read by a vertex program as <vertex.instance>, as described
@@ -142,9 +142,9 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification
 
     does not exist in the GL, but is used to describe functionality in
     the rest of this section.  This function transfers the <i>th
-    element of every enabled, non-instanced array and the 
-    floor(<instance>/<divisor>)'th element of every enabled instanced 
-    array to the GL. The effect of ArrayElementInstanced(i) is the 
+    element of every enabled, non-instanced array and the
+    floor(<instance>/<divisor>)'th element of every enabled instanced
+    array to the GL. The effect of ArrayElementInstanced(i) is the
     same as the effect of the command sequence
 
         if (normal array enabled)
@@ -189,7 +189,7 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification
         } else if (vertex array enabled) {
             Vertex[size][type]v(vertex array element i);
         }
-    
+
     where <textureUnits> and <genericAttributes> give the number of
     texture coordinate sets and generic vertex attributes supported by
     the implementation, respectively.  "[size]" and "[type]"
@@ -274,7 +274,7 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification
     instances of the range of elements are executed, the value of
     <instanceID> advances for each iteration, and the instanced
     elements advance per instance depending on the value of the divisor
-    for that vertex attribute set with VertexAttribDivisorARB.  It has the 
+    for that vertex attribute set with VertexAttribDivisorARB.  It has the
     same effect as:
 
         if (mode or count is invalid)
@@ -400,12 +400,12 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification
     is a restricted form of DrawElements. ...
 
     Modify section 2.8 (Vertex Arrays), p. 23
-    
+
     (remove section before final paragraph, p. 30, that was added by
     ARB_draw_instanced and EXT_draw_instanced)
 
     Modify section 2.8 (Vertex Arrays), p. 33
-  
+
     (in the list of client state required to implement vertex arrays add)
     ... <n> integers representing vertex attribute divisors, ...
 
@@ -440,7 +440,7 @@ Dependencies on ARB_draw_instanced
 
     If neither ARB_draw_instanced nor EXT_draw_instanced is supported,
     all references to instanceID should be removed from section 2.8.
-    
+
     If ARB_draw_instanced is not supported, all references to gl_InstanceIDARB
     should be removed from section 2.8.  This extension will introduce
     the following additional New Procedures and Functions:
@@ -451,17 +451,17 @@ Dependencies on ARB_draw_instanced
                 const void *indices, sizei primcount);
 
 Dependencies on EXT_draw_instanced
-    
+
     If EXT_draw_instanced is supported, then DrawArraysInstancedEXT
     is aliased to DrawArraysInstancedARB, and DrawElementsInstancedEXT
     is aliased to DrawElementsInstancedARB.
-    
+
     If neither ARB_draw_instanced nor EXT_draw_instanced is supported,
     all references to instanceID should be removed from section 2.8.
 
 Dependencies on EXT_gpu_shader4
 
-    If EXT_gpu_shader4 is not supported, all references to gl_InstanceID 
+    If EXT_gpu_shader4 is not supported, all references to gl_InstanceID
     should be removed from section 2.8.
 
 Dependencies on EXT_direct_state_access
@@ -514,18 +514,18 @@ Issues
 
         Resolved: Yes. This was added in revision 5 of the spec.
 
-        Prior to revision 5 of this spec, attempting to call 
-        VertexAttribDivisorARB with attrib=0 generated INVALID_VALUE. 
-        It was originally thought that this implied issuing a vertex at 
-        lower frequency than the associated attribs (due to the special 
+        Prior to revision 5 of this spec, attempting to call
+        VertexAttribDivisorARB with attrib=0 generated INVALID_VALUE.
+        It was originally thought that this implied issuing a vertex at
+        lower frequency than the associated attribs (due to the special
         properties of vertex attribute zero in GL 2.x and the compatibility
-        profiles).  That would be true if the immediate-mode model of 
+        profiles).  That would be true if the immediate-mode model of
         instancing was to make an attribute call only once every <N> vertices
         for instanced attributes -- you wouldn't want to specify a new vertex
-        once every <N> vertices! But that's not the model -- the frequency 
-        <N> is only used to translate an incoming array element <i> into an 
-        attribute index <k>.  Immediate mode calls are still specified as 
-        happening for every vertex. Given this definition, it is not 
+        once every <N> vertices! But that's not the model -- the frequency
+        <N> is only used to translate an incoming array element <i> into an
+        attribute index <k>.  Immediate mode calls are still specified as
+        happening for every vertex. Given this definition, it is not
         necessary to do anything differently for attribute zero.
 
     3) How is ArrayElement affected by this extension?
@@ -544,16 +544,16 @@ Issues
 
     5) Is it useful to have instancing for the MultiDraw* functions?
 
-        Resolved: We will follow the lead of EXT_draw_instanced and 
+        Resolved: We will follow the lead of EXT_draw_instanced and
         ARB_draw_instanced in not extending these functions.
 
-    6) This extension must elaborate on the definition of functions 
+    6) This extension must elaborate on the definition of functions
        added by ARB_draw_instanced.  How do we do this in a manner such
        that both extensions may coexist?
-       
+
         Resolved: This extension is specified so that it applies on
-        top of ARB_draw_instanced and EXT_draw_instanced.  As a 
-        result, some portions modified by those extensions are 
+        top of ARB_draw_instanced and EXT_draw_instanced.  As a
+        result, some portions modified by those extensions are
         replaced in this extension.  In the event that those
         extensions are not supported, this extension reintroduces
         the draw calls from ARB_draw_instanced.

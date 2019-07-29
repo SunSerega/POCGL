@@ -182,7 +182,7 @@ Issues
          <preserveMask> parameter.  Should this be added now, or deferred for
          inclusion in any possible future MRT extension?
 
-    RESOLVED:  Yes.  It is not difficult to add now and doing it now makes 
+    RESOLVED:  Yes.  It is not difficult to add now and doing it now makes
     supporting MRTs in the future easier.
 
 New Procedures and Functions
@@ -275,7 +275,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation)
     then no buffers will be initialized.  For any buffers not initialized in
     this manner, the initial contents will be undefined.
 
-    The values of <x>, <y>, <width> and <height> are silently clamped to the 
+    The values of <x>, <y>, <width> and <height> are silently clamped to the
     extents of the render target.
 
     The command
@@ -324,7 +324,7 @@ Sample Usage
         // the existing contents
         glStartTilingQCOM(x, y, width, height,
                           GL_COLOR_BUFFER_BIT0_QCOM | GL_DEPTH_BUFFER_BIT0_QCOM);
-      
+
         // draw the triangle
         glDrawArrays(GL_TRIANGLES, 0, 3);
 

@@ -30,16 +30,16 @@ Number
 
 Dependencies
 
-    OpenGL ES 2.0 or OES_framebuffer_object are required. This 
+    OpenGL ES 2.0 or OES_framebuffer_object are required. This
     extension is written against the OpenGL ES 2.0 Specification.
 
     This extension interacts with OpenGL ES 3.0 and later versions.
 
 Overview
 
-    This extension introduces functionality to perform multisampled 
-    rendering to a color renderable texture, without requiring an 
-    explicit resolve of multisample data. 
+    This extension introduces functionality to perform multisampled
+    rendering to a color renderable texture, without requiring an
+    explicit resolve of multisample data.
 
     Some GPU architectures - such as tile-based renderers - are
     capable of performing multisampled rendering by storing
@@ -59,8 +59,8 @@ Overview
     multisampled color data may be performed. After such a resolve, the
     multisampled color data is discarded.
 
-    In order to allow the use of multisampled depth and stencil buffers 
-    when performing multisampled rendering to a texture, the extension 
+    In order to allow the use of multisampled depth and stencil buffers
+    when performing multisampled rendering to a texture, the extension
     also adds the command RenderbufferStorageMultisampleEXT.
 
 IP Status
@@ -76,7 +76,7 @@ New Procedures and Functions
 
     void FramebufferTexture2DMultisampleEXT(
             enum target, enum attachment,
-            enum textarget, uint texture, 
+            enum textarget, uint texture,
             int level, sizei samples);
 
 New Tokens
@@ -109,26 +109,26 @@ Additions to Section 4.4.3 of the OpenGL ES 2.0 Specification
             void RenderbufferStorageMultisampleEXT( enum target,
                 sizei samples, enum internalformat, sizei width,
                 sizei height );
-        establishes the data storage, format, dimensions, and number of 
+        establishes the data storage, format, dimensions, and number of
         samples of a renderbuffer object's image. target must be RENDERBUFFER.
-        internalformat must be one of the color-renderable, depth-renderable, 
-        or stencil-renderable formats described in table 4.5. width and height 
-        are the dimensions in pixels of the renderbuffer. If either width or 
-        height is greater than the value of MAX_RENDERBUFFER_SIZE, or if 
-        samples is greater than the value of MAX_SAMPLES_EXT, then the error 
-        INVALID_VALUE is generated. If OpenGL ES is unable to create a data 
+        internalformat must be one of the color-renderable, depth-renderable,
+        or stencil-renderable formats described in table 4.5. width and height
+        are the dimensions in pixels of the renderbuffer. If either width or
+        height is greater than the value of MAX_RENDERBUFFER_SIZE, or if
+        samples is greater than the value of MAX_SAMPLES_EXT, then the error
+        INVALID_VALUE is generated. If OpenGL ES is unable to create a data
         store of the requested size, the error OUT_OF_MEMORY is generated.
-        Upon success, RenderbufferStorageMultisampleEXT deletes any existing 
-        data store for the renderbuffer image and the contents of the data 
-        store after calling RenderbufferStorageMultisampleEXT are undefined. 
-        RENDERBUFFER_WIDTH is set to width, RENDERBUFFER_HEIGHT is set to 
+        Upon success, RenderbufferStorageMultisampleEXT deletes any existing
+        data store for the renderbuffer image and the contents of the data
+        store after calling RenderbufferStorageMultisampleEXT are undefined.
+        RENDERBUFFER_WIDTH is set to width, RENDERBUFFER_HEIGHT is set to
         height, and RENDERBUFFER_INTERNAL_FORMAT is set to internalformat.
-        If samples is zero, then RENDERBUFFER_SAMPLES_EXT is set to zero. 
-        Otherwise samples represents a request for a desired minimum number 
-        of samples. Since different implementations may support different 
-        sample counts for multisampled rendering, the actual number of samples 
-        allocated for the renderbuffer image is implementation-dependent. 
-        However, the resulting value for RENDERBUFFER_SAMPLES_EXT is 
+        If samples is zero, then RENDERBUFFER_SAMPLES_EXT is set to zero.
+        Otherwise samples represents a request for a desired minimum number
+        of samples. Since different implementations may support different
+        sample counts for multisampled rendering, the actual number of samples
+        allocated for the renderbuffer image is implementation-dependent.
+        However, the resulting value for RENDERBUFFER_SAMPLES_EXT is
         guaranteed to be greater than or equal to samples and no more than the
         next larger sample count supported by the implementation.
 
@@ -139,47 +139,47 @@ Additions to Section 4.4.3 of the OpenGL ES 2.0 Specification
         undefined. The operations that may cause an implicit resolve are the
         same as for FramebufferTexture2DMultisampleEXT.
 
-        An OpenGL ES implementation may vary its allocation of internal 
+        An OpenGL ES implementation may vary its allocation of internal
         component resolution based on any RenderbufferStorageMultisampleEXT
-        parameter (except target), but the allocation and chosen internal format 
-        must not be a function of any other state and cannot be changed once 
+        parameter (except target), but the allocation and chosen internal format
+        must not be a function of any other state and cannot be changed once
         they are established.
 
         The command
             void RenderbufferStorage( enum target, enum internalformat,
                 sizei width, sizei height );
-        is equivalent to calling RenderbufferStorageMultisampleEXT with 
+        is equivalent to calling RenderbufferStorageMultisampleEXT with
         samples equal to zero.
 
     Add the following after the paragraph describing FramebufferTexture2D:
 
         The command
-            void FramebufferTexture2DMultisampleEXT( enum target, 
-                enum attachment, enum textarget, uint texture, 
+            void FramebufferTexture2DMultisampleEXT( enum target,
+                enum attachment, enum textarget, uint texture,
                 int level, sizei samples );
         enables multisampled rendering into the images of a texture object.
 
         target, textarget, texture, and level correspond to the same
-        parameters for FramebufferTexture2D and have the same restrictions.    
-        attachment must be COLOR_ATTACHMENT0. If samples is greater than the 
-        value of MAX_SAMPLES_EXT, then the error INVALID_VALUE is generated. 
+        parameters for FramebufferTexture2D and have the same restrictions.
+        attachment must be COLOR_ATTACHMENT0. If samples is greater than the
+        value of MAX_SAMPLES_EXT, then the error INVALID_VALUE is generated.
         An INVALID_OPERATION error is generated if samples is greater than
         the maximum number of samples supported for target and its
         internalformat. If samples is zero, then TEXTURE_SAMPLES_EXT is set
         to zero, and FramebufferTexture2DMultisampleEXT behaves like
         FramebufferTexture2D.
 
-        Otherwise samples represents a request for a desired minimum number 
-        of samples. Since different implementations may support different 
-        sample counts for multisampled rendering, the actual number of samples 
-        allocated for the image is implementation-dependent. However, the 
-        resulting value for TEXTURE_SAMPLES_EXT is guaranteed to be greater 
-        than or equal to samples and no more than the next larger sample count 
+        Otherwise samples represents a request for a desired minimum number
+        of samples. Since different implementations may support different
+        sample counts for multisampled rendering, the actual number of samples
+        allocated for the image is implementation-dependent. However, the
+        resulting value for TEXTURE_SAMPLES_EXT is guaranteed to be greater
+        than or equal to samples and no more than the next larger sample count
         supported by the implementation.
 
-        The implementation allocates an implicit multisample buffer with 
-        TEXTURE_SAMPLES_EXT samples and the same internalformat, width, and 
-        height as the specified texture level. This buffer is used as the 
+        The implementation allocates an implicit multisample buffer with
+        TEXTURE_SAMPLES_EXT samples and the same internalformat, width, and
+        height as the specified texture level. This buffer is used as the
         target for rendering instead of the specified texture level. The
         buffer is associated with the attachment and gets deleted after the
         attachment is broken.
@@ -189,7 +189,7 @@ Additions to Section 4.4.3 of the OpenGL ES 2.0 Specification
         time a pixel is updated. This has the effect of making the antialiasing
         appear to be automatic at the application level.
 
-        When the texture level is used as a source or destination for any 
+        When the texture level is used as a source or destination for any
         operation, the attachment is flushed, or when the attachment is broken,
         the GL implementation may discard the contents of the implicit multisample
         buffer. If the contents are discarded, the subsequent operations on the
@@ -199,10 +199,10 @@ Additions to Section 4.4.3 of the OpenGL ES 2.0 Specification
         The operations which may cause the contents of the implicit multisample
         buffer to be discarded include:
             - Drawing with the texture bound to an active texture unit
-            - ReadPixels or CopyTex[Sub]Image* while the texture is 
+            - ReadPixels or CopyTex[Sub]Image* while the texture is
               attached to the framebuffer
-            - CopyTex[Sub]Image*, Tex[Sub]Image*, 
-              CompressedTex[Sub]Image* with the specified level as 
+            - CopyTex[Sub]Image*, Tex[Sub]Image*,
+              CompressedTex[Sub]Image* with the specified level as
               destination
             - GenerateMipmap
             - Flush or Finish while the texture is attached to the
@@ -210,7 +210,7 @@ Additions to Section 4.4.3 of the OpenGL ES 2.0 Specification
             - BindFramebuffer while the texture is attached to the currently
               bound framebuffer.
 
-    
+
 Additions to section 4.4.5 of the OpenGL ES 2.0 Specification
 (Framebuffer Completeness)
 
@@ -221,15 +221,15 @@ Additions to section 4.4.5 of the OpenGL ES 2.0 Specification
          must be less than or equal to the maximum number of samples supported for
          the  internal format of _image_.
 
-    Add the following bullet point after 
+    Add the following bullet point after
         * All attached images have the same width and height.
           FRAMEBUFFER_INCOMPLETE_DIMENSIONS
     on page 116:
-        
-        * The value of RENDERBUFFER_SAMPLES_EXT is the same for all 
-          attached renderbuffers; the value of TEXTURE_SAMPLES_EXT 
-          is the same for all texture attachments; and, if the attached 
-          images are a mix of renderbuffers and textures, the value of 
+
+        * The value of RENDERBUFFER_SAMPLES_EXT is the same for all
+          attached renderbuffers; the value of TEXTURE_SAMPLES_EXT
+          is the same for all texture attachments; and, if the attached
+          images are a mix of renderbuffers and textures, the value of
           RENDERBUFFER_SAMPLES_EXT matches the value of TEXTURE_-
           SAMPLES_EXT.
           FRAMEBUFFER_INCOMPLETE_MULTISAMPLE
@@ -262,7 +262,7 @@ Dependencies on GL and ES profiles, versions, and other extensions
         SAMPLE_BUFFERS is non-zero for renderbuffers created via Renderbuffer-
         StorageMultisampleEXT or textures attached via FramebufferTexture2D-
         MultisampleEXT.
-        
+
         Also, FBOs cannot combine attachments that have associated multisample
         data specified by the mechanisms described in this extension with
         attachments allocated using the core OpenGL ES 3.1 mechanisms, such as
@@ -282,7 +282,7 @@ Dependencies on GL and ES profiles, versions, and other extensions
 
 Errors
 
-    The error OUT_OF_MEMORY is generated when 
+    The error OUT_OF_MEMORY is generated when
     RenderbufferStorageMultisampleEXT cannot create storage of the
     specified size.
 
@@ -290,17 +290,17 @@ Errors
     <samples> that is greater than MAX_SAMPLES_EXT, then the error
     INVALID_VALUE is generated.
 
-    The error INVALID_ENUM is generated if FramebufferTexture2DMultisampleEXT 
+    The error INVALID_ENUM is generated if FramebufferTexture2DMultisampleEXT
     is called with a <target> that is not FRAMEBUFFER, DRAW_FRAMEBUFFER, or
     READ_FRAMEBUFFER.
 
     The error INVALID_ENUM is generated if FramebufferTexture2DMultisampleEXT
     is called with an <attachment> that is not COLOR_ATTACHMENT0.
 
-    The error INVALID_ENUM is generated if FramebufferTexture2DMultisampleEXT 
-    is called with a <textarget> that is not TEXTURE_2D, 
-    TEXTURE_CUBE_MAP_POSITIVE_X, TEXTURE_CUBE_MAP_POSITIVE_Y, 
-    TEXTURE_CUBE_MAP_POSITIVE_Z, TEXTURE_CUBE_MAP_NEGATIVE_X, 
+    The error INVALID_ENUM is generated if FramebufferTexture2DMultisampleEXT
+    is called with a <textarget> that is not TEXTURE_2D,
+    TEXTURE_CUBE_MAP_POSITIVE_X, TEXTURE_CUBE_MAP_POSITIVE_Y,
+    TEXTURE_CUBE_MAP_POSITIVE_Z, TEXTURE_CUBE_MAP_NEGATIVE_X,
     TEXTURE_CUBE_MAP_NEGATIVE_Y, or TEXTURE_CUBE_MAP_NEGATIVE_Z.
 
     The error INVALID_OPERATION is generated if FramebufferTexture2DMultisampleEXT
@@ -310,19 +310,19 @@ Errors
 New State
 
     Changes to table 6.22, p. 154 (Renderbuffer State)
-    
+
                                                      Initial
     Get Value                 Type  Get Command      Value   Description  Sec.
     ---------                 ----  ---------------- ------- ------------ -----
-    RENDERBUFFER_SAMPLES_EXT  Z+    GetRenderbuffer- 0       Renderbuffer 4.4.3 
+    RENDERBUFFER_SAMPLES_EXT  Z+    GetRenderbuffer- 0       Renderbuffer 4.4.3
                                     Parameteriv              samples
-    
+
     Changes to table 6.23, p. 155 (Framebuffer State)
-    
+
                                                        Initial
     Get Value            Type    Get Command           Value   Description     Sec.
     ---------            ------  --------------------- ------- --------------- ----
-    TEXTURE_SAMPLES_EXT  n * Z+  GetFramebuffer-       0       Framebuffer     4.4 
+    TEXTURE_SAMPLES_EXT  n * Z+  GetFramebuffer-       0       Framebuffer     4.4
                                  AttachmentParameteriv         texture samples
 
 New Implementation Dependent State
@@ -332,7 +332,7 @@ New Implementation Dependent State
                                           Minimum
     Get Value         Type    Get Command Value   Description Sec.
     ---------         ----    ----------- ------- ----------- ----
-    MAX_SAMPLES_EXT   Z+      GetIntegerv 2       Max. # of   4.4 
+    MAX_SAMPLES_EXT   Z+      GetIntegerv 2       Max. # of   4.4
                                                   samples.
 
 Sample Code
@@ -346,15 +346,15 @@ Sample Code
     GLuint depthbuffer;
     glGenRenderbuffers(1, &depthbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
-    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER, samples, 
+    glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER, samples,
         GL_DEPTH_COMPONENT16, width, height);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    
+
     /* Create RGBA texture with single mipmap level */
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
         GL_UNSIGNED_SHORT_4_4_4_4, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -363,22 +363,22 @@ Sample Code
     GLuint framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
         GL_RENDERBUFFER, depthbuffer);
-    glFramebufferTexture2DMultisampleEXT(GL_FRAMEBUFFER, 
+    glFramebufferTexture2DMultisampleEXT(GL_FRAMEBUFFER,
         GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0, samples);
-    
+
     /* handle unsupported cases */
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != 
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
             GL_FRAMEBUFFER_COMPLETE)
     {
         ...
     }
-    
+
     /* draw to the texture */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ...
-    
+
     /* Discard the depth renderbuffer contents if possible */
     if (extension_supported("GL_EXT_discard_framebuffer"))
     {
@@ -386,11 +386,11 @@ Sample Code
         glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1,
             discard_attachments);
     }
-    
+
     /* Draw to the default framebuffer using the antialiased texture */
     /* Color data is implicitly resolved before the texture gets used */
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
         GL_STENCIL_BUFFER_BIT);
     glBindTexture(GL_TEXTURE_2D, texture);
     ...
@@ -404,10 +404,10 @@ Issues
     1. Which operations can cause a resolve?
        The IMG_multisampled_render_to_texture includes this list:
            - Drawing with the texture bound to an active texture unit
-           - ReadPixels or CopyTex[Sub]Image* while the texture is 
+           - ReadPixels or CopyTex[Sub]Image* while the texture is
              attached to the framebuffer
-           - CopyTex[Sub]Image*, Tex[Sub]Image*, 
-             CompressedTex[Sub]Image* with the specified level as 
+           - CopyTex[Sub]Image*, Tex[Sub]Image*,
+             CompressedTex[Sub]Image* with the specified level as
              destination
            - GenerateMipmap
        An implementation may also want to resolve the multisample buffer on

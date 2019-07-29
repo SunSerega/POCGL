@@ -70,12 +70,12 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     Calling Disable with the <cap> parameter set to
     ASYNC_HISTOGRAM_SGIX restores the default synchronous behavior.
-    
+
 Additions to Chapter 4 of the 1.1 Specification (Fragments and the
 Frame Buffer)
 
     None
-    
+
 Additions to Chapter 5 of the 1.1 Specification (Special Functions)
 
     None
@@ -98,7 +98,7 @@ Dependencies on SGIX_async
     the framework defined by SGIX_async.
 
 Dependencies on EXT_histogram
-    
+
     This document changes the semantics of the query commands defined
     by EXT_histogram.
 

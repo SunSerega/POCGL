@@ -1,5 +1,5 @@
 Name
-    
+
     NV_fragment_program
 
 Name Strings
@@ -174,7 +174,7 @@ Issues
          computations to compute a final value for the fragment, which it
          should write to the "z" component of the o[DEPR] register.  The "z"
          value written should be in the range [0,1], regardless of the size of
-         the depth buffer.  
+         the depth buffer.
 
          To assist in the computation of the final Z value, a fragment program
          can access the interpolated depth of the fragment (prior to any
@@ -203,7 +203,7 @@ Issues
         representing colors.  Allowing low-precision registers also allows for
         a larger number of temporary registers (at lower precision).
         Low-precision operations also provide the opportunity for a higher
-        level of performance.  
+        level of performance.
 
         Applications are free to use only high-precision operations or mix
         high- and low-precision operations as necessary.
@@ -227,7 +227,7 @@ Issues
         RESOLVED:  Applications can optionally specify the precision of
         individual instructions by adding a suffix of "R", "H", and "X" to
         instruction names to select fp32, fp16, and fx12 precision,
-        respectively.  
+        respectively.
 
         By default, instructions will be carried out using the precision of
         the destination register.  Always inferring the precision from the
@@ -279,7 +279,7 @@ Issues
         enabled.  If the depth value is replaced by a fragment program, the
         polygon offset value will NOT be recomputed and added back after
         program execution.
-  
+
         This is probably not desirable for fragment programs that modify depth
         values since the partials used to generate the offset may not match
         the partials of the computed depth value.  Polygon offset for filled
@@ -302,7 +302,7 @@ Issues
 
     How does this extension affect the handling of q texture coordinates in
     the OpenGL spec?
-       
+
         RESOLVED:  Fragment programs are allowed to access an associated q
         texture coordinate, so this attribute must be produced by
         rasterization.  In unextended OpenGL 1.2, the q coordinate is
@@ -320,7 +320,7 @@ Issues
         the clip w coordinate, so this attribute must be produced by
         rasterization.  The OpenGL 1.2 spec doesn't explictly enumerate the
         attributes associated with the fragment, but we add treatment of the w
-        clip coordinate in the appropriate locations.  
+        clip coordinate in the appropriate locations.
 
         The reciprocal of the clip w coordinate in traditional graphics
         hardware is produced by screen-space linear interpolation of the
@@ -425,13 +425,13 @@ Issues
     target?  Dealing with working sets of different program types is a bit
     messy.  Should we document some limitation if we get programs of different
     types?
-          
+
         RESOLVED:  In retrospect, it may have been a good idea to attach a
         target to this command, but there isn't a good reason to mess with
         something that already works for vertex programs.  The driver is
         responsible for ensuring consistent results when the program types
         specified are mixed.
-    
+
     What happens on data type conversions where the original value is not
     exactly representable in the new data type, either due to overflow or
     insufficient precision in the destination type?
@@ -554,7 +554,7 @@ Issues
         RESOLVED:  Yes.  These parameters will be called "local parameters".
         This extension will provide both named and numbered local parameters.
         Local parameters can be managed by the driver and eliminate the need
-        for applications to manage a global name space.  
+        for applications to manage a global name space.
 
         Named local parameters work much like standard variable names in most
         programming languages.  They are created using the "DECLARE"
@@ -610,7 +610,7 @@ Issues
         RESOLVED:  No hardware support is present.  Note that from the point
         of view of a fragment program, a texture map can be used as a 1-, 2-,
         or 3-dimensional array of constants.
-        
+
     Should this extension provide support constants in fragment programs?  If
     so, how?
 
@@ -761,9 +761,9 @@ Issues
 
         To kill based on the green (y) component, use "EQ.y" instead.  To kill
         if any of the four components is zero, use "EQ.xyzw" or just "EQ".
-        
+
         Fragment programs do not support boolean expressions.  These can
-        generally be achieved using conditional write mask.  
+        generally be achieved using conditional write mask.
 
         To evaluate the expression "(R0.x == 0) && (R1.x == 0)":
 
@@ -846,7 +846,7 @@ New Procedures and Functions
                                      const float *params);
     void GetProgramLocalParameterdvARB(enum target, uint index,
                                        double *params);
-    void GetProgramLocalParameterfvARB(enum target, uint index, 
+    void GetProgramLocalParameterfvARB(enum target, uint index,
                                        float *params);
 
 
@@ -880,7 +880,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
     (replace the first paragraph of the section, p. 39)  Primitives are clipped
     to the clip volume.  In clip coordinates, the view volume is defined by
-    
+
         -w_c <= x_c <= w_c,
         -w_c <= y_c <= w_c, and
         -w_c <= z_c <= w_c.
@@ -890,12 +890,12 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
     specification) are enabled, if the current fragment program or texture
     shader computes per-fragment depth values.  In this case, the view volume
     is defined by:
-    
+
         -w_c <= x_c <= w_c and
         -w_c <= y_c <= w_c.
 
 
-Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     Modify Chapter 3 introduction (p. 57)
 
@@ -906,7 +906,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     defined in Sections 3.8, 3.9, and 3.10, or of a fragment program defined
     in Section 3.11.  The final depth value is initially determined by the
     rasterization operations and may be modified by a fragment program.
-  
+
     note:  Antialiasing Application is renumbered from Section 3.11 to Section
     3.12.
 
@@ -919,7 +919,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
               |           |           |        Pixel          |
             Point       Line       Polygon     Rectangle   Bitmap
            Raster-     Raster-     Raster-     Raster-     Raster-
-           ization     ization     ization     ization     ization   
+           ization     ization     ization     ization     ization
               |           |           |           |           |
               +-----------+-----------+-----------+-----------+
                                       |
@@ -933,7 +933,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                     |  |                                |
         TEXTURE_    o  o                                |
         SHADER_NV                                       |
-        enable      o                                   | 
+        enable      o                                   |
                     |                                   |
                     +-------------+                     |
                     |             |                     |
@@ -945,7 +945,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                    Fog            |                     |
                     |             |                     |
                     |  +----------+                     |
-                    |  |                                | 
+                    |  |                                |
         REGISTER_   o  o                                |
         COMBINERS_                                      |
         NV enable   o                                   |
@@ -957,7 +957,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                            NV enable  o
                                       |
                                       |
-                                   Coverage 
+                                   Coverage
                                   Application
                                       |
                                       v
@@ -1009,10 +1009,10 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     respectively.  a, b, and c are the barycentric coordinates of the fragment
     for which the data are produced. a, b, and c must correspond precisely to
     the exact coordinates ... at the fragment's center.
-    
+
     Just as with line segment rasterization, equation 3.4 may be approximated
     by
-    
+
       f = a * f_a + b * f_b + c * f_c;                          (3.5)
 
     this may yield ... for texture coordinates or clip w coordinates.
@@ -1021,7 +1021,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     A fragment arising from a group ... are given by those associated with the
     current raster position.  (delete reference to divide by q)
-      
+
     Modify Section 3.7, Bitmaps (p.111)
 
     Otherwise, a rectangular array ... The associated data for each fragment
@@ -1032,7 +1032,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     ... an image at the location indicated by a fragment's texture coordinates
     to modify the fragments primary RGBA color.  Texturing does not affect the
-    secondary color.  
+    secondary color.
 
     Texturing is specified only for RGBA mode; its use in color index mode is
     undefined.
@@ -1044,13 +1044,13 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     coordinates are specified by the program.  If q is less than or equal to
     zero, the results of texturing are undefined.
 
-    Add new Section 3.11, Fragment Programs (p.140)  
+    Add new Section 3.11, Fragment Programs (p.140)
 
     Fragment program mode is enabled and disabled with the Enable and Disable
     commands using the symbolic constant FRAGMENT_PROGRAM_NV.  When fragment
     program mode is enabled, standard and extended texturing, color sum, and
     fog application stages are ignored and a general purpose program is
-    executed instead.  
+    executed instead.
 
     A fragment program is a sequence of instructions that execute on a
     per-fragment basis.  In fragment program mode, the currently bound
@@ -1124,7 +1124,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     f[WPOS].w holds the reciprocal of the associated clip w coordinate.
 
     f[COL0] and f[COL1] hold the associated RGBA primary and secondary colors
-    of the fragment, respectively.  
+    of the fragment, respectively.
 
     f[FOGC] holds the associated eye distance or fog coordinate normally used
     for fog computations.
@@ -1201,7 +1201,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     output register.
 
     The fragment program output registers may not be read by a fragment
-    program, but may be written to multiple times.  
+    program, but may be written to multiple times.
 
     The values of all fragment program output registers are initially
     undefined.
@@ -1242,7 +1242,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     Embedded scalar constants are written as standard floating-point numbers
     with an optional sign designator ("+" or "-") and optional scientific
     notation (e.g., "E+06", meaning "times 10^6").
- 
+
     Embedded vector constants are written as a comma-separated array of one to
     four scalar constants, surrounded by braces (like a C/C++ array
     initializer).  Vector constants are always treated as 4-component vectors:
@@ -1375,7 +1375,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     <instructionSequence>  ::= <instructionSequence> <instructionStatement>
                              | <instructionStatement>
 
-    <instructionStatement> ::= <instruction> ";" 
+    <instructionStatement> ::= <instruction> ";"
                              | <constantDefinition> ";"
                              | <localDeclaration> ";"
 
@@ -1388,7 +1388,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                              | <TEXop-instruction>
                              | <TXDop-instruction>
 
-    <VECTORop-instruction> ::= <VECTORop> <maskedDstReg> "," 
+    <VECTORop-instruction> ::= <VECTORop> <maskedDstReg> ","
                                <vectorSrc>
 
     <VECTORop>             ::= "DDX"   | "DDX_SAT"
@@ -1434,11 +1434,11 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                              | "MOVHC" | "MOVHC_SAT"
                              | "MOVXC" | "MOVXC_SAT"
                              | "PK2H"
-                             | "PK2US"  
-                             | "PK4B"  
+                             | "PK2US"
+                             | "PK4B"
                              | "PK4UB"
 
-    <SCALARop-instruction> ::= <SCALARop> <maskedDstReg> "," 
+    <SCALARop-instruction> ::= <SCALARop> <maskedDstReg> ","
                                <scalarSrc>
 
     <SCALARop>             ::= "COS"     | "COS_SAT"
@@ -1486,7 +1486,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                              | "UP4UB"   | "UP4UB_SAT"
                              | "UP4UBC"  | "UP4UBC_SAT"
 
-    <BINSCop-instruction> ::=  <BINSCop> <maskedDstReg> "," 
+    <BINSCop-instruction> ::=  <BINSCop> <maskedDstReg> ","
                                <scalarSrc> "," <scalarSrc>
 
     <BINSCop>              ::= "POW"   | "POW_SAT"
@@ -1706,7 +1706,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                              | <negate> <srcRegister> <scalarSuffix>
                              | <negate> <srcRegister> <swizzleSuffix>
 
-    <maskedDstReg>         ::= <dstRegister> <optionalWriteMask> 
+    <maskedDstReg>         ::= <dstRegister> <optionalWriteMask>
                                <optionalCCMask>
 
     <dstRegister>          ::= <fragTempReg>
@@ -1722,7 +1722,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     <ccMaskRule>           ::= "EQ" | "GE" | "GT" | "LE" | "LT" | "NE" |
                                "TR" | "FL"
-                           
+
     <optionalWriteMask>    ::= ""
                              | "." "x"
                              | "."     "y"
@@ -1804,12 +1804,12 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     <texImageTarget>       ::= "1D" | "2D" | "3D" | "CUBE" | "RECT"
 
-    <constantDefinition>   ::= "DEFINE" <namedVectorConstant> "=" 
+    <constantDefinition>   ::= "DEFINE" <namedVectorConstant> "="
                                <vectorConstant>
-                             | "DEFINE" <namedScalarConstant> "=" 
+                             | "DEFINE" <namedScalarConstant> "="
                                <scalarConstant>
 
-    <localDeclaration>     ::= "DECLARE" <namedLocalParameter> 
+    <localDeclaration>     ::= "DECLARE" <namedLocalParameter>
                                <optionalLocalValue>
 
     <optionalLocalValue>   ::= ""
@@ -1875,7 +1875,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     the program (R0-R31, o[COLR], and o[DEPR]) counts as two registers; each
     fp16 temporary or output register used by the program (H0-H63 and o[COLH])
     count as a single register.
-      
+
     A fragment program fails to load if any instruction sources more than one
     unique fragment attribute register.  Instructions sourcing the same
     attribute register multiple times are acceptable.
@@ -1970,7 +1970,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       UP4B[C][_SAT]        s       v        unpack four signed 8-bit scalars
       UP4UB[C][_SAT]       s       v        unpack four unsigned 8-bit scalars
       X2D[RH ][C][_SAT]    v,v,v   v        2D coordinate transformation
-     
+
     Table X.4:  Summary of fragment program instructions.  "[RHX]" indicates
     an optional arithmetic precision suffix.  "[C]" indicates an optional
     condition code update suffix.  "[_SAT]" indicates an optional clamp of
@@ -2115,7 +2115,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     After operands are loaded, they are converted to a data type corresponding
     to the operation precision specified in the fragment program instruction.
- 
+
     The following pseudo-code spells out the operand generation process.
     "SrcT" and "InstT" refer to the data types of the specified register or
     constant and the instruction, respectively.  "VecSrcT" and "VecInstT"
@@ -2165,7 +2165,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
           return convertedVal;
       }
 
-      InstT ScalarLoad(VecSrcT source) 
+      InstT ScalarLoad(VecSrcT source)
       {
           SrcT srcVal;
           InstT convertedVal;
@@ -2189,7 +2189,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     Section 3.11.4.4, Fragment Program Destination Register Update
 
     Each fragment program instruction, except for KIL, writes a 4-component
-    result vector to a single temporary or output register.  
+    result vector to a single temporary or output register.
 
     The four components of the result vector are first optionally clamped to
     the range [0,1].  The components will be clamped if and only if the result
@@ -2418,7 +2418,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     Note that the partial derivates obtained by this instruction are
     approximate, and derivative-of-derivate instruction sequences may not
-    yield accurate second derivatives.  
+    yield accurate second derivatives.
 
     For components with partial derivatives that overflow (including +/-INF
     inputs), the resulting partials may be encoded as large floating-point
@@ -2452,13 +2452,13 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z);
-      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z);
-      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z);
-      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z);
 
 
@@ -2470,13 +2470,13 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z) + (tmp0.w * tmp1.w);
-      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z) + (tmp0.w * tmp1.w);
-      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z) + (tmp0.w * tmp1.w);
-      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp2.z) + (tmp0.w * tmp1.w);
 
 
@@ -2524,7 +2524,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       | Approx2ToX(x) - 2^x | < 1.0 / 2^22, if 0.0 <= x < 1.0,
 
     and, in general,
-   
+
       | Approx2ToX(x) - 2^x | < (1.0 / 2^22) * (2^floor(x)).
 
     The following special-case rules apply to exponential approximation:
@@ -2591,7 +2591,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     effect.  The condition code components are specified, swizzled, and
     evaluated in the same manner as the condition code write mask.
 
-      if (TestCC(rc.c***) || TestCC(rc.*c**) || 
+      if (TestCC(rc.c***) || TestCC(rc.*c**) ||
           TestCC(rc.**c*) || TestCC(rc.***c)) {
          // Discard the fragment.
       } else {
@@ -2614,7 +2614,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       result.y = ApproxLog2(tmp);
       result.z = ApproxLog2(tmp);
       result.w = ApproxLog2(tmp);
-   
+
     The approximation function is accurate to at least 22 bits:
 
       | ApproxLog2(x) - log_2(x) | < 1.0 / 2^22.
@@ -2714,7 +2714,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       1. max(A,B) is always equivalent to max(B,A).
       2. max(NaN, <x>) == NaN, for all <x>.
 
-    
+
 
     Section 3.11.5.17,  MIN:  minimum
 
@@ -2762,7 +2762,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       4. +/-0.0 * <x> = +/-0.0, for all <x> except -INF, +INF, and NaN.  The
          sign of the result is positive if the signs of the two operands match
          and negative otherwise.
-      5. +/-INF * <x> = +/-INF, for all <x> except -0.0, +0.0, and NaN.  The 
+      5. +/-INF * <x> = +/-INF, for all <x> except -0.0, +0.0, and NaN.  The
          sign of the result is positive if the signs of the two operands match
          and negative otherwise.
       6. +1.0 * <x> = <x>, for all <x>.
@@ -2896,7 +2896,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       result.y = ApproxPower(tmp0, tmp1);
       result.z = ApproxPower(tmp0, tmp1);
       result.w = ApproxPower(tmp0, tmp1);
-   
+
     The exponentiation approximation function is defined in terms of the base
     2 exponentiation and logarithm approximation operations in the EX2 and LG2
     instructions, including errors and the processing of any special cases.
@@ -2974,7 +2974,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       direction = VectorLoad(op1);
       tmp.w = (axis.x * axis.x + axis.y * axis.y +
                axis.z * axis.z);
-      tmp.x = (axis.x * direction.x + axis.y * direction.y + 
+      tmp.x = (axis.x * direction.x + axis.y * direction.y +
                axis.z * direction.z);
       tmp.x = 2.0 * tmp.x;
       tmp.x = tmp.x / tmp.w;
@@ -3220,7 +3220,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     by <texImageUnit>.  <texImageTarget> values of "1D", "2D", "3D", "CUBE",
     and "RECT" correspond to the texture targets TEXTURE_1D, TEXTURE_2D,
     TEXTURE_3D, TEXTURE_CUBE_MAP_ARB, and TEXTURE_RECTANGLE_NV, respectively.
-    
+
     The (s,t,r) texture coordinates used for the lookup are the x, y, and z
     components of the single operand.
 
@@ -3249,7 +3249,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       FLOAT_RG_NV                Rt     Gt     0.0    1.0
       FLOAT_RGB_NV               Rt     Gt     Bt     1.0
       FLOAT_RGBA_NV              Rt     Gt     Bt     At
-      
+
       Table X.5:  Mapping of filtered texel components to result vector
       components for the TEX instruction.  0.0 and 1.0 indicate that the
       corresponding constant value is written to the result vector.
@@ -3269,7 +3269,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     Although this instruction allows the selection of any texture target, a
     fragment program can not use more than one texture target for any given
     texture image unit.
-      
+
 
     Section 3.11.5.39,  TXD: Texture Lookup with Derivatives
 
@@ -3278,7 +3278,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     by <texImageUnit>.  <texImageTarget> values of "1D", "2D", "3D", "CUBE",
     and "RECT" correspond to the texture targets TEXTURE_1D, TEXTURE_2D,
     TEXTURE_3D, TEXTURE_CUBE_MAP_ARB, and TEXTURE_RECTANGLE_NV, respectively.
-    
+
     The (s,t,r) texture coordinates used for the lookup are the x, y, and z
     components of the first operand.  The partial derivatives in the X
     direction (ds/dx, dt/dx, dr/dx) are specified by the x, y, and z
@@ -3298,11 +3298,11 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     OpenGL.  If the specified texture target has a consistent set of images, a
     lookup is performed.  Otherwise, the result of the instruction is the
     vector (0,0,0,0).
-      
+
     Although this instruction allows the selection of any texture target, a
     fragment program can not use more than one texture target for any given
     texture image unit.
-      
+
 
     Section 3.11.5.40,  TXP: Projective Texture Lookup
 
@@ -3331,11 +3331,11 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     OpenGL.  If the specified texture target has a consistent set of images, a
     lookup is performed.  Otherwise, the result of the instruction is the
     vector (0,0,0,0).
-      
+
     Although this instruction allows the selection of any texture target, a
     fragment program can not use more than one texture target for any given
     texture image unit.
-      
+
 
     Section 3.11.5.41,  UP2H:  Unpack Two 16-Bit Floats
 
@@ -3353,7 +3353,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       result.y = (fp16) ((RawBits(tmp) >> 16) & 0xFFFF);
       result.z = (fp16) (RawBits(tmp) & 0xFFFF);
       result.w = (fp16) ((RawBits(tmp) >> 16) & 0xFFFF);
-    
+
     Since the source operand must be a 32-bit scalar, a fragment program will
     fail to load if the operand is not obtained from a register with 32-bit
     components or from a program parameter.
@@ -3520,11 +3520,11 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
 
 Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
-Operations and the Framebuffer) 
+Operations and the Framebuffer)
 
     None
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
     Add new section 5.7, Programs (after "Flush and Finish")
 
@@ -3647,7 +3647,7 @@ Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
     to be resident.
 
     The command
-      
+
       boolean AreProgramsResidentNV(sizei n, const uint *ids,
                                     boolean *residences);
 
@@ -3713,11 +3713,11 @@ Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
       void ProgramLocalParameter4fARB(enum target, uint index,
                                       float x, float y, float z, float w);
-      void ProgramLocalParameter4fvARB(enum target, uint index, 
+      void ProgramLocalParameter4fvARB(enum target, uint index,
                                        const float *params);
       void ProgramLocalParameter4dARB(enum target, uint index,
                                       double x, double y, double z, double w);
-      void ProgramLocalParameter4dvARB(enum target, uint index, 
+      void ProgramLocalParameter4dvARB(enum target, uint index,
                                        const double *params);
 
     update the values of the numbered program local parameter <index>
@@ -3826,7 +3826,7 @@ State Requests)
 Additions to Appendix F of the OpenGL 1.2.1 Specification (ARB Extensions)
 
     Modify Section F.2.3 (Changes to Section 2.6), p.240
- 
+
     (modify last paragraph on p.240) ... Multiple sets of texture coordinates
     may be used to specify how multiple texture images are mapped onto a
     primitive.  The number of texture coordinate sets supported is
@@ -3933,7 +3933,7 @@ Additions to Appendix F of the OpenGL 1.2.1 Specification (ARB Extensions)
     treated as disabled.
 
     Modify Section F.2.15 (Changes to Section 6.1.2), p.251
-    
+
     (add to end of paragraph) Queries of texture state variables corresponding
     to texture coordinate processing unit (namely, TexGen state and enables,
     and matrices) will produce an INVALID_OPERATION error if the value of
@@ -3964,12 +3964,12 @@ Dependencies on NV_texture_shader
     being disabled in fragment program mode is not applicable.
 
 Dependencies on NV_texture_rectangle
-  
+
     If NV_texture_rectangle is not supported, the references to "RECT" in the
     <texImageTarget> grammar rule and TEXTURE_RECTANGLE_NV are not applicable.
 
 Dependencies on ARB_texture_cube_map
-  
+
     If ARB_texture_cube_map is not supported, the references to "CUBE" in the
     <texImageTarget> grammar rule and TEXTURE_CUBE_MAP_ARB are not applicable.
 
@@ -4126,7 +4126,7 @@ GLX Protocol
             24                          unused
 
 
-Errors 
+Errors
 
     INVALID_OPERATION is generated by Begin, DrawPixels, Bitmap, CopyPixels,
     or a command that performs an explicit Begin if FRAGMENT_PROGRAM_NV is
@@ -4250,7 +4250,7 @@ Revision History
 
     Rev.    Date    Author   Changes
     ----  -------- --------  --------------------------------------------
-     73   05/23/05  pbrown   Fixed cut-and-paste error in the dependency 
+     73   05/23/05  pbrown   Fixed cut-and-paste error in the dependency
                              section where it said "NV_texture_rectangle"
                              instead of "ARB_texture_cube_map".
 
@@ -4275,7 +4275,7 @@ Revision History
 
      67   12/23/02  pbrown   Fix incorrect syntax of examples of "KIL"
                              instruction. The condition code test is not
-                             parenthesized in KIL. 
+                             parenthesized in KIL.
 
      66   10/31/02  pbrown   Cleaned up special cases of POW, including the
                              fact that "POW dst, 0, 0" produces NaN in this
@@ -4301,7 +4301,7 @@ Revision History
                              ProgramNamedParameter*NV to eliminate naming
                              conflicts with ARB_vertex_program (and presumably
                              ARB_fragment_program).
-                             
+
                              Added support for numbered program local
                              parameters for compatibility with the ARB vertex
                              program extension (and upcoming ARB fragment
@@ -4372,7 +4372,7 @@ Revision History
                              failures.
 
      48   04/02/02  pbrown   Added missing enum value for the
-                             FRAGMENT_PROGRAM_BINDING_NV query. 
+                             FRAGMENT_PROGRAM_BINDING_NV query.
 
      47   03/15/02  pbrown   Fixed various typos, and an incorrect description
                              of the MAX operation.

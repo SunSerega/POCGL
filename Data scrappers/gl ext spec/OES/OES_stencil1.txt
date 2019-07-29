@@ -31,7 +31,7 @@ IP Status
 
 Status
 
-    Ratified by the Khronos BOP, July 22, 2005.    
+    Ratified by the Khronos BOP, July 22, 2005.
 
 Version
 
@@ -39,7 +39,7 @@ Version
 
 Number
 
-    OpenGL ES Extension #31    
+    OpenGL ES Extension #31
 
 Dependencies
 
@@ -54,12 +54,12 @@ Overview
 
 Issues
 
- 
+
 New Tokens
 
     Accepted by the <internalformat> parameter of RenderbufferStorageOES:
 
-        STENCIL_INDEX1_OES                 0x8D46 
+        STENCIL_INDEX1_OES                 0x8D46
 
 New Procedures and Functions
 

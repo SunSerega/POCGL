@@ -75,7 +75,7 @@ New Keywords
 New Built-in Functions
 
     dFdx()
-    dFdy()  
+    dFdy()
     fwidth()
 
 New Macro Definitions
@@ -93,7 +93,7 @@ Additions to Chapter 5 of the OpenGL ES 2.0 specification:
 
 Additions to Chapter 8 of the OpenGL ES Shading Language specification:
 
-    Replace section 8.8 (Fragment Processing Functions) with the following 
+    Replace section 8.8 (Fragment Processing Functions) with the following
     paragraphs:
 
     Fragment processing functions are only available in fragment shaders.
@@ -103,13 +103,13 @@ Additions to Chapter 8 of the OpenGL ES Shading Language specification:
 
     #extension GL_OES_standard_derivatives : enable
 
-    before being used.  
+    before being used.
 
-    Derivatives may be computationally expensive and/or numerically unstable.  
+    Derivatives may be computationally expensive and/or numerically unstable.
     Therefore, an OpenGL ES implementation may approximate the true derivatives
     by using a fast but not entirely accurate derivative computation.
 
-    The expected behavior of a derivative is specified using forward/backward 
+    The expected behavior of a derivative is specified using forward/backward
     differencing.
 
     Forward differencing:
@@ -147,8 +147,8 @@ Additions to Chapter 8 of the OpenGL ES Shading Language specification:
 
     3. The method may differ per fragment, subject to the constraint that the
        method may vary by window coordinates, not screen coordinates.  The
-       invariance requirement described in section 3.1 of the OpenGL ES 2.0 
-       specification is relaxed for derivative calculations, because the method 
+       invariance requirement described in section 3.1 of the OpenGL ES 2.0
+       specification is relaxed for derivative calculations, because the method
        may be a function of fragment location.
 
     Other properties that are desirable, but not required, are:
@@ -157,8 +157,8 @@ Additions to Chapter 8 of the OpenGL ES Shading Language specification:
        (interpolated, not extrapolated).
 
     5. Functions for dFdx should be evaluated while holding y constant.
-       Functions for dFdy should be evaluated while holding x constant.  
-       However, mixed higher order derivatives, like dFdx(dFdy(y)) and 
+       Functions for dFdy should be evaluated while holding x constant.
+       However, mixed higher order derivatives, like dFdx(dFdy(y)) and
        dFdy(dFdx(x)) are undefined.
 
     6. Derivatives of constant arguments should be 0.
@@ -175,7 +175,7 @@ Additions to Chapter 8 of the OpenGL ES Shading Language specification:
     genType dFdx (genType p)
 
     Returns the derivative in x using local differencing for the input argument
-    p. 
+    p.
 
     genType dFdy (genType p)
 
@@ -200,7 +200,7 @@ New State
 
     Add to Table 6.27: Hints
 
-Get Value                    Type  Get Command  Initial Value  Description 
+Get Value                    Type  Get Command  Initial Value  Description
 ---------                    ----  -----------  -------------  -----------
 FRAGMENT_SHADER_DERIVATIVE_  Z3    GetIntegerv  DONT_CARE      Fragment shader
 HINT_OES                                                       derivative

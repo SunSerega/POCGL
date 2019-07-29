@@ -344,7 +344,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
 
     Applications can enhance the performance of DrawPixels and other
     commands that transfer large amounts of pixel data by using a pixel
-    data range.  The command 
+    data range.  The command
 
        void PixelDataRangeNV(enum target, sizei length, void *pointer)
 
@@ -698,5 +698,5 @@ Revision History
     November 7, 2002 - Updated implementation details section with most
     up-to-date rules on PDR usage.  Lifted rule that texture downloads
     must be 2046 pixels in size or smaller.  Removed support for 8-bit
-    texture downloads.  Increased max TexSubImage pitch to 65535 from 
+    texture downloads.  Increased max TexSubImage pitch to 65535 from
     8191.

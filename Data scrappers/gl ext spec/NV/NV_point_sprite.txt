@@ -386,7 +386,7 @@ GLX Protocol
                         0x8863 n==1     POINT_SPRITE_R_MODE_NV
             4           INT32           param
 
-        PointParameterivNV 
+        PointParameterivNV
             2           8+4*n           rendering command length
             2           4222            rendering command opcode
             4           ENUM            pname

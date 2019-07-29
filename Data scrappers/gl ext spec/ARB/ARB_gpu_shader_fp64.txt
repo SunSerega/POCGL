@@ -43,7 +43,7 @@ Status
 
     Complete. Approved by the ARB at the 2010/01/22 F2F meeting.
     Approved by the Khronos Board of Promoters on March 10, 2010.
-    
+
 Version
 
     Last Modified Date:         August 27, 2012
@@ -71,7 +71,7 @@ Overview
 
     This extension allows GLSL shaders to use double-precision floating-point
     data types, including vectors and matrices of doubles.  Doubles may be
-    used as inputs, outputs, and uniforms.  
+    used as inputs, outputs, and uniforms.
 
     The shading language supports various arithmetic and comparison operators
     on double-precision scalar, vector, and matrix types, and provides a set
@@ -134,23 +134,23 @@ New Procedures and Functions
     void Uniform3dv(int location, sizei count, const double *value);
     void Uniform4dv(int location, sizei count, const double *value);
 
-    void UniformMatrix2dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix2dv(int location, sizei count, boolean transpose,
                           const double *value);
-    void UniformMatrix3dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix3dv(int location, sizei count, boolean transpose,
                           const double *value);
-    void UniformMatrix4dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix4dv(int location, sizei count, boolean transpose,
                           const double *value);
-    void UniformMatrix2x3dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix2x3dv(int location, sizei count, boolean transpose,
                             const double *value);
-    void UniformMatrix2x4dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix2x4dv(int location, sizei count, boolean transpose,
                             const double *value);
-    void UniformMatrix3x2dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix3x2dv(int location, sizei count, boolean transpose,
                             const double *value);
-    void UniformMatrix3x4dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix3x4dv(int location, sizei count, boolean transpose,
                             const double *value);
-    void UniformMatrix4x2dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix4x2dv(int location, sizei count, boolean transpose,
                             const double *value);
-    void UniformMatrix4x3dv(int location, sizei count, boolean transpose, 
+    void UniformMatrix4x3dv(int location, sizei count, boolean transpose,
                             const double *value);
 
     void GetUniformdv(uint program, int location, double *params);
@@ -162,7 +162,7 @@ New Procedures and Functions
     void ProgramUniform2dEXT(uint program, int location, double x, double y);
     void ProgramUniform3dEXT(uint program, int location, double x, double y,
                              double z);
-    void ProgramUniform4dEXT(uint program, int location, double x, double y, 
+    void ProgramUniform4dEXT(uint program, int location, double x, double y,
                              double z, double w);
     void ProgramUniform1dvEXT(uint program, int location, sizei count,
                               const double *value);
@@ -170,26 +170,26 @@ New Procedures and Functions
                               const double *value);
     void ProgramUniform3dvEXT(uint program, int location, sizei count,
                               const double *value);
-    void ProgramUniform4dvEXT(uint program, int location, sizei count, 
+    void ProgramUniform4dvEXT(uint program, int location, sizei count,
                               const double *value);
 
-    void ProgramUniformMatrix2dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix2dvEXT(uint program, int location, sizei count,
                                     boolean transpose, const double *value);
-    void ProgramUniformMatrix3dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix3dvEXT(uint program, int location, sizei count,
                                     boolean transpose, const double *value);
-    void ProgramUniformMatrix4dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix4dvEXT(uint program, int location, sizei count,
                                     boolean transpose, const double *value);
-    void ProgramUniformMatrix2x3dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix2x3dvEXT(uint program, int location, sizei count,
                                       boolean transpose, const double *value);
-    void ProgramUniformMatrix2x4dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix2x4dvEXT(uint program, int location, sizei count,
                                       boolean transpose, const double *value);
-    void ProgramUniformMatrix3x2dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix3x2dvEXT(uint program, int location, sizei count,
                                       boolean transpose, const double *value);
-    void ProgramUniformMatrix3x4dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix3x4dvEXT(uint program, int location, sizei count,
                                       boolean transpose, const double *value);
-    void ProgramUniformMatrix4x2dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix4x2dvEXT(uint program, int location, sizei count,
                                       boolean transpose, const double *value);
-    void ProgramUniformMatrix4x3dvEXT(uint program, int location, sizei count, 
+    void ProgramUniformMatrix4x3dvEXT(uint program, int location, sizei count,
                                       boolean transpose, const double *value);
 
 New Tokens
@@ -247,10 +247,10 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
       void Uniform{1,2,3,4}d(int location, T value);
       void Uniform{1,2,3,4}dv(int location, T value);
       void UniformMatrix{2,3,4}dv
-           (int location, sizei count, boolean transpose, 
+           (int location, sizei count, boolean transpose,
             const double *value);
       void UniformMatrix{2x3,3x2,2x4,4x2,3x4,4x3}dv
-           (int location, sizei count, boolean transpose, 
+           (int location, sizei count, boolean transpose,
             const double *value);
 
     (insert after fourth paragraph, p. 100) The Uniform*d{v} commands will
@@ -380,7 +380,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     Modify Section 4.1, Basic Types, p. 17
 
     (add to the basic "Transparent Types" table, pp. 17-18)
-    
+
       Types       Meaning
       --------    ----------------------------------------------------------
       double      a single double-precision floating point scalar
@@ -496,7 +496,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     lower-precision types.  There are no implicit array or structure
     conversions.
 
-    (add before the final paragraph of the section, p. 27) 
+    (add before the final paragraph of the section, p. 27)
 
     (insert before the final paragraph of the section) When performing
     implicit conversion for binary operators, there may be multiple data types
@@ -682,7 +682,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     The significand is returned by the function; the exponent is returned in
     the parameter <exp>.  For a floating-point value of zero, the significant
     and exponent are both zero.  For a floating-point value that is an
-    infinity or is not a number, the results of frexp() are undefined.  
+    infinity or is not a number, the results of frexp() are undefined.
 
     If the input <x> is a vector, this operation is performed in a
     component-wise manner; the value returned by the function and the value
@@ -858,15 +858,15 @@ Dependencies on EXT_direct_state_access
 
         ....
         void ProgramUniform{1,2,3,4}dEXT(uint program int location, T value);
-        void ProgramUniform{1,2,3,4}dvEXT (uint program, int location, 
+        void ProgramUniform{1,2,3,4}dvEXT (uint program, int location,
                                           const T *value);
         void ProgramUniformMatrix{2,3,4}dvEXT
-             (uint program, int location, sizei count, boolean transpose, 
+             (uint program, int location, sizei count, boolean transpose,
               const double *value);
         void ProgramUniformMatrix{2x3,3x2,2x4,4x2,3x4,4x3}dvEXT
-             (uint program, int location, sizei count, boolean transpose, 
+             (uint program, int location, sizei count, boolean transpose,
               const double *value);
-   
+
     operate identically to the corresponding command where "Program" is
     deleted from the name (and extension suffixes are dropped or updated
     appropriately) except, rather than updating the currently active program
@@ -956,7 +956,7 @@ Issues
       checks the offset of transform feedback buffers against the current
       program.
 
-    (5) Should we have double-precision matrix types?  We didn't add integer 
+    (5) Should we have double-precision matrix types?  We didn't add integer
         matrices, but integer matrix math is fairly uncommon.
 
       RESOLVED:  Yes, we will support all matrix sizes in double-precision.
@@ -1073,7 +1073,7 @@ Revision History
                               Allow implicit conversion from mat*->dmat*.
                               Rename fmad and [un]packFloat2x32 to fma
                               and [un]packDouble2x32.  Add overlooked
-                              fp64 versions of geometric functions. 
+                              fp64 versions of geometric functions.
 
      3    12/10/09  pbrown    Convert from EXT to ARB.
 

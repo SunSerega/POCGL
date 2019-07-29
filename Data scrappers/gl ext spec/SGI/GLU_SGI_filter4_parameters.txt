@@ -38,12 +38,12 @@ Overview
     other 4x1 interpolation schemes can be accomplished by setting B and C in
     their piecewise cubic formula.  Notably, the blurriness/sharpness of the
     resulting image can be adjusted with B and C. The reference is:
-    Mitchell, Don. and Netravali, Arun, "Reconstruction Filters for Computer 
+    Mitchell, Don. and Netravali, Arun, "Reconstruction Filters for Computer
     Graphics", SIGGRAPH '88, p. 221-228.
 
     According to Lagrange interpolation, four piecewise cubic polynomials (two
     redundant ones) are used to produce coefficients resulting in images at a
-    high sharpness level. The reference is: Dahlquist and Bjorck, 
+    high sharpness level. The reference is: Dahlquist and Bjorck,
     "Numerical Methods", Prentice-Hall, 1974, pp 284-285.
 
 Issues
@@ -53,13 +53,13 @@ Issues
     Should TexFilterFuncSGIS be called for the user?
 
     - yes, TexFilterFuncSGIS should be called instead of having the user
-      do this. This is to be consistent with the rest of GLU, i.e., 
+      do this. This is to be consistent with the rest of GLU, i.e.,
           mipmap utilities. Note that GLU was designed this way so that it
-      could be accelerated.   
+      could be accelerated.
 
 New Procedures and Functions
 
-    GLint gluTexFilterFuncSGI(GLenum target, GLenum filtertype, 
+    GLint gluTexFilterFuncSGI(GLenum target, GLenum filtertype,
                   const GLfloat *parms, GLint n, GLfloat *weights)
 
 New Tokens
@@ -74,27 +74,27 @@ Additions to the GLU Specification
     target should be either GL_TEXTURE_1D or GL_TEXTURE_2D.
     To specify Lagrange interpolation,
     GLU_LAGRANGIAN_SGI is passed into filtertype and the parms parameter
-    must be NULL. To specify Mitchell-Netravali interpolation, 
+    must be NULL. To specify Mitchell-Netravali interpolation,
     GLU_MITCHELL_NETRAVALI_SGI is passed into filtertype.  If
-    filtertype is GLU_MITCHELL_NETRAVALI_SGI, the parms parameter may point 
+    filtertype is GLU_MITCHELL_NETRAVALI_SGI, the parms parameter may point
     to a vector of two floats containing B and C control values or the parms
-    parameter may be NULL in which case both B and C default to 0.5.  
+    parameter may be NULL in which case both B and C default to 0.5.
 
     In either case, n must be set to a power of two plus one and less than
     or equal to 1025 and weights must point to n GLfloat's worth of memory.
 
-    After the coefficients are successfully generated and saved in weights, 
+    After the coefficients are successfully generated and saved in weights,
     TexFilterFuncSGIS is then called to save them as state information.
 
     Note that gluTexFilterFuncSGI only customizes filter4 filtering behavior;
-    filter4 still needs to be enabled by calling TexParameter with pname set 
-    to TEXTURE_MIN_FILTER or TEXTURE_MAG_FILTER, and params set to 
-    GL_FILTER4_SGIS. 
+    filter4 still needs to be enabled by calling TexParameter with pname set
+    to TEXTURE_MIN_FILTER or TEXTURE_MAG_FILTER, and params set to
+    GL_FILTER4_SGIS.
 
-    gluTexFilterFuncSGI returns 0 upon success otherwise a GLU error code is 
+    gluTexFilterFuncSGI returns 0 upon success otherwise a GLU error code is
     returned. See Errors.
 
-    Also see the TexFilterFuncSGIS specification. 
+    Also see the TexFilterFuncSGIS specification.
 
     GLenum target= GL_TEXTURE_2D;
         GLfloat *weights, control[2];
@@ -105,8 +105,8 @@ Additions to the GLU Specification
         rc= gluTexFilterFuncSGI(target, GLU_LAGRANGIAN_SGI,(const GLfloat *)0,
                                 n, weights);
         if (rc == 0) {
-       printf("Success!\n");    
-       /* glTexFilterFuncSGIS(target, GL_FILTER4_SGIS, n, 
+       printf("Success!\n");
+       /* glTexFilterFuncSGIS(target, GL_FILTER4_SGIS, n,
         *                     (const float *)weights);
         * has been called within gluTexFilterFuncSGI.
         */
@@ -125,7 +125,7 @@ Additions to the GLU Specification
         rc= gluTexFilterFuncSGI(target, GLU_MITCHELL_NETRAVALI_SGI,
                             (const GLfloat *)control, n, weights);
         if (rc == 0) {
-       printf("Success!\n");    
+       printf("Success!\n");
        /* glTexFilterFuncSGIS(target, GL_FILTER4_SGIS, n,
         *                     (const float *)weights);
         * has been called within gluTexFilterFuncSGI.
@@ -134,14 +134,14 @@ Additions to the GLU Specification
     else {
        printf("Failure! %s\n",gluErrorString(rc));
         }
-    
+
 Errors
 
     GLU_INVALID_OPERATION is returned if either GL_SGIS_texture_filter4 or
     GLU_SGI_filter4_parameters is not supported.
 
     GLU_INVALID_ENUM is returned if target is neither GL_TEXTURE_1D nor
-    GL_TEXTURE_2D.    
+    GL_TEXTURE_2D.
 
     GLU_INVALID_ENUM is returned if filtertype is neither GLU_LAGRANGIAN_SGI
     nor GLU_MITCHELL_NETRAVALI_SGI.
@@ -149,6 +149,6 @@ Errors
     GLU_INVALID_VALUE is returned if n is not a power of two plus one.
     GLU_INVALID_VALUE is returned if n exceeds 1025.
 
-    GLU_INVALID_VALUE is returned if filtertype is GLU_LAGRANGIAN_SGI 
+    GLU_INVALID_VALUE is returned if filtertype is GLU_LAGRANGIAN_SGI
     and parms is not NULL.
 

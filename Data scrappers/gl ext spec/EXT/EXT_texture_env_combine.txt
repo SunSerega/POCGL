@@ -138,14 +138,14 @@ New Tokens
         SRC_COLOR
         ONE_MINUS_SRC_COLOR
         SRC_ALPHA
-        ONE_MINUS_SRC_ALPHA     
+        ONE_MINUS_SRC_ALPHA
 
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv,
     and TexEnviv when the <pname> parameter value is
     OPERAND0_ALPHA_EXT or OPERAND1_ALPHA_EXT
 
         SRC_ALPHA
-        ONE_MINUS_SRC_ALPHA     
+        ONE_MINUS_SRC_ALPHA
 
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv,
     and TexEnviv when the <pname> parameter value is
@@ -159,7 +159,7 @@ New Tokens
 
         1.0
         2.0
-        4.0     
+        4.0
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)
 
@@ -246,7 +246,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
         INTENSITY                       It, It, It      It
         RGB                             Rt, Gt, Bt      1
         RGBA                            Rt, Gt, Bt      At
-        
+
         Table 3.23: Correspondence of texture components to source
         components for COMBINE_RGB_EXT and COMBINE_ALPHA_EXT arguments
 

@@ -138,7 +138,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     for B, and PIXEL_MAP_A_TO_A for A.  Each element is multiplied by an integer
     on less thanthe size of the corresponding table, and, for each element,
     and address is found by rounding this value to the nearest integer.  For
-    each element, the addressed value in the correspoding table replaces the 
+    each element, the addressed value in the correspoding table replaces the
     element.  The real value is then converted to a complex value by assigning
     zero to the imaginary part.
 
@@ -251,7 +251,7 @@ and the Framebuffer)
     For an index, if the type is not FLOAT, final conversion consists of
     masking the index with the value given Table 4.6; if the type is FLOAT,
     then the integer index is converted to a GL float data value.  For a
-    component, each the real and imaginary parts are first clamped to [0,1] 
+    component, each the real and imaginary parts are first clamped to [0,1]
     Then the appropriate conversion formula from Table 4.7 is applied to the
     both the real and imaginary parts of each component.
 

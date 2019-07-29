@@ -53,7 +53,7 @@ Overview
 
     Consider this simple example:
 
-        Consider a column of pixels in memory.  The pixels are of GL_RGB 
+        Consider a column of pixels in memory.  The pixels are of GL_RGB
         format and GL_UNSIGNED_BYTE type resulting in 3 bytes per pixel.
         Now consider that this column of pixel data was arranged in memory
         such that each row of the image (in this case each pixel) has two
@@ -63,7 +63,7 @@ Overview
         memory arrangement with existing pixel storage semantics would
         naturally start with a GL_UNPACK_ROW_LENGTH of 1 because there is
         one pixel per row.  However, no valid value of GL_UNPACK_ALIGNMENT,
-        1, 2, 4, or 8, will allow the proper row padding to express this 
+        1, 2, 4, or 8, will allow the proper row padding to express this
         memory arrangement.
 
 Glossary
@@ -79,7 +79,7 @@ Issues
         Specifying non-zero row bytes packing or unpacking values will
         override all values specified for both row length and alignment
         of the same class.  In other words, if GL_PACK_ROW_BYTES is
-        specified as non-zero, it overrides values of both 
+        specified as non-zero, it overrides values of both
         GL_PACK_ROW_LENGTH and GL_PACK_ALIGNMENT.  The same scenario is
         true of unpacking pixel storage parameters.
 
@@ -139,8 +139,8 @@ New State
 
     Get Value               Get Command     Type    Value       Attrib
     ---------               -----------     ----    -------     ------
-    PACK_ROW_BYTES_APPLE    GetIntegerv     Z+      0           client_pixel_store   
-    UNPACK_ROW_BYTES_APPLE  GetIntegerv     Z+      0           client_pixel_store  
+    PACK_ROW_BYTES_APPLE    GetIntegerv     Z+      0           client_pixel_store
+    UNPACK_ROW_BYTES_APPLE  GetIntegerv     Z+      0           client_pixel_store
 
 
 

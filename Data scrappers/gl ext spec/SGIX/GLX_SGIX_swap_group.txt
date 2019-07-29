@@ -21,12 +21,12 @@ Dependencies
 Overview
 
     This extension provides the capability to synchronize the buffer swaps
-    of a group of GLX drawables.  A swap group is created, and drawables are 
-    added as members to the swap group.  Buffer swaps to members of the swap 
+    of a group of GLX drawables.  A swap group is created, and drawables are
+    added as members to the swap group.  Buffer swaps to members of the swap
     group will then take place concurrently.
 
     This extension extends the set of conditions that must be met before
-    a buffer swap can take place. 
+    a buffer swap can take place.
 
 Dependencies
 
@@ -38,8 +38,8 @@ Issues
 
 New Procedures and Functions
 
-    void JoinSwapGroupSGIX(Display *dpy, 
-               GLXDrawable drawable, 
+    void JoinSwapGroupSGIX(Display *dpy,
+               GLXDrawable drawable,
                GLXDrawable member);
 
 New Tokens
@@ -50,16 +50,16 @@ Additions to the GLX Specification
 
     Add to section 3.2.6, Double Buffering:
 
-    JoinSwapGroupSGIX adds <drawable> to the swap group containing <member> as 
-    a member.  If <drawable> is already a member of a different group, it is 
-    implicitly removed from that group first.  If <member> is None, <drawable> 
+    JoinSwapGroupSGIX adds <drawable> to the swap group containing <member> as
+    a member.  If <drawable> is already a member of a different group, it is
+    implicitly removed from that group first.  If <member> is None, <drawable>
     is removed from the swap group that it belongs to, if any.
 
     A swap group is referenced by naming any drawable in the group; there is no
     other way to refer to a group.
 
-    Before a buffer swap can take place, a set of conditions must be 
-    satisfied.  The conditions are defined in terms of the notions of when 
+    Before a buffer swap can take place, a set of conditions must be
+    satisfied.  The conditions are defined in terms of the notions of when
     a drawable is ready to swap and when a group is ready to swap.
 
     GLX drawables except windows are always ready to swap.
@@ -92,7 +92,7 @@ Additions to the GLX Specification
 
 Errors
 
-    JoinSwapGroupSGIX generates GLXBadDrawable if <drawable> is an invalid 
+    JoinSwapGroupSGIX generates GLXBadDrawable if <drawable> is an invalid
     GLX drawable, or if <member> is an invalid GLX drawable.
 
 New State

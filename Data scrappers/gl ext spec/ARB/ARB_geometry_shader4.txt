@@ -99,9 +99,9 @@ Overview
 New Procedures and Functions
 
     void ProgramParameteriARB(uint program, enum pname, int value);
-    void FramebufferTextureARB(enum target, enum attachment, 
+    void FramebufferTextureARB(enum target, enum attachment,
                                uint texture, int level);
-    void FramebufferTextureLayerARB(enum target, enum attachment, 
+    void FramebufferTextureLayerARB(enum target, enum attachment,
                                     uint texture, int level, int layer);
     void FramebufferTextureFaceARB(enum target, enum attachment,
                                    uint texture, int level, enum face);
@@ -1541,13 +1541,13 @@ New Implementation Dependent State
                                                       geometry shader can
                                                       can emit
     MAX_GEOMETRY_TOTAL_       Z+  GetIntegerv  1024   maximum number of       2.16.4     -
-      OUTPUT_COMPONENTS_ARB                           total components (all 
+      OUTPUT_COMPONENTS_ARB                           total components (all
                                                       vertices) of active
                                                       varyings that a
                                                       geometry shader can
                                                       emit
     MAX_GEOMETRY_UNIFORM_     Z+  GetIntegerv  512    Number of words for     2.16.3     -
-      COMPONENTS_ARB                                  geometry shader 
+      COMPONENTS_ARB                                  geometry shader
                                                       uniform variables
     MAX_GEOMETRY_VARYING_     Z+  GetIntegerv  32     Number of components    2.16.4     -
       COMPONENTS_ARB                                  for varying variables
@@ -1738,7 +1738,7 @@ Modifications to the OpenGL Shading Language Specification version
                                  // on the input primitive type.
 
       varying in float foo[gl_VerticesIn]; // geometry shader input
-  
+
       varying in float foo[3];   // geometry shader input. Only legal for
                                  // the TRIANGLES input primitive type
 
@@ -1899,7 +1899,7 @@ Modifications to the OpenGL Shading Language Specification version
       varying in vec4 gl_BackColorIn[gl_VerticesIn];
       varying in vec4 gl_FrontSecondaryColorIn[gl_VerticesIn];
       varying in vec4 gl_BackSecondaryColorIn[gl_VerticesIn];
-      varying in vec4 gl_TexCoordIn[gl_VerticesIn][]; // at most will be 
+      varying in vec4 gl_TexCoordIn[gl_VerticesIn][]; // at most will be
                                                       // gl_MaxTextureCoords
       varying in float gl_FogFragCoordIn[gl_VerticesIn];
       varying in vec4 gl_PositionIn[gl_VerticesIn];
@@ -2012,20 +2012,20 @@ Modifications to the OpenGL Shading Language Specification version
         init_declarator_list COMMA IDENTIFIER
         init_declarator_list COMMA IDENTIFIER array_declarator_suffix
         init_declarator_list COMMA IDENTIFIER EQUAL initializer
-  
+
       single_declaration:
         fully_specified_type
         fully_specified_type IDENTIFIER
         fully_specified_type IDENTIFIER array_declarator_suffix
         fully_specified_type IDENTIFIER EQUAL initializer
-  
+
       array_declarator_suffix:
         LEFT_BRACKET RIGHT_BRACKET
         LEFT_BRACKET constant_expression RIGHT_BRACKET
         LEFT_BRACKET RIGHT_BRACKET array_declarator_suffix
         LEFT_BRACKET constant_expression RIGHT_BRACKET
       array_declarator_suffix
-  
+
       type_qualifier:
         CONST
         ATTRIBUTE     // Vertex only
@@ -2121,7 +2121,7 @@ Issues
                          |               processing
                          |                    |
                          |                    |
-                         +<-------------------+                
+                         +<-------------------+
                          |                                     Output
                          |position, color,                   Primitive
                          |other vertex data                     Type
@@ -2163,7 +2163,7 @@ Issues
                          +------------------+ | +-------------+
                                             | | |
                                             V V V
-                                        rasterization 
+                                        rasterization
                                               |
                                               |
                                               V
@@ -2239,7 +2239,7 @@ Issues
       triangle strips.
 
   10. Should geometry shaders support additional input primitive types?
- 
+
       RESOLVED:  Possibly in a future extension.  It should be straightforward
       to build a future extension to support geometry shaders that operate on
       quads.  Other primitive types might be more demanding on hardware. Quads
@@ -2430,7 +2430,7 @@ Issues
 
         varying in float foo;
         varying out vec4 bar[];
-  
+
   25. What is the syntax for declaring varying input variables?
 
       DISCUSSION: We need a way to distinguish between the vertices of the
@@ -2656,11 +2656,11 @@ Revision History
                               EXT_framebuffer_object
 
      20   07/09/08  jsandmel  converted to ARB.  no functional changes.
-           
-    
+
+
      19   04/04/08  pbrown    Changed MAX_GEOMETRY_TEXTURE_IMAGE_UNITS_ARB
                               minimum value to zero, to match discussion (from
-                              aeddy).  Added separators to group pictures and 
+                              aeddy).  Added separators to group pictures and
                               discussions of each of the new primitive types
                               together.
 

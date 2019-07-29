@@ -58,7 +58,7 @@ Issues
             advertise the extension.
 
     *    Should we introduce the concept of "residency" for predictors
-         as we did for texture objects?  
+         as we did for texture objects?
 
          A: No.  Caching of predictors would be far less useful than
             caching textures.  If we find an application which could
@@ -131,7 +131,7 @@ Reasoning
 
     *    To simplify state management and queries, we perform
          upsampling prior to motion compensation and predictor
-         storage. 
+         storage.
 
     *    We manage quantization tables using a syntax similar to that
          of pixel maps instead of managing them as pixel data since
@@ -146,8 +146,8 @@ New Procedures and Functions
     void GenMPEGPredictorsSGIX(sizei n,
                    uint *predictors);
 
-    void AllocMPEGPredictorsSGIX(sizei width, 
-                 sizei height, 
+    void AllocMPEGPredictorsSGIX(sizei width,
+                 sizei height,
                  sizei n,
                  uint *predictors);
 
@@ -156,7 +156,7 @@ New Procedures and Functions
 
     boolean IsMPEGPredictorSGIX(uint predictor);
 
-    void MPEGPredictorSGIX(enum target, 
+    void MPEGPredictorSGIX(enum target,
                enum format,
                enum type,
                void *pixels);
@@ -166,14 +166,14 @@ New Procedures and Functions
                               enum type,
                               void *pixels);
 
-    void SwapMPEGPredictorsSGIX(enum target0, 
+    void SwapMPEGPredictorsSGIX(enum target0,
                 enum target1);
 
     void GetMPEGParameterfvSGIX(enum target,
                 enum pname,
                 float *params);
 
-    void GetMPEGParameterivSGIX(enum target, 
+    void GetMPEGParameterivSGIX(enum target,
                 enum pname,
                 int *params);
 
@@ -245,14 +245,14 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     UNPACK_MPEG_PREDICTOR_FWD_SGIX        integer        0            [0, infinity]
     UNPACK_MPEG_PREDICTOR_BACK_SGIX        integer        0            [0, infinity]
     UNPACK_MPEG_PREDICTOR_STORE_SGIX    Z3        NONE        NONE, UNPACK_MPEG_PREDICTOR_FWD_SGIX, UNPACK_MPEG_PREDICTOR_BACK_SGIX
-    UNPACK_MPEG_PREDICTOR_STORE_SINK_SGIX    boolean        FALSE        
+    UNPACK_MPEG_PREDICTOR_STORE_SINK_SGIX    boolean        FALSE
     UNPACK_MPEG_PREDICTOR_READ_SGIX        Z3        NONE        NONE, UNPACK_MPEG_PREDICTOR_FWD_SGIX, UNPACK_MPEG_PREDICTOR_BACK_SGIX
 
     Additionally, the value MPEG1_SGIX is added to the valid range of
     PACK_COMPRESSION_TYPE_SGIX and UNPACK_COMPRESSION_TYPE_SGIX.
 
     The following should be added to the end of section 3.6.1 (Pixel
-    Storage Modes): 
+    Storage Modes):
 
     In addition to PixelStoref and PixelStorei, several commands
     control the unpacking of MPEG-compressed images.  The command:
@@ -295,7 +295,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     Images associated with MPEG predictor names are allocated using
     the command:
 
-        AllocMPEGPredictorsSGIX( sizei width, sizei height, 
+        AllocMPEGPredictorsSGIX( sizei width, sizei height,
                  sizei n, uint *predictors );
 
     This function associates an image of size <width> by <height> with
@@ -336,7 +336,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     The command
 
-        MPEGPredictorSGIX(enum target, enum format, enum type, 
+        MPEGPredictorSGIX(enum target, enum format, enum type,
               void *pixels);
 
     is used to download images from client memory to the predictor
@@ -350,7 +350,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     image are assumed to be the same as the width and height of the
     predictor bound to <target>.  The image is extracted from memory
     and processed just as if DrawPixels were called, stopping after
-    the Final Expansion to RGBA step.  
+    the Final Expansion to RGBA step.
 
     The command
 
@@ -360,7 +360,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     predictor bind points.  The predictor bound to <target0> is bound
     to <target1> and the predictor bound to <target1> is bound to
     <target0>.  The error INVALID_ENUM is generated if <target0> or
-    <target1> is not the name of a predictor bind point.  
+    <target1> is not the name of a predictor bind point.
 
     3.6.3 Rasterization of Pixel Rectangles
 
@@ -401,7 +401,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     The frame conversion step is described below for each of the
     types.  For all frame types, the output of the conversion step is
     a single YCrCb image of the same width and height as the output of
-    the upsampling step.  
+    the upsampling step.
 
     If the image is an I-frame, no predictors are used to compute the
     output image, but the quantizer table UNPACK_MPEG_INTRA_QUANT may
@@ -544,7 +544,7 @@ and the Frame Buffer)
     identical to that described in section 3.6.3 (including the
     generation of errors and possible termination of processing),
     except that the appropriate PACK values are used in place of the
-    UNPACK values.  
+    UNPACK values.
 
     The YCrCb image as downsampled is specified by PACK_SAMPLE_SGIX.
     The operation is described in SGIX_image_compression.
@@ -589,7 +589,7 @@ Additions to Chapter 5 of the 1.1 Specification (Special Functions)
 
     All of the procedures and functions added by this extension are
     not included in display lists, but instead are executed
-    immediately. 
+    immediately.
 
 Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 
@@ -608,7 +608,7 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 
     The routine
 
-        void GetMPEGPredictorSGIX(enum target, enum format, enum type, 
+        void GetMPEGPredictorSGIX(enum target, enum format, enum type,
                                   void *pixels);
 
     is used to read back the contents of the predictor bound to a bind
@@ -630,8 +630,8 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
     INVALID_OPERATION is generated.
 
     The routines
-    
-        void GetMPEGParameterfvSGIX(enum target, enum pname, 
+
+        void GetMPEGParameterfvSGIX(enum target, enum pname,
                             float *params);
 
     and
@@ -666,7 +666,7 @@ Errors
 
     INVALID_OPERATION is generated if the name zero is passed as one
     of the predictors to AllocMPEGPredictorsSGIX.
- 
+
     INVALID_VALUE is generated if the parameter <pname> to PixelStorei
     or PixelStoref indicates a predictor bind point but <param> is not
     the name of a predictor object.
@@ -686,7 +686,7 @@ Errors
     INVALID_OPERATION is generated if UNPACK_COMPRESSION_TYPE_SGIX is
     MPEG1_SGIX and during a pixel download the values width and height
     (as computed in SGIX_image_compression) are not legal for MPEG1
-    decompression. 
+    decompression.
 
     INVALID_OPERATION is generated if UNPACK_MPEG_PREDICTOR_STORE_SGIX
     is set to UNPACK_MPEG_PREDICTOR_BACK_SGIX during the download of a

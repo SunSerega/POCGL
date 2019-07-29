@@ -779,7 +779,7 @@ Dependencies on WGL_NV_video_out:
 
 Errors
 
-    
+
 
 New State
 

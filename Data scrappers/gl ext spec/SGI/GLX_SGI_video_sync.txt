@@ -20,11 +20,11 @@ Dependencies
 
 Overview
 
-    This extension provides a means for synchronization with the video 
-    frame rate of a monitor.  (In the case of an interlaced monitor, 
-    this is typically the rate of displaying both the even and odd 
-    fields of a frame.) The kernel maintains a video sync counter for 
-    each physical hardware pipe in a system; the counter is incremented 
+    This extension provides a means for synchronization with the video
+    frame rate of a monitor.  (In the case of an interlaced monitor,
+    this is typically the rate of displaying both the even and odd
+    fields of a frame.) The kernel maintains a video sync counter for
+    each physical hardware pipe in a system; the counter is incremented
     upon the completion of the display of each full frame of video data. An
     OpenGL context always corresponds to a pipe.  When an OpenGL process
     has a current context, it can put itself to sleep until the counter of
@@ -48,8 +48,8 @@ New Procedures and Functions
 
     int glXGetVideoSyncSGI(uint *count);
 
-    int glXWaitVideoSyncSGI(int divisor, 
-                int remainder, 
+    int glXWaitVideoSyncSGI(int divisor,
+                int remainder,
                 unsigned int *count);
 
 New Tokens
@@ -78,7 +78,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     None
 
 Additions to the GLX Specification
-    
+
     [Add to Section 3.2.5 of the 1.0 GLX Specification (Synchronization
      Primititives)]
 

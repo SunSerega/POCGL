@@ -31,12 +31,12 @@ Number
 
 Dependencies
 
-    OpenGLES 2.0 is required.    
+    OpenGLES 2.0 is required.
 
     The extension is written against the OpenGL ES 2.0.25 specification.
 
     EXT_unpack_subimage is required.
-    
+
 Overview
 
     This OpenGL ES 2.0 extension adds support for GL_PACK_ROW_LENGTH_NV,

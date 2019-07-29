@@ -56,7 +56,7 @@ Overview
 
     The definition of the "internalformat" parameter in the
     CompressedTexImage2D call has been extended to support
-    ETC-compressed textures. 
+    ETC-compressed textures.
 
 
 Issues
@@ -100,9 +100,9 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
 
     ETC1_RGB8_OES:
     ==============
-    
+
     If <internalformat> is ETC1_RGB8_OES, the compressed texture is an
-    ETC1 compressed texture. 
+    ETC1 compressed texture.
 
     The texture is described as a number of 4x4 pixel blocks. If the
     texture (or a particular mip-level) is smaller than 4 pixels in
@@ -129,9 +129,9 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     The number of bits that represent a 4x4 texel block is 64 bits if
     <internalformat> is given by ETC1_RGB8_OES.
 
-    The data for a block is a number of bytes, 
+    The data for a block is a number of bytes,
 
-    {q0, q1, q2, q3, q4, q5, q6, q7} 
+    {q0, q1, q2, q3, q4, q5, q6, q7}
 
     where byte q0 is located at the lowest memory address and q7 at
     the highest. The 64 bits specifying the block is then represented
@@ -155,7 +155,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     call 'flipbit'. If flipbit=0, the block is divided into two 2x4
     subblocks side-by-side, as shown in Figure 3.9.2. If flipbit=1,
     the block is divided into two 4x2 subblocks on top of each other,
-    as shown in Figure 3.9.3. 
+    as shown in Figure 3.9.3.
 
     In both individual and differential mode, a 'base color' for each
     subblock is stored, but the way they are stored is different in
@@ -175,7 +175,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     in the individual mode are:
 
     base col subblock1 = extend_4to8bits(R1, G1, B1)
-    base col subblock2 = extend_4to8bits(R2, G2, B2) 
+    base col subblock2 = extend_4to8bits(R2, G2, B2)
 
     In the 'differential' mode (diffbit = 1), the base color for
     subblock 1 is derived from the five-bit codewords R1', G1' and
@@ -197,7 +197,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     0, the base color of subblock 2 will be RGB = (198, 49, 24). In
     summary, the base colors for the subblocks in the differential
     mode are:
- 
+
     base col subblock1 = extend_5to8bits(R1', G1', B1')
     base col subblock2 = extend_5to8bits(R1'+dR2, G1'+dG2, B1'+dG2)
 
@@ -218,7 +218,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     table [-29, -9, 9 29] is selected. Note that the values in Table
     3.17.2 are valid for all textures and can therefore be hardcoded
     into the decompression unit.
-     
+
     Next, we identify which modifier value to use from the modifier
     table using the two 'pixel index' bits. The pixel index bits are
     unique for each pixel. For instance, the pixel index for pixel d
@@ -260,23 +260,23 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     | base col1 | base col2 | table  | table  |diff|flip|
     | B1 (4bits)| B2 (4bits)| cw 1   | cw 2   |bit |bit |
      ---------------------------------------------------
-    
-     
+
+
     b) bit layout in bits 63 through 32 if diffbit = 1
 
-     63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48 
+     63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48
      -----------------------------------------------
     | base col1    | dcol 2 | base col1    | dcol 2 |
     | R1' (5 bits) | dR2    | G1' (5 bits) | dG2    |
      -----------------------------------------------
-    
-     47 46 45 44 43 42 41 40 39 38 37 36 35 34  33  32 
+
+     47 46 45 44 43 42 41 40 39 38 37 36 35 34  33  32
      ---------------------------------------------------
     | base col 1   | dcol 2 | table  | table  |diff|flip|
     | B1' (5 bits) | dB2    | cw 1   | cw 2   |bit |bit |
      ---------------------------------------------------
 
-     
+
     c) bit layout in bits 31 through 0 (in both cases)
 
      31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16
@@ -287,22 +287,22 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
 
      15 14 13 12 11 10  9  8  7  6  5  4  3   2   1  0
      --------------------------------------------------
-    |         least significant pixel index bits       |  
+    |         least significant pixel index bits       |
     | p| o| n| m| l| k| j| i| h| g| f| e| d| c | b | a |
-     --------------------------------------------------      
-    
+     --------------------------------------------------
+
 
     Add table 3.17.2: Intensity modifier sets for ETC1 compressed textures:
 
     table codeword                modifier table
     ------------------        ----------------------
-            0                     -8  -2  2   8 
+            0                     -8  -2  2   8
             1                    -17  -5  5  17
-            2                    -29  -9  9  29 
-            3                    -42 -13 13  42 
-            4                    -60 -18 18  60 
+            2                    -29  -9  9  29
+            3                    -42 -13 13  42
+            4                    -60 -18 18  60
             5                    -80 -24 24  80
-            6                   -106 -33 33 106 
+            6                   -106 -33 33 106
             7                   -183 -47 47 183
 
 
@@ -317,7 +317,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
       1       0            -a (small negative value)
       0       0             a (small positive value)
       0       1             b (large positive value)
-     
+
 
 
     Add figure 3.9.0: Pixel layout for a 8x8 texture using four ETC1
@@ -327,49 +327,49 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
      First block in mem  Second block in mem
      ---- ---- ---- ---- .... .... .... ....  --> u direction
     |a1  |e1  |i1  |m1  |a2  :e2  :i2  :m2  :
-    |    |    |    |    |    :    :    :    : 
+    |    |    |    |    |    :    :    :    :
      ---- ---- ---- ---- .... .... .... ....
-    |b1  |f1  |j1  |n1  |b2  :f2  :j2  :n2  : 
-    |    |    |    |    |    :    :    :    : 
+    |b1  |f1  |j1  |n1  |b2  :f2  :j2  :n2  :
+    |    |    |    |    |    :    :    :    :
      ---- ---- ---- ---- .... .... .... ....
-    |c1  |g1  |k1  |o1  |c2  :g2  :k2  :o2  : 
-    |    |    |    |    |    :    :    :    : 
+    |c1  |g1  |k1  |o1  |c2  :g2  :k2  :o2  :
+    |    |    |    |    |    :    :    :    :
      ---- ---- ---- ---- .... .... .... ....
-    |d1  |h1  |l1  |p1  |d2  :h2  :l2  :p2  : 
-    |    |    |    |    |    :    :    :    : 
-     ---- ---- ---- ---- ---- ---- ---- ---- 
+    |d1  |h1  |l1  |p1  |d2  :h2  :l2  :p2  :
+    |    |    |    |    |    :    :    :    :
+     ---- ---- ---- ---- ---- ---- ---- ----
     :a3  :e3  :i3  :m3  |a4  |e4  |i4  |m4  |
     :    :    :    :    |    |    |    |    |
-     .... .... .... .... ---- ---- ---- ---- 
+     .... .... .... .... ---- ---- ---- ----
     :b3  :f3  :j3  :n3  |b4  |f4  |j4  |n4  |
     :    :    :    :    |    |    |    |    |
-     .... .... .... .... ---- ---- ---- ---- 
+     .... .... .... .... ---- ---- ---- ----
     :c3  :g3  :k3  :o3  |c4  |g4  |k4  |o4  |
     :    :    :    :    |    |    |    |    |
-     .... .... .... .... ---- ---- ---- ---- 
+     .... .... .... .... ---- ---- ---- ----
     :d3  :h3  :l3  :p3  |d4  |h4  |l4  |p4  |
     :    :    :    :    |    |    |    |    |
-     .... .... .... .... ---- ---- ---- ---- 
+     .... .... .... .... ---- ---- ---- ----
     | Third block in mem  Fourth block in mem
     v
     v direction
 
     Add figure 3.9.1: Pixel layout for a ETC1 compressed block:
 
-     ---- ---- ---- ---- 
+     ---- ---- ---- ----
     |a   |e   |i   |m   |
     |    |    |    |    |
-     ---- ---- ---- ---- 
+     ---- ---- ---- ----
     |b   |f   |j   |n   |
     |    |    |    |    |
-     ---- ---- ---- ---- 
+     ---- ---- ---- ----
     |c   |g   |k   |o   |
     |    |    |    |    |
-     ---- ---- ---- ---- 
+     ---- ---- ---- ----
     |d   |h   |l   |p   |
     |    |    |    |    |
-     ---- ---- ---- ---- 
-     
+     ---- ---- ---- ----
+
 
     Add figure 3.9.2: Two 2x4-pixel subblocks side-by-side:
 
@@ -406,7 +406,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     |                   |
      ---- ---- ---- ----
 
-    
+
 Additions to Chapter 4 of the OpenGL 1.3 Specification (Per-Fragment
 Operations and the Frame Buffer)
 

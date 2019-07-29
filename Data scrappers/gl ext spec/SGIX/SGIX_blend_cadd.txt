@@ -29,7 +29,7 @@ Overview
     input sources.  Adding two complex images is useful for image
     and signal processing applications.
 
-    
+
 New Procedures and Functions
 
     None

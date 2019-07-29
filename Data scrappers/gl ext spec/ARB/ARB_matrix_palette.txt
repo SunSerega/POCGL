@@ -42,42 +42,42 @@ Dependencies
 
     ARB_vertex_blend and OpenGL 1.0 are required.
     This extension is written against the ARB_vertex_blend extended
-    OpenGL 1.2.1 Specification. 
+    OpenGL 1.2.1 Specification.
 
 Overview
 
-    This extension extends the abilities of ARB_vertex_blend to include 
+    This extension extends the abilities of ARB_vertex_blend to include
     a palette of modelview matrices.  The n vertex units use a palette
     of m modelview matrices.  (Where n and m are constrained to
     implementation defined maxima.)  Each vertex has a set of n
     indices into the palette, and a corresponding set of n weights.
     Matrix indices can be changed for each vertex (between Begin and
-    End).  
-    
+    End).
+
     When this extension is utilized, the enabled units transform each
     vertex by the modelview matrices specified by the vertices'
     respective indices.  These results are subsequently scaled by the
     weights of the respective units and then summed to create the
-    eyespace vertex.   
-    
+    eyespace vertex.
+
     A similar procedure is followed for normals.  Normals, however,
     are transformed by the inverse transpose of the modelview matrix.
-    
+
 IP Status
 
-    Unknown, but believed to be none. 
+    Unknown, but believed to be none.
 
 Issues
 
-       
+
     Should the matrix palette be loaded by adding MODELVIEWm tokens
     for MatrixMode?
 
         No, this method is too difficult to extend to an arbitrary
         (implementation defined) size palette,
           and would imply having a 32 entry (minimum) stack per
-          matrix. 
-        
+          matrix.
+
 
     Should the Matrix palette be loaded with a new LoadMatrixPalette
     command?
@@ -89,9 +89,9 @@ Issues
         Matrices will be Loaded into the palette with current
         functions when MATRIX_MODE is MATRIX_PALETTE_ARB.  The current
         palette index is set by an explicit command:
-        CurrentPaletteMatrixARB(). 
-    
-        
+        CurrentPaletteMatrixARB().
+
+
     Should the Matrix Palette have a stack?
 
         Not required, this wastes a lot of space.  Define the min
@@ -100,45 +100,45 @@ Issues
 
         The stacks established in ARB_vertex_blend for
         MODELVIEW_MATRIXn are still present.
-        
-        
+
+
     Should the matrix palette be gettable?
 
        Yes, CurrentPaletteMatrixARB() and
        GetIntegerv(CURRENT_PALETTE_MATRIX_ARB, *data) define which
        matrix in the palette is returned by
-       GetFloatv(MATRIX_PALETTE_ARB, *data). 
+       GetFloatv(MATRIX_PALETTE_ARB, *data).
 
-       
+
     Should MatrixIndexARB be changed to imply LoadMatrix calls to the
     applicable MODELVIEW_MATRIXn stacks?
 
         No, the MODELVIEW_MATRIXn matrices are unused when
         MATRIX_PALETTE is enabled.
-       
-    
+
+
     Should there be a way to specify that the modelview matrices
     for two different vertex units are identical?
 
         Not explicitely, but indexing the matrix palette provides this
         functionality. (Both units will have the same matrix index.)
-        
+
     Currently, the MATRIX_PALETTE_ARB enum is used to enable the
     extension, to set the Matrix Mode, and to get the current matrix.
     Is this confusing? Should more enums be added?
 
         No.
-        
+
 New Procedures and Functions
 
     void CurrentPaletteMatrixARB(int index)
-    
+
     void MatrixIndex{ubusui}vARB(int size, T *indices)
-    
+
     void MatrixIndexPointerARB(int size, enum type, sizei stride,
                            void *pointer)
 
- 
+
 New Tokens
 
     Accepted by the <pname> parameters of GetFloatv, GetDoublev,
@@ -153,16 +153,16 @@ New Tokens
       MAX_MATRIX_PALETTE_STACK_DEPTH_ARB    0x8841
       MAX_PALETTE_MATRICES_ARB              0x8842
       CURRENT_PALETTE_MATRIX_ARB            0x8843
-      
+
     Accepted by the <cap> parameters of EnableClientState and
     DisableClientState and by the <pname> parameter of IsEnabled:
 
       MATRIX_INDEX_ARRAY_ARB:               0x8844
 
     Accepted by the <pname> parameter of GetFloatv:
-    
+
       CURRENT_MATRIX_INDEX_ARB              0x8845
-      
+
     Accepted by the <pname> parameter of GetIntegerv:
       MATRIX_INDEX_ARRAY_SIZE_ARB           0x8846
       MATRIX_INDEX_ARRAY_TYPE_ARB           0x8847
@@ -190,7 +190,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           unit.  Vertex units are enabled with Enable, and disabled
           with Disable. Enabling or Disabling a vertex unit not
           supported in the implementation results in the error
-          INVALID_OPERATION." 
+          INVALID_OPERATION."
 
     - (2.6.3, p. 19) First paragraph changed to:
 
@@ -208,7 +208,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           of End results in the error INVALID_OPERATION. Executing Begin
           after Begin has already been executed but before an End is
           executed generates the INVALID_OPERATION error, as does
-          executing End without a previous corresponding Begin."  
+          executing End without a previous corresponding Begin."
 
     - (2.7, p. 20) Added after the third paragraph:
 
@@ -227,7 +227,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
                                               <size>-1
               CURRENT_WEIGHT_ARB[<size>] = 1 - SUM     <weights>[i]
                                                i=0
-                                               
+
           otherwise the rest of the current weights are set to 0.  If
           <size> is greater than MAX_VERTEX_UNITS_ARB or if
           WEIGHTS_SUM_UNITY_ARB is enabled and <size> equals
@@ -246,7 +246,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
           Note that vertex units which are disabled can still receive
           weights and indices."
-          
+
 
     - (2.8, p. 21) First paragraph changed to read:
 
@@ -270,7 +270,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
               void ColorPointer( int size, enum type, sizei stride,
                 void *pointer );
 
-              void IndexPointer( enum type, sizei stride, void 
+              void IndexPointer( enum type, sizei stride, void
                 *pointer );
 
               void NormalPointer( enum type, sizei stride, void
@@ -282,9 +282,9 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
               void WeightPointerARB(int size, enum type,
                 sizei stride, void *pointer)
 
-              void MatrixIndexPointerARB(int size, enum type, 
+              void MatrixIndexPointerARB(int size, enum type,
                 sizei stride, void *pointer)
-                           
+
           describe the locations and organizations of these arrays.
           For each command, type specifies the data type of the
           values stored in the array. Because edge flags are always
@@ -305,29 +305,29 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           table.  For implementations supporting vertex blending, note
           that <size> values for WeightPointerARB and
           MatrixIndexPointerARB must be less than the implementation
-          defined value MAX_VERTEX_UNITS_ARB."  
-         
+          defined value MAX_VERTEX_UNITS_ARB."
+
     - (2.8, p. 22) Change table 2.4 to read:
 
-          Command            Sizes            Types                     
+          Command            Sizes            Types
           -------            -----            -----
           VertexPointer      2,3,4            short, int, float,
-                                              double 
+                                              double
           NormalPointer      3                byte, short, int, float,
-                                              double 
+                                              double
           ColorPointer       3,4              byte, ubyte, short,
                                               ushort, int, uint,
-                                              float, double 
+                                              float, double
           IndexPointer       1                ubyte, short, int,
                                               float, double
           TexCoordPointer    1,2,3,4          short, int, float,
-                                              double 
+                                              double
           EdgeFlagPointer    1                boolean
           WeightPointerARB   1..MAX_VERTEX    byte, ubyte, short,
                              _UNITS_ARB       ushort, int, uint,
-                                              float, double  
+                                              float, double
 
-          MatrixIndexPointerARB  1..MAX_VERTEX    unsigned byte, unsigned 
+          MatrixIndexPointerARB  1..MAX_VERTEX    unsigned byte, unsigned
                                  _UNITS_ARB       short, unsigned int
 
 
@@ -364,7 +364,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           Index[type]v, Normal[type]v, MatrixIndex[type]vARB, and
           Weight[type]vARB, respectively. If the vertex array is
           enabled, it is as though Vertex[size][type]v is executed last,
-          after the executions of the other corresponding commands." 
+          after the executions of the other corresponding commands."
 
     - (2.10 p. 28) Edit to the last paragraph:
 
@@ -381,7 +381,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           normalized device coordinates.  A final viewport
           transformation is applied to convert these coordinates into
           window coordinates."
-    
+
     - (2.10 p. 29) Edit to the second paragraph:
 
           "... the vertex's eye coordinates are found as:
@@ -393,11 +393,11 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
           where M_i is the palette matrix associated with the i'th
           Vertex unit:
-          
+
             M_i = MatrixPalette[MatrixIndex[i]], if VERTEX_BLEND_ARB,
             MATRIX_PALETTE_ARB and VERTEX_UNIT_ARB<i> are enabled, and
             M_i = MODELVIEW_MATRIX, otherwise.
-            
+
           w_i is the Vertex's associated weight for vertex unit i:
 
             w_i = weight_i, if VERTEX_BLEND_ARB, MATRIX_PALETTE_ARB
@@ -405,9 +405,9 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
             1, if MATRIX_PALETTE_ARB is disabled,
 
           and,
-          
+
             n = ACTIVE_VERTEX_UNITS_ARB."
-          
+
     - (2.10.2 p. 31) Change the first paragraph to:
 
           "The projection matrix and model-view matrices are set
@@ -416,27 +416,27 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           matrix mode is set with
 
             void MatrixMode( enum mode );
- 
+
           which takes one of the pre-defined constants TEXTURE,
           MODELVIEW, COLOR, PROJECTION, MODELVIEWn_ARB,
           MATRIX_PALETTE_ARB.  TEXTURE is described later in section
           2.10.2, and COLOR is described in section 3.6.3. If the
           current matrix mode is MODELVIEW, the matrix operations
           apply to the model-view matrix; if PROJECTION, then they
-           apply to the projection matrix. 
- 
+           apply to the projection matrix.
+
 
           In implementations supporting ARB_matrix_palette,
 
              void CurrentPaletteMatrixARB(int index);
-              
+
           defines which of the palette's matrices is affected by
           subsequent matrix operations when the current matrix mode is
           MATRIX_PALETTE_ARB. CurrentBlendMatrixARB generates the
           error INVALID_VALUE if the <index> parameter is not between
           0 and MAX_PALETTE_MATRICES_ARB.
           The CURRENT_PALETTE_MATRIX_ARB enum can be used to query the
-          last value set by CurrentPaletteMatrixARB."  
+          last value set by CurrentPaletteMatrixARB."
 
     - (2.10.2 p. 34) Change to the fourth paragraph:
 
@@ -449,7 +449,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           stacks of at least 1 4 x 4 matrices each for the matrix palette.
           Initially, there is only one matrix on each stack, and all
           matrices are set to the identity.  The initial matrix mode
-          is MODELVIEW. 
+          is MODELVIEW.
 
     - (2.10.3 p. 35) Added after the second paragraph:
 
@@ -459,30 +459,30 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
                                               n-1
               (nx' ny' nz') = (nx ny nz) Inv ( SUM w_i * Mu_i)
                                               i=0
-          
+
             Alternatively implementations may choose to transform the
           normal to eye-space by:
-          
+
                               n-1
               (nx' ny' nz') =  SUM w_i * (nx ny nz) Inv(Mu_i)
                               i=0
 
           where Mu_i is the upper leftmost 3x3 matrix taken from the
           modelview for vertex unit i (M_i),
-         
+
                M_i = MatrixPalette[MatrixIndex[i]]
-               
-          if VERTEX_BLEND_ARB, MATRIX_PALETTE_ARB and VERTEX_UNIT_ARB<i> 
+
+          if VERTEX_BLEND_ARB, MATRIX_PALETTE_ARB and VERTEX_UNIT_ARB<i>
           are enabled, and
-          
+
               M_i = MODELVIEW_MATRIX
-         
+
           otherwise.
 
           weight_i is the vertex's associated weight for vertex unit i,
 
               w_i = weight_i
-                        
+
           and
 
               n = ACTIVE_VERTEX_UNITS_ARB"
@@ -498,7 +498,7 @@ Additions to Chapter 4:
 
 Additions to Chapter 5:
 
-      None 
+      None
 
 Additions to Chapter 6:
 
@@ -540,7 +540,7 @@ Additions to the GLX Stream Protocol:
             4           INT32           count
 
 Errors
-      
+
       INVALID_VALUE is generated if the <size> parameter for
       MatrixIndexARB or MatrixIndexPointerARB is greater than
       MAX_VERTEX_UNITS_ARB, or if WEIGHT_SUM_UNITY_ARB is enabled
@@ -553,7 +553,7 @@ Errors
 New State
 
       Modified State in Table 6.5 (p. 195):
-                                            Initial 
+                                            Initial
 Get Value                 Get Command Type  Value   Attribute Description
 ---------                 ----------- ----  ------- --------- -----------
 CURRENT_MATRIX_INDEX_ARB  GetIntegerv n*Z+  0       current   array of current matrix indices
@@ -570,7 +570,7 @@ MATRIX_INDEX_ARRAY_POINTER_ARB    Y      GetPointerv   False    Pointer to the M
                                                                 indices array
 
       Modified state in Table 6.7 (p. 197) Transformation State:
-                                          Initial 
+                                          Initial
 Get Value            Get Command Type     Value     Attribute  Description
 ---------            ----------- ----     --------- ---------  -----------
 MATRIX_PALETTE_ARB   GetFloatv   2*x1*xM4 Identity      -      stack of current modelview matrix in the palette
@@ -578,17 +578,17 @@ MATRIX_PALETTE_ARB   IsEnabled   B        FALSE     transform  Enable for ARB_ma
 CURRENT_PALETTE_     GetIntegerv Z+       0         transform  index of current modelview matrix in the
 MATRIX_ARB                                                     palette, as set by CurrentPaletteMatrixARB()
 
-                                             
+
 New Implementation Dependent State
 
       Modified state in Table 6.24 (p. 214) Implementation Dependant Values:
 
 Get Value              Get Command Type Min Value  Description
 ---------              ----------- ---- ---------  -----------
-MAX_MATRIX_PALETTE_    GetIntegerv Z+   1          Max matrix palette stack depth                     
-STACK_DEPTH_ARB          
+MAX_MATRIX_PALETTE_    GetIntegerv Z+   1          Max matrix palette stack depth
+STACK_DEPTH_ARB
 
-                         
+
       Modified state in Table 6.25 (p. 215):
 
 Get Value                Get Command Type Min Value    Description
@@ -606,27 +606,27 @@ Revision History
     2000/11/09  v 0.4 jschelte - cleaned up some "issues".
     2000/11/27  v 0.5 jschelte - closed last issue, fixed typo in Usage
     2000/11/30  v 0.6 jschelte - replaced "blend matrices" with
-                                 "palette matrices" 
+                                 "palette matrices"
                                - cleared up some confusion in the
                                  naming of the enum for the current
                                  indices and the current palette
                                  matrix for load/get.
-    2004/04/02  v 0.7 Thomas Roell - added GLX protocol    
+    2004/04/02  v 0.7 Thomas Roell - added GLX protocol
 
 Addendum: Using this extension.
 
     // Get the implementation's capabilities
     glGetIntegerv(MAX_VERTEX_UNITS_ARB, *max_blends);
     glGetIntegerv(MAX_PALETTE_MATRICES_ARB, *max_matrices);
-    
+
     //validate that max_blends and max_matrices are sufficient here.
-    
+
     //   enable the units
     glEnable(VERTEX_UNIT_0_ARB);
     glEnable(VERTEX_UNIT_1_ARB);
     glEnable(VERTEX_UNIT_2_ARB);
     glEnable(VERTEX_UNIT_3_ARB);
-    
+
     // Load the matrix Palette
     glMatrixMode(MATRIX_PALETTE_ARB);
     for (i=0; i<palette_size; i++)
@@ -639,7 +639,7 @@ Addendum: Using this extension.
         // glGetFloatv(MATRIX_PALETTE_ARB, &matrix);
         // ..  will return matrix==mat[i].
     }
-    
+
     // Per vertex array
     //   Enable and define the Vertex Arrays:
     //     e.g. V3F C4UB N3F W4F MI4UB T4F
@@ -649,14 +649,14 @@ Addendum: Using this extension.
     glEnableClientState(TEXTURE_COORD_ARRAY);
     glEnableClientState(WEIGHT_ARRAY_ARB);
     glEnableClientState(MATRIX_INDEX_ARRAY_ARB);
-    
+
     glVertexPointer(3, FLOAT, 3, vertices);
     glNormalPointer(FLOAT, 3, normals);
     glColorPointer(4, UNSIGNED_BYTE, 4, colors);
     glTexCoordPointer(4, FLOAT, 4, texcoords);
     glWeightPointerARB(4, FLOAT, 4, weights);
     glMatrixIndexPointerARB(4, UNSIGNED_BYTE, 4, indices);
-    
+
     //   Draw Primitives from the array
     glDrawArrays(TRIANGLES, 0, vert_array_size);
 
@@ -674,7 +674,7 @@ Addendum: Using this extension.
 
     // the rest as above, except the Array Pointer definition:
     int stride = sizeof(interleaved_vertex);
-    
+
     glVertexPointer( 3, FLOAT, stride, &(vertices[0].position) );
     glNormalPointer(    FLOAT, stride, &(vertices[0].normal) );
     glColorPointer( 4,  UNSIGNED_BYTE, stride, &(vertices[0].color) );
@@ -682,4 +682,4 @@ Addendum: Using this extension.
     glWeightPointerARB( 4, FLOAT, stride, &(vertices[0].weights) );
     glMatrixIndexPointerARB( 4, UNSIGNED_BYTE, stride,
                            &(vertices[0].indices) );
-    
+

@@ -1,12 +1,12 @@
-Name 
+Name
 
     NV_render_texture_rectangle
 
-Name Strings 
+Name Strings
 
     WGL_NV_render_texture_rectangle
 
-Contact 
+Contact
 
     Pat Brown, NVIDIA Corporation (pbrown 'at' nvidia.com)
 
@@ -14,30 +14,30 @@ Notice
 
     Copyright NVIDIA Corporation, 2001, 2002.
 
-Status 
+Status
 
     Shipping, March 2002.
 
-Version 
+Version
 
     Last Modified Date:  2003/01/08
     NVIDIA Revision:     7
 
-Number 
+Number
 
     264
 
-Dependencies 
+Dependencies
 
-    OpenGL 1.1 is required. 
+    OpenGL 1.1 is required.
 
     WGL_ARB_render_texture is required.
 
     GL_NV_texture_rectangle is required.
 
-    The extension is written against the OpenGL 1.2.1 Specification. 
+    The extension is written against the OpenGL 1.2.1 Specification.
 
-Overview 
+Overview
 
     This extension allows a color buffer with non-power-of-two dimensions to
     be used for both rendering and texturing.  It is built upon the
@@ -45,7 +45,7 @@ Overview
     ability to bind a texture to a texture rectangle target, as provided
     through the NV_texture_rectangle extension.
 
-Issues 
+Issues
 
     What is the interaction of this spec and the WGL_MIPMAP_TEXTURE_ARB
     attribute?
@@ -71,11 +71,11 @@ Implementation Notes
 
     None.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     None.
 
-New Tokens 
+New Tokens
 
     Accepted by the <piAttributes> parameter of wglGetPixelFormatAttribivARB,
     wglGetPixelFormatAttribfvARB, and the <piAttribIList> and <pfAttribIList>
@@ -90,29 +90,29 @@ New Tokens
 
         WGL_TEXTURE_RECTANGLE_NV                       0x20A2
 
-Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation) 
+Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
-    None. 
+    None.
 
-Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
-    None. 
+    None.
 
-Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment 
-Operations and the Frame Buffer) 
+Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
+Operations and the Frame Buffer)
 
-    None. 
+    None.
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
-    None. 
+    None.
 
-Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State 
-Requests) 
+Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State
+Requests)
 
-    None. 
+    None.
 
-Additions to the WGL Specification 
+Additions to the WGL Specification
 
     First, close your eyes and pretend that a WGL specification actually
     existed.  Maybe if we all concentrate hard enough, one will magically
@@ -120,8 +120,8 @@ Additions to the WGL Specification
 
     These modifications are relative to the ARB_render_texture spec.
 
-    Add to the description of <piAttributes> in wglGetPixelFormatAttribivARB 
-    and <pfAttributes> in wglGetPixelFormatfv: 
+    Add to the description of <piAttributes> in wglGetPixelFormatAttribivARB
+    and <pfAttributes> in wglGetPixelFormatfv:
 
         WGL_BIND_TO_TEXTURE_RECTANGLE_RGB_NV
         WGL_BIND_TO_TEXTURE_RECTANGLE_RGBA_NV
@@ -133,21 +133,21 @@ Additions to the WGL Specification
         which case the values in the alpha component of the visual are ignored
         when the color buffer is used as a RGB texture.
 
-    Add new table entries to match criteria in description of 
-    wglChoosePixelFormatARB: 
+    Add new table entries to match criteria in description of
+    wglChoosePixelFormatARB:
 
-        Attribute                               Type        Match Criteria 
+        Attribute                               Type        Match Criteria
 
         WGL_BIND_TO_TEXTURE_RECTANGLE_RGB_NV    boolean         exact
         WGL_BIND_TO_TEXTURE_RECTANGLE_RGBA_NV   boolean         exact
 
-    Modify wglCreatePbufferARB: 
+    Modify wglCreatePbufferARB:
 
-        The following attributes are supported by wglCreatePbufferARB: 
+        The following attributes are supported by wglCreatePbufferARB:
 
         ...
 
-        WGL_TEXTURE_TARGET_ARB 
+        WGL_TEXTURE_TARGET_ARB
 
         This attribute indicates the target for the texture that will be
         created when the pbuffer is created with a texture format other than
@@ -157,7 +157,7 @@ Additions to the WGL Specification
 
     (Modify power-of-two error for wglCreatePbufferARB)
 
-        ERROR_INVALID_DATA     The pixel format attribute 
+        ERROR_INVALID_DATA     The pixel format attribute
                                WGL_TEXTURE_TARGET_ARB is WGL_TEXTURE_1D_ARB,
                                WGL_TEXTURE_2D_ARB, or
                                WGL_TEXTURE_CUBE_MAP_ARB, and WGL_PBUFFER_WIDTH
@@ -199,11 +199,11 @@ Additions to the WGL Specification
     Modify wglBindTexImageARB (only adding verbiage for supporting texture
     rectangles):
 
-        The command 
+        The command
 
         BOOL wglBindTexImageARB (HPBUFFERARB hPbuffer, int iBuffer)
 
-        defines a one-dimensional texture image, a two-dimensional 
+        defines a one-dimensional texture image, a two-dimensional
         texture image, a two-dimensional texture rectangle image, or a set of
         two-dimensional cube map texture images...
 
@@ -216,10 +216,10 @@ Additions to the WGL Specification
         current 1D texture object.
 
 
-New State 
+New State
 
-    None 
+    None
 
-Revision History 
+Revision History
 
     None

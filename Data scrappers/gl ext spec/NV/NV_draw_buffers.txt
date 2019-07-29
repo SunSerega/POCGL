@@ -246,9 +246,9 @@ New State
 
     Add Table 6.X Framebuffer (State per framebuffer object):
 
-        State           Type  Get Command Initial Value Description 
+        State           Type  Get Command Initial Value Description
         --------------- ---- ------------ ------------- -----------
-        DRAW_BUFFERi_NV Z10* GetIntegerv  see 4.2.1     Draw buffer selected 
+        DRAW_BUFFERi_NV Z10* GetIntegerv  see 4.2.1     Draw buffer selected
                                                         for fragment color i
 
     Add the new Table 6.X "Framebuffer Dependent Values" :

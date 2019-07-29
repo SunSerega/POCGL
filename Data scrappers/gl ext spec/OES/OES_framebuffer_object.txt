@@ -56,14 +56,14 @@ Overview
     This extension defines a simple interface for drawing to rendering
     destinations other than the buffers provided to the GL by the
     window-system.  OES_framebuffer_object is a simplified version
-    of EXT_framebuffer_object with modifications to match the needs of 
+    of EXT_framebuffer_object with modifications to match the needs of
     OpenGL ES.
 
     In this extension, these newly defined rendering destinations are
     known collectively as "framebuffer-attachable images".  This
     extension provides a mechanism for attaching framebuffer-attachable
     images to the GL framebuffer as one of the standard GL logical
-    buffers: color, depth, and stencil.  When a framebuffer-attachable 
+    buffers: color, depth, and stencil.  When a framebuffer-attachable
     image is attached to the framebuffer, it is used as the source and
     destination of fragment operations as described in Chapter 4.
 
@@ -73,12 +73,12 @@ Overview
     of a texture to be used as framebuffer-attachable images.  A
     particular image of a texture object is selected for use as a
     framebuffer-attachable image by specifying the mipmap level, cube
-    map face (for a cube map texture) that identifies the image.  
-    The "render to texture" semantics of this extension are similar to 
-    performing traditional rendering to the framebuffer, followed 
-    immediately by a call to CopyTexSubImage.  However, by using this 
-    extension instead, an application can achieve the same effect, 
-    but with the advantage that the GL can usually eliminate the data copy 
+    map face (for a cube map texture) that identifies the image.
+    The "render to texture" semantics of this extension are similar to
+    performing traditional rendering to the framebuffer, followed
+    immediately by a call to CopyTexSubImage.  However, by using this
+    extension instead, an application can achieve the same effect,
+    but with the advantage that the GL can usually eliminate the data copy
     that would have been incurred by calling CopyTexSubImage.
 
     This extension also defines a new GL object type, called a
@@ -100,11 +100,11 @@ Overview
     including its set of images.  Prior to this extension, it was the
     window-system which defined and managed this collection of images,
     traditionally by grouping them into a "drawable".  The window-system
-    APIs would also provide a function (i.e., eglMakeCurrent) to bind a 
-    drawable with a GL context.  In this extension, however, this 
-    functionality is subsumed by the GL and the GL provides the function 
-    BindFramebufferOES to bind a framebuffer object to the current context.  
-    Later, the context can bind back to the window-system-provided framebuffer 
+    APIs would also provide a function (i.e., eglMakeCurrent) to bind a
+    drawable with a GL context.  In this extension, however, this
+    functionality is subsumed by the GL and the GL provides the function
+    BindFramebufferOES to bind a framebuffer object to the current context.
+    Later, the context can bind back to the window-system-provided framebuffer
     in order to display rendered content.
 
     Previous extensions that enabled rendering to a texture have been
@@ -129,7 +129,7 @@ Overview
     ARB_render_texture, a single framebuffer object can facilitate
     rendering to an unlimited number of texture objects.
 
-    Please refer to the EXT_framebuffer_object extension for a 
+    Please refer to the EXT_framebuffer_object extension for a
     detailed explaination of how framebuffer objects are supposed to work,
     the issues and their resolution.  This extension can be found at
     http://oss.sgi.com/projects/ogl-sample/registry/EXT/framebuffer_object.txt
@@ -260,7 +260,7 @@ New Tokens
 
         INVALID_FRAMEBUFFER_OPERATION_OES   0x0506
 
-OES_framebuffer_object implements the functionality defined by EXT_framebuffer_object 
+OES_framebuffer_object implements the functionality defined by EXT_framebuffer_object
 with the following limitations:
 
     - EXT versions of the entry points and tokens used by the desktop
@@ -271,51 +271,51 @@ with the following limitations:
       color attachments; tokens COLOR_ATTACHMENT[1-15]_OES and
       MAX_COLOR_ATTACHMENTS_OES are not supported.
 
-    - FramebufferTexture2DOES can be used to render 
-      directly into the base level of a texture image only.  Rendering to any 
+    - FramebufferTexture2DOES can be used to render
+      directly into the base level of a texture image only.  Rendering to any
       mip-level other than the base level is not supported.
 
     - FramebufferTexture3DOES is optionally supported and is implemented only
-      if OES_texture_3D string is defined in the EXTENSIONS string returned by 
+      if OES_texture_3D string is defined in the EXTENSIONS string returned by
       OpenGL ES.
 
     - section 4.4.2.1 of the EXT_framebuffer_object spec describes the function
-      RenderbufferStorageEXT.  This function establishes the data storage, format, 
-      and dimensions of a renderbuffer object's image.  <target> must be 
-      RENDERBUFFER_EXT. <internalformat> must be one of the internal formats 
-      from table 3.16 or table 2.nnn which has a base internal format of RGB, RGBA, 
+      RenderbufferStorageEXT.  This function establishes the data storage, format,
+      and dimensions of a renderbuffer object's image.  <target> must be
+      RENDERBUFFER_EXT. <internalformat> must be one of the internal formats
+      from table 3.16 or table 2.nnn which has a base internal format of RGB, RGBA,
       DEPTH_COMPONENT, or STENCIL_INDEX.
 
       The above paragraph is modified by OES_framebuffer_object and states thus:
 
-      "This function establishes the data storage, format, and 
+      "This function establishes the data storage, format, and
       dimensions of a renderbuffer object's image.  <target> must be RENDERBUFFER_OES.
-      <internalformat> must be one of the sized internal formats from the following 
-      table which has a base internal format of RGB, RGBA, DEPTH_COMPONENT, 
+      <internalformat> must be one of the sized internal formats from the following
+      table which has a base internal format of RGB, RGBA, DEPTH_COMPONENT,
       or STENCIL_INDEX"
 
        The following formats are required:
 
-                Sized                 Base                  
-                Internal Format       Internal format      
-                ---------------       ---------------       
-                RGB565_OES            RGB                
+                Sized                 Base
+                Internal Format       Internal format
+                ---------------       ---------------
+                RGB565_OES            RGB
                 RGBA4_OES             RGBA
                 RGB5_A1_OES           RGBA
                 DEPTH_COMPONENT16_OES DEPTH_COMPONENT
 
         The following formats are optional:
 
-                Sized                 Base                  
-                Internal Format       Internal format      
+                Sized                 Base
+                Internal Format       Internal format
                 --------------------- ---------------
                 RGBA8_OES             RGBA
                 RGB8_OES              RGB
                 DEPTH_COMPONENT24_OES DEPTH_COMPONENT
                 DEPTH_COMPONENT32_OES DEPTH_COMPONENT
-                STENCIL_INDEX1_OES    STENCIL_INDEX      
-                STENCIL_INDEX4_OES    STENCIL_INDEX      
-                STENCIL_INDEX8_OES    STENCIL_INDEX      
+                STENCIL_INDEX1_OES    STENCIL_INDEX
+                STENCIL_INDEX4_OES    STENCIL_INDEX
+                STENCIL_INDEX8_OES    STENCIL_INDEX
 
 Dependencies on OES_rgb8_rgba8
 
@@ -349,7 +349,7 @@ Dependencies on OES_stencil8
     RenderbufferStorageOES is only valid if OES_stencil8 is supported.
 
 Errors
-       
+
     INVALID_ENUM is generated if RenderbufferStorageOES is called with
     an unsupported <internalformat>.
 

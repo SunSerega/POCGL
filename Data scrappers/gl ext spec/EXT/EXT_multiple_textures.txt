@@ -85,7 +85,7 @@ GL_MAX_CURRENT_TEXTURES-1.
 
 GL_TEXCOMBINE_COMBINE_COLORn
 GL_TEXCOMBINE_COLOR_OPn
-GL_TEXCOMBINE_TEX_COLORn 
+GL_TEXCOMBINE_TEX_COLORn
 GL_TEXCOMBINE_COMBINE_ALPHAn
 GL_TEXCOMBINE_ALPHA_OPn
 GL_TEXCOMBINE_TEX_ALPHAn
@@ -305,7 +305,7 @@ multiple textures and there is some hardware that supports texture
 coordinate broadcasting so this is an important programming and
 performance issue.
 
-02/04/97    
+02/04/97
                 Added GL_TEXCOMBINE_NATURAL_CLAMP to
 give applications a way to determine whether texcombine clamping should
 be enabled or not for maximum performance.

@@ -1,76 +1,76 @@
-Name 
+Name
 
-    EXT_gpu_program_parameters 
+    EXT_gpu_program_parameters
 
-Name Strings 
+Name Strings
 
-    GL_EXT_gpu_program_parameters 
+    GL_EXT_gpu_program_parameters
 
 Contributors
 
     Pat Brown
     Haroon Sheikh
-   
-Contact 
 
-    Pat Brown, NVIDIA Corporation (pbrown 'at' nvidia.com) 
+Contact
+
+    Pat Brown, NVIDIA Corporation (pbrown 'at' nvidia.com)
     Geoff Stahl, Apple Computer, Inc. (gstahl 'at' apple.com)
 
-Status 
+Status
 
-    Shipping for GeForce 8 Series (November 2006) 
+    Shipping for GeForce 8 Series (November 2006)
 
-Version 
+Version
 
     Last Modified Date:         4/17/08
     Revision:                   7
 
-Number 
+Number
 
-    320 
+    320
 
-Dependencies 
+Dependencies
 
-    ARB_vertex_program or ARB_fragment_program is required. 
+    ARB_vertex_program or ARB_fragment_program is required.
 
-    This specification is written against the spec language from the 
-    ARB_vertex_program extension. 
+    This specification is written against the spec language from the
+    ARB_vertex_program extension.
 
-Overview 
+Overview
 
-    This extension provides a new set of procedures to load multiple 
-    consecutive program environment parameters more efficiently, via a single 
-    GL call instead of multiple calls.  This will reduce the amount of CPU 
-    overhead involved in loading parameters. 
+    This extension provides a new set of procedures to load multiple
+    consecutive program environment parameters more efficiently, via a single
+    GL call instead of multiple calls.  This will reduce the amount of CPU
+    overhead involved in loading parameters.
 
-    With the existing ARB_vertex_program and ARB_fragment_program APIs, 
-    program parameters must be loaded one at a time, via separate calls. 
-    While the NV_vertex_program extension provides a set of similar functions 
-    that can be used to load program environment parameters (which are 
-    equivalent to "program parameters" in NV_vertex_program), no such function 
-    exists for program local parameters. 
+    With the existing ARB_vertex_program and ARB_fragment_program APIs,
+    program parameters must be loaded one at a time, via separate calls.
+    While the NV_vertex_program extension provides a set of similar functions
+    that can be used to load program environment parameters (which are
+    equivalent to "program parameters" in NV_vertex_program), no such function
+    exists for program local parameters.
 
-New Procedures and Functions 
+New Procedures and Functions
 
-    void ProgramEnvParameters4fvEXT(enum target, uint index, sizei count, 
-                                   const float *params); 
+    void ProgramEnvParameters4fvEXT(enum target, uint index, sizei count,
+                                   const float *params);
 
-    void ProgramLocalParameters4fvEXT(enum target, uint index, sizei count, 
-                                     const float *params); 
+    void ProgramLocalParameters4fvEXT(enum target, uint index, sizei count,
+                                     const float *params);
 
-New Tokens 
-    
-    None. 
+New Tokens
 
-Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation) 
+    None.
+
+Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
 
     (modify ARB_vertex_program and ARB_fragment_program, add paragraph after
-    introduction of ProgramEnvParameter* calls) 
+    introduction of ProgramEnvParameter* calls)
 
-    The command 
+    The command
 
-      void ProgramEnvParameters4fvEXT(enum target, uint index, sizei count, 
-                                      const float *params); 
+      void ProgramEnvParameters4fvEXT(enum target, uint index, sizei count,
+                                      const float *params);
 
     updates the values of the program environment parameters numbered <index>
     through <index> + <count> - 1 for the given program target <target>.
@@ -82,12 +82,12 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     program environment parameters supported by <target>.
 
     (modify ARB_vertex_program and ARB_fragment_program, add paragraph after
-    introduction of ProgramLocalParameter* calls) 
+    introduction of ProgramLocalParameter* calls)
 
-    The command 
+    The command
 
-      void ProgramLocalParameters4fvEXT(enum target, uint index, sizei count, 
-                                        const float *params); 
+      void ProgramLocalParameters4fvEXT(enum target, uint index, sizei count,
+                                        const float *params);
 
     updates the values of the program local parameters numbered <index>
     through <index> + <count> - 1 belonging to the program object currently
@@ -98,54 +98,54 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     less than zero or if the sum of <index> and <count> is greater than the
     number of program local parameters supported by <target>.
 
-Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
 
-    None. 
+    None.
 
-Additions to Chapter 4 of the OpenGL 2.0 Specification (Per-Fragment 
-Operations and the Frame Buffer) 
+Additions to Chapter 4 of the OpenGL 2.0 Specification (Per-Fragment
+Operations and the Frame Buffer)
 
-    None. 
+    None.
 
-Additions to Chapter 5 of the OpenGL 2.0 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 2.0 Specification (Special Functions)
 
-    None. 
+    None.
 
-Additions to Chapter 6 of the OpenGL 2.0 Specification (State and 
-State Requests) 
+Additions to Chapter 6 of the OpenGL 2.0 Specification (State and
+State Requests)
 
-    None. 
+    None.
 
-Additions to Appendix A of the OpenGL 2.0 Specification (Invariance) 
+Additions to Appendix A of the OpenGL 2.0 Specification (Invariance)
 
-    None. 
+    None.
 
-Additions to the AGL/GLX/WGL Specifications 
+Additions to the AGL/GLX/WGL Specifications
 
-    None. 
+    None.
 
-GLX Protocol 
+GLX Protocol
 
     Two new GL commands are added.  The following commands are sent to the
     server as part of a glXRender request:
 
-        ProgramEnvParameters4fvEXT 
-            2           16+16*n         rendering command length 
-            2           4281            rendering command opcode 
-            4           ENUM            target 
-            4           CARD32          index 
-            4           CARD32          n 
-            16*n        FLOAT32         params 
+        ProgramEnvParameters4fvEXT
+            2           16+16*n         rendering command length
+            2           4281            rendering command opcode
+            4           ENUM            target
+            4           CARD32          index
+            4           CARD32          n
+            16*n        FLOAT32         params
 
-        ProgramLocalParameters4fvEXT 
-            2           16+16*n         rendering command length 
-            2           4282            rendering command opcode 
-            4           ENUM            target 
-            4           CARD32          index 
-            4           CARD32          n 
-            16*n        FLOAT32         params 
+        ProgramLocalParameters4fvEXT
+            2           16+16*n         rendering command length
+            2           4282            rendering command opcode
+            4           ENUM            target
+            4           CARD32          index
+            4           CARD32          n
+            16*n        FLOAT32         params
 
-Errors 
+Errors
 
     INVALID_VALUE is generated by ProgramEnvParameters4fvEXT or
     ProgramLocalParameters4fvEXT if <count> is less than zero.
@@ -158,28 +158,28 @@ Errors
     <count> is greater than the number of program local parameters supported
     by <target>.
 
-New State 
+New State
 
-    None. 
+    None.
 
-Issues 
+Issues
 
-    (1) Should a set of ProgramEnvParameters*EXT() calls be added, or is using 
-        NV_vertex_program's ProgramParameters*NV() sufficient? 
+    (1) Should a set of ProgramEnvParameters*EXT() calls be added, or is using
+        NV_vertex_program's ProgramParameters*NV() sufficient?
 
-      RESOLVED:  We should add an ARB-style ProgramEnvParameters*() call for 
-      naming consistency. Also ProgramParameters*NV() are not available on 
+      RESOLVED:  We should add an ARB-style ProgramEnvParameters*() call for
+      naming consistency. Also ProgramParameters*NV() are not available on
       all platforms.
 
-    (2) Should an equivalent set of calls be added to query multiple program 
-        parameters at once? 
+    (2) Should an equivalent set of calls be added to query multiple program
+        parameters at once?
 
-      RESOLVED:  No. 
+      RESOLVED:  No.
 
-    (3) Should double-precision versions be supported? 
+    (3) Should double-precision versions be supported?
 
-      RESOLVED:  No.  Double-precision parameter values will be converted to 
-      single-precision in current driver implementations, anyway. 
+      RESOLVED:  No.  Double-precision parameter values will be converted to
+      single-precision in current driver implementations, anyway.
 
     (4) Why is this spec called "EXT_gpu_program_parameters"?
 
@@ -202,10 +202,10 @@ Issues
       state.
 
 
-Revision History 
+Revision History
 
-    Rev.    Date    Author    Changes 
-    ----  --------  --------  -------------------------------------------- 
+    Rev.    Date    Author    Changes
+    ----  --------  --------  --------------------------------------------
     7     04/17/08  pbrown    Fix GLX protocol section to indicate two
                               functions instead of four.
 
@@ -224,5 +224,5 @@ Revision History
 
     2     06/02/06  haroon    Changed to EXT. Added contributors.
 
-    1     04/24/06  pbrown    Initial revision. 
+    1     04/24/06  pbrown    Initial revision.
 

@@ -39,7 +39,7 @@ Version
 
 Number
 
-    OpenGL ES Extension #24    
+    OpenGL ES Extension #24
 
 Dependencies
 
@@ -54,12 +54,12 @@ Overview
 
 Issues
 
- 
+
 New Tokens
 
     Accepted by the <internalformat> parameter of RenderbufferStorageOES:
 
-        DEPTH_COMPONENT24_OES                 0x81A6 
+        DEPTH_COMPONENT24_OES                 0x81A6
 
 New Procedures and Functions
 
@@ -76,4 +76,4 @@ New State
 Revision History
 
     7/6/2005    Aaftab Munshi    Created the extension
-    6/9/2006    Aaftab Munshi    Added OES suffix    
+    6/9/2006    Aaftab Munshi    Added OES suffix

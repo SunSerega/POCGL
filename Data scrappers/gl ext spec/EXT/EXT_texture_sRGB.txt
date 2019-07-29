@@ -18,7 +18,7 @@ Contributors
     Yanjun Zhang, S3 Graphics
     Jeremy Sandmel, Apple
     Herb Kuta, Quantum3D
-     
+
 Contact
 
     Mark J. Kilgard, NVIDIA Corporation (mjk 'at' nvidia.com)
@@ -106,7 +106,7 @@ Issues
         helps highlight the fact that the alpha component is separate
         and stored with a linear distribution of precision.
 
-    4)  Should formats for sRGB luminance values be supported? 
+    4)  Should formats for sRGB luminance values be supported?
 
         RESOLVED:  Yes.  Implementations can always support luminance
         and luminance-alpha sRGB formats as an RGB8 or RGBA8 format with
@@ -116,7 +116,7 @@ Issues
         token names to indicate sRGB values with identical red, green,
         and blue components.
 
-    5)  Should formats for sRGB intensity values be supported? 
+    5)  Should formats for sRGB intensity values be supported?
 
         RESOLVED:  No.  Intensity uses the same value for both luminance
         and alpha.  Treating a single value as an sRGB luminance value
@@ -334,7 +334,7 @@ Issues
         buffer will in anyway convert the output color values into an sRGB
         color space.  A fragment program or shader could be written to
         convert linear RGB values to sRGB values prior to shader output,
-        but NO automatic conversion is performed.  
+        but NO automatic conversion is performed.
 
         So you can create a texture with an sRGB internal format (such
         as GL_SRGB8_ALPHA8_EXT), bind that texture  to a framebuffer
@@ -432,7 +432,7 @@ Issues
         By maintaining the texture border color always in linear RGB,
         we avoid developers having to know if an implementation is
         performing the sRGB conversion (ideally) pre-filtering or (less
-        ideally) post-filtering.  
+        ideally) post-filtering.
 
     19) How does this extension interact with NV_texture_expand_normal?
 
@@ -829,5 +829,5 @@ Revision History
           feedback.
 
     0.4:  Update issue 18 based on Matrox feedback.
-    
+
     0.3:  Update NV_texture_expand_normal interaction.

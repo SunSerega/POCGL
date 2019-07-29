@@ -1,5 +1,5 @@
 Name
-    
+
     NV_fog_distance
 
 Name Strings
@@ -122,7 +122,7 @@ Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
 Additions to Chapter 3 of the 1.2 Specification (Rasterization)
 
  --  Section 3.10 "Fog"
- 
+
     Add to the end of the 3rd paragraph:
 
     "If pname is FOG_DISTANCE_MODE_NV, then param must be, or params
@@ -155,7 +155,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     color and a fog color index, and a single bit to indicate whether
     or not fog is enabled.  In the initial state, fog is disabled,
     FOG_MODE is EXP, FOG_DISTANCE_NV is implementation defined, d =
-    1.0, e = 1.0, and s = 0.0; Cf = (0,0,0,0) and if = 0." 
+    1.0, e = 1.0, and s = 0.0; Cf = (0,0,0,0) and if = 0."
 
 Additions to Chapter 4 of the 1.2 Specification (Per-Fragment Operations
 and the Frame Buffer)
@@ -192,7 +192,7 @@ New State
 Get Value              Type    Get Command  Initial Value      Description      Sec     Attribute
 --------------------   ----    -----------  ---------------    -----------      -----   ---------
 FOG_DISTANCE_MODE_NV   Z3      GetIntegerv  implementation     Determines how   3.10    fog
-                                            dependent          fog distance      
+                                            dependent          fog distance
                                                                is computed
 
 New Implementation State

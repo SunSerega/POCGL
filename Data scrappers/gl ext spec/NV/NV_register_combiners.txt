@@ -1,5 +1,5 @@
 Name
-    
+
     NV_register_combiners
 
 Name Strings
@@ -57,7 +57,7 @@ Overview
     help the reader appreciate the greatly enhanced register combiners
     functionality (see the NV_texture_env_combine4 OpenGL extension
     specification for this background).  The register combiner mechanism
-    has the following enhanced functionality: 
+    has the following enhanced functionality:
 
       The numeric range of combiner computations is from [-1,1]
       (instead of TNT's [0,1] numeric range),
@@ -275,7 +275,7 @@ New Procedures and Functions
                          GLenum componentUsage);
 
     void CombinerOutputNV(GLenum stage,
-                          GLenum portion, 
+                          GLenum portion,
                           GLenum abOutput,
                           GLenum cdOutput,
                           GLenum sumOutput,
@@ -303,12 +303,12 @@ New Procedures and Functions
                                        GLint *params);
 
     void GetCombinerOutputParameterfvNV(GLenum stage,
-                                        GLenum portion, 
+                                        GLenum portion,
                                         GLenum pname,
                                         GLfloat *params);
 
     void GetCombinerOutputParameterivNV(GLenum stage,
-                                        GLenum portion, 
+                                        GLenum portion,
                                         GLenum pname,
                                         GLint *params);
 
@@ -423,9 +423,9 @@ New Tokens
 
         DISCARD_NV                         0x8530
         PRIMARY_COLOR_NV
-        SECONDARY_COLOR_NV  
-        SPARE0_NV  
-        SPARE1_NV  
+        SECONDARY_COLOR_NV
+        SPARE0_NV
+        SPARE1_NV
         TEXTURE0_ARB                                  (see ARB_multitexture)
         TEXTURE1_ARB                                  (see ARB_multitexture)
 
@@ -759,12 +759,12 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
      The computation of gcc6rgb and gcc4a involves a special "or"
      operation.  This operation evaluates to the left-hand operand if
      the alpha component of the combiner's SPARE0_NV register is less than
-     0.5; otherwise, the operation evaluates to the right-hand operand.  
+     0.5; otherwise, the operation evaluates to the right-hand operand.
 
-     The command 
+     The command
 
          CombinerOutputNV(GLenum stage,
-                          GLenum portion, 
+                          GLenum portion,
                           GLenum abOutput,
                           GLenum cdOutput,
                           GLenum sumOutput,
@@ -798,16 +798,16 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
      BIAS_BY_NEGATIVE_ONE_HALF_NV generates an INVALID_OPERATION error.
 
      If the <abDotProduct> parameter is FALSE, then
-        
+
         if <portion> is RGB,     out1rgb = max(min(gcc1rgb + cbiasrgb) * cscalergb, 1), -1)
-        if <portion> is ALPHA,   out1a   = max(min((gcc1a + cbiasa) * cscalea, 1), -1) 
+        if <portion> is ALPHA,   out1a   = max(min((gcc1a + cbiasa) * cscalea, 1), -1)
 
      otherwise <portion> must be RGB and
 
         out1rgb = max(min((gcc2rgb + cbiasrgb) * cscalergb, 1), -1)
 
      If the <cdDotProduct> parameter is FALSE, then
-        
+
         if <portion> is RGB,      out2rgb = max(min((gcc3rgb + cbiasrgb) * cscalergb, 1), -1)
         if <portion> is ALPHA,    out2a   = max(min((gcc2a + cbiasa) * cscalea, 1), -1)
 
@@ -816,7 +816,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
         out2rgb = max(min((gcc4rgb + cbiasrgb) * cscalergb, 1), -1)
 
      If the <muxSum> parameter is FALSE, then
-        
+
         if <portion> is RGB,      out3rgb = max(min((gcc5rgb + cbiasrgb) * cscalergb, 1), -1)
         if <portion> is ALPHA,    out3a   = max(min((gcc3a + cbiasa) * cscalea, 1), -1)
 
@@ -858,7 +858,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
      The final combiner stage is capable of applying the standard OpenGL
      color sum and fog operations, but has the configurability to be
      used for other purposes.
-     
+
      The command
 
         FinalCombinerInputNV(GLenum variable,
@@ -939,7 +939,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
                 min(ab[b] + iac[b] + D[b], 1.0),
                 G ]
 
-     where 
+     where
 
        ab   = [ A[r]*B[r], A[g]*B[g], A[b]*B[b] ]
        iac  = [ (1.0 -A [r])*C[r], (1.0 - A[g])*C[g], (1.0 - A[b])*C[b] ]
@@ -1117,7 +1117,7 @@ GLX Protocol
             4           ENUM            input
             4           ENUM            mapping
             4           ENUM            componentUsage
-        
+
         CombinerOutputNV
             2           36              rendering command length
             2           4141            rendering command opcode
@@ -1132,7 +1132,7 @@ GLX Protocol
             1           BOOL            cdDotProduct
             1           BOOL            muxSum
             1           BOOL            unused
-        
+
         FinalCombinerInputNV
             2           20              rendering command length
             2           4142            rendering command opcode
@@ -1396,7 +1396,7 @@ Errors
 
 New State
 
- --  (NEW table 6.29, after p217) 
+ --  (NEW table 6.29, after p217)
 
 Get Value                          Type      Get Command                          Initial Value           Description        Sec       Attribute
 ---------                          --------  ----------------------------------   ----------------------  ----------------   --------  --------------

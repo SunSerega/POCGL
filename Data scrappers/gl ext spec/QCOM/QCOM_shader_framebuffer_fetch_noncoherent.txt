@@ -31,13 +31,13 @@ Dependencies
     EXT_shader_framebuffer_fetch
     ARM_shader_framebuffer_fetch_depth_stencil
     ARM_shader_framebuffer_fetch
-    
+
 Overview
 
-    Existing extensions such as EXT_shader_framebuffer_fetch and 
+    Existing extensions such as EXT_shader_framebuffer_fetch and
     ARM_shader_framebuffer_fetch_depth_stencil allow fragment
     shaders to read existing framebuffer color or depth/stencil data as input.
-    This extension adds support for reading those same inputs with 
+    This extension adds support for reading those same inputs with
     relaxed coherency requirements.  This mode can avoid expensive
     per-primitive flushes of the pixel pipeline and may offer performance
     improvements in some implementations.
@@ -69,16 +69,16 @@ Changes to the OpenGL ES 2.0 Specification, Chapter 3
     Execution, page 197:
 
     Framebuffer Fetch Coherency
-    
+
     Rendering is typically done coherently and in primitive order.  When an
     individual sample is covered by multiple primitives, rendering for that
     sample is performed sequentially in the order in which the primitives were
     submitted.  When a Fragment shader reads framebuffer data (using
-    glLastFragData, gl_LastFragDepthARM, or an inout variable) the value will 
-    always return the last fragment value written to the frame buffer.  This 
-    coherent behavior is enabled by default, but an optional non-coherent  
-    behavior can be enabled or disabled by calling Enable or Disable with the 
-    symbolic constant FRAMEBUFFER_FETCH_NONCOHERENT_QCOM.  If the non-coherent 
+    glLastFragData, gl_LastFragDepthARM, or an inout variable) the value will
+    always return the last fragment value written to the frame buffer.  This
+    coherent behavior is enabled by default, but an optional non-coherent
+    behavior can be enabled or disabled by calling Enable or Disable with the
+    symbolic constant FRAMEBUFFER_FETCH_NONCOHERENT_QCOM.  If the non-coherent
     behavior is enabled, applications should split their rendering into a collection
     of passes, none of which touch an individual sample in the framebuffer more than
     once.  When non-coherent behavior is enabled, the results of framebuffer reads

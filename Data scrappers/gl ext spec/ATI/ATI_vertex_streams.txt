@@ -35,15 +35,15 @@ Overview
     This functionality enables software animation techniques such
     as keyframe vertex morphing.
 
-    
+
 
 IP Status
 
-    Unknown, but believed to be none. 
+    Unknown, but believed to be none.
 
 Issues
 
-     
+
 
 New Procedures and Functions
 
@@ -87,7 +87,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     - (2.6, p. 12) Second paragraph changed to:
 
           "Each vertex is specified with two, three, or four
-          coordinates. In addition, current auxilliary vertices, 
+          coordinates. In addition, current auxilliary vertices,
           a current normal, auxilliary normals, current texture
           coordinates, and current color may be used in processing
           each vertex. Normals are used by the GL in lighting
@@ -160,7 +160,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
     - (2.8, p. 23) Added after the second paragraph:
 
-          "Additionally, auxillary vertex and normal data can be 
+          "Additionally, auxillary vertex and normal data can be
           specified through the VertexPointer and NormalPointer
           commands. Whether these commands are affecting the primary
           coordinates or the auxilliary coordinates is controlled by
@@ -189,10 +189,10 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
           This command changes the active vertex stream for the
           currently selected vertex stage. Param must be less than
-          the maximum number of streams reported by get. The 
+          the maximum number of streams reported by get. The
           select the current vertex stage to effect is done by
           calling MatrixMode with MODELVIEWn_ARB, where n is
-          the vertex stage." 
+          the vertex stage."
 
 
 
@@ -218,4 +218,4 @@ Additions to Appendix A:
 
 
 
-      
+

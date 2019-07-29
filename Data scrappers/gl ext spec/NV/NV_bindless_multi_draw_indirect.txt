@@ -34,51 +34,51 @@ Number
 Dependencies
 
     NV_vertex_buffer_unified_memory is required.
-    
+
     OpenGL 4.3 or ARB_multi_draw_indirect is required.
 
     The extension is written against the OpenGL 4.3 Specification, Core Profile.
-    
+
 Overview
 
-    This extension combines NV_vertex_buffer_unified_memory and 
+    This extension combines NV_vertex_buffer_unified_memory and
     ARB_multi_draw_indirect to allow the processing of multiple drawing
-    commands, whose vertex and index data can be sourced from arbitrary 
+    commands, whose vertex and index data can be sourced from arbitrary
     buffer locations, by a single function call.
 
-    The NV_vertex_buffer_unified_memory extension provided a mechanism to 
+    The NV_vertex_buffer_unified_memory extension provided a mechanism to
     specify vertex attrib and element array locations using GPU addresses.
     Prior to this extension, these addresses had to be set through explicit
     function calls. Now the ability to set the pointer addresses indirectly
     by extending the GL_ARB_draw_indirect mechanism has been added.
-    
+
     Combined with other "bindless" extensions, such as NV_bindless_texture and
     NV_shader_buffer_load, it is now possible for the GPU to create draw
-    commands that source all resource inputs, which are common to change 
-    frequently between draw calls from the GPU: vertex and index buffers, 
+    commands that source all resource inputs, which are common to change
+    frequently between draw calls from the GPU: vertex and index buffers,
     samplers, images and other shader input data stored in buffers.
-    
+
 
 New Procedures and Functions
 
-        void MultiDrawArraysIndirectBindlessNV(enum mode, 
-                                               const void *indirect, 
-                                               sizei drawCount, 
-                                               sizei stride, 
+        void MultiDrawArraysIndirectBindlessNV(enum mode,
+                                               const void *indirect,
+                                               sizei drawCount,
+                                               sizei stride,
                                                int vertexBufferCount);
 
-        void MultiDrawElementsIndirectBindlessNV(enum mode, 
-                                                 enum type, 
-                                                 const void *indirect, 
-                                                 sizei drawCount, 
-                                                 sizei stride, 
+        void MultiDrawElementsIndirectBindlessNV(enum mode,
+                                                 enum type,
+                                                 const void *indirect,
+                                                 sizei drawCount,
+                                                 sizei stride,
                                                  int vertexBufferCount);
 
 New Tokens
 
     None.
 
-Additions to Chapter 10 of the OpenGL 4.3 (Core) Specification (Vertex 
+Additions to Chapter 10 of the OpenGL 4.3 (Core) Specification (Vertex
 Specification and Drawing Commands)
 
     Additions to Section 10.5, "Drawing Commands Using Vertex Arrays"
@@ -88,25 +88,25 @@ Specification and Drawing Commands)
 
         The command
 
-        void MultiDrawArraysIndirectBindlessNV(enum mode, 
-                                               const void *indirect, 
-                                               sizei drawCount, 
-                                               sizei stride, 
+        void MultiDrawArraysIndirectBindlessNV(enum mode,
+                                               const void *indirect,
+                                               sizei drawCount,
+                                               sizei stride,
                                                int vertexBufferCount);
 
     behaves similar to MultiDrawArraysIndirect, except that <indirect> is
     treated as an array of <drawCount> DrawArraysIndirectBindlessCommandNV
     structures.
-    
+
     It has the same effect as:
 
         typedef struct {
           GLuint   index;
-          GLuint   reserved; 
+          GLuint   reserved;
           GLuint64 address;
           GLuint64 length;
-        } BindlessPtrNV; 
-    
+        } BindlessPtrNV;
+
         typedef struct {
           DrawArraysIndirectCommand   cmd;
           BindlessPtrNV               vertexBuffers[];
@@ -121,12 +121,12 @@ Specification and Drawing Commands)
               GetIntegerui64i_vNV(VERTEX_ATTRIB_ARRAY_ADDRESS_NV,i,&vtxAddresses[i]);
               GetInteger64i_v(VERTEX_ATTRIB_ARRAY_LENGTH_NV ,i,&vtxLengths[i]);
             }
-        
+
             const ubyte * ptr = (const ubyte *)indirect;
             for (i = 0; i < drawCount; i++) {
-                const DrawArraysIndirectBindlessCommandNV* cmdNV = 
+                const DrawArraysIndirectBindlessCommandNV* cmdNV =
                               (DrawArraysIndirectBindlessCommandNV*)ptr;
-                
+
                 if ( cmdNV->cmd.instanceCount != 0 ){
                     for (n = 0; n < vertexBufferCount; n++){
                       BufferAddressRangeNV(VERTEX_ATTRIB_ARRAY_ADDRESS_NV,
@@ -140,14 +140,14 @@ Specification and Drawing Commands)
                 }
                 if (stride == 0)
                 {
-                    ptr +=  sizeof(DrawArraysIndirectCommand) + 
+                    ptr +=  sizeof(DrawArraysIndirectCommand) +
                            (sizeof(BindlessPtrNV) * vertexBufferCount);
                 } else
                 {
                     ptr += stride;
                 }
             }
-            
+
             for (i = 0; i < MAX_VERTEX_ATTRIBS) {
               BufferAddressRangeNV(VERTEX_ATTRIB_ARRAY_ADDRESS_NV,i,vtxAddresses[i],vtxLengths[i]);
             }
@@ -161,29 +161,29 @@ Specification and Drawing Commands)
 
         The command
 
-        void MultiDrawElementsIndirectBindlessNV(enum mode, 
-                                                 enum type, 
-                                                 const void *indirect, 
-                                                 sizei drawCount, 
-                                                 sizei stride, 
+        void MultiDrawElementsIndirectBindlessNV(enum mode,
+                                                 enum type,
+                                                 const void *indirect,
+                                                 sizei drawCount,
+                                                 sizei stride,
                                                  int vertexBufferCount);
 
     behaves similar to MultiDrawElementsIndirect, except that <indirect> is
     treated as an array of <drawCount> DrawElementsIndirectBindlessCommandNV
     structures.
-    
+
     It has the same effect as:
-    
+
         typedef struct {
           GLuint   index;
-          GLuint   reserved; 
+          GLuint   reserved;
           GLuint64 address;
           GLuint64 length;
-        } BindlessPtrNV; 
-    
+        } BindlessPtrNV;
+
         typedef struct {
           DrawElementsIndirectCommand cmd;
-          GLuint                      reserved; 
+          GLuint                      reserved;
           BindlessPtrNV               indexBuffer;
           BindlessPtrNV               vertexBuffers[];
         } DrawElementsIndirectBindlessCommandNV;
@@ -195,25 +195,25 @@ Specification and Drawing Commands)
             GLsizeiptr idxLength;
             GetIntegerui64vNV(ELEMENT_ARRAY_ADDRESS_NV,&idxAddress);
             GetInteger64v(ELEMENT_ARRAY_LENGTH_NV,&idxLength);
-            
+
             GLuint64 vtxAddresses[MAX_VERTEX_ATTRIBS];
             GLsizeiptr vtxLengths[MAX_VERTEX_ATTRIBS];
             for (i = 0; i < MAX_VERTEX_ATTRIBS) {
               GetIntegerui64i_vNV(VERTEX_ATTRIB_ARRAY_ADDRESS_NV,i,&vtxAddresses[i]);
               GetInteger64i_v(VERTEX_ATTRIB_ARRAY_LENGTH_NV ,i,&vtxLengths[i]);
             }
-            
+
             const ubyte * ptr = (const ubyte *)indirect;
             for (i = 0; i < primcount; i++) {
-                const DrawElementsIndirectBindlessCommandNV* cmdNV = 
+                const DrawElementsIndirectBindlessCommandNV* cmdNV =
                               (DrawElementsIndirectBindlessCommandNV*)ptr;
-                
+
                 if ( cmdNV->cmd.instanceCount != 0 ) {
                     BufferAddressRangeNV(ELEMENT_ARRAY_ADDRESS_NV,
                                          0,
                                          cmdNV->indexBuffer.address,
                                          cmdNV->indexBuffer.length);
-                                         
+
                     for (n = 0; n < vertexBufferCount; n++){
                       BufferAddressRangeNV(VERTEX_ATTRIB_ARRAY_ADDRESS_NV,
                                            cmdNV->vertexBuffers[n].index
@@ -225,19 +225,19 @@ Specification and Drawing Commands)
                                          type,
                                          (DrawElementsIndirectCommand*)ptr);
                 }
-                
+
                 if (stride == 0)
                 {
-                    ptr +=  sizeof(DrawElementsIndirectCommand) + 
+                    ptr +=  sizeof(DrawElementsIndirectCommand) +
                             sizeof(GLuint) +
-                            sizeof(BindlessPtrNV) + 
+                            sizeof(BindlessPtrNV) +
                            (sizeof(BindlessPtrNV) * vertexBufferCount);
                 } else
                 {
                     ptr += stride;
                 }
             }
-            
+
             BufferAddressRangeNV(ELEMENT_ARRAY_ADDRESS_NV,0,idxAddress,idxLengths);
             for (i = 0; i < MAX_VERTEX_ATTRIBS) {
               BufferAddressRangeNV(VERTEX_ATTRIB_ARRAY_ADDRESS_NV,i,vtxAddresses[i],vtxLengths[i]);
@@ -249,7 +249,7 @@ Specification and Drawing Commands)
     Modify both instances of "DrawArraysIndirect, DrawElementsIndirect,
     MultiDrawArraysIndirect and MultiDrawElementsIndirect" on
     p. 305 to read "DrawArraysIndirect, DrawElementsIndirect,
-    MultiDrawArraysIndirect, MultiDrawElementsIndirect, 
+    MultiDrawArraysIndirect, MultiDrawElementsIndirect,
     MultiDrawArraysIndirectBindlessNV and MultiDrawElementsIndirectBindlessNV".
 
 
@@ -268,12 +268,12 @@ Errors
 
     INVALID_VALUE is generated by MultiDrawArraysIndirectBindlessNV or
     MultiDrawElementsIndirectBindlessNV if <stride> is not a multipe of eight.
-    
+
     INVALID_OPERATION is generated by MultiDrawArraysIndirectBindlessNV or
-    MultiDrawElementsIndirectBindlessNV if the 
+    MultiDrawElementsIndirectBindlessNV if the
     VERTEX_ATTRIB_ARRAY_UNIFIED_NV client state is not enabled.
-    
-    INVALID_OPERATION is generated by MultiDrawElementsIndirectBindlessNV 
+
+    INVALID_OPERATION is generated by MultiDrawElementsIndirectBindlessNV
     if the ELEMENT_ARRAY_UNIFIED_NV client state is not enabled.
 
 New State
@@ -296,20 +296,20 @@ Issues
     2) BufferAddressRangeNV also covered fixed function vertex state, should
        this be exposed in this extension?
 
-    NO, the named attributes aren't necessary, as it is very likely that 
+    NO, the named attributes aren't necessary, as it is very likely that
     shaders are used to also handle the parameters of individual drawcalls.
     For fixed function shading the interleaving of related state changes
     with drawcalls would already be efficiently handled by regular
     MultiDraw or NV_vertex_buffer_unified_memory functionality.
-    
-    3) In which state should the vertex/index pointers be left after the 
+
+    3) In which state should the vertex/index pointers be left after the
        execution of the command?
-       
+
     RESOLVED: All pointers should be reset to what was last
     specified by the client side using BufferAddressRangeNV.
-    
+
     4) How does this extension relate to the newer NV_command_list?
-    
+
     NV_command_list provides a more flexible draw indirect mechnanism. It
     can be more efficient if there are redundancies in the vertex and index
     buffer addresses, as it allows specifying addresses and drawcalls with
@@ -323,6 +323,6 @@ Revision History
      2    1/5/2015    ckubisch  bugfix, remove of "reserved" in
                                 DrawArraysIndirectBindlessCommandNV
                                 added reference to NV_command_list
-     3    7/3/2015    ckubisch  bugfix, wrong math used in the "if (stride == 0)" 
+     3    7/3/2015    ckubisch  bugfix, wrong math used in the "if (stride == 0)"
                                 pointer advancing. GLsizeiptr for length instead of
                                 GLuint64

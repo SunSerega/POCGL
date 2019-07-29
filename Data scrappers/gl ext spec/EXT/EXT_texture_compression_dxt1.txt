@@ -42,35 +42,35 @@ Overview
 
     Support of EXT_texture_compression_s3tc is attractive for OpenGL-ES
     implementations because it provides compressed textures that allow
-    for significantly reduced texture storage. Reducing texture storage is 
-    advantageous because of the smaller memory capacity of many embedded 
+    for significantly reduced texture storage. Reducing texture storage is
+    advantageous because of the smaller memory capacity of many embedded
     systems compared to desktop systems. Smaller textures also provide a
     welcome performance advantage since embedded platforms typically provide
-    less performance than desktop systems. S3TC compressed textures 
-    are widely supported and used by applications. The DXT1 format is 
-    used in the vast majority of cases in which S3TC compressed textures 
+    less performance than desktop systems. S3TC compressed textures
+    are widely supported and used by applications. The DXT1 format is
+    used in the vast majority of cases in which S3TC compressed textures
     are used.
-    
+
     However, EXT_texture_compression_s3tc specifies functionality that is
     burdensome for an OpenGL-ES implementation. In particular it requires
-    that the driver provide the capability to compress textures into 
+    that the driver provide the capability to compress textures into
     S3TC texture formats, as an S3TC texture format is accepted as the
     <internalformat> parameter of TexImage2D and CopyTexImage2D. Further,
-    EXT_texture_compression_s3tc may require conversion from one S3TC 
-    format to another during CompressedTexSubImage2D if the <format> 
-    parameter does not match the <internalformat> of the texture image 
+    EXT_texture_compression_s3tc may require conversion from one S3TC
+    format to another during CompressedTexSubImage2D if the <format>
+    parameter does not match the <internalformat> of the texture image
     previously created by TexImage2D.
 
-    In an OpenGL-ES implementation it is therefore advantageous to support 
-    a limited subset of EXT_texture_compression_s3tc: Restrict supported 
+    In an OpenGL-ES implementation it is therefore advantageous to support
+    a limited subset of EXT_texture_compression_s3tc: Restrict supported
     texture formats to DXT1 and restrict supported operations to those
     that do not require texture compression into an S3TC texture format or
     decompression from an S3TC texture format.
 
 IP Status
 
-    A license to the S3TC Intellectual Property may be necessary for 
-    implementation of this extension.  You should consult with your 
+    A license to the S3TC Intellectual Property may be necessary for
+    implementation of this extension.  You should consult with your
     Attorney to determine the need for a license.
 
 New Procedures and Functions
@@ -85,8 +85,8 @@ New Tokens
     COMPRESSED_RGB_S3TC_DXT1_EXT                      0x83F0
     COMPRESSED_RGBA_S3TC_DXT1_EXT                     0x83F1
 
-    CompressedTexImage2D and CompressedTexSubImage2D are the only 
-    functions that support the S3TC DXT1 texture formats. No other S3TC 
+    CompressedTexImage2D and CompressedTexSubImage2D are the only
+    functions that support the S3TC DXT1 texture formats. No other S3TC
     texture formats are supported.
 
 Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
@@ -107,8 +107,8 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     (add to the end of the CompressedTexImage section)
 
     If <internalformat> is COMPRESSED_RGB_S3TC_DXT1_EXT or
-    COMPRESSED_RGBA_S3TC_DXT1_EXT, the compressed texture is stored 
-    in one of these two S3TC texture formats. OpenGL-ES 1.0 and the S3TC 
+    COMPRESSED_RGBA_S3TC_DXT1_EXT, the compressed texture is stored
+    in one of these two S3TC texture formats. OpenGL-ES 1.0 and the S3TC
     texture compression algorithm support only 2D images without borders.
     CompressedTexImage2D will produce an INVALID_OPERATION error if
     <border> is non-zero, according to the OpenGL-ES 1.0 Specification.
@@ -120,9 +120,9 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     COMPRESSED_RGB_S3TC_DXT1_EXT or COMPRESSED_RGBA_S3TC_DXT1_EXT, the
     texture is stored using one of these two S3TC compressed texture image
     formats. OpenGL-ES 1.0 only supports CompressedTexSubImage2D.
-    Since DXT1 images are easily edited along 4x4 texel boundaries, 
-    the limitations on CompressedTexSubImage2D are relaxed.  
-    CompressedTexSubImage2D will result in an INVALID_OPERATION error only 
+    Since DXT1 images are easily edited along 4x4 texel boundaries,
+    the limitations on CompressedTexSubImage2D are relaxed.
+    CompressedTexSubImage2D will result in an INVALID_OPERATION error only
     if one of the following conditions occurs:
 
         * <width> is not a multiple of four or equal to TEXTURE_WIDTH.
@@ -131,14 +131,14 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
         * <format> does not match the internal format of the texture image
           being modified.
 
-    The following restrictions at the end of section 3.8.3 of the 
-    OpenGL 1.3 Specification do not apply to S3TC DXT1 texture formats, 
-    since subimage modification is straightforward as long as the subimage 
+    The following restrictions at the end of section 3.8.3 of the
+    OpenGL 1.3 Specification do not apply to S3TC DXT1 texture formats,
+    since subimage modification is straightforward as long as the subimage
     is properly aligned.
-    
-    DELETE: Calling CompressedTexSubImage3D, CompressedTexSubImage2D, 
-    DELETE: or CompressedTexSubImage1D will result in an INVALID 
-    DELETE: OPERATION error if xoffset, yoffset, or zoffset is not 
+
+    DELETE: Calling CompressedTexSubImage3D, CompressedTexSubImage2D,
+    DELETE: or CompressedTexSubImage1D will result in an INVALID
+    DELETE: OPERATION error if xoffset, yoffset, or zoffset is not
     DELETE: equal to -b (border width), or if <width>, <height>, and
     DELETE: <depth> do not mathc the values of TEXTURE_WIDTH,
     DELETE: TEXTURE_HEIGHT, or TEXTURE_DEPTH, respectively. The contents
@@ -154,7 +154,7 @@ Additions to Chapter 5 of the OpenGL 1.3 Specification (Special Functions)
 
     None.
 
-Additions to Chapter 6 of the OpenGL 1.3 Specification (State and State 
+Additions to Chapter 6 of the OpenGL 1.3 Specification (State and State
 Requests)
 
     None.
@@ -174,16 +174,16 @@ Errors
     COMPRESSED_RGBA_S3TC_DXT1_EXT and <border> is not equal to zero.
     OpenGL-ES 1.0 does not support non-zero borders.
 
-    INVALID_OPERATION is generated by TexImage2D and CopyTexImage2D 
-    if <internalformat> is COMPRESSED_RGB_S3TC_DXT1_EXT or 
+    INVALID_OPERATION is generated by TexImage2D and CopyTexImage2D
+    if <internalformat> is COMPRESSED_RGB_S3TC_DXT1_EXT or
     COMPRESSED_RGBA_S3TC_DXT1_EXT.
 
     INVALID_OPERATION is generated by TexSubImage2D and CopyTexSubImage2D
     if the internal format of the texture currently bound to <target> is
     COMPRESSED_RGB_S3TC_DXT1_EXT or COMPRESSED_RGBA_S3TC_DXT1_EXT.
 
-    INVALID_OPERATION is generated by CompressedTexSubImage2D if <format> 
-    is COMPRESSED_RGB_S3TC_DXT1_EXT or COMPRESSED_RGBA_S3TC_DXT1_EXT and 
+    INVALID_OPERATION is generated by CompressedTexSubImage2D if <format>
+    is COMPRESSED_RGB_S3TC_DXT1_EXT or COMPRESSED_RGBA_S3TC_DXT1_EXT and
     any of the following apply:
     <width> is not a multiple of four or equal to TEXTURE_WIDTH;
     <height> is not a multiple of four or equal to TEXTURE_HEIGHT;
@@ -205,7 +205,7 @@ Appendix:
     When an S3TC image with a width of <w>, height of <h>, and block size of
     <blocksize> (8 or 16 bytes) is decoded, the corresponding image size (in
     bytes) is:
-    
+
         ceil(<w>/4) * ceil(<h>/4) * blocksize.
 
     When decoding an S3TC image, the block containing the texel at offset
@@ -216,13 +216,13 @@ Appendix:
 
     The data corresponding to a specific texel (<x>, <y>) are extracted from a
     4x4 texel block using a relative (x,y) value of
-    
+
         (<x> modulo 4, <y> modulo 4).
 
     There are four distinct S3TC image formats:
 
     COMPRESSED_RGB_S3TC_DXT1_EXT:  Each 4x4 block of texels consists of 64
-    bits of RGB image data.  
+    bits of RGB image data.
 
     Each RGB image data block is encoded as a sequence of 8 bytes, called (in
     order of increasing address):
@@ -234,7 +234,7 @@ Appendix:
             color0 = c0_lo + c0_hi * 256
             color1 = c1_lo + c1_hi * 256
             bits   = bits_0 + 256 * (bits_1 + 256 * (bits_2 + 256 * bits_3))
-        
+
         color0 and color1 are 16-bit unsigned integers that are unpacked to
         RGB colors RGB0 and RGB1 as though they were 16-bit packed pixels with
         a <format> of RGB and a type of UNSIGNED_SHORT_5_6_5.
@@ -243,7 +243,7 @@ Appendix:
         is extracted for a texel at location (x,y) in the block using:
 
             code(x,y) = bits[2*(4*y+x)+1..2*(4*y+x)+0]
-        
+
         where bit 31 is the most significant and bit 0 is the least
         significant bit.
 
@@ -269,7 +269,7 @@ Appendix:
     COMPRESSED_RGBA_S3TC_DXT1_EXT:  Each 4x4 block of texels consists of 64
     bits of RGB image data and minimal alpha information.  The RGB components
     of a texel are extracted in the same way as COMPRESSED_RGB_S3TC_DXT1_EXT.
- 
+
         The alpha component for a texel at location (x,y) in the block is
         given by:
 

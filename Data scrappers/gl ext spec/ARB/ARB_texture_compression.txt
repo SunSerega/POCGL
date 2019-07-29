@@ -422,24 +422,24 @@ New Procedures and Functions
                                  const void *data);
     void CompressedTexImage2DARB(enum target, int level,
                                  enum internalformat, sizei width,
-                                 sizei height, int border, 
+                                 sizei height, int border,
                                  sizei imageSize, const void *data);
     void CompressedTexImage1DARB(enum target, int level,
                                  enum internalformat, sizei width,
                                  int border, sizei imageSize,
                                  const void *data);
-    void CompressedTexSubImage3DARB(enum target, int level, 
+    void CompressedTexSubImage3DARB(enum target, int level,
                                     int xoffset, int yoffset,
                                     int zoffset, sizei width,
                                     sizei height, sizei depth,
                                     enum format, sizei imageSize,
                                     const void *data);
-    void CompressedTexSubImage2DARB(enum target, int level, 
+    void CompressedTexSubImage2DARB(enum target, int level,
                                     int xoffset, int yoffset,
                                     sizei width, sizei height,
                                     enum format, sizei imageSize,
                                     const void *data);
-    void CompressedTexSubImage1DARB(enum target, int level, 
+    void CompressedTexSubImage1DARB(enum target, int level,
                                     int xoffset, sizei width,
                                     enum format, sizei imageSize,
                                     const void *data);
@@ -590,7 +590,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                                    const void *data);
       void CompressedTexImage2DARB(enum target, int level,
                                    enum internalformat, sizei width,
-                                   sizei height, int border, 
+                                   sizei height, int border,
                                    sizei imageSize, const void *data);
       void CompressedTexImage3DARB(enum target, int level,
                                    enum internalformat, sizei width,
@@ -652,16 +652,16 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     The commands
 
-      void CompressedTexSubImage1DARB(enum target, int level, 
+      void CompressedTexSubImage1DARB(enum target, int level,
                                       int xoffset, sizei width,
                                       enum format, sizei imageSize,
                                       const void *data);
-      void CompressedTexSubImage2DARB(enum target, int level, 
+      void CompressedTexSubImage2DARB(enum target, int level,
                                       int xoffset, int yoffset,
                                       sizei width, sizei height,
                                       enum format, sizei imageSize,
                                       const void *data);
-      void CompressedTexSubImage3DARB(enum target, int level, 
+      void CompressedTexSubImage3DARB(enum target, int level,
                                       int xoffset, int yoffset,
                                       int zoffset, sizei width,
                                       sizei height, sizei depth,

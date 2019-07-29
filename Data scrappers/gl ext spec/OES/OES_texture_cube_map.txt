@@ -126,7 +126,7 @@ New Tokens
 
     Accepted by the <cap> parameter of Enable, Disable, IsEnabled, by the
     <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv, and GetFixedv, and
-    by the <target> parameter of BindTexture, GetTexParameterfv, 
+    by the <target> parameter of BindTexture, GetTexParameterfv,
     GetTexParameteriv, GetTexParameterxv, TexParameterf, TexParameteri,
     TexParameterx, TexParameterfv, TexParameteriv, and TexParameterxv:
 
@@ -134,7 +134,7 @@ New Tokens
 
     Accepted by the <cap> parameter of Enable, Disable, IsEnabled, by the
     <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv, and GetFixedv, and
-    by the <coord> parameter of TexGenfOES, TexGeniOES, TexGenxOES, TexGenfvOES, 
+    by the <coord> parameter of TexGenfOES, TexGeniOES, TexGenxOES, TexGenfvOES,
     TexGenivOES, TexGenxvOES, GetTexGenfvOES, GetTexGenivOES, and
     GetTexGenxvOES:
 
@@ -145,7 +145,7 @@ New Tokens
 
         TEXTURE_BINDING_CUBE_MAP_OES        0x8514
 
-    Accepted by the <target> parameter of TexImage2D, CopyTexImage2D, 
+    Accepted by the <target> parameter of TexImage2D, CopyTexImage2D,
     TexSubImage2D, and CopySubTexImage2D:
 
         TEXTURE_CUBE_MAP_POSITIVE_X_OES     0x8515
@@ -168,7 +168,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
 
       "If <pname> is TEXTURE_GEN_MODE_OES, then either <params> points to
       or <param> is an integer that is one of the symbolic constants
-      REFLECTION_MAP_OES, or NORMAL_MAP_OES."  OBJECT_LINEAR, EYE_LINEAR, 
+      REFLECTION_MAP_OES, or NORMAL_MAP_OES."  OBJECT_LINEAR, EYE_LINEAR,
       and SPHERE_MAP texture coordinate generation modes are not supported.
 
       Add these paragraphs after the 4th paragraph (page 38):
@@ -185,7 +185,7 @@ Additions to Chapter 2 of the OpenGL 1.5 Specification (OpenGL Operation)
       nfx, nfy, and nfz are the components of nf.)
 
       A texture coordinate generation function is enabled or disabled
-      using Enable and Disable with an argument of TEXTURE_GEN_STR_OES.  
+      using Enable and Disable with an argument of TEXTURE_GEN_STR_OES.
       TEXTURE_GEN_S, TEXTURE_GEN_T, TEXTURE_GEN_R and TEXTURE_GEN_Q
       argument values to Enable and Disable are not supported.
 

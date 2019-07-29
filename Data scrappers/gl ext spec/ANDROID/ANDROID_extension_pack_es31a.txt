@@ -79,7 +79,7 @@ Modifications to Chapter 20 of the OpenGL ES 3.1 Specification (State Tables)
 
     Modify Table 20.44, Implementation Dependent Fragment Shader Limits, p. 395:
 
-    Get Value                                      Type  Get Command    Minimum Value  Description                Sec. 
+    Get Value                                      Type  Get Command    Minimum Value  Description                Sec.
     -----------------------                        ----  -----------    -------------  -------------------------  -----
     MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS            Z+    GetIntegerv    1              No. of atomic counter      7.7
                                                                                        buffers accessed by a
@@ -90,7 +90,7 @@ Modifications to Chapter 20 of the OpenGL ES 3.1 Specification (State Tables)
     MAX_FRAGMENT_IMAGE_UNIFORMS                    Z+    GetIntegerv    4              No. of image variables in  11.1.3
                                                                                        fragment shaders
     MAX_FRAGMENT_SHADER_STORAGE_BLOCKS             Z+    GetIntegerv    4              No. of shader storage      7.8
-                                                                                       blocks accessed by a 
+                                                                                       blocks accessed by a
                                                                                        fragment shader
     [[Change minimum values]]
 

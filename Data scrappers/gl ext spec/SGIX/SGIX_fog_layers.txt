@@ -88,10 +88,10 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     elevation. The fog density values are clamped to the range [0.0,
     1.0]. The elevations in the specification of the density profile
     must  be monotonically increasing. At least one point must be
-    specified. The first point in the distribution must have an 
+    specified. The first point in the distribution must have an
     elevation of zero. The maximum number of points is implementation
     dependent and may be enquired using Get commands. The initial
-    state of the fog layer specification is defined by the single 
+    state of the fog layer specification is defined by the single
     point (0.0, 0.0). The fog density above the maximum user-specified
     elevation is the density value in the last point in the profile.
     Layered fog computations are defined only for positive elevations;
@@ -108,7 +108,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     argument for Fogfv or Fogiv.
 
     The ground plane is transformed into eye-coordinate space usi
-    the inverse transpose of the model-view matrix. Then the elevation 
+    the inverse transpose of the model-view matrix. Then the elevation
     of point A (in eye-coordinate space) is the dot product A . G'
     (G' - ground plane in eye-coordinate space):
 
@@ -173,11 +173,11 @@ Errors
 
     INVALID_OPERATION is generated if FogLayersSGIX is executed
     between execution of Begin and the corresponding execution to
-    End. 
+    End.
 
     INVALID_OPERATION is generated if GetFogLayersSGIX is executed
     between execution of Begin and the corresponding execution to
-    End. 
+    End.
 
 New State
 

@@ -79,8 +79,8 @@ Overview
     which takes a named source and destination.
 
     CopyImageSubData does not perform general-purpose conversions
-    such as scaling, resizing, blending, color-space, or format 
-    conversions. It should be considered to operate in a manner 
+    such as scaling, resizing, blending, color-space, or format
+    conversions. It should be considered to operate in a manner
     similar to a CPU memcpy, but using the GPU for the copy.
 
     CopyImageSubData supports copies between images with different
@@ -122,13 +122,13 @@ Operations and the Frame Buffer)
     renderbuffer.
 
     CopyImageSubData does not perform general-purpose conversions
-    such as scaling, resizing, blending, color-space, or format 
-    conversions. It should be considered to operate in a manner 
-    similar to a CPU memcpy. CopyImageSubData can copy between 
+    such as scaling, resizing, blending, color-space, or format
+    conversions. It should be considered to operate in a manner
+    similar to a CPU memcpy. CopyImageSubData can copy between
     images with different internal formats, provided
-    the formats are compatible. 
+    the formats are compatible.
 
-    CopyImageSubData also allows copying between certain 
+    CopyImageSubData also allows copying between certain
     types of compressed and uncompressed internal formats as detailed
     in Table 4.X.1. This copy does not perform on-the-fly compression
     or decompression. When copying from an uncompressed internal format
@@ -153,15 +153,15 @@ Operations and the Frame Buffer)
     renderbuffer object.  If the target parameter is a texture target,
     the name is interpreted as a texture object.  All non-proxy
     texture targets are accepted, with the exception of TEXTURE_BUFFER
-    and the cubemap face selectors described in table 3.17. 
+    and the cubemap face selectors described in table 3.17.
     INVALID_ENUM is generated if either target is not RENDERBUFFER
     or a valid non-proxy texture target, or is TEXTURE_BUFFER, or is one
     of the cubemap face selectors described in table 3.17, or if the
     target does not match the type of the object. INVALID_OPERATION
     is generated if either object is a texture and the texture is
-    not complete (as defined in section 3.9.14), if the source and 
-    destination internal formats are not compatible (see below), 
-    or if the number of samples do not match.  
+    not complete (as defined in section 3.9.14), if the source and
+    destination internal formats are not compatible (see below),
+    or if the number of samples do not match.
     INVALID_VALUE is generated if either name does not correspond to a
     valid renderbuffer or texture object according to the corresponding
     target parameter.
@@ -173,15 +173,15 @@ Operations and the Frame Buffer)
     a valid level for the image.
 
     <srcX>, <srcY>, and <srcZ> specify the lower left texel
-    coordinates of a <srcWidth>-wide by <srcHeight>-high by 
-    <srcDepth>-deep rectangular subregion of the source texel array.  
+    coordinates of a <srcWidth>-wide by <srcHeight>-high by
+    <srcDepth>-deep rectangular subregion of the source texel array.
     (Compatibility Only: Negative values
     of <srcX>, <srcY>, and <srcZ> correspond to the coordinates of
     border texels, addressed as in figure 3.10.)  Similarly, <dstX>,
     <dstY> and <dstZ> specify the coordinates of a subregion of the
     destination texel array.  The source and destination subregions
     must be contained entirely within the specified level of the
-    corresponding image objects. 
+    corresponding image objects.
     The dimensions are always specified in texels, even for compressed
     texture formats. But it should be noted that if only one of the
     source and destination textures is compressed then the number of
@@ -194,7 +194,7 @@ Operations and the Frame Buffer)
     constraints of the format.
 
     Slices of a TEXTURE_1D_ARRAY, TEXTURE_2D_ARRAY, TEXTURE_CUBE_MAP_ARRAY
-    TEXTURE_3D and faces of TEXTURE_CUBE_MAP are all compatible provided 
+    TEXTURE_3D and faces of TEXTURE_CUBE_MAP are all compatible provided
     they share a compatible internal format, and multiple slices or faces
     may be copied between these objects with a single call by specifying the
     starting slice with <srcZ> and <dstZ>, and the number of slices to
@@ -206,8 +206,8 @@ Operations and the Frame Buffer)
     are considered compatible if any of the following conditions are
     met:
      * the formats are the same,
-     * the formats are considered compatible according to the 
-       compatibility rules used for texture views as defined in 
+     * the formats are considered compatible according to the
+       compatibility rules used for texture views as defined in
        section 3.9.X. In particular, if both internal formats are listed
        in the same entry of Table 3.X.2, they are considered compatible, or
      * one format is compressed and the other is uncompressed and
@@ -217,7 +217,7 @@ Operations and the Frame Buffer)
     ------------------------------------------------------------------------
     | Texel / | Uncompressed         |                                     |
     | Block   | internal format      | Compressed internal format          |
-    | size    |                      |                                     | 
+    | size    |                      |                                     |
     ------------------------------------------------------------------------
     | 128-bit | RGBA32UI,            | COMPRESSED_RGBA_S3TC_DXT3_EXT,      |
     |         | RGBA32I,             | COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT,|
@@ -250,7 +250,7 @@ Dependencies on OpenGL 4.3 and ARB_texture_view:
 
 Dependencies on the Compatibility Profile:
 
-    If the Compatibility Profile is not supported, remove any 
+    If the Compatibility Profile is not supported, remove any
     references to negative values for the source dimensions and
     to border texels.
 
@@ -270,13 +270,13 @@ Dependencies on OpenGL 4.2 and ARB_texture_compression_bptc:
     If OpenGL 4.2 or later, and ARB_texture_compression_bptc is not
     supported, remove any references to the PBTC compressed texture
     formats.
-    
+
 Errors
 
     CopyImageSubData may fail with any of the following errors:
 
     INVALID_ENUM is generated
-     * if either <srcTarget> or <dstTarget> 
+     * if either <srcTarget> or <dstTarget>
       - is not RENDERBUFFER or a valid non-proxy texture target
       - is TEXTURE_BUFFER, or
       - is one of the cubemap face selectors described in table 3.17,
@@ -295,7 +295,7 @@ Errors
        renderbuffer or texture object according to the corresponding
        target parameter, or
      * if the specified level is not a valid level for the image, or
-     * if the dimensions of the either subregion exceeds the boundaries 
+     * if the dimensions of the either subregion exceeds the boundaries
        of the corresponding image object, or
      * if the image format is compressed and the dimensions of the
        subregion fail to meet the alignment constraints of the format.
@@ -339,18 +339,18 @@ Issues
 
        RESOLVED: Given the resolution of issue 7, this is moot.  The
         TEXTURE_CUBE_MAP token is the only way to access a cubemap.
-    
+
     6) Should the "extra" parameters for a given dimension be ignored, or
        should there be required values?
-    
+
         Resolved.
-    
+
         All parameters are required to have sensible values, for the
         simple reason that future extensions may give meaning to these
         values.  For dimensions which are currently superfluous, the
         offset must be zero and the size must be one, e.g. if the target
         is TEXTURE_2D, z must be 0 and depth must be 1.
-    
+
     7) Should the per-face cubemap targets be accepted at all?  Why not
        use Z as the selector?
 
@@ -367,7 +367,7 @@ Issues
 
         RESOLVED: This extension does not include the WGL/GLX windowing-
         layer copy functions. This extension adds the ability to copy
-        between images which have different formats where the formats 
+        between images which have different formats where the formats
         are compatible for texture views. This extension adds the ability
         to copy between uncompressed and compressed images if the texel
         and block sizes are the same.
@@ -401,7 +401,7 @@ Revision History
      3    05/10/2012   dgkoch    Clarify dimensions refer to texels in the src image.
                                  Re-order/reflow text to make it read better.
                                  Add mention of TEXTURE_CUBE_MAP_ARRAY.
-     4    10/08/2013   Jon Leech Add issue 10 discussing why copying 
+     4    10/08/2013   Jon Leech Add issue 10 discussing why copying
                                  involving conversions between ETC2/EAC
                                  compressed formats is not supported (Bug
                                  11011).

@@ -344,7 +344,7 @@ New State
 
     [NOTE: The OpenGL 2.0 specification actually should read "n x Z48*"
     because of the 6 generic compressed internal formats in table 3.18.]
-    
+
     Add the following entry to table 6.17:
 
 Get Value                Type    Get Command            Value   Description                           Sec.  Attribute
@@ -590,7 +590,7 @@ Issues
         filtering hardware for rgb9e5 textures.
 
         However, future extensions could add other shared exponent formats
-        so we name the tokens to indicate the 
+        so we name the tokens to indicate the
 
     4)  Should there be an external format and type for rgb9e5?
 

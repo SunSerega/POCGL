@@ -13,7 +13,7 @@ Contact
 
 Status
 
-    Shipping 
+    Shipping
 
 Version
 
@@ -46,7 +46,7 @@ New Tokens
    Accepted by the <pname> parameter PixelStore*()
 
     UNPACK_CONSTANT_DATA_SUNX        0x81D5
-    
+
    Accepted by <pname> parameter of GetTexLevelParameter()
 
     TEXTURE_CONSTANT_DATA_SUNX        0x81D6
@@ -65,7 +65,7 @@ directive does not prohibit the implementation from making a copy,
 rather it is treated as a hint by the implementation to avoid making a
 second copy if possible. Note that if UNPACK_CONSTANT_DATA_SUNX is set
 to TRUE, and all the pixel store values are not default values then the
-constant hint will not be honored. 
+constant hint will not be honored.
 
 
 A TexSubImage*() will always make a copy of the existing texture

@@ -74,7 +74,7 @@ Issues
     *  more tokens for driving multiple inputs, e.g. AMBIENT_DIFFUSE_AND_SPECULAR
 
     *  normals need to be in the range [-1,1]
-        
+
         when a texture is used as a normal, its components are scaled
         and biased to the range [-1,1].
 
@@ -154,13 +154,13 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     fragment.
 
     If <mode> is FRAGMENT_NORMAL_EXT then the R, G, and B components
-    of the post-texture-environment color are used to compute the 
+    of the post-texture-environment color are used to compute the
     components nx, ny, and nz of the fragment normal vector as follows:
-    
+
             nx = 2*R-1
             ny = 2*G-1
             nz = 2*B-1
-    
+
     In effect, the post-texture-environment color components are scaled
     and biased so that their range is [-1,1].
 
@@ -194,7 +194,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     The command
 
     TextureLightEXT(enum pname);
-    
+
     determines which fragment light parameter is substituted with the
     post-texture-environment color when the texture application mode
     is one of the fragment lights. <pname> is one of AMBIENT, DIFFUSE,
@@ -216,7 +216,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
             + Sm*Sl_i*(N.H_i)^n
           }
         }
-    
+
     with Shad_i coming from the red component of the post-texture-environment
     color.  If a post-environment texture color is not applied to
     SHADOW_ATTENUATION_EXT for fragment light <i>, then Shad_i is effectively
@@ -317,7 +317,7 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 Additions to the GLX Specification
 
     None
-    
+
 GLX Protocol
 
     TBD

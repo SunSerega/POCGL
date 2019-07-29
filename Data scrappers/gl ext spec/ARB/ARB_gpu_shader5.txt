@@ -451,7 +451,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     operand has a floating-point type.  Otherwise, an unsigned integer type is
     chosen if either operand has an unsigned integer type.  Otherwise, a
     signed integer type is chosen.
-    
+
 
     Modify Section 4.3, Storage Qualifiers, p. 29
 
@@ -502,7 +502,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     (modify last paragraph, p. 33) Fragment outputs output per-fragment data
     and are declared using the out storage qualifier. It is an error to use
     centroid out or sample out in a fragment shader. ...
-    
+
 
     Modify Section 4.3.7, Interface Blocks, p. 34
 
@@ -676,7 +676,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     or flat sample, which will mean the same thing as qualifying it only as
     flat.
 
-    (replace last paragraph, p. 42) 
+    (replace last paragraph, p. 42)
 
     When multisample rasterization is disabled, or for fragment shader input
     variables qualified with neither "centroid in" nor "sample in", the value
@@ -780,7 +780,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
       {
         vec4 r = vec3(a * b);           // precise, used to compute v.xyz
         vec4 s = vec3(c * d);           // precise, used to compute v.xyz
-        v.xyz = r + s;                          // precise                      
+        v.xyz = r + s;                          // precise
         v.w = (a.w * b.w) + (c.w * d.w);        // precise
         v.x = func(a.x, b.x, c.x, d.x);         // values computed in func()
                                                 // are NOT precise
@@ -886,7 +886,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
        f(vec4, vec4);        // exact match of vec4 f(in vec4 x, out vec4 y)
        f(vec4, uvec4);       // exact match of vec4 f(in vec4 x, out ivec4 y)
        f(vec4, ivec4);       // matched to vec4 f(in vec4 x, out vec4 y)
-                             //   (C) not relevant, can't convert vec4 to 
+                             //   (C) not relevant, can't convert vec4 to
                              //   ivec4.  (A) better than (B) for 2nd
                              //   argument (rule 2), same on first argument.
        f(ivec4, vec4);       // NOT matched.  All three match by implicit
@@ -961,7 +961,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     The significand is returned by the function; the exponent is returned in
     the parameter <exp>.  For a floating-point value of zero, the significant
     and exponent are both zero.  For a floating-point value that is an
-    infinity or is not a number, the results of frexp() are undefined.  
+    infinity or is not a number, the results of frexp() are undefined.
 
     If the input <x> is a vector, this operation is performed in a
     component-wise manner; the value returned by the function and the value
@@ -988,9 +988,9 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
       genIType bitfieldExtract(genIType value, int offset, int bits);
       genUType bitfieldExtract(genUType value, int offset, int bits);
 
-      genIType bitfieldInsert(genIType base, genIType insert, int offset, 
+      genIType bitfieldInsert(genIType base, genIType insert, int offset,
                               int bits);
-      genUType bitfieldInsert(genUType base, genUType insert, int offset, 
+      genUType bitfieldInsert(genUType base, genUType insert, int offset,
                               int bits);
 
       genIType bitfieldReverse(genIType value);
@@ -1132,7 +1132,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
 
     Syntax:
 
-      void umulExtended(genUType x, genUType y, out genUType msb, 
+      void umulExtended(genUType x, genUType y, out genUType msb,
                         out genUType lsb);
       void imulExtended(genIType x, genIType y, out genIType msb,
                         out genIType lsb);
@@ -1159,7 +1159,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
       vec4 textureGather(sampler2DShadow sampler, vec2 coord, float refZ);
       vec4 textureGather(sampler2DArrayShadow sampler, vec3 coord, float refZ);
       vec4 textureGather(samplerCubeShadow sampler, vec3 coord, float refZ);
-      vec4 textureGather(samplerCubeArrayShadow sampler, vec4 coord, 
+      vec4 textureGather(samplerCubeArrayShadow sampler, vec4 coord,
                          float refZ);
       vec4 textureGather(sampler2DRectShadow sampler, vec2 coord, float refZ);
 
@@ -1198,18 +1198,18 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
      non-constant offsets, and shadow mapping)
 
     Syntax:
-      gvec4 textureGatherOffset(gsampler2D sampler, vec2 coord, 
+      gvec4 textureGatherOffset(gsampler2D sampler, vec2 coord,
                                 ivec2 offset[, int comp]);
-      gvec4 textureGatherOffset(gsampler2DArray sampler, vec3 coord, 
+      gvec4 textureGatherOffset(gsampler2DArray sampler, vec3 coord,
                                 ivec2 offset[, int comp]);
-      gvec4 textureGatherOffset(gsampler2DRect sampler, vec2 coord, 
+      gvec4 textureGatherOffset(gsampler2DRect sampler, vec2 coord,
                                 ivec2 offset[, int comp]);
 
-      vec4 textureGatherOffset(sampler2DShadow sampler, vec2 coord, 
+      vec4 textureGatherOffset(sampler2DShadow sampler, vec2 coord,
                                float refZ, ivec2 offset);
-      vec4 textureGatherOffset(sampler2DArrayShadow sampler, vec3 coord, 
+      vec4 textureGatherOffset(sampler2DArrayShadow sampler, vec3 coord,
                                float refZ, ivec2 offset);
-      vec4 textureGatherOffset(sampler2DRectShadow sampler, vec2 coord, 
+      vec4 textureGatherOffset(sampler2DRectShadow sampler, vec2 coord,
                                float refZ, ivec2 offset);
 
     The textureGatherOffset() functions operate identically to
@@ -1222,7 +1222,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     coordinates is undefined.  Note that <offset> does not apply to the layer
     coordinate for array textures.
 
-    
+
     (add new "Offsets" versions of textureGather from ARB_texture_gather,
      allowing for optional component selection in a multi-component texture,
      separate non-constant offsets for each texel in the footprint, and shadow
@@ -1236,11 +1236,11 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
       gvec4 textureGatherOffsets(gsampler2DRect sampler, vec2 coord,
                                  ivec2 offsets[4][, int comp]);
 
-      vec4 textureGatherOffsets(sampler2DShadow sampler, vec2 coord, 
+      vec4 textureGatherOffsets(sampler2DShadow sampler, vec2 coord,
                                 float refZ, ivec2 offsets[4]);
       vec4 textureGatherOffsets(sampler2DArrayShadow sampler, vec3 coord,
                                 float refZ, ivec2 offsets[4]);
-      vec4 textureGatherOffsets(sampler2DRectShadow sampler, vec2 coord, 
+      vec4 textureGatherOffsets(sampler2DRectShadow sampler, vec2 coord,
                                 float refZ, ivec2 offsets[4]);
 
     The textureGatherOffsets() functions operate identically to
@@ -1257,7 +1257,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     MAX_PROGRAM_TEXTURE_GATHER_OFFSET_ARB, respectively.  Note that <offset>
     does not apply to the layer coordinate for array textures.
 
-    
+
     Modify Section 8.8, Fragment Processing Functions, p. 101
 
     (add new functions to the end of section, p. 102)
@@ -1298,10 +1298,10 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     The function interpolateAtOffset() will return the value of the input
     varying <interpolant> sampled at an offset from the center of the pixel
     specified by <offset>.  The two floating-point components of <offset>
-    give the offset in pixels in the x and y directions, respectively.  
+    give the offset in pixels in the x and y directions, respectively.
     An offset of (0,0) identifies the center of the pixel.  The range and
     granularity of offsets supported by this function is
-    implementation-dependent.  
+    implementation-dependent.
 
     For all of the interpolation functions, <interpolant> must be an input
     variable or an element of an input variable declared as an array.
@@ -1489,7 +1489,7 @@ New Implementation Dependent State
                                                Min.
     Get Value               Type  Get Command  Value  Description                  Sec.      Attrib
     ----------------------  ----  -----------  -----  --------------------------   --------  ------
-    MAX_GEOMETRY_SHADER_     Z+   GetIntegerv   32    maximum supported geometry   2.16.4      - 
+    MAX_GEOMETRY_SHADER_     Z+   GetIntegerv   32    maximum supported geometry   2.16.4      -
       INVOCATIONS                                     shader invocation count
     MIN_FRAGMENT_INTERP-     R    GetFloatv    -0.5   furthest negative offset     3.12.1      -
       OLATION_OFFSET                                   for interpolateAtOffset()
@@ -1545,11 +1545,11 @@ Issues
       successfully in GLSL 1.50.
 
         float square(float x) {
-          return x * x; 
+          return x * x;
         }
         float f = 0;
-        float g = f * 2;       
-        float h = square(3); 
+        float g = f * 2;
+        float h = square(3);
 
       The same code would fail on GLSL 1.1, because "0", "2", and "3" would
       need to be written as "0.0", "2.0", and "3.0", respectively.
@@ -1656,7 +1656,7 @@ Issues
         - favor exact matches
         - prefer "promotions" (float->double) to other conversions
         - prefer conversions from int/uint to float over similar conversion to
-          double 
+          double
 
       If none of the rules apply, one match is considered neither better nor
       worse than the other.
@@ -1865,7 +1865,7 @@ Issues
       function f() below with limited-precision floating-point math, it's not
       necessarily the case that f(a,b,c) == f(c,b,a) in the following code:
 
-          float f(float x, float y, float z) 
+          float f(float x, float y, float z)
           {
             return (x + y) + z;
           }
@@ -1876,12 +1876,12 @@ Issues
           float f(float x, float y, float z)
           {
             // Note that we intentionally compute "(x+z)" instead of "(x+y)"
-            // here, because that value will be the same when <x> and <z> 
+            // here, because that value will be the same when <x> and <z>
             // are reversed.
             precise float result = (x + z) + y;
             return result;
           }
-      
+
           (a + b) + c == (c + b) + a
 
       The "precise" qualifier will disable certain optimization and thus
@@ -1960,7 +1960,7 @@ Issues
       call is on the right-hand side of an assignment to a variable qualified
       as "precise" or is indirectly used in an assignment to such a variable.
       It is not automatically treated as precise just because the formal
-      parameter <arg1> is qualified with "precise".  
+      parameter <arg1> is qualified with "precise".
 
       For the purposes of this rule, variables passed as "out" parameters do
       not count as assignments.  Values assigned to an output parameter will
@@ -1976,7 +1976,7 @@ Issues
 
       To obtain a precise return value in such a case, use code such as:
 
-        float f(float a, float b, float c) 
+        float f(float a, float b, float c)
         {
           precise float result = (a+b) + c;
           return result;
@@ -1998,8 +1998,8 @@ Revision History
     Rev.    Date    Author    Changes
     ----  --------  --------  -----------------------------------------
     16    03/30/12  pbrown    Fix typo in language restricting the use of
-                              EmitStreamVertex()/EndStreamPrimitive() to 
-                              programs with an output primitive type of 
+                              EmitStreamVertex()/EndStreamPrimitive() to
+                              programs with an output primitive type of
                               points, not an input type of points (bug 8371).
 
     15    10/17/11  pbrown    Fix prototypes for textureGather and
@@ -2013,11 +2013,11 @@ Revision History
     13    09/24/10  pbrown    Clarify the interaction of texture gather
                               with swizzle (bug 5910), fixing conflicts
                               between API and GLSL spec language.
-                              Consolidate into one copy in the API 
+                              Consolidate into one copy in the API
                               spec.
 
     12    03/23/10  pbrown    Update issues section, both fixing/numbering
-                              existing issues and including other issues 
+                              existing issues and including other issues
                               that were left behind in NV_gpu_shader5 when the
                               specs were refactored.
 
@@ -2031,10 +2031,10 @@ Revision History
                               most preferences when converting between
                               two different types.  The only preferences
                               that remain are promoting "float" to "double"
-                              over other conversions, and preferring 
+                              over other conversions, and preferring
                               conversion of integers to "float" to converting
                               to "double" (bug 5938).
-                              
+
      8    01/29/10  pbrown    Update the spec to require that the minimum
                               value for MAX_PROGRAM_TEXTURE_GATHER_-
                               COMPONENTS is 4 (bug 5919).
@@ -2049,7 +2049,7 @@ Revision History
                               disfavor "int" to "uint" conversions, for
                               backward compatibility with previous GLSL
                               versions.  Add some new discussion of the
-                              choices involved to the issues section (bug 
+                              choices involved to the issues section (bug
                               5938).
 
      6    01/14/10  pbrown    Minor wording updates from spec reviews.

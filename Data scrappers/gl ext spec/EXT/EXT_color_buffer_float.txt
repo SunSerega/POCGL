@@ -55,7 +55,7 @@ Dependencies
 
     Written based on the wording of the OpenGL ES 3.0.3 specification
     (December 18th, 2013).
-    
+
     Specifies interactions with OpenGL ES 3.1 based on the wording of
     the OpenGL ES 3.1 specification (March 17th, 2014). Edits are
     specified using the ordering of the OpenGL ES 3.0 specification.
@@ -133,17 +133,17 @@ Additions to
     In the error list continuation on p.162, modify the first bullet,
     inserting "floating-point
 
- *  o if floating-point, signed integer, unsigned integer or ... 
+ *  o if floating-point, signed integer, unsigned integer or ...
          ^^^^^^^^^^^^^^^^
   ----
-    
+
     Insert the following bullet into the rules for determining the
     effective internal format before the "Otherwise" rule on p.140
     (p.160 in ES 3.1)
 
     o If the source buffer contains any floating point components
       the effective internalformat is taken from the first (highest)
-      row in table 3.17 for which the values of FRAMEBUFFER_RED_SIZE, 
+      row in table 3.17 for which the values of FRAMEBUFFER_RED_SIZE,
       FRAMEBUFFER_GREEN_SIZE, FRAMEBUFFER_BLUE_SIZE, and
       FRAMEBUFFER_ALPHA_SIZE are consistent. If the sizes are not
       consistent for any rows in the table then an INVALID_OPERATION
@@ -163,12 +163,12 @@ Additions to
     any sized   | 1 <= R <= 16 | 1 <= G <= 16 | 1 <= B <= 16 | A = 0        | RGB16F
     any sized   | 1 <= R <= 16 | 1 <= G <= 16 | 1 <= B <= 16 | 1 <= A <= 16 | RGBA16F
     any sized   | 16 < R       | 16 < G       | 16 < B       | A = 0        | RGB32F
-    any sized   | 16 < R       | 16 < G       | 16 < B       | 16 < A       | RGBA32F 
+    any sized   | 16 < R       | 16 < G       | 16 < B       | 16 < A       | RGBA32F
     ----------------------------------------------------------------------------------
 
     Table 3.17(8.17 in ES 3.1): Effective internal format for float-point framebuffers
 
-    
+
 Additions to
   Chapter 4 of the OpenGL ES 3.0 Specification (Per-Fragment
   Operations and the Framebuffer)
@@ -191,13 +191,13 @@ Additions to
     4.1.7 Blending, p.177 (section 15.1.7 p.315 in ES 3.1)
 
     Modify paragraphs 3 & 4:
-    
+
  *      "If the color buffer is fixed-point, the components of the
     source and destination values and blend factors are clamped
  *  to [0; 1] prior to evaluating the blend equation. If the color
  +  buffer is floating-point, no clamping occurs. The resulting four
  +  values are sent to the next operation.
-    
+
         Blending applies only if the color buffer has a fixed-point or
  *  or floating-point format. If the color buffer has an integer
  *  format, proceed to the next operation.  Furthermore, an
@@ -278,7 +278,7 @@ Additions to
     Amend the last paragraph
 
  *  "... with the exceptions of the signed and unsigned integer
- *  formats, for which they are only required to support creation of 
+ *  formats, for which they are only required to support creation of
  *  renderbuffers with up to the value of MAX_INTEGER_SAMPLES
  *  multisamples, which must be at least one, and the RGBA16F, R32F,
  *  RG32F and RGBA32F formats, for which they are only required to

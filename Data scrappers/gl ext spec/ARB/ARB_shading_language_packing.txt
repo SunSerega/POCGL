@@ -58,7 +58,7 @@ Overview
 
     This extension provides the GLSL built-in functions to convert a 32-bit
     unsigned integer holding a pair of 16-bit floating-point values to or from
-    a two-component floating-point vector (vec2).  
+    a two-component floating-point vector (vec2).
 
     This mechanism allows GLSL shaders to read and write 16-bit floating-point
     encodings (via 32-bit unsigned integers) without introducing a full set of
@@ -70,7 +70,7 @@ Overview
     these packing functions in this separate extension it allows
     implementations to provide these functions in hardware that supports them
     independent of the other ARB_gpu_shader5 features.
-    
+
     In addition to the packing functions from ARB_gpu_shader5 this extension
     also adds the missing [un]packSnorm2x16 for completeness.
 
@@ -80,7 +80,7 @@ New Procedures and Functions
 
 New Tokens
 
-    None.     
+    None.
 
 Modifications to the OpenGL API Specification
 
@@ -101,7 +101,7 @@ Modifications to The OpenGL Shading Language Specification, Version 4.10
       #define GL_ARB_shading_language_packing    1
 
     Modify Section 8.4, Floating-Point Pack and Unpack Functions
-    
+
     (add support for general packing functions)
 
     Syntax:
@@ -240,14 +240,14 @@ Issues
     (4) The packing functions introduced in ARB_gpu_shader5 may be available
     on hardware that doesn't support the other features from ARB_gpu_shader5.
     How can an implementation expose those packing functions?
-    
+
       RESOLVED: Added all the ARB_gpu_shader5 packing functions to revision
       #5 of this spec; [un]packUnorm2x16, [un]packUnorm4x8 and
       [un]packSnorm4x8.
-    
+
     (5) Should we also provide a [un]packSnorm2x16 packing function, which
     was not included in ARB_gpu_shader5?
-    
+
       RESOLVED: Yes, these functions have been added for completeness. They
       have been added to revision #5 of this extension and the extension has
       been renamed from _pack2h to _packing to encompass all these packing
@@ -261,17 +261,17 @@ Revision History
                                 and incorporate all the packing functions into
                                 this spec, including the [un]packSnorm2x16
                                 functions, which have no extension spec.
-     
-     4    12/17/10    johnk     Put in the pack/unpack section instead of 
+
+     4    12/17/10    johnk     Put in the pack/unpack section instead of
                                 common functions.  Change a reference to double.
 
      3    12/12/2010  pbrown    Rename the pack/unpack functions to avoid
                                 conflict with NV_gpu_shader5 names (bug
                                 6858).  Renamed last part of extension name
-                                from "pack2f" to "pack2h" to match the 
+                                from "pack2f" to "pack2h" to match the
                                 function name change.
 
-     2    11/08/2010  pbrown    Fix minor errata in the first draft (bug 
+     2    11/08/2010  pbrown    Fix minor errata in the first draft (bug
                                 6999).
 
      1    10/20/2010  pbrown    Internal revision.

@@ -42,23 +42,23 @@ Dependencies
 
     This extension is written against the OpenGL ES 2.0 specification.
 
-    Requires extension QCOM_extended_get to be implemented.   
+    Requires extension QCOM_extended_get to be implemented.
 
 Overview
 
-    This extension enables instrumenting the driver for debugging of OpenGL ES 
+    This extension enables instrumenting the driver for debugging of OpenGL ES
     applications.
 
 New Procedures and Functions
 
     void ExtGetShadersQCOM(uint* shaders, int maxShaders, int* numShaders);
 
-    void ExtGetProgramsQCOM(uint* programs, int maxPrograms, 
+    void ExtGetProgramsQCOM(uint* programs, int maxPrograms,
                             int* numPrograms);
 
     boolean ExtIsProgramBinaryQCOM(uint program);
 
-    void ExtGetProgramBinarySourceQCOM(uint program, enum shadertype, 
+    void ExtGetProgramBinarySourceQCOM(uint program, enum shadertype,
                                        char* source, int* length)
 
 Additions to OpenGL ES 2.0 Specification

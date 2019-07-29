@@ -19,7 +19,7 @@ Status
     Complete.
 
 Version
-    
+
     Last Modified Date: April 9, 2008
     Revision: #6
 
@@ -41,7 +41,7 @@ Overview
     for AMD's Z400 family of embedded graphics accelerator IP.  This extension
     makes available a program binary format, Z400_BINARY_AMD.
 
-    The offline shader compiler accepts a pair of OpenGL Shading Language 
+    The offline shader compiler accepts a pair of OpenGL Shading Language
     (GLSL) source shaders: one vertex shader and one fragment shader.  It
     outputs a compiled, optimized, and pre-linked program binary which can then
     be loaded into a program objects via the ProgramBinaryOES command.

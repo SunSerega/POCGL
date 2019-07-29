@@ -12,7 +12,7 @@ Version
 
 Number
 
-    ?? 
+    ??
 
 Dependencies
 
@@ -45,7 +45,7 @@ New Tokens
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
-      
+
         ARRAY_ELEMENT_LOCK_COUNT_EXT
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
@@ -56,16 +56,16 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     The currently enabled vertex arrays can be locked with the command
     LockArraysEXT.  When the vertex arrays are locked, the data
     specified by the currently enabled vertex arrays is considered
-    to be static by GL. An implementation can delay  the referencing 
+    to be static by GL. An implementation can delay  the referencing
     of the data used by the commands DrawArrays, ArrayElement or
-    DrawElements or pre-process the array data or cache the transformed 
-    vertex data associated with the currently enabled vertex arrays.  
+    DrawElements or pre-process the array data or cache the transformed
+    vertex data associated with the currently enabled vertex arrays.
     The vertex arrays are unlocked by the command UnlockArraysEXT.
     The lock count, ARRAY_ELEMENT_LOCK_COUNT_EXT, is reset
-    to 0 when the vertex arrays are unlocked. 
- 
+    to 0 when the vertex arrays are unlocked.
+
     The error INVALID_OPERATION is generated if any array pointer
-    command such as EdgeFlagPointer, TexCoordPointer, ColorPointer, 
+    command such as EdgeFlagPointer, TexCoordPointer, ColorPointer,
     IndexPointer, NormalPointer, VertexPointer or InterleavedArrays
     or EnableClientState/DisableClientState with array set
     to EDGE_FLAG_ARRAY, TEXTURE_COORD_ARRAY, COLOR_ARRAY,
@@ -74,16 +74,16 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     UnlockArraysExt.
 
     Between LockArraysEXT and UnlockArraysEXT the application
-    should ensure that none of the array data in the range 
-    specified by <count> are changed.  Changes to the array data 
-    between the execution of LockArraysEXT and UnlockArraysEXT 
-    commands may affect calls may affect DrawArrays, ArrayElement, 
+    should ensure that none of the array data in the range
+    specified by <count> are changed.  Changes to the array data
+    between the execution of LockArraysEXT and UnlockArraysEXT
+    commands may affect calls may affect DrawArrays, ArrayElement,
     or DrawElements commands in non-sequential ways.
 
     While using a static vertex array, references to array elements
     by the commands DrawArrays, ArrayElement, or DrawElements which
     are outside of the range specified by <count> are undefined.
- 
+
 Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     None
@@ -104,11 +104,11 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 
 Additions to the GLX Specification
 
-    None 
+    None
 
 GLX Protocol
 
-    None 
+    None
 
 Errors
 
@@ -124,8 +124,8 @@ Errors
     INVALID_OPERATION may be generated if LockArraysEXT or UnlockArraysEXT is called
     between execution of Begin and the corresponding execution of End.
 
-    INVALID_OPERATION is generated if any array pointer command such as 
-    EdgeFlagPointer, TexCoordPointer, ColorPointer, IndexPointer, 
+    INVALID_OPERATION is generated if any array pointer command such as
+    EdgeFlagPointer, TexCoordPointer, ColorPointer, IndexPointer,
     NormalPointer, VertexPointer or InterleavedArrays
     or EnableClientState/DisableClientState with array set
     to EDGE_FLAG_ARRAY, TEXTURE_COORD_ARRAY, COLOR_ARRAY,

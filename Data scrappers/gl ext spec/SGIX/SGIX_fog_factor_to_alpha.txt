@@ -69,7 +69,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     blending factor. This substitution occurs after the alpha test is
     performed. If fog is disabled but fog-factor-to-alpha is enabled, the
     fragment alpha coming out of the fog-factor-to-alpha in undefined.
-    
+
 Additions to Chapter 4 of the 1.2 Specification (Per-Fragment Operations
 and the Framebuffer)
 

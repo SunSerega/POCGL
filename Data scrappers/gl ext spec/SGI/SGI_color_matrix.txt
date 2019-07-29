@@ -104,7 +104,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     POST_COLOR_MATRIX_BLUE_SCALE_SGI, and POST_COLOR_MATRIX_ALPHA_SCALE_SGI
     respectively.  Rbias, Gbias, Bbias, and Abias are specified by calling
     PixelTransfer with <pname> set to POST_COLOR_MATRIX_RED_BIAS_SGI,
-    POST_COLOR_MATRIX_GREEN_BIAS_SGI, POST_COLOR_MATRIX_BLUE_BIAS_SGI, and 
+    POST_COLOR_MATRIX_GREEN_BIAS_SGI, POST_COLOR_MATRIX_BLUE_BIAS_SGI, and
     POST_COLOR_MATRIX_ALPHA_BIAS_SGI respectively.  There are no
     constraints on the values of the scale and bias variables.
 

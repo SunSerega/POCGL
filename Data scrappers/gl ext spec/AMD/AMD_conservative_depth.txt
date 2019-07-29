@@ -3,7 +3,7 @@ Name
     AMD_conservative_depth
 
 Name String
-    
+
     GL_AMD_conservative_depth
 
 Contact

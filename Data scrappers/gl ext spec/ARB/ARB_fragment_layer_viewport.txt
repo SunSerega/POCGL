@@ -34,7 +34,7 @@ Specification Update Policy
 
 Status
 
-    Complete. 
+    Complete.
     Approved by the ARB on 2012/06/18.
     Ratified by the Khronos Board of Promoters on 2012/07/27.
 
@@ -52,7 +52,7 @@ Dependencies
     OpenGL 3.0 and ARB_geometry_shader4, or OpenGL 3.2 is required.
 
     ARB_viewport_array is required.
-    
+
     This extension is written against The OpenGL Shading Language 4.20.11
     Specification.
 
@@ -66,7 +66,7 @@ Overview
     layer or viewport the fragments are being written to without the
     application implementing their own interface variables between
     the geometry and fragment shaders.
-    
+
     This extension specifies that the gl_Layer and gl_ViewportIndex
     built-in variables are also available to the fragment shader so the
     application doesn't need to implement these manually.
@@ -96,52 +96,52 @@ Additions to Chapter 7 of the OpenGL Shading Language 4.20.11 Specification
 
     Add to the section labelled "In the fragment language, built-in variables
     are intrinsically declared as:" on page 99:
-    
+
    "in int gl_Layer;
     in int gl_ViewportIndex;"
-    
+
     Modify the first paragraph describing gl_Layer start on the bottom of page
     100 as follows:
-    
+
    "The variable gl_Layer is available as an output variable in the geometry
     shader and an input variable in the fragment shader. In the geometry
     shader it is used to select a specific layer (or face and layer of a cube
     map) of a multi-layer framebuffer attachment. The actual layer used will
     come from ..."
-    
+
     Add the following paragraph to the end of the section describing gl_Layer
     on page 101 as follows:
-    
-   "The input variable gl_Layer in the fragment language will have the same 
-    value that was written to the output variable gl_Layer in the geometry 
-    language. If the geometry stage does not dynamically assign a value to 
-    gl_Layer, the value of gl_Layer in the fragment stage will be undefined.  
-    If the geometry stage makes no static assignment to gl_Layer, the input 
-    gl_Layer in the fragment stage will be zero.  Otherwise, the fragment 
-    stage will read the same value written by the geometry stage, even if 
-    that value is out of range.  If a fragment shader contains a static 
-    access to gl_Layer, it will count against the implementation defined 
+
+   "The input variable gl_Layer in the fragment language will have the same
+    value that was written to the output variable gl_Layer in the geometry
+    language. If the geometry stage does not dynamically assign a value to
+    gl_Layer, the value of gl_Layer in the fragment stage will be undefined.
+    If the geometry stage makes no static assignment to gl_Layer, the input
+    gl_Layer in the fragment stage will be zero.  Otherwise, the fragment
+    stage will read the same value written by the geometry stage, even if
+    that value is out of range.  If a fragment shader contains a static
+    access to gl_Layer, it will count against the implementation defined
     limit for the maximum number of inputs to the fragment stage."
-    
+
     Modify the fourth paragraph on page 101 which begins the description of
     gl_ViewportIndex:
-    
+
    "The variable gl_ViewportIndex is available as an output variable in the
     geometry shader and an input variable in the fragment shader. In the
     geometry shader it provides the index of the viewport to which the next
     primitive emitted from the geometry shader should be drawn. ..."
-   
+
     After this paragraph add the following new paragraph:
-    
-   "The input variable gl_ViewportIndex in the fragment stage will have the 
-    same value that was written to the output variable gl_ViewportIndex in 
-    the geometry stage.  If the geometry stage does not dynamically assign 
-    to gl_ViewportIndex, the value of gl_ViewportIndex in the fragment shader 
-    will be undefined. If the geometry stage makes no static assignment to 
-    gl_ViewportIndex, the fragment stage will read zero. Otherwise, the 
-    fragment stage will read the same value written by the geometry stage, 
-    even if that value is out of range. If a fragment shader contains a static 
-    access to gl_ViewportIndex, it will count against the implementation 
+
+   "The input variable gl_ViewportIndex in the fragment stage will have the
+    same value that was written to the output variable gl_ViewportIndex in
+    the geometry stage.  If the geometry stage does not dynamically assign
+    to gl_ViewportIndex, the value of gl_ViewportIndex in the fragment shader
+    will be undefined. If the geometry stage makes no static assignment to
+    gl_ViewportIndex, the fragment stage will read zero. Otherwise, the
+    fragment stage will read the same value written by the geometry stage,
+    even if that value is out of range. If a fragment shader contains a static
+    access to gl_ViewportIndex, it will count against the implementation
     defined limit for the maximum number of inputs to the fragment stage."
 
 Additions to the AGL/GLX/WGL Specifications
@@ -213,7 +213,7 @@ Revision History
     5     01/28/14  Ian R     Fix dependencies.  s/gl_Value/gl_Layer/.  Add
                               GLSL define for GL_ARB_fragment_layer_viewport.
     4     06/05/12  johnk     Improve distinctions between stage and shader and
-                              make it be any static access that triggers the 
+                              make it be any static access that triggers the
                               count against number of inputs to the fragment stage.
     3     05/31/12  pdaniell  Update language for unassigned and out-of-range
                               behavior for gl_Layer and gl_ViewportIndex.

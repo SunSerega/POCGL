@@ -93,14 +93,14 @@ New Tokens
         SRC_COLOR
         ONE_MINUS_SRC_COLOR
         SRC_ALPHA
-        ONE_MINUS_SRC_ALPHA     
+        ONE_MINUS_SRC_ALPHA
 
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv, and
     TexEnviv when the <pname> parameter value is OPERAND0_ALPHA_EXT,
     OPERAND1_ALPHA_EXT, OPERAND2_ALPHA_EXT, or OPERAND3_ALPHA_NV
 
         SRC_ALPHA
-        ONE_MINUS_SRC_ALPHA     
+        ONE_MINUS_SRC_ALPHA
 
 Additions to Chapter 2 of the OpenGL 1.2 Specification (OpenGL Operation)
 

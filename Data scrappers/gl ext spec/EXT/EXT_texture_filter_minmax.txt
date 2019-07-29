@@ -102,7 +102,7 @@ Modifications to the OpenGL 4.3 Specification (Compatibility Profile)
 
       Name                              Type    Legal Values
       --------------------------        ----    --------------------
-      TEXTURE_REDUCTION_MODE_EXT        enum    WEIGHTED_AVERAGE_EXT, 
+      TEXTURE_REDUCTION_MODE_EXT        enum    WEIGHTED_AVERAGE_EXT,
                                                 MIN, MAX
 
 
@@ -190,7 +190,7 @@ Modifications to the OpenGL 4.3 Specification (Compatibility Profile)
     filtered values will be combined to generate a final result using the
     equation
 
-      tau = reduce((1-frac(lambda)), tau_1, 
+      tau = reduce((1-frac(lambda)), tau_1,
                    (  frac(lambda)), tau_2),
 
     where tau_1 and tau_2 are filtered values for levels d_1 and d_2, and

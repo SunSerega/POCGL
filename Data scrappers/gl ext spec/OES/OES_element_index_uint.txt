@@ -31,7 +31,7 @@ IP Status
 
 Status
 
-    Ratified by the Khronos BOP, July 22, 2005.    
+    Ratified by the Khronos BOP, July 22, 2005.
 
 Version
 
@@ -39,7 +39,7 @@ Version
 
 Number
 
-    OpenGL ES Extension #26    
+    OpenGL ES Extension #26
 
 Dependencies
 
@@ -53,7 +53,7 @@ Overview
 
 Issues
 
- 
+
 New Tokens
 
     Accepted by the <type> parameter of DrawElements:

@@ -85,7 +85,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     three properties:
 
        1. the collection of triangles fully covers the area of the original
-          primitive, 
+          primitive,
        2. no two triangles in the decomposition overlap, and
        3. the orientation of each triangle is consistent with the orientation
           of the original primitive.
@@ -189,10 +189,10 @@ Errors
 
         * the input primitive type of the current geometry shader is POINTS
         and <mode> is not POINTS,
-    
+
         * the input primitive type of the current geometry shader is LINES and
         <mode> is not LINES, LINE_STRIP, or LINE_LOOP,
-    
+
         * the input primitive type of the current geometry shader is TRIANGLES
         and <mode> is not TRIANGLES, TRIANGLE_STRIP, TRIANGLE_FAN, QUADS,
         QUAD_STRIP, or POLYGON,
@@ -221,7 +221,7 @@ Issues
       worked with other vendors on a common extension.  Most of the
       functionality of the original specification was retained, but a few
       functional changes were made, resulting in the GL_EXT_geometry_shader4
-      specification.  
+      specification.
 
       Some of the functionality removed in this process may be useful to
       developers, so we chose to provide an NVIDIA extension to expose this

@@ -19,7 +19,7 @@ Dependencies
 Overview
 
     This extension adds two texture coordinate generation modes, both
-    which generate a texture coordinate based on the minimum distance 
+    which generate a texture coordinate based on the minimum distance
     from a vertex to a specified line.
 
 New Procedures and Functions
@@ -50,7 +50,7 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     P is a point (px/pw, py/pw, pz/pw)
 
-        D is a vector (dx, dy, dz) 
+        D is a vector (dx, dy, dz)
 
     D' is the normalized form of D
 
@@ -58,17 +58,17 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     O = V' - P
 
-    In other words, g is the distance in object coordinates from the 
+    In other words, g is the distance in object coordinates from the
     vertex to the line defined by point P and direction D.
 
     xo, yo, zo, and wo are the object coordinates of the vertex.
 
-    P and D are specified together by calling TexGen with <pname> set 
-    to OBJECT_LINE and <params> pointing to an array containing px, py, 
+    P and D are specified together by calling TexGen with <pname> set
+    to OBJECT_LINE and <params> pointing to an array containing px, py,
     pz, pw, dx, dy, and dz, respectively.
 
     If TEXTURE_GEN_MODE indicates EYE_DISTANCE_TO_LINE_SGIS, then the
-    generating function for the coordinate indicated by <coord> is the 
+    generating function for the coordinate indicated by <coord> is the
     same as above, but P, D, and V' are redefined as:
 
     P is a point (px'/pw', py'/pw', pz'/pw') where
@@ -90,7 +90,7 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     V' is (xe/we, ye/we, ze/we)
 
-    In other words, g is the distance in eye coordinates from the 
+    In other words, g is the distance in eye coordinates from the
     vertex to the line defined by point P and direction D.
 
     xe, ye, ze, and we are the eye coordinates of the vertex.

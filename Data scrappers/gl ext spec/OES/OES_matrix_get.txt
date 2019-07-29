@@ -49,7 +49,7 @@ Overview
     and the GetFixedv command for the common-lite profile.
 
     In cases where the common-lite implementation stores matrices
-    and performs matrix operations internally using floating pt 
+    and performs matrix operations internally using floating pt
     (example would be OpenGL ES implementations that support JSR184 etc.)
     the GL cannot return the floating pt matrix elements since the float
     data type is not supported by the common-lite profile.
@@ -57,7 +57,7 @@ Overview
     information.
 
     To take care of this issue, new tokens are proposed by this
-    extension.  These tokens will allow the GL to return a 
+    extension.  These tokens will allow the GL to return a
     representation of the floating pt matrix elements as as an array
     of integers, according to the IEEE 754 floating pt "single format"
     bit layout.
@@ -107,7 +107,7 @@ Additions to Chapter 6 of the OpenGL 1.4 Specification (State and
 State Requests)
 
     The new matrix tokens return the matrix elements as exponent
-    and mantissa terms.  These tokens will allow the GL to return a 
+    and mantissa terms.  These tokens will allow the GL to return a
     representation of the floating pt matrix elements as as an array
     of integers, according to the IEEE 754 floating pt "single format"
     bit layout.
@@ -119,9 +119,9 @@ Errors
 New State
 
 
-Get Value                                 Type            Command      Value    
----------                                 ----            -------     -------  
-MODELVIEW_MATRIX_FLOAT_AS_INT_BITS_OES    4* x 4* x Z    GetIntegerv    0     
+Get Value                                 Type            Command      Value
+---------                                 ----            -------     -------
+MODELVIEW_MATRIX_FLOAT_AS_INT_BITS_OES    4* x 4* x Z    GetIntegerv    0
 PROJECTION_MATRIX_FLOAT_AS_INT_BITS_OES   4* x 4* x Z    GetIntegerv    0
 TEXTURE_MATRIX_FLOAT_AS_INT_BITS_OES      4* x 4* x Z    GetIntegerv    0
 
@@ -130,5 +130,5 @@ Revision History
 
 
 June 30, 2004    Aaftab Munshi    Initial version of document
-July 16, 2004    Aaftab Munshi    Removed the description of NaN & denorms                                               
+July 16, 2004    Aaftab Munshi    Removed the description of NaN & denorms
 

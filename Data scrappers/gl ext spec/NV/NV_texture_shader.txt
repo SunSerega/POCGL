@@ -1,5 +1,5 @@
 Name
-    
+
     NV_texture_shader
 
 Name Strings
@@ -82,7 +82,7 @@ Overview
     When the texture shader enable is on, the extension replaces the
     conventional OpenGL mechanism for mapping sets of texture coordinates
     to filtered colors with this extension's sequence of texture shader
-    stages.  
+    stages.
 
     Each texture shader stage runs one of 21 canned texture shader
     programs.  These programs support conventional OpenGL texture
@@ -192,7 +192,7 @@ Overview
 
     16.  DOT_PRODUCT_TEXTURE_RECTANGLE_NV - Similar to
          DOT_PRODUCT_TEXTURE_2D_NV except that the texture acces is into
-         a rectangular non-projective texture.  
+         a rectangular non-projective texture.
 
     17.  DOT_PRODUCT_TEXTURE_CUBE_MAP_NV - When preceded by two
          DOT_PRODUCT_NV programs in the previous two texture shader
@@ -234,7 +234,7 @@ Issues
 
     What should this extension be called?  How does the functionality
     compare with DirectX 8's pixel shaders?
-      
+
       RESOLUTION:  This extension is called NV_texture_shader.
 
       DirectX 8 refers to its similar functionality as "pixel shaders".
@@ -568,7 +568,7 @@ Issues
     GL_NONE, GL_CULL_FRAGMENT_NV, DOT_PRODUCT_NV, or
     GL_DOT_PRODUCT_DEPTH_REPLACE_NV texture shader operation show up in
     the register combiners texture registers?
-     
+
       RESOLUTION: Always as the value (0,0,0,0).
 
       How the texture RGBA result of the GL_NONE, GL_CULL_FRAGMENT_NV,
@@ -581,7 +581,7 @@ Issues
       enabled.
 
     Why introduce new pixel groups (the HILO and texture offset groups)?
-    
+
       RESOLUTION:  In core OpenGL, texture image data is transferred and
       stored as sets of color components.  Such color data can always
       be promoted to RGBA data.
@@ -888,9 +888,9 @@ Issues
 
    floating-point   8-bit fixed-point   9-bit fixed-point  16 bit fixed-point
    --------------   -----------------   -----------------  ------------------
-    1.0              n/a                 255                n/a  
+    1.0              n/a                 255                n/a
     0.99996...       n/a                 n/a                32767
-    0.99218...      127                  n/a                n/a  
+    0.99218...      127                  n/a                n/a
     0.0              0                   0                  0
    -1.0            -128                 -255               -32768
    -1.00392...      n/a                 -256                n/a
@@ -996,7 +996,7 @@ New Tokens
     When the <target> parameter of TexEnvf, TexEnvfv, TexEnvi, TexEnviv,
     GetTexEnvfv, and GetTexEnviv is TEXTURE_SHADER_NV, then the value
     of <pname> may be:
-     
+
         RGBA_UNSIGNED_DOT_PRODUCT_MAPPING_NV      0x86D9
         SHADER_OPERATION_NV                       0x86DF
         OFFSET_TEXTURE_SCALE_NV                   0x86E2
@@ -1012,7 +1012,7 @@ New Tokens
         OFFSET_TEXTURE_MATRIX_NV                  0x86E1
         OFFSET_TEXTURE_2D_MATRIX_NV               deprecated alias for OFFSET_TEXTURE_MATRIX_NV
         CONST_EYE_NV                              0x86E5
-     
+
     When the <target> parameter GetTexEnvfv and GetTexEnviv is
     TEXTURE_SHADER_NV, then the value of <pname> may be:
 
@@ -1023,7 +1023,7 @@ New Tokens
     respectively, then the value of <param> or the value pointed to by
     <params> may be:
 
-        NONE 
+        NONE
 
     When the <target> and <pname> parameters of TexEnvf, TexEnvfv,
     TexEnvi, and TexEnviv are TEXTURE_SHADER_NV and SHADER_OPERATION_NV
@@ -1096,8 +1096,8 @@ New Tokens
     Accepted by the <type> parameter of GetTexImage, TexImage1D,
     TexImage2D, TexSubImage1D, and TexSubImage2D:
 
-        UNSIGNED_INT_S8_S8_8_8_NV                 0x86DA 
-        UNSIGNED_INT_8_8_S8_S8_REV_NV             0x86DB 
+        UNSIGNED_INT_S8_S8_8_8_NV                 0x86DA
+        UNSIGNED_INT_8_8_S8_S8_REV_NV             0x86DB
 
     Accepted by the <internalformat> parameter of CopyTexImage1D,
     CopyTexImage2D, TexImage1D, and TexImage2D:
@@ -1226,8 +1226,8 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
 type Parameter                 GL Data  Number of   Matching
 Token Name                     Type     Components  Pixel Formats
 -----------------------------  -------  ----------  ----------------
-UNSIGNED_INT_S8_S8_8_8_NV       uint     4           DSDT_MAG_VIB_NV           
-UNSIGNED_INT_8_8_S8_S8_REV_NV   uint     4           DSDT_MAG_VIB_NV           
+UNSIGNED_INT_S8_S8_8_8_NV       uint     4           DSDT_MAG_VIB_NV
+UNSIGNED_INT_8_8_S8_S8_REV_NV   uint     4           DSDT_MAG_VIB_NV
 
      Add to table 3.11:
 
@@ -1431,7 +1431,7 @@ Internal Format                Internal Format       bits bits bits bits bits bi
 HILO16_NV                      HILO                                                16   16
 SIGNED_HILO16_NV               HILO                                                16*  16*
 SIGNED_RGBA8_NV                RGBA                  8*   8*   8*   8*
-SIGNED_RGB8_UNSIGNED_ALPHA8_NV RGBA                  8*   8*   8*   8 
+SIGNED_RGB8_UNSIGNED_ALPHA8_NV RGBA                  8*   8*   8*   8
 SIGNED_RGB8_NV                 RGB                   8*   8*   8*
 SIGNED_LUMINANCE8_NV           LUMINANCE                                8*
 SIGNED_LUMINANCE8_ALPHA8_NV    LUMINANCE_ALPHA                      8*  8*
@@ -1526,7 +1526,7 @@ DSDT8_MAG8_INTENSITY8_NV       DSDT_MAG_INTENSITY_NV                          8 
      INVALID_OPERATION if the internal format of the texture array to
      which the pixels are to be copied is one of HILO_NV, HILO16_NV,
      SIGNED_HILO_NV, SIGNED_HILO16_NV, DSDT_NV, DSDT8_NV, DSDT_MAG_NV,
-     DSDT8_MAG8_NV, DSDT_MAG_INTENSITY_NV, or DSDT8_MAG8_INTENSITY8_NV.  
+     DSDT8_MAG8_NV, DSDT_MAG_INTENSITY_NV, or DSDT8_MAG8_INTENSITY8_NV.
 
      TexSubImage2D and TexSubImage1D generate the error INVALID_OPERATION
      if the internal format of the texture array to which the texels are
@@ -1666,7 +1666,7 @@ DSDT8_MAG8_INTENSITY8_NV       DSDT_MAG_INTENSITY_NV                          8 
 
      Also amend tables 3.18 and 3.19 based on the following updated columns:
 
-Base               DECAL                                 BLEND                                 ADD             
+Base               DECAL                                 BLEND                                 ADD
 Internal Format    Texture Function                      Texture Function                      Texture Function
 =================  ===================================== ===================================== ==========================
  ALPHA              Rv = Rf (no longer undefined)         Rv = Rf                               Rv = Rf
@@ -1689,14 +1689,14 @@ Internal Format    Texture Function                      Texture Function       
                     Bv = Bf                               Bv = Bf*(1-max(0,It)) + Bc*max(0,It)  Bv = max(-1,min(1,Bf+It))
                     Av = Af                               Av = Af*(1-max(0,It)) + Ac*max(0,It)  Av = max(-1,min(1,Af+It))
 -----------------  ------------------------------------- ------------------------------------- --------------------------
- RGB                Rv = Rt                               Rv = Rf*(1-max(0,Rt)) + Rc*max(0,Rt)  Rv = max(-1,min(1,Rf+Rt)) 
- (or 3)             Gv = Gt                               Gv = Gf*(1-max(0,Gt)) + Gc*max(0,Gt)  Gv = max(-1,min(1,Gf+Gt)) 
-                    Bv = Bt                               Bv = Bf*(1-max(0,Bt)) + Bc*max(0,Bt)  Bv = max(-1,min(1,Bf+Bt)) 
-                    Av = Af                               Av = Af                               Av = Af 
+ RGB                Rv = Rt                               Rv = Rf*(1-max(0,Rt)) + Rc*max(0,Rt)  Rv = max(-1,min(1,Rf+Rt))
+ (or 3)             Gv = Gt                               Gv = Gf*(1-max(0,Gt)) + Gc*max(0,Gt)  Gv = max(-1,min(1,Gf+Gt))
+                    Bv = Bt                               Bv = Bf*(1-max(0,Bt)) + Bc*max(0,Bt)  Bv = max(-1,min(1,Bf+Bt))
+                    Av = Af                               Av = Af                               Av = Af
 -----------------  ------------------------------------- ------------------------------------- --------------------------
- RGBA               Rv = Rf*(1-max(0,At)) + Rt*max(0,At)  Rv = Rf*(1-max(0,Rt)) + Rc*max(0,Rt)  Rv = max(-1,min(1,Rf+Rt)) 
- (or 4)             Gv = Gf*(1-max(0,At)) + Gt*max(0,At)  Gv = Gf*(1-max(0,Gt)) + Gc*max(0,Gt)  Gv = max(-1,min(1,Gf+Gt)) 
-                    Bv = Bf*(1-max(0,At)) + Bt*max(0,At)  Bv = Bf*(1-max(0,Bt)) + Bc*max(0,Bt)  Bv = max(-1,min(1,Bf+Bt)) 
+ RGBA               Rv = Rf*(1-max(0,At)) + Rt*max(0,At)  Rv = Rf*(1-max(0,Rt)) + Rc*max(0,Rt)  Rv = max(-1,min(1,Rf+Rt))
+ (or 4)             Gv = Gf*(1-max(0,At)) + Gt*max(0,At)  Gv = Gf*(1-max(0,Gt)) + Gc*max(0,Gt)  Gv = max(-1,min(1,Gf+Gt))
+                    Bv = Bf*(1-max(0,At)) + Bt*max(0,At)  Bv = Bf*(1-max(0,Bt)) + Bc*max(0,Bt)  Bv = max(-1,min(1,Bf+Bt))
                     Av = Af                               Av = Af*At                            Av = Af*At
 -----------------  ------------------------------------- ------------------------------------- --------------------------
 
@@ -1941,7 +1941,7 @@ DOT_PRODUCT_TEXTURE_CUBE_MAP_NV    shader result type must    shader operation  
                                     be one of signed HILO,     must be                          must be
                                     unsigned HILO, all         DOT_PRODUCT_NV                   DOT_PRODUCT_NV
                                     signed RGBA, or all
-                                    unsigned RGBA 
+                                    unsigned RGBA
 DOT_PRODUCT_REFLECT_CUBE_MAP_NV    shader result type must    shader operation must be         shader operation  -
                                     be one of signed HILO,     DOT_PRODUCT_NV or                must be
                                     unsigned HILO, all         DOT_PRODUCT_DIFFUSE_CUBE_MAP_NV  DOT_PRODUCT_NV
@@ -1953,7 +1953,7 @@ DOT_PRODUCT_CONST_EYE_-            shader result type must    shader operation  
  REFLECT_CUBE_MAP_NV                be one of signed HILO,     must be                          must be
                                     unsigned HILO, all         DOT_PRODUCT_NV or                DOT_PRODUCT_NV
                                     signed RGBA, or all        DOT_PRODUCT_DIFFUSE_CUBE_MAP_NV
-                                    unsigned RGBA 
+                                    unsigned RGBA
 DOT_PRODUCT_DIFFUSE_CUBE_MAP_NV    shader result type must    shader operation must be         -                 shader operation must be
                                     be one of signed HILO,     DOT_PRODUCT_NV                                     DOT_PRODUCT_REFLECT_CUBE_MAP_NV
                                     unsigned HILO, all                                                            or DOT_PRODUCT_CONST_EYE_-
@@ -1964,7 +1964,7 @@ DOT_PRODUCT_DEPTH_REPLACE_NV       shader result type must    shader operation  
                                     be one of signed HILO,     must be
                                     unsigned HILO, all         DOT_PRODUCT_NV
                                     signed RGBA, or all
-                                    unsigned RGBA 
+                                    unsigned RGBA
 ---------------------------------  -------------------------  -------------------------------  ----------------  --------------------------------
 
 Table 3.A:  Texture shader inter-stage dependencies for each operation.
@@ -2046,7 +2046,7 @@ DOT_PRODUCT_TEXTURE_CUBE_MAP_NV    s,t,r       cube map   y       y       -     
 DOT_PRODUCT_REFLECT_CUBE_MAP_NV    s,t,r,q     cube map   y       y       -       y         -      -          -         -
 DOT_PRODUCT_CONST_EYE_-            s,t,r       cube map   y       y       -       y         -      -          -         y
  REFLECT_CUBE_MAP_NV
-DOT_PRODUCT_DIFFUSE_CUBE_MAP_NV    s,t,r (q*)  cube map   y       y       y       y         -      -          -         - 
+DOT_PRODUCT_DIFFUSE_CUBE_MAP_NV    s,t,r (q*)  cube map   y       y       y       y         -      -          -         -
 ---------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
 DOT_PRODUCT_DEPTH_REPLACE_NV       s,t,r       -          y       -       -       y         -      -          -         -
 ---------------------------------  ----------  ---------  ------  ------  ------  --------  -----  ---------  --------  ------
@@ -2075,44 +2075,44 @@ TEXTURE_CUBE_MAP_ARB               matches cube map target type   filtered cube 
                                                                                                         texel, else (0,0,0,0)
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 PASS_THROUGH_NV                    unsigned RGBA                  (max(0,min(1,s)), max(0,min(1,t)),   (max(0,min(1,s)), max(0,min(1,t)),
-                                                                   max(0,min(1,r)), max(0,min(1,q)))    max(0,min(1,r)), max(0,min(1,q))) 
+                                                                   max(0,min(1,r)), max(0,min(1,q)))    max(0,min(1,r)), max(0,min(1,q)))
 CULL_FRAGMENT_NV                   unsigned RGBA                  invalid                              (0,0,0,0)
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 OFFSET_TEXTURE_2D_NV               matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
                                                                                                         filtered 2D target texel,
-                                                                                                        else (0,0,0,0) 
+                                                                                                        else (0,0,0,0)
 OFFSET_TEXTURE_2D_SCALE_NV         unsigned RGBA                  filtered 2D target texel             scaled filtered 2D target texel
 OFFSET_TEXTURE_RECTANGLE_NV        matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
                                                                                                         RGBA, filtered rectangle target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 OFFSET_TEXTURE_RECTANGLE_SCALE_NV  unsigned RGBA                  filtered rectangle target texel      scaled filtered rectangle target texel
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 DEPENDENT_AR_TEXTURE_2D_NV         matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
                                                                                                         filtered 2D target texel,
-                                                                                                        else (0,0,0,0)  
+                                                                                                        else (0,0,0,0)
 DEPENDENT_GB_TEXTURE_2D_NV         matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
                                                                                                         filtered 2D target texel,
-                                                                                                        else (0,0,0,0)  
+                                                                                                        else (0,0,0,0)
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 DOT_PRODUCT_NV                     float                          dot product                          (0,0,0,0)
 DOT_PRODUCT_TEXTURE_2D_NV          matches 2D target type         filtered 2D target texel             if 2D target texture type is RGBA,
                                                                                                         filtered 2D target texel,
-                                                                                                        else (0,0,0,0)  
+                                                                                                        else (0,0,0,0)
 DOT_PRODUCT_TEXTURE_RECTANGLE_NV   matches rectangle target type  filtered rectangle target texel      if rectangle target texture type is
                                                                                                         RGBA, filtered rectangle target
-                                                                                                        texel, else (0,0,0,0)  
+                                                                                                        texel, else (0,0,0,0)
 DOT_PRODUCT_TEXTURE_CUBE_MAP_NV    matches cube map target type   filtered cube map target texel       if cube map target texture type is
                                                                                                         RGBA,  filtered cube map target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 DOT_PRODUCT_REFLECT_CUBE_MAP_NV    matches cube map target type   filtered cube map target texel       if cube map target texture type is
                                                                                                         RGBA, filtered cube map target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 DOT_PRODUCT_CONST_EYE_-            matches cube map target type   filtered cube map target texel       if cube map target texture type is
  REFLECT_CUBE_MAP_NV                                                                                    RGBA, filtered cube map target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 DOT_PRODUCT_DIFFUSE_CUBE_MAP_NV    matches cube map target type   filtered cube map target texel       if cube map target texture type is
                                                                                                         RGBA,  filtered cube map target
-                                                                                                        texel, else (0,0,0,0) 
+                                                                                                        texel, else (0,0,0,0)
 -------------------------------    -----------------------------  -----------------------------------  --------------------------------------
 DOT_PRODUCT_DEPTH_REPLACE_NV       unsigned RGBA                  invalid                              (0,0,0,0)
 -------------------------------    -----------------------------  -----------------------------------  --------------------------------------
@@ -2332,7 +2332,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      If the texture unit's 2D texture object is has a format type other
      than RGBA (the DSDT_MAG_INTENSITY_NV base internal format does not
      count as an RGBA format type in this context), then this texture
-     shader stage is not consistent.  
+     shader stage is not consistent.
 
      If the texture unit's 2D texture object is not consistent, then
      this texture shader stage is not consistent.
@@ -2400,7 +2400,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      value has a texture shader result type other than RGBA (the
      DSDT_MAG_INTENSITY_NV base internal format does not count as an
      RGBA format type in this context), then this texture shader stage
-     is not consistent.  
+     is not consistent.
 
      If the previous texture input's texture shader result specified
      by the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV
@@ -2443,7 +2443,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      value has a texture shader result type other than RGBA (the
      DSDT_MAG_INTENSITY_NV base internal format does not count as an
      RGBA format type in this context), then this texture shader stage
-     is not consistent.  
+     is not consistent.
 
      If the previous texture input's texture shader result specified
      by the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV
@@ -2538,7 +2538,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the components of the previous texture input texture
      object specified by the current texture shader stage's
@@ -2586,7 +2586,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -2648,7 +2648,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -2713,7 +2713,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -2802,7 +2802,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -2860,7 +2860,7 @@ the mapping in Table 3.23 in the EXT_texture_env_combine extension).
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -3133,7 +3133,7 @@ Errors
      is not one of HILO_NV, DSDT_NV, DSDT_MAG_NV, or DSDT_INTENSITY_NV,
      and the format parameter is not one of COLOR_INDEX, RED,
      GREEN, BLUE, ALPHA, RGB, RGBA, LUMINANCE, or
-     LUMINANCE_ALPHA 
+     LUMINANCE_ALPHA
 
      INVALID_OPERATION is generated when TexSubImage2D or
      TexSubImage1D is called and the texture array's base internal format
@@ -3178,7 +3178,7 @@ Errors
 
      INVALID_OPERATION is generated when TexEnv is called
      and the SHADER_OPERATION_NV parameter for texture
-     unit 2 is assigned one of 
+     unit 2 is assigned one of
      DOT_PRODUCT_TEXTURE_CUBE_MAP_NV, DOT_PRODUCT_REFLECT_CUBE_MAP_NV,
      or DOT_PRODUCT_CONST_EYE_REFLECT_CUBE_MAP_NV.
 

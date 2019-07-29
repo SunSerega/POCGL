@@ -1,5 +1,5 @@
 Name
-    
+
     NV_vertex_program1_1
 
 Name Strings
@@ -406,11 +406,11 @@ a scalar output replicated across a 4-component vector.
     "
 
 Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
-Operations and the Framebuffer) 
+Operations and the Framebuffer)
 
     None
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
     None
 
@@ -427,7 +427,7 @@ GLX Protocol
 
     None
 
-Errors 
+Errors
 
     None
 

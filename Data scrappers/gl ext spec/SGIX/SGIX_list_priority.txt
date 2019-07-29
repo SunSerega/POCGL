@@ -35,18 +35,18 @@ Issues
     speed versus memory consumption, degree of optimization, etc.
 
     yes, in another spec
-    
+
     *   Should we go ahead and add a ListParameter command rather than a
     PrioritorizeList command just in case some other list attribute
     needs to be added.  Do we go ahead and finish the job with
     f,i,iv functions?
 
     yes
-    
+
     *    Is 1.0 a reasonable default?
 
     *    Should it be an SGI rather than SGIX extension?
-    
+
 New Procedures and Functions
 
     ListParameterfSGIX(uint list,

@@ -83,7 +83,7 @@ Additions to Chapter 3 of the OpenGL 3.2 Specification (Rasterization)
         | PACK_REVERSE_ROW_ORDER_ANGLE | boolean | FALSE         | TRUE/FALSE  |
         +------------------------------+---------+---------------+-------------+
 
-    In Section 4.3.1 (Reading Pixels) modify the second paragraph of subsection 
+    In Section 4.3.1 (Reading Pixels) modify the second paragraph of subsection
     "Placement in Pixel Pack Buffer or Client Memory" to read:
 
         When PACK_REVERSE_ROW_ORDER_ANGLE is FALSE groups of elements are placed

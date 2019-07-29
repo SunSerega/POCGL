@@ -31,8 +31,8 @@ Overview
 Issues
 
     * We don't operate in "bits" mode here. Extended Range
-      and Precision (erp) values are just erp values 
-      and old fashioned [0,1] values are interpeted as [0,1] values; 
+      and Precision (erp) values are just erp values
+      and old fashioned [0,1] values are interpeted as [0,1] values;
       this makes lambda uninteresting except for the erp case.
       should we bother to define lambda in a way that is interesting
       for non extended range and precision?
@@ -63,7 +63,7 @@ New Tokens
     Accepted by the <pname> parameter of PixelTexGenParameterSGIX:
 
     PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX
-    
+
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     None
@@ -75,8 +75,8 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     of Pixel Rectangles) of the GL Specification. Immediately following
     the text added by the pixel_texture.spec, insert the following:
 
-    If PIXEL_TEX_GEN_SGIX is enabled and the PixelTexGenSGIX 
-    pname PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX is set to ALPHA, 
+    If PIXEL_TEX_GEN_SGIX is enabled and the PixelTexGenSGIX
+    pname PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX is set to ALPHA,
     the mapping from r,g,b,a to s,t,r,q is altered.
 
     The alpha color component value becomes the lambda value, the log-base-2
@@ -84,11 +84,11 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     of minification to magnification occurs at lambda = 0, with values
     less than 0 corresponding to minification and values greater than
     0 corresponding to magnification.  The alpha color component value
-    becomes the texture coordinate value.  The Q texture coordinate 
+    becomes the texture coordinate value.  The Q texture coordinate
     is set to 1.
 
-    If PIXEL_TEX_GEN_SGIX is enabled and the PixelTexGenSGIX 
-    pname PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX is set to ZERO, 
+    If PIXEL_TEX_GEN_SGIX is enabled and the PixelTexGenSGIX
+    pname PIXEL_TEX_GEN_LAMBDA_SOURCE_SGIX is set to ZERO,
     lambda is set to zero.
 
 Additions to Chapter 4 of the 1.0 Specification (Per-Fragment Operations

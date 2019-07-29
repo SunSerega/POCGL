@@ -20,14 +20,14 @@ Dependencies
 
 Overview
 
-    New texture environment function ADD is supported with the following 
-    equation: 
+    New texture environment function ADD is supported with the following
+    equation:
              Cv = Cf + CcCt + Cb
 
     New function may be specified by calling glTexEnv with GL_ADD token.
     New parameter Cb (bias) may be specified by calling TexEnv with
-    TEXTURE_ENV_BIAS_SGIX token. 
-    
+    TEXTURE_ENV_BIAS_SGIX token.
+
 
 New Procedures and Functions
 
@@ -56,8 +56,8 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
                 Texture Environment
                 -------------------
 
-    Base Texture Format    REPLACE  MODULATE  BLEND  DECAL  ADD  
-    -------------------    -------  --------  -----  -----  ---             
+    Base Texture Format    REPLACE  MODULATE  BLEND  DECAL  ADD
+    -------------------    -------  --------  -----  -----  ---
 
     ALPHA             ...      ...       ...    ...   Rv = Rf
                  ...      ...       ...    ...   Gv = Gf
@@ -104,8 +104,8 @@ Additions to Chapter 5 of the GL Specification (Special Functions)
 
 Additions to Chapter 6 of the GL Specification (State and State Requests)
 
-    The value of the texture environment bias is queried by calling 
-    GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev with <pname> set to 
+    The value of the texture environment bias is queried by calling
+    GetBooleanv, GetIntegerv, GetFloatv, and GetDoublev with <pname> set to
     TEXTURE_ENV_BIAS_SGIX.
 
 

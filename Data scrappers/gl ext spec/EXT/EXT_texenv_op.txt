@@ -428,13 +428,13 @@ New State
 
 
   Get Value                   Type   Get Command            Initial Value
-  ---------                   ----   -----------            ------------ 
-  TEXTURE_ENV_MODE_ALPHA_EXT  Z6     GetTexEnviv            MODULATE     
-  TEXTURE_ENV_MODE_RGB_EXT    Z6     GetTexEnviv            MODULATE 
-  ALPHA_SCALE                 R      GetTexEnvfv            1.0      
-  RGB_SCALE_EXT               R      GetTexEnvfv            1.0      
-  ALPHA_OPERATION_EXT         Z3     GetTexEnviv            ADD      
-  RGB_OPERATION_EXT           Z3     GetTexEnviv            ADD      
+  ---------                   ----   -----------            ------------
+  TEXTURE_ENV_MODE_ALPHA_EXT  Z6     GetTexEnviv            MODULATE
+  TEXTURE_ENV_MODE_RGB_EXT    Z6     GetTexEnviv            MODULATE
+  ALPHA_SCALE                 R      GetTexEnvfv            1.0
+  RGB_SCALE_EXT               R      GetTexEnvfv            1.0
+  ALPHA_OPERATION_EXT         Z3     GetTexEnviv            ADD
+  RGB_OPERATION_EXT           Z3     GetTexEnviv            ADD
   SOURCE_EXT                  6 X    GetTexEnvOperandivEXT  PREVIOUS_EXT for
                               Z6                            ALPHA_OPERAND_A_EXT
 

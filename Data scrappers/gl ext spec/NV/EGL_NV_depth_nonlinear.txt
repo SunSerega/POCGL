@@ -115,8 +115,8 @@ Changes to the EGL 1.2 Specification
 
     Modify the description of the depth buffer in Section 3.4 (p. 15)
 
-    "The depth buffer is used only by OpenGL ES.  It contains fragment depth 
-    (Z) information generated during rasterization.  EGL_DEPTH_SIZE indicates 
+    "The depth buffer is used only by OpenGL ES.  It contains fragment depth
+    (Z) information generated during rasterization.  EGL_DEPTH_SIZE indicates
     the depth of this buffer in bits, and EGL_DEPTH_ENCODING_NV indicates which
     alternate depth-buffer encoding (if any) should be used.  Legal values for
     EGL_DEPTH_ENCODING_NV are: EGL_DONT_CARE, EGL_DEPTH_ENCODING_NONE_NV and

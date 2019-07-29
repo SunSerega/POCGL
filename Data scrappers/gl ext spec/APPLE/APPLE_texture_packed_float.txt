@@ -16,16 +16,16 @@ Contact
     Alexander Rogoyski, Apple Inc (rogoyski 'at' apple.com)
 
 Status
-    
+
     Complete
 
 Version
 
     Last Modified Date: February 13, 2014
     Version:            1.0
-    
+
 Number
-    
+
     OpenGL ES Extension #195
 
 Dependencies
@@ -35,39 +35,39 @@ Dependencies
     Written against the OpenGL ES 2.0.25 (Nov. 2010) Specification.
 
     OES_texture_half_float affects the definition of this specification.
-    
+
     EXT_texture_storage affects the definition of this specification.
 
 Overview
 
     This extension adds two new 3-component floating-point texture formats
-    that fit within a single 32-bit word called R11F_G11F_B10F and RGB9_E5 
-    
-    The first RGB format, R11F_G11F_B10F, stores 5 bits of biased exponent 
-    per component in the same manner as 16-bit floating-point formats, but 
-    rather than 10 mantissa bits, the red, green, and blue components have 
-    6, 6, and 5 bits respectively. Each mantissa is assumed to have an 
-    implied leading one except in the denorm exponent case.  There is no 
-    sign bit so only non-negative values can be represented.  Positive 
-    infinity, positivedenorms, and positive NaN values are representable.  
+    that fit within a single 32-bit word called R11F_G11F_B10F and RGB9_E5
+
+    The first RGB format, R11F_G11F_B10F, stores 5 bits of biased exponent
+    per component in the same manner as 16-bit floating-point formats, but
+    rather than 10 mantissa bits, the red, green, and blue components have
+    6, 6, and 5 bits respectively. Each mantissa is assumed to have an
+    implied leading one except in the denorm exponent case.  There is no
+    sign bit so only non-negative values can be represented.  Positive
+    infinity, positivedenorms, and positive NaN values are representable.
     The value of the fourth component returned by a texture fetch is always
     1.0.
 
-    The second RGB format, RGB9_E5, stores a single 5-bit exponent (biased 
-    up by 15) and three 9-bit mantissas for each respective component.  
-    There is no sign bit so all three components must be non-negative.  
-    The fractional mantissas are stored without an implied 1 to the left 
-    of the decimal point. Neither infinity nor not-a-number (NaN) are 
+    The second RGB format, RGB9_E5, stores a single 5-bit exponent (biased
+    up by 15) and three 9-bit mantissas for each respective component.
+    There is no sign bit so all three components must be non-negative.
+    The fractional mantissas are stored without an implied 1 to the left
+    of the decimal point. Neither infinity nor not-a-number (NaN) are
     representable in this shared exponent format.
 
 New Procedures and Functions
 
     None
-        
+
 New Tokens
 
     Accepted by the <type> parameter of TexImage2D and TexSubImage2D:
-    
+
         UNSIGNED_INT_10F_11F_11F_REV_APPLE           0x8C3B
         UNSIGNED_INT_5_9_9_9_REV_APPLE               0x8C3E
 
@@ -76,7 +76,7 @@ New Tokens
 
         R11F_G11F_B10F_APPLE                         0x8C3A
         RGB9_E5_APPLE                                0x8C3D
-        
+
 Changes to Chapter 2 of the OpenGL ES 2.0.25 Specification
 (OpenGL Operation)
 
@@ -87,7 +87,7 @@ Changes to Chapter 2 of the OpenGL ES 2.0.25 Specification
         An unsigned 11-bit floating-point number has no sign bit, a 5-bit
         exponent (E), and a 6-bit mantissa (M).  The value of an unsigned
         11-bit floating-point number (represented as an 11-bit unsigned
-        integer N) is determined by the following: 
+        integer N) is determined by the following:
 
             0.0,                      if E == 0 and M == 0,
             2^-14 * (M / 64),         if E == 0 and M != 0,
@@ -108,22 +108,22 @@ Changes to Chapter 2 of the OpenGL ES 2.0.25 Specification
             2^(E-15) * (1 + M/64)     if E == 31 and M != 0
 
         When a floating-point value is converted to an unsigned 11-bit
-        floating-point representation, finite values are rounded to the 
-        closest representable finite value.  While less accurate, 
-        implementations are allowed to always round in the direction of 
-        zero.  This means negative values are converted to zero.  
-        Likewise, finite positive values greater than 65024 (the maximum 
-        finite representable unsigned 11-bit floating-point value) are 
-        converted to 65024.  Additionally: negative infinity is converted 
-        to zero; positive infinity is converted to positive infinity; and 
+        floating-point representation, finite values are rounded to the
+        closest representable finite value.  While less accurate,
+        implementations are allowed to always round in the direction of
+        zero.  This means negative values are converted to zero.
+        Likewise, finite positive values greater than 65024 (the maximum
+        finite representable unsigned 11-bit floating-point value) are
+        converted to 65024.  Additionally: negative infinity is converted
+        to zero; positive infinity is converted to positive infinity; and
         both positive and negative NaN are converted to positive NaN.
 
         Any representable unsigned 11-bit floating-point value is legal
         as input to a GL command that accepts 11-bit floating-point data.
-        The result of providing a value that is not a floating-point 
+        The result of providing a value that is not a floating-point
         number (such as infinity or NaN) to such a command is unspecified,
         but must not lead to GL interruption or termination.  Providing a
-        denormalized number or negative zero to GL must yield predictable 
+        denormalized number or negative zero to GL must yield predictable
         results.
 
         "Unsigned 10-Bit Floating-Point Numbers"
@@ -131,7 +131,7 @@ Changes to Chapter 2 of the OpenGL ES 2.0.25 Specification
         An unsigned 10-bit floating-point number has no sign bit, a 5-bit
         exponent (E), and a 5-bit mantissa (M).  The value of an unsigned
         10-bit floating-point number (represented as an 10-bit unsigned
-        integer N) is determined by the following: 
+        integer N) is determined by the following:
 
             0.0,                      if E == 0 and M == 0,
             2^-14 * (M / 32),         if E == 0 and M != 0,
@@ -145,24 +145,24 @@ Changes to Chapter 2 of the OpenGL ES 2.0.25 Specification
             M = N mod 32.
 
         When a floating-point value is converted to an unsigned 10-bit
-        floating-point representation, finite values are rounded to the 
-        closet representable finite value.  While less accurate, 
-        implementations are allowed to always round in the direction of 
-        zero.  This means negative values are converted to zero.  
-        Likewise, finite positive values greater than 64512 (the maximum 
-        finite representable unsigned 10-bit floating-point value) are 
-        converted to 64512.  Additionally: negative infinity is converted 
-        to zero; positive infinity is converted to positive infinity; and 
+        floating-point representation, finite values are rounded to the
+        closet representable finite value.  While less accurate,
+        implementations are allowed to always round in the direction of
+        zero.  This means negative values are converted to zero.
+        Likewise, finite positive values greater than 64512 (the maximum
+        finite representable unsigned 10-bit floating-point value) are
+        converted to 64512.  Additionally: negative infinity is converted
+        to zero; positive infinity is converted to positive infinity; and
         both positive and negative NaN are converted to positive NaN.
 
         Any representable unsigned 10-bit floating-point value is legal
         as input to a GL command that accepts 10-bit floating-point data.
-        The result of providing a value that is not a floating-point 
-        number (such as infinity or NaN) to such a command is 
+        The result of providing a value that is not a floating-point
+        number (such as infinity or NaN) to such a command is
         unspecified, but must not lead to GL interruption or termination.
-        Providing a denormalized number or negative zero to GL must yield 
+        Providing a denormalized number or negative zero to GL must yield
         predictable results.
-        
+
 Changes to Chapter 3 of the OpenGL ES 2.0.25 Specification (Rasterization)
 
     Add to Table 3.2, p. 62:
@@ -182,7 +182,7 @@ Changes to Chapter 3 of the OpenGL ES 2.0.25 Specification (Rasterization)
 
   Add to Table 3.5, p. 64:
 
-        type Parameter                       GL Data  Number of   Matching  
+        type Parameter                       GL Data  Number of   Matching
         Token Name                           Type     Components  Pixel Formats
         ----------------------------------   -------  ----------  -------------
         UNSIGNED_INT_10F_11F_11F_REV_APPLE   uint     3           RGB
@@ -190,7 +190,7 @@ Changes to Chapter 3 of the OpenGL ES 2.0.25 Specification (Rasterization)
 
   Add the following to section 3.6.2 Transfer of Pixel Rectangles,
   subsection Unpacking
-    
+
 
         UNSIGNED_INT_10F_11F_11F_REV_APPLE:
 
@@ -208,15 +208,15 @@ Changes to Chapter 3 of the OpenGL ES 2.0.25 Specification (Rasterization)
         +------------+---------------+---------------+---------------+
 
   Add Section 3.7.14, Shared Exponent Texture Color Conversion
-  
+
         If the currently bound texture's <format> is RGB and <type> is
-        UNSIGNED_INT_5_9_9_9_REV_APPLE, the red, green, blue, and shared 
-        bits are converted to color components (prior to filtering) using 
-        shared exponent decoding.  The 1st, 2nd, 3rd, and 4th components 
-        are called p_red, p_green, p_blue, and p_exp respectively and are 
+        UNSIGNED_INT_5_9_9_9_REV_APPLE, the red, green, blue, and shared
+        bits are converted to color components (prior to filtering) using
+        shared exponent decoding.  The 1st, 2nd, 3rd, and 4th components
+        are called p_red, p_green, p_blue, and p_exp respectively and are
         treated as unsigned integers. They are converted to floating-point
         red, green, and blue as follows:
-        
+
             red   = p_red   * 2^(p_exp - B - N)
             green = p_green * 2^(p_exp - B - N)
             blue  = p_blue  * 2^(p_exp - B - N)
@@ -229,11 +229,11 @@ Errors
     Relaxation of INVALID_ENUM errors
     ---------------------------------
 
-    TexImage2D, and TexSubImage2D accept  the new 
-    UNSIGNED_INT_10F_11F_11F_REV_APPLE and 
+    TexImage2D, and TexSubImage2D accept  the new
+    UNSIGNED_INT_10F_11F_11F_REV_APPLE and
     UNSIGNED_INT_5_9_9_9_REV_APPLE token for <type>.
 
-    TexStorage2DEXT accepts the new R11F_G11F_B10F_APPLE and 
+    TexStorage2DEXT accepts the new R11F_G11F_B10F_APPLE and
     RGB9_E5_APPLE token for <internalformat>.
 
 
@@ -241,19 +241,19 @@ Errors
     ----------
 
     INVALID_OPERATION is generated by TexImage2D and TexSubImage2D
-    if <type> is UNSIGNED_INT_10F_11F_11F_REV_APPLE or 
+    if <type> is UNSIGNED_INT_10F_11F_11F_REV_APPLE or
     UNSIGNED_INT_5_9_9_9_REV_APPLE and <format> is not RGB.
 
-    UNSIGNED_INT_10F_11F_11F_REV_APPLE is implied as the <type> when 
-    TexStorage2DEXT is called with <internalformat> 
+    UNSIGNED_INT_10F_11F_11F_REV_APPLE is implied as the <type> when
+    TexStorage2DEXT is called with <internalformat>
     R11F_G11F_B10F_APPLE. Thus, INVALID_OPERATION is generated by TexSubImage2D
     if <type> is not UNSIGNED_INT_10F_11F_11F_REV_APPLE.
 
-    UNSIGNED_INT_5_9_9_9_REV_APPLE is implied as the <type> when 
-    TexStorage2DEXT is called with <internalformat> 
+    UNSIGNED_INT_5_9_9_9_REV_APPLE is implied as the <type> when
+    TexStorage2DEXT is called with <internalformat>
     RGB9_E5_APPLE. Thus, INVALID_OPERATION is generated by TexSubImage2D
     if <type> is not UNSIGNED_INT_5_9_9_9_REV_APPLE.
-    
+
 Dependencies on OES_texture_half_float
 
     If OES_texture_half_float is not supported, modify fifth paragraph
@@ -275,7 +275,7 @@ Dependencies on OES_texture_half_float
 Dependencies on EXT_texture_storage
 
     If EXT_texture_storage is not supported, remove all references to
-    TexStorage2DEXT.     
+    TexStorage2DEXT.
 
 New Implementation Dependent State
 
@@ -284,4 +284,4 @@ New Implementation Dependent State
 Revision History
 
     1.0  2014/02/13  rogoyski    Initial version
-        
+

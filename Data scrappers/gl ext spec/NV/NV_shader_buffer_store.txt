@@ -45,7 +45,7 @@ Dependencies
 
     This extension interacts with NV_gpu_program5.
 
-    This extension interacts with GLSL 4.30, ARB_shader_storage_buffer_object, 
+    This extension interacts with GLSL 4.30, ARB_shader_storage_buffer_object,
     and ARB_compute_shader.
 
 Overview
@@ -99,7 +99,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
     (extend the language inserted by NV_shader_buffer_load in its "Append to
      Section 2.9 (p. 45) to allow READ_WRITE and WRITE_ONLY mappings)
 
-    The data store of a buffer object may be made accessible to the GL 
+    The data store of a buffer object may be made accessible to the GL
     via shader buffer loads and stores by calling:
 
         void MakeBufferResidentNV(enum target, enum access);
@@ -112,7 +112,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
 
     The data store of a buffer object may be made inaccessible to the GL
     via shader buffer loads and stores by calling:
-    
+
         void MakeBufferNonResidentNV(enum target);
 
 
@@ -206,7 +206,7 @@ Additions to the AGL/GLX/WGL Specifications
 GLX Protocol
 
     None.
-    
+
 
 Additions to the OpenGL Shading Language Specification, Version 1.50 (Revision
 09)
@@ -232,7 +232,7 @@ Additions to the OpenGL Shading Language Specification, Version 1.50 (Revision
     declared using the "const" storage qualifier may only read the underlying
     memory, which is treated as read-only.  ...
 
-    (insert after seventh paragraph) 
+    (insert after seventh paragraph)
 
     In pointer variable declarations, the "coherent", "volatile", "restrict",
     and "const" qualifiers can be positioned anywhere in the declaration, and
@@ -338,7 +338,7 @@ Additions to the OpenGL Shading Language Specification, Version 1.50 (Revision
 
       uint      atomicCompSwap(uint *address, uint compare, uint data);
       int       atomicCompSwap(int *address, int compare, int data);
-      uint64_t  atomicCompSwap(uint64_t *address, uint64_t compare, 
+      uint64_t  atomicCompSwap(uint64_t *address, uint64_t compare,
                                uint64_t data);
 
     Description:
@@ -394,12 +394,12 @@ Additions to the OpenGL Shading Language Specification, Version 1.50 (Revision
     !!! TBD:  Add grammar constructs for memory access qualifiers, allowing
         memory access qualifiers before or after the type and the "*"
         characters indicating pointers in a variable declaration.
- 
+
 
 Dependencies on EXT_shader_image_load_store
 
     This specification incorporates the memory access ordering and
-    synchronization discussion from EXT_shader_image_load_store verbatim.  
+    synchronization discussion from EXT_shader_image_load_store verbatim.
 
     If EXT_shader_image_load_store is not supported, this spec should be
     construed to introduce:
@@ -416,10 +416,10 @@ Dependencies on EXT_shader_image_load_store
 
 Dependencies on NV_gpu_shader5
 
-    This specification requires either NV_gpu_shader5 or NV_gpu_program5.  
+    This specification requires either NV_gpu_shader5 or NV_gpu_program5.
 
     If NV_gpu_shader5 is supported, use of the new shading language features
-    described in this extension requires 
+    described in this extension requires
 
       #extension GL_NV_gpu_shader5 : enable
 
@@ -465,7 +465,7 @@ ARB_compute_shader
 
       uint64_t atomicAdd(inout uint64_t mem, uint data);
       uint64_t atomicExchange(inout uint64_t mem, uint data);
-      uint64_t atomicCompSwap(inout uint64_t mem, uint64_t compare, 
+      uint64_t atomicCompSwap(inout uint64_t mem, uint64_t compare,
                               uint64_t data);
 
     If ARB_shader_storage_buffer_object or ARB_compute_shader are supported,
@@ -489,11 +489,11 @@ Issues
     (1) Does MAX_SHADER_BUFFER_ADDRESS_NV still apply?
 
       RESOLVED:  The primary reason for this limitation to exist was the lack
-      of 64-bit integer support in shaders (see issue 15 of 
-      NV_shader_buffer_load). Given that this extension is being released at 
-      the same time as NV_gpu_shader5 which adds 64-bit integer support, it 
+      of 64-bit integer support in shaders (see issue 15 of
+      NV_shader_buffer_load). Given that this extension is being released at
+      the same time as NV_gpu_shader5 which adds 64-bit integer support, it
       is expected that this maximum address will match the maximum address
-      supported by the GPU's address space, or will be equal to "~0ULL" 
+      supported by the GPU's address space, or will be equal to "~0ULL"
       indicating that any GPU address returned by the GL will be usable in a
       shader.
 
@@ -555,11 +555,11 @@ Revision History
     Rev.    Date    Author    Changes
     ----  --------  --------  -----------------------------------------
      5    08/13/12  pbrown    Add interaction with OpenGL 4.3 (and related ARB
-                              extensions) supporting atomic{Inc,Dec}Wrap and 
+                              extensions) supporting atomic{Inc,Dec}Wrap and
                               64-bit unsigned integer atomics to shared and
-                              shader storage buffer memory. 
+                              shader storage buffer memory.
 
-     4    04/13/10  pbrown    Remove the floating-point version of atomicAdd(). 
+     4    04/13/10  pbrown    Remove the floating-point version of atomicAdd().
 
      3    03/23/10  pbrown    Minor cleanups to the dependency sections.
                               Fixed obsolete extension names.  Add an issue

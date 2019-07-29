@@ -1,5 +1,5 @@
 Name
-    
+
     NV_texture_shader2
 
 Name Strings
@@ -108,8 +108,8 @@ New Tokens
 
     Accepted by the <type> parameter of TexImage3D and TexSubImage3D:
 
-        UNSIGNED_INT_S8_S8_8_8_NV                 0x86DA 
-        UNSIGNED_INT_8_8_S8_S8_REV_NV             0x86DB 
+        UNSIGNED_INT_S8_S8_8_8_NV                 0x86DA
+        UNSIGNED_INT_8_8_S8_S8_REV_NV             0x86DB
 
     Accepted by the <internalformat> parameter of TexImage3D:
 
@@ -179,7 +179,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
      array to which the pixels are to be copied is one of HILO_NV,
      HILO16_NV, SIGNED_HILO_NV, SIGNED_HILO16_NV, DSDT_NV, DSDT8_NV,
      DSDT_MAG_NV, DSDT8_MAG8_NV, DSDT_MAG_INTENSITY_NV, or
-     DSDT8_MAG8_INTENSITY8_NV.  
+     DSDT8_MAG8_INTENSITY8_NV.
 
      TexSubImage3D, TexSubImage2D, and TexSubImage1D generate the error
      INVALID_OPERATION if the internal format of the texture array
@@ -274,13 +274,13 @@ DOT_PRODUCT_TEXTURE_3D_NV          s,t,r       3D         y       y       -     
 
 texture shader operation i         shader stage result type       shader stage result                  texture unit RGBA color result
 =================================  =============================  ===================================  ======================================
-TEXTURE_3D                         matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA, 
+TEXTURE_3D                         matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA,
                                                                                                         filtered 3D target texel,
                                                                                                         else (0,0,0,0)
 ---------------------------------  -----------------------------  -----------------------------------  --------------------------------------
 DOT_PRODUCT_TEXTURE_3D_NV          matches 3D target type         filtered 3D target texel             if 3D target texture type is RGBA,
                                                                                                         filtered 3D target texel,
-                                                                                                        else (0,0,0,0)   
+                                                                                                        else (0,0,0,0)
 -------------------------------    -----------------------------  -----------------------------------  --------------------------------------
 
      Add the following new sections specifying new 3D texture operations:
@@ -327,7 +327,7 @@ DOT_PRODUCT_TEXTURE_3D_NV          matches 3D target type         filtered 3D ta
      current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value has
      a format type other than RGBA or HILO (the DSDT_MAG_INTENSITY_NV
      base internal format does not count as an RGBA format type in this
-     context), then this texture shader stage is not consistent.  
+     context), then this texture shader stage is not consistent.
 
      If the previous texture input texture shader operation specified by
      the current texture shader stage's PREVIOUS_TEXTURE_INPUT_NV value
@@ -486,7 +486,7 @@ Errors
      is not one of HILO_NV, DSDT_NV, DSDT_MAG_NV, or DSDT_INTENSITY_NV,
      and the format parameter is not one of COLOR_INDEX, RED,
      GREEN, BLUE, ALPHA, RGB, RGBA, LUMINANCE, or
-     LUMINANCE_ALPHA 
+     LUMINANCE_ALPHA
 
      INVALID_OPERATION is generated when TexSubImage3D, TexSubImage2D, or
      TexSubImage1D is called and the texture array's base internal format

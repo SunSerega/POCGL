@@ -118,7 +118,7 @@ Additions to Chapter 2 of the 2.0 Specification (OpenGL Operation)
     An unsigned 11-bit floating-point number has no sign bit, a 5-bit
     exponent (E), and a 6-bit mantissa (M).  The value of an unsigned
     11-bit floating-point number (represented as an 11-bit unsigned
-    integer N) is determined by the following: 
+    integer N) is determined by the following:
 
         0.0,                      if E == 0 and M == 0,
         2^-14 * (M / 64),         if E == 0 and M != 0,
@@ -161,7 +161,7 @@ Additions to Chapter 2 of the 2.0 Specification (OpenGL Operation)
     An unsigned 10-bit floating-point number has no sign bit, a 5-bit
     exponent (E), and a 5-bit mantissa (M).  The value of an unsigned
     10-bit floating-point number (represented as an 10-bit unsigned
-    integer N) is determined by the following: 
+    integer N) is determined by the following:
 
         0.0,                      if E == 0 and M == 0,
         2^-14 * (M / 32),         if E == 0 and M != 0,
@@ -454,7 +454,7 @@ New State
                                                                R, G, B, and A
                                                                components are
                                                                signed
-    
+
 New Implementation Dependent State
 
     None
@@ -518,7 +518,7 @@ Issues
     6)  What is the exponent bias?
 
         RESOLVED:  15, just like 16-bit half-precision floating-point
-        values.  
+        values.
 
     7)  Can s10e5 floating-point filtering be used to filter
         r11f_g11f_b10f values?  If so, how?

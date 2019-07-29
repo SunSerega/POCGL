@@ -874,7 +874,7 @@ Issues
       The spec is currently ambiguous, and can be interpreted as
       layer (the number of cube map faces) or array_layer = floor(layer/6),
       the number of cube maps.
- 
+
 Revision History
 
     Rev.    Date    Author    Changes

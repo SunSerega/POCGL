@@ -26,7 +26,7 @@ Contributors
     Mark J. Kilgard, NVIDIA
     Pat Brown, NVIDIA
     Yanjun Zhang, S3 Graphics
-     
+
 Contact
 
     Mark J. Kilgard, NVIDIA Corporation (mjk 'at' nvidia.com)
@@ -719,7 +719,7 @@ Revision History
                                   accumulation buffer operations
            2  08/11/08  mjk       Get Command: IsEnabled -> GetInteger
                                   for FRAMEBUFFER_SRGB_CAPABLE_EXT
-           1  10/21/06  barthold  Added revision history         
+           1  10/21/06  barthold  Added revision history
          0.4  10/20/06  mjk       Added issue 19
          0.3            mjk       Internal spec development.
 

@@ -110,7 +110,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     Primitive -+--> Rasterization -->+
     Assembly   |                     |
            |      Polygon        |
-           +--> Rasterization -->+---> Texturing ---> Specular ---> Fog 
+           +--> Rasterization -->+---> Texturing ---> Specular ---> Fog
                      |
                 Pixel         |
     DrawPixels --->   Rectangle ---->+
@@ -162,7 +162,7 @@ GLX Protocol
 Errors
 
     INVALID_ENUM is generated if the <pname> parameter of TexEnvi,
-      TexEnviv, TexEnvf, or TexEnvf is TEXTURE_LIGHTING_MODE_HP and 
+      TexEnviv, TexEnvf, or TexEnvf is TEXTURE_LIGHTING_MODE_HP and
       the <param> parameter is not one of TEXTURE_POST_SPECULAR_HP or
       TEXTURE_PRE_SPECULAR_HP.
 

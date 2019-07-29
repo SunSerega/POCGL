@@ -1,5 +1,5 @@
 Name
-    
+
     ARB_uniform_buffer_object
 
 Name Strings
@@ -72,13 +72,13 @@ Dependencies
     This extension interacts with OpenGL 3.0, ARB_geometry_shader4,
     ARB_texture_rectangle, EXT_gpu_shader4, EXT_texture_array,
     EXT_texture_integer, and EXT_texture_buffer_object.
-    
+
 Overview
 
     This extension introduces the concept of a group of GLSL uniforms
     known as a "uniform block", and the API mechanisms to store "uniform
     blocks" in GL buffer objects.
-    
+
     The extension also defines both a standard cross-platform layout in
     memory for uniform block data, as well as mechanisms to allow the GL
     to optimize the data layout in an implementation-defined manner.
@@ -96,7 +96,7 @@ Overview
            to one of the Uniform* variants.
 
     These solutions have their disadvantages. Solution A imposes
-    considerable development overhead on the application developer. 
+    considerable development overhead on the application developer.
     Solution B may impose considerable run-time overhead on the
     application if the number of uniforms modified in a given frame of
     rendering is sufficiently large.
@@ -118,20 +118,20 @@ Overview
 
     The data storage for a uniform block can be declared to use one of
     three layouts in memory: packed, shared, or std140.
-    
+
       - "packed" uniform blocks have an implementation-dependent data
         layout for efficiency, and unused uniforms may be eliminated by
         the compiler to save space.
-    
-      - "shared" uniform blocks, the default layout, have an implementation- 
+
+      - "shared" uniform blocks, the default layout, have an implementation-
         dependent data layout for efficiency, but the layout will be uniquely
         determined by the structure of the block, allowing data storage to be
         shared across programs.
-    
+
       - "std140" uniform blocks have a standard cross-platform cross-vendor
         layout (see below). Unused uniforms will not be eliminated.
 
-    Any uniforms not declared in a named uniform block are said to 
+    Any uniforms not declared in a named uniform block are said to
     be part of the "default uniform block".
 
     While uniforms in the default uniform block are updated with
@@ -152,9 +152,9 @@ Overview
     and connecting the "uniform block" to a buffer object. A "uniform
     block" has no "location" because "uniform blocks" are not updated
     directly. The buffer object APIs are used instead.
-    
+
     Properties of Uniforms and uniform blocks:
-    
+
     a) A uniform is "active" if it exists in the database and has a valid
        u_index.
     b) A "uniform block" is "active" if it exists in the database and
@@ -184,50 +184,50 @@ IP Status
 New Procedures and Functions
 
    void    GetUniformIndices(uint program,
-                                sizei uniformCount, 
-                                const char* const * uniformNames, 
+                                sizei uniformCount,
+                                const char* const * uniformNames,
                                 uint* uniformIndices);
 
    void    GetActiveUniformsiv(uint program,
-                                  sizei uniformCount, 
-                                  const uint* uniformIndices, 
-                                  enum pname, 
+                                  sizei uniformCount,
+                                  const uint* uniformIndices,
+                                  enum pname,
                                   int* params);
 
    void    GetActiveUniformName(uint program,
-                                   uint uniformIndex, 
-                                   sizei bufSize, 
-                                   sizei* length, 
+                                   uint uniformIndex,
+                                   sizei bufSize,
+                                   sizei* length,
                                    char* uniformName);
 
    uint    GetUniformBlockIndex(uint program,
                                    const char* uniformBlockName);
 
    void    GetActiveUniformBlockiv(uint program,
-                                      uint uniformBlockIndex, 
-                                      enum pname, 
+                                      uint uniformBlockIndex,
+                                      enum pname,
                                       int* params);
 
    void    GetActiveUniformBlockName(uint program,
-                                        uint uniformBlockIndex, 
-                                        sizei bufSize, 
-                                        sizei* length, 
+                                        uint uniformBlockIndex,
+                                        sizei bufSize,
+                                        sizei* length,
                                         char* uniformBlockName);
 
-   void    BindBufferRange(enum target, 
-                           uint index, 
-                           uint buffer, 
+   void    BindBufferRange(enum target,
+                           uint index,
+                           uint buffer,
                            intptr offset,
                            sizeiptr size);
 
-   void    BindBufferBase(enum target, 
-                          uint index, 
+   void    BindBufferBase(enum target,
+                          uint index,
                           uint buffer);
 
    void    GetIntegeri_v(enum target, uint index, int* data);
 
    void    UniformBlockBinding(uint program,
-                                  uint uniformBlockIndex, 
+                                  uint uniformBlockIndex,
                                   uint uniformBlockBinding);
 
 New Types
@@ -292,9 +292,9 @@ New Tokens
         UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER       0x8A44
         UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER     0x8A45
         UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER     0x8A46
-        
+
     Returned by GetActiveUniformsiv and GetUniformBlockIndex
-    
+
         INVALID_INDEX                                   0xFFFFFFFFu
 
 2.1 Specification Updates
@@ -322,7 +322,7 @@ Additions to Chapter 2 - OpenGL Operation
     "named uniform blocks," and are assigned a uniform block index. Uniforms
     that are declared outside of a named uniform block are said to be part of
     the "default uniform block." Default uniform blocks have no name or uniform
-    block index. Like uniforms, uniform blocks can be active or inactive. Active 
+    block index. Like uniforms, uniform blocks can be active or inactive. Active
     uniform blocks are those that contain active uniforms after a program has
     been compiled and linked.
 
@@ -336,7 +336,7 @@ Additions to Chapter 2 - OpenGL Operation
     represent the numbers of individual floating-point, integer, or boolean
     values that can be held in uniform variable storage for a vertex shader.
     A link error is generated if an attempt is made to utilize more than
-    the space available for vertex shader uniform variables. 
+    the space available for vertex shader uniform variables.
 
     When a program is successfully linked, all active uniforms belonging to
     the program object's default uniform block are initialized to zero (FALSE
@@ -354,7 +354,7 @@ Additions to Chapter 2 - OpenGL Operation
     named uniform blocks may be changed by modifying the contents of the buffer
     object using commands such as BufferData, BufferSubData, MapBuffer, and
     UnmapBuffer. Uniforms in a named uniform block are not assigned a location
-    and may not be modified using the Uniform* commands. The offsets and strides 
+    and may not be modified using the Uniform* commands. The offsets and strides
     of all active uniforms belonging to named uniform blocks of a program object
     are invalidated and new ones assigned after each successful re-link.
 
@@ -378,7 +378,7 @@ Additions to Chapter 2 - OpenGL Operation
 
     Pg 80, insert before the description of GetActiveUniform:
 
-    Named uniform blocks, like uniforms, are identified by name strings. 
+    Named uniform blocks, like uniforms, are identified by name strings.
     Uniform block indices corresponding to uniform block names can be queried
     by calling
 
@@ -390,7 +390,7 @@ Additions to Chapter 2 - OpenGL Operation
     necessary for <program> to have been linked successfully. The link
     could have failed because the number of active uniforms exceeded the
     limit.
-    
+
     <uniformBlockName> must contain a null-terminated string specifying
     the name of a uniform block.
 
@@ -400,14 +400,14 @@ Additions to Chapter 2 - OpenGL Operation
     <program>, or an error occurred, then INVALID_INDEX is returned.
     The indices of the active uniform blocks of a program are assigned in
     consecutive order, beginning with zero.
-    
+
     An active uniform block's name string can be queried from its
     uniform block index by calling
-    
+
         void GetActiveUniformBlockName(uint program,
-                                          uint uniformBlockIndex, 
-                                          sizei bufSize, 
-                                          sizei* length, 
+                                          uint uniformBlockIndex,
+                                          sizei bufSize,
+                                          sizei* length,
                                           char* uniformBlockName);
 
     <program> is the name of a program object for which the command
@@ -423,7 +423,7 @@ Additions to Chapter 2 - OpenGL Operation
     section 6.1.14). If <uniformBlockIndex> is greater than or equal to
     the value of ACTIVE_UNIFORM_BLOCKS, the error INVALID_VALUE is
     generated.
-    
+
     The string name of the uniform block identified by <uniformBlockIndex>
     is returned into <uniformBlockName>. The name is
     null-terminated. The actual number of characters written into
@@ -439,10 +439,10 @@ Additions to Chapter 2 - OpenGL Operation
     Information about an active uniform block can be queried by calling
 
         void GetActiveUniformBlockiv(uint program,
-                                        uint uniformBlockIndex, 
-                                        enum pname, 
+                                        uint uniformBlockIndex,
+                                        enum pname,
                                         int* params);
- 
+
     <program> is the name of a program object for which the command
     LinkProgram has been issued in the past. It is not
     necessary for <program> to have been linked successfully. The link
@@ -453,17 +453,17 @@ Additions to Chapter 2 - OpenGL Operation
     If <uniformBlockIndex> is greater than or equal to the value of
     ACTIVE_UNIFORM_BLOCKS, or is not the index of an active uniform
     block in <program>, the error INVALID_VALUE is generated.
-    
+
     If no error occurs, the uniform block parameter(s) specified by
     <pname> are returned in <params>. Otherwise, nothing will be written
     to <params>.
-    
+
     If <pname> is UNIFORM_BLOCK_BINDING, then
     the index of the uniform buffer binding
     point last selected by the uniform block specified by <uniformBlockIndex>
     for <program> is returned. If no uniform block has been previously
     specified, zero is returned.
-    
+
     If <pname> is UNIFORM_BLOCK_DATA_SIZE, the value returned is the
     implementation-dependent minimum total buffer object size, in
     basic machine units, required to hold all active uniforms in the
@@ -472,7 +472,7 @@ Additions to Chapter 2 - OpenGL Operation
     arrange uniform values as tightly packed in a buffer object. The exception
     to this is the "std140" uniform block layout, which guarantees specific
     packing behavior and does not require the application to query for offsets
-    and strides. In this case, the minimum size may still be queried, even 
+    and strides. In this case, the minimum size may still be queried, even
     though it is determined in advance based only on the uniform block
     declaration (see "Standard Uniform Block Layout" in section 2.15.3.1.2).
 
@@ -510,8 +510,8 @@ Additions to Chapter 2 - OpenGL Operation
     to a set of uniforms in a program may be queried by calling
 
         void GetUniformIndices(uint program,
-                                  sizei uniformCount, 
-                                  const char* const * uniformNames, 
+                                  sizei uniformCount,
+                                  const char* const * uniformNames,
                                   uint* uniformIndices);
 
     <program> is the name of a program object for which the command
@@ -522,13 +522,13 @@ Additions to Chapter 2 - OpenGL Operation
 
     <uniformCount> indicates both the number of elements in the array of
     names <uniformNames> and the number of indices that may be written to
-    <uniformIndices>. 
-    
+    <uniformIndices>.
+
     <uniformNames> contains a list of <uniformCount> name strings
     identifying the uniform names to be queried for indices.  For each name
-    string in <uniformNames>, the index assigned to the active uniform of 
+    string in <uniformNames>, the index assigned to the active uniform of
     that name will be written to the corresponding element of
-    <uniformIndices>.  If a string in <uniformNames> is not the name of an 
+    <uniformIndices>.  If a string in <uniformNames> is not the name of an
     active uniform, the value INVALID_INDEX will be written to the
     corresponding element of <uniformIndices>.
 
@@ -538,9 +538,9 @@ Additions to Chapter 2 - OpenGL Operation
     index by calling
 
         void GetActiveUniformName(uint program,
-                                     uint uniformIndex, 
-                                     sizei bufSize, 
-                                     sizei* length, 
+                                     uint uniformIndex,
+                                     sizei bufSize,
+                                     sizei* length,
                                      char* uniformName);
 
     <program> is the name of a program object for which the command
@@ -580,20 +580,20 @@ Additions to Chapter 2 - OpenGL Operation
 
     Information about active uniforms can be obtained by calling either
 
-        void GetActiveUniform(uint program, 
+        void GetActiveUniform(uint program,
                               uint index,
-                              sizei bufSize, 
+                              sizei bufSize,
                               sizei* length,
-                              int* size, 
-                              enum* type, 
+                              int* size,
+                              enum* type,
                               char* name);
 
     or
 
         void GetActiveUniformsiv(uint program,
-                                    sizei uniformCount, 
-                                    const uint* uniformIndices, 
-                                    enum pname, 
+                                    sizei uniformCount,
+                                    const uint* uniformIndices,
+                                    enum pname,
                                     int* params);
 
     <program> is the name of a program object for which the command
@@ -605,7 +605,7 @@ Additions to Chapter 2 - OpenGL Operation
     These commands provide information about the uniform or uniforms selected
     by <index> or <uniformIndices>, respectively. In GetActiveUniform, an
     <index> of 0 selects the first active uniform, and an <index> of the value
-    of ACTIVE_UNIFORMS - 1 selects the last active uniform. In 
+    of ACTIVE_UNIFORMS - 1 selects the last active uniform. In
     GetActiveUniformsiv, <uniformIndices> is an array of such active uniform
     indices. If any index is greater than or equal to the value of
     ACTIVE_UNIFORMS, the error INVALID_VALUE is generated.
@@ -641,7 +641,7 @@ Additions to Chapter 2 - OpenGL Operation
 
     GetActiveUniform will return as much information about active uniforms as
     possible. If no information is available, <length> will be set to zero and
-    <name> will be an empty string. This situation could arise if 
+    <name> will be an empty string. This situation could arise if
     GetActiveUniform is issued after a failed link.
 
     If an error occurs, nothing is written to <length>, <size>, <type>,
@@ -695,14 +695,14 @@ Additions to Chapter 2 - OpenGL Operation
 
     If <pname> is UNIFORM_TYPE, then an array identifying the types
     of the uniforms specified by the corresponding array of
-    <uniformIndices> is returned.  The returned types can be any of the 
+    <uniformIndices> is returned.  The returned types can be any of the
     values in Table 2.utype.
 
     If <pname> is UNIFORM_SIZE, then an array identifying the size
     of the uniforms specified by the corresponding array of
     <uniformIndices> is returned. The sizes returned are in units of the type
     returned by a query of UNIFORM_TYPE.  For active uniforms that are
-    arrays, the size is the number of active elements in the array; for 
+    arrays, the size is the number of active elements in the array; for
     all other uniforms, the size is one.
 
     If <pname> is UNIFORM_NAME_LENGTH, then an array identifying the
@@ -750,7 +750,7 @@ Additions to Chapter 2 - OpenGL Operation
     Pg 81, replace Uniform* description with:
 
     To load values into the uniform variables of the default uniform block of
-    the program object that is currently in use, use the commands 
+    the program object that is currently in use, use the commands
 
         ...
 
@@ -763,7 +763,7 @@ Additions to Chapter 2 - OpenGL Operation
     buffer object storage.  The mechanisms for placing individual uniforms in
     a buffer object and connecting a uniform block to an individual buffer
     object are described below.
-    
+
     There is a set of implementation-dependent maximums for the number of
     active uniform blocks used by each shader (vertex, fragment, geometry).
     If the number of uniform blocks used by any shader in the program exceeds
@@ -801,17 +801,17 @@ Additions to Chapter 2 - OpenGL Operation
 
     - Members of type "uint" are extracted from a buffer object by reading a
       single uint-typed value at the specified offset.
- 
+
     - Members of type "float" are extracted from a buffer object by reading a
       single float-typed value at the specified offset.
- 
+
     - Vectors with <N> elements with basic data types of "bool", "int",
       "uint", or "float" are extracted as <N> values in consecutive memory
       locations beginning at the specified offset, with components stored in
       order with the first (X) component at the lowest offset. The GL data
       type used for component extraction is derived according to the rules for
       scalar members above.
- 
+
     - Column-major matrices with <C> columns and <R> rows (using the type
       "mat<C>x<R>", or simply "mat<C>" if <C>==<R>) are treated as an array of
       <C> floating-point column vectors, each consisting of <R> components.
@@ -850,7 +850,7 @@ Additions to Chapter 2 - OpenGL Operation
     uniforms within a uniform block. When the "std140" layout is specified,
     the offset of each uniform in a uniform block can be derived from the
     definition of the uniform block by applying the set of rules described
-    below. 
+    below.
 
     If a uniform block is declared in multiple shaders linked together into a
     single program, the link will fail unless the uniform block declaration,
@@ -906,10 +906,10 @@ Additions to Chapter 2 - OpenGL Operation
       (9) If the member is a structure, the base alignment of the structure is
           <N>, where <N> is the largest base alignment value of any of its
           members, and rounded up to the base alignment of a vec4. The
-          individual members of this sub-structure are then assigned offsets 
+          individual members of this sub-structure are then assigned offsets
           by applying this set of rules recursively, where the base offset of
           the first member of the sub-structure is equal to the aligned offset
-          of the structure. The structure may have padding at the end; the 
+          of the structure. The structure may have padding at the end; the
           base offset of the member following the sub-structure is rounded up
           to the next multiple of the base alignment of the structure.
 
@@ -933,9 +933,9 @@ Additions to Chapter 2 - OpenGL Operation
     Buffer objects are bound to uniform block binding points by calling one of
     the commands
 
-        void BindBufferRange(enum target, 
-                             uint index, 
-                             uint buffer, 
+        void BindBufferRange(enum target,
+                             uint index,
+                             uint buffer,
                              intptr offset,
                              sizeiptr size);
 
@@ -946,9 +946,9 @@ Additions to Chapter 2 - OpenGL Operation
     with <target> set to UNIFORM_BUFFER. There is an array of buffer
     object binding points with which uniform blocks can be associated via
     UniformBlockBinding, plus a single general binding point that can be
-    used by other buffer object manipulation functions (e.g. BindBuffer, 
-    MapBuffer). Both commands bind the buffer object named by <buffer> to the 
-    general binding point, and additionally bind the buffer object to the 
+    used by other buffer object manipulation functions (e.g. BindBuffer,
+    MapBuffer). Both commands bind the buffer object named by <buffer> to the
+    general binding point, and additionally bind the buffer object to the
     binding point in the array given by <index>. The error INVALID_VALUE is
     generated if <index> is greater than or equal to the value of
     MAX_UNIFORM_BUFFER_BINDINGS.
@@ -973,9 +973,9 @@ Additions to Chapter 2 - OpenGL Operation
 
     Each of a program's active uniform blocks has a corresponding uniform buffer
     object binding point. This binding point can be assigned by calling:
-    
+
          void UniformBlockBinding(uint program,
-                                     uint uniformBlockIndex, 
+                                     uint uniformBlockIndex,
                                      uint uniformBlockBinding);
 
     <program> is a name of a program object for which the command LinkProgram
@@ -992,11 +992,11 @@ Additions to Chapter 2 - OpenGL Operation
     binding point <uniformBlockBinding> to extract the values of the uniforms
     in the uniform block identified by <uniformBlockIndex>.
 
-    The results of Begin or commands that perform an implicit Begin are 
-    undefined when an active uniform block of the active program is assigned a 
-    uniform buffer binding point where the <size> parameter to BindBufferRange 
+    The results of Begin or commands that perform an implicit Begin are
+    undefined when an active uniform block of the active program is assigned a
+    uniform buffer binding point where the <size> parameter to BindBufferRange
     is less than the value of UNIFORM_BLOCK_DATA_SIZE for that uniform
-    block, or when no buffer object is bound to that binding point, and may 
+    block, or when no buffer object is bound to that binding point, and may
     result in GL interruption or termination.
 
     When executing shaders that access uniform blocks, the binding point
@@ -1014,7 +1014,7 @@ Additions to Chapter 2 - OpenGL Operation
     When a program object is linked or re-linked, the uniform buffer object
     binding point assigned to each of its active uniform blocks is reset to
     zero.
-    
+
 Additions to Chapter 3 - Rasterization
 
     3.11.1 Shader Variables, p. 196
@@ -1028,7 +1028,7 @@ Additions to Chapter 3 - Rasterization
     value of the implementation-dependent constant
     MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS. These values represent the
     numbers of individual floating-point, integer, or boolean values that can be
-    held in uniform variable storage for a fragment shader. 
+    held in uniform variable storage for a fragment shader.
 
 Additions to Chapter 4 - Per-Fragment Operations and the Framebuffer
 
@@ -1037,9 +1037,9 @@ Additions to Chapter 4 - Per-Fragment Operations and the Framebuffer
 Additions to Chapter 5 - State and State Requests
 
     5.4 Display Lists, p. 244
-    Add the following language to the list of commands excluded from 
+    Add the following language to the list of commands excluded from
     display list compilation:
-    
+
     "Buffer objects: BindBufferRange, BindBufferBase"
 
 
@@ -1068,8 +1068,8 @@ Additions to Chapter 6 - State and State Requests
     active uniform blocks, call GetIntegeri_v with <param> set to
     UNIFORM_BUFFER_BINDING. <index> must be in the range
     zero to the value of MAX_UNIFORM_BUFFER_BINDINGS - 1.
-    The name of the buffer object bound to <index> is returned in 
-    <values>. If no buffer object is bound for <index>, zero is 
+    The name of the buffer object bound to <index> is returned in
+    <values>. If no buffer object is bound for <index>, zero is
     returned in <values>.
 
     To query the starting offset or size of the range of each buffer object
@@ -1273,123 +1273,123 @@ OpenGL Shading Language Spec v1.20.8 Updates
 
     4.3.5.1 Uniform Blocks
 
-    Variable declarations at global scope can be grouped into a named block to 
+    Variable declarations at global scope can be grouped into a named block to
     provide coarser granularity for manipulation, sharing, or backing than is
     achievable with individual declarations. This is currently only allowed for
     uniform variables grouped into uniform blocks. All other uses are reserved.
- 
-    The application backs a uniform block with a buffer. This allows application
-    access to a set of uniform variables through a single buffer. The 
-    application will need to query the offsets of the variables within the 
-    block or follow standard rules for block layout in order to know how to
-    layout the contents of a buffer used to back the block. 
 
-    A uniform block (rather than a uniform variable) is created by the uniform 
+    The application backs a uniform block with a buffer. This allows application
+    access to a set of uniform variables through a single buffer. The
+    application will need to query the offsets of the variables within the
+    block or follow standard rules for block layout in order to know how to
+    layout the contents of a buffer used to back the block.
+
+    A uniform block (rather than a uniform variable) is created by the uniform
     keyword, followed by a block name, followed by an open curly brace ( { ) as
     follows:
 
-        uniform-block : 
-            layout-qualifieropt  uniform block-name { member-list } ; 
+        uniform-block :
+            layout-qualifieropt  uniform block-name { member-list } ;
 
-        layout-qualifier : 
-            layout ( layout-qualifier-id-list ) 
+        layout-qualifier :
+            layout ( layout-qualifier-id-list )
 
-        member-list : 
-            member-declaration 
-            member-declaration member-list 
+        member-list :
+            member-declaration
+            member-declaration member-list
 
-        member-declaration : 
-            layout-qualifieropt  uniformopt  basic-type declarators ; 
+        member-declaration :
+            layout-qualifieropt  uniformopt  basic-type declarators ;
 
-    Where declarators are the same as for other uniform variable declarations, 
+    Where declarators are the same as for other uniform variable declarations,
     except initializers are not allowed. Layout qualifiers are defined in the
-    next section. 
+    next section.
 
-    For example, 
+    For example,
 
-        uniform Transform { 
-            mat4 ModelViewMatrix; 
-            mat4 ModelViewProjectionMatrix; 
-            uniform mat3 NormalMatrix;      // reuse of uniform is optional 
-            float Deformation; 
-        }; 
+        uniform Transform {
+            mat4 ModelViewMatrix;
+            mat4 ModelViewProjectionMatrix;
+            uniform mat3 NormalMatrix;      // reuse of uniform is optional
+            float Deformation;
+        };
 
     The above establishes a uniform block named "Transform" with four uniforms
-    grouped inside it. 
+    grouped inside it.
 
     The names declared inside the block are accessed as if they were declared
     outside the block. In no way does the shader ever access block members
-    through any use of block-name. 
+    through any use of block-name.
 
     Uniform block names and variable names declared within uniform blocks are
     scoped at the program level. Matching block names from multiple compilation
     units in the same program must match in terms of having the same number of
     declarations with the same sequence of types and the same sequence of member
-    names, as well as having the same member-wise layout qualification (see next 
-    section). Any mismatch will generate a link error. 
+    names, as well as having the same member-wise layout qualification (see next
+    section). Any mismatch will generate a link error.
 
     Sampler types are not allowed inside of uniform blocks. All other types,
     arrays, and structures allowed for uniforms are allowed within a uniform
-    block. 
+    block.
 
     There is an implementation-dependent limit on the number of uniform blocks
     that can be used per stage. If this limit is exceeded, it will cause a link
-    error. 
+    error.
 
     4.3.5.2 Uniform Block Layout Qualifiers
 
-    The layout-qualifier-id-list for uniform blocks is a comma separated list of 
-    the following qualifiers: 
+    The layout-qualifier-id-list for uniform blocks is a comma separated list of
+    the following qualifiers:
 
-        shared        (default) 
-        packed 
-        std140 
-        row_major 
-        column_major  (default) 
+        shared        (default)
+        packed
+        std140
+        row_major
+        column_major  (default)
 
     These qualifiers are identifiers, not keywords. None of these have any
     semantic affect at all on the usage of the variables being declared; they
     only describe how data is laid out in memory. For example, matrix semantics
     are always column-based, as described in the rest of this specification, no
-    matter what layout qualifiers are being used. 
+    matter what layout qualifiers are being used.
 
     Uniform block layout qualifiers can be declared at global scope, on a single
-    uniform block, or on a single block member. 
+    uniform block, or on a single block member.
 
     At global scope, it is an error to use layout qualifiers to declare a
     variable. Instead, at global scope, layout qualifiers apply just to the
     keyword uniform and establish default qualification for subsequent blocks:
 
-        layout-defaults : 
-            layout-qualifier uniform ; 
+        layout-defaults :
+            layout-qualifier uniform ;
 
-    When this is done, the previous default qualification is first inherited and 
+    When this is done, the previous default qualification is first inherited and
     then overridden as per the override rules listed below for each qualifier
     listed in the declaration. The result becomes the new default qualification
-    scoped to subsequent uniform block definitions. Layout defaults can only be 
-    specified at global scope. 
+    scoped to subsequent uniform block definitions. Layout defaults can only be
+    specified at global scope.
 
-    The initial state of compilation is as if the following were declared: 
+    The initial state of compilation is as if the following were declared:
 
-        layout(shared, column_major) uniform; 
+        layout(shared, column_major) uniform;
 
     Explicitly declaring this in a shader will return defaults back to their
-    initial state. 
+    initial state.
 
     Uniform blocks can be declared with optional layout qualifiers, and so can
     their individual member declarations. Such block layout qualification is
     scoped only to the content of the block. As with global layout declarations,
-    block layout qualification first inherits from the current default 
+    block layout qualification first inherits from the current default
     qualification and then overrides it. Similarly, individual member layout
     qualification is scoped just to the member declaration, and inherits from
-    and overrides the block's qualification. 
+    and overrides the block's qualification.
 
     The shared qualifier overrides only the std140 and packed qualifiers; other
     qualifiers are inherited. The compiler/linker will ensure that multiple
     programs and programmable stages containing this definition will share the
     same memory layout for this block, as long as they also matched in their
     row_major and/or column_major qualifications. This allows use of the same
-    buffer to back the same block definition across different programs. 
+    buffer to back the same block definition across different programs.
 
     The packed qualifier overrides only std140 and shared; other qualifiers are
     inherited. When packed is used, no shareable layout is guaranteed. The
@@ -1397,13 +1397,13 @@ OpenGL Shading Language Spec v1.20.8 Updates
     get used and on other criteria. Offsets must be queried, as there is no
     other way of guaranteeing where (and which) variables reside within the
     block. Attempts to share a packed uniform block across programs or stages
-    will generally fail. However, implementations may aid application management 
-    of packed blocks by using canonical layouts for packed blocks. 
+    will generally fail. However, implementations may aid application management
+    of packed blocks by using canonical layouts for packed blocks.
 
     The std140 qualifier overrides only the packed and shared qualifiers; other
     qualifiers are inherited. The layout is explicitly determined by this, as
     described in the API specification section 2.15.3.1.2. Hence, as in shared
-    above, the resulting layout is shareable across programs. 
+    above, the resulting layout is shareable across programs.
 
     Layout qualifiers on member declarations cannot use the shared, packed, or
     std140 qualifiers. These can only be used at global scope or on a block
@@ -1411,7 +1411,7 @@ OpenGL Shading Language Spec v1.20.8 Updates
 
     The row_major qualifier overrides only the column_major qualifier; other
     qualifiers are inherited. It only affects the layout of matrices. Elements
-    within a matrix row will be contiguous in memory. 
+    within a matrix row will be contiguous in memory.
 
     The column_major qualifier overrides only the row_major qualifier; other
     qualifiers are inherited. It only affects the layout of matrices. Elements
@@ -1419,32 +1419,32 @@ OpenGL Shading Language Spec v1.20.8 Updates
 
     When multiple arguments are listed in a layout declaration, the affect will
     be the same as if they were declared one at a time, in order from left to
-    right, each in turn inheriting from and overriding the result from the 
-    previous qualification. 
+    right, each in turn inheriting from and overriding the result from the
+    previous qualification.
 
-    For example 
+    For example
 
-        layout(row_major, column_major) 
+        layout(row_major, column_major)
 
-    results in the qualification being column_major. Other examples: 
+    results in the qualification being column_major. Other examples:
 
         layout(shared, row_major) uniform; // default is now shared & row_major
- 
-        layout(std140) uniform Transform { // layout of this block is std140 
-            mat4 M1;                       // row_major 
-            layout(column_major) mat4 M2;  // column major 
-            mat3 N1;                       // row_major 
-        }; 
 
-        uniform T2 {  // layout of this block is shared 
-            ... 
+        layout(std140) uniform Transform { // layout of this block is std140
+            mat4 M1;                       // row_major
+            layout(column_major) mat4 M2;  // column major
+            mat3 N1;                       // row_major
         };
- 
-        layout(column_major) uniform T3 {  // shared and column_major 
-            mat4 M3;                       // column_major 
-            layout(row_major) mat4 m4;     // row major 
-            mat3 N2;                       // column_major 
-        }; 
+
+        uniform T2 {  // layout of this block is shared
+            ...
+        };
+
+        layout(column_major) uniform T3 {  // shared and column_major
+            mat4 M3;                       // column_major
+            layout(row_major) mat4 m4;     // row major
+            mat3 N2;                       // column_major
+        };
 
 Interactions with OpenGL 3.0
 
@@ -1467,8 +1467,8 @@ Interactions with OpenGL 3.0
 
         to
 
-    "When a program is successfully linked, all active uniforms belonging to 
-    the program object's default uniform block are initialized as defined by 
+    "When a program is successfully linked, all active uniforms belonging to
+    the program object's default uniform block are initialized as defined by
     the version of the OpenGL Shading Language used to compile the program. A
     successful link will also generate a location for each active uniform in
     the default uniform block. The values of active uniforms in the default
@@ -1504,7 +1504,7 @@ Interactions with EXT_texture_buffer_object
 Interactions with EXT_texture_integer
 
     If EXT_texture_integer is not available, then all of the types in
-    table 2.utype with UNSIGNED_INT or INT_SAMPLER in their names should 
+    table 2.utype with UNSIGNED_INT or INT_SAMPLER in their names should
     be omitted.
 
 Interactions with ARB_geometry_shader4
@@ -1522,7 +1522,7 @@ Errors
 
     The error INVALID_OPERATION is generated by BindBufferRange and
     BindBufferBase if <buffer> is not the name of a valid buffer object.
-    
+
     The error INVALID_VALUE is generated by GetUniformIndices,
     GetActiveUniformsiv, GetActiveUniformName, GetUniformBlockIndex,
     GetActiveUniformBlockiv, GetActiveUniformBlockName, and
@@ -1548,7 +1548,7 @@ Errors
     <uniformBlockIndex> is greater than or equal to ACTIVE_UNIFORM_BLOCKS.
 
     The error INVALID_VALUE is generated by UniformBlockBinding if
-    <uniformBlockBinding> is greater than or equal to 
+    <uniformBlockBinding> is greater than or equal to
     MAX_UNIFORM_BUFFER_BINDINGS.
 
     The error INVALID_VALUE is generated by BindBufferRange and BindBufferBase
@@ -1575,9 +1575,9 @@ New State
     UNIFORM_BUFFER_BINDING             nxZ+  GetIntegeri_v            0       Uniform buffer object      2.15.3 -
                                                                               bound to the specified
                                                                               context binding point
-                                                                              
+
     ACTIVE_UNIFORM_BLOCKS              Z+    GetProgramiv             0       Number of active           2.15.3 -
-                                                                              uniform blocks in a 
+                                                                              uniform blocks in a
                                                                               program
 
     ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH
@@ -1587,13 +1587,13 @@ New State
     UNIFORM_TYPE                    0*xZ_27  GetActiveUniformsiv      -       Type of active uniform     2.15.3 -
 
     UNIFORM_SIZE                       0*xZ+ GetActiveUniformsiv      -       Size of active uniform     2.15.3 -
-    
+
     UNIFORM_NAME_LENGTH                0*xZ+ GetActiveUniformsiv      -       Uniform name length        2.15.3 -
 
     UNIFORM_BLOCK_INDEX                0*xZ  GetActiveUniformsiv      -       Uniform block index        2.15.3 -
-        
+
     UNIFORM_OFFSET                     0*xZ  GetActiveUniformsiv      -       Uniform buffer offset      2.15.3 -
-    
+
     UNIFORM_ARRAY_STRIDE               0*xZ  GetActiveUniformsiv      -       Uniform buffer array       2.15.3 -
                                                                               stride
 
@@ -1614,32 +1614,32 @@ New State
 
 
     UNIFORM_BLOCK_ACTIVE_UNIFORMS      0*xZ+ GetActiveUniformBlockiv  -       Count of active            2.15.3 -
-                                                                              uniforms in 
-                                                                              the specified 
+                                                                              uniforms in
+                                                                              the specified
                                                                               uniform block
 
     UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES
                                     0*xnxZ+  GetActiveUniformBlockiv  -       Array of active            2.15.3 -
                                                                               uniform indices of
-                                                                              the specified 
+                                                                              the specified
                                                                               uniform block
 
     UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER
                                        0*xB  GetActiveUniformBlockiv  0       TRUE if uniform block      2.15.3 -
-                                                                              is actively 
-                                                                              referenced by the 
+                                                                              is actively
+                                                                              referenced by the
                                                                               vertex shader
 
     UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER
                                        0*xB  GetActiveUniformBlockiv  0       TRUE if uniform block      2.15.3 -
-                                                                              is actively 
-                                                                              referenced by the 
+                                                                              is actively
+                                                                              referenced by the
                                                                               geometry shader
 
     UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER
                                        0*xB  GetActiveUniformBlockiv  0       TRUE if uniform block      2.15.3 -
-                                                                              is actively 
-                                                                              referenced by the 
+                                                                              is actively
+                                                                              referenced by the
                                                                               fragment shader
 
 New Implementation Dependent State
@@ -1648,15 +1648,15 @@ New Implementation Dependent State
     Get Value                                       Type  Get Command  Value    Description                  Sec     Attribute
     --------------------------------                --    -----------  -----    -------------------------    -----   ----------
     MAX_VERTEX_UNIFORM_BLOCKS                       Z+    GetIntegerv   12      Maximum number of vertex     2.15.3  -
-                                                                                uniform buffers per 
+                                                                                uniform buffers per
                                                                                 program
 
     MAX_FRAGMENT_UNIFORM_BLOCKS                     Z+    GetIntegerv   12      Maximum number of fragment   2.15.3  -
-                                                                                uniform buffers per 
+                                                                                uniform buffers per
                                                                                 program
 
     MAX_GEOMETRY_UNIFORM_BLOCKS                     Z+    GetIntegerv   12      Maximum number of geometry   2.15.3  -
-                                                                                uniform buffers per 
+                                                                                uniform buffers per
                                                                                 program
 
     MAX_COMBINED_UNIFORM_BLOCKS                     Z+    GetIntegerv   36      Maximum number of uniform    2.15.3  -
@@ -1743,7 +1743,7 @@ Sample Code
     GLsizei uniformBlockSize;
     GLint singleSize, offset;
 
-    GLfloat colors[] = 
+    GLfloat colors[] =
     {
         0.45,0.45,1,1,
         0.45,0.45,1,1,
@@ -1758,11 +1758,11 @@ Sample Code
         hf = (GLfloat) height;
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(60.0, wf/hf, 0.1, 100.0);    
+        gluPerspective(60.0, wf/hf, 0.1, 100.0);
     }
 
     void init_opengl()
-    {    
+    {
         reshape(width, height);
         //load_shader and link_program are utility functions omitted here
         vshad_id = load_shader(GL_VERTEX_SHADER, "gooch.vs");
@@ -1771,21 +1771,21 @@ Sample Code
         glAttachShader(prog_id, vshad_id);
         glAttachShader(prog_id, fshad_id);
         link_program(prog_id);
-        
+
         //Update the uniforms using ARB_uniform_buffer_object
         glGenBuffers(1, &buffer_id);
 
-        //There's only one uniform block here, the 'colors0' uniform block. 
+        //There's only one uniform block here, the 'colors0' uniform block.
         //It contains the color info for the gooch shader.
         uniformBlockIndex = glGetUniformBlockIndex(prog_id, "colors0");
-        
+
         //We need to get the uniform block's size in order to back it with the
         //appropriate buffer
         glGetActiveUniformBlockiv(prog_id, uniformBlockIndex,
                                      GL_UNIFORM_BLOCK_DATA_SIZE,
                                      &uniformBlockSize);
         glError();
-        
+
         //Create UBO.
         glBindBuffer(GL_UNIFORM_BUFFER, buffer_id);
         glBufferData(GL_UNIFORM_BUFFER, uniformBlockSize,
@@ -1802,11 +1802,11 @@ Sample Code
         glGetUniformIndices(prog_id, 1, &names[2], &index);
         glGetActiveUniformsiv(prog_id, 1, &index,
                                  GL_UNIFORM_OFFSET, &offset);
-        
+
         glGetActiveUniformsiv(prog_id, 1, &index,
                                  GL_UNIFORM_SIZE, &singleSize);
         glError();
-        
+
         glViewport(0, 0, width, height);
     }
 
@@ -1814,7 +1814,7 @@ Sample Code
     {
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
-        
+
         glUseProgram(prog_id);
 
         glEnable(GL_DEPTH_TEST);
@@ -1842,7 +1842,7 @@ Sample Code
             init_opengl();
             initialized = 1;
         }
-        
+
         render();
     }
 
@@ -1855,7 +1855,7 @@ Sample Code
     // Copyright (c) 2002-2006 3Dlabs Inc. Ltd.
     // See 3Dlabs-License.txt for license information
 
-    vec3 LightPosition = vec3(0.0, 10.0, 4.0); 
+    vec3 LightPosition = vec3(0.0, 10.0, 4.0);
 
     varying float NdotL;
     varying vec3  ReflectVec;
@@ -1892,7 +1892,7 @@ Sample Code
     void main (void)
     {
         vec3 kcool    = min(CoolColor + DiffuseCool * SurfaceColor, 1.0);
-        vec3 kwarm    = min(WarmColor + DiffuseWarm * SurfaceColor, 1.0); 
+        vec3 kwarm    = min(WarmColor + DiffuseWarm * SurfaceColor, 1.0);
         vec3 kfinal   = mix(kcool, kwarm, NdotL);
 
         vec3 nreflect = normalize(ReflectVec);
@@ -1965,7 +1965,7 @@ Examples
 
 Issues
 
-    (1) How are offsets to elements in a uniform buffer correlated to 
+    (1) How are offsets to elements in a uniform buffer correlated to
     uniform locations?
 
         Resolved: Traditional uniform locations were used in the glUniform
@@ -1999,7 +1999,7 @@ Issues
     (4) Should a uniform buffer be split into multiple uniform buffers
     on a per data type basis to simplify the buffer offset interface ?
 
-        Resolved: No.  This violates the intended "generic data store" 
+        Resolved: No.  This violates the intended "generic data store"
         convention of buffer objects.  Users of this extension are free
         to group their uniform definitions on a per data-type basis in
         this manner and, indeed, it may, on some implementations, result
@@ -2011,26 +2011,26 @@ Issues
         Resolved:  No, this extension does not change the per-program
         scope of uniforms.  Uniforms in a uniform block, like traditional
         GLSL uniforms, are global to a program object.
-        
+
         It's tricky because allowing uniforms to have per-stage scope
         exposes both a feature and the possibility for an application
         programming error.
-        
+
         feature:  an application that wants to use a uniform "foo" in two
                   stages and wants uniform "foo" has different layouts
                   and/or values in each stage (or possibly simply does not
                   care if they do)
         vs.
-        
+
         error: an application that wants to use a uniform "foo" in two
                stages and does not want them to have different values, but
                *accidentally* defines "foo" in each stage differently or
                binds different uniform buffers to each stage.
-    
+
         Rather than enable this feature (and simultaneously add possibility
         for error) in this extension, we defer the choice to a future
         extension.
-    
+
         Note however, some of the motivation for a per-stage scope for
         uniform names comes from a broader desire to augment the GLSL API
         with a set of per-stage program objects that do not need to be
@@ -2039,7 +2039,7 @@ Issues
         extension could, if desired, add syntax to the GLSL to allow any
         uniform (uniform block or default) to be defined with "per-stage" scope
         in a more comprehensive way.
-    
+
 
     (6) Should AttachUniformBuffer take a <program> argument?
 
@@ -2047,16 +2047,16 @@ Issues
         the additional ability to attach a uniform buffer object directly
         to a progam's uniform blocks instead of going through the per-context
         uniform buffer binding points.
-        
+
         This feature has been deferred, possibly to be added in a future
         extension.
-        
+
         If this routine were to be added and does not take a program
         argument, then it should work on the currently bound program
         object, and its name should be changed to
         ProgramUniformBuffer, to conform to precedent set by
         FramebufferTexture, et. all.
-    
+
         Alternately, if AttachUniformBuffer requires a program
         argument, it would be for consistency with existing C API to
         GLSL (i.e., those that attach shaders to program objects and
@@ -2074,31 +2074,31 @@ Issues
         uniforms because they provide a more efficient update mechanism
         to specify uniforms.  Uniform block indices have been used in
         this extension for the same reason.
-        
+
         The location API not used by this extension and is only relevant for
         the glUniform* API.
-    
+
         RESOLUTION: RESOLVED, moot.
 
 
     (8) What is the order of operations under which a uniform buffer
     association is made with a program (or shader)?
-    
+
         It is known that at very least, that the uniform buffer
-        offsets and strides will be known at link time.  Does the 
-        uniform buffer need to be attached to the program prior to linking in 
-        order to keep these offsets constant or can a uniform buffer be 
-        bound to a program at any time post-link effectively acting as 
+        offsets and strides will be known at link time.  Does the
+        uniform buffer need to be attached to the program prior to linking in
+        order to keep these offsets constant or can a uniform buffer be
+        bound to a program at any time post-link effectively acting as
         substitute storage for the uniform data?
-    
+
         RESOLVED:  Uniform buffer objects are bound to the context's
-        uniform buffer binding points, and this can happen at any time. 
+        uniform buffer binding points, and this can happen at any time.
         However, the association of a program's uniform block to the context's
         uniform buffer binding points can only happen after linking because only
         then are uniform block indices known.
 
 
-    (9) Can the existing Uniform API be used to update values in a 
+    (9) Can the existing Uniform API be used to update values in a
     uniform buffer?
 
         Resolved: No.  The Uniform* API won't update values in a uniform buffer,
@@ -2107,9 +2107,9 @@ Issues
 
 
     (10) When is the size of a uniform block's storage known?
-    
+
         Resolved:  Only after linking.
-        
+
         Once a program is linked, the storage needed for a given uniform
         block can be determined by querying for
         UNIFORM_BLOCK_DATA_SIZE.
@@ -2118,7 +2118,7 @@ Issues
         bound to the associated uniform buffer binding point can provide,
         results are undefined.  This is no different than fetching off the end
         of an array.
-        
+
 
     (11) Is it an error to call AttachUniformBuffer prior to
     linking the program designated by <program>?
@@ -2133,8 +2133,8 @@ Issues
         uniform block indices.
 
 
-    (12) Some hardware does not support some of the GLSL data types 
-    natively (bools or ints perhaps). What limitations do we have in 
+    (12) Some hardware does not support some of the GLSL data types
+    natively (bools or ints perhaps). What limitations do we have in
     exposing the raw uniform data storage via the buffer object API ?
 
         Resolved:  None, but note that some implementations without
@@ -2143,7 +2143,7 @@ Issues
 
         Also, queries are provided to expose the layout of the buffer
         objects to allow the buffers to be packed properly.
- 
+
 
     (13) Are there expected limitations for dead uniform elimination
     using this extension?
@@ -2185,14 +2185,14 @@ Issues
         UNIFORM_ARRAY_STRIDE with GetActiveUniformsiv.
 
 
-    (15) How are the values from static initializer values propagated 
+    (15) How are the values from static initializer values propagated
     to a buffer object once it is attached?
 
         Resolved:  Static initialization values declared in a shader mapped
         to a uniform buffer are disallowed by the grammar and must be
         established through writes to the uniform buffer.
 
-    
+
     (16) Is GetUniformBlockIndex needed?  This information can be
     obtained (in reverse mapping) from GetActiveUniformBlock.
 
@@ -2230,7 +2230,7 @@ Issues
 
         RESOLUTION: No queries will be introduced. Implementations that cannot
         handle the prescribed storage formats must convert as necessary.
-        
+
         See also issue (48)
 
 
@@ -2244,7 +2244,7 @@ Issues
 
 
     (22) How does the program notice new changes to the uniform buffer object?
-    
+
         Should we add a new "UpdateUniforms()" call or use
         AttachUniformBuffer(), or UseProgram() to realize changes.
 
@@ -2252,14 +2252,14 @@ Issues
         noticed, the buffer object in question must be re-bound or
         re-attached if the changes to the buffer object come from another
         context.
-        
+
         If the changes come from this context, then the intent is to
         follow the general object model decision here that governs how
         child/container object state changes are made.
-        
+
         [Currently, this means that changes by this context will be
         noticed at next draw time, at the latest].
-    
+
 
     (23) The naming convention choosen for GetActiveUniformsiv and
     GetActivePartitionsiv is not a simple matter.
@@ -2310,24 +2310,24 @@ Issues
         application is not required to similarly query UNIFORM_START, the
         compiler must be prevented from eliminating elements from the start of
         an array.
-    
+
         For example, if an application declares "uniform float myFloat[10];" and
         accesses only the single element myFloat[7] in the shader text, the
         compiler may eliminate elements 8-9 only.  Querying UNIFORM_SIZE
         will give 8, and UNIFORM_OFFSET will give the offset of element 0.
-    
+
         If we add UNIFORM_START, in this example, querying
         UNIFORM_SIZE will give 1, UNIFORM_START will give 7, and
         UNIFORM_OFFSET will give the offset of element 7 in the uniform
         buffer.
-    
+
         Purely for symmetry, it seems that the compiler should be as free to
         strip leading elements as it is to strip trailing elements.
-        
+
         After additional discussions, however, the working group decided
         not to introduce this complexity.  This feature could be layered
         as an additional extension if desired.
-    
+
         RESOLUTION: RESOLVED
 
 
@@ -2340,21 +2340,21 @@ Issues
 
     (26) Should we make any guarantees about the ordering of uniforms in the
     active uniform array, relative to their uniform block number?
-    
+
         It might be useful to guarantee that the ordering of the
         uniforms in the active uniform array is such that all uniforms
         in a single uniform block form a contiguous subrange of the
         active uniform array.
-    
+
         On the other hand, just knowing the order is probably not enough
         since you need to know offsets/strides, packing, etc.
-    
-        This extension provides uniform block-based uniform updates. 
+
+        This extension provides uniform block-based uniform updates.
         This level of organization is efficient and requires no further
         augmentation as this issue suggests.
 
         RESOLUTION: RESOLVED, no
-    
+
 
     (27) What is the difference between
     MAX_LOGICAL_UNIFORM_BUFFERS and
@@ -2387,17 +2387,17 @@ Issues
     operation, yet uniforms are not guaranteed to be tightly packed, how
     can one reasonably use transform feedback to populate uniform
     buffers?
-    
+
         DISCUSSION:  As it stands, existing implementations pack uniform
         definitions on 16 byte boundaries, 4 byte boundaries or are tightly
         packed.  If this is known for a given implementation, uniform
         declarations could of course be made such that they lined up on these
         boundaries. However, without a dedicated queryable interface in the GL
         C API, there is no way to guarantee the portability of this logic.
-    
+
         RESOLUTION: resolved, compatibility with XFB output is only guaranteed
         for vec4 types in a "std140" layout uniform block:
-        
+
         In order to facilitate the read-only nature of uniform and
         transform feedback data formatting, we've added to this
         specification a uniform buffer "std140" layout qualifier guarantee of
@@ -2407,7 +2407,7 @@ Issues
         data arrangement, declaring their uniforms accordingly, to allow
         ARB_uniform_buffer_object and EXT_transform_feedback to
         interoperate.
-    
+
 
     (30) Should the "active" keyword in shader text be declared per uniform or
     per uniform block ?
@@ -2416,119 +2416,119 @@ Issues
         different syntax in the GLSL.  Earlier versions of this spec
         leveraged the concept of 'active' uniforms from GLSL that were
         defined with the initial GLSL API.
-        
+
         The discussion that follows pertains to a feature where the user can
         declare uniforms and uniform blocks as active explicitly.
 
         DISCUSSION:  Declaring a uniform active has the advantages of simplicity
-        and little additional spec language to describe behavior.  When a 
+        and little additional spec language to describe behavior.  When a
         uniform is declared active, all of its members are considered active
         (for structs and arrays) and therefore the arrangement of the data in
         that uniform can be guaranteed to be consistent.  Consistency of this
-        uniform data arrangement can be used to share the uniform across muliple 
+        uniform data arrangement can be used to share the uniform across muliple
         programs without worrying about dead code elimination changing the
         offsets and strides of uniform data.
-    
+
         Declaring uniform blocks active has some of the advantages that were
-        primary motivating factors for this specficiation being written.  
+        primary motivating factors for this specficiation being written.
         Namely, that uniforms did not have to be aggregated into structures in
         order to update them efficiently.  In this case, uniforms don't have to
         be aggregated into structs in order to share them easily.  Another
         advantage is the logical distinction of a group of shared uniforms that
         is analogous to how the uniform buffer object, also a shared entity,
         that backs them.
-    
+
         If a uniform uniform block is declared active, all uniforms therein are
         considered active.  It is presumed under this model, that an advisable
         usage pattern would be to gather the declaration of shared uniforms of
         multiple shaders into an atomic shader source call.  Then each
         individual shader would carry declarations of uniforms unique to
-        themselves.  
-    
+        themselves.
+
         GLSL allows piecewise declaration of uniforms in multiple modules in a
         program.  Piecewise declaration of shared uniform blocks carries with it
         some difficulties because missing pieces can change the layout of the
         uniform block.
-    
-            A) Should we disallow piecewise construction of uniform blocks 
+
+            A) Should we disallow piecewise construction of uniform blocks
             declared active by setting a compile time error if this is
             attempted ?
-    
+
             RESOLVED: Yes, piecewise construction of uniform blocks will be
             allowed.
-    
-        Proposal for active uniform block demarcation:  
-    
+
+        Proposal for active uniform block demarcation:
+
         Active uniform blocks are declared as followed:
-    
+
         active uniform block foo;
-    
+
         uniform <type> a;
         uniform <type> b;
         uniform <type> c;
-    
+
         uniform block;
-    
+
         The first uniform block delimiter names the uniform block.  The second
-        uniform block, with no name argument, terminates the "foo" uniform block 
+        uniform block, with no name argument, terminates the "foo" uniform block
         and indicates that any subsequent uniform definition will be part of the
         default uniform block.
-    
+
         Subsequent declarations referring to uniform block "foo" augment the
-        contents of the uniform block.  These subsequent declarations, of 
-        course, can appear within the same shader or within other shader sources 
+        contents of the uniform block.  These subsequent declarations, of
+        course, can appear within the same shader or within other shader sources
         in the same program.
-    
+
         This aggregation mechanism, and the use of piece-wise definitions of
         uniform blocks, has sharing implications.
-    
+
         Considering the following example:
-    
+
         *****************************
         PROGRAM A Text:
-    
+
         active uniform block foo;
-    
+
         uniform <type> a;
         uniform <type> b;
-    
+
         uniform block;
-    
-    
+
+
         *****************************
         PROGRAM B Text:
-    
+
         active uniform block foo;
-    
+
         uniform <type> b;
         uniform <type> a;
-    
+
         uniform block;
-    
+
         ... some place later in the program text
-    
+
         active uniform block foo;
-    
+
         uniform <type> e;
         uniform <type> d;
-    
+
         uniform block;
         *****************************
-    
+
         Both the order and the number of uniforms in the aggregate definition of
         'foo' in program B must be considered for sharing the uniform buffer
         backing A & B corresponding to uniform block 'foo'.
-    
+
         First, order.  To avoid potential confusion with order of declarations
         of uniforms, all uniforms declared in a uniform block will be sorted in
         an implementation defined manner.  By doing so, the implementation will
         allow sharing of uniform buffers with identical uniform declarations by
         name, type and number, but arranged in different orders.
-    
+
         Second, mismatches in declarations of uniforms within 'foo' between two
         different programs.  Because uniforms are sorted, partial matches of
         uniform declarations within uniform blocks are not guaranteed to have
-        the same offsets when the buffer is bound to different programs.  In our 
+        the same offsets when the buffer is bound to different programs.  In our
         example, there are no guarantees that the offset of uniform 'a' and the
         offset of uniform 'b' would be the same in uniform block foo of program
         'A' when compared to program 'B'.  Applications must therefore use care
@@ -2537,7 +2537,7 @@ Issues
         themselves between uniform block declarations will result in offsets
         without correlation and application errors should be expected if any
         assumptions about these offsets is made otherwise.
-    
+
         This sharing behavior if of particular significance when defining
         shaders as it suggests that the shaders themselves, if they choose to
         define uniform blocks piecewise across given program text.  This sharing
@@ -2549,19 +2549,19 @@ Issues
         as a header file where the uniform block definition is guaranteed to be
         the same when used in multiple programs thus allowing sharing and
         consistent offsets.
-    
+
         RESOLUTION: RESOLVED
-    
+
         Partitions, uniforms, and varyings can all have the "active" keyword
         applied to them.  See rules q - t in the rules and concepts list
         following the opening summary to this spec.
-    
-        The resolution of issue (34) to use struct-like syntax for uniform block 
+
+        The resolution of issue (34) to use struct-like syntax for uniform block
         definition closes the issue on piecewise definition of uniform blocks
         discussed above.
 
 
-    (31) ActiveVaryingNV() uses the GL C API to declare a varying active in 
+    (31) ActiveVaryingNV() uses the GL C API to declare a varying active in
     contrast to declaring uniforms/uniform uniform blocks active as suggested in
     this specification.  Is this inconsistency a concern ?
 
@@ -2569,9 +2569,9 @@ Issues
 
         Earlier versions of this spec declared uniforms and uniform blocks
         as active, and optionally extended this to varyings as well.
-        
+
         Later versions of this spec deferred this concept out of the extension.
-    
+
         The declaring a varying as active via function call requires
         that this call is made prior to link time and that it identifies
         the varying using a name string.  It is more efficient to manage
@@ -2586,12 +2586,12 @@ Issues
     uniform name doesn't exist to follow this precedent ?
 
         RESOLUTION: RESOLVED
-    
+
         This specification uses indices which are unsigned integers and
         therefore our unsigned value of 0xFFFFFFFF is not called "-1"
         but acts effectively the same on platforms where GLint is
         32-bit twos-complement.
-        
+
         Also note, uniform (and varying locations) are signed which
         allows them to use -1 as a signifier, but uniform (and uniform
         block) indices are unsigned because they are used to iterate
@@ -2605,16 +2605,16 @@ Issues
 
         When used with 3.1 (where display lists have been removed
         altogether) obviously, this question is moot.
-        
+
         For GL 2.0/3.0, this should be resolved with the following
         precedents:
-        
+
         BindUniformBlock should follow the precedent of BindBufferRange,
         which does not get included in display lists.
 
         UniformBlockBinding should follow the precedent of glUniform (for
         setting samplers) which *does* get included in display lists.
-        
+
         Note, the GL 2.1 spec says (p.244, section 5.4) that "GL
         commands that source data from buffer objects dereference the
         buffer object data in question at display list compile time,
@@ -2622,13 +2622,13 @@ Issues
         display list. Only GL commands that are executed immediately,
         rather than being compiled into a display list, are permitted to
         use a buffer object as a data sink."
-        
+
         The same rules would affect uniform blocks sourcing data from
         buffer objects.
-        
+
         So this basically means that only BindUniformBlock is excluded,
         (since all queries are already excluded), however see issue (55).
-        
+
         Since we use the BindBufferRange API introduced by OpenGL 3.0, and
         those routines are already excluded, there's no additions to the
         display list exclusion list needed.
@@ -2637,39 +2637,39 @@ Issues
     (34) What should the syntax of uniform block demarcation be ?
 
         DISCUSSION: The two following syntaxes were considered:
-    
+
         uniform block foo;
-    
+
         uniform <type> a;
         uniform <type> b;
-    
+
         uniform block;
-    
+
         In this example, the "uniform block" keyword both opens and closes the
         uniform block.
-    
+
         Second, a struct-like syntax:
-        
+
             uniform myUniformBlock
             {
                 int a;
                 vec4 b;
-            };  
-        
+            };
+
         and
-        
+
             packed uniform myUniformBlock
             {
                 int a;
                 vec4 b;
-            };  
-       
+            };
+
         where "packed" means that the uniform block might be optimized by the
         compiler to eliminate/re-order uniforms.
-        
+
         This is functionally equivalent to the current uniform block
         syntax in this spec.
-    
+
         RESOLUTION:  RESOLVED, using the "struct-like" syntax above.
 
 
@@ -2677,71 +2677,71 @@ Issues
     programs themselves ?
 
         DISCUSSION:
-    
+
         Attaching UBOs to programs versus the context has the following
         advantages:
-    
+
             UBOs and programs have natural encapsulation boundaries that
             fit with the conventions of object-oriented design
             programming.
-    
+
         Alternately, binding UBOs to the context has the following advantages:
-    
+
             Migration to the possible program environment object design
             expected in future versions of OpenGL will be handled more
             easily and won't require a semantics change because these
             context bindings will all be moved collectively to the PEO
             and UBO attachments will not have to be handled as a
             "special case" item.
-        
+
         If we support per-context per-stage bindings, then we'll need the
         following additions to this extension:
-        
+
             - a set number of binding points on the context for each stage
               (vertex/fragment/geometry)
                 VERTEX_SHADER_BINDING_0..n
                 GEOMETRY_SHADER_BINDING_0..n
                 FRAGMENT_SHADER_BINDING_0..n
-                
-              or alternately, a unified set of per context bindings 
+
+              or alternately, a unified set of per context bindings
                 SHADER_BINDING_0..n
 
             - a new routine to bind a UBO to a per-stage context binding point
                 BindUniformBuffer(enum target, uint uniformBlockIndex,
                                      uint buffer);
-    
+
             - a new routine that defines the mapping of a uniform block name
             string to a per-stage binding point index
                 void UniformBlockBinding(uint program, uint unit,
                     const char* name);
 
 
-        RESOLUTION: RESOLVED, 
-        
+        RESOLUTION: RESOLVED,
+
         Note per-context and per-program bindings serve two distinct use cases.
-        
+
         Per-context:  assumes that there is generally many to one mapping
         between programs and given set of uniform buffers.
-    
+
         Per-program:  assumes that there is a one to one mapping between
         programs and a given set of uniform buffers.
-    
+
         The original ARB "assembly-language" programming extensions serviced
         both use cases (with "program locals" and "program environment"
         parameters).
-    
+
         The GLSL programming API dropped the "program environment" /
         per-context storage of uniforms in favor of per-program only storage
         for uniforms.
-    
+
         This API currently supports only the context binding model, but
         a future extension could add the per-program-object bindings if
         desired.
-       
+
 
     (36) How is the query for MAX_{FRAGMENT|VERTEX}_UNIFORM_COMPONENTS
     affected by UBOs?
-    
+
         DISCUSSION:  MAX_{FRAGMENT|VERTEX}_UNIFORM_COMPONENTS traditionally
         referred to the limited amount of dedicated (often register based,
         sometimes per-stage) uniform storage.  For implementations that
@@ -2750,97 +2750,97 @@ Issues
         uniforms.  Instead it is quantified by two numbers: the number of
         separate buffers that can be read at one time (per stage), and the
         sizes of one of those buffers.
-    
+
         On the other hand for implementations that wish to support this
         extension but that still have this limited amount of dedicated
         uniform storage this single MAX_{FRAGMENT|VERTEX}_UNIFORM_COMPONENTS
         value is still valid.
-    
+
         RESOLUTION: Resolved, as follows:
 
         We added a new set of integer implementation-dependent queries, named
         MAX_COMBINED_{VERTEX|GEOMETRY|FRAGMENT}_UNIFORM_COMPONENTS. These
         would indicate the maximum total number of uniforms available between
         the default uniform block and all uniform blocks. For this ARB version
-        of the extension, the minimum maximum would be 
+        of the extension, the minimum maximum would be
         MAX_{VERTEX|GEOMETRY|FRAGMENT}_UNIFORM_COMPONENTS. For the 3.1 core
         version, the minimum maximum would be larger:
         MAX_{VERTEX|GEOMETRY|FRAGMENT}_UNIFORM_BLOCKS * MAX_UNIFORM_BLOCK_SIZE +
         MAX_{VERTEX|GEOMETRY|FRAGMENT}_UNIFORM_COMPONENTS.
 
-        
+
     (37) Do we need  MAX_{VERTEX|GEOMETRY|FRAGMENT}_UNIFORM_BUFFERS
     or can we merge these into a single value MAX_UNIFORM_BUFFERS that
     is the same for the 3 stages?
-    
+
         DISCUSSION:
-        
+
         3 separate queries is needed only if we think implementations would have
         different values for each stage.
-    
+
         RESOLUTION: currently 3 queries, plus a "combined" query.
-        
+
 
     (38) What's the deal with UniformBlockBinding()?  How does it
     work?  What is it for?
 
         DISCUSSION:
-        
+
         UniformBlockBinding can be defined in two different ways, depending on
         the precedent we'd like to use.
-        
+
         It can either be similar to a uniform sampler (i.e., an indirection
         table that can choose a particular buffer to use after linking), or
         an attribute location (i.e., an indirection table that can choose a
         particular buffer to use PRIOR to linking).
-    
+
         The current API chooses the former precedent (i.e., uniform
         samplers), and as a result, UniformBlockBinding can be called (in
         fact, must be called) after linking the program.
-    
+
         If we desired to change this behavior, we'd need to modify
         UniformBlockBinding to take a uniform block *name* intead of *index*,
         because a uniform block index is only defined post-link.
-    
+
         This is workable, but slightly less flexible for the developer, at
         the cost of an indirection.
-        
+
         RESOLUTION: Use the "sampler" precedent, UniformBlockBinding is
         called post link.
 
 
     (39) Does the matrix packing need to be "per program" state or "per
     implementation" state?
-    
+
         DISCUSSION:
-        
+
         Is the choice of matrix packing really "per program"?  If not,
         should we just use the per-context queries for this information? The
         former might be useful if we intend to expose some kind of
         per-program packing control in the shading language or API. If we
         don't, then the latter might be simpler.
-        
+
         Or do we think we might go further and make this per-uniform state
         in the future? if so, then the current per-program query is also
         insufficient.
-        
+
         After discussion with the working group, queries for
         matrix (and all other uniform layout) will be per-uniform, not
         per program, so these routines have been removed.
 
-        RESOLUTION: Resolved, this issue is moot.  
+        RESOLUTION: Resolved, this issue is moot.
 
 
     (40) Are uniform block indices assumed to be "tightly packed"?
-    
-        Yes, an implementation will assign consecutive indices to 
-        active uniform blocks, starting with zero. 
+
+        Yes, an implementation will assign consecutive indices to
+        active uniform blocks, starting with zero.
 
         Note that there is no prescribed ordering in which indices must be
         assigned. In other words, which uniform block indices are assigned to
         which uniform blocks is an implementation choice. An application must
         call GetUniformBlockIndex to find the mapping.
-        
+
         RESOLUTION: Resolved, yes.
 
 
@@ -2852,15 +2852,15 @@ Issues
         in the API spec and in the API names.  Currently we use "uniform
         block" for this, and the API seems to make sense, but could
         change if someone has a better name.
-    
+
         RESOLUTION: RESOLVED, yes.
-    
+
 
     (42) Should there be an "offset" for the base of the ubo so that an
     application can use collections uniforms within a buffer object?
-    
+
         DISCUSSION:
-        
+
         If we do this, we'd need an additional/augmented version of
         BindUniformBuffer that takes an offset, and a queriable required
         alignment for the offset.  See also issue 55.
@@ -2881,13 +2881,13 @@ Issues
     GL for the properties/names of multiple uniforms at one time?  Or
     can we simplify those apis to only query for the property/name of
     one uniform at a time?
-    
+
         DISCUSSION:  The multiquery apis are useful for getting lists of
         uniform data at once, but are more complicated (require arrays of
         pointers to output values).
-    
+
         Do we need these?
-    
+
         RESOLUTION: Resolved, we'll replace GetActiveUniformNames with
         GetActiveUniformName, but keep the rest which have solid use
         cases.
@@ -2907,11 +2907,11 @@ Issues
 
 
     (45) What is the default value of UNIFORM_BLOCK_BUFFER_BINDING?
-    
+
         This is moot without the AttachUniformBuffer API. This was the
         query for the uniform buffer object bound directly to a uniform
         block in the program object.
-        
+
         If we add this API in a future extension, it seems it should be
         zero. We would need for the spec to state the precedence of
         program attachments over context attachments.  I.e., if the
@@ -2920,22 +2920,22 @@ Issues
         uniform block uniform buffer binding, otherwise it comes from
         the  unit binding, and hence from the context that is currently
         using the program.
-    
+
         RESOLUTION.  RESOLVED, moot.
 
 
     (46) How do the logical/combined maximums for UBOs and textures
          relate to each other?
-    
+
         Textures have these queries:
-        
+
             MAX_TEXTURE_IMAGE_UNITS
                 maximum textures that can be used by the fragment stage.
 
             MAX_COMBINED_TEXTURE_IMAGE_UNITS
                 maximum textures that can be used by all program stages
                 at once.
-            
+
         Ideally, MAX_TEXTURE_IMAGE_UNITS would be called
         "MAX_FRAGMENT_TEXTURE_IMAGE_UNITS"
 
@@ -2950,13 +2950,13 @@ Issues
         context binding points for these other stages.
 
         This spec tries to avoid this problem with the following queries:
-        
+
             MAX_VERTEX_UNIFORM_BLOCKS
             MAX_GEOMETRY_UNIFORM_BLOCKS
             MAX_FRAGMENT_UNIFORM_BLOCKS
             MAX_COMBINED_UNIFORM_BLOCKS  (much like "combined" for textures)
             MAX_UNIFORM_BUFFER_BINDINGS  (# UBO binding points on context)
-            
+
         For symmetry, we'd recommend that we make a similar update to textures
         in the 3.1 spec:
 
@@ -2970,13 +2970,13 @@ Issues
         in the 3.1 API spec, deprecating the old names.
 
 
-    (47)  Is using a keyword to specify packed/shared/std140 the best way 
+    (47)  Is using a keyword to specify packed/shared/std140 the best way
     to manage uniform block packing?  What do they mean anyway?
-    
+
         DISCUSSION:
-        
+
         There are 3 use cases of interest:
-        
+
         "packed"
 
             - implementation may optimize the layout to remove inactive
@@ -2984,7 +2984,7 @@ Issues
               efficiency.
 
             - application must query the GL for the uniform block layout
-        
+
         "shared"
 
             - implementation may optimize the layout but must use the same
@@ -2992,16 +2992,16 @@ Issues
               by multiple shaders
 
             - application must query the GL for the uniform block layout
-            
-        
+
+
         "std140":
             - implementation must use a pre-determined layout, defined
               in this specification.
             - application need not query the implementation for layout
               information as it can be determined by reading the shader
               and the specification
-        
-        
+
+
         Other options considered included:
             - an API in the GL
             - a #pragma in the GLSL
@@ -3013,7 +3013,7 @@ Issues
         intial default.  These qualifiers can be used either within a uniform
         block declaration, or at global scope causing subsequent uniform blocks
         with unspecified layouts to adopt a new default layout.
-        
+
 
     (48)  What is the "std140" packing layout?
 
@@ -3025,7 +3025,7 @@ Issues
         The user would need to opt-in to this layout.
 
         We need to define what this layout looks like.
-        
+
         See also issue (20).
 
         RESOLUTION: resolved, standard layout is now in 2.15.3.1.2.
@@ -3066,17 +3066,17 @@ Issues
 
     (50) This extension needs to be sanitized to be written against
     the 2.1 and 3.0 core specs.  What are the differences?
-    
+
         Aside from the sanity checking for using the right
         section numbers and such, there are two other changes:
-        
+
         1) GetIntegeri_v doesn't exist in 2.0 so needs to be
         added by this extension for the 2.0 version
-        
+
         2) The "max components" query needs different behavior
         for a 2.1 vs. a 3.0/3.1 implementation.  See issue (36)
-        
-        
+
+
         RESOLUTION: Resolved, interactions section added which
         details the differences when OpenGL 3.0 is supported.
         Spec is written against OpenGL 2.1, so that's where the
@@ -3085,15 +3085,15 @@ Issues
 
     (51) Do we need to name the default uniform block with index 0 and
     name ""?
-    
-        This is done for symmetry and to allow iterating through 
+
+        This is done for symmetry and to allow iterating through
         all uniform blocks, including the default, and treat them
         similarly.
-        
+
         On the other hand, it's a little weird since the default
-        partition can not be used with a buffer object.  On the third hand, 
+        partition can not be used with a buffer object.  On the third hand,
         maybe some day we will allow that.
-        
+
         As a side note, if we go with a name, should it be "", or
         perhaps "gl_DefaultUniformBlock" or something like that.
 
@@ -3101,7 +3101,7 @@ Issues
         uniform block.  The default uniform block no longer needs a name.
         If the uniform block index is queried for a uniform that is associated
         with the default uniform block, -1 is returned.
-        
+
 
     (52) The current extension spec seems to specify "uint" indices, but
     the values in the queries such as GetActiveUniformBlockiv are
@@ -3110,21 +3110,21 @@ Issues
         Need to double check the APIs to see if we'd have to duplicate
         some or all of the queries to make them type safe for signed vs.
         unsigned ints.
-        
+
         RESOLUTION: resolved, No.  There are a few other places in the GL
         query APIs that already suffer from this problem.
 
 
     (53) What are the UNIFORM_BLOCK_REFERENCED_BY_*_SHADER queries used
     for?
-    
+
         The total number of uniform blocks in each stage may be subject
         to a per-stage limit on some implementations. These queries
         allow the user to query the program's uniform blocks to see
         which are used for each stage.
 
         RESOLUTION: resolved
-        
+
     (54) How do the APIs that use uniform locations relate to the
     uniforms in named uniform blocks?  And how do the APIs
     introduced by this extension relate to uniforms in the default
@@ -3135,21 +3135,21 @@ Issues
 
         However, the query APIs introduced by this extension can be used
         with all uniforms, including those in a default uniform block.
-        
-        RESOLUTION: resolved 
+
+        RESOLUTION: resolved
 
     (55) Should we use the BindBufferBase/BindBufferRange APIs that were
     introduced in GL 3.0 instead of BindUniformBuffer?
-    
+
         As defined, they'd work fine.
-        
+
         One side issue:  should the "offset" be part of the context binding?
         or should the uniform blocks get to each select their own
         offset within a single context binding?
-        
+
         If implementations can support the latter, it may allow
         applications to get by with fewer context bindings.
-        
+
         If not, then we should replace BindUniformBuffer with
         these routines, but for the 2.0 extension version we'd still
         need to add those routines and duplicate their spec language
@@ -3162,42 +3162,42 @@ Issues
 
     (56) Can a mapping from uniform block to uniform buffer object be
     queried?
-    
+
         On one hand, it seems like GetActiveUniformBlock could handle
         it.
 
         On the other hand, this linking is indirect: a uniform block
-        selects a binding point, and a binding point binds a UBO. The GL 
-        *could* do the indirect lookup for you, but the data would only be 
-        valid until you changed the unit binding, so it's a little fragile 
+        selects a binding point, and a binding point binds a UBO. The GL
+        *could* do the indirect lookup for you, but the data would only be
+        valid until you changed the unit binding, so it's a little fragile
         for the implementation to provide this query.
-        
+
         RESOLUTION:  Resolved, not needed, the user can do this.
 
 
     (57) Should we have MAX_UNIFORM_BUFFER_SIZE or a max size on
     uniform block data instead?
-        
+
         The uniform buffer could be larger than the amount of uniform
         block(s) data inside it.
-        
+
         Also see issue (36).
-    
+
         RESOLUTION: Resolved, name is MAX_UNIFORM_BLOCK_SIZE.
-        
-    
+
+
     (58) Is there any expectation that uniforms stay in the order
     declared for the packed/shared layouts?
 
-        This might make sharing easier, but is not clear if it's 
+        This might make sharing easier, but is not clear if it's
         worth it / overly constraining.
-        
+
         RESOLUTION: resolved, yes, names/types must retain declaration order
-        
+
 
     (59) Do we need the glsl syntax for declaring arrays of uniform
     blocks?
-    
+
         Deferred this feature to a future extension.
 
         RESOLUTION, resolved
@@ -3206,24 +3206,24 @@ Issues
     (60) When using this extension with OpenGL 2.1/3.0, do we require
     that uniform buffer object names must be generated with glGenBuffers
     to be used with these new entry points?
-    
+
         For OpenGL 3.1 core, there is a blanket requirement to call glGen
         for object names.
-        
+
         For OpenGL 2.x, there is not a requirement to call glGen but in
         3.0, user-generated names have been deprecated.
-        
+
         For 3.0, we added two new object types (FBO/VAO) that
         required the user to call glGen, but existing object types
         (textures/renderbuffers/buffer objects) could be used
         without calling glGen.
-        
+
         We need to decide what to do with this when exporting
         this extension on 2.1 and 3.0.
 
         RESOLUTION: Resolved, this extension does not govern the creation of
         buffer objects.  That's done by BindBuffer, which is not altered
-        by this spec, so on 2.1 and 3.0 you'd be able to use any name, 
+        by this spec, so on 2.1 and 3.0 you'd be able to use any name,
         whereas on 3.1 you'd be required to call GenBuffers.
 
 
@@ -3288,7 +3288,7 @@ Issues
     storage of matrices?
 
         If no controls are provided in GLSL 1.40, the default resolution for the
-        UBO layout documentation would be to treat all matrices as column-major.  
+        UBO layout documentation would be to treat all matrices as column-major.
         We will also need to pick a default orientation for matrices with that
         use no GLSL language mechanism to declare orientation.
 
@@ -3325,7 +3325,7 @@ Issues
 
     (69) Do we need to pad the end of structures and/or arrays using the
     standard packing rules?  Or should we be able to squeeze data types with
-    small alignment requirements in the "holes" left at the end of structures or 
+    small alignment requirements in the "holes" left at the end of structures or
     arrays with larger alignment requirements?
 
         uniform ExamplePad {
@@ -3376,7 +3376,7 @@ Issues
       end of structures to the largest alignment of the atomic types used in the
       structure.  For example, if you have:
 
-      struct { 
+      struct {
         double a;
         char b;
       } c;
@@ -3398,7 +3398,7 @@ Issues
     (70) Should "bool" data types be represented as 8-bit quantities (a la
     GLboolean in most gl.h versions) or 32-bit?
 
-        RESOLVED:  Use 32-bit integers.  
+        RESOLVED:  Use 32-bit integers.
 
         Using GLboolean (8-bit) would be the closest match to the API types, but
         some implementations of this standard may prefer 32-bit integers at this
@@ -3413,14 +3413,14 @@ Issues
 
 
     (71) What happens we are using indirect rendering where the data types used
-    by the client and server differ, due to endianness or some other issues 
+    by the client and server differ, due to endianness or some other issues
     related to basic data type?  What happens if the processor running the GLSL
     executable uses different data type representations than the application?
 
         DUPLICATE of issue (49)
 
 
-    (72) What parameters should we provide for querying the layout of matrices 
+    (72) What parameters should we provide for querying the layout of matrices
     (and arrays of matrices) in memory?
 
         RESOLVED:  We expect that matrices will be stored as an array of column
@@ -3433,14 +3433,14 @@ Issues
         strides.
 
         For single matrices, the stride between columns/rows is the only
-        parameter.  Some implementations may provide tightly packed matrices, 
+        parameter.  Some implementations may provide tightly packed matrices,
         where a 3x3 column-major matrix might be represented with 9 consecutive
         floats with a 12-byte (3-float) stride between columns.  Others, such as
         the "std140" packing above represents such a matrix as an array of 3
         column or row vectors, but pads each row/column for a 16-byte (4-float)
         stride.
 
-        For arrays of matrices, two queries would be needed for maximum 
+        For arrays of matrices, two queries would be needed for maximum
         flexibility.  For example, a hypothetical implementation might pack 3x3
         arrays tightly as 9 floats, but require that each array in the matrix be
         aligned on a 16-byte boundary.  This would have a column stride of 12B,
@@ -3502,13 +3502,13 @@ Issues
     "std140vec4" alternative?
 
         RESOLVED:  The "std140" packing is intended to provide a common
-        device-independent layout for uniform blocks that can be supported by 
+        device-independent layout for uniform blocks that can be supported by
         all OpenGL 3.1-capable GPUs.  Applications using this packing do not
         need to query the offsets and strides of all its uniforms and can rely
         on the same packing being used on all OpenGL 3.1 implementations.
 
         While some implementations may be able to support a more space-efficient
-        packing, "std140" does not attempt to provide any features not available 
+        packing, "std140" does not attempt to provide any features not available
         on all platforms.  Some of the limitations baked into this packing
         include:
 
@@ -3522,7 +3522,7 @@ Issues
 
         The array/structure restriction is because some implementations treat
         uniform buffers as arrays of four-component vectors and may not be able
-        to efficiently perform indexed array access with strides less than 16 
+        to efficiently perform indexed array access with strides less than 16
         bytes.
 
         The "std140novec4" alternate packing illustrates an alternate approach
@@ -3727,7 +3727,7 @@ Revision History
         - introduce BindBufferRange/BindBufferBase in place of
           BindUniformBufferAPPLE, resolving issue (55)
         - add missing query language in Chapter 6
-        - add missing UNIFORM_BUFFER_OFFSET_ALIGNMENT_APPLE from 
+        - add missing UNIFORM_BUFFER_OFFSET_ALIGNMENT_APPLE from
           state tables
         - separate new state from implementation state in state tables
         - remove instance-name language and arrays of uniform blocks per
@@ -3735,12 +3735,12 @@ Revision History
         - fix minor typos and cosmetic issues
         - reformat some lines to fit in 80 columns
         - replace tabs with spaces
-        
+
     (v41, 2009-01-25, jsandmel)
         - incorporated resolutions/feedback from Portland F2F
         - resolved issues (33), (39), (44), (52), (55), (56), (58), (59)
         - added issue (61)
-        
+
     (v40, 2009-01-25, jsandmel)
         - fixed a few typos noticed by Barthold Lichtenbelt
         - fixed up some white space in issues list
@@ -3797,31 +3797,31 @@ Revision History
         - improved readability of a few areas
         - fixed a data type typo
 
-    (v34, 2009-01-12, jsandmel) 
+    (v34, 2009-01-12, jsandmel)
         - added issue (47) and preliminary keyword support for packed,
           sharable, standard layouts
 
-    (v33, 2009-01-11, jsandmel) 
+    (v33, 2009-01-11, jsandmel)
         - switched terminology from "partition" to "uniform block"
         - switched syntax from 'active' to 'packed', and changed default
           behavior
         - changed lots of function names to account for the above
-        - cleaned up overview 
+        - cleaned up overview
         - dropped language talking about "binding" for the uniform block ->
           uniform block unit association, since it's not an object binding
           operation
         - added concept of "combined"/"logical" binding point max queries
-        - incorporated most recent GLSL syntax from the GLSL working group for 
+        - incorporated most recent GLSL syntax from the GLSL working group for
           uniform blocks
         - removed the AttachUniformBufferAPPLE for per-program bindings of UBOs
 
-    (v32, 2008-12-08, jsandmel) 
+    (v32, 2008-12-08, jsandmel)
         - added UNIFORM_BUFFER_OFFSET_ALIGNMENT_APPLE
 
-    (v31, 2008-12-08, jsandmel) 
+    (v31, 2008-12-08, jsandmel)
         - minor updates to overview (this could still use more editing).
 
-    (v30, 2008-12-08, jsandmel) 
+    (v30, 2008-12-08, jsandmel)
         - cleaned up function argument names for clarity
         - reformatted new procedures/tokens section
         - added concept of uniformBlockBinding (for context bindings) to
@@ -3842,8 +3842,8 @@ Revision History
         - removed stale query for UNIFORM_LOCATION_APPLE from state table
         - cleaned up (most of) issues list with API changes
         - removed some AMD/NV'isms from the issues language
- 
-    (v29, 2008-11-24, jsandmel) 
+
+    (v29, 2008-11-24, jsandmel)
         - Added <stage> argument to query routines to indicate
           vtx/geom/fragment.
         - Still need to update sample code for this proposal.
@@ -3880,7 +3880,7 @@ Revision History
 
     (2008-06-19, jdr) Added issue 34 and language describing the decision
     to use struct-like syntax for partition definitions.  Added explicit
-    mention that AttachUniformBufferObjectAPPLE() was required after a 
+    mention that AttachUniformBufferObjectAPPLE() was required after a
     uniform buffer object has been modified.  Fixed examples.
 
     (2008-03-18, jdr) Provide resolution and spec language for "active" and
@@ -3915,7 +3915,7 @@ Revision History
     section.
 
     (2008-03-03, jdr) Rewrote overview to reflect partitioning.  Re-arranged
-    for spec worthiness.  Cleaned up new procedures functions and defined 
+    for spec worthiness.  Cleaned up new procedures functions and defined
     aggregate layout function. Revised issues list to reflect partitioning,
     include more recent discussions, and used current accepted vernacular.
 
@@ -3924,7 +3924,7 @@ Revision History
     locations.
 
     (2008-03-03, jdr) Changed to namespace to partitions.  Added issues 21 &
-    22. Added aggregate uniform info query per partition.  
+    22. Added aggregate uniform info query per partition.
 
     (2008-03-03, bb) Added separate partition support.  Changed extension name
     to APPLE_uniform_buffer.
@@ -3936,7 +3936,7 @@ Revision History
     (2008-02-26, jdr)  Changes to accomodate relative offsets.  Revised
     example source. Error additions. Removed contact information for
     contributors list.
-    
+
     (2008-02-25, jdr)  Added source example.
 
     (2008-02-21, jdr)  Added to issues list, resolutions of all issues

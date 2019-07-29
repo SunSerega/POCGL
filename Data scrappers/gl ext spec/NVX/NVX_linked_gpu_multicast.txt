@@ -58,7 +58,7 @@ Overview
     With multi-GPU anti-aliasing, each GPU renders the same content with alternate sample
     positions and the driver blends the result to improve quality.  This also has issues with
     offscreen rendering and can conflict with other anti-aliasing techniques.
-    
+
     These issues with implicit multi-GPU rendering all have the same root cause: the driver lacks
     adequate knowledge to accelerate every application.  To resolve this, NVX_linked_gpu_multicast
     provides application control over multiple GPUs with a single context.
@@ -72,11 +72,11 @@ Overview
     - Each GPU gets its own instance of all framebuffers and attached textures, allowing
       individualized output for each GPU.  Input data can be customized for each GPU using buffers
       created with the storage flag, LGPU_SEPARATE_STORAGE_BIT_NVX and a new API,
-      LGPUNamedBufferSubDataNVX. 
+      LGPUNamedBufferSubDataNVX.
 
     - Textures can be transferred from one GPU to another using LGPUCopyImageSubDataNVX.
-    
-    
+
+
 New Procedures and Functions
 
     void LGPUNamedBufferSubDataNVX(
@@ -86,7 +86,7 @@ New Procedures and Functions
 
     void LGPUCopyImageSubDataNVX(
         uint sourceGpu, bitfield destinationGpuMask,
-        uint srcName, enum srcTarget, 
+        uint srcName, enum srcTarget,
         int srcLevel,
         int srcX, int srxY, int srcZ,
         uint dstName, enum dstTarget,
@@ -95,7 +95,7 @@ New Procedures and Functions
         sizei width, sizei height, sizei depth);
 
     void LGPUInterlockNVX(void);
-    
+
 New Tokens
 
     Accepted in the <flags> parameter of BufferStorage and
@@ -118,7 +118,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     multicast, or repeated across all linked GPUs.  Objects are shared by all GPUs, however each
     GPU has its own instance (copy) of many resources, including framebuffers.  When each GPU has
     its own instance of a resource, it is considered to have per-GPU storage.  When all GPUs share
-    a single instance of a resource, this is considered GPU-shared storage. 
+    a single instance of a resource, this is considered GPU-shared storage.
 
     The mechanism for linking GPUs is implementation specific, as is the process-global mechanism
     for enabling multicast rendering support (if necessary).  The number of GPUs usable for
@@ -160,7 +160,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
         const void *data);
 
     This function operates similarly to NamedBufferSubData, except that it updates the per-GPU
-    buffer data on the set of GPUs defined by <gpuMask>.  
+    buffer data on the set of GPUs defined by <gpuMask>.
 
     An INVALID_VALUE error is generated if <gpuMask> is zero.
     An INVALID_OPERATION error is generated if <buffer> is not the name of an existing buffer
@@ -178,13 +178,13 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
 
     All buffers in the default framebuffer as well as renderbuffers and textures bound to
     framebuffer objects receive per-GPU storage.  Storage for other textures is undefined: it may
-    be per-GPU or GPU-shared and can transition between the types at any time. 
+    be per-GPU or GPU-shared and can transition between the types at any time.
 
     To copy texel data between GPUs, the client may use the command
 
     void LGPUCopyImageSubDataNVX(
         uint sourceGpu, bitfield destinationGpuMask,
-        uint srcName, enum srcTarget, 
+        uint srcName, enum srcTarget,
         int srcLevel,
         int srcX, int srxY, int srcZ,
         uint dstName, enum dstTarget,
@@ -196,7 +196,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     and a destination GPU set defined by <destinationGpuMask>.
 
     INVALID_ENUM is generated
-     * if either <srcTarget> or <dstTarget> 
+     * if either <srcTarget> or <dstTarget>
       - is not RENDERBUFFER or a valid non-proxy texture target
       - is TEXTURE_BUFFER, or
       - is one of the cubemap face selectors described in table 3.17,
@@ -217,7 +217,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
        renderbuffer or texture object according to the corresponding
        target parameter, or
      * if the specified level is not a valid level for the image, or
-     * if the dimensions of the either subregion exceeds the boundaries 
+     * if the dimensions of the either subregion exceeds the boundaries
        of the corresponding image object, or
      * if the image format is compressed and the dimensions of the
        subregion fail to meet the alignment constraints of the format.
@@ -235,11 +235,11 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     guarantee consistency, the interlock command must be used as a barrier between any two
     accesses by multiple GPUs to the same memory when at least one of the accesses is a write.
     For consistent copies between GPUs, synchronization is required before and after each copy:
-    
+
     1. Prior to each call to LGPUCopyImageSubDataNVX, LGPUInterlockNVX() must be called after
     the most recent read or write of the target image by a destination GPU.
 
-    2. After each call to LGPUCopyImageSubDataNVX, LGPUInterlockNVX() must be called 
+    2. After each call to LGPUCopyImageSubDataNVX, LGPUInterlockNVX() must be called
     prior to any future read or write of the target image by a destination GPU.
 
     GPU writes and reads to/from GPU-shared locations require synchronization as well.  GPU writes
@@ -248,8 +248,8 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     fetches, shader image loads, CopyTexImage, etc. synchronized with writes by other GPUs.
     Existing barriers such as TextureBarrier and MemoryBarrier only provide consistency guarantees
     for rendering, writes and reads on a single GPU.
-    
-          
+
+
     Additions to the AGL/GLX/WGL Specifications
 
         None
@@ -281,7 +281,7 @@ New Implementation Dependent State
 Sample Code
 
     Binocular stereo rendering example using NVX_linked_gpu_multicast with single GPU fallback:
-   
+
     struct ViewData {
         GLint viewport_index;
         GLfloat mvp[16];
@@ -346,7 +346,7 @@ Issues
     query results for all GPUs through a buffer with separate storage (LGPU_SEPARATE_STORAGE_BIT).
 
   (3) Which textures and buffers have separate storage for each GPU?
-  
+
     The default framebuffer and framebuffer texture attachments. Also buffers allocated with
     LGPU_SEPARATE_STORAGE_BIT. Other buffers and textures may or may not have separate storage.
 

@@ -41,13 +41,13 @@ Version
 
     0.6 - 05/07/01
     Chopped out most of the new entry points. Back to just object
-    buffers and one call to define vertex arrays in an object buffer. 
+    buffers and one call to define vertex arrays in an object buffer.
 
     0.5 - 04/18/01
     The great renaming. Added sample usage section. Expanded issues
-    section. 
+    section.
 
-    0.4 - 04/09/01 
+    0.4 - 04/09/01
     Rewrote to use new entry points.
 
     0.3 - 04/06/01
@@ -82,7 +82,7 @@ Issues
 
     Should this extension include support for allowing vertex indices
     to be stored on the server?
-    
+
         RESOLUTION: NO. This might not be universally supported, and
         seems simple enough to layer on top of this extension.
 
@@ -127,7 +127,7 @@ New Procedures and Functions
 
     boolean IsObjectBufferATI(uint buffer)
 
-    void UpdateObjectBufferATI(uint buffer, uint offset, sizei size, 
+    void UpdateObjectBufferATI(uint buffer, uint offset, sizei size,
                                const void *pointer, enum preserve)
 
     void GetObjectBufferfvATI(uint buffer, enum pname, float *params)
@@ -139,7 +139,7 @@ New Procedures and Functions
 
   For defining vertex arrays inside an object buffer:
 
-    void ArrayObjectATI(enum array, int size, enum type, 
+    void ArrayObjectATI(enum array, int size, enum type,
                         sizei stride, uint buffer, uint offset)
 
   For querying vertex arrays inside an object buffer:
@@ -157,7 +157,7 @@ New Procedures and Functions
   If EXT_vertex_shader is defined, for querying variant arrays inside
   an object buffer:
 
-    void GetVariantArrayObjectfvATI(uint id, enum pname, 
+    void GetVariantArrayObjectfvATI(uint id, enum pname,
                                     float *params)
 
     void GetVariantArrayObjectivATI(uint id, enum pname,
@@ -177,13 +177,13 @@ New Tokens
         DISCARD_ATI                     0x8763
 
     Accepted by the <pname> parameter of GetObjectBufferivATI and
-    GetObjectBufferfvATI: 
+    GetObjectBufferfvATI:
 
         OBJECT_BUFFER_SIZE_ATI          0x8764
         OBJECT_BUFFER_USAGE_ATI         0x8765
 
     Accepted by the <pname> parameter of GetArrayObjectivATI and
-    GetArrayObjectfvATI: 
+    GetArrayObjectfvATI:
 
         ARRAY_OBJECT_BUFFER_ATI         0x8766
         ARRAY_OBJECT_OFFSET_ATI         0x8767
@@ -206,7 +206,7 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     frequently used vertex array data on the server side, a client may
     use the command
 
-        uint NewObjectBufferATI(sizei size, const void *pointer, 
+        uint NewObjectBufferATI(sizei size, const void *pointer,
                                 enum usage);
 
     to allocate a persistent buffer in which client data may be
@@ -237,8 +237,8 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     To modify the data contained in the object buffer, the client may
     use the command
 
-        void UpdateObjectBufferATI(uint buffer, uint offset, 
-                                   sizei size, const void *pointer, 
+        void UpdateObjectBufferATI(uint buffer, uint offset,
+                                   sizei size, const void *pointer,
                                    enum preserve);
 
     <buffer> identifies the object buffer to be updated. <offset> and
@@ -289,7 +289,7 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     memory pointer that is part of the client state for the vertex
     array is set to null to indicate that the vertex array has been
     defined using ArrayObjectATI instead of one of the pointer
-    commands. 
+    commands.
 
     Vertex arrays that are defined to reside within an object buffer
     function in the same manner as normal vertex arrays. They are
@@ -297,12 +297,12 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     DisableClientState. Primitives can be constructed using
     ArrayElement, DrawArrays, DrawElements, and DrawRangeElements.
     Clients may use mix of traditional vertex arrays and vertex array
-    objects to specify geometry. 
+    objects to specify geometry.
 
     There is no explicit mechanism to define interleaved vertex arrays
     in an object buffer. This can be implicitly done by storing the
     arrays in an interleaved fashion during NewObjectBufferATI or
-    UpdateObjectBufferATI. 
+    UpdateObjectBufferATI.
 
     If EXT_vertex_shader is defined, then a client can define an array
     of variant data using the command:
@@ -319,7 +319,7 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
     Variant arrays defined by VariantArrayObjectATI are enabled and
     disabled in the same way as variant arrays defined by
     VariantPointerATI, by using EnableVariantClientStateATI and
-    DisableVariantClientStateATI. 
+    DisableVariantClientStateATI.
 
 
 Additions to Chapter 3 of the 1.2.1 Specification (Rasterization)
@@ -341,7 +341,7 @@ Additions to Chapter 5 of the 1.2.1 Specification (Special Functions)
     The commands defined by this extension function in the same manner
     as the traditional vertex array commands when they are compiled
     into a display list.
-    
+
     Commands that are used to create and manage memory for stored
     arrays are not included in display lists, but are executed
     immediately. These include NewObjectBufferATI, IsObjectBufferATI,
@@ -431,7 +431,7 @@ Errors
 
     INVALID_ENUM is generated if the <pname> parameter of
     GetObjectBufferfvATI and GetObjectBufferivATI is not
-    OBJECT_BUFFER_SIZE_ATI or OBJECT_BUFFER_USAGE_ATI. 
+    OBJECT_BUFFER_SIZE_ATI or OBJECT_BUFFER_USAGE_ATI.
 
     INVALID_ENUM is generated if the <array> parameter of
     ArrayObjectATI, GetArrayObjectfvATI, and GetArrayObjectivATI does
@@ -452,9 +452,9 @@ Errors
     specified by NewObjectBufferATI.
 
     INVALID_ENUM is generated if the <pname> parameter of
-    GetArrayObjectfvATI and GetArrayObjectivATI is not 
+    GetArrayObjectfvATI and GetArrayObjectivATI is not
     ARRAY_OBJECT_BUFFER_ATI or ARRAY_OBJECT_OFFSET_ATI.
-    
+
 
 New State
 
@@ -467,8 +467,8 @@ New State
 
     ARRAY_OBJECT_BUFFER_ATI     GetIntegerv     Z+      0               -
     ARRAY_OBJECT_OFFSET_ATI     GetIntegerv     Z+      0               -
-        
-    
+
+
 Usage Example
 
     Here is a simple example that demonstrates usage of the extension.

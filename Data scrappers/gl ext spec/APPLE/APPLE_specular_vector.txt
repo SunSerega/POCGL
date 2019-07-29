@@ -29,7 +29,7 @@ Overview
     dot product of the true reflection vector of the light source
     and the vector from the vertex to the viewpoint.  This yields
     results that are visually similar to but often more realistic
-    than the existing lighting model.  
+    than the existing lighting model.
 
     Mathematically, the specular component s.n in the existing
     lighting model calculation is replaced with the following
@@ -47,7 +47,7 @@ Overview
     All other lighting model and material parameters (shininess,
     spotlight, attenuation, local viewer, and direction/positional
     sources) operate normally.  The specular vector lighting model
-    affects both rgba and index modes.   
+    affects both rgba and index modes.
 
 New Procedures and Functions
 

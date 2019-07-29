@@ -108,7 +108,7 @@ IP Status
 
 New Procedures and Functions
 
-    void GetActiveAtomicCounterBufferiv 
+    void GetActiveAtomicCounterBufferiv
       (uint program, uint bufferIndex, enum pname, int *params);
 
 New Types
@@ -253,7 +253,7 @@ begining with "Each active uniform, whether in a named..."
     considered an active atomic counter buffer.  Information about the set of
     active atomic counter buffers for a program can be obtained by calling
 
-      void GetActiveAtomicCounterBufferiv 
+      void GetActiveAtomicCounterBufferiv
         ( uint program, uint bufferIndex, enum pname, int *params );
 
     <program> is the name of a program object for which the
@@ -284,12 +284,12 @@ begining with "Each active uniform, whether in a named..."
     in the atomic counter buffer identified by
     <bufferIndex> is returned.
 
-    The total amount of buffer object storage accessible in any 
-    given atomic counter buffer is subject to an implementation-dependent 
+    The total amount of buffer object storage accessible in any
+    given atomic counter buffer is subject to an implementation-dependent
     limit. The maximum amount of storage accessible to atomic counters,
-    in basic machine units, can be queried by calling GetIntegerv with the constant 
+    in basic machine units, can be queried by calling GetIntegerv with the constant
     MAX_ATOMIC_COUNTER_BUFFER_SIZE. If the amount of storage required for a
-    atomic counter buffer exceeds this limit, a program may fail 
+    atomic counter buffer exceeds this limit, a program may fail
     to link.
 
     If <pname> is ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS, then the
@@ -329,9 +329,9 @@ beginning with "The name of an active..."
 Replace the last paragraph on p. 77
 beginning with "Each uniform variable..."
 
-    Each active uniform variable, except subroutine uniforms, 
-    is broken down into one or more strings using the "." (dot) 
-    and "[]" operators, if necessary, to the point that it is 
+    Each active uniform variable, except subroutine uniforms,
+    is broken down into one or more strings using the "." (dot)
+    and "[]" operators, if necessary, to the point that it is
     legal to pass each string back into GetUniformIndices.
 
 Modify first sentence of first paragraph on p. 78
@@ -343,18 +343,18 @@ beginning with "Information about active uniforms..."
 Replace the fourth paragraph on p. 78
 beginning with "Each uniform variable..."
 
-    Each active uniform variable, except subroutine uniforms, 
-    is broken down into one or more strings using the "." (dot) 
-    and "[]" operators, if necessary, to the point that it is 
+    Each active uniform variable, except subroutine uniforms,
+    is broken down into one or more strings using the "." (dot)
+    and "[]" operators, if necessary, to the point that it is
     legal to pass each string back into GetUniformIndices.
 
-Modify the last paragraph 
+Modify the last paragraph
 
 Add to Table 2.13, p. 81
 
     Type Name Token              Keyword      Attrib  Xfb
     ---------------------------  -----------  ------  ---
-    UNSIGNED_INT_ATOMIC_COUNTER  atomic_uint         
+    UNSIGNED_INT_ATOMIC_COUNTER  atomic_uint
 
 Modify description of UNIFORM_OFFSET query in GetActiveUniformsiv, p. 82
 
@@ -389,7 +389,7 @@ beginning with "To load values into the uniform variables..."
     To load values into the uniform variables of the default uniform block
     of the active program object, except for subroutine uniforms and atomic
     counters, ..."
- 
+
 Modify first sentence of the fifth paragraph on p. 84
 beginning with "For all other uniform types..."
 
@@ -418,10 +418,10 @@ Add new unnumbered subsections at the end of the section, p. 90
     Additionally, there is an implementation-dependent limit on the sum of the
     number of active atomic counter buffers used by each shader of a
     program. If an atomic counter buffer is used by multiple shaders,
-    each such use counts separately against this combined limit. The combined 
+    each such use counts separately against this combined limit. The combined
     atomic counter buffer use limit can be obtained by calling
     GetIntegerv with a <pname> of MAX_COMBINED_ATOMIC_COUNTER_BUFFERS.
-    
+
     Atomic Counter Buffer Object Storage
 
     Atomic counters stored in buffer objects are represented in memory
@@ -446,13 +446,13 @@ Add new unnumbered subsections at the end of the section, p. 90
 
     Regions of buffer objects are bound as storage for atomic counters by calling
     one of the commands BindBufferRange or BindBufferBase (see section 2.9.1)
-    with <target> set to ATOMIC_COUNTER_BUFFER. In addition to the general errors 
+    with <target> set to ATOMIC_COUNTER_BUFFER. In addition to the general errors
     described in section 2.9.1, BindBufferBase and BindBufferRange will generate an INVALID_VALUE
     error if <index> is greater than or equal to the value of MAX_ATOMIC_COUNTER_BUFFER_BINDINGS,
     and BindBufferRange will generate an INVALID_VALUE error if <offset> is
     not a multiple of four.
 
-    Each of a program's active atomic counter buffer bindings has a corresponding 
+    Each of a program's active atomic counter buffer bindings has a corresponding
     atomic counter buffer binding point. This binding point is established
     with the layout qualifier in the shader text, either explicitly or implicitly,
     as described in the Shading Language specification.
@@ -486,11 +486,11 @@ Atomic Counter Access
    pipeline stage accesses the same atomic counter, each such
    access counts separately against the MAX_COMBINED_ATOMIC_COUNTERS limit.
 
-    
+
 Additions to Chapter 6 of the OpenGL 4.1 (Core Profile) Specification
 (State and State Requests)
 
-Add to the end of section 6.1.8 (Buffer Object Queries) 
+Add to the end of section 6.1.8 (Buffer Object Queries)
 
     To query which buffer objects are bound to the array of transform
     feedback binding points and will be used when transform feedback is
@@ -501,7 +501,7 @@ Add to the end of section 6.1.8 (Buffer Object Queries)
     object is bound for <index>, zero is returned in <values>. The error
     INVALID_VALUE is generated if <index> is greater than or equal to the
     value of MAX_TRANSFORM_FEEDBACK_BUFFERS.
-    
+
     To query the starting offset or size of the range of each buffer object
     binding used for transform feedback, call GetInteger64i_v with <param>
     set to TRANSFORM_FEEDBACK_BUFFER_START or TRANSFORM_FEEDBACK_BUFFER_SIZE
@@ -621,7 +621,7 @@ Add new table, labeled "Atomic Counter State", after Table 6.39, p. 380
     ATOMIC_COUNTER_BUFFER_START       n*Z+  GetInteger64i_v  0        Start offset of            2.9.9
                                                                       binding range for each
                                                                       atomic counter buffer
-    ATOMIC_COUNTER_BUFFER_SIZE        n*Z+  GetInteger64i_v  0        Size of binding range for  2.9.9 
+    ATOMIC_COUNTER_BUFFER_SIZE        n*Z+  GetInteger64i_v  0        Size of binding range for  2.9.9
                                                                       each atomic counter buffer
 
 New Implementation Dependent State
@@ -629,20 +629,20 @@ New Implementation Dependent State
 
 Add to Table 6.46, Implementation Dependent Vertex Shader Limits, p. 387:
 
-    Get Value                                  Type  Get Command    Minimum Value  Description                Sec. 
+    Get Value                                  Type  Get Command    Minimum Value  Description                Sec.
     -----------------------                    ----  -----------    -------------  -------------------------  -----
     MAX_VERTEX_ATOMIC_COUNTER_BUFFERS          Z+    GetIntegerv    0              Number of atomic counter   2.11.7
                                                                                    buffers accessed by a
                                                                                    vertex shader
     MAX_VERTEX_ATOMIC_COUNTERS                 Z+    GetIntegerv    0              Number of atomic counters  2.11.11
-                                                                                   accessed by a vertex 
+                                                                                   accessed by a vertex
                                                                                    shader
 Add to Table 6.47, Implementation Dependent Tesselation Shader Limits, p. 388:
 
-    Get Value                                  Type  Get Command    Minimum Value  Description                Sec. 
+    Get Value                                  Type  Get Command    Minimum Value  Description                Sec.
     -----------------------                    ----  -----------    -------------  -------------------------  -----
     MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS    Z+    GetIntegerv    0              Number of atomic counter   2.11.7
-                                                                                   buffers accessed by a 
+                                                                                   buffers accessed by a
                                                                                    tesselation control shader
     MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS Z+    GetIntegerv    0              Number of atomic counter   2.11.7
                                                                                    buffers accessed by a
@@ -651,31 +651,31 @@ Add to Table 6.47, Implementation Dependent Tesselation Shader Limits, p. 388:
                                                                                    accessed by a tesselation
                                                                                    control shader
     MAX_TESS_EVALUATION_ATOMIC_COUNTERS        Z+    GetIntegerv    0              Number of atomic counters  2.11.11
-                                                                                   accessed by a tesselation 
+                                                                                   accessed by a tesselation
                                                                                    evaluation shader
 Add to Table 6.48, Implementation Dependent Geometry Shader Limits, p. 389:
 
-    Get Value                                  Type  Get Command    Minimum Value  Description                Sec. 
+    Get Value                                  Type  Get Command    Minimum Value  Description                Sec.
     -----------------------                    ----  -----------    -------------  -------------------------  -----
     MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS        Z+    GetIntegerv    0              Number of atomic counter   2.11.7
-                                                                                   buffers accessed by a 
+                                                                                   buffers accessed by a
                                                                                    geometry shader
     MAX_GEOMETRY_ATOMIC_COUNTERS               Z+    GetIntegerv    0              Number of atomic counters  2.11.11
                                                                                    accessed by a geometry
                                                                                    shader
 Add to Table 6.49, Implementation Dependent Fragment Shader Limits, p. 390:
 
-    Get Value                                  Type  Get Command    Minimum Value  Description                Sec. 
+    Get Value                                  Type  Get Command    Minimum Value  Description                Sec.
     -----------------------                    ----  -----------    -------------  -------------------------  -----
     MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS        Z+    GetIntegerv    1              Number of atomic counter   2.11.7
                                                                                    buffers accessed by a
-                                                                                   fragment shader 
+                                                                                   fragment shader
     MAX_FRAGMENT_ATOMIC_COUNTERS               Z+    GetIntegerv    8              Number of atomic counters  2.11.11
                                                                                    accessed by a fragment
                                                                                    shader
 Add to Table 6.50 Implementation Dependent Aggregate Shader Limits, p. 391:
 
-    Get Value                                  Type  Get Command    Minimum Value  Description                Sec. 
+    Get Value                                  Type  Get Command    Minimum Value  Description                Sec.
     -----------------------                    ----  -----------    -------------  -------------------------  -----
     MAX_ATOMIC_COUNTER_BUFFER_BINDINGS         Z+    GetIntegerv    1              Max. number of atomic      2.9.9
                                                                                    counter buffer bindings
@@ -683,7 +683,7 @@ Add to Table 6.50 Implementation Dependent Aggregate Shader Limits, p. 391:
                                                                                    machine units of an
                                                                                    atomic counter buffer
     MAX_COMBINED_ATOMIC_COUNTER_BUFFERS        Z+    GetIntegerv    1              Max. number of atomic      2.11.7
-                                                                                   counter buffers per 
+                                                                                   counter buffers per
                                                                                    program
     MAX_COMBINED_ATOMIC_COUNTERS               Z+    GetIntegerv    8              Max. number of atomic      2.11.11
                                                                                    counter uniforms per
@@ -755,12 +755,12 @@ Insert Section 4.3.6 Atomic Counters.  (Existing 4.3.6 becomes 4.3.7, and so on)
 
         layout( binding=2, offset=0 ) uniform atomic_uint a;
 
-    will establish that the opaque handle to the atomic counter "a" 
+    will establish that the opaque handle to the atomic counter "a"
     will be bound to atomic counter buffer binding 2 at offset 0.
 
     There is an implementation dependent limit to the number of uniforms that
-    can be used for each type of shader and if this is exceeded it will cause a 
-    compile-time or link-time error.  Uniform variables that are declared but 
+    can be used for each type of shader and if this is exceeded it will cause a
+    compile-time or link-time error.  Uniform variables that are declared but
     not used may or may not count against this limit.
 
     If multiple shaders are linked together, then they will share a single
@@ -785,7 +785,7 @@ Add Section 4.3.8.4 Uniform Layout Qualifiers
         binding = integer-constant
         offset = integer-constant
 
-    For example, 
+    For example,
 
         layout(binding = 2, offset = 4) uniform atomic_uint foo;
 
@@ -902,7 +902,7 @@ Add Section 8.10  Atomic Counter Functions (existing 8.10 becomes 8.11, and so o
     8.10  Atomic Counter Functions
 
     Atomic counter functions have exclusive access to any single counter, perform
-    an atomic operation, then release exclusive access to that counter, 
+    an atomic operation, then release exclusive access to that counter,
     as-if a single step.
     Any other atomic counter function may access that single counter only after any
     earlier atomic operation is completed.
@@ -913,7 +913,7 @@ Add Section 8.10  Atomic Counter Functions (existing 8.10 becomes 8.11, and so o
     or decremented and returned in an atomic operation,
     or simply returned.
 
-    The underlying counter is a 32-bit unsigned integer.  Increments and decrements 
+    The underlying counter is a 32-bit unsigned integer.  Increments and decrements
     at the limit of the range will wrap to [0, 2^32-1].
 
 
@@ -1043,7 +1043,7 @@ Issues
 
      Resolved:  ARB_shader_atomic_counters.  It's primarily a shader
      extension, and it provides atomic_counters.
-    
+
 17 - What happens to shared buffer objects that are updated in
      more than one context by data-setting commands, including
      the built-in atomic counter functions?
@@ -1062,7 +1062,7 @@ Issues
      per counter.  Shaders may store multiple atomic counters in
      a single buffer binding.
 
-19 - What about simultaneous use of buffer object at two 
+19 - What about simultaneous use of buffer object at two
      binding points, where one is an atomic counter binding point?
 
      Resolved.  We are going to be conservative and make
@@ -1139,7 +1139,7 @@ Issues
      counter, UNIFORM_ARRAY_STRIDE can be used to query the stride in memory
      of an array of atomic counters (even though it's always four bytes), and
      UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX can be used to query the index of the
-     active atomic counter buffer associated with the uniform.  
+     active atomic counter buffer associated with the uniform.
 
      No GetActiveUniformsiv query is provided to retrieve the binding point
      associated with an atomic counter uniform.  It may be obtained indirectly

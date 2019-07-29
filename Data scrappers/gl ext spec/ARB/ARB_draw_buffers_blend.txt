@@ -180,7 +180,7 @@ Operations and the Frame Buffer)
     values of the blend equations and functions can be queried by caling
     GetIntegerIndexedvEXT with the corresponding <target> as shown in
     table 6.20 and <index> $i$.
-    
+
     The value of the blend enable, or the blend equations and functions
     for draw buffer zero may also be queried by calling IsEnabled, or
     GetInteger, respectively, with the same symbolic constants but no

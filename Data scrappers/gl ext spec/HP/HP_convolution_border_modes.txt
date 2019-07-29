@@ -75,7 +75,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     dimensions.  Even if TexImage1D or TexImage2D is called with a
     null pixel pointer, the dimensions of the resulting texture image
     are those that would result from the convolution of the specified
-    image.)  
+    image.)
 
     For the remaining border modes, we define Cw = floor(Wf / 2)
     and Ch = floor(Hf / 2).  The coordinates (Cw, Ch) define the
@@ -125,7 +125,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     The pixel value at each corner is also replicated in order to
     provide data for the convolution operation at each corner of
     the source image.
-    
+
 Additions to Chapter 4 of the 1.0 Specification (Per-Fragment Operations
 and the Frame buffer)
 

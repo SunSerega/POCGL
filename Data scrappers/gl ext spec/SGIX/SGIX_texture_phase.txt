@@ -31,11 +31,11 @@ Overview
 
 Issues
 
-    *    
+    *
 
 Reasoning
 
-    *    
+    *
 
 New Procedures and Functions
 
@@ -57,7 +57,7 @@ Additions to Chapter 2 of the GL Specification (OpenGL Operation)
 Additions to Chapter 3 of the GL Specification (Rasterization)
 
     The additional token value PHASE_SGIS is accepted as an enumerated
-    value for the texture minification and magnification filters, causing 
+    value for the texture minification and magnification filters, causing
     Table 3.7 to be replaced with the table below:
 
     Name                Type        Legal Values
@@ -81,7 +81,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
     Phase filtering is specified by calling TexParameteri,
     TexParameterf, TexParameteriv, or TexParameterfv with <pname> set
-    to TEXTURE_MIN_FILTER or TEXTURE_MAG_FILTER, and <param> or <params> 
+    to TEXTURE_MIN_FILTER or TEXTURE_MAG_FILTER, and <param> or <params>
     set to PHASE_SGIS. Because phase filtering is defined only for
     non-mipmapped textures, there is no difference between its
     definition for minification and magnification.
@@ -104,7 +104,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
 
    Let
-   
+
     A = frac(u - 1/2)
 
     where frac(x) denotes the fractional part of x, and u is the
@@ -191,7 +191,7 @@ Additions to the GLX Specification
 
 GLX Protocol
 
-    
+
 Errors
 
 

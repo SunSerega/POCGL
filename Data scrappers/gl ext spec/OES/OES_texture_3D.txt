@@ -37,14 +37,14 @@ IP Status
 Status
 
     Ratified by the Khronos BOP, July 22, 2005.
-    
+
 Version
 
     Last Modifed Date: July 24, 2007
 
 Number
 
-    OpenGL ES Extension #34    
+    OpenGL ES Extension #34
 
 Dependencies
 
@@ -54,20 +54,20 @@ Overview
 
     This extension adds support for 3D textures.  The OpenGL ES 2.0 texture wrap
     modes and mip-mapping is supported for power of two 3D textures.  Mip-
-    mapping and texture wrap modes other than CLAMP_TO_EDGE are not supported 
+    mapping and texture wrap modes other than CLAMP_TO_EDGE are not supported
     for non-power of two 3D textures.
-    
-    The OES_texture_npot extension, if supported, will enable mip-mapping and 
+
+    The OES_texture_npot extension, if supported, will enable mip-mapping and
     other wrap modes for non-power of two 3D textures.
 
 Issues
 
     None.
- 
+
 New Tokens
 
-    Accepted by the <target> parameter of TexImage3DOES, TexSubImage3DOES, 
-    CopyTexSubImage3DOES, CompressedTexImage3DOES and 
+    Accepted by the <target> parameter of TexImage3DOES, TexSubImage3DOES,
+    CopyTexSubImage3DOES, CompressedTexImage3DOES and
     CompressedTexSubImage3DOES, GetTexParameteriv, and GetTexParameterfv:
 
         TEXTURE_3D_OES              0x806F
@@ -77,7 +77,7 @@ New Tokens
 
         TEXTURE_WRAP_R_OES          0x8072
 
-    Accepted by the <pname> parameter of GetBooleanv, GetIntegerv, and 
+    Accepted by the <pname> parameter of GetBooleanv, GetIntegerv, and
     GetFloatv:
 
         MAX_3D_TEXTURE_SIZE_OES     0x8073
@@ -85,50 +85,50 @@ New Tokens
 
 New Procedures and Functions
 
-    void TexImage3DOES(enum target, int level, enum internalFormat, 
-                       sizei width, sizei height, sizei depth, int border, 
+    void TexImage3DOES(enum target, int level, enum internalFormat,
+                       sizei width, sizei height, sizei depth, int border,
                        enum format, enum type, const void *pixels)
 
     Similar to 2D textures and cubemaps,  <internalFormat> must match <format>.
-    Please refer to table 3.1 of the OpenGL ES 2.0 specification for a list of 
+    Please refer to table 3.1 of the OpenGL ES 2.0 specification for a list of
     valid <format> and <type> values.  No texture borders are supported.
 
-    void TexSubImage3DOES(enum target, int level, 
-                          int xoffset, int yoffset, int zoffset, 
-                          sizei width, sizei height, sizei depth, 
+    void TexSubImage3DOES(enum target, int level,
+                          int xoffset, int yoffset, int zoffset,
+                          sizei width, sizei height, sizei depth,
                           enum format, enum type, const void *pixels)
 
-    void CopyTexSubImage3DOES(enum target, int level, 
-                              int xoffset, int yoffset, int zoffset, 
+    void CopyTexSubImage3DOES(enum target, int level,
+                              int xoffset, int yoffset, int zoffset,
                               int x, int y, sizei width, sizei height)
 
-    CopyTexSubImage3DOES is supported.  The internal format parameter can be 
-    any of the base internal formats described for TexImage2D and TexImage3DOES 
+    CopyTexSubImage3DOES is supported.  The internal format parameter can be
+    any of the base internal formats described for TexImage2D and TexImage3DOES
     subject to the constraint that color buffer components can be dropped during
-    the conversion to the base internal format, but new components cannot be 
-    added.  For example, an RGB color buffer can be used to create LUMINANCE or 
-    RGB textures, but not ALPHA, LUMINANCE_ALPHA, or RGBA textures.  Table 3.3 
-    of the OpenGL ES 2.0 specification summarizes the allowable framebuffer and 
+    the conversion to the base internal format, but new components cannot be
+    added.  For example, an RGB color buffer can be used to create LUMINANCE or
+    RGB textures, but not ALPHA, LUMINANCE_ALPHA, or RGBA textures.  Table 3.3
+    of the OpenGL ES 2.0 specification summarizes the allowable framebuffer and
     base internal format combinations.
 
-    void CompressedTexImage3DOES(enum target, int level, enum internalformat, 
-                                 sizei width, sizei height, sizei depth, 
+    void CompressedTexImage3DOES(enum target, int level, enum internalformat,
+                                 sizei width, sizei height, sizei depth,
                                  int border, sizei imageSize, const void *data)
 
-    void CompressedTexSubImage3DOES(enum target, int level, 
-                                    int xoffset, int yoffset, int zoffset, 
-                                    sizei width, sizei height, sizei depth, 
-                                    enum format, sizei imageSize, 
+    void CompressedTexSubImage3DOES(enum target, int level,
+                                    int xoffset, int yoffset, int zoffset,
+                                    sizei width, sizei height, sizei depth,
+                                    enum format, sizei imageSize,
                                     const void *data)
 
     void FramebufferTexture3DOES(enum target, enum attachment,
                                  enum textarget, uint texture,
                                  int level, int zoffset);
 
-    FramebufferTexture3DOES is derived from FramebufferTexture3DEXT.  Please 
-    refer to the EXT_framebuffer_object extension specification for a detailed 
-    description of FramebufferTexture3DEXT.  The only difference is that 
-    FramebufferTexture3DOES can be used to render directly into the base level 
+    FramebufferTexture3DOES is derived from FramebufferTexture3DEXT.  Please
+    refer to the EXT_framebuffer_object extension specification for a detailed
+    description of FramebufferTexture3DEXT.  The only difference is that
+    FramebufferTexture3DOES can be used to render directly into the base level
     of a 3D texture image only.  The OES_fbo_render_mipmap extension removes
     this limitation and allows rendering to any mip-level of a 3D texture.
 
@@ -138,13 +138,13 @@ New Keywords
 
 Grammar changes
 
-    The token SAMPLER3D is added to the list of tokens returned from lexical 
+    The token SAMPLER3D is added to the list of tokens returned from lexical
     analysis and the type_specifier_no_prec production.
 
 New Built-in Functions
 
     texture3D()
-    texture3DProj()  
+    texture3DProj()
     texture3DLod()
     texture3DProjLod()
 
@@ -166,12 +166,12 @@ Additions to Chapter 8 of the OpenGL ES Shading Language specification:
 
     Add the following to the table of built-in functions in section 8.7:
 
-    The built-in texture lookup functions texture3D, texture3DProj, 
+    The built-in texture lookup functions texture3D, texture3DProj,
     texture3DLod, and texture3DProjLod are optional, and must be enabled by
 
     #extension GL_OES_texture_3D : enable
 
-    before being used.  
+    before being used.
 
     Syntax:
         vec4 texture3D (sampler3D sampler, vec3 coord [, float bias] )
@@ -180,8 +180,8 @@ Additions to Chapter 8 of the OpenGL ES Shading Language specification:
         vec4 texture3DProjLod (sampler3D sampler, vec4 coord, float lod)
 
     Description:
-        Use the texture coordinate coord to do a texture lookup in the 3D 
-        texture currently bound to sampler.  For the projective ("Proj") 
+        Use the texture coordinate coord to do a texture lookup in the 3D
+        texture currently bound to sampler.  For the projective ("Proj")
         versions, the texture coordinate is divided by coord.q.
 
 Errors
@@ -192,11 +192,11 @@ New State
 
 Get Value                Type    Get Command        Value    Description
 ---------                ----    -----------        -----    -----------
-TEXTURE_BINDING_3D_OES    Z+     GetIntegerv        0        texture object 
+TEXTURE_BINDING_3D_OES    Z+     GetIntegerv        0        texture object
                                                              bound to TEXTURE_3D
 TEXTURE_WRAP_R_OES        1xZ2   GetTexParameteriv  REPEAT   texture coord "r"
                                                              wrap mode
-MAX_3D_TEXTURE_SIZE_OES   Z+     GetIntegerv        16       maximum 3D texture 
+MAX_3D_TEXTURE_SIZE_OES   Z+     GetIntegerv        16       maximum 3D texture
                                                              image dimension
 
 Revision History

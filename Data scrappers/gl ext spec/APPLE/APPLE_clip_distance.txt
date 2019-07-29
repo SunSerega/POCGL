@@ -115,7 +115,7 @@ Additions to OpenGL ES Shading Language 3.00 Specification [ES3]
 
         #define GL_APPLE_clip_distance 1
 
-Additions to Chapter 7 of the OpenGL ES Shading Language 1.00 Specification 
+Additions to Chapter 7 of the OpenGL ES Shading Language 1.00 Specification
 (Built-in Variables) [ES2] or
 Additions to Chapter 7 of the OpenGL ES Shading Language 3.00 Specification
 (Built-in Variables) [ES3]
@@ -216,4 +216,4 @@ Issues
 Revision History
 
     Revision 1, 2013/12/13
-        - 
+        -

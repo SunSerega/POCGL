@@ -106,14 +106,14 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     is possible to create named 1, 2, and 3-dimensional texture objects.
     The name space for texture objects is the unsigned integers, with zero
     reserved by the GL.
-    
+
     A texture object is created by binding an unused name to TEXTURE_1D,
     TEXTURE_2D, or TEXTURE_3D_EXT.  This binding is accomplished by calling
     BindTextureEXT with <target> set to TEXTURE_1D, TEXTURE_2D, or
     TEXTURE_3D_EXT, and <texture> set to the name of the new texture object.
     When a texture object is bound to a target, the previous binding for
     that target is automatically broken.
-    
+
     When a texture object is first bound it takes the dimensionality of its
     target.  Thus, a texture object first bound to TEXTURE_1D is
     1-dimensional; a texture object first bound to TEXTURE_2D is
@@ -133,7 +133,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     which it is bound return state from the bound texture object.  If
     texture mapping of the dimensionality of the target to which a texture
     object is bound is active, the bound texture object is used.
-    
+
     By default when an OpenGL context is created, TEXTURE_1D, TEXTURE_2D,
     and TEXTURE_3D_EXT have 1, 2, and 3-dimensional textures associated
     with them.  In order that access to these default textures not be
@@ -227,7 +227,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     A texture object comprises the image arrays, priority, border color,
     filter modes, and wrap modes that are associated with that object.  More
     explicitly, the state list
-    
+
         TEXTURE,
         TEXTURE_PRIORITY_EXT
         TEXTURE_RED_SIZE,
@@ -267,7 +267,7 @@ Additions to the GLX Specification
 GLX Protocol
 
     Six new GL commands are added.
-  
+
     The following rendering command is sent to the server as part of a
     glXRender request:
 
@@ -275,7 +275,7 @@ GLX Protocol
             2           12              rendering command length
             2           4117            rendering command opcode
             4           ENUM            target
-            4           CARD32          texture 
+            4           CARD32          texture
 
     The following rendering command can be sent to the server as part of a
     glXRender request or as part of a glXRenderLarge request:
@@ -297,7 +297,7 @@ GLX Protocol
     The remaining commands are non-rendering commands. These commands are
     sent separately (i.e., not as part of a glXRender or glXRenderLarge
     request), using either the glXVendorPrivate request or the
-    glXVendorPrivateWithReply request: 
+    glXVendorPrivateWithReply request:
 
         DeleteTexturesEXT
             1           CARD8           opcode (X assigned)
@@ -336,7 +336,7 @@ GLX Protocol
             1                           unused
             2           CARD16          sequence number
             4           (n+p)/4         reply length
-            4           BOOL32          return_value 
+            4           BOOL32          return_value
             20                          unused
             n           LISTofBOOL      residences
             p                           unused, p=pad(n)
@@ -353,7 +353,7 @@ GLX Protocol
             1                           unused
             2           CARD16          sequence number
             4           0               reply length
-            4           BOOL32          return_value 
+            4           BOOL32          return_value
             20                          unused
 
 Dependencies on EXT_texture3D
@@ -384,7 +384,7 @@ Errors
     or 2-dimensional texture object.
 
     INVALID_VALUE is generated if PrioritizeTexturesEXT parameter <n>
-    negative. 
+    negative.
 
     INVALID_VALUE is generated if AreTexturesResidentEXT parameter <n>
     is negative.

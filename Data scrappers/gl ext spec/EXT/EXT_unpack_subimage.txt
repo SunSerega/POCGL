@@ -149,10 +149,10 @@ Issues
         completeness and for convenience.
 
     4. Should the new tokens be suffixed?
- 
+
         Yes. This extension was originally drafted with unsuffixed tokens
         since they provide the same functionality as in core Desktop GL.
-        However, the policy of the ES working group is that suffixes 
+        However, the policy of the ES working group is that suffixes
         must be used in extensions even for functionality that is core
         in Desktop GL.
 

@@ -87,7 +87,7 @@ New Tokens
 
 Changes to Chapter 4 of the OpenGL ES 2.0.25 Specification (Per-Fragment
 Operations and the Frame Buffer)
-  
+
     Add to section 4.2.1, "Selecting a Buffer for Writing":
 
     If the bound draw surface is auto stereo enabled and 3d Vision

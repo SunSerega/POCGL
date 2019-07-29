@@ -35,7 +35,7 @@ Specification Update Policy
 
 Status
 
-    Complete. 
+    Complete.
     Ratified by the Khronos Board of Promoters on 2014/03/14.
 
 Version

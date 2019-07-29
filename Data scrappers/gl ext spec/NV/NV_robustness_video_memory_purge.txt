@@ -32,7 +32,7 @@ Number
 
 Dependencies
 
-    This extension is written against the ARB_robustness and 
+    This extension is written against the ARB_robustness and
     GLX_ARB_create_context extensions.
 
 Overview
@@ -66,39 +66,39 @@ New Procedures and Functions
 
 New Tokens
 
-    Returned by GetGraphicsResetStatusARB, in addition to other tokens 
+    Returned by GetGraphicsResetStatusARB, in addition to other tokens
     defined in ARB_robustness:
 
         PURGED_CONTEXT_RESET_NV    0x92BB
-    
+
     Accepted as an attribute name in the <*attrib_list> argument of
     glXCreateContextAttribsARB:
-        
+
         GLX_GENERATE_RESET_ON_VIDEO_MEMORY_PURGE_NV 0x20F7
 
-    Accepted as an attribute name in the <*attrib_list> argument of 
+    Accepted as an attribute name in the <*attrib_list> argument of
     eglCreateContext:
-        
+
         EGL_GENERATE_RESET_ON_VIDEO_MEMORY_PURGE_NV 0x334C
 
 Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile)
 Specification (OpenGL Operation)
 
     Modify subsection 2.6 "Graphics Reset Recovery". After:
-        UNKNOWN_CONTEXT_RESET_ARB indicates a detected graphics reset 
+        UNKNOWN_CONTEXT_RESET_ARB indicates a detected graphics reset
         whose cause is unknown.
 
     add:
         PURGED_CONTEXT_RESET_NV indicates that video memory was purged
-        in a mode switch event. In that case, the application can no 
-        longer count on its resources' content being preserved, and must 
-        delete and recreate all buffer objects including FBOs and all 
-        textures bound to an FBO, transfer all relevant data again, 
-        and re-render to FBOs. Using buffer objects, including FBOs, 
-        that haven't been deleted and re-created is undefined behavior. 
+        in a mode switch event. In that case, the application can no
+        longer count on its resources' content being preserved, and must
+        delete and recreate all buffer objects including FBOs and all
+        textures bound to an FBO, transfer all relevant data again,
+        and re-render to FBOs. Using buffer objects, including FBOs,
+        that haven't been deleted and re-created is undefined behavior.
         Other objects are unaffected.
 
-        GetGraphicsResetStatusARB() needs to be called at least once 
+        GetGraphicsResetStatusARB() needs to be called at least once
         every frame, after a Flush(), Finish(), or buffer swapping call.
 
 Additions to the GLX 1.4 Specification
@@ -109,11 +109,11 @@ Additions to the GLX 1.4 Specification
 
     Add a new paragraph to the description of glXCreateContextAttribsARB:
 
-        The attribute name GLX_GENERATE_RESET_ON_VIDEO_MEMORY_PURGE_NV, 
-        which defaults to GL_FALSE, can be specified as GL_TRUE. In this 
-        case, a context reset notification will be generated when video 
-        memory content has been lost. This will only take effect if the 
-        attribute GLX_CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB is set to 
+        The attribute name GLX_GENERATE_RESET_ON_VIDEO_MEMORY_PURGE_NV,
+        which defaults to GL_FALSE, can be specified as GL_TRUE. In this
+        case, a context reset notification will be generated when video
+        memory content has been lost. This will only take effect if the
+        attribute GLX_CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB is set to
         GLX_LOSE_CONTEXT_ON_RESET_ARB.
 
 Additions to the EGL 1.5 Specification
@@ -122,11 +122,11 @@ Additions to the EGL 1.5 Specification
 
         3.7.1.7 OpenGL reset notification for video memory purge events
 
-        The attribute name EGL_GENERATE_RESET_ON_VIDEO_MEMORY_PURGE_NV, 
-        which defaults to GL_FALSE, can be specified as GL_TRUE. In this 
-        case, a context reset notification will be generated when video 
-        memory content has been lost. This will only take effect if the 
-        attribute EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY is set 
+        The attribute name EGL_GENERATE_RESET_ON_VIDEO_MEMORY_PURGE_NV,
+        which defaults to GL_FALSE, can be specified as GL_TRUE. In this
+        case, a context reset notification will be generated when video
+        memory content has been lost. This will only take effect if the
+        attribute EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY is set
         to EGL_LOSE_CONTEXT_ON_RESET.
 
 Errors
@@ -143,8 +143,8 @@ Issues
 
     (2) Which NVIDIA drivers are affected?
 
-    Not all NVIDIA drivers expose this extension, but all desktop Linux 
-    drivers at the time of its publishing are affected by the issues it 
+    Not all NVIDIA drivers expose this extension, but all desktop Linux
+    drivers at the time of its publishing are affected by the issues it
     addresses.
 
 Example

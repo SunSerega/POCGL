@@ -137,7 +137,7 @@ New Procedures and Functions
 New Tokens
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
-    GetFloatv, and GetDoublev: 
+    GetFloatv, and GetDoublev:
 
         MAX_IMAGE_UNITS_EXT                             0x8F38
         MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS_EXT 0x8F39
@@ -267,7 +267,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
 
     The type of an image variable must match the texture target of the image
     currently bound to the image unit, otherwise the result of the load/
-    store/atomic operation is undefined (see Section 4.1.X of the OpenGL 
+    store/atomic operation is undefined (see Section 4.1.X of the OpenGL
     Shading Language specification for more detail).
 
     The location of an image variable needs to be queried with
@@ -414,7 +414,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
     shader.  <barriers> is a bitfield indicating the set of operations that
     are synchronized with shader stores; the bits used in <barriers> are as
     follows:
-    
+
     - VERTEX_ATTRIB_ARRAY_BARRIER_BIT_EXT:  If set, vertex data sourced from
         buffer objects after the barrier will reflect data written by shaders
         prior to the barrier.  The set of buffer objects affected by this bit
@@ -652,8 +652,8 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
       layer  = floor(layer_orig / 6)
       face   = layer_orig - (layer * 6)
 
-    <format> specifies the format that the elements of the image will be 
-    treated as when doing formatted stores, as described later in this 
+    <format> specifies the format that the elements of the image will be
+    treated as when doing formatted stores, as described later in this
     section. This is referred to as the "image unit format". This must be one
     of the formats listed in Table X.2, otherwise the error INVALID_VALUE is
     generated.
@@ -742,7 +742,7 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
       * the image has more samples than the implementation-dependent value of
         MAX_IMAGE_SAMPLES_EXT.
 
-      * the access is a load and the format is not compatible with the 
+      * the access is a load and the format is not compatible with the
         "size" layout qualifier of the image uniform.
 
      For textures with multiple samples per texel, the sample selected for an
@@ -756,19 +756,19 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
      of the array, the results of the operation are undefined but may not lead
      to termination.
 
-     Accesses to textures bound to image units do format conversions based on 
+     Accesses to textures bound to image units do format conversions based on
      the <format> argument specified when the image is bound. Loads always
      return a value as a vec4, ivec4, or uvec4, and stores always take the
-     source data as a vec4, ivec4, or uvec4. Data is converted to/from the 
+     source data as a vec4, ivec4, or uvec4. Data is converted to/from the
      specified format as if it were passed through a TexImage2D or GetTexImage
-     command with <format> and <type> as RGBA and FLOAT for vec4 data, with 
-     <format> and <type> as RGBA_INTEGER and INT for ivec4 data, or with 
+     command with <format> and <type> as RGBA and FLOAT for vec4 data, with
+     <format> and <type> as RGBA_INTEGER and INT for ivec4 data, or with
      <format> and <type> as RGBA_INTEGER and UNSIGNED_INT for uvec4 data.
      Unused components are filled in with (0,0,0,1) (where "1" is either a
-     float or integer depending on the format). 
-     
-     The formats that are supported for image loads are dependent on the 
-     layout(size*) qualifier of the image uniform. The following formats 
+     float or integer depending on the format).
+
+     The formats that are supported for image loads are dependent on the
+     layout(size*) qualifier of the image uniform. The following formats
      are supported for image loads:
 
      - size1x8: R8I, R8UI
@@ -779,75 +779,75 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
 
      Image stores support all formats in Table X.2.
 
-     Table X.2 specifies how each format is stored in memory, which must be 
-     made explicit because a single image can be viewed with multiple formats 
+     Table X.2 specifies how each format is stored in memory, which must be
+     made explicit because a single image can be viewed with multiple formats
      according to the <format> argument. The "R", "G", "B", and "A" columns
      indicate which bits of which 32-bit word correspond to that component.
      For example, an entry of "1[15:0]" indicates that the selected component
-     uses sixteen bits with its most significant bit in bit 15 of the second 
-     word of memory and its least significant bit in bit 0. Floating-point 
-     textures with 32-bit components are stored using the IEEE standard 
-     representation; textures with 10-, 11-, or 16-bit floating-point 
-     components are stored according to Sections 2.1.2 and 2.1.3.  
+     uses sixteen bits with its most significant bit in bit 15 of the second
+     word of memory and its least significant bit in bit 0. Floating-point
+     textures with 32-bit components are stored using the IEEE standard
+     representation; textures with 10-, 11-, or 16-bit floating-point
+     components are stored according to Sections 2.1.2 and 2.1.3.
 
-     The "equivalence" column of Table X.2 defines a set of equivalence 
+     The "equivalence" column of Table X.2 defines a set of equivalence
      classes for formats, such that if the internal format of a texture level
-     is in the same equivalence class as the <format> argument to 
-     BindImageTextureEXT then the image may be viewed with that format. 
+     is in the same equivalence class as the <format> argument to
+     BindImageTextureEXT then the image may be viewed with that format.
      Otherwise, the access is considered invalid as described above.
 
         Internal format  Equivalence      R        G         B         A
         ---------------  -----------   -------  -------   -------   -------
         RGBA32F             4x32       0[31:0]  1[31:0]   2[31:0]   3[31:0]
         RGBA16F             2x32       0[15:0]  0[31:16]  1[15:0]   1[31:16]
-        RG32F               2x32       0[31:0]  1[31:0] 
-        RG16F               1x32       0[15:0]  0[31:16] 
-        R11F_G11F_B10F      1x32       0[10:0]  0[21:11]  0[31:22] 
-        R32F                1x32       0[31:0]  
-        R16F                1x16       0[15:0] 
+        RG32F               2x32       0[31:0]  1[31:0]
+        RG16F               1x32       0[15:0]  0[31:16]
+        R11F_G11F_B10F      1x32       0[10:0]  0[21:11]  0[31:22]
+        R32F                1x32       0[31:0]
+        R16F                1x16       0[15:0]
 
         RGBA32UI            4x32       0[31:0]  1[31:0]   2[31:0]   3[31:0]
         RGBA16UI            2x32       0[15:0]  0[31:16]  1[15:0]   1[31:16]
         RGB10_A2UI          1x32       0[9:0]   0[19:10]  0[29:20]  0[31:30]
         RGBA8UI             1x32       0[7:0]   0[15:8]   0[23:16]  0[31:24]
         RG32UI              2x32       0[31:0]  1[31:0]
-        RG16UI              1x32       0[15:0]  0[31:16] 
-        RG8UI               1x16       0[7:0]   0[15:8] 
-        R32UI               1x32       0[31:0]  
-        R16UI               1x16       0[15:0] 
-        R8UI                1x8        0[7:0] 
+        RG16UI              1x32       0[15:0]  0[31:16]
+        RG8UI               1x16       0[7:0]   0[15:8]
+        R32UI               1x32       0[31:0]
+        R16UI               1x16       0[15:0]
+        R8UI                1x8        0[7:0]
 
         RGBA32I             4x32       0[31:0]  1[31:0]   2[31:0]   3[31:0]
         RGBA16I             2x32       0[15:0]  0[31:16]  1[15:0]   1[31:16]
         RGBA8I              1x32       0[7:0]   0[15:8]   0[23:16]  0[31:24]
         RG32I               2x32       0[31:0]  1[31:0]
-        RG16I               1x32       0[15:0]  0[31:16] 
-        RG8I                1x16       0[7:0]   0[15:8] 
-        R32I                1x32       0[31:0]  
-        R16I                1x16       0[15:0] 
-        R8I                 1x8        0[7:0] 
+        RG16I               1x32       0[15:0]  0[31:16]
+        RG8I                1x16       0[7:0]   0[15:8]
+        R32I                1x32       0[31:0]
+        R16I                1x16       0[15:0]
+        R8I                 1x8        0[7:0]
 
         RGBA16              2x32       0[15:0]  0[31:16]  1[15:0]   1[31:16]
         RGB10_A2            1x32       0[9:0]   0[19:10]  0[29:20]  0[31:30]
         RGBA8               1x32       0[7:0]   0[15:8]   0[23:16]  0[31:24]
-        RG16                1x32       0[15:0]  0[31:16] 
-        RG8                 1x16       0[7:0]   0[15:8] 
-        R16                 1x16       0[15:0] 
-        R8                  1x8        0[7:0] 
+        RG16                1x32       0[15:0]  0[31:16]
+        RG8                 1x16       0[7:0]   0[15:8]
+        R16                 1x16       0[15:0]
+        R8                  1x8        0[7:0]
 
         RGBA16_SNORM        2x32       0[15:0]  0[31:16]  1[15:0]   1[31:16]
         RGBA8_SNORM         1x32       0[7:0]   0[15:8]   0[23:16]  0[31:24]
-        RG16_SNORM          1x32       0[15:0]  0[31:16] 
-        RG8_SNORM           1x16       0[7:0]   0[15:8] 
-        R16_SNORM           1x16       0[15:0] 
-        R8_SNORM            1x8        0[7:0] 
+        RG16_SNORM          1x32       0[15:0]  0[31:16]
+        RG8_SNORM           1x16       0[7:0]   0[15:8]
+        R16_SNORM           1x16       0[15:0]
+        R8_SNORM            1x8        0[7:0]
 
-        Table X.2, Supported texture formats, component packing, and 
+        Table X.2, Supported texture formats, component packing, and
         equivalence classes for formatted image accesses.
 
      Implementations may support a limited combined number of image units and
-     active fragment shader outputs (section 4.2.1).  A link error will be 
-     generated if the number of active image uniforms used in all shaders and 
+     active fragment shader outputs (section 4.2.1).  A link error will be
+     generated if the number of active image uniforms used in all shaders and
      the number of active fragment shader outputs exceeds the implementation-
      dependent value (MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS_EXT).
 
@@ -897,7 +897,7 @@ New Implementation Dependent State
       AND_FRAGMENT_OUTPUTS_EXT                                     units + fragment outputs
     MAX_IMAGE_SAMPLES_EXT        Z     GetIntegerv      0          max allowed samples     3.9.X        -
                                                                    for a texture level
-                                                                   bound to an image unit  
+                                                                   bound to an image unit
 
 New State
 
@@ -928,7 +928,7 @@ GLX Protocol
 
     !!! TBD !!!
 
-    
+
 Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Including the following line in a shader can be used to control the
@@ -974,19 +974,19 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Like samplers, images are opaque handles to one-, two-, or
     three-dimensional images corresponding to all or a portion of a single
-    level of a texture image bound to an image unit.  There are distinct 
-    image variable types for each texture target, and for each of float, 
+    level of a texture image bound to an image unit.  There are distinct
+    image variable types for each texture target, and for each of float,
     integer, and unsigned integer data types.  Image accesses should use
     an image type that matches the target of the texture whose level is
-    bound to the image unit, or for non-layered bindings of 3D or array 
+    bound to the image unit, or for non-layered bindings of 3D or array
     images should use the image type that matches the dimensionality of
-    the layer of the image (i.e. a layer of 3D, 2DArray, Cube, or 
-    CubeArray should use image2D, a layer of 1DArray should use image1D, 
-    and a layer of 2DMSArray should use image2DMS). If the image target type 
+    the layer of the image (i.e. a layer of 3D, 2DArray, Cube, or
+    CubeArray should use image2D, a layer of 1DArray should use image1D,
+    and a layer of 2DMSArray should use image2DMS). If the image target type
     does not match the bound image in this manner, if the data type does not
-    match the bound image, or if the "size" layout qualifier does not match 
-    the image unit format as described in Section 3.9.X of the OpenGL 
-    Specification, the results of image accesses are undefined but may not 
+    match the bound image, or if the "size" layout qualifier does not match
+    the image unit format as described in Section 3.9.X of the OpenGL
+    Specification, the results of image accesses are undefined but may not
     include program termination.
 
     Image variables are used in the image load, store, and atomic functions
@@ -1024,7 +1024,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Modify Section 4.3.2, Constant Qualifier (p. 30)
 
-    (add after last paragraph of section)  
+    (add after last paragraph of section)
 
     Because image variables can not be built from constant expressions, the
     "const" qualifier may not be used to create a compile-time constant image
@@ -1037,7 +1037,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Remove "only" from the sentence:
 
-    Fragment shaders can have an input layout only for redeclaring the 
+    Fragment shaders can have an input layout only for redeclaring the
     built-in variable gl_FragCoord...
 
     Add to the end of the section:
@@ -1049,7 +1049,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
         early_fragment_tests
 
     to indicate that fragment tests will be performed before fragment shader
-    execution, as described in Section 3.12.2 of the OpenGL Specification. 
+    execution, as described in Section 3.12.2 of the OpenGL Specification.
     For example,
 
       layout(early_fragment_tests) in;
@@ -1169,7 +1169,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
       funcA(img1);              // OK, adding "restrict" is allowed
       funcB(img2);              // illegal, stripping "coherent" is not
 
-    
+
     (Insert a new numbered section at the end of Chapter 8, Built-in
     Functions, p. 69)
 
@@ -1182,15 +1182,15 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     When image memory functions access memory, an individual texel in the
     image is identified using an i, (i,j), or (i,j,k) coordinate corresponding
-    to the values of <coord>.  For image2DMS and image2DMSArray variables (and 
-    the corresponding int/unsigned int types) corresponding to multisample 
-    textures, each texel may have multiple samples and an individual sample is 
-    identified using the integer <sample> parameter.  The coordinates and 
-    sample number are used to select an individual texel in the manner 
+    to the values of <coord>.  For image2DMS and image2DMSArray variables (and
+    the corresponding int/unsigned int types) corresponding to multisample
+    textures, each texel may have multiple samples and an individual sample is
+    identified using the integer <sample> parameter.  The coordinates and
+    sample number are used to select an individual texel in the manner
     described in Section 3.9.X of the OpenGL specification.
 
     Loads and stores support float, integer, and unsigned integer types. The
-    data types "gimage*" serve as placeholders meaning either "image*", 
+    data types "gimage*" serve as placeholders meaning either "image*",
     "iimage*", or "uimage*" in the same way as "gvec" or "gsampler".
 
     The "IMAGE_INFO" in the prototypes below is a placeholder representing
@@ -1219,11 +1219,11 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Description:
 
-    Loads the texel at the coordinate <coord> from the image unit specified 
-    by <image>.  For multisample loads, the sample number is given by 
-    <sample>.  When <image>, <coord>, and <sample> identify a valid texel, 
-    the bits used to represent the selected texel in memory are converted to 
-    a vec4, ivec4, or uvec4 in the manner described in Section 3.9.X of the 
+    Loads the texel at the coordinate <coord> from the image unit specified
+    by <image>.  For multisample loads, the sample number is given by
+    <sample>.  When <image>, <coord>, and <sample> identify a valid texel,
+    the bits used to represent the selected texel in memory are converted to
+    a vec4, ivec4, or uvec4 in the manner described in Section 3.9.X of the
     OpenGL Specification and returned.
 
 
@@ -1239,7 +1239,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
     valid texel, the bits used to represent <data> are converted to the format
     of the image unit in the manner described in Section 3.9.X of the OpenGL
     Specification and stored to the specified texel.
-    
+
 
     Syntax:
 
@@ -1286,7 +1286,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
     specify the the individual texel to operate on.  The method for
     identifying the individual texel operated on from <image>, <coord>, and
     <sample>, and the method for reading and writing the texel are specified
-    in Section 3.9.X of the OpenGL specification. The format of the image 
+    in Section 3.9.X of the OpenGL specification. The format of the image
     unit must be in the "1x32" equivalence class in Table X.2 in Section 3.9.X
     of the OpenGL specification, otherwise the atomic operation is invalid.
 
@@ -1391,7 +1391,7 @@ Errors
     INVALID_VALUE is generated by BindImageTextureEXT if <texture> is not the
     name of an existing texture object.
 
-    INVALID_VALUE is generated by BindImageTextureEXT if <format> is not a 
+    INVALID_VALUE is generated by BindImageTextureEXT if <format> is not a
     legal format.
 
 
@@ -1516,15 +1516,15 @@ Dependencies on NV_gpu_program5
                                 | <STOREIMop_instruction>
                                 | <ATOMIMop_instruction>
 
-      <LOADIMop_instruction>  ::= <LOADIMop> <opModifiers> <instResult> "," 
+      <LOADIMop_instruction>  ::= <LOADIMop> <opModifiers> <instResult> ","
                                        <instOperandV> "," <imageAccess>
 
-      <STOREIMop_instruction> ::= <STOREIMop> <opModifiers> <imageUnit> "," 
-                                       <instOperandV> "," <instOperandV> "," 
+      <STOREIMop_instruction> ::= <STOREIMop> <opModifiers> <imageUnit> ","
+                                       <instOperandV> "," <instOperandV> ","
                                        <imageTarget>
 
-      <ATOMIMop_instruction>  ::= <ATOMIMop> <opModifiers> <instResult> "," 
-                                       <instOperandV> "," <instOperandV> "," 
+      <ATOMIMop_instruction>  ::= <ATOMIMop> <opModifiers> <instResult> ","
+                                       <instOperandV> "," <instOperandV> ","
                                        <imageAccess>
 
       <LOADIMop>              ::= "LOADIM"
@@ -1551,19 +1551,19 @@ Dependencies on NV_gpu_program5
     Section 2.X.3.X, Program Image Variables
 
     Program image variables are used as constants during program execution
-    and refer the image objects bound to one or more image units. All 
+    and refer the image objects bound to one or more image units. All
     image variables have associated bindings and are read-only during
     program execution.  Image variables retain their values across program
     invocations, and the set of image units to which they refer is
     constant.  The texture object a variable refers to may be changed by
-    binding a new texture object to the corresponding image unit.  Image 
-    variables may only be used to identify a texture object in image 
+    binding a new texture object to the corresponding image unit.  Image
+    variables may only be used to identify a texture object in image
     instructions, and may not be used as operands in any other instruction.
-    Image variables may be declared explicitly via the <IMAGE_statement> 
-    grammar rule, or implicitly by using an image unit binding in an 
+    Image variables may be declared explicitly via the <IMAGE_statement>
+    grammar rule, or implicitly by using an image unit binding in an
     instruction.
 
-    Image array variables may be declared as arrays, but the list of image 
+    Image array variables may be declared as arrays, but the list of image
     units assigned to the array must increase consecutively.
 
       Binding          Components  Underlying State
@@ -1579,7 +1579,7 @@ Dependencies on NV_gpu_program5
     with a single integer referring to image unit <a>.
 
     If an image binding matches "image[a..b]", the image variable is
-    filled with an array of integers referring to image units <a> through 
+    filled with an array of integers referring to image units <a> through
     <b>, inclusive.  A program will fail to compile if <a> or <b> is
     negative or greater than or equal to the number of image units
     supported, or if <a> is greater than <b>.
@@ -1587,7 +1587,7 @@ Dependencies on NV_gpu_program5
 
     Modify Section 2.X.4, Program Execution Environment
 
-      Instr-      Modifiers 
+      Instr-      Modifiers
       uction  V  F I C S H D  Out Inputs    Description
       ------- -- - - - - - -  --- --------  --------------------------------
       ATOMIM  50 - - X - - -  s   v,vs,i    atomic image operation
@@ -1625,19 +1625,19 @@ Dependencies on NV_gpu_program5
     Section 2.X.8.Z, LOADIM:  Image Load
 
     The LOADIM instruction takes the components of a single signed integer
-    vector operand and uses them as coordinates to perform an unformatted 
-    image load from the texture bound to the image unit specified by 
-    <imageUnit>. Unformatted loads read the data from memory without 
-    converting from the image unit format, by copying raw bits from memory 
-    to the destination variable according to the bit layouts described in 
-    Table X.2, where word 0 is written to the .x component, word 1 to .y, 
+    vector operand and uses them as coordinates to perform an unformatted
+    image load from the texture bound to the image unit specified by
+    <imageUnit>. Unformatted loads read the data from memory without
+    converting from the image unit format, by copying raw bits from memory
+    to the destination variable according to the bit layouts described in
+    Table X.2, where word 0 is written to the .x component, word 1 to .y,
     etc..
 
-    Eleven image targets are supported:  1D, 2D, 3D, RECT, CUBE, BUFFER, 
-    ARRAY1D, ARRAY2D, ARRAYCUBE, 2DMS, and ARRAY2DMS.  The texel coordinate 
+    Eleven image targets are supported:  1D, 2D, 3D, RECT, CUBE, BUFFER,
+    ARRAY1D, ARRAY2D, ARRAYCUBE, 2DMS, and ARRAY2DMS.  The texel coordinate
     is a one-, two- or three-dimensional vector, taken from the <x>, <y>, and
     <z> components of the operand.  For the 2DMS and ARRAY2DMS, the texel
-    coordinate is a two- or three-dimensional vector, taken from the <x>, 
+    coordinate is a two- or three-dimensional vector, taken from the <x>,
     <y>, and <z> components of the operand, and a sample number is taken from
     the <w> component of the operand.
 
@@ -1646,7 +1646,7 @@ Dependencies on NV_gpu_program5
           coords.y = 0;
         }
         if (target == 1D || target == 2D ||
-            target == BUFFER || target == RECT || 
+            target == BUFFER || target == RECT ||
             target == 2DMS) {
           coords.z = 0;
         }
@@ -1660,18 +1660,18 @@ Dependencies on NV_gpu_program5
     loaded value and the <y>, <z>, and <w> components of the result are zero,
     zero, and one (int or float, depending on the type of the opModifier),
     respectively. For "S8" and "S16" modifiers, the loaded value is sign-
-    extended; for "U8" and "U16", the loaded value is zero-extended.  When 
-    an image load uses the "F32X2", "S32X2", or "U32X2" storage modifiers, 
-    the <x> and <y> components of the result contain the loaded values and 
+    extended; for "U8" and "U16", the loaded value is zero-extended.  When
+    an image load uses the "F32X2", "S32X2", or "U32X2" storage modifiers,
+    the <x> and <y> components of the result contain the loaded values and
     the <z>, and <w> components of the result are zero and one, respectively.
-    When an image load uses the "F32X4", "S32X4", or "U32X4" storage 
+    When an image load uses the "F32X4", "S32X4", or "U32X4" storage
     modifiers, all four components of the result contain the loaded values.
     If the image load is invalid for any of the reasons described in Section
     3.9.X, the result vector will be undefined.
 
     LOADIM supports no base data type modifiers, but requires exactly one
     storage modifier.  An image load is treated as invalid unless the storage
-    modifier matches the image unit format, as described in Table X.3.  The 
+    modifier matches the image unit format, as described in Table X.3.  The
     base data type of the result vector is derived from the storage modifier.
     The single operand is always interpreted as a signed integer vector.
 
@@ -1697,11 +1697,11 @@ Dependencies on NV_gpu_program5
     by <imageUnit> using the data specified in the first vector operand.  The
     store is performed in the manner described in Section 3.9.X.
 
-    Eleven image targets are supported:  1D, 2D, 3D, RECT, CUBE, BUFFER, 
-    ARRAY1D, ARRAY2D, ARRAYCUBE, 2DMS, and ARRAY2DMS.  The texel coordinate 
+    Eleven image targets are supported:  1D, 2D, 3D, RECT, CUBE, BUFFER,
+    ARRAY1D, ARRAY2D, ARRAYCUBE, 2DMS, and ARRAY2DMS.  The texel coordinate
     is a one-, two- or three-dimensional vector, taken from the <x>, <y>, and
     <z> components of the operand.  For the 2DMS and ARRAY2DMS, the texel
-    coordinate is a two- or three-dimensional vector, taken from the <x>, 
+    coordinate is a two- or three-dimensional vector, taken from the <x>,
     <y>, and <z> components of the operand, and a sample number is taken from
     the <w> component of the operand.
 
@@ -1711,7 +1711,7 @@ Dependencies on NV_gpu_program5
           coords.y = 0;
         }
         if (target == 1D || target == 2D ||
-            target == BUFFER || target == RECT || 
+            target == BUFFER || target == RECT ||
             target == 2DMS) {
           coords.z = 0;
         }
@@ -1722,18 +1722,18 @@ Dependencies on NV_gpu_program5
 
     STOREIM supports an optional base data type or storage modifier.  If a
     storage modifier is specified, the store is unformatted; otherwise, it is
-    formatted.  Formatted stores operate as described in Section 3.9.X. 
-    Unformatted stores write the data to memory without converting to the 
-    image unit format, by copying raw bits from the source variable to 
-    memory according to the bit layouts described in Table X.2, where word 
+    formatted.  Formatted stores operate as described in Section 3.9.X.
+    Unformatted stores write the data to memory without converting to the
+    image unit format, by copying raw bits from the source variable to
+    memory according to the bit layouts described in Table X.2, where word
     0 is taken from the <x> component, word 1 from <y>, etc..
-    
+
     An unformatted image store is treated as invalid unless the
-    storage modifier matches image unit format, as described in Table X.3.  
-    When performing an unformatted store using the "S8", "U8", "S16", or 
-    "U16" modifiers, all bits but the least significant eight or sixteen 
-    are dropped as part of the store.  When performing a formatted store, 
-    the first operand will be converted to the image unit format as part 
+    storage modifier matches image unit format, as described in Table X.3.
+    When performing an unformatted store using the "S8", "U8", "S16", or
+    "U16" modifiers, all bits but the least significant eight or sixteen
+    are dropped as part of the store.  When performing a formatted store,
+    the first operand will be converted to the image unit format as part
     of the store.
 
     The base data type of the first vector operand is derived from the data
@@ -1786,7 +1786,7 @@ Dependencies on NV_gpu_program5
           coords.y = 0;
         }
         if (target == 1D || target == 2D ||
-            target == BUFFER || target == RECT || 
+            target == BUFFER || target == RECT ||
             target == 2DMS) {
           coords.z = 0;
         }
@@ -1805,7 +1805,7 @@ Dependencies on NV_gpu_program5
           writeval = max(tmp0.x, result);
           break;
         case IWRAP:
-          writeval = (result >= tmp0.x) ? 0 : result+1; 
+          writeval = (result >= tmp0.x) ? 0 : result+1;
           break;
         case DWRAP:
           writeval = (result == 0 || result > tmp0.x) ? tmp0.x : result-1;
@@ -1833,7 +1833,7 @@ Dependencies on NV_gpu_program5
 
     ATOMIM performs a scalar atomic operation.  The <y>, <z>, and <w>
     components of the result vector are undefined.
-      
+
     ATOMIM supports no base data type modifiers, but requires exactly one
     storage and one atomic modifier.  An image atomic is treated as invalid
     unless the storage modifier matches the format of the texture bound to the
@@ -1889,19 +1889,19 @@ Issues
 
     (1) How are the format and type of the load/store determined?
 
-      RESOLVED:  There is a natural desire to load and store using a 
-      canonical 4-vector in the shader with hardware converting to/from a 
+      RESOLVED:  There is a natural desire to load and store using a
+      canonical 4-vector in the shader with hardware converting to/from a
       format compatible with the bound image, to be consistent with how
       texture loads and fragment shader outputs currently behave. There is
       also good reason to allow some flexibility in the format used for image
       accesses being different from the internal format of the texture level.
-      We allow format conversions to and from any format that image units 
-      support. We make the format be selected when the image is bound to an 
+      We allow format conversions to and from any format that image units
+      support. We make the format be selected when the image is bound to an
       image unit, and define which image unit formats can be used for which
       texture level internal formats. For example, it is legal to access an
-      image whose internal format is RGBA8 with an image unit format of 
+      image whose internal format is RGBA8 with an image unit format of
       R32UI.
-      
+
     (2) What set of texture formats should be supported for image loads and
         stores?
 
@@ -1946,7 +1946,7 @@ Issues
         completeness?  What happens if you bind a texture with inconsistent
         mipmaps?
 
-      RESOLVED:  The image unit is treated as if nothing were bound, where 
+      RESOLVED:  The image unit is treated as if nothing were bound, where
       all accesses are treated as invalid.
 
     (8) What happens if the value passed to Uniform1i to specify the image
@@ -1975,11 +1975,11 @@ Issues
       store of a buffer object. This buffer texture may be bound to an image
       unit and accessed with an imageBuffer variable in the Shading Language.
 
-      This extension adds support for image accesses to multisample textures, 
-      but not renderbuffers. Note that with the ARB_texture_multisample 
-      extension, there is no longer a good reason to use renderbuffers. 
+      This extension adds support for image accesses to multisample textures,
+      but not renderbuffers. Note that with the ARB_texture_multisample
+      extension, there is no longer a good reason to use renderbuffers.
       Existing 2D or rectangle targets already provided a superset of single-
-      sample renderbuffer functionality; the new ARB extension provides a 
+      sample renderbuffer functionality; the new ARB extension provides a
       superset of multisample renderbuffer functionality.
 
     (11) What amount of automatic synchronization is provided for image loads
@@ -2036,7 +2036,7 @@ Issues
          indicating that the image data lines up with a four-component
          floating-point vector.
 
-      RESOLVED:  No.  Separate types are provided for float vs. int vs. 
+      RESOLVED:  No.  Separate types are provided for float vs. int vs.
       unsigned int, but not for each image format.
 
     (15) If shader image variable types include information on the texel
@@ -2061,7 +2061,7 @@ Issues
       currently bound to the selected image unit.  If this ability were
       provided, it would also be necessary to provide some mechanism to
       specify a texture target because there is a separate default "zero"
-      texture for each target.  
+      texture for each target.
 
       Note that existing framebuffer objects have a similar behavior; default
       textures can't be attached to an FBO.
@@ -2073,14 +2073,14 @@ Issues
     (18) Should we have defined behavior if invalid coordinates are passed to
          an image load, store, or atomic operation?  If so, what happens?
 
-      RESOLVED:  Yes. We define the behavior to return zeroes on a load and 
-      atomic and to have no effect on any bound texture on stores and 
+      RESOLVED:  Yes. We define the behavior to return zeroes on a load and
+      atomic and to have no effect on any bound texture on stores and
       atomics.
 
     (19) Should we have a limit on the total number of combined image units
          and draw buffers, and if so, what should that be?
 
-      RESOLVED:  Yes, some hardware requires this. The program will fail to 
+      RESOLVED:  Yes, some hardware requires this. The program will fail to
       link.
 
     (20) What happens if a shader specifies an image store or atomic operation
@@ -2157,7 +2157,7 @@ Issues
 
     (24) For formatted loads where the format doesn't include some component,
          what values are filled in? (0,0,0,1)? (0,0,0,0)?
-         
+
       RESOLVED: Prefer (0,0,0,1) to match other APIs.
 
     (25) How does the combined-image-and-fragment-output limit interact with
@@ -2236,7 +2236,7 @@ Issues
       where "image2D" is replaced with "struct image2D_data *".  In this
       model, the former declares <firstImage> to be a pointer to constant
       image data.  The latter declares <secondImage> to be a constant pointer
-      to non-constant image data.  
+      to non-constant image data.
 
       For "coherent", "volatile", and "const", the qualifier should typically
       go before the image type.  For "restrict", the qualifier must go after
@@ -2389,13 +2389,13 @@ Revision History
                               vector.  Also clarify that single-layer bindings
                               of an array or cube map texture use a target
                               appropriate to the bound layer.
-                              
+
      4    03/23/10  pbrown    Add interaction with EXT_separate_shader_objects.
                               Update issues section to include some issues
                               left behind in NV_gpu_shader5 when specs were
                               refactored.
 
-     3    03/21/10  pbrown    Update spec overview, interactions, and issues 
+     3    03/21/10  pbrown    Update spec overview, interactions, and issues
                               sections; miscellaneous minor clarifications.
 
      2    03/16/10  pbrown    Add a separate #extension line for this

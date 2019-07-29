@@ -33,7 +33,7 @@ Overview
     is non-zero, a separate stencil buffer is allocated for the color buffer and
     each aux buffer.  This extension does not cause separate depth or stencil
     buffers to be allocated for the left and right buffers of a stereo drawable.
-    A context with no aux buffers will be unaffected by this extension.  
+    A context with no aux buffers will be unaffected by this extension.
 
     Switching the draw or read buffer from the color buffer to an aux buffer, or
     switching between two aux buffers, simultaneously switches the associated
@@ -87,11 +87,11 @@ Issues
 New Procedures and Functions
 
     None
- 
+
 New Tokens
 
-    Accepted by the <pname> parameter of GetIntegerv. 
-    
+    Accepted by the <pname> parameter of GetIntegerv.
+
     AUX_DEPTH_STENCIL_APPLE          0x8A14
 
 Errors

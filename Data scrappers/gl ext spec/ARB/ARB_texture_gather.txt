@@ -336,16 +336,16 @@ Revision History
     Rev.    Date      Author    Changes
     ----  --------    --------  --------------------------------------------
     8     02/26/14    Jon Leech Change MIN_PROGRAM_TEXTURE_GATHER_OFFSET_ARB
-                                type from Z+ to Z (Bug 11730).       
+                                type from Z+ to Z (Bug 11730).
 
     7     01/27/11    pbrown    Add further clarification on the interaction
-                                of texture gather and incomplete textures 
+                                of texture gather and incomplete textures
                                 bug 7289).
 
     6     09/23/10    pbrown    Clarify the interaction of texture gather
                                 with swizzle (bug 5910), fixing conflicts
                                 between API and GLSL spec language.
-                                Consolidate into one copy in the API 
+                                Consolidate into one copy in the API
                                 spec.  Fix incorrect resolution on issue
                                 (5).  Minor wording updates to issues.
 

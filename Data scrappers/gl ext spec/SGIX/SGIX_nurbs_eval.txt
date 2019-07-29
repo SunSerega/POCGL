@@ -34,12 +34,12 @@ Overview
 
     In the new NURBS extension, every effort has been made to extend the
     existing evaluators interface, rather than define a completely new set of
-    interfaces and state. 
+    interfaces and state.
 
 Issues
 
     * Should it be NURB or NURBS?
-    
+
     I'm choosing NURBS since it matches the GLU spec and glu extensions.
     This does not agree with Farin's usage in the literature, but does agree
     with many other authors.
@@ -104,14 +104,14 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
   Basis Functions:
 
     NURBS polynomials for curves are defined as follows:
-    Consider the R^k-valued polynomial q(u) is defined by 
+    Consider the R^k-valued polynomial q(u) is defined by
      q(u) = sum(i=0,n) N_i^d(u) * R_i
     with N_i^d(u) =    N_i^(d-1)(u) * (u-u(i-1))/(u(i+d-1)-u(i-1)) +
             N(i+1)^(d-1)(u) * (u(i+d)-u)/(u(i+d)-u_i)
     the i_th NURBS basis polynomial of degree d.
 
     Each R_i is a control point, and each u_i is a knot-value.
-    The complete set of {u_i} values is called the knot vector. 
+    The complete set of {u_i} values is called the knot vector.
 
   Map1[fd]:
 
@@ -121,11 +121,11 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     given as input to Map1[fd] or Map2[fd].  In other words, the <order>
     parameter only determines the size of the valid GL state for the map
     array; it does not really capture the mathematical order of the curve or
-    surface. 
+    surface.
 
     Note that it is still true that the <order> parameter to Map1[fd] is equal
     to n+1 in the equation defining NURBS polynomials at the beginning of this
-    section. 
+    section.
 
   Map2[fd]:
 
@@ -165,7 +165,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     MAP1_XXX_NURBS is enabled, the evaluation functions instead evaluate NURBS
     curves.  Similarly, the new MAP2_XXX_NURBS tokens are used to enable NURBS
     surface evaluation for the functions EvalCoord2[fd], EvalCoord2[fd]v,
-    EvalPoint2, and EvalMesh2.   
+    EvalPoint2, and EvalMesh2.
 
 Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 
@@ -188,7 +188,7 @@ Errors
     INVALID_VALUE is generated if NurbsKnots[12]SGIX parameter <uknotcount> or
     <vknotcount> are negative or greater that or equal to MAX_EVAL_ORDER.
 
-    INVALID_VALUE is generated if <uorder> > <uknotcount>+1 when any of 
+    INVALID_VALUE is generated if <uorder> > <uknotcount>+1 when any of
     EvalCoord1[fd], EvalCoord1[fd]v, EvalPoint1, or EvalMesh1 are called if
     both of MAP1_XXX and MAP1_XXX_NURBS_SGIX are enabled.
 
@@ -221,10 +221,10 @@ New State
     MAP2_TEXTURE_COORD_3_NURBS_SGIX    glIsEnabled    B    FALSE    eval/enable
     MAP2_TEXTURE_COORD_4_NURBS_SGIX    glIsEnabled    B    FALSE   eval/enable
 
-    NURBS_KNOT_COUNT_SGIX        GetMapiv    9XZ+     0    
-    NURBS_KNOT_COUNT_SGIX        GetMapiv    9X2XZ+     0,0    
-    NURBS_KNOT_VECTOR_SGIX        GetMapdv    9X7*XR     undef.    
-    NURBS_KNOT_VECTOR_SGIX        GetMapdv    9X2X7*XR undef.    
+    NURBS_KNOT_COUNT_SGIX        GetMapiv    9XZ+     0
+    NURBS_KNOT_COUNT_SGIX        GetMapiv    9X2XZ+     0,0
+    NURBS_KNOT_VECTOR_SGIX        GetMapdv    9X7*XR     undef.
+    NURBS_KNOT_VECTOR_SGIX        GetMapdv    9X2X7*XR undef.
 
 
 New Implementation Dependent State

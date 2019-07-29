@@ -27,7 +27,7 @@ Overview
     shadow.  This allows the (untextured) ambient lighting and direct
     shadowed lighting from a single light source to be computed in a
     single pass.
-    
+
 New Procedures and Functions
 
     None
@@ -103,7 +103,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 
     The shadow ambient value is queried by calling GetTexParameterfv
     with <pname> set to SHADOW_AMBIENT_SGIX.
-    
+
 Additions to the GLX Specification
 
     None
@@ -117,7 +117,7 @@ New State
 Get Value            Get Command        Type    Initial Value        Attribute
 ---------            -----------        ----    -------------        ---------
 SHADOW_AMBIENT_SGIX        GetTexParameter[if]v    F    0.0            texture
-    
+
 New Implementation Dependent State
 
     None

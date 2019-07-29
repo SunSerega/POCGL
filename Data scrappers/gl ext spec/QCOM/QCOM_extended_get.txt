@@ -42,7 +42,7 @@ Dependencies
 
 Overview
 
-    This extension enables instrumenting the driver for debugging of OpenGL ES 
+    This extension enables instrumenting the driver for debugging of OpenGL ES
     applications.
 
 New Procedures and Functions
@@ -181,16 +181,16 @@ Additions to OpenGL ES 1.1 Specification
         void ExtGetTexLevelParameterivQCOM(uint texture, enum face, int level,
                                            enum pname, int* params);
 
-    returns parameters for texture level chosen with <texture>, <face> and 
+    returns parameters for texture level chosen with <texture>, <face> and
     <level>.
 
     The command
 
         void ExtTexObjectStateOverrideiQCOM(enum target, enum pname, int param);
 
-    overrides texture parameter for current texture in the <target>. The state 
-    chosen with the <pname> argument is restored with <param> value 
-    STATE_RESTORE. The STATE_RESTORE has the same effect as calling 
+    overrides texture parameter for current texture in the <target>. The state
+    chosen with the <pname> argument is restored with <param> value
+    STATE_RESTORE. The STATE_RESTORE has the same effect as calling
     TexParameteri(enum target, enum pname, int param).
 
     The command
@@ -200,7 +200,7 @@ Additions to OpenGL ES 1.1 Specification
                                    sizei width, sizei height, sizei depth,
                                    enum format, enum type, void *texels);
 
-    copies texels from current texture in <target> to address in <texels> 
+    copies texels from current texture in <target> to address in <texels>
     parameter.
 
     The command
@@ -217,8 +217,8 @@ Errors
     INVALID_ENUM error will be generated if the <texture> parameter to
     ExtGetTexLevelParameterivQCOM does not reference to a valid texture target.
 
-    INVALID_VALUE error will be generated if the <face> parameter to cubemap 
-    texture target in ExtGetTexLevelParameterivQCOM is not one of the allowable 
+    INVALID_VALUE error will be generated if the <face> parameter to cubemap
+    texture target in ExtGetTexLevelParameterivQCOM is not one of the allowable
     values.
 
     INVALID_VALUE error will be generated if the texture <level> parameter to

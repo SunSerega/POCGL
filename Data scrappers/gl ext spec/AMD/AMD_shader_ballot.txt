@@ -641,7 +641,7 @@ Dependencies on AMD_gpu_shader_int16
     |            genU16Type v)                             | non-uniform control flow. These functions operate         |
     |                                                      | component-wise.                                           |
     +------------------------------------------------------+-----------------------------------------------------------+
-    
+
 Additions to the AGL/GLX/WGL Specifications
 
     None.

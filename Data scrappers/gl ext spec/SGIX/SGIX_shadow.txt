@@ -27,7 +27,7 @@ Overview
         operations perform either a <= or >= test on the value from texture
         memory and the iterated R value, and return 1.0 or 0.0 if the test
         passes or fails, respectively.
-        
+
 New Procedures and Functions
 
         None
@@ -133,7 +133,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
         TEXTURE_COMPARE_OPERATOR_SGIX.  Texture compare enable/disable state
         is queried by calling GetTexParameteriv or GetTexParameterif with
         <pname> TEXTURE_COMPARE_SGIX.
-        
+
 Additions to the GLX Specification
 
         None
@@ -150,7 +150,7 @@ Get Value                       Get Command             Type    Initial Value   
 ---------                       -----------             ----    -------------           ---------
 TEXTURE_COMPARE_SGIX            GetTexParameter[if]v    B       False                   texture
 TEXTURE_COMPARE_OPERATOR_SGIX   GetTexParameter[if]v    Z_2     TEXTURE_LEQUAL_R_SGIX   texture
-        
+
 
 New Implementation Dependent State
 

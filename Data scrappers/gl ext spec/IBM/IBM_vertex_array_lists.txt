@@ -10,7 +10,7 @@ Name Strings
 
 Version
 
-    IBM Date: 1999/06/02 13:18:29  Revision: 1.8 
+    IBM Date: 1999/06/02 13:18:29  Revision: 1.8
 
 Number
 
@@ -32,14 +32,14 @@ Dependencies
 
 Overview
 
-    This extension introduces seven (7) new functions that set the 
+    This extension introduces seven (7) new functions that set the
     vertex array pointers. However, instead of a single pointer, these
-    functions provide a list of array pointers that can be used by the 
-    EXT_multi_draw_arrays and IBM_multimode_draw_arrays extension 
-    functions to draw from multiple of vertex arrays. The first 
+    functions provide a list of array pointers that can be used by the
+    EXT_multi_draw_arrays and IBM_multimode_draw_arrays extension
+    functions to draw from multiple of vertex arrays. The first
     primitive will use the first array in the list, the second primitive
     will use the second array in the list, and so forth. If a glDrawArray,
-    DrawElements, or DrawRangeElements function is used, then 
+    DrawElements, or DrawRangeElements function is used, then
     only the first vertex array in the list is used.
 
     When a vertex array list is specified, only the list pointer
@@ -50,8 +50,8 @@ Overview
     array pointers without making a OpenGL API function call.
 
     A <ptrstride> value of zero (0) can be used to force all primitives
-    of a multi-vertex array to use only the first vertex array in 
-    the list. 
+    of a multi-vertex array to use only the first vertex array in
+    the list.
 
     The <stride> parameter of the list pointer functions differs from
     that of the non-list vertex array pointer functions in that 1)
@@ -66,7 +66,7 @@ Overview
     interchangably.
 
     New queries are provided by this extension so that ZAPdb can be extended
-    to query the list pointer state whenever a vertex array function 
+    to query the list pointer state whenever a vertex array function
     is traced. The pointer returned by a query of *_ARRAY_POINTER returns
     the first entry in the array list.
 
@@ -75,16 +75,16 @@ Issues
 
 New Procedures and Functions
 
-    void ColorPointerListIBM (GLint size, 
-                   GLenum type, 
-                  GLint stride, 
-                  const void **pointer, 
+    void ColorPointerListIBM (GLint size,
+                   GLenum type,
+                  GLint stride,
+                  const void **pointer,
                   GLint ptrstride)
 
-    void SecondaryColorPointerListIBM (GLint size, 
-                                       GLenum type, 
-                           GLint stride, 
-                           const void **pointer, 
+    void SecondaryColorPointerListIBM (GLint size,
+                                       GLenum type,
+                           GLint stride,
+                           const void **pointer,
                            GLint ptrstride)
 
     void EdgeFlagPointerListIBM (GLint stride,
@@ -96,26 +96,26 @@ New Procedures and Functions
                  const void **pointer,
                  GLint ptrstride)
 
-    void IndexPointerListIBM (GLenum type, 
-                  GLint stride, 
-                  const void **pointer, 
+    void IndexPointerListIBM (GLenum type,
+                  GLint stride,
+                  const void **pointer,
                   GLint ptrstride);
 
-    void NormalPointerListIBM (GLenum type, 
-                   GLint stride, 
-                   const void **pointer, 
+    void NormalPointerListIBM (GLenum type,
+                   GLint stride,
+                   const void **pointer,
                    GLint ptrstride);
 
-    void TexCoordPointerListIBM (GLint size, 
-                 GLenum type, 
-                 GLint stride, 
+    void TexCoordPointerListIBM (GLint size,
+                 GLenum type,
+                 GLint stride,
                  const void **pointer,
                  GLint ptrstride);
 
-    void VertexPointerListIBM (GLint size, 
-                   GLenum type, 
-                   GLint stride, 
-                   const void **pointer, 
+    void VertexPointerListIBM (GLint size,
+                   GLenum type,
+                   GLint stride,
+                   const void **pointer,
                    GLint ptrstride);
 
 
@@ -137,23 +137,23 @@ New Procedures and Functions
             in the pointer lists pointed to by <pointer>.
 
     Valid <size> and <type> parameters for each of the functions is
-        the same as the non-list vertex array counterparts. 
+        the same as the non-list vertex array counterparts.
 
                    <size>    <type>
                                    ------       ------------------------
-    ColorPointerListIBM        3,4        GLshort, GLint, GLfloat, 
+    ColorPointerListIBM        3,4        GLshort, GLint, GLfloat,
                         GLdouble
         EdgeFlagPointerListIBM      -        -
     FogCoordPointerListIBM      1        GLfloat, GLdouble
-    IndexPointerListIBM        -        GLubyte, GLshort, GLint, 
+    IndexPointerListIBM        -        GLubyte, GLshort, GLint,
                          GLfloat, GLdouble
     NormalPointerListIBM        -           GLbyte, GLshort, GLint,
                         GLfloat, GLdouble
-    SecondaryColorPointerListIBM 3,4    GLshort, GLint, GLfloat, 
+    SecondaryColorPointerListIBM 3,4    GLshort, GLint, GLfloat,
                         GLdouble
-        TexCoordPointerListIBM      1,2,3,4    GLshort, GLint, GLfloat, 
+        TexCoordPointerListIBM      1,2,3,4    GLshort, GLint, GLfloat,
                         GLdouble
-    VertexPointerListIBM        2,3,4    GLshort, GLint, GLfloat, 
+    VertexPointerListIBM        2,3,4    GLshort, GLint, GLfloat,
                         GLdouble
 
 New Tokens

@@ -12,7 +12,7 @@ Contact
 
 Version
 
-    IBM Date: 2003/12/16 15:48:00  Revision: 1.2 
+    IBM Date: 2003/12/16 15:48:00  Revision: 1.2
 
 Number
 
@@ -29,9 +29,9 @@ Overview
     glDrawArrays() and glDrawElements() except they handle multiple lists of
     vertices and multiple primitive modes in one call. Their main purpose is
     to allow one function call to render more than one primitive regardless
-    of the primitive mode. 
+    of the primitive mode.
 
-    This extension is similar to the EXT_multi_draw_arrays extension 
+    This extension is similar to the EXT_multi_draw_arrays extension
     except that it accomodates the specification of a  unique mode for
     each primitive.
 
@@ -63,8 +63,8 @@ New Procedures and Functions
 
 
         modestride      Specifies the how the mode array is strided.
-                        Typical values are 0 (single primitive mode 
-                        for all primitives) and sizeof(GLenum) 
+                        Typical values are 0 (single primitive mode
+                        for all primitives) and sizeof(GLenum)
                         (seperate primitive mode for each primitive).
 
 
@@ -97,8 +97,8 @@ New Procedures and Functions
                         number of primitives.
 
         modestride      Specifies the how the mode array is strided.
-                        Typical values are 0 (single primitive mode 
-                        for all primitives) and sizeof(GLenum) 
+                        Typical values are 0 (single primitive mode
+                        for all primitives) and sizeof(GLenum)
                         (seperate primitive mode for each primitive).
 
 New Tokens
@@ -118,13 +118,13 @@ Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
                                       GLint modestride)
 
     Behaves identically to DrawArrays except that a list of arrays and
-    a list of primitive modes is specified instead. The number of lists 
+    a list of primitive modes is specified instead. The number of lists
     is specified in the primcount parameter. It has the same effect as:
 
         for(i=0; i<primcount; i++) {
-           if (*(count+i)>0) 
-               DrawArrays(*((GLenum *)((char *)mode+i*modestride)), 
-                          *(first+i), 
+           if (*(count+i)>0)
+               DrawArrays(*((GLenum *)((char *)mode+i*modestride)),
+                          *(first+i),
                           *(count+i));
         }
 
@@ -142,9 +142,9 @@ Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
     specified in the primcount parameter. It has the same effect as:
 
         for(i=0; i<primcount; i++) {
-            if (*(count+i)>0) 
-                DrawElements(*((GLenum *)((char *)mode+i*modestride)), 
-                             *(count+i), 
+            if (*(count+i)>0)
+                DrawElements(*((GLenum *)((char *)mode+i*modestride)),
+                             *(count+i),
                              type,
                              *(indices+i));
         }

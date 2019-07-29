@@ -49,9 +49,9 @@ Overview
 Issues
 
     * Too general?
-    
+
     * Asynchronous support?
-      
+
 
 New Procedures and Functions
 
@@ -70,7 +70,7 @@ New Tokens
     Accepted by the <space> parameter of AddressSpace:
 
     MEMORY            0x????
-    
+
     Accepted by the <space> parameter of AddressSpace and the
     <space> parameter of DataPipe:
 
@@ -253,11 +253,11 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     a datapipe head can be obtained using the command Datapipe with
     the <space> parameter set to one of DATAPIPE_0 through DATAPIPE_3.
 
-    Datapipe client transfer parameters are specified using OpenGL commands 
+    Datapipe client transfer parameters are specified using OpenGL commands
     such as PixelStore or glVertexPointerEXT.  The OpenGL side of the
     transfer is completely specified by issuing the OpenGL command
     which normal causes data transfer, i.e., TexImage2D, but in the
-    case of datapipes the actual data transfer is not initiated until 
+    case of datapipes the actual data transfer is not initiated until
     the datapipe transfer command has been issued.
 
     If the address space corresponding to the datapipe head is not

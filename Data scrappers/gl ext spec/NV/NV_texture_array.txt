@@ -162,7 +162,7 @@ Additions to Chapter 3 of the OpenGL ES 2.0.25 Specification
     Replace the first sentence:
 
     Pixel storage modes affect the operation of TexImage*D,
-    TexSubImage*D, and ReadPixels when one of these commands is issued. 
+    TexSubImage*D, and ReadPixels when one of these commands is issued.
 
     Add to table 3.1
 
@@ -206,7 +206,7 @@ Additions to Chapter 3 of the OpenGL ES 2.0.25 Specification
     dimensional image before obtaining the first group from memory.
     Then <depth> two-dimensional images are processed, each having a
     subimage extracted as described in section 3.6.2.
-    
+
     The selected groups are transferred to the GL as described in
     section 3.6.2 and then clamped to the representable range of the
     internal format. For color component groups, if the <internalformat>
@@ -461,7 +461,7 @@ Additions to Chapter 3 of the OpenGL ES 2.0.25 Specification
     Modify Section 3.7.3, "Compressed Texture Images"
 
     Replace the second paragraph:
-    
+
     The commands
 
         void CompressedTexImage2D(enum target, int level,
@@ -526,7 +526,7 @@ Additions to Chapter 3 of the OpenGL ES 2.0.25 Specification
     modified. If the <imageSize> parameter is not consistent with the
     format, dimensions, and contents of the compressed image (too little
     or too much data), an INVALID_VALUE error results.
-    
+
 
     Replace the last two paragraphs of section 3.7.3:
 

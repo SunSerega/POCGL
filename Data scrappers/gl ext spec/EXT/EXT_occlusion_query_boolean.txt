@@ -80,96 +80,96 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL ES Operation)
 
     Add a new section "Asynchronous Queries" between sections 2.12 and 2.13
     and renumber subsequent sections:
-    
+
     "2.13 Asynchronous Queries
-    
-    Asynchronous queries provide a mechanism to return information about the 
-    processing of a sequence of GL commands. There is one query type 
-    supported by the GL. Occlusion queries (see section 4.1.6) set a boolean 
+
+    Asynchronous queries provide a mechanism to return information about the
+    processing of a sequence of GL commands. There is one query type
+    supported by the GL. Occlusion queries (see section 4.1.6) set a boolean
     to true when any fragments or samples pass the depth test.
-    
+
     The results of asynchronous queries are not returned by the GL immediately
-    after the completion of the last command in the set; subsequent commands 
+    after the completion of the last command in the set; subsequent commands
     can be processed while the query results are not complete. When available,
-    the query results are stored in an associated query object. The commands 
-    described in section 6.1.6 provide mechanisms to determine when query 
-    results are available and return the actual results of the query. The 
-    name space for query objects is the unsigned integers, with zero reserved 
+    the query results are stored in an associated query object. The commands
+    described in section 6.1.6 provide mechanisms to determine when query
+    results are available and return the actual results of the query. The
+    name space for query objects is the unsigned integers, with zero reserved
     by the GL.
-    
-    Each type of query supported by the GL has an active query object name. If 
-    the active query object name for a query type is non-zero, the GL is 
+
+    Each type of query supported by the GL has an active query object name. If
+    the active query object name for a query type is non-zero, the GL is
     currently tracking the information corresponding to that query type and the
-    query results will be written into the corresponding query object. If the 
-    active query object for a query type name is zero, no such information is 
+    query results will be written into the corresponding query object. If the
+    active query object for a query type name is zero, no such information is
     being tracked.
-    
-    A query object is created and made active by calling 
-    
+
+    A query object is created and made active by calling
+
         void BeginQueryEXT(enum target, uint id);
-        
-    <target> indicates the type of query to be performed; valid values of 
-    <target> are defined in subsequent sections. If the query object name <id> 
-    has not been created, the name is marked as used and associated with a new 
-    query object of the type specified by <target>. Otherwise <id> must be the 
+
+    <target> indicates the type of query to be performed; valid values of
+    <target> are defined in subsequent sections. If the query object name <id>
+    has not been created, the name is marked as used and associated with a new
+    query object of the type specified by <target>. Otherwise <id> must be the
     name of an existing query object of that type.
-    
-    BeginQueryEXT fails and an INVALID_OPERATION error is generated if <id> 
-    is not a name returned from a previous call to GenQueriesEXT, or if such 
+
+    BeginQueryEXT fails and an INVALID_OPERATION error is generated if <id>
+    is not a name returned from a previous call to GenQueriesEXT, or if such
     a name has since been deleted with DeleteQueriesEXT.
-    
-    BeginQueryEXT sets the active query object name for the query type given 
-    by <target> to <id>. If BeginQueryEXT is called with an <id> of zero, if 
-    the active query object name for <target> is non-zero (for the targets 
-    ANY_SAMPLES_PASSED_EXT and ANY_SAMPLES_PASSED_CONSERVATIVE_EXT, if the 
-    active query for either target is non-zero), if <id> is the name of an 
+
+    BeginQueryEXT sets the active query object name for the query type given
+    by <target> to <id>. If BeginQueryEXT is called with an <id> of zero, if
+    the active query object name for <target> is non-zero (for the targets
+    ANY_SAMPLES_PASSED_EXT and ANY_SAMPLES_PASSED_CONSERVATIVE_EXT, if the
+    active query for either target is non-zero), if <id> is the name of an
     existing query object whose type does not match <target>, or if <id> is the
     active query object name for any query type, the error INVALID_OPERATION is
     generated.
-    
-    The command 
-    
-        void EndQueryEXT(enum target);
-        
-    marks the end of the sequence of commands to be tracked for the query type 
-    given by <target>. The active query object for <target> is updated to 
-    indicate that query results are not available, and the active query object 
-    name for <target> is reset to zero. When the commands issued prior to 
-    EndQueryEXT have completed and a final query result is available, the 
-    query object active when EndQueryEXT is called is updated by the GL. The 
-    query object is updated to indicate that the query results are available 
-    and to contain the query result. If the active query object name for 
-    <target> is zero when EndQueryEXT is called, the error INVALID_OPERATION 
-    is generated.
-    
+
     The command
-    
+
+        void EndQueryEXT(enum target);
+
+    marks the end of the sequence of commands to be tracked for the query type
+    given by <target>. The active query object for <target> is updated to
+    indicate that query results are not available, and the active query object
+    name for <target> is reset to zero. When the commands issued prior to
+    EndQueryEXT have completed and a final query result is available, the
+    query object active when EndQueryEXT is called is updated by the GL. The
+    query object is updated to indicate that the query results are available
+    and to contain the query result. If the active query object name for
+    <target> is zero when EndQueryEXT is called, the error INVALID_OPERATION
+    is generated.
+
+    The command
+
         void GenQueriesEXT(sizei n, uint *ids);
-        
-    returns <n> previously unused query object names in <ids>. These names are 
-    marked as used, for the purposes of GenQueriesEXT only, but no object is 
+
+    returns <n> previously unused query object names in <ids>. These names are
+    marked as used, for the purposes of GenQueriesEXT only, but no object is
     associated with them until the first time they are used by BeginQueryEXT.
-    
+
     Query objects are deleted by calling
-    
+
         void DeleteQueriesEXT(sizei n, const uint *ids);
-        
-    <ids> contains <n> names of query objects to be deleted. After a query 
-    object is deleted, its name is again unused. Unused names in <ids> are 
-    silently ignored, as is the value zero. If an active query object is 
-    deleted its name immediately becomes unused, but the underlying object is 
+
+    <ids> contains <n> names of query objects to be deleted. After a query
+    object is deleted, its name is again unused. Unused names in <ids> are
+    silently ignored, as is the value zero. If an active query object is
+    deleted its name immediately becomes unused, but the underlying object is
     not deleted until it is no longer active (see section C.1).
-    
-    Query objects contain two pieces of state: a single bit indicating whether 
-    a query result is available, and an integer containing the query result 
-    value. The number of bits used to represent the query result is 
-    implementation-dependent and may vary by query object type. In the initial 
+
+    Query objects contain two pieces of state: a single bit indicating whether
+    a query result is available, and an integer containing the query result
+    value. The number of bits used to represent the query result is
+    implementation-dependent and may vary by query object type. In the initial
     state of a query object, the result is available and its value is zero.
-    
-    The necessary state for each query type is an unsigned integer holding the 
+
+    The necessary state for each query type is an unsigned integer holding the
     active query object name (zero if no query object is active), and any state
     necessary to keep the current results of an asynchronous query in progress.
-    Only a single type of occlusion query can be active at one time, so the 
+    Only a single type of occlusion query can be active at one time, so the
     required state for occlusion queries is shared."
 
 Additions to Chapter 3 of the OpenGL ES 2.0 Specification (Rasterization)
@@ -184,21 +184,21 @@ Operations and the Frame Buffer)
 
     "4.1.6  Occlusion Queries
 
-    Occlusion queries use query objects to track the number of fragments or 
-    samples that pass the depth test. An occlusion query can be started and 
-    finished by calling BeginQueryEXT and EndQueryEXT, respectively, with a 
+    Occlusion queries use query objects to track the number of fragments or
+    samples that pass the depth test. An occlusion query can be started and
+    finished by calling BeginQueryEXT and EndQueryEXT, respectively, with a
     target of ANY_SAMPLES_PASSED_EXT or ANY_SAMPLES_PASSED_CONSERVATIVE_EXT.
 
-    When an occlusion query is started with the target 
+    When an occlusion query is started with the target
     ANY_SAMPLES_PASSED_EXT, the samples-boolean state maintained by the GL is
-    set to FALSE. While that occlusion query is active, the samples-boolean 
-    state is set to TRUE if any fragment or sample passes the depth test. When 
+    set to FALSE. While that occlusion query is active, the samples-boolean
+    state is set to TRUE if any fragment or sample passes the depth test. When
     the occlusion query finishes, the samples-boolean state of FALSE or TRUE is
-    written to the corresponding query object as the query result value, and 
-    the query result for that object is marked as available. If the target of 
-    the query is ANY_SAMPLES_PASSED_CONSERVATIVE_EXT, an implementation may 
+    written to the corresponding query object as the query result value, and
+    the query result for that object is marked as available. If the target of
+    the query is ANY_SAMPLES_PASSED_CONSERVATIVE_EXT, an implementation may
     choose to use a less precise version of the test which can additionally set
-    the samples-boolean state to TRUE in some other implementation dependent 
+    the samples-boolean state to TRUE in some other implementation dependent
     cases."
 
 Additions to Chapter 5 of the OpenGL ES 2.0 Specification (Special Functions)
@@ -225,9 +225,9 @@ State Requests)
 
       void GetQueryivEXT(enum target, enum pname, int *params);
 
-    <target> identifies the query target, and must be one of 
+    <target> identifies the query target, and must be one of
     ANY_SAMPLES_PASSED_EXT or ANY_SAMPLES_PASSED_CONSERVATIVE_EXT.
-    
+
     <pname> must be CURRENT_QUERY_EXT. The name of the currently active
     query for <target>, or zero if no query is active, will be placed in
     <params>.
@@ -241,40 +241,40 @@ State Requests)
     generated. <pname> must be QUERY_RESULT_EXT or QUERY_RESULT_AVAILABLE_EXT.
 
     If <pname> is QUERY_RESULT_EXT, then the query object's result value
-    is returned as a single integer in <params>. If the value is so large in 
-    magnitude that it cannot be represented with the requested type, then the 
+    is returned as a single integer in <params>. If the value is so large in
+    magnitude that it cannot be represented with the requested type, then the
     nearest value representable using the requested type is returned.
 
-    There may be an indeterminate delay before the above query returns. If 
-    <pname> is QUERY_RESULT_AVAILABLE_EXT, FALSE is returned if such a delay 
-    would be required; otherwise TRUE is returned. It must always be true that 
-    if any query object returns a result available of TRUE, all queries of the 
+    There may be an indeterminate delay before the above query returns. If
+    <pname> is QUERY_RESULT_AVAILABLE_EXT, FALSE is returned if such a delay
+    would be required; otherwise TRUE is returned. It must always be true that
+    if any query object returns a result available of TRUE, all queries of the
     same type issued prior to that query must also return TRUE.
 
-    Querying the state for any given query object forces that occlusion query 
-    to complete within a finite amount of time. Repeatedly querying the 
+    Querying the state for any given query object forces that occlusion query
+    to complete within a finite amount of time. Repeatedly querying the
     QUERY_RESULT_AVAILABLE_EXT state for any given query object is guaranteed
     to return true eventually. Note that multiple queries to the same occlusion
     object may result in a significant performance loss. For better performance
-    it is recommended to wait N frames before querying this state. N is 
+    it is recommended to wait N frames before querying this state. N is
     implementation dependent but is generally between one and three.
-    
-    If multiple queries are issued using the same object name prior to calling 
-    GetQueryObjectuivEXT, the result and availability information returned 
-    will always be from the last query issued. The results from any queries 
-    before the last one will be lost if they are not retrieved before starting 
+
+    If multiple queries are issued using the same object name prior to calling
+    GetQueryObjectuivEXT, the result and availability information returned
+    will always be from the last query issued. The results from any queries
+    before the last one will be lost if they are not retrieved before starting
     a new query on the same <target> and <id>."
 
-Additions to Appendix C of the OpenGL ES 2.0 Specification (Shared Object and 
+Additions to Appendix C of the OpenGL ES 2.0 Specification (Shared Object and
 Multiple Contexts)
 
     Change the first sentence of the first paragraph of section C.1.2 to read:
-    
+
     "When a buffer, texture, renderbuffer, or query is deleted, ..."
- 
+
     Add the following sentence to the end of section C.1.2:
 
-    "A query object is in use so long as it is the active query object for a 
+    "A query object is in use so long as it is the active query object for a
     query type and index, as described in section 2.13."
 
 Errors
@@ -282,28 +282,28 @@ Errors
     The error INVALID_OPERATION is generated if BeginQueryEXT is called
     where <id> is not a name returned from a previous call to GenQueriesEXT,
     or if such a name has since been deleted with DeleteQueriesEXT.
-    
+
     The error INVALID_OPERATION is generated if BeginQueryEXT is called
     where <id> is zero.
-    
+
     The error INVALID_OPERATION is generated if BeginQueryEXT is called
-    where <id> is the name of an existing query object whose type does not 
+    where <id> is the name of an existing query object whose type does not
     match <target>.
-    
+
     The error INVALID_OPERATION is generated if BeginQueryEXT is called
     where <id> is the active query object name for any query type.
-    
+
     The error INVALID_OPERATION is generated if BeginQueryEXT is called
     when the active query object name for either ANY_SAMPLES_PASSED_EXT or
     ANY_SAMPLES_PASSED_CONSERVATIVE_EXT is non-zero.
 
     The error INVALID_OPERATION is generated if EndQueryEXT is called
     when the active query object name for <target> is zero.
-    
-    The error INVALID_OPERATION is generated if GetQueryObjectuivEXT is 
+
+    The error INVALID_OPERATION is generated if GetQueryObjectuivEXT is
     called where <id> is not the name of a query object.
 
-    The error INVALID_OPERATION is generated if GetQueryObjectuivEXT is 
+    The error INVALID_OPERATION is generated if GetQueryObjectuivEXT is
     called where <id> is the name of a currently active query object.
 
     The error INVALID_VALUE is generated if GenQueriesEXT is called where
@@ -319,7 +319,7 @@ Errors
     The error INVALID_ENUM is generated if GetQueryivEXT is called where
     <pname> is not CURRENT_QUERY_EXT.
 
-    The error INVALID_ENUM is generated if GetQueryObjectuivEXT is called 
+    The error INVALID_ENUM is generated if GetQueryObjectuivEXT is called
     where <pname> is not QUERY_RESULT_EXT or QUERY_RESULT_AVAILABLE_EXT.
 
 New State
@@ -356,7 +356,7 @@ Issues
         removed in OpenGL 3.0.
 
         RESOLVED: Not an error.  Calling DeleteQueries marks the name
-        as no longer used, but the object is not deleted until it is no 
+        as no longer used, but the object is not deleted until it is no
         longer in use (i.e. no longer active).
 
     (4)  What is the interaction with multisample?
@@ -378,8 +378,8 @@ Issues
 
         RESOLVED: Yes.
 
-        If occlusion test X occurred before occlusion query Y, and the driver 
-        informs the app that occlusion query Y is done, the app can infer that 
+        If occlusion test X occurred before occlusion query Y, and the driver
+        informs the app that occlusion query Y is done, the app can infer that
         occlusion query X is also done.
 
     (7) Will polling a query for QUERY_RESULT_AVAILABLE without a Flush
@@ -395,11 +395,11 @@ Issues
 
     (9) Are query objects shareable between multiple contexts?
 
-        RESOLVED: No.  Query objects are lightweight and we normally share 
+        RESOLVED: No.  Query objects are lightweight and we normally share
         large data across contexts.  Also, being able to share query objects
-        across contexts is not particularly useful.  In order to do the async 
-        query across contexts, a query on one context would have to be finished 
-        before the other context could query it.  
+        across contexts is not particularly useful.  In order to do the async
+        query across contexts, a query on one context would have to be finished
+        before the other context could query it.
 
     (10) Should there be a limit on how many queries can be outstanding?
 

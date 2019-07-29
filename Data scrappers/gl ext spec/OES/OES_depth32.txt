@@ -39,7 +39,7 @@ Version
 
 Number
 
-    OpenGL ES Extension #25    
+    OpenGL ES Extension #25
 
 Dependencies
 
@@ -54,12 +54,12 @@ Overview
 
 Issues
 
- 
+
 New Tokens
 
     Accepted by the <internalformat> parameter of RenderbufferStorageOES:
 
-        DEPTH_COMPONENT32_OES                 0x81A7 
+        DEPTH_COMPONENT32_OES                 0x81A7
 
 New Procedures and Functions
 

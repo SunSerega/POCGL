@@ -87,7 +87,7 @@ Additions to Chapter 2 of the OpenGL 1.1 Specification (OpenGL Operation)
 
     The vertex array range is enabled or disabled by calling
     EnableClientState or DisableClientState with the symbolic
-    constant VERTEX_ARRAY_RANGE_NV. 
+    constant VERTEX_ARRAY_RANGE_NV.
 
     The vertex array range is also enabled or disabled by calling
     EnableClientState or DisableClientState with the symbolic constant

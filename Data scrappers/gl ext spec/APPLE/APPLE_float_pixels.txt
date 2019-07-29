@@ -18,7 +18,7 @@ Status
 Version
 
     1.0
-    
+
 Number
 
     368
@@ -26,13 +26,13 @@ Number
 Dependencies
 
     Written based on the wording of the OpenGL 2.0 specification.
-    
+
     Depends on (but does not require) ARB_texture_float
 
     Depends on (but does not require) ARB_color_buffer_float
 
     Depends on (but does not require) ARB_half_float_pixel
-    
+
     Interacts with APPLEX_texture_float_16_filter.
 
     Interacts with APPLEX_color_buffer_float_16_blend.
@@ -87,16 +87,16 @@ Overview
 Issues:
 
     1. How is this extension different from the ARB floating point extensions?
-    
+
         Conceptually, this extension can be considered the union of the
         feature sets from the following extensions:
 
             ARB_texture_float
             ARB_color_buffer_float
             ARB_half_float_pixel
-        
+
         with the following EXCEPTIONS:
-        
+
             * this extension does not support the the per-component
               query of TEXTURE_*_TYPE from ARB_texture_float.
 
@@ -113,7 +113,7 @@ Issues:
               from ARB_color_buffer_float.  It does, however, use the
               default clamping behavior specified in the
               ARB_color_buffer_float extension.
-              
+
               Note that this means the following in this extension:
 
                 - vertex color outputs are always clamped, regardless of
@@ -137,7 +137,7 @@ Issues:
        extensions, what is the appropriate (and "future-proof") method
        for an application to use to query for floating point color
        buffer and texture support?
-       
+
         This extension and the related extensions
         APPLEX_color_buffer_float_16_blend and
         APPLEX_texture_float_16_filter, should be considered
@@ -146,16 +146,16 @@ Issues:
         extensions and as hardware becomes more capable, it is possible
         that future revisions of OpenGL may deprecate or remove them
         altogether.
-       
+
         As such, to allow for ease of transition to support of the ARB
         floating point extensions, applications are *strongly*
         encouraged to use the following algorithm to query for floating
         point texture and color buffer support:
-        
+
             // any Floating Point Support at all?
             bool supportsFloatColorBuffers = FALSE;
             bool supportsFloatTextures     = FALSE;
-            
+
             // 16 bit/component Floating Point Blend/Filter Support?
             bool supportsFloat16ColorBufferBlending = FALSE;
             bool supportsFloat16TextureFiltering    = FALSE;
@@ -163,10 +163,10 @@ Issues:
             // 32 bit/component Floating Point Blend/Filter Support?
             bool supportsFloat32ColorBufferBlending = FALSE;
             bool supportsFloat32TextureFiltering    = FALSE;
-        
+
             // ===============================================
             // Check for floating point texture support
-            // 
+            //
             // * First check for full ARB_texture_float
             //   extension and only then check for more
             //   limited APPLE and APPLEX texture extensions
@@ -175,7 +175,7 @@ Issues:
             {
                 supportsFloatTextures           = TRUE;
                 supportsFloat16TextureFiltering = TRUE;
-                supportsFloat32TextureFiltering = TRUE;            
+                supportsFloat32TextureFiltering = TRUE;
             }
             else if (extensionSupported("APPLE_float_pixels"))
             {
@@ -189,7 +189,7 @@ Issues:
 
             // ===============================================
             // Check for floating point color buffer support
-            // 
+            //
             // * First check for full ARB_color_buffer_float
             //   extension and only then check for more
             //   limited APPLE and APPLEX color buffer extensions
@@ -198,7 +198,7 @@ Issues:
             {
                 supportsFloatColorBuffers          = TRUE;
                 supportsFloat16ColorBufferBlending = TRUE;
-                supportsFloat32ColorBufferBlending = TRUE;            
+                supportsFloat32ColorBufferBlending = TRUE;
             }
             else if (extensionSupported("APPLE_float_pixels"))
             {
@@ -214,7 +214,7 @@ Issues:
     3. Why does this extension (and the related APPLEX_*_float_*
        extensions) even exist, given the existence of the ARB, ATI, and
        NVIDIA floating point extensions?
-       
+
         A good question.  This extension was developed contemporaneously
         with the ATI and NVIDIA extensions and support for this
         extension in Mac OS X's OpenGL implementation predates the
@@ -237,7 +237,7 @@ Issues:
 
     4. What will happen when the ARB floating point extensions are
        supported?
-       
+
         The APPLE_float_pixels and the related
         APPLEX_texture_float_16_filter and
         APPLEX_color_buffer_float_16_blend extensions are intended as a
@@ -256,7 +256,7 @@ Issues:
         corresponding ARB extensions are supported by the underlying
         hardware.  Applications should pay attention to issue #2 above
         to prepare for this possibility.
-        
+
 
 New Procedures and Functions
 
@@ -273,22 +273,22 @@ New Tokens
     Accepted by the GetBooleanv:
 
       COLOR_FLOAT_APPLE               0x8A0F
-      
+
     Accepted by the  parameter of TexImage1D,
     TexImage2D, and TexImage3D:
 
       RGBA_FLOAT32_APPLE              0x8814        // Same as RGBA_FLOAT32_ATI/ARB
-      RGB_FLOAT32_APPLE               0x8815        // Same as RGB_FLOAT32_ATI/ARB              
-      ALPHA_FLOAT32_APPLE             0x8816        // Same as ALPHA_FLOAT32_ATI/ARB            
-      INTENSITY_FLOAT32_APPLE         0x8817        // Same as INTENSITY_FLOAT32_ATI/ARB        
-      LUMINANCE_FLOAT32_APPLE         0x8818        // Same as LUMINANCE_FLOAT32_ATI/ARB        
-      LUMINANCE_ALPHA_FLOAT32_APPLE   0x8819        // Same as LUMINANCE_ALPHA_FLOAT32_ATI/ARB  
-      RGBA_FLOAT16_APPLE              0x881A        // Same as RGBA_FLOAT16_ATI/ARB             
-      RGB_FLOAT16_APPLE               0x881B        // Same as RGB_FLOAT16_ATI/ARB              
-      ALPHA_FLOAT16_APPLE             0x881C        // Same as ALPHA_FLOAT16_ATI/ARB            
-      INTENSITY_FLOAT16_APPLE         0x881D        // Same as NTENSITY_FLOAT16_ATI/ARB        
-      LUMINANCE_FLOAT16_APPLE         0x881E        // Same as LUMINANCE_FLOAT16_ATI/ARB        
-      LUMINANCE_ALPHA_FLOAT16_APPLE   0x881F        // Same as LUMINANCE_ALPHA_FLOAT16_ATI/ARB  
+      RGB_FLOAT32_APPLE               0x8815        // Same as RGB_FLOAT32_ATI/ARB
+      ALPHA_FLOAT32_APPLE             0x8816        // Same as ALPHA_FLOAT32_ATI/ARB
+      INTENSITY_FLOAT32_APPLE         0x8817        // Same as INTENSITY_FLOAT32_ATI/ARB
+      LUMINANCE_FLOAT32_APPLE         0x8818        // Same as LUMINANCE_FLOAT32_ATI/ARB
+      LUMINANCE_ALPHA_FLOAT32_APPLE   0x8819        // Same as LUMINANCE_ALPHA_FLOAT32_ATI/ARB
+      RGBA_FLOAT16_APPLE              0x881A        // Same as RGBA_FLOAT16_ATI/ARB
+      RGB_FLOAT16_APPLE               0x881B        // Same as RGB_FLOAT16_ATI/ARB
+      ALPHA_FLOAT16_APPLE             0x881C        // Same as ALPHA_FLOAT16_ATI/ARB
+      INTENSITY_FLOAT16_APPLE         0x881D        // Same as NTENSITY_FLOAT16_ATI/ARB
+      LUMINANCE_FLOAT16_APPLE         0x881E        // Same as LUMINANCE_FLOAT16_ATI/ARB
+      LUMINANCE_ALPHA_FLOAT16_APPLE   0x881F        // Same as LUMINANCE_ALPHA_FLOAT16_ATI/ARB
 
 Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
 
@@ -429,15 +429,15 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     Add a new section, after 3.8.9 and prior to section 3.8.10, p. 177
 
     3.8.9.5 Floating point formats and texture filters
-    
+
     Due to limitations in current render hardware, textures with
     floating point formats may not support minification or magnification
     filters that require LINEAR filtering in the manner described above.
-    
+
     Specifically, if the texture filter is neither GL_NEAREST nor
     GL_NEAREST_MIPMAP_NEAREST, and *any* of following conditions are
     true:
-    
+
         * the <internalformat> of the texture is a 32-bit/component
           floating point format and ARB_texture_float is not supported
           by the implementation, *or*
@@ -445,10 +445,10 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
         * the <internalformat> of the texture is a 16-bit/component
           floating point format and APPLEX_texture_float_16_filter
           extension is not supported by the implementation,
-     
+
     then the GL will interpret texture minification and magnification filters
     according to the table (xxx.1) listed below:
-    
+
         specified filter         will behave as:
         ----------------         --------------
         LINEAR                   NEAREST
@@ -556,7 +556,7 @@ Operations and the Frame Buffer)
     destination weighting factors determined by the blend functions, and
     a constant blend color to obtain a new set of R, G, B, and A values,
     as described below.
-    
+
     If the color buffer is fixed-point, the components of the source
     and destination values and blend factors are clamped to [0, 1]
     prior to evaluating the blend equation, the components of the
@@ -568,7 +568,7 @@ Operations and the Frame Buffer)
     Blending is dependent on the incoming fragment’s alpha value and
     that of the corresponding currently stored pixel. Blending applies
     only in RGBA mode and only one of the following conditions is true:
-        
+
         * the format of the current color buffer is fixed-point, *or*
 
         * the format of current color buffer(s) is 16 bit floating point
@@ -578,7 +578,7 @@ Operations and the Frame Buffer)
         * the format of the current color buffer is floating-point and
           the ARB_color_buffer_float extension is supported by the
           implementation.
-    
+
     Otherwise, the blending stage is bypassed. Blending is enabled or
     disabled using Enable or Disable with the symbolic constant BLEND.
     If it is disabled (or bypassed), or if logical operation on color
@@ -776,7 +776,7 @@ New State
     Get value          Type  Get Cmnd     Minimum Value  Description                  Sec.  Attribute
     -----------------  ----  -----------  -------------  ---------------------------  ----  ---------
     COLOR_FLOAT_APPLE   B    GetBooleanv        -        True if color buffers store   2.7      -
-                                                         floating point components   
+                                                         floating point components
 
 Revision History
 
@@ -791,7 +791,7 @@ Revision History
             - controllable color clamping
             - texture per-component float-versus-int type queries
             - half float types with imaging subset routines
-        * added interactions with the shader extensions 
+        * added interactions with the shader extensions
         * added interactions with the APPLEX_*_float_16_* extensions
         * added updates to AGL and CGL
-        
+

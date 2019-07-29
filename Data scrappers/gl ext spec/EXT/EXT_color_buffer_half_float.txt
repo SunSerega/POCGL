@@ -177,7 +177,7 @@ Operations and the Framebuffer)
     the combination format RGBA and type UNSIGNED_BYTE is accepted. For
     floating-point rendering surfaces, the combination format RGBA and type
     FLOAT is accepted. The second is an implementation-chosen format...
-    
+
     (modify "Conversion of RGBA Values", p. 106)  The R, G, B, and A values
     form a group of elements. For a fixed-point color buffer, each element is
     converted to floating-point according to section 2.1.2. For a floating-
@@ -225,7 +225,7 @@ Requests)
 
     (insert after fourth paragraph, p. 126) If the value of FRAMEBUFFER_-
     ATTACHMENT_OBJECT_TYPE is not NONE, then
-    
+
     * If <pname> is FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT, <params> will
     contain the type of components of the specified attachment, either FLOAT or
     UNSIGNED_NORMALIZED_EXT for floating-point or unsigned fixed-point
@@ -234,15 +234,15 @@ Requests)
 Dependencies on OES_texture_half_float
 
     If OES_texture_half_float is not supported, then all references to
-    RGBA16F_EXT, RGB16F_EXT, RG16F_EXT, R16F_EXT, HALF_FLOAT_OES and 
+    RGBA16F_EXT, RGB16F_EXT, RG16F_EXT, R16F_EXT, HALF_FLOAT_OES and
     half should be ignored.
-    
+
     If OES_texture_half_float is supported, textures created with:
-    
+
         <internalformat> = RGBA
         <format> = RGBA
         <type> = HALF_FLOAT_OES
-        
+
     are renderable.
 
 Dependencies on EXT_texture_rg
@@ -265,7 +265,7 @@ New State
 
     Get Value                                    Type  Get Command                          Initial Value  Description        Section
     -------------------------------------------  ----  -----------------------------------  -------------  -----------------  -------
-    FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT    Z_2   GetFramebufferAttachmentParameteriv  -              Data type of       6.1.3  
+    FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT    Z_2   GetFramebufferAttachmentParameteriv  -              Data type of       6.1.3
                                                                                                            components in the
                                                                                                            attached image
 
@@ -342,7 +342,7 @@ Issues
        RESOLVED:  No. Queries will return unclamped values.
 
     9. Should CopyTex[Sub]Image be supported for floating-point formats?
-        
+
        RESOLVED: Yes. OES_texture_half_float mentions in Issue 3 that this
        should not be allowed, but did not update the specification to error.
        Conversion between unsigned normalized and floating point formats

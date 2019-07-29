@@ -1,5 +1,5 @@
 Name
-    
+
     ARB_vertex_program
 
 Name Strings
@@ -250,7 +250,7 @@ Issues
       program results - A set of 4-component vectors to hold the final results
       of a vertex program.  The program results correspond closely to the set
       of vertex attributes used during primitive assembly and rasterization.
-      
+
       program variables - Variable names used to identify a specific vertex
       attribute, program parameter, temporary, address register, or result.
 
@@ -381,7 +381,7 @@ Issues
 
       RESOLVED:  The function VertexAttribPointerARB takes a boolean argument
       <normalized> that indicates whether fixed-point array data should be
-      normalized to [-1,+1] or [0,1].  
+      normalized to [-1,+1] or [0,1].
 
       One alternate approach would have been to extend to set of enumerants to
       include values such as NORMALIZED_UNSIGNED_BYTE_ARB.  Adding such
@@ -404,9 +404,9 @@ Issues
     (10) How is this extension different from previous vertex program
     extensions, such as EXT_vertex_shader or NV_vertex_program?  What pitfalls
     are there in porting vertex programs to/from this extension?
-    
+
       RESOLVED:  See "Interactions with NV_vertex_program" and "Interactions
-      with EXT_vertex_shader" sections near the end of this specification.  
+      with EXT_vertex_shader" sections near the end of this specification.
 
     (11) Should program parameter variables bound to GL state be updated
     automatically after the bound state changes?  If so, when?
@@ -429,7 +429,7 @@ Issues
 
       Supporting per-vertex material properties places additional pressure on
       the number of per-vertex bindings an implementation can support, which
-      was already a problem.  See issue (5).  
+      was already a problem.  See issue (5).
 
       In practice, material properties are usually not changed in this manner.
       Applications needing to change material properties inside a Begin/End in
@@ -460,7 +460,7 @@ Issues
       support reads of multiple attributes or program parameters, the driver
       may need to transparently insert additional instructions and/or consume
       temporaries to perform the operation.
-    
+
     (15) How and when should related state be combined into a single program
     parameter binding?  Additionally, should any values derived from core GL
     state be exposed, too?
@@ -589,7 +589,7 @@ Issues
       program mode.  User-defined clipping support will be provided for
       programs that use the "position invariant" option, where all vertex
       transformation operations are performed by the fixed-function pipeline.
-      
+
       It is expected that future vertex program extensions or a future
       language standard may provide more powerful user clipping functionality.
 
@@ -606,7 +606,7 @@ Issues
           transformation.  May not work properly if the vertex transformation
           doesn't match the standard "multiply by modelview and projection
           matrices" model.
-  
+
       (4) Project existing fixed-function clip planes into clip coordinates
           and perform the clip test in clip space.  The clip planes would be
           transformed by the inverse of the projection matrix, which will not
@@ -725,7 +725,7 @@ Issues
     (34) Should program object management APIs (GenProgramsARB,
     DeleteProgramsARB) work like texture objects or display lists?
 
-      RESOLVED:  Texture objects.  
+      RESOLVED:  Texture objects.
 
       Both approaches have their merits.  Pluses for the display list model
       include:  no need to keep around multiple indices if you want to
@@ -849,7 +849,7 @@ Issues
       when vertex program mode is enabled.
 
     (45) Should programs be C-style null-terminated strings?
-      
+
       RESOLVED:  No.  Programs should be specified as an array of GLubyte with
       an explicit length parameter.  OpenGL has no precedent for passing
       null-terminated strings into the API (though GetString returns
@@ -900,7 +900,7 @@ Issues
 
       RESOLVED:  Assume program matrix zero were loaded with the following
       code:
- 
+
         // When loaded, the first row is "1, 2, 3, 4", because of column-major
         // (OpenGL spec) vs. row-major (C) differences.
         GLfloat matrix[16] = { 1, 5, 9,  13,
@@ -1150,7 +1150,7 @@ Issues
         OUTPUT oPos         = result.position;
         OUTPUT oColor       = result.color;
 
-        # Transform the vertex to clip coordinates.   
+        # Transform the vertex to clip coordinates.
         DP4   oPos.x, mvp[0], iPos;
         DP4   oPos.y, mvp[1], iPos;
         DP4   oPos.z, mvp[2], iPos;
@@ -1160,7 +1160,7 @@ Issues
         DP3   xfNormal.x, mvinv[0], iNormal;
         DP3   xfNormal.y, mvinv[1], iNormal;
         DP3   xfNormal.z, mvinv[2], iNormal;
-        
+
         # Compute diffuse and specular dot products and use LIT to compute
         # lighting coefficients.
         DP3   dots.x, xfNormal, lightDir;
@@ -1195,7 +1195,7 @@ Issues
          TEMP   temp;
          OUTPUT oPos         = result.position;
          OUTPUT oColor       = result.color;
- 
+
          DP3   temp, lightDir, iNormal;
          MUL   oColor.xyz, temp, diffuseCol;
          MAX   temp, temp, 0;            # clamp dot product to zero
@@ -1249,7 +1249,7 @@ Issues
       then a single transformation into clip space.  This would potentially
       save instructions, but this optimization would be of no value if the
       program did any other operations that required eye coordinates.
-      
+
       Note also that the MVP transformations are likely general 4x4 matrix
       multiplies (4 DP4 instructions per transform).  On the other hand,
       object and eye coordinates are often 3D coordinates with a constant W of
@@ -1502,15 +1502,15 @@ New Procedures and Functions
     void VertexAttrib4NusvARB(uint index, const ushort *v);
     void VertexAttrib4NuivARB(uint index, const uint *v);
 
-    void VertexAttribPointerARB(uint index, int size, enum type, 
+    void VertexAttribPointerARB(uint index, int size, enum type,
                                 boolean normalized, sizei stride,
                                 const void *pointer);
 
     void EnableVertexAttribArrayARB(uint index);
     void DisableVertexAttribArrayARB(uint index);
 
-    void ProgramStringARB(enum target, enum format, sizei len, 
-                          const void *string); 
+    void ProgramStringARB(enum target, enum format, sizei len,
+                          const void *string);
 
     void BindProgramARB(enum target, uint program);
 
@@ -1538,12 +1538,12 @@ New Procedures and Functions
 
     void GetProgramEnvParameterdvARB(enum target, uint index,
                                      double *params);
-    void GetProgramEnvParameterfvARB(enum target, uint index, 
+    void GetProgramEnvParameterfvARB(enum target, uint index,
                                      float *params);
 
     void GetProgramLocalParameterdvARB(enum target, uint index,
                                        double *params);
-    void GetProgramLocalParameterfvARB(enum target, uint index, 
+    void GetProgramLocalParameterfvARB(enum target, uint index,
                                        float *params);
 
     void GetProgramivARB(enum target, enum pname, int *params);
@@ -1644,7 +1644,7 @@ New Tokens
         PROGRAM_ERROR_STRING_ARB                        0x8874
 
     Accepted by the <mode> parameter of MatrixMode:
-    
+
         MATRIX0_ARB                                     0x88C0
         MATRIX1_ARB                                     0x88C1
         MATRIX2_ARB                                     0x88C2
@@ -1801,7 +1801,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     (R,G,B,A) = (1,1,1,1). The initial color index is 1.  The initial values
     for all generic vertex attributes are undefined.
 
-    
+
     Modify Section 2.8, Vertex Arrays (p. 21)
 
     (modify first paragraph of section, p.21) The vertex specification
@@ -1818,8 +1818,8 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
       ...
 
-      void VertexAttribPointerARB(uint index, int size, enum type, 
-                                  boolean normalized, sizei stride, 
+      void VertexAttribPointerARB(uint index, int size, enum type,
+                                  boolean normalized, sizei stride,
                                   const void *pointer);
 
     describe the locations and organizations...
@@ -1845,7 +1845,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     (modify Table 2.4, p.23)
 
-                                       Normal    
+                                       Normal
       Command                 Sizes    ized?   Types
       ----------------------  -------  ------  --------------------------------
       VertexPointer           2,3,4     no     short, int, float, double
@@ -1873,13 +1873,13 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     (modify last paragraph, p.23) The command
 
-      void ArrayElement(int i); 
+      void ArrayElement(int i);
 
     transfers the ith element of every enabled array to the GL.  The effect of
     ArrayElement(i) is the same as the effect of the command sequence
 
       if (ARB_vertex_blend vertex weight array enabled) {
-        Weight[type]vARB(vertex weight array size, 
+        Weight[type]vARB(vertex weight array size,
                          vertex weight array element i);
       }
       if (EXT_vertex_weighting vertex weight array enabled) {
@@ -2063,7 +2063,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     Add New Section 2.14 and subsections (p. 57).
 
     Section 2.14, Vertex Programs
-    
+
     The conventional GL vertex transformation model described in sections 2.10
     through 2.13 is a configurable but essentially hard-wired sequence of
     per-vertex computations based on a canonical set of per-vertex parameters
@@ -2105,7 +2105,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     Each program object has an associated program string.  The command
 
-      ProgramStringARB(enum target, enum format, sizei len, 
+      ProgramStringARB(enum target, enum format, sizei len,
                        const void *string);
 
     updates the program string for the current program object for <target>.
@@ -2142,11 +2142,11 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
       void ProgramLocalParameter4fARB(enum target, uint index,
                                       float x, float y, float z, float w);
-      void ProgramLocalParameter4fvARB(enum target, uint index, 
+      void ProgramLocalParameter4fvARB(enum target, uint index,
                                        const float *params);
       void ProgramLocalParameter4dARB(enum target, uint index,
                                       double x, double y, double z, double w);
-      void ProgramLocalParameter4dvARB(enum target, uint index, 
+      void ProgramLocalParameter4dvARB(enum target, uint index,
                                        const double *params);
 
     update the values of the program local parameter numbered <index>
@@ -2285,15 +2285,15 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     <SCALARop>             ::= "EX2"
                              | "EXP"
                              | "LG2"
-                             | "LOG"                          
+                             | "LOG"
                              | "RCP"
                              | "RSQ"
 
     <BINSCop_instruction>  ::= <BINSCop> <maskedDstReg> "," <scalarSrcReg> ","
-                               <scalarSrcReg> 
+                               <scalarSrcReg>
 
     <BINSCop>              ::= "POW"
- 
+
     <BINop_instruction>    ::= <BINop> <maskedDstReg> ","
                                <swizzleSrcReg> "," <swizzleSrcReg>
 
@@ -2316,7 +2316,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     <TRIop>                ::= "MAD"
 
-    <SWZ_instruction>      ::= "SWZ" <maskedDstReg> "," <srcReg> "," 
+    <SWZ_instruction>      ::= "SWZ" <maskedDstReg> "," <srcReg> ","
                                <extendedSwizzle>
 
     <scalarSrcReg>         ::= <optionalSign> <srcReg> <scalarSuffix>
@@ -2327,13 +2327,13 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     <maskedAddrReg>        ::= <addrReg> <addrWriteMask>
 
-    <extendedSwizzle>      ::= <extSwizComp> "," <extSwizComp> "," 
+    <extendedSwizzle>      ::= <extSwizComp> "," <extSwizComp> ","
                                  <extSwizComp> "," <extSwizComp>
 
     <extSwizComp>          ::= <optionalSign> <extSwizSel>
 
-    <extSwizSel>           ::= "0" 
-                             | "1" 
+    <extSwizSel>           ::= "0"
+                             | "1"
                              | <component>
 
     <srcReg>               ::= <vertexAttribReg>
@@ -2355,10 +2355,10 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     <progParamSingle>      ::= <establishedName>
 
     <progParamArray>       ::= <establishedName>
-    
+
     <progParamArrayMem>    ::= <progParamArrayAbs>
                              | <progParamArrayRel>
-                             
+
     <progParamArrayAbs>    ::= <integer>
 
     <progParamArrayRel>    ::= <addrReg> <addrComponent> <addrRegRelOffset>
@@ -2448,7 +2448,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     <optArraySize>         ::= ""
                              | <integer> from 1 to MAX_PROGRAM_PARAMETERS_ARB
-                                 (maximum number of allowed program 
+                                 (maximum number of allowed program
                                   parameter bindings)
 
     <paramSingleInit>      ::= "=" <paramSingleItemDecl>
@@ -2491,25 +2491,25 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
                              | "emission"
                              | "shininess"
 
-    <stateLightItem>       ::= "light" "[" <stateLightNumber> "]" "." 
+    <stateLightItem>       ::= "light" "[" <stateLightNumber> "]" "."
                                  <stateLightProperty>
 
     <stateLightProperty>   ::= "ambient"
-                             | "diffuse" 
+                             | "diffuse"
                              | "specular"
                              | "position"
                              | "attenuation"
                              | "spot" "." <stateSpotProperty>
                              | "half"
 
-    <stateSpotProperty>    ::= "direction" 
+    <stateSpotProperty>    ::= "direction"
 
     <stateLightModelItem>  ::= "lightmodel" <stateLModProperty>
 
     <stateLModProperty>    ::= "." "ambient"
                              | <optFaceType> "." "scenecolor"
 
-    <stateLightProdItem>   ::= "lightprod" "[" <stateLightNumber> "]" 
+    <stateLightProdItem>   ::= "lightprod" "[" <stateLightNumber> "]"
                                  <optFaceType> "." <stateLProdProperty>
 
     <stateLProdProperty>   ::= "ambient"
@@ -2518,21 +2518,21 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     <stateLightNumber>     ::= <integer> from 0 to MAX_LIGHTS-1
 
-    <stateTexGenItem>      ::= "texgen" <optTexCoordNum> "." 
+    <stateTexGenItem>      ::= "texgen" <optTexCoordNum> "."
                                  <stateTexGenType> "." <stateTexGenCoord>
 
     <stateTexGenType>      ::= "eye"
                              | "object"
 
-    <stateTexGenCoord>     ::= "s" 
-                             | "t" 
-                             | "r" 
+    <stateTexGenCoord>     ::= "s"
+                             | "t"
+                             | "r"
                              | "q"
 
     <stateFogItem>         ::= "fog" "." <stateFogProperty>
 
-    <stateFogProperty>     ::= "color" 
-                             | "params" 
+    <stateFogProperty>     ::= "color"
+                             | "params"
 
     <stateClipPlaneItem>   ::= "clip" "[" <stateClipPlaneNum> "]" "." "plane"
 
@@ -2543,23 +2543,23 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     <statePointProperty>   ::= "size"
                              | "attenuation"
 
-    <stateMatrixRow>       ::= <stateMatrixItem> "." "row" "[" 
+    <stateMatrixRow>       ::= <stateMatrixItem> "." "row" "["
                                   <stateMatrixRowNum> "]"
 
     <stateMatrixRows>      ::= <stateMatrixItem> <optMatrixRows>
 
     <optMatrixRows>        ::= ""
-                             | "." "row" "[" <stateMatrixRowNum> ".." 
+                             | "." "row" "[" <stateMatrixRowNum> ".."
                                   <stateMatrixRowNum> "]"
 
-    <stateMatrixItem>      ::= "matrix" "." <stateMatrixName> 
+    <stateMatrixItem>      ::= "matrix" "." <stateMatrixName>
                                <stateOptMatModifier>
 
     <stateOptMatModifier>  ::= ""
                              | "." <stateMatModifier>
 
-    <stateMatModifier>     ::= "inverse" 
-                             | "transpose" 
+    <stateMatModifier>     ::= "inverse"
+                             | "transpose"
                              | "invtrans"
 
     <stateMatrixRowNum>    ::= <integer> from 0 to 3
@@ -2570,7 +2570,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
                              | "texture" <optTexCoordNum>
                              | "palette" "[" <statePaletteMatNum> "]"
                              | "program" "[" <stateProgramMatNum> "]"
-                             
+
     <stateOptModMatNum>    ::= ""
                              | "[" <stateModMatNum> "]"
 
@@ -2586,22 +2586,22 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     <programMultipleItem>  ::= <progEnvParams>
                              | <progLocalParams>
 
-    <progEnvParams>        ::= "program" "." "env" 
+    <progEnvParams>        ::= "program" "." "env"
                                  "[" <progEnvParamNums> "]"
 
     <progEnvParamNums>     ::= <progEnvParamNum>
                              | <progEnvParamNum> ".." <progEnvParamNum>
 
-    <progEnvParam>         ::= "program" "." "env" 
+    <progEnvParam>         ::= "program" "." "env"
                                  "[" <progEnvParamNum> "]"
 
-    <progLocalParams>      ::= "program" "." "local" 
+    <progLocalParams>      ::= "program" "." "local"
                                  "[" <progLocalParamNums> "]"
 
     <progLocalParamNums>   ::= <progLocalParamNum>
                              | <progLocalParamNum> ".." <progLocalParamNum>
 
-    <progLocalParam>       ::= "program" "." "local" 
+    <progLocalParam>       ::= "program" "." "local"
                                  "[" <progLocalParamNum> "]"
 
     <progEnvParamNum>      ::= <integer> from 0 to
@@ -2621,14 +2621,14 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     <paramConstScalarUse>  ::= <floatConstant>
 
     <paramConstVector>     ::= "{" <signedFloatConstant> "}"
-                             | "{" <signedFloatConstant> "," 
+                             | "{" <signedFloatConstant> ","
                                    <signedFloatConstant> "}"
-                             | "{" <signedFloatConstant> "," 
+                             | "{" <signedFloatConstant> ","
                                    <signedFloatConstant> ","
                                    <signedFloatConstant> "}"
-                             | "{" <signedFloatConstant> "," 
+                             | "{" <signedFloatConstant> ","
                                    <signedFloatConstant> ","
-                                   <signedFloatConstant> "," 
+                                   <signedFloatConstant> ","
                                    <signedFloatConstant> "}"
 
     <signedFloatConstant>  ::= <optionalSign> <floatConstant>
@@ -2845,7 +2845,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
       vertex.normal                       vertex.attrib[2]
       vertex.color                        vertex.attrib[3]
       vertex.color.primary                vertex.attrib[3]
-      vertex.color.secondary              vertex.attrib[4]        
+      vertex.color.secondary              vertex.attrib[4]
       vertex.fogcoord                     vertex.attrib[5]
       vertex.texcoord                     vertex.attrib[8]
       vertex.texcoord[0]                  vertex.attrib[8]
@@ -2888,7 +2888,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     A program parameter variable can be bound to a scalar or vector constant
     using the <paramConstDecl> grammar rule (explicit declarations) or the
-    <paramConstUse> grammar rule (implicit declarations).  
+    <paramConstUse> grammar rule (implicit declarations).
 
     If a program parameter binding matches the <paramConstScalarDecl> or
     <paramConstScalarUse> grammar rules, the corresponding program parameter
@@ -2915,7 +2915,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
       Binding                        Components  Underlying State
       -----------------------------  ----------  ----------------------------
-      program.env[a]                 (x,y,z,w)   program environment 
+      program.env[a]                 (x,y,z,w)   program environment
                                                  parameter a
       program.local[a]               (x,y,z,w)   program local parameter a
       program.env[a..b]              (x,y,z,w)   program environment
@@ -3029,7 +3029,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     "y", "z", and "w" components of the program parameter variable are filled
     with the "x", "y", "z", and "w" components, respectively, of the light
     position.
-    
+
     If a program parameter binding matches "state.light[n].attenuation", the
     "x", "y", and "z" components of the program parameter variable are filled
     with the constant, linear, and quadratic attenuation parameters of the
@@ -3136,7 +3136,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
       state.fog.color                (r,g,b,a)   RGB fog color (section 3.10)
       state.fog.params               (d,s,e,r)   fog density, linear start
                                                  and end, and 1/(end-start)
-                                                 (section 3.10) 
+                                                 (section 3.10)
 
       Table X.3.5:  Fog Property Bindings
 
@@ -3174,7 +3174,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
       -----------------------------  ----------  ----------------------------
       state.point.size               (s,n,x,f)   point size, min and max size
                                                  clamps, and fade threshold
-                                                 (section 3.3) 
+                                                 (section 3.3)
       state.point.attenuation        (a,b,c,1)   point size attenuation consts
 
       Table X.3.7:  Point Property Bindings
@@ -3262,7 +3262,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     Individual parameter variables in a program parameter array are bound to
     GL state vectors or constant vectors as specified by the grammar rule
     <paramMultInitList>.  Each individual parameter in the array is bound in
-    turn as described above.  
+    turn as described above.
 
     The total number of entries in the array is equal to the number of
     parameters bound in the initializer list.  A vertex program that specifies
@@ -3427,7 +3427,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     with a <pname> of MAX_PROGRAM_TEMPORARIES_ARB, and must be at least 12.
     Each temporary declared in the program, using the <TEMP_statement> grammar
     rule, counts against this limit.  Aliases of declared temporaries do not.
-    
+
     The limit on vertex program attribute bindings can be queried with a
     <pname> of MAX_PROGRAM_ATTRIBS_ARB and must be at least 16.  Each distinct
     vertex attribute bound explicitly or implicitly in the program counts
@@ -3438,7 +3438,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     with a <pname> of MAX_PROGRAM_ADDRESS_REGISTERS_ARB, and must be at least
     1.  Each address register declared in the program, using the
     <ADDRESS_statement> grammar rule, counts against this limit.
-    
+
     The limit on vertex program parameter bindings can be queried with a
     <pname> of MAX_PROGRAM_PARAMETERS_ARB, and must be at least 96.  Each
     distinct GL state vector bound explicitly or implicitly in the program
@@ -3488,7 +3488,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     If vertex program mode is enabled, the currently bound vertex program is
     executed when a vertex is specified directly through the Vertex command,
     indirectly through vertex arrays or evaluators (section 5.1), or when the
-    current raster position is updated.  
+    current raster position is updated.
 
     If vertex program mode is enabled and the currently bound program object
     does not contain a valid vertex program, the error INVALID_OPERATION will
@@ -3499,7 +3499,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     branching.  Vertex programs begin by executing the first instruction in
     the program, and execute instructions in the order specified in the
     program until the last instruction is completed.
-    
+
     There are twenty-seven vertex program instructions.  The instructions and
     their respective input and output parameters are summarized in Table X.5.
 
@@ -3598,7 +3598,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
           return operand;
       }
 
-      float ScalarLoad(floatVec source) 
+      float ScalarLoad(floatVec source)
       {
           float operand;
 
@@ -3642,7 +3642,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
       floatVec ProgramParameterLoad(int addrReg)
       {
         int index;
-        
+
         if (absolute) {
           index = paramNumber;
         } else {
@@ -3801,7 +3801,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     The ABS instruction performs a component-wise absolute value operation on
     the single operand to yield a result vector.
 
-      tmp = VectorLoad(op0); 
+      tmp = VectorLoad(op0);
       result.x = fabs(tmp.x);
       result.y = fabs(tmp.y);
       result.z = fabs(tmp.z);
@@ -3846,7 +3846,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1);
-      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
             (tmp0.z * tmp1.z);
       result.x = dot;
       result.y = dot;
@@ -3862,7 +3862,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
             (tmp0.z * tmp1.z) + (tmp0.w * tmp1.w);
       result.x = dot;
       result.y = dot;
@@ -3880,7 +3880,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      dot = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
             (tmp0.z * tmp1.z) + tmp1.w;
       result.x = dot;
       result.y = dot;
@@ -3938,10 +3938,10 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     approximation by evaluating
 
         result.x * f(result.y),
-    
+
     where f(x) is a user-defined function that approximates 2^x over the
     domain [0.0, 1.0).  The "w" component of the result vector is always 1.0.
-    
+
     The exact behavior is specified in the following pseudo-code:
 
       tmp = ScalarLoad(op0);
@@ -3955,7 +3955,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
       | RoughApprox2ToX(x) - 2^x | < 1.0 / 2^11, if 0.0 <= x < 1.0,
 
     and, in general,
-   
+
       | RoughApprox2ToX(x) - 2^x | < (1.0 / 2^11) * (2^floor(x)).
 
 
@@ -4062,7 +4062,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     more accurate approximation by evaluating
 
         result.x + f(result.y),
-    
+
     where f(x) is a user-defined function that approximates 2^x over the
     domain [1.0, 2.0).  The "w" component of the result vector is always 1.0.
 
@@ -4073,7 +4073,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
       result.y = tmp / 2^(floor(log2(tmp)));
       result.z = RoughApproxLog2(tmp);
       result.w = 1.0;
-   
+
     Here, "floor(log2(tmp))" refers to the floor of the exact logarithm, which
     can be easily computed for standard floating-point representations.  The
     approximation function is accurate to at least 10 bits:
@@ -4302,7 +4302,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
     "xSelect", "xNegate", "ySelect", "yNegate", "zSelect", "zNegate",
     "wSelect", and "wNegate" correspond to the "select" and "negate" values
-    above for the four <extSwizComp> matches.  
+    above for the four <extSwizComp> matches.
 
     Since this instruction allows for component selection and negation for
     each individual component, the grammar does not allow the use of the
@@ -4336,7 +4336,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     the MAX_PROGRAM_MATRIX_STACK_DEPTH_ARB and must be at least 1.
 
 
-    Section 2.14.7  Required Vertex Program State 
+    Section 2.14.7  Required Vertex Program State
 
     The state required to support program objects of all targets consists of:
 
@@ -4391,7 +4391,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
    Initially, no vertex program objects exist.
 
 
-Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
 
     Modify Section 3.3, Points (p. 63)
 
@@ -4444,16 +4444,16 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     eye-coordinates, to the fragment center. ...
 
 Additions to Chapter 4 of the OpenGL 1.3 Specification (Per-Fragment
-Operations and the Framebuffer) 
+Operations and the Framebuffer)
 
     None
 
-Additions to Chapter 5 of the OpenGL 1.3 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.3 Specification (Special Functions)
 
     Modify Section 5.1, Evaluators (p. 181)
 
     (modify next-to-last paragraph, p. 184) For MAP VERTEX 3, let q = p. For
-    MAP VERTEX 4, let q=(x/w,y/w,z/w), where (x; y; z;w) = p. Then let 
+    MAP VERTEX 4, let q=(x/w,y/w,z/w), where (x; y; z;w) = p. Then let
 
             dq   dq
         m = -- x --.
@@ -4630,7 +4630,7 @@ Requests)
     The command
 
       void GetVertexAttribPointervARB(uint index, enum pname, void **pointer);
-    
+
     obtains the pointer named <pname> for vertex attribute numbered <index>
     and places the information in the array <pointer>.  <pname> must be
     VERTEX_ATTRIB_ARRAY_POINTER_ARB.  The INVALID_VALUE error is generated if
@@ -4688,11 +4688,11 @@ Additions to the AGL/GLX/WGL Specifications
     is made to the AGL/GLX/WGL API.
 
     Changes to program objects shared between multiple rendering contexts will
-    be serialized (i.e., the changes will occur in a specific order).  
+    be serialized (i.e., the changes will occur in a specific order).
 
     Changes to a program object made by one rendering context are not
     guaranteed to take effect in another rendering context until the other
-    calls BindProgram to bind the program object.  
+    calls BindProgram to bind the program object.
 
     When a program object is deleted by one rendering context, the object
     itself is not destroyed until it is no longer the current program object
@@ -4706,7 +4706,7 @@ Additions to the AGL/GLX/WGL Specifications
 Dependencies on EXT_vertex_weighting and ARB_vertex_blend
 
     If EXT_vertex_weighting and ARB_vertex_blend are both not supported, all
-    discussions of vertex weights should be removed.  
+    discussions of vertex weights should be removed.
 
     In particular, references to vertex weights should be removed from Table
     X.1, and the description of ArrayElement in section 2.8.  The line
@@ -4723,7 +4723,7 @@ Dependencies on EXT_vertex_weighting and ARB_vertex_blend
       Binding                               Underlying State
       ------------------------------------  ---------------------------
         state.matrix.modelview              modelview matrix
-    
+
 
 Dependencies on ARB_matrix_palette:
 
@@ -4841,7 +4841,7 @@ Interactions with NV_vertex_program
       CURRENT_MATRIX_STACK_DEPTH_ARB      CURRENT_MATRIX_STACK_DEPTH_NV
       MAX_PROGRAM_MATRICES_ARB            MAX_TRACK_MATRICES_NV
       MAX_PROGRAM_MATRIX_STACK_DEPTH_ARB  MAX_TRACK_MATRIX_STACK_DEPTH_NV
-        
+
     The following GL state is identical in the two extensions and can be set
     or queried using either NV functions or ARB functions.
 
@@ -4883,7 +4883,7 @@ Interactions with NV_vertex_program
         the NV and ARB specs.  Under the NV spec, program objects are created
         by calling LoadProgramNV.  Under the ARB spec, program objects are
         created by calling BindProgramARB with an unused program name.
-       
+
     The following state is provided only by ARB_vertex_program:
 
       - Program error string.  Querying the error string after calling
@@ -5260,12 +5260,12 @@ Interactions with EXT_vertex_shader
        BindVertexShaderEXT          BindProgramARB
        GenVertexShadersEXT          GenProgramsARB
        DeleteVertexShaderEXT        DeleteProgramsARB
-       
+
        The following procedures are used in EXT_vertex_shader to define the
        program instruction sequence, and are not present in ARB_vertex_program
        since the string provided to ProgramStringARB fully defines the program
        contents.
-       
+
            ShaderOp1EXT
            ShaderOp2EXT
            ShaderOp3EXT
@@ -5663,7 +5663,7 @@ Interactions with EXT_vertex_shader
           ARB_vertex_program also offers an "EXP" function that is designed to
           support a lower precision approximation of base-2 exponentiation
           that can be further refined through an iterative process.
-          
+
           On some implementations, both "EX2" and "EXP" may be carried out
           with the same high precision at no cost relative to each other.  As
           such, if a vertex program is using "EXP" with the intent of
@@ -6332,8 +6332,8 @@ GLX Protocol
      VertexAttrib4usvARB, and VertexAttrib4uivARB protocol encodings.
 
 
-Errors 
- 
+Errors
+
     The error INVALID_VALUE is generated by any VertexAttrib*ARB or
     GetVertexAttrib*ARB command if <index> is greater than or equal to
     MAX_VERTEX_ATTRIBS_ARB.
@@ -6547,7 +6547,7 @@ Revision History
 
     40    03/03/03  pbrown    Fixed list of immediate-mode VertexAttrib
                               functions in Section 2.7 -- there are no
-                              normalized float functions (e.g., 
+                              normalized float functions (e.g.,
                               VertexAttrib4Nfv).  Clarified issue (42)
                               describing how point size is handled in vertex
                               program mode.
@@ -6561,7 +6561,7 @@ Revision History
                               incorrectly -- it should be P*M0 rather than
                               M0*P.
 
-    37    12/23/02  pbrown    Fixed minor typos.  Fixed state table bug where 
+    37    12/23/02  pbrown    Fixed minor typos.  Fixed state table bug where
                               CURRENT_VERTEX_ATTRIB_ARB was incorrectly called
                               CURRENT_ATTRIB_ARB.
 
@@ -6664,7 +6664,7 @@ Revision History
 
     26    06/04/02  pbrown    Spec checkpoint published on the working group
                               web site.  Resolves most of the remaining open
-                              issues. 
+                              issues.
 
                               Deletions:  Removed the ability to bind the
                               color matrix (from ARB_imaging).
@@ -6689,7 +6689,7 @@ Revision History
                               multiple contexts share program objects
                               Disallowed queries of generic attribute zero.
 
-                              Fixes:  Fixed prototype for VertexAttrib4Nub.  
+                              Fixes:  Fixed prototype for VertexAttrib4Nub.
 
                               Minor Changes:  Minor typo and language
                               fixes. Added guidelines for future
@@ -6734,7 +6734,7 @@ Revision History
                               Deletions:  Removed the semantic requirement
                               that vertex programs write a vertex position,
                               per working group resolution.
-                              
+
                               Minor changes:  Cleaned up cruft in a number of
                               issues; many more to go.  Added several issues.
                               Documented that VertexAttrib functions are
@@ -6790,7 +6790,7 @@ Revision History
                               query to the appropriate state table.
 
     22    05/20/02  pbrown    Spec checkpoint.  More changes from working
-                              group deliberations. 
+                              group deliberations.
 
                               Added functionality:  Assigned enumerant values.
                               Added "undefined (vertex attribute) aliasing"
@@ -6886,21 +6886,21 @@ Revision History
     20    04/17/02  pbrown    Clarify the meaning of individual components of
                               program parameters where the component mapping
                               is not obvious from the mapping table.
-                              
+
     18    04/15/02  pbrown    Update spec to reflect issues resolved by the
                               working group on 4/11.
 
                               Started using "program matrix" terminology --
-                              was "tracking matrix".  
+                              was "tracking matrix".
 
                               Address register variables must now be declared.
                               The number of address registers can be queried.
                               Only 1-component address registers are currently
-                              supported.  
+                              supported.
 
                               VertexAttribPointer takes a separate argument to
                               indicate normalized data, now called
-                              "normalized" (was "normalize").  
+                              "normalized" (was "normalize").
 
                               ProgramString and functions to set and query
                               local parameters all take a <target> and refer
@@ -6908,15 +6908,15 @@ Revision History
                               a program number).  Have not touched other
                               somewhat related issues (e.g., is there a
                               program object zero?).
-                              
+
                               Added COLOR_SUM enable (taken directly from
                               EXT_secondary_color) for completeness and a
                               few updates to EXT_secondary_color
                               interactions.
-                              
+
                               Fixed cut-and-paste error in specification of
                               the clip-space user clip dot product.
-                              
+
                               Documented special-case arithmetic for ADD, MAD,
                               and MUL.
 
@@ -6937,12 +6937,12 @@ Revision History
                               of some of the considerations on how color
                               material should be treated.  Added issues on the
                               name of the program matrices, the number of MVP
-                              matrices, and where variable declarations 
+                              matrices, and where variable declarations
                               can be done.  Added numbers to all spec issues.
                               Fixed lighting example (issue 74) so it
                               compiles, and so that the half vector is
                               properly normalized.
-                              
+
                               Grammar:  Eliminated stale hardwired temporary,
                               parameter array, and result register names
                               (R<n>, c[<n>], and o[...]).  Should have been

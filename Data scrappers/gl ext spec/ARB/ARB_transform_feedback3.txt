@@ -9,7 +9,7 @@ Name Strings
 Contact
 
     Pat Brown (pbrown 'at' nvidia.com)
-    
+
 Contributors
 
     Barthold Lichtenbelt, NVIDIA
@@ -62,7 +62,7 @@ Dependencies
 
     This extension interacts with ARB_gpu_shader5 and NV_gpu_program5.
 
-    This extension is written against the OpenGL 3.2 specification (Core 
+    This extension is written against the OpenGL 3.2 specification (Core
     Profile).
 
     This extension builds up and is written against various language in the
@@ -140,7 +140,7 @@ New Tokens
 Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
 
     (Modify the error behavior of transform feedback buffer binding APIs to
-     treat the new constant MAX_TRANSFORM_FEEDBACK_BUFFERS as the number of 
+     treat the new constant MAX_TRANSFORM_FEEDBACK_BUFFERS as the number of
      binding points.)
 
     Buffer objects are made to be targets of transform feedback by calling one
@@ -177,9 +177,9 @@ Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
     point if and only if the varyings directed at that binding point belong to
     the vertex stream in question.  All varyings assigned to a given binding
     point are required to come from a single vertex stream.
-    
+
     ...
-    
+
 
     (Modify Section 2.14, Asynchronous Queries)
 
@@ -265,7 +265,7 @@ Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
     are specified with the command
 
       void TransformFeedbackVaryings(uint program, sizei count,
-                                     const char **varyings, 
+                                     const char **varyings,
                                      enum bufferMode)
 
     <program> specifies the program object. <count> specifies the number of
@@ -281,8 +281,8 @@ Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
     MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS.
 
     If a string in <varyings> is "gl_NextBuffer", it does not identify a
-    varying variable, but instead serves as a buffer separator value to 
-    direct subsequent varyings at the next transform feedback binding point. 
+    varying variable, but instead serves as a buffer separator value to
+    direct subsequent varyings at the next transform feedback binding point.
     If a string in <varyings> is "gl_SkipComponents1", "gl_SkipComponents2",
     "gl_SkipComponents3", or "gl_SkipComponents4", it also does not identify a
     specific varying variable.  Instead, such values are treated as requesting
@@ -343,8 +343,8 @@ Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
     varyings to be recorded for the purposes of determining the value of
     TRANSFORM_FEEDBACK_VARYINGS and for determining the variable selected
     by <index> in GetTransformFeedbackVarying.  If <index> identifies
-    "gl_NextBuffer", the values zero and NONE will be written to <size> and 
-    <type>, respectively.  If <index> is of the form "gl_SkipComponents<n>", 
+    "gl_NextBuffer", the values zero and NONE will be written to <size> and
+    <type>, respectively.  If <index> is of the form "gl_SkipComponents<n>",
     the value NONE, will be written to <type> and the number of components <n>
     will be written to <size>.
 
@@ -362,10 +362,10 @@ Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
     to replay the captured vertices.  DrawTransformFeedbackStream is
     equivalent to calling DrawArrays with <mode> set to <mode>, <first> set to
     zero, and <count> set to the number of vertices captured from the vertex
-    stream numbered <stream> the last time transform feedback was active on 
+    stream numbered <stream> the last time transform feedback was active on
     the transform feedback object named by <id>.  The error INVALID_VALUE
     is generated if <stream> is greater than or equal to the value of
-    MAX_VERTEX_STREAMS.  DrawTransformFeedback is equivalent to calling 
+    MAX_VERTEX_STREAMS.  DrawTransformFeedback is equivalent to calling
     DrawTransformFeedbackStream with a <stream> of zero.  The error
     INVALID_VALUE is generated if <id> is not the name of a transform feedback
     object.  The error INVALID_OPERATION is generated if
@@ -378,7 +378,7 @@ Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
     belonging to the selected vertex stream are recorded, the corresponding
     vertex count will be zero even if complete primitives were emitted to the
     selected stream.
-    
+
 
 Additions to Chapter 3 of the OpenGL 3.2 Specification (Rasterization)
 
@@ -386,7 +386,7 @@ Additions to Chapter 3 of the OpenGL 3.2 Specification (Rasterization)
     State that only vertices sent to stream zero are processed further.)
 
     (insert at the beginning of the section, prior to language explaining
-    RASTERIZER_DISCARD) 
+    RASTERIZER_DISCARD)
 
     Primitives sent to the vertex stream zero are processed further;
     primitives emitted to any other stream are discarded.  When geometry
@@ -451,18 +451,18 @@ State Requests)
     binding points and will be used when transform feedback is active, call
     GetIntegeri_v() with <param> set to TRANSFORM_FEEDBACK_BUFFER_BINDING.
     <index> must be in the range zero to the value of
-    MAX_TRANSFORM_FEEDBACK_BUFFERS - 1. The name of the buffer object bound 
-    to <index> is returned in <values>. If no buffer object is bound for 
+    MAX_TRANSFORM_FEEDBACK_BUFFERS - 1. The name of the buffer object bound
+    to <index> is returned in <values>. If no buffer object is bound for
     <index>, zero is returned in <values>. The error INVALID_VALUE is
     generated if <index> is greater than or equal to the value of
     MAX_TRANSFORM_FEEDBACK_BUFFERS.
-    
+
     To query the starting offset or size of the range of each buffer object
     binding used for transform feedback, call GetInteger64i_v() with param
     set to TRANSFORM_FEEDBACK_BUFFER_START or TRANSFORM_FEEDBACK_BUFFER_SIZE
     respectively. <index> must be in the range 0 to the value of
     MAX_TRANSFORM_FEEDBACK_BUFFERS - 1. If the parameter (starting offset or
-    size) was not specified when the buffer object was bound, zero is 
+    size) was not specified when the buffer object was bound, zero is
     returned. If no buffer object is bound to index, -1 is returned. The
     error INVALID_VALUE is generated if <index> is greater than or equal to
     the limit MAX_TRANSFORM_FEEDBACK_BUFFERS.
@@ -492,23 +492,23 @@ Dependencies on NV_gpu_program5 and ARB_gpu_shader5
 
     We expect that some extension providing multiple vertex streams will be
     supported on all implementations of this extension.
-    
+
 
 Dependencies on NV_transform_feedback and NV_transform_feedback2
 
     If NV_transform_feedback or NV_transform_feedback2 is supported the
     following additional edits are required:
-    
+
     New Procedures and Functions
 
         void TransformFeedbackStreamAttribsNV(sizei count,
-                                              const int * attribs, 
-                                              sizei nbuffers, 
+                                              const int * attribs,
+                                              sizei nbuffers,
                                               const int *bufstreams,
                                               enum bufferMode);
 
     New Tokens
-    
+
         Accepted in the <locations> array of TransformFeedbackVaryingsNV
         when <bufferMode> is INTERLEAVED_ATTRIBS:
 
@@ -522,7 +522,7 @@ Dependencies on NV_transform_feedback and NV_transform_feedback2
     Feedback.)
 
     (Modify the error behavior of transform feedback buffer binding APIs to
-     treat the new constant MAX_TRANSFORM_FEEDBACK_BUFFERS as the number of 
+     treat the new constant MAX_TRANSFORM_FEEDBACK_BUFFERS as the number of
      binding points.)
 
     Buffer objects are made to be targets of transform feedback by calling one
@@ -541,13 +541,13 @@ Dependencies on NV_transform_feedback and NV_transform_feedback2
 
     (Modify the section that describes TransformFeedbackAttribsNV for
     fixed-function vertex processing.)
-                              
+
     When no vertex or geometry shader is active, transform feedback may be
     used to record vertex attribute values written by fixed-function vertex
     processing or by an assembly vertex or geometry program.  Both buffer
     modes described above are supported.  The set of attributes recorded, and
     their order, is specified by TransformFeedbackAttribsNV (section 2.Y).
-    
+
     (modify language from NV_transform_feedback describing
     TransformFeedbackAttribsNV, used to capture outputs from fixed-function
     and assembly programs)
@@ -631,9 +631,9 @@ Dependencies on NV_transform_feedback and NV_transform_feedback2
     The attributes captured by TransformFeedbackAttribsNV always come from
     primitives emitted to vertex stream zero.  However, the command
 
-      void TransformFeedbackStreamAttribsNV(sizei count, const int * attribs, 
-                                            sizei nbuffers, 
-                                            const int *bufstreams, 
+      void TransformFeedbackStreamAttribsNV(sizei count, const int * attribs,
+                                            sizei nbuffers,
+                                            const int *bufstreams,
                                             enum bufferMode);
 
     can capture vertex attributes from arbitrary vertex streams.  <count>,
@@ -643,7 +643,7 @@ Dependencies on NV_transform_feedback and NV_transform_feedback2
     attributes are recorded only to those binding points whose corresponding
     <bufstreams> value equals the vertex stream number.  The error
     INVALID_VALUE is generated if any value in <bufstreams> is greater than or
-    equal to the value of MAX_VERTEX_STREAMS.  The error INVALID_OPERATION is 
+    equal to the value of MAX_VERTEX_STREAMS.  The error INVALID_OPERATION is
     generated if the number of binding points specified by <attribs> is not
     equal to <nbuffers>.  If <bufferMode> is INTERLEAVED_ATTRIBS, the
     number of binding points used is one plus the number of NEXT_BUFFER_NV
@@ -691,7 +691,7 @@ Dependencies on NV_transform_feedback and NV_transform_feedback2
     program object.  The command
 
       void TransformFeedbackVaryingsNV(uint program, sizei count,
-                                       const int *locations, 
+                                       const int *locations,
                                        enum bufferMode)
 
     sets the transform feedback state for <program> and specifies the set of
@@ -755,10 +755,10 @@ Dependencies on NV_transform_feedback and NV_transform_feedback2
     whether the old state was set when <program> was last linked (using the
     varying names provided by TransformFeedbackVaryings), or via a
     post-link call to TransformFeedbackVaryingsNV.
-    
+
     (Additions to Chapter 6 of the OpenGL 3.2 Specification (State and State
      Requests))
-    
+
     (Clean up/replace the language added by NV_transform_feedback, which added
      a new Section 6.1.14 "Transform Feedback" and renamed 6.1.14 to 6.1.15.
      The only functional change here is to explicitly separator attributes
@@ -779,14 +779,14 @@ Dependencies on NV_transform_feedback and NV_transform_feedback2
     separators (NEXT_BUFFER_NV) passed to TransformFeedbackAttribsNV are
     counted as attributes for the purposes of these queries, and will be
     returned by TRANSFORM_FEEDBACK_RECORD_NV queries.
-    
+
     (add to OpenGL 3.2 Section 6.1.10, Shader and Program Queries, p. 259)
 
     (Clean up/replace the language added to this section by
     NV_transform_feedback, and add language describing how separators are
     handled.)
 
-    If <pname> is TRANSFORM_FEEDBACK_BUFFER_MODE, the buffer mode used when 
+    If <pname> is TRANSFORM_FEEDBACK_BUFFER_MODE, the buffer mode used when
     transform feedback is active is returned.  If <pname> is
     TRANSFORM_FEEDBACK_VARYINGS, the number of varying variables to capture
     in transform feedback mode for the program is returned.  Any separators
@@ -863,7 +863,7 @@ Errors
         SKIP_COMPONENTS4_NV, and <bufferMode> is not INTERLEAVED_ATTRIBS.
 
     The error INVALID_VALUE is generated by DrawTransformFeedbackStream
-    if <stream> is greater than or equal to the value of 
+    if <stream> is greater than or equal to the value of
     MAX_VERTEX_STREAMS.
 
     The error INVALID_VALUE is generated by TransformFeedbackVaryings if
@@ -919,7 +919,7 @@ Errors
 
     The error INVALID_VALUE is generated by GetIntegerIndexedvEXT() if <param>
     is TRANSFORM_FEEDBACK_BUFFER_BINDING,
-    TRANSFORM_FEEDBACK_BUFFER_START, or TRANSFORM_FEEDBACK_BUFFER_SIZE and 
+    TRANSFORM_FEEDBACK_BUFFER_START, or TRANSFORM_FEEDBACK_BUFFER_SIZE and
     <index> is greater than or equal to the value of
     MAX_TRANSFORM_FEEDBACK_BUFFERS.
 
@@ -952,7 +952,7 @@ New Implementation Dependent State
    added by EXT_transform_feedback.)
 
                                                   Minimum
-    Get Value                  Type  Get Command   Value   Description                   Sec.  Attrib 
+    Get Value                  Type  Get Command   Value   Description                   Sec.  Attrib
     ---------                  ----  -----------  -------  ---------------------------   ----  ------
     MAX_TRANSFORM_FEEDBACK_     Z+   GetIntegerv     4     Max number of buffer objs     2.Y     -
       BUFFERS                                              to write with xform feedback
@@ -990,7 +990,7 @@ Issues
           glGetVaryingLocation(program, "joker"),
           glGetVaryingLocation(program, "manbearpig")
         };
-        glTransformFeedbackVaryingsNV(program, 6, locations, 
+        glTransformFeedbackVaryingsNV(program, 6, locations,
                                       GL_INTERLEAVED_ATTRIBS);
 
       A similar example using assembly shaders might work like:
@@ -1043,7 +1043,7 @@ Issues
                 |      tessellation
                 |           |
                 +<----------+
-                |        
+                |
                 +---------------+
                 |               |
                 |stream         V
@@ -1076,7 +1076,7 @@ Issues
                   etc...
 
      Vertices are initially received via commands such as glDrawArrays,
-     glDrawElements, glArrayElement, or glVertex.  Vertices are first 
+     glDrawElements, glArrayElement, or glVertex.  Vertices are first
      processed by the vertex shader and/or the fixed-function vertex pipeline
      and are assembled into primitives (points, lines, triangles, etc...).  If
      tessellation shaders are enabled, these primitives are processed by the
@@ -1123,7 +1123,7 @@ Issues
       and capture both processed triangle vertices and some values that are
       computed per-primitive (e.g., facet normal).  The geometry shader
       might declare its outputs like the following:
-      
+
         layout(stream = 0) out vec4 position;
         layout(stream = 0) out vec4 texcoord;
         layout(stream = 1) out vec4 normal;
@@ -1140,19 +1140,19 @@ Issues
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 21);
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, 22);
 
-        // Set up XFB to capture position and texcoord to buffer binding 
-        // point 0 (buffer 21 bound), and normal to binding point 1 (buffer 
+        // Set up XFB to capture position and texcoord to buffer binding
+        // point 0 (buffer 21 bound), and normal to binding point 1 (buffer
         // 22 bound).
-        char *strings[] = { "position", "texcoord", "gl_NextBuffer", 
+        char *strings[] = { "position", "texcoord", "gl_NextBuffer",
                             "normal" };
         // create <program>
-        glTransformFeedbackVaryings(program, 4, strings, 
+        glTransformFeedbackVaryings(program, 4, strings,
                                     GL_INTERLEAVED_ATTRIBS);
         // link <program>
 
       A setup like:
 
-        char *strings[] = { "position", "gl_NextBuffer", 
+        char *strings[] = { "position", "gl_NextBuffer",
                             "texcoord", "gl_NextBuffer", "normal" };
 
       would capture "position" to binding point 0, "normal" to binding point
@@ -1164,11 +1164,11 @@ Issues
 
       A setup like:
 
-        char *strings[] = { "position", "normal", "gl_NextBuffer", 
+        char *strings[] = { "position", "normal", "gl_NextBuffer",
                             "texcoord" };
 
       would be illegal (LinkProgram would fail) because the first binding
-      point would want to capture varyings from both vertex streams.      
+      point would want to capture varyings from both vertex streams.
 
     (4) With multiple vertex streams supported by geometry shaders, the number
         of primitives generated and/or written by transform feedback is
@@ -1303,7 +1303,7 @@ Issues
 
       RESOLVED:  We should probably allow recording the same attribute more
       than once in some form, if for no other reason than to handle the
-      multi-stream assembly case described in the question. Resolved by 
+      multi-stream assembly case described in the question. Resolved by
       allowing this for TransformFeedbackStreamAttribsNV.
 
     (11) Should we provide the ability to leave holes in the data emitted by
@@ -1316,8 +1316,8 @@ Issues
       special "spacer" markers (e.g., "skip 4 components") as well.  Consider
       the following example in the EXT_transform_feedback API:
 
-        char *names[] = { "batman", "gl_SkipComponents3", "robin", 
-                          "gl_NextBuffer", "riddler", "gl_SkipComponents2", 
+        char *names[] = { "batman", "gl_SkipComponents3", "robin",
+                          "gl_NextBuffer", "riddler", "gl_SkipComponents2",
                           "joker", "manbearpig" };
         glTransformFeedbackVaryings(program, 8, names,
                                     GL_INTERLEAVED_ATTRIBS);
@@ -1356,7 +1356,7 @@ Issues
       When primitives are received on any other streams, they are discarded
       after any transform feedback operations involving that stream are
       completed.
-      
+
       When using GLSL geometry shaders, stream zero is the only one that
       makes sense for rasterization, because the geometry shader output
       "gl_Position" is associated with stream zero.
@@ -1373,7 +1373,7 @@ Issues
       capture both processed triangle vertices and some values that are
       computed per-primitive (e.g., facet normal).  The geometry program might
       declare outputs like the following:
-      
+
         RESULT position = result.position;          # used in stream 0
         RESULT texcoord = result.texcoord[0];       # used in stream 0
         RESULT normal = result.texcoord[0];         # used in stream 1
@@ -1434,13 +1434,13 @@ Revision History
     10    02/02/2010 pbrown    Clarify that "gl_SkipComponents*" is in
                                units of "float" (bug 5863).
 
-     9    01/20/2010 pbrown    Update extension interaction references 
+     9    01/20/2010 pbrown    Update extension interaction references
                                to use ARB_gpu_shader5 (instead of "EXT").
 
-     8    01/14/2010 Jon Leech Update errors for out of range vertex 
+     8    01/14/2010 Jon Leech Update errors for out of range vertex
                                streams passed to
                                DrawTransformFeedbackStream and
-                               BeginQuery to match core specification 
+                               BeginQuery to match core specification
                                (Bug 5896).
 
      7    12/07/2009 jbolz     Rename EXT->ARB.
@@ -1448,7 +1448,7 @@ Revision History
      6    10/22/2009 jbolz     Close unresolved issues, with no functional
                                changes.
 
-     5    10/22/2009 jbolz     Incorporated fixes from bmerry. Changed 
+     5    10/22/2009 jbolz     Incorporated fixes from bmerry. Changed
                                GetTransformFeedbackVarying to not return
                                length=0 for separators.
 

@@ -131,7 +131,7 @@ Additions to Chapter 3 of the OpenGL 3.2 Specification (Compatibility Profile) (
     specifies that the varying out variable name in <program> should be bound to
     fragment color <colorNumber> when the program is next linked. <index> may be
     zero or one to specify that the color be used as either the first or second
-    color input to the blend equation, respectively, as described in Section 4.1.8. 
+    color input to the blend equation, respectively, as described in Section 4.1.8.
 
     If <name> was bound previously, its assigned binding is replaced with
     colorNumber. <name> must be a null-terminated string. The error INVALID_VALUE
@@ -238,7 +238,7 @@ and the Framebuffer)
 
     The maximum number of draw buffers that may be attached to a single frame
     buffer when using dual-source blending functions is implementation dependent
-    and can be queried by calling GetIntegerv with the symbolic constant 
+    and can be queried by calling GetIntegerv with the symbolic constant
     MAX_DUAL_SOURCE_DRAW_BUFFERS. When
     using dual-source blending, MAX_DUAL_SOURCE_DRAW_BUFFERS should be used
     in place of MAX_DRAW_BUFFERS to determine the maximum number of draw
@@ -302,7 +302,7 @@ Dependencies on ARB_draw_buffers
     Using dual-source blending functions may consume additional outputs from
     hardware shading units and therefore can reduce the number of draw buffers
     that may be attached to a single frame buffer when dual-source blending
-    functions are enabled. In this case, the value of 
+    functions are enabled. In this case, the value of
     MAX_DUAL_SOURCE_DRAW_BUFFERS may be less than the value of
     MAX_DRAW_BUFFERS. If ARB_draw_buffers is not supported then the value of
     MAX_DUAL_SOURCE_DRAW_BUFFERS will be 1. Furthermore, the discussion
@@ -325,7 +325,7 @@ Dependencies on ARB_draw_buffers_blend
 
 Interactions with NV_gpu_program5
 
-    If NV_gpu_program5 is supported, fragment result bindings 
+    If NV_gpu_program5 is supported, fragment result bindings
     "result.color[n].primary" and "result.color[n].secondary" can be used to
     specify the <n>th color outputs for index 0 and 1, respectively.
 
@@ -485,8 +485,8 @@ Revision History
     12    02/05/2010  istewart  Add interactions with NV_gpu_program5.
     11    01/26/2010  pbrown    Assign enum values.
     10    01/14/2010  pbrown    Add spec language allowing for a link error if
-                                explicit output bindings don't leave enough 
-                                space for array outputs.  Clarify that any 
+                                explicit output bindings don't leave enough
+                                space for array outputs.  Clarify that any
                                 automatic assignments for fragment outputs
                                 will use color index zero.
      9    12/10/2009  Jon Leech Fix typos in blending equation table, remove

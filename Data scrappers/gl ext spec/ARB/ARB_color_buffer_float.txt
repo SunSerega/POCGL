@@ -1050,6 +1050,6 @@ Revision History
 
       8   2/15/07  Jon Leech  Assign GLX rendering opcode.
 
-      9   4/1/15   Jon Leech  Add missing _ARB suffix to 
+      9   4/1/15   Jon Leech  Add missing _ARB suffix to
                               GLX_RGBA_FLOAT_TYPE and GLX_RGBA_FLOAT_BIT
                               (bug 13717).

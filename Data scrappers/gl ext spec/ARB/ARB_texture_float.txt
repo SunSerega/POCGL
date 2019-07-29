@@ -432,7 +432,7 @@ Revision History
                               Reviewed by the ARB and closed all
                               UNRESOLVED issues.
 
-      6    7/6/06  pbrown     Fixed broken language for border color 
+      6    7/6/06  pbrown     Fixed broken language for border color
                               handling.  TexParameteriv border colors
                               should still be converted to integer; we
                               only intended to remove the [0,1] clamping.

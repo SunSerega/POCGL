@@ -64,46 +64,46 @@ Additions to Chapter 14 of the OpenGL 4.3 (Compatibility Profile) Specification
 
         void PolygonMode(enum face, enum mode);
 
-    <face> is one of FRONT, BACK, or FRONT_AND_BACK, indicating that the 
-    rasterizing method described by mode respectively replaces the rasterizing 
-    method for front-facing polygons, back-facing polygons, or both front- and 
-    back-facing polygons. <mode> is one of the symbolic constants POINT, LINE, 
-    FILL, or FILL_RECTANGLE_NV. Calling PolygonMode with POINT causes certain 
-    vertices of a polygon to be treated, for rasterization purposes, as if they 
-    had been drawn with mode POINTS. The vertices selected for this treatment 
-    are those that have been tagged as having a polygon boundary edge beginning 
-    on them (see section 10.1.17). LINE causes edges that are tagged as 
-    boundary to be rasterized as line segments. (The line stipple counter is 
+    <face> is one of FRONT, BACK, or FRONT_AND_BACK, indicating that the
+    rasterizing method described by mode respectively replaces the rasterizing
+    method for front-facing polygons, back-facing polygons, or both front- and
+    back-facing polygons. <mode> is one of the symbolic constants POINT, LINE,
+    FILL, or FILL_RECTANGLE_NV. Calling PolygonMode with POINT causes certain
+    vertices of a polygon to be treated, for rasterization purposes, as if they
+    had been drawn with mode POINTS. The vertices selected for this treatment
+    are those that have been tagged as having a polygon boundary edge beginning
+    on them (see section 10.1.17). LINE causes edges that are tagged as
+    boundary to be rasterized as line segments. (The line stipple counter is
     reset at the beginning of the first rasterized edge of the polygon, but not
-    for subsequent edges.) FILL is the default mode of polygon rasterization, 
-    corresponding to the description in sections 14.6.1, 14.6.2, and 14.6.3. 
-    Note that these modes affect only the final rasterization of polygons: in 
-    particular, a polygon's vertices are lit, and the polygon is clipped and 
+    for subsequent edges.) FILL is the default mode of polygon rasterization,
+    corresponding to the description in sections 14.6.1, 14.6.2, and 14.6.3.
+    Note that these modes affect only the final rasterization of polygons: in
+    particular, a polygon's vertices are lit, and the polygon is clipped and
     possibly culled before these modes are applied.
 
     FILL_RECTANGLE_NV mode modifies triangle rasterization to consider a sample
-    within the primitive if the sample location is inside the window-aligned 
-    bounding box of the triangle after projection. Note that the barycentric 
+    within the primitive if the sample location is inside the window-aligned
+    bounding box of the triangle after projection. Note that the barycentric
     weights used in attribute interpolation may be outside the range [0,1]
-    when these primitives are shaded. Special treatment is given to a sample 
-    position on the boundary edge of the bounding box. In such a case we 
-    require that if two rectangles lie on either side of a common edge (with 
-    identical endpoints) on which a sample position lies, then exactly one of 
-    the triangles results in the production of the fragment during 
-    rasterization. 
-    
-    Polygons rendered with FILL_RECTANGLE_NV mode may be clipped by the 
-    frustum or by user clip planes, in an implementation-dependent manner. 
-    If clipping is applied, the triangle is culled rather than clipped. When 
-    quads and polygons are rendered in this mode, they will be tessellated 
-    and rasterized as independent triangles (the order of tessellation within 
+    when these primitives are shaded. Special treatment is given to a sample
+    position on the boundary edge of the bounding box. In such a case we
+    require that if two rectangles lie on either side of a common edge (with
+    identical endpoints) on which a sample position lies, then exactly one of
+    the triangles results in the production of the fragment during
+    rasterization.
+
+    Polygons rendered with FILL_RECTANGLE_NV mode may be clipped by the
+    frustum or by user clip planes, in an implementation-dependent manner.
+    If clipping is applied, the triangle is culled rather than clipped. When
+    quads and polygons are rendered in this mode, they will be tessellated
+    and rasterized as independent triangles (the order of tessellation within
     a primitive is undefined).
 
-    Polygon antialiasing applies only to the FILL state of PolygonMode. Polygon 
-    antialiasing does not apply to the FILL_RECTANGLE_NV mode. For POINT or 
+    Polygon antialiasing applies only to the FILL state of PolygonMode. Polygon
+    antialiasing does not apply to the FILL_RECTANGLE_NV mode. For POINT or
     LINE, point antialiasing or line segment antialiasing, respectively, apply.
 
-    An INVALID_OPERATION error is generated by Begin or any Draw command if 
+    An INVALID_OPERATION error is generated by Begin or any Draw command if
     only one of the front and back polygon mode is FILL_RECTANGLE_NV.
 
 
@@ -122,14 +122,14 @@ Additions to the AGL/GLX/WGL Specifications
 GLX Protocol
 
     None.
-    
+
 Modifications to the OpenGL Shading Language Specification, Version 4.30
 
     None.
 
 Errors
 
-    An INVALID_OPERATION error is generated by Begin or any Draw command if 
+    An INVALID_OPERATION error is generated by Begin or any Draw command if
     only one of the front and back polygon mode is FILL_RECTANGLE_NV.
 
 Interactions with OpenGL 4.3 (Core Profile) and OpenGL ES 3.1
@@ -154,7 +154,7 @@ Issues
 
     RESOLVED: The new rasterization mode applies during rasterization, not
     earlier. So transform feedback would write out the triangle as if it were
-    being FILLed normally, and the triangle may have started life as a 
+    being FILLed normally, and the triangle may have started life as a
     different type of primitive (e.g. point or line) before being converted to
     a triangle by a geometry shader.
 

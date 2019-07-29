@@ -16,7 +16,7 @@ Number
 
 Dependencies
 
-    OpenGL 1.1 is required 
+    OpenGL 1.1 is required
     EXT_texture3D affects the definition of this extension.
     SGIS_texture4D affects the definition of this extension.
     SGIS_texture_border_clamp affects the definition of this extension.
@@ -67,7 +67,7 @@ Overview
         Ct<i> = texture color from texture lookup <i>
         Cf    = fragment color
         TE    = texture environment
-    
+
     Texture coordinate set, texture coordinate evaluator state, texture
     generation function, and texture matrix are replicated independently of
     the texture rasterization state and may differ in number from the
@@ -90,13 +90,13 @@ Issues
 
            a. efficient, no error checking required
            d. adds *a lot* of new commands
-        
+
         2. MultiTexCoord<n><T>[v|f](enum target, <T> data);
 
            a. only a small number of commands added
            a. can be fairly efficient (may need hw tweak)
            d. needs range checking for <target>
-        
+
         3. reuse TexCoord command and add SelectTextureCoordSetSGIS(enum target)
            to control routing
 
@@ -111,7 +111,7 @@ Issues
 
     *  SelectTextureSGIS probably should not affect client state such as
        the vertex array state.
-        
+
         it doesn't any more
 
     *  mechanism to replicate input texcoords across multiple texture paths
@@ -158,18 +158,18 @@ Issues
     *  special treatment of name 0?
 
         RESOLVED: no
-    
+
     *  more texture environment functions, SUBTRACT, ...?
         leading candidates are SUBTRACT and REVERSE_SUBTRACT
         could also make a new version of environment which is
         similar to blending.
 
         RESOLVED: new environment, see texture_env.spec
-    
+
     * more general combination of texture results?
 
         RESOLVED: do them in add-on specs
-    
+
     * allow texture environment computation to do something
       even when texture is disabled. This contradicts the current
       specification of texturing (the difference would show
@@ -177,7 +177,7 @@ Issues
       behavior in a new environment (see texture_env.spec)
 
     * support for interleaved arrays
-      
+
       add a command which acts as a multiplier on the current
       interleaved array token causing the texture coordinate
       array to have <n> contiguous texture coords of the same
@@ -210,7 +210,7 @@ Issues
       DisableClientState use TEXTURE_COORD_ARRAY0_SGIS ..
       TEXTURE_COORD_ARRAY<n>_SGIS
 
-        
+
 
 New Procedures and Functions
 
@@ -362,9 +362,9 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
         void InterleavedArrays(enum format, sizei stride,
             void *pointer) ;
-        
+
         void InterleavedTextureCoordSetsSGIS(int factor) ;
-    
+
     efficiently initializes the six arrays and their enables to one of 14
     configurations. <format> must be one 14 symbolic constants: V2F, V3F,
     C4UB_V2F, C4UB_V3F, C3F_V3F, N3F_V3F, C4F_N3F_V3F, T2F_V3F, T4F_V4F,
@@ -402,7 +402,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
             }
             SelectTextureCoordSetSGIS(x);
             pc *= factor;
-    
+
 
     If the number of supported is texture coordinate sets,
     MAX_TEXTURE_COORD_SETS_SGIS, is <k>, then the client state require to
@@ -415,7 +415,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
 
     Section 2.10.2 Matrices
-    
+
     <amend paragraph 8 texture matrix>
 
     There is another 4x4 matrix that is applied to texture coordinates.
@@ -449,7 +449,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     top of the stack and the entry below it.
 
         void PopMatrix( void );
-    
+
     pops the top entry off of the stack, replacing the current matrix with the
     matrix that was the second entry in the stack.  The pushing or popping
     takes place on the stack corresponding to the current matrix mode.  Popping
@@ -679,7 +679,7 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 Additions to the GLX Specification
 
     None
-    
+
 GLX Protocol
 
     TBD

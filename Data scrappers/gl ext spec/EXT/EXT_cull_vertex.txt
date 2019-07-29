@@ -71,7 +71,7 @@ New Tokens
 
 Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
-   Before the discussion of Clipping, add a description of 
+   Before the discussion of Clipping, add a description of
    vertex culling.
 
    Vertex Culling

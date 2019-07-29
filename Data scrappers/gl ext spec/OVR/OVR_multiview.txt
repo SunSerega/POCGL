@@ -577,25 +577,25 @@ Issues
     be read. This conforms to the expected behavior for read operations on FBOs
     with multiview texture attachments to be consistent with
     FramebufferTextureMultisampleMultiviewOVR.
-    
+
     (15) How do clears apply to framebuffers with multiple views
     (bugzilla 16173)?
-    
+
     Resolved: Clears are applied to all views.
-    
+
     (16) How should blit operations to draw framebuffers with multiple views
     be handled (bugzilla 16174)?
-    
+
     Resolved: The options are to broadcast the blit, only blit to a subset
     of views, or throw an error. There's no particularly compelling use case
     for either of the first options, so an error would have been desirable.
     However, this was missed when the extension was initially drafted, and
     implementations all ended up doing the same thing - blitting to just the
     first view of the draw framebuffer.
-    
+
     (17) How do clears apply to framebuffers with multiple views
     (bugzilla 16173)?
-    
+
     Resolved: Clears are applied to all views.
 
     (18) What happens if the num_views layout qualifier has an invalid value

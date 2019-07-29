@@ -1,6 +1,6 @@
 
 Name
-    
+
     EXT_texture_lod_bias
 
 Name Strings
@@ -38,7 +38,7 @@ Dependencies
     Written based on the wording of the OpenGL 1.2 specification.
 
     Affects ARB_multitexture.
-    
+
     Interacts with OpenGL ES 1.1.
 
 Overview
@@ -144,7 +144,7 @@ New Tokens
     When the <target> parameter of GetTexEnvfv, GetTexEnviv, TexEnvi,
     TexEnvf, TexEnviv, and TexEnvfv is TEXTURE_FILTER_CONTROL_EXT, then
     the value of <pname> may be:
-        
+
         TEXTURE_LOD_BIAS_EXT                0x8501
 
     Accepted by the <pname> parameters of GetBooleanv, GetIntegerv,
@@ -159,7 +159,7 @@ Additions to Chapter 2 of the 1.2 Specification (OpenGL Operation)
 Additions to Chapter 3 of the 1.2 Specification (Rasterization)
 
  --  Section 3.8.5 "Texture Minification"
- 
+
      Change the first formula under "Scale Factor and Level of Detail" to read:
 
      "The choice is governed by a scale factor p(x,y), the level of detail

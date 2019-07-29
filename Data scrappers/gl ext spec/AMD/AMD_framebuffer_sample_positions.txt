@@ -167,7 +167,7 @@ Additions to Chapter 9 of the OpenGL 4.4 (Core) Specification
     would cause the function to return an array of the requested <numsamples>
     per each pixel in the sampling pattern.
 
-    The error INVALID_VALUE is generated if <pixelindex> is less than 
+    The error INVALID_VALUE is generated if <pixelindex> is less than
     zero or is greater than or equal to the result of querying
     PIXELS_PER_SAMPLE_PATTERN_X_AMD multiplied by the result of querying
     PIXELS_PER_SAMPLE_PATTERN_Y_AMD and is not equal to ALL_SAMPLES. The
@@ -291,7 +291,7 @@ Issues
         Let ssd be the float value returned when SUBSAMPLE_DISTANCE_AMD is
         queried, then one can infer the subpixilization to be 1/ssd+1. For
         example, if ssd = 0.06667 then the pixel is subdivided into
-        1/0.0667+1 = 16 subpixels in each  dimension. 
+        1/0.0667+1 = 16 subpixels in each  dimension.
 
         One can also avoid using sample positions that would map to the same
         subpixel. A coordinate c will map to the greatest multiple of ssd that

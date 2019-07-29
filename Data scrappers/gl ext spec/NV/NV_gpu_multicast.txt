@@ -61,7 +61,7 @@ Overview
     With multi-GPU anti-aliasing, each GPU renders the same content with alternate sample
     positions and the driver blends the result to improve quality.  This also has issues with
     offscreen rendering and can conflict with other anti-aliasing techniques.
-    
+
     These issues with implicit multi-GPU rendering all have the same root cause: the driver lacks
     adequate knowledge to accelerate every application.  To resolve this, NV_gpu_multicast
     provides fine-grained, explicit application control over multiple GPUs with a single context.
@@ -74,10 +74,10 @@ Overview
 
     - Each GPU gets its own instance of all framebuffers, allowing individualized output for each
       GPU.  Input data can be customized for each GPU using buffers created with the storage flag,
-      PER_GPU_STORAGE_BIT_NV and a new API, MulticastBufferSubDataNV. 
+      PER_GPU_STORAGE_BIT_NV and a new API, MulticastBufferSubDataNV.
 
     - New interfaces provide mechanisms to transfer textures and buffers from one GPU to another.
-    
+
 New Procedures and Functions
 
     void RenderGpuMaskNV(bitfield mask);
@@ -94,7 +94,7 @@ New Procedures and Functions
 
     void MulticastCopyImageSubDataNV(
         uint srcGpu, bitfield dstGpuMask,
-        uint srcName, enum srcTarget, 
+        uint srcName, enum srcTarget,
         int srcLevel,
         int srcX, int srcY, int srcZ,
         uint dstName, enum dstTarget,
@@ -134,8 +134,8 @@ New Tokens
     Accepted as a value for <pname> for the TexParameter{if}, TexParameter{if}v,
     TextureParameter{if}, TextureParameter{if}v, MultiTexParameter{if}EXT and
     MultiTexParameter{if}vEXT commands and for the <value> parameter of GetTexParameter{if}v,
-    GetTextureParameter{if}vEXT and GetMultiTexParameter{if}vEXT: 
-        
+    GetTextureParameter{if}vEXT and GetMultiTexParameter{if}vEXT:
+
         PER_GPU_STORAGE_NV                          0x9548
 
     Accepted by the <pname> parameter of GetMultisamplefv:
@@ -156,7 +156,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     own instance (copy) of many resources, including framebuffers.  When each GPU has its own
     instance of a resource, it is considered to have per-GPU storage.  When all GPUs share a
     single instance of a resource, this is considered GPU-shared storage.
-    
+
     The mechanism for linking GPUs is implementation specific, as is the mechanism for enabling
     multicast rendering support (if necessary).  The number of GPUs usable for multicast rendering
     by a context can be queried by calling GetIntegerv with the symbolic constant
@@ -165,7 +165,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     multicast GPUs.  GPUs are also identified by bitmasks of the form 2^i, where i is the GPU
     index.  A set of GPUs is specified by the union of masks for each GPU in the set.
 
-    20.1 Controlling Individual GPUs 
+    20.1 Controlling Individual GPUs
 
     Render commands are restricted to a specific set of GPUs with
 
@@ -188,7 +188,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     section 2.4 (page 26).  MulticastBlitFramebufferNV is an exception to this policy: while it is
     a rendering command, it has its own source and destinations mask.  Note that buffer and
     textures updates are not affected by RENDER_GPU_MASK_NV.
-    
+
     20.2 Multi-GPU Buffer Storage
 
     Like other resources, buffer objects can have two types of storage, per-GPU storage or
@@ -209,7 +209,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     storage:
 
       BufferSubData, NamedBufferSubData, ClearBufferSubData, and ClearNamedBufferData
-    
+
     An INVALID_VALUE error is generated if BufferStorage/NamedBufferStorageEXT is called with
     PER_GPU_STORAGE_BIT_NV set with MAP_READ_BIT or SPARSE_STORAGE_BIT_ARB.
     An INVALID_OPERATION is generated if a buffer with PER_GPU_STORAGE_BIT_NV is bound to
@@ -239,7 +239,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     object is TRUE and the value of BUFFER_STORAGE_FLAGS for the buffer does not have the
     DYNAMIC_STORAGE_BIT set.
 
-    To copy between buffers created with PER_GPU_STORAGE_BIT_NV, the client may use the command 
+    To copy between buffers created with PER_GPU_STORAGE_BIT_NV, the client may use the command
 
       void MulticastCopyBufferSubDataNV(
         uint readGpu, bitfield writeGpuMask,
@@ -286,7 +286,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
 
     void MulticastCopyImageSubDataNV(
         uint srcGpu, bitfield dstGpuMask,
-        uint srcName, enum srcTarget, 
+        uint srcName, enum srcTarget,
         int srcLevel,
         int srcX, int srcY, int srcZ,
         uint dstName, enum dstTarget,
@@ -300,7 +300,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     MulticastCopyImageSubDataNV:
 
     INVALID_ENUM is generated
-     * if either <srcTarget> or <dstTarget> 
+     * if either <srcTarget> or <dstTarget>
       - is not RENDERBUFFER or a valid non-proxy texture target
       - is TEXTURE_BUFFER, or
       - is one of the cubemap face selectors described in table 3.17,
@@ -323,7 +323,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
        renderbuffer or texture object according to the corresponding
        target parameter, or
      * if the specified level is not a valid level for the image, or
-     * if the dimensions of the either subregion exceeds the boundaries 
+     * if the dimensions of the either subregion exceeds the boundaries
        of the corresponding image object, or
      * if the image format is compressed and the dimensions of the
        subregion fail to meet the alignment constraints of the format.
@@ -343,8 +343,8 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     In addition to the errors generated by BlitNamedFramebuffer (see listing starting on page
     634), calling MulticastBlitFramebufferNV will generate INVALID_VALUE if <srcGpu> or <dstGpu>
     is greater than or equal to MULTICAST_GPUS_NV.
-    
-    20.3.2 Per-GPU Sample Locations  
+
+    20.3.2 Per-GPU Sample Locations
 
     Programmable sample locations can be customized for each GPU and framebuffer using the
     following command:
@@ -354,7 +354,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
 
     An INVALID_OPERATION error is generated by MulticastFramebufferSampleLocationsfvNV if
     <framebuffer> is not the name of an existing framebuffer object.
-   
+
     INVALID_VALUE is generated if the sum of <start> and <count> is greater than
     PROGRAMMABLE_SAMPLE_LOCATION_TABLE_SIZE_ARB.
 
@@ -382,7 +382,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     unpack buffer.  The following table defines how the storage of the resource influences the
     behavior of these copies.
 
-    Table 20.1 Behavior of Copy Commands with Multi-GPU Storage 
+    Table 20.1 Behavior of Copy Commands with Multi-GPU Storage
 
     Source     Destination Behavior
     ---------- ----------- -----------------------------------------------------------------------
@@ -393,14 +393,14 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
 
     per-GPU    GPU-shared  Copy from the GPU with the lowest index set in RENDER_GPU_MASK_NV to
                            to the shared destination.
-    per-GPU    per-GPU     Implementations are encouraged to copy from source to destination 
+    per-GPU    per-GPU     Implementations are encouraged to copy from source to destination
                            separately on each GPU.  This is not required.  If and when this is not
                            feasible, the copy should source from the GPU with the lowest index set
                            in RENDER_GPU_MASK_NV.
     per-GPU    undefined   Either of the above behaviors for a per-GPU source may apply.
 
     undefined  GPU-shared  Either of the above behaviors for a GPU-shared destination may apply.
-    undefined  per-GPU     Either of the above behaviors for a per-GPU destination may apply. 
+    undefined  per-GPU     Either of the above behaviors for a per-GPU destination may apply.
     undefined  undefined   Any of the above behaviors may apply.
 
     20.5 Multi-GPU Synchronization
@@ -418,7 +418,7 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     any two accesses by multiple GPUs to the same memory when at least one of the accesses is a
     write.  This includes accesses to both the source and the destination.  The safest approach is
     to call MulticastBarrierNV immediately before and after each copy that involves multiple GPUs.
-    
+
     GPU writes and reads to/from GPU-shared locations require synchronization as well.  GPU writes
     such as transform feedback, shader image store, CopyTexImage, CopyBufferSubData are not
     automatically synchronized with writes by other GPUs.  Neither are GPU reads such as texture
@@ -447,9 +447,9 @@ Additions to the OpenGL 4.5 Specification (Compatibility Profile)
     20.6 Multi-GPU Queries
 
     Queries are performed across all multicast GPUs.  Each query object stores independent result
-    values for each GPU.  The result value for a specific GPU can be queried using one of the 
+    values for each GPU.  The result value for a specific GPU can be queried using one of the
     following commands:
-    
+
     void MulticastGetQueryObjectivNV(uint gpu, uint id, enum pname, int *params);
     void MulticastGetQueryObjectuivNV(uint gpu, uint id, enum pname, uint *params);
     void MulticastGetQueryObjecti64vNV(uint gpu, uint id, enum pname, int64 *params);
@@ -554,7 +554,7 @@ Additions to Chapter 14 of the OpenGL 4.5 (Compatibility Profile) Specification
         sample_location.xy = (table[2*sample_i], table[2*sample_i+1]);
 
     with the following:
-    
+
         float *table = MULTICAST_FRAMEBUFFER_PROGRAMMABLE_SAMPLE_LOCATIONS_NV;
         table += PROGRAMMABLE_SAMPLE_LOCATION_TABLE_SIZE_ARB * gpu;
         sample_location.xy = (table[2*sample_i], table[2*sample_i+1]);
@@ -598,13 +598,13 @@ New State
     ---------                ----   -----------      -------  -----------                  ----
     PER_GPU_STORAGE_NV       B      GetTexParameter  FALSE    Per-GPU storage requested    20.3
 
-    
+
     Additions to Table 23.30 Framebuffer (state per framebuffer object)
 
     Get Value                Get Command      Type Initial Value    Description          Sec.    Attribute
     ---------                -----------      ---- -------------    -----------          ----    ---------
     MULTICAST_PROGRAMMABLE_- GetMultisamplefv  *    (0.5,0.5)       Programmable sample  20.3.2      -
-        SAMPLE_LOCATION_NV        
+        SAMPLE_LOCATION_NV
 
     * The type here is "2* x n x 2 x R[0,1]" which is is equivalent to PROGRAMMABLE_SAMPLE_LOCATION_ARB
     but with samples locations for all multicast GPUs (one after the other).
@@ -630,7 +630,7 @@ Backwards Compatibility
 Sample Code
 
     Binocular stereo rendering example using NV_gpu_multicast with single GPU fallback:
-   
+
     struct ViewData {
         GLint viewport_index;
         GLfloat mvp[16];
@@ -701,7 +701,7 @@ Issues
     commands so they are not influenced by the mask.  If masked copies are desired, use
     MulticastCopyImageSubDataNV, MulticastCopyBufferSubDataNV or MulticastBlitFramebufferNV.
     These commands explicitly specify the GPU source and destination and are not influenced by the
-    render mask.  
+    render mask.
 
   (4) What happens if the MulticastCopyBufferSubDataNV source and destination buffer is the same?
 
@@ -720,7 +720,7 @@ Issues
     RESOLVED. No. This can be achieved using multicast UBOs and ARB_shader_viewport_layer_array.
 
   (7) Should we add a present API that automatically displays content from a specific GPU? It
-    could abstract the transport mechanism, copying when necessary. 
+    could abstract the transport mechanism, copying when necessary.
 
     RESOLVED. No. Transfers should be avoided to maximize performance and minimize latency.
     Minimizing transfers requires application awareness of display connectivity to assign
@@ -736,7 +736,7 @@ Issues
     may also be 1 if explicit GPU control is unavailable (e.g. if the active multi-GPU rendering
     mode prevents it).  Note that in revisions 5 and prior of this extension the minimum for
     MULTICAST_GPUS_NV was 2.
-  
+
   (9) Should glGet*BufferParameter* return the PER_GPU_STORAGE_BIT_NV bit when
     BUFFER_STORAGE_FLAGS is queried?
 

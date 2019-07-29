@@ -27,7 +27,7 @@ Contributors
 
 Status
 
-    Complete. 
+    Complete.
 
 Version
 
@@ -47,7 +47,7 @@ Dependencies
     OES_compressed_paletted_texture, OES_texture_float, OES_texture_half_float
     EXT_texture_type_2_10_10_10_REV, EXT_texture_format_BGRA8888,
     EXT_texture3D, EXT_texture_rg, APPLE_texture_2D_limited_npot,
-    APPLE_rgb_422, APPLE_texture_format_BGRA8888, 
+    APPLE_rgb_422, APPLE_texture_format_BGRA8888,
     ARB_texture_cube_map, ARB_texture_cube_map_array,
     ARB_texture_rectangle, SGIS_generate_mipmap,
     EXT_direct_state_access, OES_EGL_image, WGL_ARB_render_texture,
@@ -529,7 +529,7 @@ Dependencies on OpenGL ES
         RGBA32F_EXT            RGBA               FLOAT
         RGB32F_EXT             RGB                FLOAT
         LUMINANCE_ALPHA32F_EXT LUMINANCE_ALPHA    FLOAT
-        LUMINANCE32F_EXT       LUMINANCE          FLOAT 
+        LUMINANCE32F_EXT       LUMINANCE          FLOAT
         ALPHA32F_EXT           ALPHA              FLOAT
 
     If OES_texture_half_float is supported:
@@ -539,7 +539,7 @@ Dependencies on OpenGL ES
         RGBA16F_EXT            RGBA               HALF_FLOAT_OES
         RGB16F_EXT             RGB                HALF_FLOAT_OES
         LUMINANCE_ALPHA16F_EXT LUMINANCE_ALPHA    HALF_FLOAT_OES
-        LUMINANCE16F_EXT       LUMINANCE          HALF_FLOAT_OES 
+        LUMINANCE16F_EXT       LUMINANCE          HALF_FLOAT_OES
         ALPHA16F_EXT           ALPHA              HALF_FLOAT_OES
 
     If EXT_texture_type_2_10_10_10_REV is supported:
@@ -626,7 +626,7 @@ Dependencies on OES_compressed_paletted_texture
 Dependencies on APPLE_rgb_422
 
     UNSIGNED_SHORT_8_8_APPLE is implied as the <type> when TexStorage2DEXT
-    is called with <internalformat> RGB_RAW_422_APPLE.  Subsequently supplying 
+    is called with <internalformat> RGB_RAW_422_APPLE.  Subsequently supplying
     UNSIGNED_SHORT_8_8_REV_APPLE as the <type> to a TexSubImage2D updating
     such an immutable texture will generate an INVALID_OPERATION error.
 

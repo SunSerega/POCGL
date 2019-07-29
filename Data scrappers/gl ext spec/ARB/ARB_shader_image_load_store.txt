@@ -306,7 +306,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
 
     The type of an image variable must match the texture target of the image
     currently bound to the image unit, otherwise the result of a load, store,
-    or atomic operation is undefined (see Section 4.1.X of the OpenGL 
+    or atomic operation is undefined (see Section 4.1.X of the OpenGL
     Shading Language specification for more detail).
 
     The location of an image variable needs to be queried with
@@ -362,7 +362,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
     The order in which texture or buffer object memory is read or written by
     shaders is largely undefined.  For some shader types (vertex, tessellation
     evaluation, and in some cases, fragment), even the number of shader
-    invocations that might perform loads and stores is undefined. 
+    invocations that might perform loads and stores is undefined.
     In particular, the following rules apply:
 
       * While a vertex or tessellation evaluation shader will be executed at
@@ -476,7 +476,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
     shader.  <barriers> is a bitfield indicating the set of operations that
     are synchronized with shader stores; the bits used in <barriers> are as
     follows:
-    
+
     - VERTEX_ATTRIB_ARRAY_BARRIER_BIT:  If set, vertex data sourced from
         buffer objects after the barrier will reflect data written by shaders
         prior to the barrier.  The set of buffer objects affected by this bit
@@ -783,7 +783,7 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
 
       * the texture level bound to the image unit is less than the base
         level or greater than the maximum level of the texture;
-      
+
       * [[compatiblity profile only]] the texture bound to the image unit is
         bordered;
 
@@ -903,7 +903,7 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
         R16_SNORM               r16_snorm
         R8_SNORM                r8_snorm
 
-        Table X.2, Supported image unit formats, with equivalent format 
+        Table X.2, Supported image unit formats, with equivalent format
         layout qualifiers.
 
     When a texture is bound to an image unit, the <format> parameter for the
@@ -998,8 +998,8 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
         floating-point formats; class (b) is for 10/10/10/2 packed formats.
 
     Implementations may support a limited combined number of image units and
-    active fragment shader outputs (section 4.2.1).  A link error will be 
-    generated if the number of active image uniforms used in all shaders and 
+    active fragment shader outputs (section 4.2.1).  A link error will be
+    generated if the number of active image uniforms used in all shaders and
     the number of active fragment shader outputs exceeds the implementation-
     dependent value (MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS).
 
@@ -1015,7 +1015,7 @@ Additions to Chapter 3 of the OpenGL 3.2 (Compatibility Profile) Specification
     "early_fragment_tests" layout qualifier, the per-fragment tests described
     in Section 3.X will be performed prior to fragment shader execution.
     Otherwise, they will be performed after fragment shader execution.
-   
+
 
 Additions to Chapter 4 of the OpenGL 3.2 (Compatibility Profile) Specification
 (Per-Fragment Operations and the Framebuffer)
@@ -1053,7 +1053,7 @@ New Implementation Dependent State
       AND_FRAGMENT_OUTPUTS                                     units + fragment outputs
     MAX_IMAGE_SAMPLES            Z     GetIntegerv      0      max allowed samples        3.9.X        -
                                                                for a texture level
-                                                               bound to an image unit  
+                                                               bound to an image unit
     MAX_VERTEX_IMAGE_            Z+    GetIntegerv      0      number of image variables  2.14.7
       UNIFORMS                                                 in vertex shaders
     MAX_TESS_CONTROL_IMAGE_      Z+    GetIntegerv      0      number of image variables  2.14.7
@@ -1110,7 +1110,7 @@ Specification (Invariance)
 
     Modify Section A.3, Invariance (p. 455)
 
-    (add new language to the end of the section, p. 457) 
+    (add new language to the end of the section, p. 457)
 
     If a sequence of GL commands specifies primitives to be rendered with
     shaders containing side effects (image stores, image atomic operations,
@@ -1151,7 +1151,7 @@ Specification (Invariance)
 
     Add Section A.5, Shader Image Load, Store, and Atomic Invariance (p. 457)
 
-    
+
 
 Additions to Appendix D of the OpenGL 3.2 (Compatibility Profile)
 Specification (Invariance)
@@ -1163,7 +1163,7 @@ Specification (Invariance)
     * Rendering commands that trigger shader invocations, where the shader
       performs image stores or atomic operations.
 
-    
+
 Additions to the AGL/GLX/WGL Specifications
 
     None.
@@ -1178,7 +1178,7 @@ GLX Protocol
     EXT_shader_image_load_store).  BindImageTexture throws an error on
     negative <level> and <layer> values; BindImageTextureEXT does not.
 
-    
+
 Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Including the following line in a shader can be used to control the
@@ -1230,15 +1230,15 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Like samplers, images are opaque handles to one-, two-, or
     three-dimensional images corresponding to all or a portion of a single
-    level of a texture image bound to an image unit.  There are distinct 
+    level of a texture image bound to an image unit.  There are distinct
     image variable types for each texture target, and for each of float,
-    integer, and unsigned integer data types.  Image accesses should use 
-    an image type that matches the target of the texture whose level is 
-    bound to the image unit, or for non-layered bindings of 3D or array 
-    images should use the image type that matches the dimensionality of 
-    the layer of the image (i.e. a layer of 3D, 2DArray, Cube, or 
-    CubeArray should use image2D, a layer of 1DArray should use image1D, 
-    and a layer of 2DMSArray should use image2DMS). If the image target type 
+    integer, and unsigned integer data types.  Image accesses should use
+    an image type that matches the target of the texture whose level is
+    bound to the image unit, or for non-layered bindings of 3D or array
+    images should use the image type that matches the dimensionality of
+    the layer of the image (i.e. a layer of 3D, 2DArray, Cube, or
+    CubeArray should use image2D, a layer of 1DArray should use image1D,
+    and a layer of 2DMSArray should use image2DMS). If the image target type
     does not match the bound image in this manner, if the data type does not
     match the bound image, or if the format layout qualifier does not match
     the image unit format as described in Section 3.9.X of the OpenGL
@@ -1262,10 +1262,10 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Add Memory Qualifier Table to Section 4.3, Storage Qualifiers, p. 29
 
-    Only variables declared as image types (the basic opaque types with 
+    Only variables declared as image types (the basic opaque types with
     "image" in their keyword) can be qualified with a memory qualifier.
 
-    Variables declared as image types can qualified with one or more of the 
+    Variables declared as image types can qualified with one or more of the
     following memory qualifiers:
 
         Qualifier       Meaning
@@ -1281,18 +1281,18 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
                         only way to read and write the underlying memory
                         in the relevant shader stage
 
-        readonly        memory variable that can be used to read the 
-                        underlying memory, but cannot be used to write the 
+        readonly        memory variable that can be used to read the
+                        underlying memory, but cannot be used to write the
                         underlying memory
 
-        writeonly       memory variable that can be used to write the 
-                        underlying memory, but cannot be used to read the 
+        writeonly       memory variable that can be used to write the
+                        underlying memory, but cannot be used to read the
                         underlying memory
 
 
     Modify Section 4.3.2, Constant Qualifier (p. 30)
 
-    (add after last paragraph of section)  
+    (add after last paragraph of section)
 
     Because image variables can not be built from constant expressions, the
     "const" qualifier may not be used to create a compile-time constant image
@@ -1302,7 +1302,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Remove "only" from the sentence:
 
-    Fragment shaders can have an input layout only for redeclaring the 
+    Fragment shaders can have an input layout only for redeclaring the
     built-in variable gl_FragCoord...
 
     Add to the end of the section:
@@ -1314,12 +1314,12 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
         early_fragment_tests
 
     to request that fragment tests be performed before fragment shader
-    execution, as described in Section 3.12.2 of the OpenGL Specification. 
+    execution, as described in Section 3.12.2 of the OpenGL Specification.
     For example,
 
       layout(early_fragment_tests) in;
 
-    Specifying this will make per-fragment tests be performed before fragment 
+    Specifying this will make per-fragment tests be performed before fragment
     shader execution. If this is not declared, per-fragment tests will be
     performed after fragment shader execution.
 
@@ -1329,7 +1329,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
     Section 4.3.8.X, Image Layout Qualifiers
 
     Format layout qualifiers can be used on image variable declarations (those
-    declared with a basic type having 'image' in its keyword). The format 
+    declared with a basic type having 'image' in its keyword). The format
     layout qualifier identifiers for image variable declarations are
 
       <layout-qualifier-id>:
@@ -1394,12 +1394,12 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Any image variable used for image loads or atomic operations must specify
     a format layout qualifier; it is an error to pass an image uniform
-    variable or function parameter declared without a format layout qualifier 
+    variable or function parameter declared without a format layout qualifier
     to an image load or atomic function.
 
-    Uniforms not qualified with "writeonly" must have a format layout qualifier. 
+    Uniforms not qualified with "writeonly" must have a format layout qualifier.
     Note that an image variable passed to a function for read access cannot be
-    declared as "writeonly" and hence must have been declared with a format 
+    declared as "writeonly" and hence must have been declared with a format
     layout qualifier.
 
     (Insert immediately after Section 4.3.9, Interpolation, p. 42)
@@ -1444,7 +1444,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
     written at any point during shader execution by some source other than the
     executing shader invocation.  When a volatile variable is read, its value
     must be re-fetched from the underlying memory, even if the shader
-    invocation performing the read had previously fetched its value from the 
+    invocation performing the read had previously fetched its value from the
     same memory.  When a volatile variable is written, its value must be
     written to the underlying memory, even if the compiler can conclusively
     determine that its value will be overwritten by a subsequent write.  Since
@@ -1464,21 +1464,21 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
     using other variables in the same scope; otherwise, accesses to
     "restrict"-qualified variables will have undefined results.
 
-    Memory accesses to image variables declared using the "readonly" qualifier 
-    may only read the underlying memory, which is treated as read-only memory 
-    and cannot be written to. It is an error to pass an image variable qualified 
-    with "readonly" to imageStore() or other built-in functions that modify 
+    Memory accesses to image variables declared using the "readonly" qualifier
+    may only read the underlying memory, which is treated as read-only memory
+    and cannot be written to. It is an error to pass an image variable qualified
+    with "readonly" to imageStore() or other built-in functions that modify
     image memory.
 
-    Memory accesses to image variables declared using the "writeonly" qualifier 
-    may only write the underlying memory; the underlying memory cannot be read. 
-    It is an error to pass an image variable qualified with "writeonly" to 
+    Memory accesses to image variables declared using the "writeonly" qualifier
+    may only write the underlying memory; the underlying memory cannot be read.
+    It is an error to pass an image variable qualified with "writeonly" to
     imageLoad() or other built-in functions that read image memory.
 
-    The values of image variables qualified with "coherent", "volatile", 
-    "restrict", "readonly", or "writeonly" may not be passed to functions 
+    The values of image variables qualified with "coherent", "volatile",
+    "restrict", "readonly", or "writeonly" may not be passed to functions
     whose formal parameters lack such qualifiers. (See section 6.1 'Function
-    Definitions' for more detail on function calling.) It is legal to have 
+    Definitions' for more detail on function calling.) It is legal to have
     additional qualifiers on a formal parameter, but not to have fewer.
 
       vec4 funcA(layout(rgba32f) image2D restrict a)   { ... }
@@ -1489,12 +1489,12 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
       funcA(img1);              // OK, adding "restrict" is allowed
       funcB(img2);              // illegal, stripping "coherent" is not
 
-    Layout qualifiers cannot be used on formal function parameters, but they are 
-    not included in parameter matching.  
+    Layout qualifiers cannot be used on formal function parameters, but they are
+    not included in parameter matching.
 
-    Note that the use of "const" in an image variable declaration is qualifying 
-    the const-ness of variable being declared, not the image it refers to: The 
-    qualifier "readonly" qualifies the image memory (as accessed through that 
+    Note that the use of "const" in an image variable declaration is qualifying
+    the const-ness of variable being declared, not the image it refers to: The
+    qualifier "readonly" qualifies the image memory (as accessed through that
     variable) while "const" qualifiers the variable itself.
 
     Modify Section 7.4, Built-In Constants, p. 74
@@ -1519,20 +1519,20 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Variables using one of the image data types may be used in the built-in
     shader image memory functions defined in this section to read and write
-    individual texels of a texture.  Each image variable references an image 
+    individual texels of a texture.  Each image variable references an image
     unit, which has a texture image attached.
 
     When image memory functions access memory, an individual texel in the
     image is identified using an i, (i,j), or (i,j,k) coordinate corresponding
-    to the values of <coord>.  For image2DMS and image2DMSArray variables (and 
-    the corresponding int/unsigned int types) corresponding to multisample 
-    textures, each texel may have multiple samples and an individual sample is 
-    identified using the integer <sample> parameter.  The coordinates and 
-    sample number are used to select an individual texel in the manner 
+    to the values of <coord>.  For image2DMS and image2DMSArray variables (and
+    the corresponding int/unsigned int types) corresponding to multisample
+    textures, each texel may have multiple samples and an individual sample is
+    identified using the integer <sample> parameter.  The coordinates and
+    sample number are used to select an individual texel in the manner
     described in Section 3.9.X of the OpenGL specification.
 
     Loads and stores support float, integer, and unsigned integer types. The
-    data types "gimage*" serve as placeholders meaning either "image*", 
+    data types "gimage*" serve as placeholders meaning either "image*",
     "iimage*", or "uimage*" in the same way as "gvec" or "gsampler".
 
     The "IMAGE_INFO" in the prototypes below is a placeholder representing
@@ -1561,11 +1561,11 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
 
     Description:
 
-    Loads the texel at the coordinate <coord> from the image unit specified 
-    by <image>.  For multisample loads, the sample number is given by 
-    <sample>.  When <image>, <coord>, and <sample> identify a valid texel, 
-    the bits used to represent the selected texel in memory are converted to 
-    a vec4, ivec4, or uvec4 in the manner described in Section 3.9.X of the 
+    Loads the texel at the coordinate <coord> from the image unit specified
+    by <image>.  For multisample loads, the sample number is given by
+    <sample>.  When <image>, <coord>, and <sample> identify a valid texel,
+    the bits used to represent the selected texel in memory are converted to
+    a vec4, ivec4, or uvec4 in the manner described in Section 3.9.X of the
     OpenGL Specification and returned.
 
 
@@ -1581,7 +1581,7 @@ Modifications to the OpenGL Shading Language Specification, Version 1.50
     valid texel, the bits used to represent <data> are converted to the format
     of the image unit in the manner described in Section 3.9.X of the OpenGL
     Specification and stored to the specified texel.
-    
+
 
     Syntax:
 
@@ -1723,7 +1723,7 @@ Errors
     INVALID_VALUE is generated by BindImageTexture if <texture> is not the
     name of an existing texture object.
 
-    INVALID_VALUE is generated by BindImageTexture if <format> is not a 
+    INVALID_VALUE is generated by BindImageTexture if <format> is not a
     legal format.
 
 
@@ -1886,19 +1886,19 @@ Issues
 
     (1) How are the format and type of the load/store determined?
 
-      RESOLVED:  There is a natural desire to load and store using a 
-      canonical 4-vector in the shader with hardware converting to/from a 
+      RESOLVED:  There is a natural desire to load and store using a
+      canonical 4-vector in the shader with hardware converting to/from a
       format compatible with the bound image, to be consistent with how
       texture loads and fragment shader outputs currently behave. There is
       also good reason to allow some flexibility in the format used for image
       accesses being different from the internal format of the texture level.
-      We allow format conversions to and from any format that image units 
-      support. We make the format be selected when the image is bound to an 
+      We allow format conversions to and from any format that image units
+      support. We make the format be selected when the image is bound to an
       image unit, and define which image unit formats can be used for which
       texture level internal formats. For example, it is legal to access an
-      image whose internal format is RGBA8 with an image unit format of 
+      image whose internal format is RGBA8 with an image unit format of
       R32UI.
-      
+
     (2) What set of texture formats should be supported for image loads and
         stores?
 
@@ -1943,7 +1943,7 @@ Issues
         completeness?  What happens if you bind a texture with inconsistent
         mipmaps?
 
-      RESOLVED:  The image unit is treated as if nothing were bound, where 
+      RESOLVED:  The image unit is treated as if nothing were bound, where
       all accesses are treated as invalid.
 
     (8) What happens if the value passed to Uniform1i to specify the image
@@ -1974,11 +1974,11 @@ Issues
       store of a buffer object. This buffer texture may be bound to an image
       unit and accessed with an imageBuffer variable in the Shading Language.
 
-      This extension adds support for image accesses to multisample textures, 
-      but not renderbuffers. Note that with the ARB_texture_multisample 
-      extension, there is no longer a good reason to use renderbuffers. 
+      This extension adds support for image accesses to multisample textures,
+      but not renderbuffers. Note that with the ARB_texture_multisample
+      extension, there is no longer a good reason to use renderbuffers.
       Existing 2D or rectangle targets already provided a superset of single-
-      sample renderbuffer functionality; the new ARB extension provides a 
+      sample renderbuffer functionality; the new ARB extension provides a
       superset of multisample renderbuffer functionality.
 
     (11) What amount of automatic synchronization is provided for image loads
@@ -2035,7 +2035,7 @@ Issues
          indicating that the image data lines up with a four-component
          floating-point vector.
 
-      RESOLVED:  No.  Separate types are provided for float vs. int vs. 
+      RESOLVED:  No.  Separate types are provided for float vs. int vs.
       unsigned int, but not for each image format.  However, format qualifiers
       associated with image variables can (and in many cases must) be used to
       associate a format with an image variable.
@@ -2062,7 +2062,7 @@ Issues
       currently bound to the selected image unit.  If this ability were
       provided, it would also be necessary to provide some mechanism to
       specify a texture target because there is a separate default "zero"
-      texture for each target.  
+      texture for each target.
 
       Note that existing framebuffer objects have a similar behavior; default
       textures can't be attached to an FBO.
@@ -2074,14 +2074,14 @@ Issues
     (18) Should we have defined behavior if invalid coordinates are passed to
          an image load, store, or atomic operation?  If so, what happens?
 
-      RESOLVED:  Yes. We define the behavior to return zeroes on a load and 
-      atomic and to have no effect on any bound texture on stores and 
+      RESOLVED:  Yes. We define the behavior to return zeroes on a load and
+      atomic and to have no effect on any bound texture on stores and
       atomics.
 
     (19) Should we have a limit on the total number of combined image units
          and draw buffers, and if so, what should that be?
 
-      RESOLVED:  Yes, some hardware requires this. The program will fail to 
+      RESOLVED:  Yes, some hardware requires this. The program will fail to
       link.
 
     (20) What happens if a shader specifies an image store or atomic operation
@@ -2151,7 +2151,7 @@ Issues
 
     (24) For formatted loads where the format doesn't include some component,
          what values are filled in? (0,0,0,1)? (0,0,0,0)?
-         
+
       RESOLVED: Prefer (0,0,0,1) to match other APIs.
 
     (25) How does the combined-image-and-fragment-output limit interact with
@@ -2230,7 +2230,7 @@ Issues
       where "image2D" is replaced with "struct image2D_data *".  In this
       model, the former declares <firstImage> to be a pointer to constant
       image data.  The latter declares <secondImage> to be a constant pointer
-      to non-constant image data.  
+      to non-constant image data.
 
       For "coherent", "volatile", and "const", the qualifier should typically
       go before the image type.  For "restrict", the qualifier must go after
@@ -2377,7 +2377,7 @@ Revision History
                               prefix.
 
     35    09/11/14  pbrown    Add missing text for issue (9).
-    
+
     34    06/10/14  Jon Leech Minor typo fixes from bug 7263.
 
     33    10/16/13  pbrown    Update issue (20) to clarify that any image
@@ -2398,7 +2398,7 @@ Revision History
     31    01/18/12  Jon Leech State table fix for
                               IMAGE_FORMAT_COMPATIBILITY_TYPE (Bug 8430).
 
-    30    08/04/11  pbrown    Remove imageAtomicIncWrap() and 
+    30    08/04/11  pbrown    Remove imageAtomicIncWrap() and
                               imageAtomicDecWrap() functions from the ARB
                               extension (bug 7182).   Rename the <index>
                               argument of BindImageTexture to <unit> (bug
@@ -2439,13 +2439,13 @@ Revision History
                               when used with non-layered textures.  Clarify
                               that non-existent layer/face numbers make
                               accesses invalid for both non-layered and
-                              layered bindings (bug 7721). 
+                              layered bindings (bug 7721).
 
-    21    06/06/11  pbrown    Add IMAGE_FORMAT_COMPATIBILITY_TYPE to state 
+    21    06/06/11  pbrown    Add IMAGE_FORMAT_COMPATIBILITY_TYPE to state
                               tables, add descriptions for IMAGE_BINDING*
                               state table entries (bug 7689).
 
-    20    06/06/11  pbrown    Clarify the language describing data type 
+    20    06/06/11  pbrown    Clarify the language describing data type
                               conversions for image loads/stores to indicate
                               that we use the same general process as for
                               TexImage and GetTexImage commands.  For
@@ -2454,10 +2454,10 @@ Revision History
                               GetTexImage is not supported (bug 7249).
 
     19    02/14/11  pbrown    Remove the repeatability requirement (Appendix
-                              A.1) when using shaders with side effects (bug 
+                              A.1) when using shaders with side effects (bug
                               7026).  Clean up spec language describing GLSL's
-                              memoryBarrier() function, and add a dependency 
-                              on atomic counter extensions to indicate that 
+                              memoryBarrier() function, and add a dependency
+                              on atomic counter extensions to indicate that
                               memoryBarrier() also applies to atomic counters
                               (bug 7237).
 
@@ -2470,9 +2470,9 @@ Revision History
                               is negative (bug 7226).  Clarify language for
                               MemoryBarrier's BUFFER_UPDATE_BARRIER_BIT (bug
                               7228).  Update the <format> parameter of
-                              BindImageTexture to be an "enum" instead of 
+                              BindImageTexture to be an "enum" instead of
                               "int".  The EXT used "int" to be compatible
-                              with TexImage, which itself derived to the 
+                              with TexImage, which itself derived to the
                               deprecated "1", "2", "3", and "4" formats from
                               OpenGL 1.0 (bug 7183).
 
@@ -2486,7 +2486,7 @@ Revision History
 
     13    01/05/11  Jon Leech Fix typos from Bug 7202.
 
-    12    12/17/10  johnk     Minor tweaks for grammar and consistency that 
+    12    12/17/10  johnk     Minor tweaks for grammar and consistency that
                               also apply to 1.5, that were generated while
                               incorporating into 4.2 core.
 
@@ -2494,14 +2494,14 @@ Revision History
                               rules in Appendices A and D to account for
                               side effects from shader execution (bug 7026).
 
-    10    12/14/10  pbrown    Clean up issues section from changes in 
+    10    12/14/10  pbrown    Clean up issues section from changes in
                               revisions 7-9.
 
      9    12/14/10  pbrown    Modify the layout qualifier behavior for image
                               variables to specify a full GL-style format
                               instead of component/bit counts (bug 6868),
                               with loaded data converted to a canonical
-                              vector type according to the full format.  
+                              vector type according to the full format.
                               Limited the amount of format mismatching allowed
                               when binding textures allocated outside the GL
                               to image units.  Removed the requirement for
@@ -2515,7 +2515,7 @@ Revision History
                               already covered by the EXT version of the spec.
 
      6    10/19/10  pdaniell  ARBify in preparation for OpenGL 4.2 core.
-     
+
      5    09/17/10  pbrown    Clean up the spec language specifying the
                               mapping of coordinates to texels according to
                               the texture target.  For 1D arrays, GLSL wants
@@ -2525,13 +2525,13 @@ Revision History
                               vector.  Also clarify that single-layer bindings
                               of an array or cube map texture use a target
                               appropriate to the bound layer.
-                              
+
      4    03/23/10  pbrown    Add interaction with EXT_separate_shader_objects.
                               Update issues section to include some issues
                               left behind in NV_gpu_shader5 when specs were
                               refactored.
 
-     3    03/21/10  pbrown    Update spec overview, interactions, and issues 
+     3    03/21/10  pbrown    Update spec overview, interactions, and issues
                               sections; miscellaneous minor clarifications.
 
      2    03/16/10  pbrown    Add a separate #extension line for this

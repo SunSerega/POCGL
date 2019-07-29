@@ -32,7 +32,7 @@ Specification Update Policy
 
 Status
 
-    Complete. 
+    Complete.
     Approved by the ARB on June 26, 2014.
     Ratified by the Khronos Board of Promoters on August 7, 2014.
 
@@ -71,8 +71,8 @@ New Tokens
 
         QUERY_WAIT_INVERTED                             0x8E17
         QUERY_NO_WAIT_INVERTED                          0x8E18
-        QUERY_BY_REGION_WAIT_INVERTED                   0x8E19  
-        QUERY_BY_REGION_NO_WAIT_INVERTED                0x8E1A  
+        QUERY_BY_REGION_WAIT_INVERTED                   0x8E19
+        QUERY_BY_REGION_NO_WAIT_INVERTED                0x8E1A
 
 Additions to Chapter 10 of the OpenGL 4.4 (Core Profile) Specification (Vertex Specification and Drawing Commands)
 

@@ -44,9 +44,9 @@ Issues
 
         This is accomplished using GetIntegerv, GetFloatv, and
         GetDoubleV to return a maximum value for Instructions,
-        constants, and volatiles as well as returned the numbers 
+        constants, and volatiles as well as returned the numbers
         of these resources consumed by the current shader.
-    
+
     Is lighting or texture coordinate generation performed when a user
     defined vertex shader is enabled.
 
@@ -77,7 +77,7 @@ Issues
     Should we give the opcode enumerants data type names or leave them
     generic?
 
-        This presents an interesting question in that the 
+        This presents an interesting question in that the
         trade off is a more simple, concise interface for more
         difficult validation on the part of the implementation.
 
@@ -87,36 +87,36 @@ Issues
         frame. When a vertex shader is invoked, the eye-space
         clipping planes are transformed by the current projection
         matrix and are applied after the primitive is assembled from
-        the transformed vertices. 
+        the transformed vertices.
 
   What are better names for GenData/SetData?
-  
+
      These are misleading, and they should be changed. The primary
      hurdle is devising a better set of names.
-     
+
      RESOLVED: New names implemented
-     
+
   Should the *Transform* calls be replaced with a different moniker?
-  
+
      Possibly, the term transform is somewhat narrow for the
      functionality. The term shader has been suggested. It seems
      like a good choice as it fits with the RenderMan style
      terminology already in use.
 
      RESOLVED: Shader will be used.
-     
+
   How should RasterPos be affected by this extension?
-  
+
      It is probably confusing to have RasterPos affected by
      this extension, so it should be disallowed.
-     
+
   How should the arrays/indexing be handled?
-  
+
      The index operation should be more strictly defined
      to only operate on contiguous name sets allocated by a
      single GenSymbols call. Alternatively, it may be useful to
      enforce that data to be used as arrays be given a special
-     designation. 
+     designation.
 
   Should color-index mode be included?
 
@@ -134,14 +134,14 @@ New Procedure and Functions
     void ShaderOp1EXT( enum op, uint res, uint arg1 )
     void ShaderOp2EXT( enum op, uint res, uint arg1, uint arg2 )
     void ShaderOp3EXT( enum op, uint res, uint arg1, uint arg2, uint arg3 )
-    void SwizzleEXT( uint res, uint in, enum outX, enum outY, enum outZ, 
+    void SwizzleEXT( uint res, uint in, enum outX, enum outY, enum outZ,
                      enum outW )
     void WriteMaskEXT( uint res, uint in, enum outX, enum outY, enum outZ
                        enum outW )
     void InsertComponentEXT( uint res, uint src, uint num )
     void ExtractComponentEXT( uint res, uint src, uint num )
     uint GenSymbolsEXT( enum datatype, enum storagetype, enum range,
-                     uint components ) 
+                     uint components )
     void SetInvariantEXT( uint id, enum type, void *addr )
     void SetLocalConstantEXT( uint id, enum type, void *addr )
     void Variant{bsifd ubusui}vEXT( uint id, T *addr )
@@ -319,7 +319,7 @@ New Tokens
       ONE_EXT                             0x87de
       NEGATIVE_ONE_EXT                    0x87DF
 
-    Accepted by the <range> parameter of GenSymbolsEXT: 
+    Accepted by the <range> parameter of GenSymbolsEXT:
 
       NORMALIZED_RANGE_EXT                    0x87E0
       FULL_RANGE_EXT                          0x87E1
@@ -329,8 +329,8 @@ New Tokens
       CURRENT_VERTEX_EXT                  0x87E2
       MVP_MATRIX_EXT                      0x87E3
 
-      
-   
+
+
 Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
   - (2.6, p. 12) First paragraph changed to:
@@ -355,7 +355,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
   - (2.6, p. 14)
     Should replace figure 2.2 with something showing the switch
     between built in vertex/normal transformation and lighting and the
-    vertex shader program. 
+    vertex shader program.
 
   - (2.6.3, p. 19) First paragraph changed to:
     "The only GL commands that are allowed within any Begin/End pairs
@@ -390,17 +390,17 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
        void DisableVariantClientStateEXT( uint id)
 
     The id parameter contains the id of the variant array to enable
-    or disable. 
-    
+    or disable.
+
   - (2.10, p. 28) First Paragraph changed to:
     "Vertices, normals, and texture coordinates are transformed before
     their coordinates are used to produce an image in the
-    framebuffer. This transformation can be accomplished with either 
+    framebuffer. This transformation can be accomplished with either
     the OpenGL Per-Vertex operations or replaced by a vertex shader.
     We begin with a description of how vertex coordinates are
     transformed via the OpenGL Per-Vertex operations and how this
     transformation is controlled. The specification of a vertex shader
-    is described in section 2.14." 
+    is described in section 2.14."
 
   - (2.10, p. 28) Second Paragraph changed to:
     "Figure 2.6 diagrams the sequence of transformations that are
@@ -412,12 +412,12 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     coordinates. A perspective division is carried out on clip
     coordinates to yield normalized device coordinates. A final
     viewport transformation is applied to convert these coordinates
-    into window coordinates." 
+    into window coordinates."
 
   - (2.10.2, p. 33) Eighth Paragraph changed to:
     "There is another 4 x 4 matrix that is applied to texture
     coordinates by the OpenGL per-vertex operations. This matrix
-    is applied as 
+    is applied as
          | m1 m5 m9  m13 | |s|
          | m2 m6 m10 m14 | |t|,
          | m3 m7 m11 m15 | |r|
@@ -444,7 +444,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
     Where P is the projection matrix and x_clip, y_clip, z_clip, and
     w_clip are the clip space vertex coordinates. When P is singular,
-    the result of clipping is undefined. 
+    the result of clipping is undefined.
 
   - (2.12, p. 41) Added after the third paragraph:
     "The raster position is not affected by the current vertex shader
@@ -463,7 +463,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     primitive may be flatshaded, indicating that all vertices of the
     primitive are to have the same color. Finally, if a primitive is
     clipped, then colors (and texture coordinates) must be computed
-    at the vertices introduced or modified by clipping." 
+    at the vertices introduced or modified by clipping."
 
   - (2.13.1, p. 44) First paragraph:
     "GL lighting computes colors for each vertex sent to the GL. This
@@ -474,7 +474,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     characteristics of the light sources and a current material. The
     following discussion assumes that the GL is in RGBA mode. (Color
     index lighting is described in section 2.13.5.) Lighting may be in
-    one of two states: 
+    one of two states:
        1. Lighting Off. In this state, the current color is assigned
                         to the vertex primary color. The secondary
                         color is (0; 0; 0; 0). Lighting is off if
@@ -483,7 +483,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
                        colors are computed from the current lighting
                        parameters. Lighting is turned on or off using
                        the generic Enable or Disable commands with the
-                       symbolic value LIGHTING." 
+                       symbolic value LIGHTING."
 
   - (2.13.8, p. 55) First paragraph:
     "After lighting or vertex shading, clamping or masking and possible
@@ -498,7 +498,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     processing by specifying the operations to perform on the
     incoming vertex and associated data. A vertex shader is defined
     between a BeginVertexShaderEXT and EndVertexShaderEXT block. These
-    commands are defined as follows:  
+    commands are defined as follows:
 
         void BeginVertexShaderEXT( void );
         void EndVertexShaderEXT( void );
@@ -514,7 +514,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
         In addition to a default vertex shader program, named vertex
     shaders can be created. The namespace for vertex shaders is
     unsigned integers with zero reserved by the GL. A vertetx shader is
-    created by binding an unused name using: 
+    created by binding an unused name using:
 
         void BindVertexShaderEXT( uint id );
 
@@ -523,7 +523,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     calling BindVertexShaderEXT. Calling BindShaderEXT with an argument
     of zero binds the default vertex shader program. A vertex shader
     program can be deleted, freeing the name, by calling
-        
+
         void DeleteVertexShaderEXT( uint id );
 
     where id is the name to be deleted. Unique names can be generated
@@ -538,7 +538,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     available, or if any error is generated, no vertex shader names
     are generated, and 0 is returned. The currently bound vertex
     shader can be determined by querying VERTEX_SHADER_BINDING_EXT.
-        There are four kinds of data available from within a vertex 
+        There are four kinds of data available from within a vertex
     shader program: invariant data, local constant data, local data,
     and variant data. Invariant data is data that can only be set
     outside of a vertex shader program definition, it is set before a
@@ -559,7 +559,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     these various kinds of data for use in the vertex shader program.
     This staging takes place in two parts. The first part involves
     defining a name and giving it a data type and storage class.
-    This is done by calling 
+    This is done by calling
 
         uint GenSymbolsEXT( enum datatype, enum storagetype, enum range,
                          uint components );
@@ -596,11 +596,11 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
         void Variant{bsifd ubusui}vEXT( uint id, T *addr );
         void VariantPointerEXT( uint id, enum type, uint stride,
                                        void *addr );
-    
+
     where id is a name returned by GenSymbolsEXT, and type is DOUBLE,
     FLOAT, BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT, INT, or
     UNSIGNED_INT, and addr is a pointer to
-    the value to be assigned to the name. 
+    the value to be assigned to the name.
         SetInvariantEXT is used to set a single scalar, vector,
     or matrix value. It may be used outside of the vertex shader
     program to set invariant data. SetLocalConstantEXT may be used
@@ -620,7 +620,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
         void ShaderOp1EXT( enum op, uint res, uint arg1 );
         void ShaderOp2EXT( enum op, uint res, uint arg1, uint arg2 );
-        void ShaderOp3EXT( enum op, uint res, uint arg1, uint arg2, 
+        void ShaderOp3EXT( enum op, uint res, uint arg1, uint arg2,
                               uint arg3);
 
     where op is one of the constants described below, and res is one
@@ -634,7 +634,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     from the vertex shader program are the last values written to
     these identifiers. Partial writes to these identifiers can be
     accomplished by using WriteMaskEXT.
-    
+
         To facilitate the use of GL state values in a vertex shader
     program, a parameter binding mechanism is provided. Items such as
     material properties, light positions, and matrices are bound to
@@ -674,7 +674,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     SPECULAR                 VECTOR      VARIANT
     EMISSION                 VECTOR      VARIANT
     SHININESS                SCALAR      VARIANT
-    
+
 
     TexGen Parameters:
 
@@ -725,9 +725,9 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
     provides access to the coordinates of the vertex being processed.
     A special case of the bindings is CURRENT_NORMAL as it only a
     3-tuple natively. In this case, it is expanded as a homogeneous
-    vector with the fourth component set to 0. 
+    vector with the fourth component set to 0.
         Each operation is accepted by a particular
-    ShaderOp[1..3]EXT based on the number of arguments it 
+    ShaderOp[1..3]EXT based on the number of arguments it
     accepts and it's results are based on the type of arguments (as
     bound by GenSymbolsEXT) it receives. This is described in the
     following table. S denotes a scalar, V denotes a vector, M denotes
@@ -744,8 +744,8 @@ Operation            Number of Inputs  res  args  Output
 ------------------- ------------------ ---- ----- -----------------
 OP_INDEX_EXT       2                  S   S,S      special see below
                                       V   S,V
-                                      M   S,M      
-                                         
+                                      M   S,M
+
 OP_NEGATE_EXT      1                  S   S        r = -a1
                                       V   S        r[0] = -a1
                                                    r[1] = -a1
@@ -755,7 +755,7 @@ OP_NEGATE_EXT      1                  S   S        r = -a1
                                                    r[1] = -a1[1]
                                                    r[2] = -a1[2]
                                                    r[3] = -a1[3]
-                                                      
+
 OP_DOT3_EXT        2                  S   V,V      r    = a1[0] * a2[0] +
                                                           a1[1] * a2[1] +
                                                           a1[2] * a2[2]
@@ -769,7 +769,7 @@ OP_DOT3_EXT        2                  S   V,V      r    = a1[0] * a2[0] +
                                                           a1[1] * a2[1] +
                                                           a1[2] * a2[2]
                                                    r[3] = unchanged
-                                                      
+
 OP_DOT4_EXT        2                  S   V,V      r    = a1[0] * a2[0] +
                                                           a1[1] * a2[1] +
                                                           a1[2] * a2[2] +
@@ -790,7 +790,7 @@ OP_DOT4_EXT        2                  S   V,V      r    = a1[0] * a2[0] +
                                                           a1[1] * a2[1] +
                                                           a1[2] * a2[2] +
                                                           a1[3] * a2[3]
-                                                             
+
 OP_MUL_EXT         2                  S   S,S      r = a1 * a2
                                       V   S,S      r[0] = r[1] = r[2] = r[3] = a1 * a2
                                                    r[1] = a1 * a2
@@ -808,8 +808,8 @@ OP_MUL_EXT         2                  S   S,S      r = a1 * a2
                                                    r[1] = a1[1] * a2[1]
                                                    r[2] = a1[2] * a2[2]
                                                    r[3] = a1[3] * a2[3]
-                                                      
-OP_MOV_EXT         1                  S   S        r = a1 
+
+OP_MOV_EXT         1                  S   S        r = a1
                                       V   S        r[0] = a1
                                                    r[1] = a1
                                                   r[2] = a1
@@ -818,7 +818,7 @@ OP_MOV_EXT         1                  S   S        r = a1
                                                    r[1] = a1[1]
                                                    r[2] = a1[2]
                                                    r[3] = a1[3]
-                                                      
+
 OP_ADD_EXT         2                  S   S,S      r = a1 + a2
                                       V   S,S      r[0] = a1 + a2
                                                    r[1] = a1 + a2
@@ -836,7 +836,7 @@ OP_ADD_EXT         2                  S   S,S      r = a1 + a2
                                                    r[1] = a1[1] + a2[1]
                                                    r[2] = a1[2] + a2[2]
                                                    r[3] = a1[3] + a2[3]
-                                                      
+
 OP_MADD_EXT        3                  S   S,S,S    r = a1 * a2 + a3
                                       V   S,S,S    r[0] = a1 * a2 + a3
                                                    r[1] = a1 * a2 + a3
@@ -870,7 +870,7 @@ OP_MADD_EXT        3                  S   S,S,S    r = a1 * a2 + a3
                                                    r[1] = a1[1] * a2[1] +a3[1]
                                                    r[2] = a1[2] * a2[2] +a3[2]
                                                    r[3] = a1[3] * a2[3] +a3[3]
-                                                      
+
 OP_FRAC_EXT        1                  S   S        r = a1 - FLOOR(a1)
                                       V   S        r[0] = a1 - FLOOR(a1)
                                                    r[1] = a1 - FLOOR(a1)
@@ -880,7 +880,7 @@ OP_FRAC_EXT        1                  S   S        r = a1 - FLOOR(a1)
                                                    r[1] = a1[1] - FLOOR(a1[1])
                                                    r[2] = a1[2] - FLOOR(a1[2])
                                                    r[3] = a1[3] - FLOOR(a1[3])
-                                                      
+
 OP_MAX_EXT         2                  S   S,S      r = MAX(a1, a2)
                                       V   S,S      r[0] = MAX(a1, a2)
                                                    r[1] = MAX(a1, a2)
@@ -898,7 +898,7 @@ OP_MAX_EXT         2                  S   S,S      r = MAX(a1, a2)
                                                    r[1] = MAX(a1[1], a2[1])
                                                    r[2] = MAX(a1[2], a2[2])
                                                    r[3] = MAX(a1[3], a2[3])
-                                                      
+
 OP_MIN_EXT         2                  S   S,S      r = MIN(a1, a2)
                                       V   S,S      r[0] = MIN(a1, a2)
                                                    r[1] = MIN(a1, a2)
@@ -916,7 +916,7 @@ OP_MIN_EXT         2                  S   S,S      r = MIN(a1, a2)
                                                    r[1] = MIN(a1[1], a2[1])
                                                    r[2] = MIN(a1[2], a2[2])
                                                    r[3] = MIN(a1[3], a2[3])
-                                                     
+
 OP_SET_GE_EXT      2                  S   S,S      r = (a1 >= a2) ? 1 : 0
                                       V   S,S      r[0] = (a1 >= a2) ? 1 : 0
                                                    r[1] = (a1 >= a2) ? 1 : 0
@@ -934,7 +934,7 @@ OP_SET_GE_EXT      2                  S   S,S      r = (a1 >= a2) ? 1 : 0
                                                    r[1] =(a1[1]>=a2[1]) ?1 : 0
                                                    r[2] =(a1[2]>=a2[2]) ?1 : 0
                                                    r[3] =(a1[3]>=a2[3]) ?1 : 0
-                                                      
+
 OP_SET_LT_EXT      2                  S   S,S      r = (a1 < a2) ? 1 : 0
                                       V   S,S      r[0] = (a1 < a2) ? 1 : 0
                                                    r[1] = (a1 < a2) ? 1 : 0
@@ -951,7 +951,7 @@ OP_SET_LT_EXT      2                  S   S,S      r = (a1 < a2) ? 1 : 0
                                       V   V,V      r[0] =(a1[0]< a2[0]) ?1 : 0
                                                    r[1] =(a1[1]< a2[1]) ?1 : 0
                                                    r[2] =(a1[2]< a2[2]) ?1 : 0
-                                                   r[3] =(a1[3]< a2[3]) ?1 : 0 
+                                                   r[3] =(a1[3]< a2[3]) ?1 : 0
 
 
 OP_CLAMP_EXT       3                  S   S,S,S    r = ( a1 <= a2) ? a2 :
@@ -1017,7 +1017,7 @@ OP_CLAMP_EXT       3                  S   S,S,S    r = ( a1 <= a2) ? a2 :
                                                    r[3]= ( a1[3] <= a2[3]) ? a2[3] :
                                                           ( (a1[3]>=a3[3]) ? a3[3] :
                                                             (a1[3] ))
-                                                               
+
 OP_FLOOR_EXT       1                  S   S        r = FLOOR(a1)
                                       V   S        r[0] = FLOOR(a1)
                                                    r[1] = FLOOR(a1)
@@ -1027,7 +1027,7 @@ OP_FLOOR_EXT       1                  S   S        r = FLOOR(a1)
                                                    r[1] = FLOOR(a1[1])
                                                    r[2] = FLOOR(a1[2])
                                                    r[3] = FLOOR(a1[3])
-                                                      
+
 OP_ROUND_EXT       1                  S   S        r = FLOOR(a1 + 0.5)
                                       V   S        r[0] = FLOOR(a1 + 0.5)
                                                    r[1] = FLOOR(a1 + 0.5)
@@ -1037,9 +1037,9 @@ OP_ROUND_EXT       1                  S   S        r = FLOOR(a1 + 0.5)
                                                    r[1] = FLOOR(a1[1] + 0.5)
                                                    r[2] = FLOOR(a1[2] + 0.5)
                                                    r[3] = FLOOR(a1[3] + 0.5)
-                                                      
+
 OP_EXP_BASE_2_EXT  1                  S   S        r = 2 ^ a1
-                                                      
+
 OP_LOG_BASE_2_EXT  1                  S    S        r = (a1==0) ? MINUS_INF :
                                                          LOG2(a1)
                                                       r is undefined if a1 < 0
@@ -1047,14 +1047,14 @@ OP_LOG_BASE_2_EXT  1                  S    S        r = (a1==0) ? MINUS_INF :
 OP_POWER_EXT       2                  S   S,S      r = a1 ^ a2
                                                       r is undefined if a1 < 0
                                                        and -1 < a2 < 1
-                                                      
+
 OP_RECIP_EXT       1                  S   S        r = (a1==0) ? INF :
                                                         1.0 / a1
-                                                      
+
 OP_RECIP_SQRT_EXT    1                S   S        r = (a1==0) ? INF :
                                                         1.0 / SQRT(a1)
                                                       r is undefined if a1 < 0
-                                                      
+
 OP_SUB_EXT           2                S   S,S      r = a1 - a2
                                       V   S,S      r[0] = a1 - a2
                                                    r[1] = a1 - a2
@@ -1072,7 +1072,7 @@ OP_SUB_EXT           2                S   S,S      r = a1 - a2
                                                    r[1] = a1[1] - a2[1]
                                                    r[2] = a1[2] - a2[2]
                                                    r[3] = a1[3] - a2[3]
-                                                      
+
 OP_CROSS_PRODUCT_EXT   2              V   V,V      r[0] = a1[1] * a2[2] -
                                                           a2[1] * a1[2]
                                                    r[1] = a1[2] * a2[0] -
@@ -1080,7 +1080,7 @@ OP_CROSS_PRODUCT_EXT   2              V   V,V      r[0] = a1[1] * a2[2] -
                                                    r[2] = a1[0] * a2[1] -
                                                           a2[0] * a1[1]
                                                    r[3] = 1
-                                                      
+
 OP_MULTIPLY_MATRIX_EXT 2              V   M,V      r[0] = a2[0] * a1[0] +
                                                           a2[1] * a1[4] +
                                                           a2[2] * a1[8] +
@@ -1097,15 +1097,15 @@ OP_MULTIPLY_MATRIX_EXT 2              V   M,V      r[0] = a2[0] * a1[0] +
                                                           a2[1] * a1[7] +
                                                           a2[2] * a1[11] +
                                                           a2[3] * a1[15]
-                                      
 
 
- 
+
+
         A special operation is OP_INDEX_EXT. It is special in that it
     indexes a contiguous block of ids generated by a single call to
     GenSymbolsEXT. The value placed in res is the data item
     represented by:
-    
+
        arg2 + int( value(arg1) )
 
    This allows data to be indexed on a per-vertex basis. The results
@@ -1128,7 +1128,7 @@ OP_MULTIPLY_MATRIX_EXT 2              V   M,V      r[0] = a2[0] * a1[0] +
     should be placed in the res vector.
         Vector data can also be masked by using the following call:
 
-        void WriteMaskEXT( unint res, uint in, enum outX, enum outY, 
+        void WriteMaskEXT( unint res, uint in, enum outX, enum outY,
                            enum outZ, enum outW )
 
     where in is a vector value out[XYZW] are either GL_TRUE or
@@ -1149,7 +1149,7 @@ OP_MULTIPLY_MATRIX_EXT 2              V   M,V      r[0] = a2[0] * a1[0] +
     be a vector, and if src is a vector, res must be a matrix. The
     num parameter controls which scalar or vector will be replaced.
     The mappings are as follows:
-    
+
         Num    Type   Operation
         ------ ----   -------------------
         0        S    res[0] = src
@@ -1207,7 +1207,7 @@ OP_MULTIPLY_MATRIX_EXT 2              V   M,V      r[0] = a2[0] * a1[0] +
     VERTEX_SHADER_LOCAL_CONSTANTS_EXT, VERTEX_SHADER_INVARIANTS_EXT,
     and VERTEX_SHADER_LOCALS_EXT.
         Additionally, an implementation reports where a vertex shader
-    program falls within all the optimized limits by a query of 
+    program falls within all the optimized limits by a query of
     VERTEX_SHADER_OPTIMIZED_EXT. This boolean value will be true
     if the vertex shader program consumes less than the maximum
     optimizable resources in all catagories. This value is provided
@@ -1279,16 +1279,16 @@ INVALID_VALUE is generated if the <num> parameter to InsertComponentEXT or
 ExtractComponentEXT is grater than 3.
 
 ILLEGAL_OPERATION is generated if the <src> parameter to InsertComponentsEXT
-is of type VECTOR_EXT and the <res> parameter is not of type MATRIX_EXT. 
+is of type VECTOR_EXT and the <res> parameter is not of type MATRIX_EXT.
 
 ILLEGAL_OPERATION is generated if the <src> parameter to InsertComponentsEXT
-is of type SCALAR_EXT and the <res> parameter is not of type VECTOR_EXT. 
+is of type SCALAR_EXT and the <res> parameter is not of type VECTOR_EXT.
 
 ILLEGAL_OPERATION is generated if the <src> parameter to ExtractComponentsEXT
-is of type VECTOR_EXT and the <res> parameter is not of type SCALAR_EXT. 
+is of type VECTOR_EXT and the <res> parameter is not of type SCALAR_EXT.
 
 ILLEGAL_OPERATION is generated if the <src> parameter to ExtractComponentsEXT
-is of type MATRIX_EXT and the <res> parameter is not of type VECTOR_EXT. 
+is of type MATRIX_EXT and the <res> parameter is not of type VECTOR_EXT.
 
 ILLEGAL_OPERATION is generated if the SetLocalConstantEXT is used multiple
 times on a single symbol in the context of defining a shader.
@@ -1336,8 +1336,8 @@ Added new Table Vertex Shader symbol state:
 
 New Implementation Dependent State
 
-    Get Value                                       Get Command        Type      Minimum Value   
-    ---------------------------------------         -------------      -------   --------------- 
+    Get Value                                       Get Command        Type      Minimum Value
+    ---------------------------------------         -------------      -------   ---------------
     MAX_VERTEX_SHADER_INSTRUCTIONS_EXT              GetIntegerv         Z+         32
     MAX_VERTEX_SHADER_VARIANTS_EXT                  GetIntegerv         Z+          4
     MAX_VERTEX_SHADER_INVARIANTS_EXT                GetIntegerv         Z+         16

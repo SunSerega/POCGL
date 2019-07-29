@@ -99,7 +99,7 @@ Additions to Chapter 3 of the OpenGL 1.2 Specification (Rasterization)
 
 
         Table 3.20: COMBINE_EXT texture functions
-    
+
 
 Additions to Chapter 4 of the OpenGL 1.2 Specification (Per-Fragment Operations
 and the Framebuffer)

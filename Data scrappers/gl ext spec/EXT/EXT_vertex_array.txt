@@ -480,28 +480,28 @@ Additions to the GLX Specification
 
 GLX Protocol
 
-    A new rendering command is added; it can be sent to the server as part of a 
+    A new rendering command is added; it can be sent to the server as part of a
     glXRender request or as part of a glXRenderLarge request:
 
-        The DrawArraysEXT command consists of three sections, in the following order: 
-        (1) header information, (2) a list of array information, containing the type 
-        and size of the array values for each enabled array and (3) a list of vertex 
-        data. Each element in the list of vertex data contains information for a single 
+        The DrawArraysEXT command consists of three sections, in the following order:
+        (1) header information, (2) a list of array information, containing the type
+        and size of the array values for each enabled array and (3) a list of vertex
+        data. Each element in the list of vertex data contains information for a single
         vertex taken from the enabled arrays.
-   
+
         DrawArraysEXT
             2           16+(12*m)+(s*n) rendering command length
             2           4116            rendering command opcode
             4           CARD32          n (number of array elements)
             4           CARD32          m (number of enabled arrays)
             4           ENUM            mode    /* GL_POINTS etc */
-            12*m        LISTofARRAY_INFO 
-            s*n         LISTofVERTEX_DATA 
-     
+            12*m        LISTofARRAY_INFO
+            s*n         LISTofVERTEX_DATA
+
             Where s = ns + cs + is + ts + es + vs + np + cp + ip + tp + ep + vp. (See
-            description below, under VERTEX_DATA.) Note that if an array is disabled 
-            then no information is sent for it. For example, when the normal array is 
-            disabled, there is no ARRAY_INFO record for the normal array and ns and np 
+            description below, under VERTEX_DATA.) Note that if an array is disabled
+            then no information is sent for it. For example, when the normal array is
+            disabled, there is no ARRAY_INFO record for the normal array and ns and np
             are both zero.
 
             Note that the list of ARRAY_INFO is unordered: since the ARRAY_INFO
@@ -518,27 +518,27 @@ GLX Protocol
 
         ARRAY_INFO
             4           ENUM                    data type
-                        0x1400  i=1             BYTE 
+                        0x1400  i=1             BYTE
                         0x1401  i=1             UNSIGNED_BYTE
-                        0x1402  i=2             SHORT       
+                        0x1402  i=2             SHORT
                         0x1403  i=2             UNSIGNED_SHORT
-                        0x1404  i=4             INT  
+                        0x1404  i=4             INT
                         0x1405  i=4             UNSIGNED_INT
                         0x1406  i=4             FLOAT
                         0x140A  i=8             DOUBLE_EXT
             4           INT32                   j (number of values in array element)
             4           ENUM                    array type
-                        0x8074  j=2/3/4         VERTEX_ARRAY_EXT               
-                        0x8075  j=3             NORMAL_ARRAY_EXT               
-                        0x8076  j=3/4           COLOR_ARRAY_EXT                
-                        0x8077  j=1             INDEX_ARRAY_EXT                
-                        0x8078  j=1/2/3/4       TEXTURE_COORD_ARRAY_EXT        
-                        0x8079  j=1             EDGE_FLAG_ARRAY_EXT 
+                        0x8074  j=2/3/4         VERTEX_ARRAY_EXT
+                        0x8075  j=3             NORMAL_ARRAY_EXT
+                        0x8076  j=3/4           COLOR_ARRAY_EXT
+                        0x8077  j=1             INDEX_ARRAY_EXT
+                        0x8078  j=1/2/3/4       TEXTURE_COORD_ARRAY_EXT
+                        0x8079  j=1             EDGE_FLAG_ARRAY_EXT
 
             For each array, the size of an array element is i*j. Some arrays
             (e.g., the texture coordinate array) support different data sizes;
             for these arrays, the size, j, is specified when the array is defined.
- 
+
         VERTEX_DATA
             if the normal array is enabled:
 
@@ -570,9 +570,9 @@ GLX Protocol
             vs          LISTofBYTE              vertex array element
             vp                                  unused, vp=pad(vs)
 
-            where ns, cs, is, ts, es, vs is the size of the normal, color, index, 
-            texture, edge and vertex array elements and np, cp, ip, tp, ep, vp is 
-            the padding for the normal, color, index, texture, edge and vertex array 
+            where ns, cs, is, ts, es, vs is the size of the normal, color, index,
+            texture, edge and vertex array elements and np, cp, ip, tp, ep, vp is
+            the padding for the normal, color, index, texture, edge and vertex array
             elements, respectively.
 
 Errors

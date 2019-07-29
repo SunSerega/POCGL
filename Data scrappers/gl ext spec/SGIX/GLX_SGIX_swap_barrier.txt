@@ -25,14 +25,14 @@ Overview
     This extension provides the capability to sychronize the buffer
     swaps of different swap groups.
 
-    A swap group is bound to a _swap_barrier_.  The buffer swaps of each 
-    swap group using that barrier will wait until every swap group using 
+    A swap group is bound to a _swap_barrier_.  The buffer swaps of each
+    swap group using that barrier will wait until every swap group using
     that barrier is ready to swap (where readiness is defined below), after
     which time all buffer swaps of all groups using that barrier will
     take place concurrently.
 
     This extension extends the set of conditions that must be met before
-    a buffer swap can take place. 
+    a buffer swap can take place.
 
 Issues
 
@@ -40,11 +40,11 @@ Issues
 
 New Procedures and Functions
 
-    void BindSwapBarrierSGIX(Display *dpy, 
+    void BindSwapBarrierSGIX(Display *dpy,
                  GLXDrawable drawable,
                  int barrier);
 
-    Bool QueryMaxSwapBarriersSGIX(Display *dpy, 
+    Bool QueryMaxSwapBarriersSGIX(Display *dpy,
                    int screen,
                   int *max);
 
@@ -56,19 +56,19 @@ Additions to the GLX Specification
 
     Add to section 3.2.6, Double Buffering:
 
-    BindSwapBarrierSGIX binds the swap group that contains <drawable> to 
+    BindSwapBarrierSGIX binds the swap group that contains <drawable> to
     <barrier>.  Subsequent buffer swaps for that group will be subject to
-    this binding, until the group is unbound from <barrier>.  If <barrier> 
+    this binding, until the group is unbound from <barrier>.  If <barrier>
     is zero, the group is unbound from its current barrier, if any.
 
-    QueryMaxSwapBarriersSGIX returns in <max> the maximum number of barriers 
+    QueryMaxSwapBarriersSGIX returns in <max> the maximum number of barriers
     supported by an implementation on <screen>.
 
     QueryMaxSwapBarriersSGIX returns True if it success and False if it fails.
     If it fails, <max> is unchanged.
 
-    Before a buffer swap can take place, a set of conditions must be 
-    satisfied.  The conditions are defined in terms of the notions of when 
+    Before a buffer swap can take place, a set of conditions must be
+    satisfied.  The conditions are defined in terms of the notions of when
     a drawable is ready to swap and when a group is ready to swap.
 
     Any GLX drawable that is not a window is always ready.
@@ -92,19 +92,19 @@ Additions to the GLX Specification
 
     2. If the window belongs to a group, the group is ready.
 
-    3. If the window belongs to a group and that group is bound to a 
+    3. If the window belongs to a group and that group is bound to a
        barrier, all groups using that barrier are ready.
 
     Buffer swaps for all windows in a swap group will take place concurrently
     after the conditions are satisfied for every window in the group.
 
-    Buffer swaps for all groups using a barrier will take place concurrently 
-    after the conditions are satisfied for every window of every group using 
-    the barrier, if and only if the vertical retraces of the screens of all 
+    Buffer swaps for all groups using a barrier will take place concurrently
+    after the conditions are satisfied for every window of every group using
+    the barrier, if and only if the vertical retraces of the screens of all
     the groups are synchronized.  If they are not synchronized, there is no
     guarantee of concurrency between groups.
 
-    Both BindSwapBarrierSGIX and QueryMaxSwapBarrierSGIX are part of the X 
+    Both BindSwapBarrierSGIX and QueryMaxSwapBarrierSGIX are part of the X
     stream.
 
     An implementation may support a limited number of swap barriers,
@@ -114,13 +114,13 @@ Additions to the GLX Specification
 
 Errors
 
-    BindSwapBarrierSGIX generates BadValue if <barrier> is already bound to 
+    BindSwapBarrierSGIX generates BadValue if <barrier> is already bound to
     another swap group or if <barrier> is not a valid name of a barrier.
 
-    BindSwapBarrierSGIX generates BadGLXDrawable if <drawable> is an 
+    BindSwapBarrierSGIX generates BadGLXDrawable if <drawable> is an
     invalid GLX drawable.
 
-    QueryMaxSwapBarrierSGIX generates BadValue if <screen> is not a valid 
+    QueryMaxSwapBarrierSGIX generates BadValue if <screen> is not a valid
     screen.
 
 New State

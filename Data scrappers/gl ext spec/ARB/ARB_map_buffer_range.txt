@@ -364,4 +364,4 @@ Revision History
       3   08/07/2008   jleech   Remove ARB suffixes.
       4   01/24/2011   srahman  Add GLX protocol.
       5   06/22/2012   jleech   Define how buffer object state is affected
-                                by MapBufferRange. 
+                                by MapBufferRange.

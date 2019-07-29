@@ -164,7 +164,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
       (1) Change reference to the "r" coordinate to simply indicate that the
           reference value for shadow mapping is provided in the lookup
           function.  It's still usually in the "r" coordinate, except for
-          two-dimensional array textures, where it's in "q".  
+          two-dimensional array textures, where it's in "q".
       (2) Add new EXT_gpu_shader4 sampler types used for array textures. )
 
     Texture lookups involving textures with depth component data can either
@@ -285,7 +285,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     that
 
       * The border depth, d_b, is zero, and the depth of the image is always 1
-        regardless of the value of border. 
+        regardless of the value of border.
 
       * The border height, h_b, is zero if <target> is TEXTURE_1D_ARRAY_EXT,
         and <border> otherwise.
@@ -297,7 +297,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
 
     (modify the fourth paragraph on p. 157) For the purposes of decoding the
     texture image, TexImage1D is equivalent to calling TexImage2D with
-    corresponding arguments and height of 1, except that 
+    corresponding arguments and height of 1, except that
 
       * The border height and depth (h_b and d_b) are always zero, regardless
         of the value of <border>.
@@ -358,7 +358,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     border width, height, and depth of the texture array, and taking x, y, z,
     w, h, and d to be the xoffset, yoffset, zoffset, width, height, and depth
     argument values, any of the following relationships generates the error
-    INVALID VALUE:  
+    INVALID VALUE:
 
         x < -w_b
         x + w > w_s - w_b
@@ -373,8 +373,8 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     the texel array is treated when specified or changed, and when applied to
     a fragment. Each parameter is set by calling
 
-      void TexParameter{if}( enum target, enum pname, T param ); 
-      void TexParameter{if}v( enum target, enum pname, T params ); 
+      void TexParameter{if}( enum target, enum pname, T param );
+      void TexParameter{if}v( enum target, enum pname, T params );
 
     target is the target, either TEXTURE_1D, TEXTURE_2D, TEXTURE_3D,
     TEXTURE_CUBE_MAP, TEXTURE_1D_ARRAY_EXT, or TEXTURE_2D_ARRAY_EXT.
@@ -394,11 +394,11 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     obtained from image layer l, where
 
       l = clamp(floor(t + 0.5), 0, h_t-1), for one-dimensional array textures,
-          clamp(floor(r + 0.5), 0, d_t-1), for two-dimensional array textures.      
+          clamp(floor(r + 0.5), 0, d_t-1), for two-dimensional array textures.
 
     (modify third paragraph, p. 174)  For a two-dimensional, two-dimensional
     array, or cube map texture,
- 
+
       tau = ...
 
     where tau_ij is the texel at location (i, j) in the two-dimensional
@@ -429,7 +429,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
 
       maxsize = w_t,                  for one-dimensional and one-dimensional
                                       array textures,
-                max(w_t, h_t),        for two-dimensional, two-dimensional 
+                max(w_t, h_t),        for two-dimensional, two-dimensional
                                       array, and cube map textures
                 max(w_t, h_t, d_t),   for three dimensional textures.
 
@@ -443,7 +443,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
      w_d = 2 ^ i;
      h_d = 1, for one-dimensional array textures and
            2 ^ i, otherwise; and
-     d_d = 1, for two-dimensional array textures and 
+     d_d = 1, for two-dimensional array textures and
            2 ^ i, otherwise,
 
     until the last array is reached with dimension 1 × 1 × 1.
@@ -563,7 +563,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     the initial one-, two-, and three dimensional, cube map, and one- and
     two-dimensional array texture objects, is shared among all texture
     units. ...
-    
+
     Modify Section 3.8.14, Texture Comparison Modes (p. 185)
 
     (modify second through fourth paragraphs, p. 188, reflecting that the
@@ -741,7 +741,7 @@ Dependencies on EXT_framebuffer_object
         array texture, then FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT must be
         smaller than the number of layers in the texture.
 
-    
+
     (modify Section 6.1.3, Enumerated Queries)
 
     ...
@@ -758,7 +758,7 @@ Dependencies on NV_geometry_program4
     EXT_framebuffer_object to support layered rendering, which allows
     applications to bind entire three-dimensional, cube map, or array textures
     to a single attachment point, and select a layer to render to according to
-    a layer number written by the geometry program.  
+    a layer number written by the geometry program.
 
     The framebuffer object modifications provided in NV_geometry_program4 are
     more extensive than the more limited support provided for array textures.
@@ -976,7 +976,7 @@ Issues
     (1) Should this extension generalize the notion of 1D and 2D textures to
         be arrays of 1D or 2D images, or simply introduce new targets?
 
-      RESOLVED:  Introduce new targets.  
+      RESOLVED:  Introduce new targets.
 
       It would have been possible to simply extend the notion of 1D and 2D
       textures, and allow applications to pass TEXTURE_1D to TexImage2D (1D
@@ -1030,7 +1030,7 @@ Issues
 
       RESOLVED:  No; it's not believed to be worth the effort.  Fixed-function
       fragment processing could be easily supported by allowing applications
-      to enable or disable TEXTURE_1D_ARRAY_EXT or TEXTURE_2D_ARRAY_EXT.  
+      to enable or disable TEXTURE_1D_ARRAY_EXT or TEXTURE_2D_ARRAY_EXT.
 
       Note that for fixed-function fragment processing, there would be issues
       with texture lookups of two-dimensional array textures with shadow
@@ -1213,7 +1213,7 @@ Issues
       generation wouldn't work.
 
       We expect that future revisions of the GL will change the specification
-      of mipmapped textures in 
+      of mipmapped textures in
 
     (20) This extension allows the use of S3TC texture internal formats in
          TexImage3D and CompressedTexImage3D.  Does this mean that they are
@@ -1237,7 +1237,7 @@ Revision History
       7   08/07/08  jleech    Corrected token MAX_TEXTURE_ARRAY_LAYERS_EXT in
                               state table to MAX_ARRAY_TEXTURE_LAYERS_EXT.
 
-      6   02/04/08  pbrown    Added a missing interaction with the VTC texture 
+      6   02/04/08  pbrown    Added a missing interaction with the VTC texture
                               compression spec allowing updates of compressed
                               2D array textures along 4x4x1 boundaries (we
                               previously inherited the VTC restriction of

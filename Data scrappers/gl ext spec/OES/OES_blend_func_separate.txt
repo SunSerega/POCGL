@@ -77,24 +77,24 @@ Additions to Chapter 3 of the OpenGL ES 1.1 Specification (Rasterization)
 Additions to Chapter 4 of the OpenGL ES 1.1 Specification (Per-Fragment Operations
 and the Framebuffer)
 
-    Replace the "Blend Equation" discussion in section 4.1.7 (Blending) with 
+    Replace the "Blend Equation" discussion in section 4.1.7 (Blending) with
     the following:
-    
+
     "The weighting factors used by the blend equation are determined by the
     blend functions.  Blend functions are specified with the commands
-    
+
         void BlendFuncSeparateOES(enum srcRGB, enum dstRGB, enum srcAlpha, enum dstAlpha);
         void BlendFunc(enum src, enum dst);
-        
+
         BlendFuncSeparate arguments <srcRGB and dstRGB determine the source
     and destination RGB blend functions, respectively, while <srcAlpha> and
     <dstAlpha> determine the source and destination alpha blend functions.
     BlendFunc argument <src> determines both the RGB and alpha source
     functions, while <dst> determines both RGB and alpha destination functions.
-    
+
         The possible source and destination blend functions and their
     corresponding computed blend factors are summarized in table 4.blendfunc.
-    
+
      Function                  RGB Blend Factors             Alpha Blend Factor
                                (Sr, Sg, Sb) or (Dr, Dg, Db)  Sa or Da
      ------------------        ----------------------------  ------------------
@@ -113,20 +113,20 @@ and the Framebuffer)
      Table 4.blendfunc: RGB and ALPHA source and destination blending functions
      and the corresponding blend factors.  Addition and subtraction of triplets
      is performed component-wise.
-     
-     *1 SRC_ALPHA_SATURATE is valid only for source RGB and alpha blending 
+
+     *1 SRC_ALPHA_SATURATE is valid only for source RGB and alpha blending
      functions.
-     
+
      *2 f = min(As, 1 - Ad)."
 
     In the "Blending State" paragraph, insert the following in place of
     existing blend function state:
 
-    "The state required for blending is... four integers indicating the source 
+    "The state required for blending is... four integers indicating the source
     and destination blend functions for RGB and alpha....  The initial state
     for both source functions is ONE.  The initial state for both
     destination functions is ZERO."
-    
+
 Additions to Chapter 5 of the OpenGL ES 1.1 Specification (Special Functions)
 
     None
@@ -156,7 +156,7 @@ New State
 New Implementation Dependent State
 
     None
-    
+
 Revision History
 
     2009/05/19    Benj Lipchak    First draft of true extension specification

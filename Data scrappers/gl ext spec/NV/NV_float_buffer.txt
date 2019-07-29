@@ -150,7 +150,7 @@ Issues
 
         Fragment programs can be written that store data completely unrelated
         to color into a floating-point "RGBA" buffer.
- 
+
     Can floating-point color buffers be displayed?  If so, how?
 
         RESOLVED:  Not in this extension.  Floating-point color buffers can be
@@ -237,7 +237,7 @@ Issues
     be filtered down to a single pixel in the color buffer.  Similar filtering
     on floating-point color buffers does not necessarily make sense.  Should
     there even be a normal color buffer in this case?
-    
+
         RESOLVED:  The initial implementation of this extension does not
         provide floating-point color buffers that support multisampling.
 
@@ -281,7 +281,7 @@ Issues
         RESOLVED:  DrawPixels generates fragments with the originally
         specified color values; components are not clamped to [0,1].  For
         fixed-point color buffers, DrawPixels will generate fragments with
-        clamped color components.  
+        clamped color components.
 
         CopyPixels is defined in the spec as a ReadPixels followed by a
         DrawPixels, and will operate similarly.
@@ -309,7 +309,7 @@ Issues
 
     Why don't floating-point textures support filtering?  What can be done to
     achieve texture filtering?
-    
+
         RESOLVED:  Extended OpenGL texture filtering (including mipmapping and
         support for anisotropic filters) is very computationally expensive.
         Even simple linear filtering for floating-point textures with large
@@ -329,7 +329,7 @@ Issues
             TEX  H0, H2.x, TEX0, RECT;   # lookup 1st sample
             TEX  H1, H2.y, TEX0, RECT;   # lookup 2nd sample
             LRPH H0, H3.x, H1, H0;       # blend
-            
+
         A 2D linear filter can be implemented similarly, assuming the 2D
         coordinate is in f[TEX0].xy:
 
@@ -378,7 +378,7 @@ Issues
     How does NV_float_buffer interact with SGIS_generate_mipmap?
 
         RESOLVED:  Since this extension supports only texture rectangles
-        (which have no mipmaps), this issue is moot.  
+        (which have no mipmaps), this issue is moot.
 
         In the general case, mipmaps should be generated using an appropriate
         downsample filter, where floating-point component values are averaged.
@@ -392,7 +392,7 @@ Issues
         FLOAT_CLEAR_COLOR_VALUE_NV.  Notice that "CLEAR" and "COLOR" are
         reversed due to a mistake made when the spec was first written.  This
         spec lists the core query token, and originally had "CLEAR" and
-        "COLOR" reversed there, too.  
+        "COLOR" reversed there, too.
 
         Then again, the core specification is inconsistent since the queried
         state is set by calling glClearColor(), with "Clear" before "Color".
@@ -542,7 +542,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     (modify Table 3.15, p. 118 -- Respecify this table with all extensions
     relevant to texture formats supported by NVIDIA.  For this extension, add
     four base internal formats.)
-    
+
         Base Internal            Pixel       Component       Internal
         Format                   Group Type  Values          Components
         ---------------------    ----------  ---------       ---------------
@@ -582,7 +582,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     relevant to sized texture internal formats supported by NVIDIA.  For this
     extension, add eight sized internal formats.)
 
-        Sized                  Base                
+        Sized                  Base
         Int. Format            Int. Format         Component Name / Type-Size
         -------------------    ---------------     ---------------------------
         ALPHA4                 ALPHA               A/U4
@@ -639,7 +639,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
       * DSDT8_NV               DSDT_NV             DS/S8  DT/S8
       * DSDT8_MAG8_NV          DSDT_MAG_NV         DS/S8  DT/S8  MAG/U8
       * DSDT8_MAG8_            DSDT_MAG_
-        INTENSITY8_NV          INTENSITY_NV        DS/S8  DT/S8  MAG/U8 I/U8        
+        INTENSITY8_NV          INTENSITY_NV        DS/S8  DT/S8  MAG/U8 I/U8
         FLOAT_R16_NV           FLOAT_R_NV          R/F16
         FLOAT_R32_NV           FLOAT_R_NV          R/F32
         FLOAT_RG16_NV          FLOAT_RG_NV         R/F16  G/F16
@@ -720,7 +720,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
     alpha value.  In RGBA mode with floating-point frame buffers, the coverage
     value is simply discarded.  In color index mode, the value is used to set
     the low order bits of the color index value as described in section 3.2.
-    
+
 
 Additions to Chapter 4 of the OpenGL 1.3 Specification (Per-Fragment
 Operations and the Frame Buffer)
@@ -821,7 +821,7 @@ Additions to Chapter 6 of the OpenGL 1.3 Specification (State and
 State Requests)
 
     Modify Section 6.1.4, Texture Queries (p. 200)
- 
+
     Modify Table 6.1 (add new rows, corresponding to new internal formats,
     p. 202)
 
@@ -943,7 +943,7 @@ Additions to the WGL Specification
                                WGL_BIND_TO_TEXTURE_RECTANGLE_FLOAT_RGBA_NV
                                attribute is not set in the pixel format.
 
-    Modify wglBindTexImageARB: 
+    Modify wglBindTexImageARB:
 
     ...
 
@@ -951,7 +951,7 @@ Additions to the WGL Specification
         internal format of the texture. The format-specific component sizes
         are also determined by pbuffer attributes as shown in the table below.
         The component sizes are dependent on the format of the texture.
-  
+
         Component           Size                 Format
         ---------    ------------------------    ----------------------------
             R        WGL_RED_BITS_ARB            RGB, RGBA, FLOAT_R, FLOAT_RG,
@@ -1150,7 +1150,7 @@ Errors
     WGL_BIND_TO_TEXTURE_RECTANGLE_FLOAT_RGBA_NV attribute is not set in the
     pixel format.
 
-    
+
 New State
 
     (Modify Table 6.15, Texture Objects (cont.), p. 223)
@@ -1281,7 +1281,7 @@ Revision History
                              fixes.
 
       4   10/29/01  pbrown   Add documentation of possible uses of
-                             floating-point color buffers. 
+                             floating-point color buffers.
 
       3   10/19/01  pbrown   Assign GL enumerants.  Fixed some bugs in the use
                              of #defines in the spec.  Added ARB_imaging

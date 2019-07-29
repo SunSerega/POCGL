@@ -136,7 +136,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
     These commands specify one, two, three or four values.  Note that attribute
     variables declared with "double" types must be loaded with
     VertexAttribL*d{v}EXT; loading attributes with VertexAttrib*d{v} will
-    produce undefined results. Similarly, attributes declared with 64-bit 
+    produce undefined results. Similarly, attributes declared with 64-bit
     integer types must be loaded with VertexAttribL*{i64,ui64}{v}.
 
     For all VertexAttrib* commands, the error INVALID_VALUE is generated if
@@ -158,7 +158,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
 
     Modify Section 2.8, Vertex Arrays, p. 34
 
-    (insert new paragraph after first paragraph, p. 37)  
+    (insert new paragraph after first paragraph, p. 37)
 
     The command
 
@@ -167,8 +167,8 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
 
     specifies state for a generic vertex attribute array associated with a
     shader attribute variable declared with 64-bit double precision components.
-    <type> must be one of DOUBLE, INT64_NV, or UNSIGNED_INT64_NV, specifying 
-    components of type double, int64EXT, and uint64EXT, respectively. <index>, 
+    <type> must be one of DOUBLE, INT64_NV, or UNSIGNED_INT64_NV, specifying
+    components of type double, int64EXT, and uint64EXT, respectively. <index>,
     <size>, and <stride> behave as defined in all other vertex commands; <size>
     may be one, two, three or four.
 
@@ -232,10 +232,10 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
       Table X.1:  Scalar and vector vertex attribute types and VertexAttrib*
       commands used to set the values of the corresponding generic attribute.
 
-    For the 64-bit types listed in Table X.1, no default attribute values are 
-    provided if the values of the vertex attribute variable are specified with 
-    fewer components than required for the attribute variable.  For example, 
-    the fourth component of a variable of type dvec4 will be undefined if 
+    For the 64-bit types listed in Table X.1, no default attribute values are
+    provided if the values of the vertex attribute variable are specified with
+    fewer components than required for the attribute variable.  For example,
+    the fourth component of a variable of type dvec4 will be undefined if
     specified using VertexAttribL3dvEXT or using a vertex array specified with
     VertexAttribLPointerEXT and a size of three.
 
@@ -273,12 +273,12 @@ Additions to Chapter 6 of the OpenGL 3.2 (Compatibility Profile) Specification
     four integer values; GetVertexAttribIiv reads and returns them as signed
     integers; GetVertexAttribIuiv reads and returns them as four unsigned
     integers; GetVertexAttribLdvEXT reads and returns them as four double-
-    precision floating-point values.  GetVertexAttribLi64vNV reads and returns 
-    them as four 64-bit signed integer values.  GetVertexAttribLui64vNV reads 
-    and returns them as four 64-bit unsigned integer values.  The results of 
-    the query are undefined if the current attribute values are read using one 
-    data type but were specified using a different one.  The error 
-    INVALID_OPERATION is generated if index is zero, as there is no current 
+    precision floating-point values.  GetVertexAttribLi64vNV reads and returns
+    them as four 64-bit signed integer values.  GetVertexAttribLui64vNV reads
+    and returns them as four 64-bit unsigned integer values.  The results of
+    the query are undefined if the current attribute values are read using one
+    data type but were specified using a different one.  The error
+    INVALID_OPERATION is generated if index is zero, as there is no current
     value for generic attribute zero.
 
 
@@ -322,7 +322,7 @@ Dependencies on NV_gpu_program5 and NV_gpu_shader5
 Dependencies on EXT_vertex_attrib_64bit
 
     If EXT_vertex_attrib_64bit is supported, vertex shaders are permitted to
-    use 64-bit floating-point components for their inputs.  
+    use 64-bit floating-point components for their inputs.
 
     Even if an application only uses 64-bit floating-point values in their
     vertex shader, this extension may still be useful.  In particular, it
@@ -346,7 +346,7 @@ New Implementation Dependent State
 Issues
 
     (1) What GLSL "#extension" should be required to enable 64-bit integer
-        vertex sahder inputs. 
+        vertex sahder inputs.
 
       RESOLVED:  NV_gpu_shader5 provides general-purpose support for 64-bit
       integer types in shaders, and we have written it to explicitly permit
@@ -360,7 +360,7 @@ Revision History
 
     Rev.    Date    Author    Changes
     ----  --------  --------  -----------------------------------------
-     4    03/21/10  pbrown    Minor wording updates to the spec overview, 
+     4    03/21/10  pbrown    Minor wording updates to the spec overview,
                               dependencies, issues, and body.
 
      3    03/08/10  pbrown    Rename to "NV_vertex_attrib_integer_64bit" to

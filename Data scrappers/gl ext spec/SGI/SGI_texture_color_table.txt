@@ -166,7 +166,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
                 Modification of Texture Components
                 ----------------------------------
-    Base Table        
+    Base Table
     Internal Format        Rt    Gt    Bt    At
     ---------------        --    --    --    --
 
@@ -236,7 +236,7 @@ Errors
 
     TEXTURE_COLOR_TABLE_SGI and PROXY_TEXTURE_COLOR_TABLE_SGI are
     added to the list of <target> parameters that are accepted by
-    color table commands.  
+    color table commands.
 
 New State
 
@@ -278,4 +278,4 @@ Revision History
     2003 Feb 5
         Updated to specify interaction with ARB_multitexture (Brian Paul)
 
-       
+

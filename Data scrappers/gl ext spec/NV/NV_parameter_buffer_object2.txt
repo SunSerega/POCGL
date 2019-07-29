@@ -38,7 +38,7 @@ Dependencies
 Overview
 
     This extension builds on the NV_parameter_buffer_object extension to
-    provide additional flexibility in sourcing data from buffer objects.  
+    provide additional flexibility in sourcing data from buffer objects.
 
     The original NV_parameter_buffer_object (PaBO) extension provided the
     ability to bind buffer objects to a set of numbered binding points and
@@ -154,7 +154,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     (Add to the set of opcodes in Table X.13)
 
-                  Modifiers 
+                  Modifiers
       Instruction F I C S H D  Out Inputs    Description
       ----------- - - - - - -  --- --------  --------------------------------
       LDC         X X X X - F  v   v         load from constant buffer
@@ -458,7 +458,7 @@ Issues
       have had LDC simply ignore the type of binding and always interpret an
       index as a byte offset, but chose the new declaration type to avoid
       confusion.
-        
+
       We also considered an approach where the buffer and offset were
       specified in separate operands.  That would be similar to texture, where
       the coordinates and texture are specified separately.  The first operand
@@ -499,7 +499,7 @@ Issues
       the operand.  In both cases, the components of this vector are swizzled
       and have optional absolute value and negation operations performed to
       produce a final vector operand, as is the case with other vector
-      operands.  
+      operands.
 
       If condition code operations or saturation are specified for the result
       vector, these operations are performed using the appropriate data types.
@@ -547,7 +547,7 @@ Issues
         LDC.F32 temp.y, buffer[28].x;
         LDC.F32 temp.z, buffer[32].x;
         LDC.F32 temp.w, buffer[40].x;
-        
+
 
 Revision History
 

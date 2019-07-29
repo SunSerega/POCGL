@@ -49,18 +49,18 @@ Dependencies
 
 Overview
 
-    OES_framebuffer_object allows rendering to the base level of a 
-    texture only.  This extension removes this limitation by 
+    OES_framebuffer_object allows rendering to the base level of a
+    texture only.  This extension removes this limitation by
     allowing implementations to support rendering to any mip-level
     of a texture(s) that is attached to a framebuffer object(s).
 
     If this extension is supported, FramebufferTexture2DOES, and
-    FramebufferTexture3DOES can be used to render directly into 
+    FramebufferTexture3DOES can be used to render directly into
     any mip level of a texture image
 
 Issues
 
- 
+
 New Tokens
 
     None.

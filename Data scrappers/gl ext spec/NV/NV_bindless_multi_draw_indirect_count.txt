@@ -176,7 +176,7 @@ Revision History
 
     Rev.    Date      Author    Changes
     ----  --------    --------    -----------------------------------------
-     3    07/06/2015  ckubisch  stress that indirect buffer must be able to 
+     3    07/06/2015  ckubisch  stress that indirect buffer must be able to
                                 store <maxDrawCount> commands
      2      06/24/2013  ckubisch    Sync to ARB_indirect_parameters
      1      06/14/2013  ckubisch    Initial draft

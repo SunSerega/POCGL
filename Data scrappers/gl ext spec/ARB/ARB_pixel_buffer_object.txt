@@ -858,7 +858,7 @@ GLX Protocol
     commands because the pixel store modes are stateful rather than
     being parameters sent with every pixel command.
 
-    When bound to a pixel unpack buffer object, the pixel payload for a 
+    When bound to a pixel unpack buffer object, the pixel payload for a
     pixel command with no reply (for exmaple, glTexImage2D) is not sent.
     Instead, the pointer itself is sent as a 64-bit offset.
     Pixel storage modes are also not included in non-reply pixel commands.
@@ -940,7 +940,7 @@ GLX Protocol
             4           ENUM            target
             4           CARD32          start
             4           CARD32          count
-            4           ENUM            apiFormat  
+            4           ENUM            apiFormat
             4           ENUM            apiType
 
         ColorTablePBO
@@ -1067,7 +1067,7 @@ GLX Protocol
             4           CARD32          height
             4           ENUM            apiFormat
             4           ENUM            apiType
-   
+
         PixelMapfvPBO
 
             2           20              rendering command length
@@ -1091,7 +1091,7 @@ GLX Protocol
             8           CARD64          values
             4           ENUM            map
             4           CARD32          mapsize
-   
+
         PolygonStipplePBO
 
             2           12              rendering command length
@@ -1203,7 +1203,7 @@ GLX Protocol
             4           ENUM            target
             4           ENUM            apiFormat
             4           ENUM            apiType
- 
+
         GetCompressedTexImagePBO
 
             2           20              rendering command length
@@ -1828,7 +1828,7 @@ Revision History
 
    revision 1.1 srahman
 
-       Add GLX protocol support. 
+       Add GLX protocol support.
 
    revision 1.2 Jon Leech
 

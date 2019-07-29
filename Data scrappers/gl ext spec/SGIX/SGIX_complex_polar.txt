@@ -33,7 +33,7 @@ Issues
       of generating only 1 component from an input that has 2 components:
       real and imaginary.  This extension is really computing 2 operations
       that, for generality, should be defined as atomic operations.
-    
+
 New Procedures and Functions
 
     None

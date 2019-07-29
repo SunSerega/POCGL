@@ -3,7 +3,7 @@ Name
     EXT_texture_rg
 
 Name Strings
-    
+
     GL_EXT_texture_rg
 
 Contributors
@@ -16,12 +16,12 @@ Contact
 
     Benj Lipchak, Apple (lipchak 'at' apple.com)
 
-Status 
-    
+Status
+
     Complete
 
 Version
-    
+
     Date: July 22, 2011
     Revision: 3
 
@@ -52,7 +52,7 @@ Overview
     For example, when sampling from such textures, the luminance values are
     replicated across the color components. This is no longer necessary with
     programmable shaders.
-    
+
     It is also desirable to be able to render to one- and two-component format
     textures using capabilities such as framebuffer objects (FBO), but
     rendering to L/LA formats is under-specified (specifically how to map
@@ -64,7 +64,7 @@ Overview
     both texturing and rendering into with framebuffer objects.
 
 New Procedures and Functions
-    
+
     None
 
 New Tokens
@@ -177,7 +177,7 @@ Dependencies on OES_texture_float
 
 Dependencies on OES_texture_half_float
 
-    If OES_texture_half_float is not supported, then omit the rows of 
+    If OES_texture_half_float is not supported, then omit the rows of
     Table 3.4 that have Type HALF_FLOAT_OES.
 
 Dependencies on APPLE_framebuffer_multisample
@@ -186,7 +186,7 @@ Dependencies on APPLE_framebuffer_multisample
     RenderbufferStorageMultisampleAPPLE should be ignored.
 
 Revision History
-    
+
     #1 February 22, 2011, khaughey
         - initial version adapted from ARB_texture_rg.
     #2 June 16, 2011, benj

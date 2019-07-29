@@ -83,7 +83,7 @@ New Procedures and Functions
 New Tokens
 
     Accepted by the <pname> parameter of GetMultisamplefvNV:
-    
+
         SAMPLE_POSITION_NV                          0x8E50
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled, and by
@@ -174,7 +174,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     TexelFetch apply to TexelFetchMultisample, with the additional requirement
     that it must be called on a RENDERBUFFER texture target. If the sample number
     is greater than or equal to the value of SAMPLES for the render buffer
-    associated with the renderbuffer texture, the results are undefined. 
+    associated with the renderbuffer texture, the results are undefined.
 
 Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
 
@@ -327,7 +327,7 @@ and the Frame Buffer)
     specified using
 
         void SampleMaskIndexedNV(GLuint index, GLbitfield mask);
-    
+
     with <mask> set to the desired mask for <maskNumber>. SAMPLE_MASK_VALUE is
     queried by calling GetIntegerIndexedv with <pname> set to SAMPLE_MASK_VALUE
     and the index set to <maskNumber>. Bit B of mask M corresponds to sample
@@ -353,7 +353,7 @@ State Requests)
         void GetBooleanIndexedvEXT(enum target, uint index, boolean *data);
         void GetIntegerIndexedvEXT(enum target, uint index, int *data);
 
-    are used to query indexed state.  <target> is the name of 
+    are used to query indexed state.  <target> is the name of
     the indexed state and <index> is the index of the particular
     element being queried.  <data> is a pointer to a scalar or array
     of the indicated type in which to place the returned data. In addition ...
@@ -380,19 +380,19 @@ GLX Protocol
         2      XXXX            rendering command opcode
         4      ENUM            target
         4      CARD32          renderbuffer
-   
-        
+
+
     The following new non-rendering commands are added:
 
     GetMultisamplefvNV
 
-        1      CARD8           opcode(X assigned)                                    
+        1      CARD8           opcode(X assigned)
         1      XXX             GLX opcode
         2      4               request length
-        4      GLX_CONTEXT_TAG context tag      
+        4      GLX_CONTEXT_TAG context tag
         4      ENUM            pname
         4      CARD32          index
-    =>  
+    =>
         1      1               reply
         1                      unused
         2      CARD16          sequence number
@@ -401,9 +401,9 @@ GLX Protocol
         4      FLOAT32         val[0]
         4      FLOAT32         val[1]
         8                      unused
-  
-  
-       
+
+
+
 Dependencies on EXT_framebuffer_multisample
 
     If EXT_framebuffer_multisample is not available, all discussion involving
@@ -575,15 +575,15 @@ Issues
 
     (5) What should the default value of SAMPLE_MASK be? 0? ~0?
 
-      RESOLVED. ~0 to match with other state like stencil mask. 
+      RESOLVED. ~0 to match with other state like stencil mask.
 
     (6) Should the sample position query work for non-multisample?
-      
+
       RESOLVED. The value of SAMPLES for non-multisample is zero, so the sample
       position query will return an error for all index values in this case.
 
     (7) Integer/unsigned integer renderbuffer sampler types?
-     
+
       RESOLVED. There are integer/unsigned integer renderbuffer sampler types.
 
     (8) Do we need a program option to enable the new behavior?

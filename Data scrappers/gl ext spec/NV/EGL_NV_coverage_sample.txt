@@ -82,7 +82,7 @@ Overview
     include alpha-testing for "imposters," or extruded volume rendering
     for stencil shadow volumes), coverage buffer updates may be masked
     by the application, analagous to masking the depth buffer.
-    
+
 IP Status
 
     NVIDIA Proprietary
@@ -145,7 +145,7 @@ Changes to Chapter 4 of the OpenGL 2.0 Specification
     in the framebuffer's color buffers.  As with multisampling, coverage
     sampling resolves color sample and coverage values to a single, displayable
     color each time a pixel is updated, so antialiasing appears to be automatic
-    at the application level.  Coverage sampling may be used simultaneously 
+    at the application level.  Coverage sampling may be used simultaneously
     with multisampling; however, this is not required.
 
     An additional buffer, called the coverage buffer, is added to
@@ -185,7 +185,7 @@ Changes to Chapter 4 of the OpenGL 2.0 Specification
     applications may get better visual results when rendering partially
     transparent objects).  If <operation> is COVERAGE_AUTOMATIC_NV,
     the GL will automatically select the appropriate coverage operation,
-    dependent on the GL blend mode and the use of gl_LastFragColor / 
+    dependent on the GL blend mode and the use of gl_LastFragColor /
     gl_LastFragData in the bound fragment program.  If blending is enabled,
     or gl_LastFragColor / gl_LastFragData appears in the bound fragment
     program, COVERAGE_AUTOMATIC_NV will behave identically to
@@ -219,13 +219,13 @@ Changes to Chapter 4 of the OpenGL 2.0 Specification
     rasterized using the following algorithm, regardless of whether
     line antialiasing (LINE_SMOOTH) is enabled or disabled.  Line
     rasterization produces fragments using the same algorithm described
-    in section 3.4.4; however, sample points are divided into SAMPLES 
+    in section 3.4.4; however, sample points are divided into SAMPLES
     multisample points and COVERAGE_SAMPLES_NV coverage sample points.
 
     Rasterization for multisample points uses the algorithm described in
     section 3.4.4.  Rasterization for coverage sample points uses
     implementation-dependent algorithms, ultimately storing results in
-    the coverage buffer."    
+    the coverage buffer."
 
     Insert a new section, after Section 3.5.6 (Polygon Multisample
     Rasterization)
@@ -286,10 +286,10 @@ Changes to Chapter 4 of the OpenGL 2.0 Specification
 
     Fine Control of Multisample Buffer Updates
 
-    When the value of SAMPLE_BUFFERS is one, ColorMask, DepthMask, 
+    When the value of SAMPLE_BUFFERS is one, ColorMask, DepthMask,
     CoverageMask, and StencilMask or StencilMaskSeparate control the
     modification of values in the multisample buffer. [...]"
-    
+
     Change paragraph 2 of Section 4.2.3 (Clearing the Buffers) to read:
 
     "is the bitwise OR of a number of values indicating which buffers are to
@@ -306,7 +306,7 @@ Changes to Chapter 4 of the OpenGL 2.0 Specification
     coverage buffer; again, if there is no coverage buffer, the error
     INVALID_OPERATION occurs.  When <format> is COVERAGE_COMPONENT_NV,
     <type> must be GL_UNSIGNED_BYTE.  Any other value for <type> will
-    generate the error INVALID_ENUM.  If there is a multisample buffer, the 
+    generate the error INVALID_ENUM.  If there is a multisample buffer, the
     values are undefined."
 
 
@@ -356,28 +356,28 @@ Additions to the EGL 1.2 Specification
     |                           |         |    pixel                          |
     +---------------------------+---------+-----------------------------------+
 
-    Modify the first sentence of the last paragraph of the "Buffer 
-    Descriptions and Attributes" subsection of Section 3.4 (Configuration 
+    Modify the first sentence of the last paragraph of the "Buffer
+    Descriptions and Attributes" subsection of Section 3.4 (Configuration
     Management), p. 16
 
     "There are no single-sample depth, stencil or coverage buffers for a
-    multisample EGLConfig; the only depth, stencil and coverage buffers are 
+    multisample EGLConfig; the only depth, stencil and coverage buffers are
     those in the multisample buffer. [...]"
 
     And add the following text at the end of that paragraph:
 
     "The <coverage buffer> is used only by OpenGL ES.  It contains primitive
     coverage information that is used to produce a high-quality anti-aliased
-    image.  The format of the coverage buffer is not specified, and its 
-    contents are not directly accessible.  Only the existence of the coverage 
+    image.  The format of the coverage buffer is not specified, and its
+    contents are not directly accessible.  Only the existence of the coverage
     buffer, and the number of coverage samples it contains, are exposed by EGL.
 
-    EGL_COVERAGE_BUFFERS_NV indicates the number of coverage buffers, which 
+    EGL_COVERAGE_BUFFERS_NV indicates the number of coverage buffers, which
     must be zero or one.  EGL_COVERAGE_SAMPLES_NV gives the number of coverage
     samples per pixel; if EGL_COVERAGE_BUFFERS_NV is zero, then
     EGL_COVERAGE_SAMPLES_NV will also be zero."
 
-    Add to Table 3.4 (Default values and match criteria for EGLConfig 
+    Add to Table 3.4 (Default values and match criteria for EGLConfig
     attributes)
 
     +---------------------------+-----------+-------------+---------+---------+
@@ -410,14 +410,14 @@ Usage Examples
         glDepthMask(GL_TRUE);
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-        while (1) 
+        while (1)
         {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | 
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                     GL_COVERAGE_BUFFER_BIT_NV);
             glDrawElements(...);
             eglSwapBuffers(...);
         }
-        
+
    (2)  Multi-Pass Rendering Algorithms
 
         while (1)
@@ -425,10 +425,10 @@ Usage Examples
             glDepthMask(GL_TRUE);
             glCoverageMaskNV(GL_TRUE);
             glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | 
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                     GL_COVERAGE_BUFFER_BIT_NV);
 
-            //  first render pass: render Z-only (occlusion surface), with 
+            //  first render pass: render Z-only (occlusion surface), with
             //  coverage info.  color writes are disabled
 
             glCoverageMaskNV(GL_TRUE);
@@ -437,10 +437,10 @@ Usage Examples
             glDepthFunc(GL_LESS);
             glDrawElements(...);
 
-            //  second render pass: set Z test to Z-equals, disable Z-writes & 
-            //  coverage writes.  enable color writes.  coverage may be 
-            //  disabled, because subsequent rendering passes are rendering 
-            //  identical geometry -- since the final coverage buffer will be 
+            //  second render pass: set Z test to Z-equals, disable Z-writes &
+            //  coverage writes.  enable color writes.  coverage may be
+            //  disabled, because subsequent rendering passes are rendering
+            //  identical geometry -- since the final coverage buffer will be
             //  unchanged, we can disable coverage writes as an optimization.
 
             glCoverageMaskNV(GL_FALSE);
@@ -459,7 +459,7 @@ Usage Examples
             glDepthMask(GL_TRUE);
             glCoverageMaskNV(GL_TRUE);
             glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | 
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                     GL_COVERAGE_BUFFER_BIT_NV);
 
             // render opaque, Z-buffered geometry with coverage info for the
@@ -471,9 +471,9 @@ Usage Examples
             glDrawElements(...);
 
             // render translucent, Z-buffered geometry.  to ensure that visible
-            // edges of opaque geometry remain anti-aliased, change the 
-            // coverage operation to just edge fragments.  this will maintain 
-            // the coverage information underneath the translucent geometry, 
+            // edges of opaque geometry remain anti-aliased, change the
+            // coverage operation to just edge fragments.  this will maintain
+            // the coverage information underneath the translucent geometry,
             // except at translucent edges.
 
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -485,7 +485,7 @@ Usage Examples
             eglSwapBuffers();
         }
 
-   (4)  Rendering Opacity-Mapped Particle Systems & HUDs on Top of Opaque 
+   (4)  Rendering Opacity-Mapped Particle Systems & HUDs on Top of Opaque
         Geometry
 
         while (1)
@@ -493,7 +493,7 @@ Usage Examples
             glDepthMask(GL_TRUE);
             glCoverageMaskNV(GL_TRUE);
             glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | 
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
                     GL_COVERAGE_BUFFER_BIT_NV);
 
             // render opaque, Z-buffered geometry, with coverage info.
@@ -501,10 +501,10 @@ Usage Examples
             glDrawElements(...);
 
             // render opacity-mapped geometry.  disable Z writes, enable alpha
-            // blending. also, disable coverage writes -- the edges of the 
-            // geometry used for the HUD/particle system have alpha values 
-            // tapering to zero, so edge coverage is uninteresting, and 
-            // interior coverage should still refer to the underlying opaque 
+            // blending. also, disable coverage writes -- the edges of the
+            // geometry used for the HUD/particle system have alpha values
+            // tapering to zero, so edge coverage is uninteresting, and
+            // interior coverage should still refer to the underlying opaque
             // geometry, so that opaque edges visible through the translucent
             // regions remain anti-aliased.
 
@@ -514,7 +514,7 @@ Usage Examples
             glEnable(GL_BLEND);
             glDrawElements(...);
             glDisable(GL_BLEND);
-            
+
             eglSwapBuffers();
         }
 
@@ -534,12 +534,12 @@ Issues
         Implementations are encouraged, whenever possible, to use the highest-
         quality coverage sample resolve supported for calls to eglSwapBuffers,
         eglCopyBuffers, ReadPixels, CopyPixels and CopyTex{Sub}Image.
-        
+
     2.  Should all render buffer & texture types be legal sources for image
         resolves and coverage attachment?
 
         RESOLVED: This spec should not place any arbitrary limits on usage;
-        however, there are many reasons why implementers may not wish to 
+        however, there are many reasons why implementers may not wish to
         support coverage sampling for all surface types.
 
         Implementations may return FRAMEBUFFER_UNSUPPORTED_OES from

@@ -170,7 +170,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     LOD is clamped to the specified range prior to any use.  Specifically,
     the mipmap image array selection described in the Mipmapping Subsection
-    of the GL Specification is based on the clamped LOD value.  Also, the 
+    of the GL Specification is based on the clamped LOD value.  Also, the
     determination of whether the minification or magnification filter is
     used is based on the clamped LOD.
 
@@ -224,7 +224,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     Additional Filters
     ------------------
-    
+
     Sharpen filters (described in SGIS_sharpen_texture) operate on array
     levels BASE_LEVEL and BASE_LEVEL+1.  If the minimum of MAX_LEVEL and p
     is not greater than BASE_LEVEL, then sharpen texture reverts to a
@@ -235,7 +235,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     ----------------
 
     In Section 3.8 the OpenGL specification states:
-    
+
         "In order to allow the client to meaningfully query the maximum
          image array sizes that are supported, an implementation must not
          allow an image array of level one or greater to be created if a

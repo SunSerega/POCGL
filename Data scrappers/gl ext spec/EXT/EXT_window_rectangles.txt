@@ -145,7 +145,7 @@ Specification (Writing Fragments and Samples to the Framebuffer)
     generates INVALID_VALUE when /n/ is less than zero or greater than
     the implementation-dependent value of MAX_WINDOW_RECTANGLES_EXT), and
     an array of 4*/n/ elements.
-    
+
     When the WindowRectanglesEXT command is processed without error,
     the /i/th window rectangle box is set to the corresponding four
     parameters (box[4*i],box[4*i+1],box[4*i+2],box[4*i+3) for values
@@ -212,7 +212,7 @@ Specification (Writing Fragments and Samples to the Framebuffer)
 
  -- Update section 18.1.2 "Conversion to Fragments"
 
-    Change the third sentence of the second paragraph to read: 
+    Change the third sentence of the second paragraph to read:
 
     "However, the histogram and minmax tables are updated even if the
     corresponding fragments are later rejected by the pixel ownership
@@ -261,7 +261,7 @@ Specification (Fixed-Function Primitive Assembly and Rasterization)
 
     "Four fragment operations are performed, and a further three are
     optionally performed on each fragment, in the following order:
-    
+
     * the pixel ownership test (see section 13.8.1);
     * the window rectangles test (see section 13.8.X);
     * the scissor test (see section 13.8.2);
@@ -383,7 +383,7 @@ Additions to the AGL/GLX/WGL Specifications
 
 GLX Protocol
 
-    A new GL rendering command is added. The following command is sent to the 
+    A new GL rendering command is added. The following command is sent to the
     server as part of a glXRender request:
 
         WindowRectanglesEXT
@@ -571,7 +571,7 @@ Issues
         This matches the behavior of existing commands such
         as glScissorArrayv and glViewportArrayv, part of the
         ARB_viewport_array extension.
-        
+
     12) What about really huge values for the box coordinates?
 
         RESOLVED:  That should be fine.  In theory, OpenGL has an
@@ -596,7 +596,7 @@ Issues
         This behavior is why GL_EXCLUSIVE_EXT is the initial context state.
 
     14) Should this work when rendering to windows?
-    
+
         RESOLVED:  No, the hardware functionality for window rectangles
         may be used by the window system for pixel-ownership tests.  Instead
         this functionality is limited to FBOs.
@@ -606,7 +606,7 @@ Issues
         device-independent bitmaps?
 
         RESOLVED:  No.
-    
+
         For simplicity of specification, the language is written to
         refer only to non-zero framebuffer objects supporting the window
         rectangles test so pbuffers, etc. wouldn't support the window
@@ -647,16 +647,16 @@ Issues
         That language would read:
 
          -- Update section 17.4.5 "The Accumulation Buffer"
-        
+
             Change the second paragraph's first sentence to read:
-        
+
             "When the scissor test is enabled (section 17.3.2), then only those
             pixels within the current scissor box are updated by any Accum
             operation; otherwise, all pixels in the window that survive the
             window rectangles test (section 17.3.X) are updated."
-        
+
             Change the second sentence of the fifth paragraph to read:
-        
+
             "If fragment color clamping is enabled, the results are then clamped
             to the range [0,1]. The resulting color value is placed in the
             buffers currently enabled for color writing as if it were a fragment
@@ -765,11 +765,11 @@ Issues
         AMD is they could support the extension if the limit was 4.
 
     29) Is there a Vulkan version of this functionality?
-    
+
         RESOLVED:  Yes, VK_EXT_discard_rectangles.  See:
 
         https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html#VK_EXT_discard_rectangles
-        
+
 Revision History
 
     Rev.    Date    Author     Changes

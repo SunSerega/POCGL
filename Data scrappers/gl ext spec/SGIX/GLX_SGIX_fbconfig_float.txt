@@ -9,7 +9,7 @@ Name Strings
     GLX_SGIX_fbconfig_float
 
 Version
-    
+
     $Date: 1999/01/08 19:41:53 $ $Revision: 1.1 $
 
 Number
@@ -39,7 +39,7 @@ Issues
 
 New Procedures and Functions
 
-    int glXGetFBConfigFltAttribSGIX(Display *dpy, 
+    int glXGetFBConfigFltAttribSGIX(Display *dpy,
                         GLXFBConfigSGIX config,
                         int attribute,
                         double *value);
@@ -79,7 +79,7 @@ Additions to the GLX Specification
     listed in <flt_attrib_list> are used in conjunction with
     the attributes listed in <attrib_list> to select a
     matching GLXFBConfigSGIX.
-    
+
     All attributes have an inherent data type, listed in Table 3, such as
     integer, boolean, enumerated, bitmask, XID, or floating point.
     Any of these attributes may appear in <attrib_list>, although
@@ -95,12 +95,12 @@ Additions to the GLX Specification
     To get the value of a floating point GLX attribute for a
     GLXFBConfigSGIX use:
 
-        int glXGetFBConfigFltAttribSGIX(Display *dpy, 
+        int glXGetFBConfigFltAttribSGIX(Display *dpy,
                             GLXFBConfigSGIX config,
                             int attribute,
                             double *value);
 
-    glXGetFBConfigFltAttribSGIX has the same semantics as 
+    glXGetFBConfigFltAttribSGIX has the same semantics as
     glXGetFBConfigAttribSGIX, although it returns a double value
     rather than an int value.  Non-floating-point attributes undergo
     a cast to double before they are returned.

@@ -65,7 +65,7 @@ Overview
     Ci be (ni+2)/2pi and keep the color (RGBA) vector separate.
 
     This extension will be implemented in the OpenGL pipeline directly
-    in place of the per-vertex specular, diffuse lighting.  
+    in place of the per-vertex specular, diffuse lighting.
 
 Issues
 
@@ -87,7 +87,7 @@ Issues
 
 
 New Procedures and Functions
- 
+
     Because of the potentially large number of nonlinear terms, special
     "Nonlin" versions of Material, Light have been added in this extension.
     These functions affect lighting state in a manner identical to Material
@@ -102,7 +102,7 @@ New Procedures and Functions
 New Tokens
 
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled, by
-    the <pname> parameters of GetBooleanv, GetIntegerv, GetFloatv, and 
+    the <pname> parameters of GetBooleanv, GetIntegerv, GetFloatv, and
     GetDoublev:
 
     NONLIN_LIGHTING_SGIX                                 0x????
@@ -112,7 +112,7 @@ New Tokens
 
     MAX_NONLIN_TERMS_SGIX                                0x????
     MAX_NONLIN_LIGHTS_SGIX                               0x????+1
-    
+
     Accepted by the <pname> parameter of NonlinMaterialv, NonlinLightv:
 
     COLOR_SGIX                                           0x????
@@ -132,13 +132,13 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     ...
     2.  Lighting On, Nonlinear Reflectance Disabled.  In this state,
         a vertex's color is found by computing a value given the
-        current lighting parameters and using the specular/diffuse 
+        current lighting parameters and using the specular/diffuse
         reflectance model.
 
     3.  Lighting On, Nonlinear Reflectance Enabled.  In this state,
         a vertex's color is found by computing a value given the
         current lighting parameters and using the nonlinear reflectance
-        model. 
+        model.
 
     Lighting is turned either on or off using the generic Enable or
     Disable commands with the symbolic value LIGHTING.  Nonlinear
@@ -172,7 +172,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     If nonlinear reflectance is disabled, the color c produced...
     ...If nonlinear reflectance is enabled, the color c produced by lighting a
     vertex is given by
-    
+
     c = ecm + acm*acs +
 
     sum<i=0,n-1>(sum<j=0,min(tnlm, tnll)-1>(acm*acli +
@@ -190,7 +190,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     ... <paragraph 2>
     ... params is a pointer... terms is an integer indicating how many terms
     of a nonlinear lighting equation are being specified by a function call.
- 
+
     ...For the Material or NonlinMaterial commands, face must be one of...
 
     ... <table 2.8>
@@ -204,7 +204,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     ...
 
     Nonlinear Light Source Parameters(NonlinLight)
-    
+
     ncli,j    COLOR        4*terms
     tnll    terms        1
 
@@ -249,7 +249,7 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
     and GetMaterial counterparts, except that they return by reference
     the number of terms (int *terms) and an array of parameters (T *data).
     The *data pointer passed to GetNonlinMaterial and GetNonlinLight should
-    point to an array large enough to contain MAX_NONLIN_TERMS*components, 
+    point to an array large enough to contain MAX_NONLIN_TERMS*components,
     where components equals the number of floats comprising a datum.
 
     ... <table 6.3>
@@ -274,7 +274,7 @@ Errors
     INVALID_VALUE is generated if NonlinLight{f}vSGIX parameter <terms> is
     outside the range [0..MAX_NONLIN_TERMS).
 
-    INVALID_OPERATION is generated if the number of terms for an active 
+    INVALID_OPERATION is generated if the number of terms for an active
     light differs from the current material, or if the number of terms
     for SHININESS, WEIGHTS and COLOR differ.  This error results from
     primitive specification.
@@ -288,7 +288,7 @@ Errors
     INVALID_VALUE is generated if NonlinMaterial{T}vSGIX parameter <terms> is
     outside the range [0..MAX_NONLIN_TERMS).
 
-    INVALID_ENUM is generated if GetNonlinLight{t}vSGIX parameter <light>  
+    INVALID_ENUM is generated if GetNonlinLight{t}vSGIX parameter <light>
     is not valid (LIGHT{0..MAX_NONLIN_LIGHTS-1}.
 
     INVALID_ENUM is generated if GetNonlinLight{t}vSGIX parameter <pname>

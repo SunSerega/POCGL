@@ -3,7 +3,7 @@ Name
     ARB_conservative_depth
 
 Name String
-    
+
     GL_ARB_conservative_depth
 
 Contact
@@ -111,13 +111,13 @@ Additions to Chapter 4 of the OpenGL Shading Language 4.00.08 Specification (Var
     qualifiers only..."
 
         Fragment shaders allow output layout qualifiers only on the interface
-        out, or for the purposes of redeclaring the built-in variable 
+        out, or for the purposes of redeclaring the built-in variable
         gl_FragDepth (ses Section 7.2, Fragment Shader Special Variables).
 
     Insert the following before the paragraph beginning: "Geometry shaders can
     have three types of output layout qualifiers..."
 
-        The built-in fragment shader variable gl_FragDepth may be redeclared using 
+        The built-in fragment shader variable gl_FragDepth may be redeclared using
         one of the following layout qualifiers.
 
         layout-qualifier-id
@@ -132,7 +132,7 @@ Additions to Chapter 4 of the OpenGL Shading Language 4.00.08 Specification (Var
 
         The layout qualifier for gl_FragDepth specifies constraints on the final
         value of gl_FragDepth written by any shader invocation.  GL implementations
-        may perform optimizations assuming that the depth test fails (or passes) 
+        may perform optimizations assuming that the depth test fails (or passes)
         for a given fragment if all values of gl_FragDepth consistent with the layout
         qualifier would fail (or pass).  If the final value of gl_FragDepth
         is inconsistent with its layout qualifier, the result of the depth test for
@@ -147,7 +147,7 @@ Additions to Chapter 4 of the OpenGL Shading Language 4.00.08 Specification (Var
         and depth testing will always be performed after the shader has executed.
         When the layout qualifier is "depth_greater", the GL will assume that the
         final value of gl_FragDepth is greater than or equal to the fragment's
-        interpolated depth value, as given by the <z> component of gl_FragCoord. 
+        interpolated depth value, as given by the <z> component of gl_FragCoord.
         When the layout qualifier is <depth_less>, the GL will assume that any
         modification of gl_FragDepth will only decrease its value. When the
         layout qualifier is <depth_unchanged>, the shader compiler will honor
@@ -188,7 +188,7 @@ Revision History
      6     6/20/2011  wwlk      approved by ARB
      5     1/27/2011  johnk     Update with edits from reviews of the core spec.
      4    12/17/2010  johnk     Correct gl_Depth -> gl_FragDepth
-                                Make the code examples fit within the width of 
+                                Make the code examples fit within the width of
                                 actual paper.
 
      3    04/01/2010  gsellers  Minor cleanup. Update to GLSL 4.00.

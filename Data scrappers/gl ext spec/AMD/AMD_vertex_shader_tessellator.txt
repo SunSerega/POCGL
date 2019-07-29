@@ -25,7 +25,7 @@ Number
 
 Dependencies
 
- 
+
     OpenGL 2.0 is required.
 
     EXT_gpu_shader4 affects the definition of this extension.
@@ -50,7 +50,7 @@ Overview
     user defined attributes, are system provided values which are
     initialized prior to vertex shader invocation.
 
-    With vertex shading tessellation, additional vertex shader special 
+    With vertex shading tessellation, additional vertex shader special
     values are available:
 
         ivec3 gl_VertexTriangleIndex; // indices of the three control
@@ -78,13 +78,13 @@ Overview
         vec2 gl_UVCoord;            // UV coordinates of the vertex
 
     i o--*--*--o k
-      |\ |\ |\ | 
+      |\ |\ |\ |
       | \| \| \|
       *--*--*--*
-      |\ |\ |\ | 
+      |\ |\ |\ |
       | \| \| \|
       *--*--*--*
-      |\ |\ |\ | 
+      |\ |\ |\ |
       | \| \| \|
     j o--*--*--o l
 
@@ -97,7 +97,7 @@ Overview
     is responsible for explicitly fetching all other vertex data either
     from textures, uniform buffers, or vertex buffers.
 
-    The shader writer is further responsible for interpolating 
+    The shader writer is further responsible for interpolating
     the vertex data at the given barycentric coordinates or uv
     coordinates of the vertex.
 
@@ -447,7 +447,7 @@ Add to Table 6.5 Vertex Array Data
     ---------                  ----    --------------- -------       -------------------- ----    ---------
     TESSELLATION_FACTOR_AMD    R       GetFloatv       1.0           tessellation factor  2.8     vertex-array
     TESSELLATION_MODE_AMD      Z_2     GetIntegerv     DISCRETE_AMD  tessellation mode    2.8     vertex-array
- 
+
 New Implementation Dependent State
 
     None.

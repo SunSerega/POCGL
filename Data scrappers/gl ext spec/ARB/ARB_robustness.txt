@@ -15,7 +15,7 @@ Contributors
     Chris Marrin, Apple
     Greg Roth, NVIDIA
     Jeff Bolz, NVIDIA
-    Jon Leech 
+    Jon Leech
     Kenneth Russell, Google
     Kent Miller, Apple
     Piers Daniell, NVIDIA
@@ -78,7 +78,7 @@ Overview
     Several recent trends in how OpenGL integrates into modern computer
     systems have created new requirements for robustness and security
     for OpenGL rendering contexts.
-    
+
     Additionally GPU architectures now support hardware fault detection;
     for example, video memory supporting ECC (error correcting codes)
     and error detection.  OpenGL contexts should be capable of recovering
@@ -93,7 +93,7 @@ Overview
     additional "safe" APIs that bound the amount of data returned by
     an API query.  For example, the safer "snprintf" or "_snprintf"
     routines are prefered over "sprintf".
-    
+
     The OpenGL API has many such robustness perils.  OpenGL queries
     return (write) some number of bytes to a buffer indicated by a
     pointer parameter.  The exact number of bytes written by existing
@@ -126,8 +126,8 @@ Overview
     The intent of this extension is to address some specific robustness
     goals:
 
-    *   For all existing OpenGL queries, provide additional "safe" APIs 
-        that limit data written to user pointers to a buffer size in 
+    *   For all existing OpenGL queries, provide additional "safe" APIs
+        that limit data written to user pointers to a buffer size in
         bytes that is an explicit additional parameter of the query.
 
     *   Provide a mechanism for an OpenGL application to learn about
@@ -369,7 +369,7 @@ Specification (State and State Requests)
       and <n> is greater than <bufSize>, but <data>+<n> does not exceed
       the size of the buffer, no error results.
 
-      ... 
+      ...
 
           void GetMap{ifd}v(enum map, enum value, T data);
           void GetnMap{ifd}vARB(enum map, enum value, sizei bufSize, T data);
@@ -381,7 +381,7 @@ Specification (State and State Requests)
 
       Section 6.1.4 "Texture Queries"
 
-      
+
       Modify the description of GetTexImage:
 
       "The commands
@@ -408,7 +408,7 @@ Specification (State and State Requests)
           void GetCompressedTexImage(enum target, int lod, void *img);
           void GetnCompressedTexImageARB(enum target, int lod, sizei bufSize,
                                          void *img );
-          
+
       are used to obtain texture images stored in compressed form. The
       parameters <target>, <lod>, and <img> are interpreted in the same
       manner as in GetTexImage and GetnTexImageARB respectively. When
@@ -422,7 +422,7 @@ Specification (State and State Requests)
       does not exceed the size of the buffer, no error results."
 
       Modify Section 6.1.5 "Stipple Query"
-      
+
       The commands
 
           void GetPolygonStipple(void *pattern);
@@ -443,7 +443,7 @@ Specification (State and State Requests)
                              void *table );
           void GetnColorTableARB(enum target, enum format, enum type,
                                  sizei bufSize, void *table);
-          
+
       <target> must be one of the regular color table names listed in
       table 3.4. ...
       ... to the components requested by format are described in table
@@ -481,7 +481,7 @@ Specification (State and State Requests)
       GetnSeparableFilterARB does not write more than <rowBufSize> bytes
       into <row> and no more than <columnBufSize> bytes into <column>.
       <span> is currently unused. ...
-      
+
 
       Modify Section 6.1.9 "Histogram Query"
 
@@ -932,7 +932,7 @@ Revision History
      17   17 Sep 2012  Jon Leech  Clarify that GetnUniform* does not write
                                   any data if bufSize is less than required
                                   (Bug 8739).
-     16   25 Jun 2012  Jon Leech  Add interactions with ARB_imaging and 
+     16   25 Jun 2012  Jon Leech  Add interactions with ARB_imaging and
                                   core profile.
      15   10 Apr 2012  Jon Leech  Fix description of INVALID_OPERATION
                                   error to be when required data size is
@@ -982,7 +982,7 @@ Revision History
       5   05 May 2010  groth      Add clarification regarding recovered reset
                                   detection.
       4   02 May 2010  groth      Remove references to deleted functionality.
-                                  Add issue addressing differences with 
+                                  Add issue addressing differences with
       3   15 Apr 2010  groth      Describe GLSL array behavior when using
                                   robust arrays.
                                   Add issue explaining graphics reset causes.

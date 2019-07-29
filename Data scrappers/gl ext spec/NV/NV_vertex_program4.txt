@@ -241,7 +241,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
                               | <resultColor> <optWriteMask>
                               | <resultColor> "." <colorType> <optWriteMask>
                               | <resultColor> "." <faceType> <optWriteMask>
-                              | <resultColor> "." <faceType> "." <colorType> 
+                              | <resultColor> "." <faceType> "." <colorType>
                                 "." <optWriteMask>
 
     <resultUseD>            ::= <resultColor>
@@ -384,7 +384,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
       vertex.normal                       vertex.attrib[2]
       vertex.color                        vertex.attrib[3]
       vertex.color.primary                vertex.attrib[3]
-      vertex.color.secondary              vertex.attrib[4]        
+      vertex.color.secondary              vertex.attrib[4]
       vertex.fogcoord                     vertex.attrib[5]
       vertex.texcoord                     vertex.attrib[8]
       vertex.texcoord[0]                  vertex.attrib[8]
@@ -559,14 +559,14 @@ State Requests)
     Modify Section 6.1.14, Shader and Program Queries (p. 256)
 
     (modify 2nd paragraph, p.259) The commands
-    
+
       ...
       void GetVertexAttribIivEXT(uint index, enum pname, int *params);
       void GetVertexAttribIuivEXT(uint index, enum pname, uint *params);
 
     obtain the...  <pname> must be one of VERTEX_ATTRIB_ARRAY_ENABLED,
     ... VERTEX_ATTRIB_ARRAY_NORMALIZED, VERTEX_ATTRIB_ARRAY_INTEGER_EXT, or
-    CURRENT_VERTEX_ATTRIB. ...  
+    CURRENT_VERTEX_ATTRIB. ...
 
     (split 3rd paragraph, p.259) ... The size, stride, type, normalized flag,
     and unconverted integer flag are set by the commands VertexAttribPointer
@@ -870,7 +870,7 @@ Issues
     (6) Should vertex IDs be provided for vertices in immediate mode?
     Vertices in display lists?  Vertex arrays compiled into a display list?
 
-      RESOLVED:  No to all.  
+      RESOLVED:  No to all.
 
       A different definition would be needed for immediate mode vertices,
       since the vertex attributes are not specified with an index.  It would

@@ -116,9 +116,9 @@ New Procedures and Functions
     void ProgramUniform1i64NV(uint program, int location, int64EXT x);
     void ProgramUniform2i64NV(uint program, int location, int64EXT x,
                               int64EXT y);
-    void ProgramUniform3i64NV(uint program, int location, int64EXT x, 
+    void ProgramUniform3i64NV(uint program, int location, int64EXT x,
                               int64EXT y, int64EXT z);
-    void ProgramUniform4i64NV(uint program, int location, int64EXT x, 
+    void ProgramUniform4i64NV(uint program, int location, int64EXT x,
                               int64EXT y, int64EXT z, int64EXT w);
     void ProgramUniform1i64vNV(uint program, int location, sizei count,
                                const int64EXT *value);
@@ -130,11 +130,11 @@ New Procedures and Functions
                                const int64EXT *value);
 
     void ProgramUniform1ui64NV(uint program, int location, uint64EXT x);
-    void ProgramUniform2ui64NV(uint program, int location, uint64EXT x, 
+    void ProgramUniform2ui64NV(uint program, int location, uint64EXT x,
                                uint64EXT y);
-    void ProgramUniform3ui64NV(uint program, int location, uint64EXT x, 
+    void ProgramUniform3ui64NV(uint program, int location, uint64EXT x,
                                uint64EXT y, uint64EXT z);
-    void ProgramUniform4ui64NV(uint program, int location, uint64EXT x, 
+    void ProgramUniform4ui64NV(uint program, int location, uint64EXT x,
                                uint64EXT y, uint64EXT z, uint64EXT w);
     void ProgramUniform1ui64vNV(uint program, int location, sizei count,
                                 const uint64EXT *value);
@@ -142,7 +142,7 @@ New Procedures and Functions
                                 const uint64EXT *value);
     void ProgramUniform3ui64vNV(uint program, int location, sizei count,
                                 const uint64EXT *value);
-    void ProgramUniform4ui64vNV(uint program, int location, sizei count, 
+    void ProgramUniform4ui64vNV(uint program, int location, sizei count,
                                 const uint64EXT *value);
 
 

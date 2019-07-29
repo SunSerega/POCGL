@@ -11,7 +11,7 @@ Contributors
     Benj Lipchak
     Ben Bowman
 
-    and contributors to the ARB_shader_texture_lod spec, 
+    and contributors to the ARB_shader_texture_lod spec,
     which provided the basis for this spec.
 
 Contact
@@ -73,13 +73,13 @@ Overview
     The existing isotropic vertex texture functions:
 
         vec4 texture2DLodEXT(sampler2D sampler,
-                             vec2 coord, 
+                             vec2 coord,
                              float lod);
         vec4 texture2DProjLodEXT(sampler2D sampler,
-                                 vec3 coord, 
+                                 vec3 coord,
                                  float lod);
         vec4 texture2DProjLodEXT(sampler2D sampler,
-                                 vec4 coord, 
+                                 vec4 coord,
                                  float lod);
 
         vec4 textureCubeLodEXT(samplerCube sampler,
@@ -93,21 +93,21 @@ Overview
     derivatives:
 
         vec4 texture2DGradEXT(sampler2D sampler,
-                              vec2 P, 
-                              vec2 dPdx, 
+                              vec2 P,
+                              vec2 dPdx,
                               vec2  dPdy);
         vec4 texture2DProjGradEXT(sampler2D sampler,
-                                  vec3 P, 
-                                  vec2 dPdx, 
+                                  vec3 P,
+                                  vec2 dPdx,
                                   vec2 dPdy);
         vec4 texture2DProjGradEXT(sampler2D sampler,
                                   vec4 P,
-                                  vec2 dPdx, 
+                                  vec2 dPdx,
                                   vec2 dPdy);
 
         vec4 textureCubeGradEXT(samplerCube sampler,
                                 vec3 P,
-                                vec3 dPdx, 
+                                vec3 dPdx,
                                 vec3 dPdy);
 
      are added to the built-in functions for vertex shaders
@@ -131,8 +131,8 @@ Additions to Chapter 3 of the OpenGL ES 2.0 Specification (Rasterization)
 
     "Let s(x, y) be the function that associates an s texture coordinate
     with each set of window coordinates (x, y) that lie within a
-    primitive;  define t(x, y) analogously.  Let u(x, y) = wt * s(x, y) and 
-    v(x, y) = ht * t(x, y), where wt and ht are equal to the width and height 
+    primitive;  define t(x, y) analogously.  Let u(x, y) = wt * s(x, y) and
+    v(x, y) = ht * t(x, y), where wt and ht are equal to the width and height
     of the level zero array.
 
     Let
@@ -192,15 +192,15 @@ Specification
     "For the "Lod" functions, lod specifies lambda_base (see equation 3.11 in
     The OpenGL ES 2.0 Specification) and specifies dSdx, dTdx = 0 and
     dSdy, dTdy = 0 (see equation 3.12a in The OpenGL ES 2.0 Specification).
-    The "Lod" functions are allowed in a vertex shader.  If enabled by the 
-    preprocessor directive #extension, the "Lod" functions are also allowed in 
+    The "Lod" functions are allowed in a vertex shader.  If enabled by the
+    preprocessor directive #extension, the "Lod" functions are also allowed in
     a fragment shader.
 
     For the "Grad" functions, dPdx is the explicit derivative of P with respect
     to window x, and similarly dPdy with respect to window y. For the "ProjGrad"
     functions, dPdx is the explicit derivative of the projected P with respect
     to window x, and similarly for dPdy with respect to window y.  For a two-
-    dimensional texture, dPdx and dPdy are vec2.  For a cube map texture, 
+    dimensional texture, dPdx and dPdy are vec2.  For a cube map texture,
     dPdx and dPdy are vec3.
 
     Let
@@ -232,21 +232,21 @@ Specification
     Add the following entries to the texture function table:
 
         vec4 texture2DGradEXT(sampler2D sampler,
-                              vec2 P, 
-                              vec2 dPdx, 
+                              vec2 P,
+                              vec2 dPdx,
                               vec2  dPdy);
         vec4 texture2DProjGradEXT(sampler2D sampler,
-                                  vec3 P, 
-                                  vec2 dPdx, 
+                                  vec3 P,
+                                  vec2 dPdx,
                                   vec2 dPdy);
         vec4 texture2DProjGradEXT(sampler2D sampler,
                                   vec4 P,
-                                  vec2 dPdx, 
+                                  vec2 dPdx,
                                   vec2 dPdy);
 
         vec4 textureCubeGradEXT(samplerCube sampler,
                                 vec3 P,
-                                vec3 dPdx, 
+                                vec3 dPdx,
                                 vec3 dPdy);
 
 Interactions with EXT_texture_anisotropic

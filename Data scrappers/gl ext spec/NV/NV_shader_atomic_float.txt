@@ -162,7 +162,7 @@ Dependencies on NV_gpu_program5
       If a program specifies the "NV_shader_atomic_float" option, it may use
       "F32" storage modifier with the "ATOM" and "ATOMIM" opcodes to perform
       atomic floating-point add or exchange operations.
-    
+
     (Add to the table in "Section 2.X.8.Z, ATOM" in NV_gpu_program5:)
 
       atomic     storage

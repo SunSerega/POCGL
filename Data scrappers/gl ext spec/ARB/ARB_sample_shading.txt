@@ -113,12 +113,12 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
 
     Sample shading can be used to specify a minimum number of unique samples
     to process for each fragment.  Sample shading is controlled by by calling
-    Enable or Disable with the symbolic constant SAMPLE_SHADING_ARB.  
+    Enable or Disable with the symbolic constant SAMPLE_SHADING_ARB.
 
     If MULTISAMPLE or SAMPLE_SHADING_ARB is disabled, sample shading has no
     effect.  Otherwise, an implementation must provide a minimum of
 
-        max(ceil(MIN_SAMPLE_SHADING_VALUE_ARB*SAMPLES),1) 
+        max(ceil(MIN_SAMPLE_SHADING_VALUE_ARB*SAMPLES),1)
 
     unique color values and sets of texture coordinates for each
     fragment. These are associated with the samples in an
@@ -147,7 +147,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     number of samples in the framebuffer, or one if rendering to a
     non-multisample framebuffer. Using this variable in a fragment shader
     causes the entire shader to be evaluated per-sample.  When rendering to a
-    non-multisample buffer, or if multisample rasterization is disabled, 
+    non-multisample buffer, or if multisample rasterization is disabled,
     gl_SampleID will always be zero. gl_NumSamples is the sample count
     of the framebuffer regardless of whether multisample rasterization
     is enabled or not.
@@ -159,7 +159,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     zero to one.  The sub-pixel coordinate of the center of the pixel is
     always (0.5, 0.5).  Using this variable in a fragment shader
     causes the entire shader to be evaluated per-sample.  When rendering to a
-    non-multisample buffer, or if multisample rasterization is disabled, 
+    non-multisample buffer, or if multisample rasterization is disabled,
     gl_SamplePosition will always be (0.5, 0.5).
 
     Add the following paragraph to the section Shader Outputs, p. 196
@@ -167,11 +167,11 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     The built-in integer array gl_SampleMask[] can be used to change the
     sample coverage for a fragment from within the shader.  The number
     of elements in the array is ceil(<s>/32), where <s> is the
-    maximum number of color samples supported by the implementation.  
+    maximum number of color samples supported by the implementation.
     If bit <n> of element <w> in the array is set to zero, sample
     <w>*32+<n> should be considered uncovered for the purposes of
     multisample fragment operations (Section 4.1.3).  Modifying the
-    sample mask in this way may exclude covered samples from being 
+    sample mask in this way may exclude covered samples from being
     processed further at a per-fragment granularity.  However, setting
     sample mask bits to one will never enable samples not covered by the
     original primitive.  If the fragment shader is being evaluated at
@@ -213,7 +213,7 @@ Operations and the Frame Buffer)
     the fragment coverage is undefined.  If no fragment shader is active, or
     if the active fragment shader does not statically assign values to
     gl_SampleMask, the fragment coverage is not modified.
-    
+
 
 Additions to Chapter 5 of the OpenGL 2.0 Specification (Special Functions)
 
@@ -260,7 +260,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
 
     Add to section 7.2 "Fragment Shader Special Variables"
 
-      
+
       The built-in output array gl_SampleMask[] sets the sample mask for
       the fragment being processed. Coverage for the current fragment is
       ANDed with the value of gl_SampleMask. Bit B of mask
@@ -268,7 +268,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
       sized in the fragment shader either implicitly or explicitly to be
       the same size as the implementation dependent maximum sample mask
       words determined by the maximum number of samples.  If the fragment
-      shader statically assigns a value to gl_SampleMask[], the sample 
+      shader statically assigns a value to gl_SampleMask[], the sample
       mask will be undefined for any array elements of any fragment shader
       invocations that fails to assign a value.  If a shader does not
       statically assign a value to gl_SampleMask, the sample mask has no
@@ -296,7 +296,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
         int gl_SampleID;
         vec2 gl_SamplePosition;
         int gl_SampleMask[];
-      
+
 
 Issues
 
@@ -371,9 +371,9 @@ Revision History
     ----  --------    --------  -----------------------------------------
     8     02/02/2010  pbrown    Clarify that use of gl_SamplePosition
                                 triggers per-sample shading (bug 5911).
-                                
+
     7     01/20/2010  Jon Leech Add rounding rule for computing number of
-                                samples used depending on min sample  
+                                samples used depending on min sample
                                 shading setting.
 
     6     10/22/2009  pdaniell  Specify that gl_NumSamples should return
@@ -384,7 +384,7 @@ Revision History
     5     09/17/2009  pbrown    Clean up some language on MinSampleShading.
                                 Add a clarification requiring variables to
                                 be sampled at sample locations when doing
-                                full per-sample shading.  Add some more 
+                                full per-sample shading.  Add some more
                                 details on the gl_SampleMask array and its
                                 operation in the multisample fragment ops.
                                 Rename gl_MaxSampleId to gl_NumSamples and

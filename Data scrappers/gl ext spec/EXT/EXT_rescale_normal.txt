@@ -22,9 +22,9 @@ Dependencies
 Overview
 
     When normal rescaling is enabled a new operation is added to the
-    transformation of the normal vector into eye coordinates.  The normal vector 
-    is rescaled after it is multiplied by the inverse modelview matrix and 
-    before it is normalized.  
+    transformation of the normal vector into eye coordinates.  The normal vector
+    is rescaled after it is multiplied by the inverse modelview matrix and
+    before it is normalized.
 
     The rescale factor is chosen so that in many cases normal vectors with unit
     length in object coordinates will not need to be normalized as they
@@ -49,21 +49,21 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     Finally, we consider how the ModelView transformation state affects
     normals. Normals are of interest only in eye coordinates, so the rules
     governing their transformation to other coordinate systems are not
-    examined.  
+    examined.
 
     Normals which have unit length when sent to the GL, have their length
     changed by the inverse of the scaling factor after transformation by
     the model-view inverse matrix when the model-view matrix represents
-    a uniform scale. If rescaling is enabled, then normals specified with 
-    the Normal command are rescaled after transformation by the ModelView 
-    Inverse. 
+    a uniform scale. If rescaling is enabled, then normals specified with
+    the Normal command are rescaled after transformation by the ModelView
+    Inverse.
 
     Normals sent to the GL may or may not have unit length. In addition,
     the length of the normals after transformation might be altered due
-    to transformation by the model-view inverse matrix. If normalization 
-    is enabled, then normals specified with the Normal3 command are 
-    normalized after transformation by the model-view inverse matrix and 
-    after rescaling if rescaling is enabled.  Normalization and rescaling 
+    to transformation by the model-view inverse matrix. If normalization
+    is enabled, then normals specified with the Normal3 command are
+    normalized after transformation by the model-view inverse matrix and
+    after rescaling if rescaling is enabled.  Normalization and rescaling
     are controlled with
 
         void Enable( enum target);
@@ -72,24 +72,24 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 
         void Disable( enum target);
 
-    with target equal to NORMALIZE or RESCALE_NORMAL. This requires two 
-    bits of state.  The initial state is for normals not to be normalized or 
+    with target equal to NORMALIZE or RESCALE_NORMAL. This requires two
+    bits of state.  The initial state is for normals not to be normalized or
     rescaled.
     .
     .
     .
 
-    Therefore, if the modelview matrix is M, then the transformed plane equation 
+    Therefore, if the modelview matrix is M, then the transformed plane equation
     is
 
      (n_x' n_y' n_z' q') = ((n_x n_y n_z q) * (M^-1)),
 
-    the rescaled normal is  
+    the rescaled normal is
 
      (n_x" n_y" n_z")  = f * (n_x' n_y' n_z'),
 
     and the fully transformed normal is
-              
+
                1                               (n_x")
             ____________                       (n_y")               (2.1)
         __________________________________     (n_z")
@@ -98,28 +98,28 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
      If rescaling is disabled then f is 1, otherwise f is computed
      as follows:
 
-     Let m_ij denote the matrix element in row i and column j of M^-1, 
-     numbering the topmost row of the matrix as row 1, and the leftmost 
-     column as column 1. Then 
+     Let m_ij denote the matrix element in row i and column j of M^-1,
+     numbering the topmost row of the matrix as row 1, and the leftmost
+     column as column 1. Then
 
                               1
                            __________
             f =   ________________________________
-                 V (m_31)^2 + (m_32)^2 + (m_33)^2  
+                 V (m_31)^2 + (m_32)^2 + (m_33)^2
 
      Alternatively, an implementation my chose to normalize the normal
-     instead of rescaling the normal. Then 
+     instead of rescaling the normal. Then
 
                               1
                            __________
             f =   ________________________________
-                 V (n_x')^2 + (n_y')^2 + (n_z')^2  
+                 V (n_x')^2 + (n_y')^2 + (n_z')^2
 
 
-     If normalization is disabled, then the square root in equation 2.1 is 
+     If normalization is disabled, then the square root in equation 2.1 is
      replaced with 1, otherwise . . . .
 
-    
+
 Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     None

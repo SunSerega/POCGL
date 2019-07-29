@@ -24,7 +24,7 @@ Overview
     The extensions defines a special purpose fast multisample clear.
     This clear can be used with some restrictions as a significantly
     faster alternative to Clear(DEPTH_BUFFER_BIT).
-     
+
     The extension is based on the RealityEngine architecture and will
     probably never be supported by any other architecture.
 
@@ -35,7 +35,7 @@ New Procedures and Functions
 New Tokens
 
     None.
-    
+
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     None.
@@ -64,7 +64,7 @@ and the Frame Buffer)
     cleared.
 
     The tags of all the samples can be set by calling TagSampleBuffer.
-    
+
     When using TagSampleBuffer, it is the responsibility of the
     application to ensure that the tags of all samples are cleared
     (i.e., that a color is stored into each sample least once) before
@@ -75,7 +75,7 @@ and the Frame Buffer)
     undefined.
 
     When SAMPLE_BUFFER_SGIS is 0, TagSampleBuffer has no effect.
-    
+
 Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 
     None.
@@ -97,7 +97,7 @@ Errors
 New State
 
     None.
-    
+
 New Implementation Dependent State
 
     None.

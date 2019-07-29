@@ -8,7 +8,7 @@ Name Strings
 
 Version
 
-    IBM Id: cull_vertex.spec,v 1.4 2000/02/11 15:11:46 brokensh Exp 
+    IBM Id: cull_vertex.spec,v 1.4 2000/02/11 15:11:46 brokensh Exp
 
 Number
 
@@ -39,7 +39,7 @@ Issues
     used in combination with two sided lighting to produce realistic
     lighting effects if the normals were consistenly reversed.  Neither is
     addressed in the current specification.  Both are addressed by
-    EXT_cull_vertex. 
+    EXT_cull_vertex.
 
   * Should a control be provided to perform vertex culling with a local eye
     position?  Not in this specification; addressed by EXT_cull_vertex.

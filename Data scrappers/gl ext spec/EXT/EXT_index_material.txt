@@ -77,10 +77,10 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     which of these modes is selected is
 
         void IndexMaterial (enum face, enum mode);
-    
+
     <face> is one of FRONT, BACK, or FRONT_AND_BACK, indicating whether
     the front material, back material, or both are affected by the current
-    index.  <mode> must be INDEX_OFFSET.  The replacements made to 
+    index.  <mode> must be INDEX_OFFSET.  The replacements made to
     material properties are permanent; the replaced values remain until
     changed by either sending a new index or by setting a new material
     value when IndexMaterial is not currently enabled to override that

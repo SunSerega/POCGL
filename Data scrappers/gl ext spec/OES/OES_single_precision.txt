@@ -95,7 +95,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
 
     None
-        
+
 Additions to Chapter 4 of the OpenGL 1.3 Specification (Per-Fragment
 Operations and the Frame Buffer)
 

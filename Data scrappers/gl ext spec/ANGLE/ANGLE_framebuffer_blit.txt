@@ -111,7 +111,7 @@ Operations and the Framebuffer)
     the object bound to READ_FRAMEBUFFER_BINDING_ANGLE is not "framebuffer
     complete" (section 4.4.4.2). GetIntegerv generates an INVALID_OPERATION
     error if the object bound to READ_FRAMEBUFFER_BINDING_ANGLE is not
-    framebuffer complete, or if the GL is using a framebuffer object 
+    framebuffer complete, or if the GL is using a framebuffer object
     (i.e. READ_FRAMEBUFFER_BINDING_ANGLE is non-zero) and there is no color
     attachment."
 
@@ -149,12 +149,12 @@ Operations and the Framebuffer)
     and destination rectangle dimensions do not match, no copy is
     performed and an INVALID_OPERATION error is generated.
     Because stretching is not supported, <filter> must be NEAREST and
-    no filtering is applied. 
+    no filtering is applied.
 
-    Flipping during a copy is not supported. If either the source or 
-    destination rectangle specifies a negative dimension, the error 
-    INVALID_OPERATION is generated. If both the source and 
-    destination rectangles specify a negative dimension for the same 
+    Flipping during a copy is not supported. If either the source or
+    destination rectangle specifies a negative dimension, the error
+    INVALID_OPERATION is generated. If both the source and
+    destination rectangles specify a negative dimension for the same
     direction, no reversal is required and the operation is supported.
 
     If the source and destination buffers are identical, and the
@@ -175,7 +175,7 @@ Operations and the Framebuffer)
     not "framebuffer complete" (section 4.4.4.2)."
 
     Calling BlitFramebufferANGLE will result in an INVALID_OPERATION
-    error if <mask> includes COLOR_BUFFER_BIT and the source and 
+    error if <mask> includes COLOR_BUFFER_BIT and the source and
     destination color formats to not match.
 
     Calling BlitFramebufferANGLE will result in an INVALID_OPERATION
@@ -183,10 +183,10 @@ Operations and the Framebuffer)
     and the source and destination depth and stencil buffer formats do
     not match.
 
-    If <mask> includes DEPTH_BUFFER_BIT or STENCIL_BUFFER_BIT, only 
-    complete buffers can be copied.  If the source rectangle does not 
-    specify the complete source buffer or the destination rectangle 
-    (after factoring the scissor region, if applicable) does not specify 
+    If <mask> includes DEPTH_BUFFER_BIT or STENCIL_BUFFER_BIT, only
+    complete buffers can be copied.  If the source rectangle does not
+    specify the complete source buffer or the destination rectangle
+    (after factoring the scissor region, if applicable) does not specify
     the complete destination buffer, an INVALID_OPERATION
     error is generated.
 
@@ -260,7 +260,7 @@ Operations and the Framebuffer)
 
     "<target> must be DRAW_FRAMEBUFFER_ANGLE, READ_FRAMEBUFFER_ANGLE, or
     FRAMEBUFFER.  If <target> is FRAMEBUFFER, it behaves as
-    though DRAW_FRAMEBUFFER_ANGLE was specified.  The INVALID_OPERATION 
+    though DRAW_FRAMEBUFFER_ANGLE was specified.  The INVALID_OPERATION
     error is generated if the value of the corresponding binding is zero."
 
     In section 4.4.3 (Renderbuffer Objects), modify the first two sentences
@@ -272,7 +272,7 @@ Operations and the Framebuffer)
     specified.  The INVALID_OPERATION error is generated if the value of the
     corresponding binding is zero."
 
-    In section 4.4.5 (Framebuffer Completeness), modify the first sentence 
+    In section 4.4.5 (Framebuffer Completeness), modify the first sentence
     of the description of CheckFramebufferStatus as follows:
 
     "If <target> is not DRAW_FRAMEBUFFER_ANGLE, READ_FRAMEBUFFER_ANGLE or
@@ -286,7 +286,7 @@ Operations and the Framebuffer)
     "Attempting to render to or read from a framebuffer which is not
     framebuffer complete will generate an
     INVALID_FRAMEBUFFER_OPERATION error."
-    
+
 
 
 Additions to Chapter 6 of the OpenGL 1.5 Specification (State and State
@@ -299,8 +299,8 @@ Requests)
     FRAMEBUFFER.  If <target> is FRAMEBUFFER, it behaves as
     though DRAW_FRAMEBUFFER_ANGLE was specified."
 
-    Modify the title of Table 6.23 (Framebuffer State) to be "Framebuffer 
-    (state per attachment point)". 
+    Modify the title of Table 6.23 (Framebuffer State) to be "Framebuffer
+    (state per attachment point)".
 
 
 Dependencies on OES_texture_3D
@@ -331,11 +331,11 @@ Errors
     and the source and destination depth or stencil buffer formats do
     not match.
 
-    The error INVALID_OPERATION is generated if BlitFramebufferANGLE is 
+    The error INVALID_OPERATION is generated if BlitFramebufferANGLE is
     called and any of the following conditions are true:
      - the source and destination rectangle dimensions do not match
        (ie scaling or flipping is required).
-     - <mask> includes COLOR_BUFFER_BIT and the source and destination 
+     - <mask> includes COLOR_BUFFER_BIT and the source and destination
        buffer formats do not match.
      - <mask> includes DEPTH_BUFFER_BIT or STENCIL_BUFFER_BIT and the
        source or destination rectangles do not specify the entire source
@@ -363,7 +363,7 @@ New State
 
     Remove reference to FRAMEBUFFER_BINDING from Table 6.23.
 
-    (Add a new table 6.yy, "Framebuffer Dependent Values") 
+    (Add a new table 6.yy, "Framebuffer Dependent Values")
 
     Get Value                     Type   Get Command   Initial Value    Description               Section
     ----------------------------  ----   -----------   --------------   -------------------       ------------
@@ -377,12 +377,12 @@ New State
 Issues
 
     1) What should we call this extension?
-  
-       Resolved: ANGLE_framebuffer_blit.  
 
-       This extension is a result of a collaboration between Google and 
+       Resolved: ANGLE_framebuffer_blit.
+
+       This extension is a result of a collaboration between Google and
        TransGaming for the open-source ANGLE project. Typically one would
-       label a multi-vendor extension as EXT, but EXT_framebuffer_blit 
+       label a multi-vendor extension as EXT, but EXT_framebuffer_blit
        is already the name for this on Desktop GL.  Additionally this
        isn't truely a multi-vendor extension because there is only one
        implementation of this.  We'll follow the example of the open-source
@@ -392,27 +392,27 @@ Issues
        EXT_framebuffer_blit?
 
        To date, EXT_framebuffer_blit has not had interactions with OpenGL ES
-       specified and, as far as we know, it has not previously been exposed on 
-       an ES 1.1 or ES 2.0 implementation. Because there are enough 
-       differences between Desktop GL and OpenGL ES, and since OpenGL ES 2.0 
-       has already subsumed the EXT_framebuffer_object functionality (with 
+       specified and, as far as we know, it has not previously been exposed on
+       an ES 1.1 or ES 2.0 implementation. Because there are enough
+       differences between Desktop GL and OpenGL ES, and since OpenGL ES 2.0
+       has already subsumed the EXT_framebuffer_object functionality (with
        some changes) it was deemed a worthwhile exercise to fully specify the
-       interactions.  Additionally, some of the choices in exactly which 
+       interactions.  Additionally, some of the choices in exactly which
        functionality is supported by BlitFramebufferANGLE is dictated by
-       what is reasonable to support on a implementation which is 
-       layered on Direct3D9.  It is not expected that other implementations 
-       will necessary have the same set of restrictions or requirements. 
+       what is reasonable to support on a implementation which is
+       layered on Direct3D9.  It is not expected that other implementations
+       will necessary have the same set of restrictions or requirements.
 
     3) How does this extension differ from EXT_framebuffer_blit?
 
-       This extension is designed to be a pure subset of the 
+       This extension is designed to be a pure subset of the
        EXT_framebuffer_blit functionality as applicable to OpenGL ES 2.0.
 
        Functionality that is unchanged:
         - the split DRAW and READ framebuffer attachment points and related sematics.
         - the token values for the DRAW/READ_FRAMEBUFFER and DRAW/READ_FRAMBUFFER_BINDING
         - the signature of the BlitFramebuffer entry-point.
-       
+
        Additional restrictions imposed by BlitFramebufferANGLE:
         - no color conversions are supported
         - no scaling, stretching or flipping are supported

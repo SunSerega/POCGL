@@ -106,7 +106,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     (mostly add to existing grammar rules, modify a few existing grammar
     rules -- changes marked with "***")
-    
+
     <optionName>            ::= "NV_fragment_program"
 
     <TexInstruction>        ::= <TXDop_instruction>
@@ -133,8 +133,8 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     <TRIop>                 ::= "X2D"
 
-    <TXDop_instruction>     ::= <TXDop> <instResult> "," <instOperandV> "," 
-                                <instOperandV> "," <instOperandV> "," 
+    <TXDop_instruction>     ::= <TXDop> <instResult> "," <instOperandV> ","
+                                <instOperandV> "," <instOperandV> ","
                                 <texTarget>
 
     <TXDop>                 ::= "TXD"
@@ -155,17 +155,17 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     <TEMP_statement>        ::= <varSize> "TEMP" <varNameList>
 
-    <OUTPUT_statement>      ::= <varSize> "OUTPUT" <establishName> "=" 
+    <OUTPUT_statement>      ::= <varSize> "OUTPUT" <establishName> "="
                                   <resultUseD>
 
     <varSize>               ::= "SHORT"
                               | "LONG"
 
-    <paramUseV>             ::= <constantScalar> 
+    <paramUseV>             ::= <constantScalar>
                                   (*** instead of <constantScalar>
                                        <swizzleSuffix>)
 
-    <paramUseS>             ::= <constantScalar> 
+    <paramUseS>             ::= <constantScalar>
                                   (*** instead of <constantScalar>
                                        <scalarSuffix>)
 
@@ -241,7 +241,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     The condition code register is initialized to a vector of EQ values
     each time a fragment program executes.
-    
+
     Modify Section 3.11.4, Fragment Program Execution Environment
 
     (modify instruction table) There are fifty-two fragment program
@@ -304,7 +304,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       SWZ      - - - - X  v       v        extended swizzle
       TEX      - - - X X  v       v        texture sample
       TXB      - - - X X  v       v        texture sample with bias
-      TXD      - - - X X  v,v,v   v        texture sample w/partials      
+      TXD      - - - X X  v,v,v   v        texture sample w/partials
       TXP      - - - X X  v       v        texture sample with projection
       UP2H     - - - X X  s       v        unpack two 16-bit floats
       UP2US    - - - X X  s       v        unpack two unsigned 16-bit scalars
@@ -371,7 +371,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
           return operand;
       }
 
-      float ScalarLoad(floatVec source) 
+      float ScalarLoad(floatVec source)
       {
           float operand;
 
@@ -559,15 +559,15 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
       * the availability of the following instructions:
 
-          - DDX (partial derivative relative to X), 
-          - DDY (partial derivative relative to Y), 
+          - DDX (partial derivative relative to X),
+          - DDY (partial derivative relative to Y),
           - PK2H (pack as two half floats),
-          - PK2US (pack as two unsigned shorts), 
+          - PK2US (pack as two unsigned shorts),
           - PK4B (pack as four signed bytes),
-          - PK4UB (pack as four unsigned bytes), 
-          - RFL (reflection vector), 
-          - SEQ (set on equal to), 
-          - SFL (set on false), 
+          - PK4UB (pack as four unsigned bytes),
+          - RFL (reflection vector),
+          - SEQ (set on equal to),
+          - SFL (set on false),
           - SGT (set on greater than),
           - SLE (set on less than or equal to),
           - SNE (set on not equal to),
@@ -758,7 +758,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       direction = VectorLoad(op1);
       tmp.w = (axis.x * axis.x + axis.y * axis.y +
                axis.z * axis.z);
-      tmp.x = (axis.x * direction.x + axis.y * direction.y + 
+      tmp.x = (axis.x * direction.x + axis.y * direction.y +
                axis.z * direction.z);
       tmp.x = 2.0 * tmp.x;
       tmp.x = tmp.x / tmp.w;
@@ -861,7 +861,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       result.y = (fp16) ((RawBits(tmp) >> 16) & 0xFFFF);
       result.z = (fp16) (RawBits(tmp) & 0xFFFF);
       result.w = (fp16) ((RawBits(tmp) >> 16) & 0xFFFF);
-    
+
     A fragment program will fail to load if it contains a UP2H instruction
     whose operand is a variable declared as "SHORT".
 
@@ -964,7 +964,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     following is performed:
 
       tmp = VectorLoad(op0);
-      if ((tmp.x < 0) || (tmp.y < 0) || 
+      if ((tmp.x < 0) || (tmp.y < 0) ||
           (tmp.z < 0) || (tmp.w < 0))
       {
           exit;
@@ -972,8 +972,8 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     If a condition code is specified, the following is performed:
 
-      if (TestCC(rc.c***) || TestCC(rc.*c**) || 
-          TestCC(rc.**c*) || TestCC(rc.***c)) 
+      if (TestCC(rc.c***) || TestCC(rc.*c**) ||
+          TestCC(rc.**c*) || TestCC(rc.***c))
       {
          exit;
       }
@@ -991,7 +991,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     y, and z components, respectively, of the second vector operand.
     ds/dy, dt/dy, and dr/dy are given by the x, y, and z components of
     the third vector operand.
-    
+
     The resulting sample is mapped to RGBA as described in table 3.21
     and written to the result vector.
 
@@ -1080,12 +1080,12 @@ Dependencies on ARB_fragment_program
                               | "SCS"
                               | "SIN"
 
-    <BINSCop_instruction>   ::= <BINSCop> <instResult> "," <instOperandS> "," 
+    <BINSCop_instruction>   ::= <BINSCop> <instResult> "," <instOperandS> ","
                                 <instOperandS>
 
     <BINSCop>               ::= "POW"
 
-    <BINop_instruction>     ::= <BINop> <instResult> "," <instOperandV> "," 
+    <BINop_instruction>     ::= <BINop> <instResult> "," <instOperandV> ","
                                 <instOperandV>
 
     <BINop>                 ::= "ADD"
@@ -1101,19 +1101,19 @@ Dependencies on ARB_fragment_program
                               | "SUB"
                               | "XPD"
 
-    <TRIop_instruction>     ::= <TRIop> <instResult> "," <instOperandV> "," 
+    <TRIop_instruction>     ::= <TRIop> <instResult> "," <instOperandV> ","
                                 <instOperandV> "," <instOperandV>
 
     <TRIop>                 ::= "CMP"
                               | "MAD"
                               | "LRP"
 
-    <SWZop_instruction>     ::= <SWZop> <instResult> "," <instOperandVNS> "," 
+    <SWZop_instruction>     ::= <SWZop> <instResult> "," <instOperandVNS> ","
                                 <extendedSwizzle>
 
     <SWZop>                 ::= "SWZ"
 
-    <TEXop_instruction>     ::= <TEXop> <instResult> "," <instOperandV> "," 
+    <TEXop_instruction>     ::= <TEXop> <instResult> "," <instOperandV> ","
                                 <texTarget>
 
     <TEXop>                 ::= "TEX"
@@ -1131,7 +1131,7 @@ Dependencies on ARB_fragment_program
     <optTexImageUnitNum>    ::= /* empty */
                               | "[" <texImageUnitNum> "]"
 
-    <texImageUnitNum>       ::= <integer> 
+    <texImageUnitNum>       ::= <integer>
                                 /*[0,MAX_TEXTURE_IMAGE_UNITS_ARB-1]*/
 
     <texTargetType>         ::= "1D"
@@ -1176,7 +1176,7 @@ Dependencies on ARB_fragment_program
 
     <PARAM_singleStmt>      ::= "PARAM" <establishName> <paramSingleInit>
 
-    <PARAM_multipleStmt>    ::= "PARAM" <establishName> "[" <optArraySize> "]" 
+    <PARAM_multipleStmt>    ::= "PARAM" <establishName> "[" <optArraySize> "]"
                                 <paramMultipleInit>
 
     <optArraySize>          ::= /* empty */
@@ -1235,7 +1235,7 @@ Dependencies on ARB_fragment_program
     <attribColor>           ::= "fragment" "." "color"
 
     <paramUseV>             ::= <paramSingleVarName> <swizzleSuffix>
-                              | <paramArrayVarName> "[" <arrayMem> "]" 
+                              | <paramArrayVarName> "[" <arrayMem> "]"
                                 <swizzleSuffix>
                               | <stateSingleItem> <swizzleSuffix>
                               | <programSingleItem> <swizzleSuffix>
@@ -1243,7 +1243,7 @@ Dependencies on ARB_fragment_program
                               | <constantScalar> <swizzleSuffix>
 
     <paramUseS>             ::= <paramSingleVarName> <scalarSuffix>
-                              | <paramArrayVarName> "[" <arrayMem> "]" 
+                              | <paramArrayVarName> "[" <arrayMem> "]"
                                 <scalarSuffix>
                               | <stateSingleItem> <scalarSuffix>
                               | <programSingleItem> <scalarSuffix>
@@ -1280,7 +1280,7 @@ Dependencies on ARB_fragment_program
                               | "state" "." <stateDepthItem>
 
     <stateMaterialItem>     ::= "material" "." <stateMatProperty>
-                              | "material" "." <faceType> "." 
+                              | "material" "." <faceType> "."
                                 <stateMatProperty>
 
     <stateMatProperty>      ::= "ambient"
@@ -1289,7 +1289,7 @@ Dependencies on ARB_fragment_program
                               | "emission"
                               | "shininess"
 
-    <stateLightItem>        ::= "light" "[" <stateLightNumber> "]" "." 
+    <stateLightItem>        ::= "light" "[" <stateLightNumber> "]" "."
                                 <stateLightProperty>
 
     <stateLightProperty>    ::= "ambient"
@@ -1308,9 +1308,9 @@ Dependencies on ARB_fragment_program
                               | "." "scenecolor"
                               | "." <faceType> "." "scenecolor"
 
-    <stateLightProdItem>    ::= "lightprod" "[" <stateLightNumber> "]" "." 
+    <stateLightProdItem>    ::= "lightprod" "[" <stateLightNumber> "]" "."
                                 <stateLProdProperty>
-                              | "lightprod" "[" <stateLightNumber> "]" "." 
+                              | "lightprod" "[" <stateLightNumber> "]" "."
                                 <faceType> "." <stateLProdProperty>
 
     <stateLProdProperty>    ::= "ambient"
@@ -1326,16 +1326,16 @@ Dependencies on ARB_fragment_program
 
     <stateMatrixRows>       ::= <stateMatrixItem>
                               | <stateMatrixItem> "." <stateMatModifier>
-                              | <stateMatrixItem> "." "row" "[" 
-                                <stateMatrixRowNum> ".." <stateMatrixRowNum> 
+                              | <stateMatrixItem> "." "row" "["
+                                <stateMatrixRowNum> ".." <stateMatrixRowNum>
                                 "]"
-                              | <stateMatrixItem> "." <stateMatModifier> "." 
-                                "row" "[" <stateMatrixRowNum> ".." 
+                              | <stateMatrixItem> "." <stateMatModifier> "."
+                                "row" "[" <stateMatrixRowNum> ".."
                                 <stateMatrixRowNum> "]"
 
-    <stateMatrixRow>        ::= <stateMatrixItem> "." "row" "[" 
+    <stateMatrixRow>        ::= <stateMatrixItem> "." "row" "["
                                 <stateMatrixRowNum> "]"
-                              | <stateMatrixItem> "." <stateMatModifier> "." 
+                              | <stateMatrixItem> "." <stateMatModifier> "."
                                 "row" "[" <stateMatrixRowNum> "]"
 
     <stateMatrixItem>       ::= "matrix" "." <stateMatrixName>
@@ -1362,7 +1362,7 @@ Dependencies on ARB_fragment_program
 
     <stateProgramMatNum>    ::= <integer> /*[0,MAX_PROGRAM_MATRICES_ARB-1]*/
 
-    <stateTexEnvItem>       ::= "texenv" <optLegacyTexUnitNum> "." 
+    <stateTexEnvItem>       ::= "texenv" <optLegacyTexUnitNum> "."
                                 <stateTexEnvProperty>
 
     <stateTexEnvProperty>   ::= "color"
@@ -1384,32 +1384,32 @@ Dependencies on ARB_fragment_program
 
     <progEnvParam>          ::= "program" "." "env" "[" <progEnvParamNum> "]"
 
-    <progLocalParams>       ::= "program" "." "local" "[" <progLocalParamNums> 
+    <progLocalParams>       ::= "program" "." "local" "[" <progLocalParamNums>
                                 "]"
 
     <progLocalParamNums>    ::= <progLocalParamNum>
                               | <progLocalParamNum> ".." <progLocalParamNum>
 
-    <progLocalParam>        ::= "program" "." "local" "[" <progLocalParamNum> 
+    <progLocalParam>        ::= "program" "." "local" "[" <progLocalParamNum>
                                 "]"
 
-    <progEnvParamNum>       ::= <integer> 
+    <progEnvParamNum>       ::= <integer>
                                 /*[0,MAX_PROGRAM_ENV_PARAMETERS_ARB-1]*/
 
-    <progLocalParamNum>     ::= <integer> 
+    <progLocalParamNum>     ::= <integer>
                                 /*[0,MAX_PROGRAM_LOCAL_PARAMETERS_ARB-1]*/
 
     <constantVector>        ::= "{" <constantVectorList> "}"
 
     <constantVectorList>    ::= <signedConstantScalar>
-                              | <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
                                 <signedConstantScalar>
-                              | <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
+                                <signedConstantScalar> ","
                                 <signedConstantScalar>
-                              | <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
-                                <signedConstantScalar> "," 
+                              | <signedConstantScalar> ","
+                                <signedConstantScalar> ","
+                                <signedConstantScalar> ","
                                 <signedConstantScalar>
 
     <signedConstantScalar>  ::= <optSign> <constantScalar>
@@ -1480,12 +1480,12 @@ Dependencies on ARB_fragment_program
 
     <swizzleSuffix>         ::= /* empty */
                               | "." <component>
-                              | "." <xyzwComponent> <xyzwComponent> 
+                              | "." <xyzwComponent> <xyzwComponent>
                                 <xyzwComponent> <xyzwComponent>
-                              | "." <rgbaComponent> <rgbaComponent> 
+                              | "." <rgbaComponent> <rgbaComponent>
                                 <rgbaComponent> <rgbaComponent>
 
-    <extendedSwizzle>       ::= <extSwizComp> "," <extSwizComp> "," 
+    <extendedSwizzle>       ::= <extSwizComp> "," <extSwizComp> ","
                                 <extSwizComp> "," <extSwizComp>
 
     <extSwizComp>           ::= <optSign> <xyzwExtSwizSel>
@@ -1568,6 +1568,6 @@ Revision History
                              table.
 
     2     05/16/04  pbrown   Documented terminals in modified fragment program
-                             grammar. 
+                             grammar.
 
     1     --------  pbrown   Internal pre-release revisions.

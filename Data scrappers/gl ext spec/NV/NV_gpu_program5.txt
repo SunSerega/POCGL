@@ -103,7 +103,7 @@ Overview
 
       * further extending texture gather support to provide a new opcode
         (TXGO) that applies a separate texel offset vector to each of the four
-        samples returned by the instruction; 
+        samples returned by the instruction;
 
       * bit manipulation instructions, including ones to find the position of
         the most or least significant set bit, bitfield insertion and
@@ -189,7 +189,7 @@ New Procedures and Functions
 New Tokens
 
     Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
-    GetFloatv, and GetDoublev: 
+    GetFloatv, and GetDoublev:
 
         MAX_GEOMETRY_PROGRAM_INVOCATIONS_NV             0x8E5A
         MIN_FRAGMENT_INTERPOLATION_OFFSET_NV            0x8E5B
@@ -213,14 +213,14 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     string parsing begins with the character immediately following the header
     string.
 
-    (add/change the following rules to the NV_fragment_program4 and 
+    (add/change the following rules to the NV_fragment_program4 and
      NV_gpu_program5 base grammars)
 
-    <SpecialInstruction>    ::= "IPAC" <opModifiers> <instResult> "," 
+    <SpecialInstruction>    ::= "IPAC" <opModifiers> <instResult> ","
                                 <instOperandV>
-                              | "IPAO" <opModifiers> <instResult> "," 
+                              | "IPAO" <opModifiers> <instResult> ","
                                 <instOperandV> "," <instOperandV>
-                              | "IPAS" <opModifiers> <instResult> "," 
+                              | "IPAS" <opModifiers> <instResult> ","
                                 <instOperandV> "," <instOperandS>
 
     <interpModifier>        ::= "SAMPLE"
@@ -317,8 +317,8 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     <TRIop>                 ::= "BFI"
 
-    <TEXop_instruction>     ::= <TEXop> <opModifiers> <instResult> "," 
-                                <instOperandV> "," <instOperandV> "," 
+    <TEXop_instruction>     ::= <TEXop> <opModifiers> <instResult> ","
+                                <instOperandV> "," <instOperandV> ","
                                 <texAccess>
 
     <TEXop>                 ::= "TXG"
@@ -326,12 +326,12 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     <TXDop>                 ::= "TXGO"
 
-    <ATOMop_instruction>    ::= <ATOMop> <opModifiers> <instResult> "," 
+    <ATOMop_instruction>    ::= <ATOMop> <opModifiers> <instResult> ","
                                 <instOperandV> "," <instOperandS>
 
     <ATOMop>                ::= "ATOM"
 
-    <STOREop_instruction>   ::= <STOREop> <opModifiers> <instOperandV> "," 
+    <STOREop_instruction>   ::= <STOREop> <opModifiers> <instOperandV> ","
                                 <instOperandS>
 
     <STOREop>               ::= "STORE"
@@ -394,14 +394,14 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     <namingStatement>       ::= <TEXTURE_statement>
 
-    <BUFFER_statement>      ::= <bufferDeclType> <establishName> 
-                                <optArraySize> <optArraySize> "=" 
+    <BUFFER_statement>      ::= <bufferDeclType> <establishName>
+                                <optArraySize> <optArraySize> "="
                                 <bufferMultInit>
 
     <bufferDeclType>        ::= "CBUFFER"
 
     <TEXTURE_statement>     ::= "TEXTURE" <establishName> <texSingleInit>
-                              | "TEXTURE" <establishName> <optArraySize> 
+                              | "TEXTURE" <establishName> <optArraySize>
                                 <texMultipleInit>
 
     <texSingleInit>         ::= "=" <textureUseDS>
@@ -442,8 +442,8 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     select component sizes.  Implementations are not required to support more
     than one component size, so "SHORT", "LONG", and the default could all
     refer to the same component size.  The "LONG" modifier is supported only
-    for declarations of temporary variables ("TEMP"), and attribute variables 
-    ("ATTRIB") in vertex programs.  The "SHORT" modifier is supported only 
+    for declarations of temporary variables ("TEMP"), and attribute variables
+    ("ATTRIB") in vertex programs.  The "SHORT" modifier is supported only
     for declarations of temporary variables and result variables ("OUTPUT").
 
 
@@ -539,7 +539,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     Modify Section 2.X.3.5, Program Results
 
-    (modify Table X.X) 
+    (modify Table X.X)
 
       Binding                        Components  Description
       -----------------------------  ----------  ----------------------------
@@ -655,7 +655,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
      first ISA supporting the instruction, and to indicate whether the
      instruction supports 64-bit floating-point modifiers.)
 
-      Instr-      Modifiers 
+      Instr-      Modifiers
       uction  V  F I C S H D  Out Inputs    Description
       ------- -- - - - - - -  --- --------  --------------------------------
       ABS     40 6 6 X X X F  v   v         absolute value
@@ -695,7 +695,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
       FRC     40 6 - X X X F  v   v         fraction
       I2F     40 - 6 X - - S  vf  v         integer to float
       IF      40 - - - - - -  -   c         start of if test block
-      IPAC    50 X - X X - F  v   v         interpolate at centroid (fp-only) 
+      IPAC    50 X - X X - F  v   v         interpolate at centroid (fp-only)
       IPAO    50 X - X X - F  v   v,v       interpolate w/offset (fp-only)
       IPAS    50 X - X X - F  v   v,su      interpolate at sample (fp-only)
       KIL     40 X X - - X F  -   vc        kill fragment
@@ -735,7 +735,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
       SGE     40 6 6 X X X F  v   v,v       set on greater than or equal
       SGT     40 6 6 X X X F  v   v,v       set on greater than
       SHL     40 - 6 X - - S  v   v,s       shift left
-      SHR     40 - 6 X - - S  v   v,s       shift right 
+      SHR     40 - 6 X - - S  v   v,s       shift right
       SIN     40 X - X X X F  s   s         sine with reduction to [-PI,PI]
       SLE     40 6 6 X X X F  v   v,v       set on less than or equal
       SLT     40 6 6 X X X F  v   v,v       set on less than
@@ -751,7 +751,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
       TGEQ    50 X X X X - F  v   v         test all equal in thread group
       TRUNC   40 6 6 X X X F  v   vf        truncate (round toward zero)
       TXB     40 X X X X - F  v   vf,t      texture sample with bias
-      TXD     40 X X X X - F  v vf,vf,vf,t  texture sample w/partials      
+      TXD     40 X X X X - F  v vf,vf,vf,t  texture sample w/partials
       TXF     40 X X X X - F  v   vs,t      texel fetch
       TXFMS   40 X X X X - F  v   vs,t      multisample texel fetch
       TXG     41 X X X X - F  v   vf,t      texture gather
@@ -767,9 +767,9 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
       X2D     40 X - X X X F  v   v,v,v     2D coordinate transformation
       XOR     40 - 6 X - - S  v   v,v       exclusive or
       XPD     40 X - X X X F  v   v,v       cross product
-    
+
           Table X.13:  Summary of NV_gpu_program5 instructions.
-    
+
       The "V" column indicates the first assembly language in the
       NV_gpu_program4 family (if any) supporting the opcode.  "41" and "50"
       indicate NV_gpu_program4_1 and NV_gpu_program5, respectively.
@@ -805,7 +805,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
       Instructions labeled "fp-only" and "gp-only" are supported only for
       fragment and geometry programs, respectively.
-    
+
 
     Modify Section 2.X.4.1, Program Instruction Modifiers
 
@@ -873,8 +873,8 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
       ROUND     Inexact conversion results round to nearest value (even)
       CEIL      Inexact conversion results round to larger value
       FLR       Inexact conversion results round to smaller value
-      TRUNC     Inexact conversion results round to value closest to zero 
-      
+      TRUNC     Inexact conversion results round to value closest to zero
+
 
     "F", "U", and "S" modifiers are base data type modifiers and specify that
     the instruction should operate on floating-point, unsigned integer, or
@@ -941,8 +941,8 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     modifiers specify the operation to perform on the memory being accessed,
     and are described in more detail in the description of this instruction.
 
-    For load and store operations, the "COH" modifier controls whether the 
-    operation uses a coherent level of the cache hierarchy, as described in 
+    For load and store operations, the "COH" modifier controls whether the
+    operation uses a coherent level of the cache hierarchy, as described in
     Section 2.X.4.5.
 
     For load and store operations, the "VOL" modifier controls whether the
@@ -972,7 +972,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     "S8", "S16", "S32", "S64", "U8", "U16", "U32", and "U64" storage modifiers
     specify the data type of the vector operand and the converted result.  Two
     storage modifiers must be provided, which specify the data type of the
-    result and the operand, respectively.  
+    result and the operand, respectively.
 
     For the CVT (data type conversion) instruction, the "ROUND", "CEIL",
     "FLR", and "TRUNC" modifiers specify how to round converted results that
@@ -1214,7 +1214,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     and a storage modifier <modifier>, the memory store can be described by
     the following code:
 
-      void BufferMemoryStore(char *address, operand_t_vec operand, 
+      void BufferMemoryStore(char *address, operand_t_vec operand,
                              OpModifier modifier)
       {
         switch (modifier) {
@@ -1349,7 +1349,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     If a fragment program specifies the "NV_early_fragment_tests" option, the
     depth and stencil tests will be performed prior to fragment program
     invocation, as described in Section 3.X.
-    
+
 
     Modify Section 2.X.7.Y of the NV_geometry_program4 specification
 
@@ -1361,7 +1361,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     The PRIMITIVE_IN statement declares the type of primitives seen by a
     geometry program.  The single argument must be one of "POINTS", "LINES",
     "LINES_ADJACENCY", "TRIANGLES", "TRIANGLES_ADJACENCY", or "PATCHES".
-    
+
 
     (Add a new optional program declaration to declare a geometry shader that
      is run <N> times per primitive.)
@@ -1369,7 +1369,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     Geometry programs support three types of mandatory declaration statements,
     as described below.  Each of the three must be included exactly once in
     the geometry program.
-    
+
     ...
 
     Geometry programs also support one optional declaration statement.
@@ -1439,7 +1439,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
         writeval = max(tmp0.x, result);
         break;
       case IWRAP:
-        writeval = (result >= tmp0.x) ? 0 : result+1; 
+        writeval = (result >= tmp0.x) ? 0 : result+1;
         break;
       case DWRAP:
         writeval = (result == 0 || result > tmp0.x) ? tmp0.x : result-1;
@@ -1467,7 +1467,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     ATOM performs a scalar atomic operation.  The <y>, <z>, and <w> components
     of the result vector are undefined.
-      
+
     ATOM supports no base data type modifiers, but requires exactly one
     storage modifier.  The base data types of the result vector, and the first
     (vector) operand are derived from the storage modifier.  The second
@@ -1556,7 +1556,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
           Type mask = ((1 << bits) - 1) << offset;
           return ((src << offset) & mask) | (dst & (~mask));
         }
-      }    
+      }
 
     BFI supports only signed and unsigned integer data type modifiers.  If no
     type modifier is specified, the operand and result vectors are treated as
@@ -1568,7 +1568,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     The BFR instruction performs a component-wise bit reversal of the single
     vector operand to produce a result vector.  Bit reversal is performed by
     exchanging the most and least significant bits, the second-most and
-    second-least significant bits, and so on. 
+    second-least significant bits, and so on.
 
       tmp0 = VectorLoad(op0);
       result.x = BitReverse(tmp0.x);
@@ -1625,7 +1625,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     The BTFM instruction searches for the most significant bit of each
     component of the single source vector, yielding a result vector comprising
-    the bit number of the located bit for each component.  
+    the bit number of the located bit for each component.
 
       tmp0 = VectorLoad(op0);
       result.x = FindMSB(tmp0.x);
@@ -1745,7 +1745,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     attribute named by the single vector operand at the centroid location.
     The result vector would be identical to the value obtained by a MOV
     instruction if the attribute variable were declared using the CENTROID
-    modifier.  
+    modifier.
 
     When interpolating an attribute variable with this instruction, the
     CENTROID and SAMPLE attribute variable modifiers are ignored.  The FLAT
@@ -1768,7 +1768,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     z and w components of the second vector operand are ignored.  The (x,y)
     position used for interpolating the attribute variable is obtained by
     adding the (x,y) offsets in the second vector operand to the (x,y)
-    position of the pixel center.  
+    position of the pixel center.
 
     The range of offsets supported by the IPAO instruction is
     implementation-dependent.  The position used to interpolate the attribute
@@ -1983,7 +1983,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     types, the TRUE value is -1 and the FALSE value is 0.  For unsigned
     integer data types, the TRUE value is the maximum integer value (all bits
     are ones) and the FALSE value is zero.
-     
+
 
     Section 2.X.8.Z, TGANY:  Test for Any Non-Zero in a Thread Group
 
@@ -2087,14 +2087,14 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     To determine the four texels to sample, the minification and magnification
     filters are ignored and the rules for LINEAR filter are applied to the
     base level of the texture image to determine the texels T_i0_j1, T_i1_j1,
-    T_i1_j0, and T_i0_j0, as defined in equations 3.23 through 3.25. The 
-    texels are then converted to texture source colors (Rs,Gs,Bs,As) according 
-    to table 3.21, followed by application of the texture swizzle as described 
-    in section 3.8.13.  A four-component vector is returned by taking one of 
-    the four components of the swizzled texture source colors from each of the 
-    four selected texels.  The component is selected using the 
-    <texImageUnitComp> grammar rule, by adding a scalar suffix 
-    (".x", ".y", ".z", ".w") to the identified texture; if no scalar suffix 
+    T_i1_j0, and T_i0_j0, as defined in equations 3.23 through 3.25. The
+    texels are then converted to texture source colors (Rs,Gs,Bs,As) according
+    to table 3.21, followed by application of the texture swizzle as described
+    in section 3.8.13.  A four-component vector is returned by taking one of
+    the four components of the swizzled texture source colors from each of the
+    four selected texels.  The component is selected using the
+    <texImageUnitComp> grammar rule, by adding a scalar suffix
+    (".x", ".y", ".z", ".w") to the identified texture; if no scalar suffix
     is provided, the first component is selected.
 
     TXG only operates on 2D, SHADOW2D, CUBE, SHADOWCUBE, ARRAY2D,
@@ -2105,7 +2105,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     When using a "SHADOW" texture target, component selection is ignored.
     Instead, depth comparisons are performed on the depth values for each of
     the four selected texels, and 0/1 values are returned based on the results
-    of the comparison.  
+    of the comparison.
 
     As with other texture accesses, the results of a texture gather operation
     are undefined if the texture target in the instruction is incompatible
@@ -2147,23 +2147,23 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     texture coordinate to select a texel.  The minification and magnification
     filters are ignored and the rules for LINEAR filtering are used to select
     the texel T_i0_j0, as defined in equations 3.23 through 3.25, from the
-    base level of the texture image.  The texels are then converted to texture 
-    source colors (Rs,Gs,Bs,As) according to table 3.21, followed by 
-    application of the texture swizzle as described in section 3.8.13.  A 
-    four-component vector is returned by taking one of the four components 
-    of the swizzled texture source colors from each of the four selected 
-    texels.  The component is selected using the <texImageUnitComp> grammar 
-    rule, by adding a scalar suffix (".x", ".y", ".z", ".w") to the identified 
+    base level of the texture image.  The texels are then converted to texture
+    source colors (Rs,Gs,Bs,As) according to table 3.21, followed by
+    application of the texture swizzle as described in section 3.8.13.  A
+    four-component vector is returned by taking one of the four components
+    of the swizzled texture source colors from each of the four selected
+    texels.  The component is selected using the <texImageUnitComp> grammar
+    rule, by adding a scalar suffix (".x", ".y", ".z", ".w") to the identified
     texture; if no scalar suffix is provided, the first component is selected.
 
     TXGO only operates on 2D, SHADOW2D, ARRAY2D, SHADOWARRAY2D, RECT, and
     SHADOWRECT texture targets; a program will fail to compile if any other
-    texture target is used.  
+    texture target is used.
 
     When using a "SHADOW" texture target, component selection is ignored.
     Instead, depth comparisons are performed on the depth values for each of
     the four selected texels, and 0/1 values are returned based on the results
-    of the comparison.  
+    of the comparison.
 
     As with other texture accesses, the results of a texture gather operation
     are undefined if the texture target in the instruction is incompatible
@@ -2234,7 +2234,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
       lambda = ComputeLOD(ddx, ddy);
       result = TextureSample(tmp, lambda, ddx, ddy, itmp);
 
-        
+
     Section 2.X.8.Z, UP64:  Unpack 64-bit Component
 
     The UP64 instruction produces a vector result with 32-bit components by
@@ -2295,7 +2295,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     "vertex[0]" refers to the first vertex of the patch, and "vertex[<n>-1]"
     refers to the last vertex.
 
-    
+
     Modify Section 2.14.6.2 of the NV_geometry_program4 specification,
     Geometry Program Output Primitives
 
@@ -2352,8 +2352,8 @@ Additions to Chapter 3 of the OpenGL 3.0 Specification (Rasterization)
 
    Section 3.11.4.5.3, ARB_blend_func_extended Option
 
-   If a fragment program specifies the "ARB_blend_func_extended" option, dual 
-   source color outputs as described in ARB_blend_func_extended are made 
+   If a fragment program specifies the "ARB_blend_func_extended" option, dual
+   source color outputs as described in ARB_blend_func_extended are made
    available through the use of the "result.color[n].primary" and
    "result.color[n].secondary" result bindings, corresponding to SRC_COLOR
    and SRC1_COLOR, respectively, for the fragment color output numbered <n>.
@@ -2367,14 +2367,14 @@ Operations and the Frame Buffer)
 
     (Replace the complicated set of conditions with the following)
 
-    Specifically, the values of rendered fragments are undefined if any 
-    shader stage fetches texels from a given mipmap level, cubemap face, and 
-    array layer of a texture if that same mipmap level, cubemap face, and 
-    array layer of the texture can be written to via fragment shader outputs, 
-    even if the reads and writes are not in the same Draw call. However, an 
+    Specifically, the values of rendered fragments are undefined if any
+    shader stage fetches texels from a given mipmap level, cubemap face, and
+    array layer of a texture if that same mipmap level, cubemap face, and
+    array layer of the texture can be written to via fragment shader outputs,
+    even if the reads and writes are not in the same Draw call. However, an
     application can insert MemoryBarrier(TEXTURE_FETCH_BARRIER_BIT_NV) between
-    Draw calls that have such read/write hazards in order to guarantee that 
-    writes have completed and caches have been invalidated, as described in 
+    Draw calls that have such read/write hazards in order to guarantee that
+    writes have completed and caches have been invalidated, as described in
     section 2.20.X.
 
 
@@ -2544,7 +2544,7 @@ Issues
       and parameter buffers accessed with an index must be declared as arrays,
       so the assembler knows which textures might be accessed this way.
       Additionally, accessing an array of textures or parameter buffers with
-      an out-of-bounds index will yield undefined results.  
+      an out-of-bounds index will yield undefined results.
 
       In particular, there is no limitation on the values used for indexing --
       they are not required to be true constants and are not required to have
@@ -2713,7 +2713,7 @@ Issues
         LONG ATTRIB vector64;
 
       The LONG modifier can only be used vertex program inputs, and can not be
-      used for inputs of any program type or outputs of any program type.  
+      used for inputs of any program type or outputs of any program type.
 
       For other cases, this extension provides the PK64 and UP64 instructions
       that provide a mechanism to pass 64-bit components using consecutive
@@ -2721,14 +2721,14 @@ Issues
       components can be passed to a vertex shader using multiple vertex
       attributes without using the VertexAttribL APIs with the following code:
 
-        /* Pass the X/Y components in vertex attribute 0 (X/Y/Z/W).  Use 
+        /* Pass the X/Y components in vertex attribute 0 (X/Y/Z/W).  Use
            stride to skip over Z. */
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 3*sizeof(GLdouble), 
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 3*sizeof(GLdouble),
                               (GLdouble *) buffer);
 
         /* Pass the Z components in vertex attribute 1 (X/Y).  Use stride to
            skip over original X/Y components. */
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 3*sizeof(GLdouble), 
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 3*sizeof(GLdouble),
                               (GLdouble *) buffer + 2);
 
       In this example, the vertex program would use the PK64 instruction to
@@ -2980,12 +2980,12 @@ Issues
 
       RESOLVED:  Implementations may choose implement full memory protection,
       in which case accesses using the wrong type of memory mapping will fault
-      and lead to termination of the application.  
+      and lead to termination of the application.
 
       However, full memory protection is not required in this extension --
       implementations may choose to substitute a read-write mapping in place
       of a read-only or write-only mapping.  As a result, we specify the
-      result of such invalid loads and stores to be undefined.  
+      result of such invalid loads and stores to be undefined.
 
       Note that if a program erroneously writes to nominally read-only
       mappings, the results may be weird.  If the implementation substitutes a
@@ -3004,7 +3004,7 @@ Issues
       characteristics (where threads are grouped and run as a unit).  Using
       ATOM instructions with a single memory address to implement a critical
       section will result in serial execution -- only one of the hundreds of
-      threads can execute code in the critical section at a time.  
+      threads can execute code in the critical section at a time.
 
       When a global operation would be done under a lock, it may be possible
       to improve performance if the algorithm can be parallelized to have
@@ -3049,20 +3049,20 @@ Issues
 
     (18) How do the TXG and TXGO opcodes work with sRGB textures?
 
-       RESOLVED. Gamma-correction is applied to the texture source color 
+       RESOLVED. Gamma-correction is applied to the texture source color
        before "gathering" and hence applies to all four components, unless
-       the texture swizzle of the selected component is ALPHA in which case 
+       the texture swizzle of the selected component is ALPHA in which case
        no gamma-correction is applied.
 
     (19) How can render-to-texture algorithms take advantage of
          MemoryBarrierEXT, nominally provided for global memory transactions?
 
       RESOLVED: Many algorithms use RTT to ping-pong between two allocations,
-      using the result of one rendering pass as the input to the next. 
+      using the result of one rendering pass as the input to the next.
       Existing mechanisms require expensive FBO Binds, DrawBuffer changes, or
       FBO attachment changes to safely swap the render target and texture. With
-      memory barriers, layered geometry shader rendering, and texture arrays, 
-      an application can very cheaply ping-pong between two layers of a single 
+      memory barriers, layered geometry shader rendering, and texture arrays,
+      an application can very cheaply ping-pong between two layers of a single
       texture. i.e.
 
         X = 0;
@@ -3070,17 +3070,17 @@ Issues
         // Attach the array texture to an FBO using FramebufferTextureARB
         while (!done) {
           // Stuff X in a constant, vertex attrib, etc.
-          Draw - 
+          Draw -
             Texturing from layer X;
             Writing gl_Layer = 1 - X in the geometry shader;
-          
+
           MemoryBarrierNV(TEXTURE_FETCH_BARRIER_BIT_NV);
           X = 1 - X;
         }
 
-      However, be warned that this requires geometry shaders and hence adds 
+      However, be warned that this requires geometry shaders and hence adds
       the overhead that all geometry must pass through an additional program
-      stage, so an application using large amounts of geometry could become 
+      stage, so an application using large amounts of geometry could become
       geometry-limited or more shader-limited.
 
     (20) What is the ".PREC" instruction modifier good for?
@@ -3143,7 +3143,7 @@ Issues
       executing the slow path unconditionally.  These instructions allow code
       like:
 
-        # Condition code matches NE if and only if condition.x is non-zero 
+        # Condition code matches NE if and only if condition.x is non-zero
         # for all threads.
         TGALL.S.CC cc.x, condition.x;
         IF NE.x;
@@ -3180,7 +3180,7 @@ Revision History
 
      3    04/13/10  pbrown    Remove F32 support from ATOM.ADD.
 
-     2    03/22/10  pbrown    Various wording updates to the spec overview, 
+     2    03/22/10  pbrown    Various wording updates to the spec overview,
                               dependencies, issues, and body.  Remove various
                               spec language that has been refactored into the
                               EXT_shader_image_load_store specification.

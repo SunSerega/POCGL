@@ -114,9 +114,9 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     <varModifier>           ::= <interpModifier>
 
     <SpecialInstruction>    ::= "KIL" <opModifiers> <killCond>
-                              | "DDX" <opModifiers> <instResult> "," 
+                              | "DDX" <opModifiers> <instResult> ","
                                 <instOperandV>
-                              | "DDY" <opModifiers> <instResult> "," 
+                              | "DDY" <opModifiers> <instResult> ","
                                 <instOperandV>
 
     <killCond>              ::= <instOperandV>
@@ -409,7 +409,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     (modify Table X.13 in section 2.X.4, Program Instructions, to include the
     following.)
 
-                Modifiers 
+                Modifiers
     Instruction F I C S H D  Inputs     Out  Description
     ----------- - - - - - -  ---------- ---  --------------------------------
     DDX         X - X X X F  v          v    partial derivative relative to X
@@ -553,7 +553,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     discarded if any of its components are negative:
 
       tmp = VectorLoad(op0);
-      if ((tmp.x < 0) || (tmp.y < 0) || 
+      if ((tmp.x < 0) || (tmp.y < 0) ||
           (tmp.z < 0) || (tmp.w < 0))
       {
           exit;
@@ -565,8 +565,8 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     If a condition code test is provided, the fragment is discarded if any
     component of the test passes:
 
-      if (TestCC(rc.c***) || TestCC(rc.*c**) || 
-          TestCC(rc.**c*) || TestCC(rc.***c)) 
+      if (TestCC(rc.c***) || TestCC(rc.*c**) ||
+          TestCC(rc.**c*) || TestCC(rc.***c))
       {
          exit;
       }
@@ -577,7 +577,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
 
     Replace Section 2.14.8, and rename it to "Vertex Attribute Clipping"
     (p. 70).
- 
+
     After lighting, clamping or masking and possible flatshading, vertex
     attributes, including colors, texture and fog coordinates, shader varying
     variables, and point sizes computed on a per vertex basis, are clipped.
@@ -811,7 +811,7 @@ Revision History
      5    03/11/09  pbrown    Fix section numbers for option/declaration
                               sections.
 
-     4    11/06/07  pbrown    Documented interaction between the FLAT 
+     4    11/06/07  pbrown    Documented interaction between the FLAT
                               interpolation modifier and point sprite
                               coordinate replacement.
 

@@ -1,6 +1,6 @@
 
 Name
-    
+
     EXT_texture_filter_anisotropic
 
 Name Strings
@@ -129,7 +129,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
  --  Sections 3.8.5 "Texture Minification" and 3.8.6 "Texture Magnification"
 
      After the first paragraph in Section 3.8.5:
- 
+
      "When the texture's value of TEXTURE_MAX_ANISOTROPY_EXT is equal to 1.0,
      the GL uses an isotropic texture filtering approach as described in
      this section and Section 3.8.6.  However, when the texture's value
@@ -229,7 +229,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
      TauAniso = 1/N \ Tau(u(x,y)+dudy(i/(N+1)-1/2), v(x,y)+dvdy(i/(N+1)-1/2)), Py >= Px
                     /
                     ---
-                    i=1 
+                    i=1
 
      "
 
@@ -290,7 +290,7 @@ Revision History
 
   2018-05-23 (Nicolas Capens) - clarify interaction with sampler objects.
 
-  11/12/14 (Jon Leech) - Fix spelling of TEXTURE_MAX_ANISOTROPY 
+  11/12/14 (Jon Leech) - Fix spelling of TEXTURE_MAX_ANISOTROPY
   (public Bug 1263).
 
   9/26/07 (Jon Leech) - assigned OpenGL ES extension number so

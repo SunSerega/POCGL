@@ -83,7 +83,7 @@ Issues
 
         RESOLVED: They move smoothly as the point moves around on the
         screen, even though the pixels touched by the point do not.  The
-        exact formula is given in the spec below.  
+        exact formula is given in the spec below.
 
         A point sprite can be thought of as a quad whose upper-left corner has
         (s,t) texture coordinates of (0,0) and whose lower-right corner has
@@ -96,8 +96,8 @@ Issues
               ^
             +y| (0,0)
               |   +-----+
-              |   |     |   
-              |   |  P  |   
+              |   |     |
+              |   |  P  |
               |   |     |
               |   +-----+
               |       (1,1)
@@ -173,7 +173,7 @@ Issues
         a given texture unit is GL_TRUE, the texture coordinate set for
         that texture unit is (s,t,0,1) where the point sprite-overridden
         s and t are described in the amended Section 3.3 below.  The
-        important point is that r and q are forced to 0 and 1, respectively. 
+        important point is that r and q are forced to 0 and 1, respectively.
 
         For fragment program extensions, r and q correspond to the z and w
         components of the respective fragment attribute.
@@ -309,7 +309,7 @@ Additions to Chapter 3 of the OpenGL 1.4 Specification (Rasterization)
     the minimum and maximum point size and the point fade threshold size,
     three floating-point values specifying the distance attenuation
     coefficients, a bit indicating whether or not antialiasing is
-    enabled, a bit indicating whether or not point sprites are enabled, 
+    enabled, a bit indicating whether or not point sprites are enabled,
     and a bit for the point sprite texture coordinate replacement mode
     for each texture unit."
 
@@ -351,8 +351,8 @@ State Requests)
     None.
 
 Interactions with NV_point_sprite
-    
-    ARB_point_sprite is a functional subset of NV_point_sprite.  
+
+    ARB_point_sprite is a functional subset of NV_point_sprite.
 
     The only functional difference between the extensions is that
     NV_point_sprite provides the POINT_SPRITE_R_MODE_NV control.  This mode
@@ -370,7 +370,7 @@ Interactions with NV_point_sprite
     of r coordinates for point sprites (forced to zero) is replaced with the
     corresponding language from NV_point_sprite (controlled by
     POINT_SPRITE_R_MODE_NV).
-    
+
 
 Errors
 
@@ -400,7 +400,7 @@ Revision History
     ----  --------  --------  --------------------------------------------
     7     07/22/03  pbrown    Marked point parameter issue resolved.
 
-    6     07/18/03  pbrown    Removed POINT_SPRITE_R_MODE_CONTROL.  
+    6     07/18/03  pbrown    Removed POINT_SPRITE_R_MODE_CONTROL.
 
                               Expanded on spec issue documenting the inversion
                               of the "t" texture coordinate relative to the

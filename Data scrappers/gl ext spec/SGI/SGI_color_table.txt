@@ -178,7 +178,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     (The relationship of internal format tokens to "base internal formats" is
     described in EXT_texture.)
-    
+
     It is acceptable for an implementation to vary its allocation of internal
     component resolution based any ColorTableSGI parameter, but the allocation
     must not be a function of any other factor, and cannot be changed once it is
@@ -432,7 +432,7 @@ GLX Protocol
             16                          unused
             n*4         LISTofINT32     params
 
-        Note that n may be zero, indicating that a GL error occurred. 
+        Note that n may be zero, indicating that a GL error occurred.
 
 
         GetColorTableParameterfvSGI
@@ -456,7 +456,7 @@ GLX Protocol
             16                          unused
             n*4         LISTofFLOAT32   params
 
-        Note that n may be zero, indicating that a GL error occurred. 
+        Note that n may be zero, indicating that a GL error occurred.
 
 
         GetColorTableSGI
@@ -489,7 +489,7 @@ GLX Protocol
     <swap_bytes>, <format>, and <type>. No extra padding is needed after
         <pixels> because the image format already pads to 32 bits.
 
- 
+
 Dependencies on EXT_abgr
 
     If EXT_abgr is supported, the <format> parameters of ColorTableSGI and

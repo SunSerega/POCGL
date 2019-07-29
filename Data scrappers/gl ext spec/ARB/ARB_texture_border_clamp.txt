@@ -67,11 +67,11 @@ IP Status
 
 Issues
 
-    (1) Is this formulation correct for higher-order texture filters 
+    (1) Is this formulation correct for higher-order texture filters
         (e.g., cubic or anisotropic filters)?
-        
+
        RESOLVED:  No.  A more appropriate formulation would clamp the texture
-       coordinates in texel space. 
+       coordinates in texel space.
 
 New Procedures and Functions
 
@@ -96,11 +96,11 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     Name              Type      Legal Values
     ==============    =======   ====================
     TEXTURE_WRAP_S    integer   CLAMP, CLAMP_TO_EDGE, REPEAT,
-                                CLAMP_TO_BORDER_ARB 
+                                CLAMP_TO_BORDER_ARB
     TEXTURE_WRAP_T    integer   CLAMP, CLAMP_TO_EDGE, REPEAT,
-                                CLAMP_TO_BORDER_ARB 
+                                CLAMP_TO_BORDER_ARB
     TEXTURE_WRAP_R    integer   CLAMP, CLAMP_TO_EDGE, REPEAT,
-                                CLAMP_TO_BORDER_ARB 
+                                CLAMP_TO_BORDER_ARB
 
 
     Modify Section 3.8.4, Texture Wrap Modes, p.124
@@ -173,7 +173,7 @@ New State
 Revision History
 
     1.0,  06/22/2000 prbrown1:   Added issue w.r.t. higher order filters.
-    
+
     0.2,  05/23/2000 prbrown1:   Removed dependency on SGIS_texture_filter4
                                  per ARB guidelines.
 

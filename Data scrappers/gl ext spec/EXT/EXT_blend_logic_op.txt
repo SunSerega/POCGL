@@ -26,7 +26,7 @@ Overview
     logical operation is as specified by LogicOp.  While only the XOR
     operation may find wide application, the generality of full logical
     operations is allowed.
-    
+
 New Procedures and Functions
 
     None

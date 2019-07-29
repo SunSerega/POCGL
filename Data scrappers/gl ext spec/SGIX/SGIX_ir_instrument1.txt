@@ -63,7 +63,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     The first (index 0) will be the IR_INSTRUMENT1_SGIX enum itself,
     the second word (index 1) will be 10. The following words are
 
-    COUNTEMPTY (index 2) 
+    COUNTEMPTY (index 2)
     Increments each time a datum such as a word of screen-space
     geometry, or word of a pixel or texel could have been written to
     next stage of the GL pipeline, but wasn't because there was no

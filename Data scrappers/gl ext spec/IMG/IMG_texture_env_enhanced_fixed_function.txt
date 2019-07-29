@@ -20,7 +20,7 @@ Status
     Complete
 
 Version
-    
+
     1.0, 11 May 2009
 
 Number
@@ -31,19 +31,19 @@ Dependencies
 
     None
 
-    This extension is written against the OpenGL 1.3 Specification. The intention 
-    is that this extension is only exposed, within a OpenGL-ES 1.0 impementation 
+    This extension is written against the OpenGL 1.3 Specification. The intention
+    is that this extension is only exposed, within a OpenGL-ES 1.0 impementation
     and the reader should be aware of the restrictions of OpenGL-ES 1.0 with respect
     to this OpenGL 1.3 extension.
 
 Overview
 
-    This extension adds new texture environment functions to allow use of 
-    of blend modes supported in some early MBX-lite devices, including dot3 functionality. 
+    This extension adds new texture environment functions to allow use of
+    of blend modes supported in some early MBX-lite devices, including dot3 functionality.
     It is superceded by OpenGL-ES 1.1 which includes tex_env_combine.
 
-    New functions may be specified by calling TexEnv with the following tokens: 
-    MODULATE_COLOR_IMG, RECIP_ADD_SIGNED_ALPHA_IMG, TEXTURE_ALPHA_MODULATE_IMG, 
+    New functions may be specified by calling TexEnv with the following tokens:
+    MODULATE_COLOR_IMG, RECIP_ADD_SIGNED_ALPHA_IMG, TEXTURE_ALPHA_MODULATE_IMG,
     FACTOR_ALPHA_MODULATE_IMG, FRAGMENT_ALPHA_MODULATE_IMG, ADD_BLEND_IMG, DOT3_RGBA.
 
 New Procedures and Functions
@@ -73,49 +73,49 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     section 3.8.12 should be modified as follows:
 
     TEXTURE_ENV_MODE may be set to one of REPLACE, MODULATE, DECAL,
-    BLEND, ADD, MODULATE_COLOR_IMG, RECIP_ADD_SIGNED_ALPHA_IMG, 
-    TEXTURE_ALPHA_MODULATE_IMG, FACTOR_ALPHA_MODULATE_IMG, 
+    BLEND, ADD, MODULATE_COLOR_IMG, RECIP_ADD_SIGNED_ALPHA_IMG,
+    TEXTURE_ALPHA_MODULATE_IMG, FACTOR_ALPHA_MODULATE_IMG,
     FRAGMENT_ALPHA_MODULATE_IMG, ADD_BLEND_IMG, DOT3_RGBA_IMG, or COMBINE;
 
     Table 3.24 is added as follows:
 
     Base                MODULATE_COLOR_IMG            RECIP_ADD_SIGNED_ALPHA_IMG
-    Internal Format     tex func                      tex func  
+    Internal Format     tex func                      tex func
     ---------------     ------------------            --------------------------
 
-    ALPHA               Cv = Cf                       Cv = Cf      
+    ALPHA               Cv = Cf                       Cv = Cf
                         Av = As                       Av = (1-As) + Af - 0.5
 
     LUMINANCE           Cv = CfCs                     Cv = Cf
-    (or 1)              Av = Af                       Av = Af - 0.5          
-        
-    LUMINANCE_ALPHA     Cv = CfCs                     Cv = Cf      
+    (or 1)              Av = Af                       Av = Af - 0.5
+
+    LUMINANCE_ALPHA     Cv = CfCs                     Cv = Cf
     (or 2)              Av = As                       Av = (1-As) + Af - 0.5
 
-    INTENSITY           Cv = CfCs                     Cv = Cf      
-                        Av = As                       Av = (1-As) + Af - 0.5     
+    INTENSITY           Cv = CfCs                     Cv = Cf
+                        Av = As                       Av = (1-As) + Af - 0.5
 
     RGB                 Cv = CfCs                     Cv = Cf
-    (or 3)              Av = Af                       Av = Af - 0.5  
+    (or 3)              Av = Af                       Av = Af - 0.5
 
     RGBA                Cv = CfCs                     Cv = Cf
-    (or 4)              Av = As                       Av = (1-As) + Af - 0.5     
+    (or 4)              Av = As                       Av = (1-As) + Af - 0.5
 
 
     Base                TEXTURE_ALPHA_MODULATE_IMG    FACTOR_ALPHA_MODULATE_IMG
-    Internal Format     tex func                      tex func  
+    Internal Format     tex func                      tex func
     ---------------     --------------------------    -------------------------
 
-    ALPHA               Cv = ZERO                     Cv = ZERO  
+    ALPHA               Cv = ZERO                     Cv = ZERO
                         Av = As                       Av = Ac
 
     LUMINANCE           Cv = Cs                       Cv = AcCs
-    (or 1)              Av = ONE                      Av = Ac           
-        
-    LUMINANCE_ALPHA     Cv = AsCs                     Cv = AcCs  
+    (or 1)              Av = ONE                      Av = Ac
+
+    LUMINANCE_ALPHA     Cv = AsCs                     Cv = AcCs
     (or 2)              Av = As                       Av = Ac
 
-    INTENSITY           Cv = AsCs                     Cv = AcCs      
+    INTENSITY           Cv = AsCs                     Cv = AcCs
                         Av = As                       Av = Ac
 
     RGB                 Cv = Cs                       Cv = AcCs
@@ -126,7 +126,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
 
     Base                FRAGMENT_ALPHA_MODULATE_IMG    ADD_BLEND_IMG
-    Internal Format     tex func                       tex func  
+    Internal Format     tex func                       tex func
     ---------------     -----------------------        -------------
 
     ALPHA               Cv = ZERO                      Cv = Cf
@@ -134,7 +134,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
     LUMINANCE           Cv = AfCs                      Cv = Cf + (1 - Af)Cs
     (or 1)              Av = Af                        Av = Af
-        
+
     LUMINANCE_ALPHA     Cv = AfCs                      Cv = Cf + (1 - Af)Cs
     (or 2)              Av = Af                        Av = AfAs
 
@@ -149,20 +149,20 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
 
     Base                DOT3_RGBA_IMG
-    Internal Format     tex func    
-    ---------------     ---------    
+    Internal Format     tex func
+    ---------------     ---------
 
-    ALPHA               Undefined    
-                        Undefined    
+    ALPHA               Undefined
+                        Undefined
 
-    LUMINANCE           Undefined    
-     (or 1)             Undefined    
-        
-    LUMINANCE_ALPHA     Undefined    
-     (or 2)             Undefined    
+    LUMINANCE           Undefined
+     (or 1)             Undefined
 
-    INTENSITY           Undefined    
-                        Undefined    
+    LUMINANCE_ALPHA     Undefined
+     (or 2)             Undefined
+
+    INTENSITY           Undefined
+                        Undefined
 
     RGB                 Cv = Dot3(Cf,Cs)
     (or 3)              Av = Dot3(Cf,Cs)
@@ -224,4 +224,4 @@ Revision History
     0.2, 13/01/2004  gdc: Formatting changes.
     0.3, 25/01/2005  nt:  Updated copyright date.
     1.0, 11/05/2009  bcb: Final tidy up for publish.
-  
+

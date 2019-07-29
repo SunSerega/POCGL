@@ -438,7 +438,7 @@ Dependencies on EXT_discard_framebuffer:
 
     If EXT_discard_framebuffer is supported, in Section 4.5 replace
     the sentence:
-    
+
     "<target> must be FRAMEBUFFER."
 
     with

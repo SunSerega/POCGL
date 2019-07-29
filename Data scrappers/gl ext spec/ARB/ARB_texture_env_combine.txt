@@ -72,19 +72,19 @@ Issues
  1. Should the explicit bias be removed in favor of an implcit bias as
     part of a ADD_SIGNED_ARB function?
 
-    - RESOLVED: Yes. This pre-scale bias is a special case and will 
+    - RESOLVED: Yes. This pre-scale bias is a special case and will
       be treated as such.
 
  2. Should the primary color of the incoming fragment be available to
     all texture environments?  Currently it is only available to the
     texture environment of texture unit 0.
 
-    - RESOLVED: Yes. PRIMARY_COLOR_ARB has been added as an input 
+    - RESOLVED: Yes. PRIMARY_COLOR_ARB has been added as an input
       source.
 
  3. Should textures from other texture units be allowed as sources?
 
-    - RESOLVED: NO. Even though this adds a lot of flexibility that 
+    - RESOLVED: NO. Even though this adds a lot of flexibility that
       folks can use today, there is not enough support amonst the
       ARB participants to add it to the base spec.
 
@@ -93,17 +93,17 @@ Issues
     Arg2, so all of the 1.2 modes can be expressed?  If so, should all
     color sources be allowed, to maintain orthogonality?
 
-    - RESOLVED: Yes. This seems to be a reasonable area to expand 
-      functionality and remain backwards compatible with the EXT 
+    - RESOLVED: Yes. This seems to be a reasonable area to expand
+      functionality and remain backwards compatible with the EXT
       version of the extension.
 
- 5. If the texture environment for a given texture unit does not 
+ 5. If the texture environment for a given texture unit does not
     reference the texture object that is bound to that texture unit,
     does a valid texture object need to be bound that unit?
 
     - RESOLVED: Yes. Each texture unit implicitly references the
       texture object that is bound to that unit, regardless of the
-      texture environment function. This may require that 
+      texture environment function. This may require that
       applications bind a dummy texture to the texture unit.
 
  6. Should we allow the secondary color to take part in texture blending?
@@ -112,7 +112,7 @@ Issues
       as a specular part of the lit color and does not have associated
       alpha. In order to do this right, the secondary color extension
       needs to be fixed first to allow a full featured color and clearly
-      state the interaction of how it interacts with the color sum stage. 
+      state the interaction of how it interacts with the color sum stage.
 
  7. How exactly is this ARB extension different from the EXT version?
 
@@ -187,14 +187,14 @@ New Tokens
         SRC_COLOR
         ONE_MINUS_SRC_COLOR
         SRC_ALPHA
-        ONE_MINUS_SRC_ALPHA     
+        ONE_MINUS_SRC_ALPHA
 
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv,
     and TexEnviv when the <pname> parameter value is
     OPERAND0_ALPHA_ARB, OPERAND1_ALPHA_ARB, or OPERAND2_ALPHA_ARB
 
         SRC_ALPHA
-        ONE_MINUS_SRC_ALPHA     
+        ONE_MINUS_SRC_ALPHA
 
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv,
     and TexEnviv when the <pname> parameter value is RGB_SCALE_ARB or
@@ -202,7 +202,7 @@ New Tokens
 
         1.0
         2.0
-        4.0     
+        4.0
 
 Additions to Chapter 2 of the GL Specification (OpenGL Operation)
 
@@ -243,12 +243,12 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     The arguments Arg0, Arg1 and Arg2 are determined by the values of
     SOURCE<n>_RGB_ARB, SOURCE<n>_ALPHA_ARB, OPERAND<n>_RGB_ARB and
     OPERAND<n>_ALPHA_ARB. In the following two tables, Ct and At are
-    the filtered texture RGB and alpha values; Cc and Ac are the 
-    texture environment RGB and alpha values; Cf and Af are the RGB 
-    and alpha of the primary color of the incoming fragment; and Cp 
-    and Ap are the RGB and alpha values resulting from the previous 
-    texture environment. On texture environment 0, Cp and Ap are 
-    identical to Cf and Af, respectively. The relationship is 
+    the filtered texture RGB and alpha values; Cc and Ac are the
+    texture environment RGB and alpha values; Cf and Af are the RGB
+    and alpha of the primary color of the incoming fragment; and Cp
+    and Ap are the RGB and alpha values resulting from the previous
+    texture environment. On texture environment 0, Cp and Ap are
+    identical to Cf and Af, respectively. The relationship is
     described in tables 3.21 and 3.22.
 
         SOURCE<n>_RGB_ARB       OPERAND<n>_RGB_ARB      Argument
@@ -297,7 +297,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
         INTENSITY                       It, It, It      It
         RGB                             Rt, Gt, Bt      1
         RGBA                            Rt, Gt, Bt      At
-        
+
         Table 3.23: Correspondence of texture components to source
         components for COMBINE_RGB_ARB and COMBINE_ALPHA_ARB arguments
 
@@ -331,8 +331,8 @@ Additions to Appendix F of the GL Specification (ARB Extensions)
     If a texture environment for a given texture unit references a
     texture unit that is disabled or does not have a valid texture
     object bound to it, then it is as if texture is disabled for the
-    given texture unit. Every texture unit implicitly references the 
-    texture object that is bound to it, regardless of the texture 
+    given texture unit. Every texture unit implicitly references the
+    texture object that is bound to it, regardless of the texture
     function specified by COMBINE_RGB_ARB or COMBINE_ALPHA_ARB.
 
 Additions to the GLX Specification
@@ -359,7 +359,7 @@ Errors
     ONE_MINUS_SRC_COLOR, SRC_ALPHA or ONE_MINUS_SRC_ALPHA.
 
     INVALID_ENUM is generated if <params> value for OPERAND0_ALPHA_ARB,
-    OPERAND1_ALPHA_ARB, or OPERAND2_ALPHA_ARB is not one of SRC_ALPHA 
+    OPERAND1_ALPHA_ARB, or OPERAND2_ALPHA_ARB is not one of SRC_ALPHA
     or ONE_MINUS_SRC_ALPHA.
 
     INVALID_VALUE is generated if <params> value for RGB_SCALE_ARB or
@@ -401,7 +401,7 @@ Revision History
 
     00/12/13  bpoddar   Added enum value for SUBTRACT_ARB
 
-    00/12/06  bpoddar   Moved references to Ct<n> and At<n> to 
+    00/12/06  bpoddar   Moved references to Ct<n> and At<n> to
                         ARB_texture_env_crossbar spec.
 
     00/12/01  bpoddar   Removed TEXTURE<n>_ARB since several companies
@@ -410,13 +410,13 @@ Revision History
     00/11/13  bpoddar   Recreated 6/20 spec with language for dealing
                         with inconsistent textures moved to appendix F.
 
-    00/06/20  rhammers  Changed behavior when dealing with references 
+    00/06/20  rhammers  Changed behavior when dealing with references
                         do disabled and inconsistent textures.
 
     00/05/23  rhammers  Cleaned up for first draft of ARB version.
                         Added issue -- TEXTURE with TEXTURE<n>_ARB
                         Added issue .. "upstream" textures
-                        Listed get functions with description of 
+                        Listed get functions with description of
                         enumerants.
                         Added 1.1 and multitexture to dependencies
 

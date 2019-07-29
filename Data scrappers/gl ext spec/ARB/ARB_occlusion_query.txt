@@ -168,7 +168,7 @@ Issues
     completed and its result is available?
 
         RESOLVED.  Yes, this allows applications to use CPU time that might
-        have been spent spinning more usefully.  However, the polling 
+        have been spent spinning more usefully.  However, the polling
         method introduced in the NV_occlusion_query spec allowed for a
         potential infinite loop if the application does not do a flush.
         This version of the spec clarifies the behavior which now makes such
@@ -214,7 +214,7 @@ Issues
         In order to allow for two overdraws in the case of only one sample
         buffer, the minimum counter precision (n) will be determined by:
 
-        n = min (32 , ceil (log2 (maxViewportWidth x maxViewportHeight x 
+        n = min (32 , ceil (log2 (maxViewportWidth x maxViewportHeight x
                         1 sample x 2 overdraws) ) )
 
         An implementation can either set QUERY_COUNTER_BITS_ARB to the
@@ -281,21 +281,21 @@ Issues
 
     Will polling a query without a Flush possibly cause an infinite loop?
 
-        RESOLVED: No.  An infinite loop was possible in the original 
-        NV_occlusion_query spec if an application did not perform a 
+        RESOLVED: No.  An infinite loop was possible in the original
+        NV_occlusion_query spec if an application did not perform a
         flush prior to polling.  This behavior was removed in this version
-        of the spec as it violated language in the core GL spec.  
+        of the spec as it violated language in the core GL spec.
 
-        Instead of allowing for an infinite loop, performing a 
+        Instead of allowing for an infinite loop, performing a
         QUERY_RESULT_AVAILABLE_ARB will perform a flush if the result
         is not ready yet on the first time it is queried.  This ensures
         that the async query will return true in finite time.
-        
+
         This behavior is not a significant performance loss over the original
         version of the spec.  A flush would need to be performed at some
         point anyway and the flush performed when QUERY_RESULT_AVAILABLE_ARB
         is requested will only occur *if the result is not back yet*.
-      
+
     What should be the interaction between this spec and
     HP_occlusion_test?
 
@@ -342,11 +342,11 @@ Issues
 
     Are query objects shareable between multiple contexts?
 
-        RESOLVED: No.  Query objects are lightweight and we normally share 
+        RESOLVED: No.  Query objects are lightweight and we normally share
         large data across contexts.  Also, being able to share query objects
-        across contexts is not particularly useful.  In order to do the async 
-        query across contexts, a query on one context would have to be finished 
-        before the other context could query it.  
+        across contexts is not particularly useful.  In order to do the async
+        query across contexts, a query on one context would have to be finished
+        before the other context could query it.
 
     What happens when an app begins a query on a target, ends it, begins
     a query on the same target with the same id, ends it, and then tries
@@ -354,8 +354,8 @@ Issues
     query does the GetQueryObjecti[u]vARB return results for?
 
         RESOLVED.  In this case, the result retrieved from
-        GetQueryObjecti[u]vARB  will be from the last query on that target and 
-        id.  The result returned from GetQueryObjecti[u]vARB will always be from 
+        GetQueryObjecti[u]vARB  will be from the last query on that target and
+        id.  The result returned from GetQueryObjecti[u]vARB will always be from
         the last BeginQueryARB/EndQueryARB pair on that target and id.
 
     Is this extension useful for saving geometry, fill rate, or both?
@@ -486,7 +486,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     Modify Section 2.1, OpenGL Fundamentals (p. 4)
 
     (modify fourth paragraph, p. 4)  It also means that queries and
-    pixel read operations return state consistent with complete 
+    pixel read operations return state consistent with complete
     execution of all previously invoked GL commands, except where
     explicitly specified otherwise
 
@@ -541,12 +541,12 @@ Operations and the Frame Buffer)
     generated.
 
     BeginQueryARB with a <target> of SAMPLES_PASSED_ARB resets the
-    current samples-passed count to zero and sets the query active 
-    state to TRUE and the active query id to <id>.  EndQueryARB with 
-    a target of SAMPLES_PASSED_ARB initializes a copy of the current 
-    samples-passed count into the active occlusion query object's results 
-    value, sets the active occlusion query object's result available to 
-    FALSE, sets the query active state to FALSE, and the active query 
+    current samples-passed count to zero and sets the query active
+    state to TRUE and the active query id to <id>.  EndQueryARB with
+    a target of SAMPLES_PASSED_ARB initializes a copy of the current
+    samples-passed count into the active occlusion query object's results
+    value, sets the active occlusion query object's result available to
+    FALSE, sets the query active state to FALSE, and the active query
     id to 0.
 
     If BeginQueryARB is called with an <id> of zero, or where <id> is the
@@ -563,14 +563,14 @@ Operations and the Frame Buffer)
     by the value of SAMPLES if any sample in the fragment is covered.
 
     If the samples-passed count overflows, i.e., exceeds the value 2^n-1
-    (where n is the number of bits in the samples-passed count), its 
-    value becomes undefined.  It is recommended, but not required, that 
-    implementations handle this overflow case by saturating at 2^n-1 and 
+    (where n is the number of bits in the samples-passed count), its
+    value becomes undefined.  It is recommended, but not required, that
+    implementations handle this overflow case by saturating at 2^n-1 and
     incrementing no further.
 
     The necessary state is a single bit indicating whether an occlusion
     query is active, the identifier of the currently active occlusion
-    query, and a counter keeping track of the number of samples that 
+    query, and a counter keeping track of the number of samples that
     have passed."
 
 Additions to Chapter 5 of the OpenGL 1.4 Specification (Special Functions)
@@ -603,8 +603,8 @@ State Requests)
     <params>.
 
     If <pname> is QUERY_COUNTER_BITS_ARB, the number of bits in the counter for
-    <target> will be placed in <params>.  The minimum number of query counter 
-    bits allowed is a function of the implementation's maximum viewport 
+    <target> will be placed in <params>.  The minimum number of query counter
+    bits allowed is a function of the implementation's maximum viewport
     dimensions (MAX_VIEWPORT_DIMS).  If the counter is non-zero, then the
     counter must be able to represent at least two overdraws for every pixel
     in the viewport using only one sample buffer.  The formula to compute the
@@ -614,7 +614,7 @@ State Requests)
           0
 
     If the value of n is 0, then the result from GetQueryiv(SAMPLES_PASSED_ARB)
-    will always return 0,  
+    will always return 0,
 
     The state of a query object can be queried with the commands
 
@@ -635,14 +635,14 @@ State Requests)
     <params> indicates whether or not such a wait would occur if the
     result of that query object were to be queried presently.  A result
     of TRUE means no wait would be required; a result of FALSE means that
-    some wait would occur.  It must always be true that if the result for one 
+    some wait would occur.  It must always be true that if the result for one
     query is available, the result for all previous queries must also be
     available at that point in time.
 
     Querying the state for a given occlusion query forces that occlusion
     query to complete within a finite amount of time.
 
-    If multiple queries are issued on the same target and id prior to 
+    If multiple queries are issued on the same target and id prior to
     calling GetQueryObject[u]iVARB, the result returned will always be
     from the last query issued.  The results from any queries before the
     last one will be lost if the results are not retrieved before starting

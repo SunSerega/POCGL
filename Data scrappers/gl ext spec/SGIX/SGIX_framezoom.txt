@@ -59,7 +59,7 @@ New Tokens
     GetDoublev:
 
     FRAMEZOOM_SGIX
-    
+
     Accepted by the <pname> parameter of GetBooleanv, GetDoublev,
     GetIntegerv, and GetFloatv:
 

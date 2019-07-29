@@ -100,7 +100,7 @@ Operations and the Frame Buffer)
       IMPLEMENTATION_COLOR_READ_FORMAT_OES and
       IMPLEMENTATION_COLOR_READ_TYPE_OES.  The preferred format
       indicates a read format and type combination that provides optimal
-      performance, for the read surface that is bound to the current 
+      performance, for the read surface that is bound to the current
       GL context, for a particular implementation.  The state values
       are chosen from the set of regularly accepted format
       and type parameters as shown in tables 3.6 and 3.5.

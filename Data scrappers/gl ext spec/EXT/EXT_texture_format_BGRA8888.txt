@@ -32,7 +32,7 @@ Dependencies
     which in turn is based OpenGL 1.3. Thus this spec is effectively
     written against OpenGL 1.3 but does not address sections explicitly
     removed or reduced by OpenGL-ES 1.0.
-    
+
     This extension has interactions with the OpenGL ES 2.0 API.
 
 Overview
@@ -66,7 +66,7 @@ Overview
     LUMINANCE_ALPHA     LUMINANCE_ALPHA UNSIGNED_BYTE           2
     LUMINANCE           LUMINANCE       UNSIGNED_BYTE           1
     ALPHA               ALPHA           UNSIGNED_BYTE           1
-    
+
     This format is renderable in versions of OpenGL ES from 2.0 onwards.
 
 IP Status
@@ -127,14 +127,14 @@ New State
 New Implementation Dependent State
 
     None
-    
+
 Interactions with the OpenGL ES 2.0 specification
 
     Add the following entry to Table 4.5: Renderbuffer image formats,
     showing their renderable type (color-, depth-, or stencil-renderable)
     and the number of bits each format contains for color (R, G, B, A),
     depth (D), and stencil (S) components:
-    
+
     |-----------------|------------------|------|------|------|------|------|------|
     | Sized           | Renderable       | R    | G    | B    | A    | D    | S    |
     | Internal Format | Type             | bits | bits | bits | bits | bits | bits |

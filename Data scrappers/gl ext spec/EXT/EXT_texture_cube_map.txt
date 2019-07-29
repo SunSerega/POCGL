@@ -1,5 +1,5 @@
 Name
-    
+
      EXT_texture_cube_map
 
 Name Strings
@@ -68,7 +68,7 @@ Overview
     the cube map center to the eye position (both in world coordinates),
     and 2) the cube map orientation in world coordinates.  The axis of
     rotation is the cross product of these two vectors; the angle of
-    rotation is the arcsin of the dot product of these two vectors. 
+    rotation is the arcsin of the dot product of these two vectors.
 
 Issues
 
@@ -160,7 +160,7 @@ Issues
 
       Note that this is an issue for REFLECTION_MAP_EXT, but not
       NORMAL_MAP_EXT.
-   
+
     What happens if an (s,t,q) is passed to cube map generation that
     is close to (0,0,0), ie. a degenerate direction vector?
 
@@ -290,7 +290,7 @@ New Tokens
     Accepted by the <target> parameter of GetTexLevelParameteriv,
     GetTexLevelParameterfv, GetTexParameteriv, and TexImage2D:
 
-        PROXY_TEXTURE_CUBE_MAP_EXT          0x851b 
+        PROXY_TEXTURE_CUBE_MAP_EXT          0x851b
 
     Accepted by the <pname> parameter of GetBooleanv, GetDoublev,
     GetIntegerv, and GetFloatv:
@@ -481,7 +481,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
      "Therefore PROXY_TEXTURE_1D, PROXY_TEXTURE_2D, PROXY_TEXTURE_3D,
      and PROXY_TEXTURE_CUBE_MAP_EXT cannot be used as textures, and their
      images must never be queried using GetTexImage." ...
- 
+
  --  Section 3.8.8 "Texture Objects"
 
      Change the first sentence of paragraph one (page 133) to say:

@@ -66,7 +66,7 @@ Issues
       than a multitude of nearly indistinguishable sampling techniques.
 
     When does changing the multisampling filter hint take effect?
-    
+
       RESOLUTION: It may not be until the next swap buffers or glClear
       operation that the multisample hint actually takes effect.
       This may be implementation dependent.

@@ -35,14 +35,14 @@ Dependencies
 
     EGL_EXT_create_context_robustness is used to determine if a context
     implementing this extension supports robust buffer access, and if it
-    supports reset notification. 
+    supports reset notification.
 
 Overview
 
     Several recent trends in how OpenGL integrates into modern computer
     systems have created new requirements for robustness and security
     for OpenGL rendering contexts.
-    
+
     Additionally GPU architectures now support hardware fault detection;
     for example, video memory supporting ECC (error correcting codes)
     and error detection.  OpenGL contexts should be capable of recovering
@@ -75,8 +75,8 @@ Overview
     The intent of this extension is to address some specific robustness
     goals:
 
-    *   For all existing OpenGL queries, provide additional "safe" APIs 
-        that limit data written to user pointers to a buffer size in 
+    *   For all existing OpenGL queries, provide additional "safe" APIs
+        that limit data written to user pointers to a buffer size in
         bytes that is an explicit additional parameter of the query.
 
     *   Provide a mechanism for an OpenGL application to learn about
@@ -301,7 +301,7 @@ Issues
         mechanism via two unique attributes. These attributes differ
     from those specified by KHR_create_context to allow for
     differences in what functionality those attributes define.
-        
+
     4. What can cause a graphics reset?
 
        Either user or implementor errors may result in a graphics reset.
@@ -337,7 +337,7 @@ Issues
        shared contexts?
 
        RESOLVED: A reset in one context will result in a reset in all other
-       contexts in its share group. 
+       contexts in its share group.
 
     7. How can an application query for robust buffer access support,
        since this is now determined at context creation time?

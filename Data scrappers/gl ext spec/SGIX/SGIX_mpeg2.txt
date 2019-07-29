@@ -42,7 +42,7 @@ Overview
         - During encode, the picture_structure field of the picture
           coding extension and the picture_type field of the picture
           header are set correctly as determined by
-          PACK_MPEG_PICTURE_TYPE_SGIX. 
+          PACK_MPEG_PICTURE_TYPE_SGIX.
 
 Issues
 
@@ -50,7 +50,7 @@ Issues
          fields are interpreted and set correctly.  We do this so that
          we can make guarantees about which predictors will be used
          and updated.  Should we make this less restrictive?
-         
+
 New Procedures and Functions
 
     None.
@@ -103,7 +103,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     picture_type field of the picture header and the picture_structure
     field of the picture coding extension.  This extraction and
     interpretation is performed as specified in the MPEG2 spec (ISO
-    13818). 
+    13818).
 
     Decompression of MPEG2 images is very similar to the decompression
     of MPEG1 images described in SGIX_mpeg1, but MPEG2 decompression
@@ -146,7 +146,7 @@ and the Frame Buffer)
     MPEG_IFIELD_BOTTOM_SGIX, MPEG_PFIELD_TOP_SGIX,
     MPEG_PFIELD_BOTTOM_SGIX, MPEG_BFIELD_TOP_SGIX, and
     MPEG_BFIELD_BOTTOM_SGIX are added to the valid range of
-    PACK_MPEG_PICTURE_TYPE_SGIX. 
+    PACK_MPEG_PICTURE_TYPE_SGIX.
 
     The following should be added to the "Packing of Compressed
     Images" subsection of section 4.3.2 following the information
@@ -162,7 +162,7 @@ and the Frame Buffer)
     takes place.  If the image is a field, the height (as computed in
     image_compression_SGIX) is interpreted as the number of scan lines
     in the field, which is half the height of the corresponding frame.
-    
+
     The first step of MPEG2 compression is the conversion to YCrCb.
     If PACK_TO_RGB_SGIX is TRUE, the RGBA input image is converted to
     a YCrCb image using an unspecified algorithm.  If PACK_TO_RGB_SGIX
@@ -196,7 +196,7 @@ and the Frame Buffer)
     field of the predictor replaces the current image.  Every other
     scan line of the predictor is extracted, beginning with the second
     scan line from the top.  The image extracted during the replacement
-    step replaces the current image in all subsequent processing.  
+    step replaces the current image in all subsequent processing.
 
     After the replacement step, downsampling of the image occurs in
     the same manner as during the compression of MPEG1 images.
@@ -210,7 +210,7 @@ and the Frame Buffer)
     MPEG_IFIELD_BOTTOM_SGIX, the quantization table
     PACK_MPEG_INTRA_QUANT_SGIX is used.  The quantization table
     PACK_MPEG_INTRA_QUANT_CHROMA_SGIX is also used if PACK_SAMPLE_SGIX
-    is SAMPLE_422_SGIX.  No predictors are used.  
+    is SAMPLE_422_SGIX.  No predictors are used.
 
     If the picture type is MPEG_PFRAME_SGIX, MPEG_PFIELD_TOP_SGIX, or
     MPEG_PFIELD_BOTTOM_SGIX, the quantization table
@@ -223,7 +223,7 @@ and the Frame Buffer)
     INVALID_OPERATION is generated.  If the image is a field, its
     width must be equal to the width of the predictor and its height
     must be equal to half the height of the predictor or the error
-    INVALID_OPERATION is generated.  
+    INVALID_OPERATION is generated.
 
     If the picture type is MPEG_BFRAME_SGIX, MPEG_PFIELD_TOP_SGIX, or
     MPEG_PFIELD_BOTTOM_SGIX, the quantization table
@@ -241,7 +241,7 @@ and the Frame Buffer)
     is generated.  Error checking for this step takes place prior to
     the predictor replacement step, so if an error is detected the
     contents of the predictors are left unchanged.
-    
+
     Further compression is applied to the image using an unspecified
     algorithm.  The output of MPEG2 decompression is a byte stream
     containing an MPEG2 picture header followed by picture data.  The
@@ -269,7 +269,7 @@ GLX Protocol
 
     XXX
 
-Errors 
+Errors
 
     INVALID_OPERATION is generated if UNPACK_MPEG_PREDICTOR_STORE_SGIX
     is set to UNPACK_MPEG_PREDICTOR_BACK_SGIX during the download of
@@ -282,7 +282,7 @@ Errors
     MPEG2 field and the height of the predictor bound to
     UNPACK_MPEG_PREDICTOR_FWD_SGIX is not equal to twice the height of
     the field.
-    
+
     INVALID_OPERATION is generated if a pixel readback operation is
     applied, PACK_COMPRESSION_TYPE_SGIX is equal to MPEG2_SGIX, and
     the value of PACK_MPEG_PICTURE_TYPE is not one of the legal

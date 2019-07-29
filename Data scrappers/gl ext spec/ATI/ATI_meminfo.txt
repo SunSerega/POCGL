@@ -71,7 +71,7 @@ Issues
         OpenGL paradigms. The classes defined so far are texture, vertex
         buffer, an render buffer. These correspond to API visible capabilities
         such as readable, writable, and mapable. The memory between these pools
-        may often be shared, so allocations in one pool may reduce all pools. 
+        may often be shared, so allocations in one pool may reduce all pools.
 
     3) Are the abreviations and names correct?
 
@@ -117,13 +117,13 @@ Additions to Chapter 6 of the 2.0 Specification (State and State Requests)
 
     Section 6.1.x, Memory Information Queries
 
-    Inserted between sections 6.1.14 and 6.1.15 
+    Inserted between sections 6.1.14 and 6.1.15
 
     Information on the current memory resources available can be queried
     by specifying VBO_FREE_MEMORY_ATI, TEXTURE_FREE_MEMORY_ATI, or
     RENDERBUFFER_FREE_MEMORY_ATI as the value parameter to  GetIntergerv.
     These return the memory status for pools of memory used for vertex
-    buffer objects, textures, and render buffers respectively. The 
+    buffer objects, textures, and render buffers respectively. The
     memory status is not meant to be an exact measurement of the system's
     current status (though it may be in some implementations), but it is
     instead meant to represent the present load such that an application
@@ -142,7 +142,7 @@ Additions to Chapter 6 of the 2.0 Specification (State and State Requests)
     memory is memory that an implementation may use as a backup to its
     primary pool for a certain type of allocation. The pools are not
     guaranteed to be either independent or shared, as this is an
-    implementation choice. 
+    implementation choice.
 
 Additions to the OpenGL Shading Language specification
 

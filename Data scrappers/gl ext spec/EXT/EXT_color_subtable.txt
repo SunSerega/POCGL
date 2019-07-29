@@ -24,7 +24,7 @@ Overview
 
     This extension allows a portion of a color table to be redefined.
     If EXT_copy_texture is implemented, this extension also defines a
-    method to load a portion of a color lookup table from the 
+    method to load a portion of a color lookup table from the
     framebuffer.
 
 
@@ -60,15 +60,15 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     POST_COLOR_MATRIX_COLOR_TABLE_EXT, or TEXTURE_COLOR_TABLE_SGI.
     <start> and <count> control which entries of the color table
     are changed. If <start> + <count> exceeds the number of entries in
-    the table then an INVALID_VALUE error is generated. <format> and 
+    the table then an INVALID_VALUE error is generated. <format> and
     <type> have the same meaning as for ColorTableEXT. The
     data is treated as a 1D texture just as in ColorTableEXT.
 
-    If EXT_copy_texture is supported, a portion of a color table can be 
-    re-defined using image data in the framebuffer. CopyColorSubTableEXT 
-    accepts image data from a <width> pixel wide by one pixel high color 
-    buffer region whose lower-left pixel has window coordinates <x>,<y>.  
-    If any pixels within this region are outside the window that is associated 
+    If EXT_copy_texture is supported, a portion of a color table can be
+    re-defined using image data in the framebuffer. CopyColorSubTableEXT
+    accepts image data from a <width> pixel wide by one pixel high color
+    buffer region whose lower-left pixel has window coordinates <x>,<y>.
+    If any pixels within this region are outside the window that is associated
     with the GL context, the values obtained for those pixels are undefined.
 
     These pixel values are obtained from the framebuffer exactly as if
@@ -77,7 +77,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     component values are treated exactly as if ColorTableEXT had been
     called, beginning with the scaling of the color components by
     COLOR_TABLE_SCALE_EXT.  The accepted values of the <target> parameter
-    are COLOR_TABLE_EXT, POST_CONVOLUTION_COLOR_TABLE_EXT, 
+    are COLOR_TABLE_EXT, POST_CONVOLUTION_COLOR_TABLE_EXT,
     POST_COLOR_MATRIX_COLOR_TABLE_EXT or TEXTURE_COLOR_TABLE_SGI.
 
 Additions to Chapter 4 of the 1.0 Specification (Per-Fragment Operations
@@ -104,8 +104,8 @@ GLX Protocol
 Dependencies on SGI_color_table
 Dependencies on EXT_color_table
 
-    If both EXT_color_subtable and EXT_color_table are supported then 
-    ColorSubTableEXT can be used to redefine a portion of the color table, 
+    If both EXT_color_subtable and EXT_color_table are supported then
+    ColorSubTableEXT can be used to redefine a portion of the color table,
     post convolution color table and post color matrix color table.
 
     If EXT_color_table is not supported then the following values for <target>
@@ -115,25 +115,25 @@ Dependencies on EXT_color_table
 
 Dependencies on SGI_texture_color_table
 
-    If both EXT_texture_color_table and EXT_color_table are supported then 
-    ColorSubTableEXT() can be used to redefine a portion of the texture color 
+    If both EXT_texture_color_table and EXT_color_table are supported then
+    ColorSubTableEXT() can be used to redefine a portion of the texture color
     table.
 
     If EXT_color_table is not supported then the following values for <target>
-    are invalid when calling ColorSubTableEXT or CopyColorSubTableEXT: 
+    are invalid when calling ColorSubTableEXT or CopyColorSubTableEXT:
     TEXTURE_COLOR_TABLE_SGI.
 
 Dependencies on EXT_copy_texture
 
-    If EXT_copy_texture is not supported, CopyColorSubTableEXT is not 
+    If EXT_copy_texture is not supported, CopyColorSubTableEXT is not
     supported.
 
 
 Errors
 
     INVALID_ENUM is generated if ColorSubTableEXT or CopyColorSubTableEXT
-    parameter <target> is not one of COLOR_TABLE_EXT, COLOR_TABLE_SGI, 
-    POST_CONVOLUTION_COLOR_TABLE_EXT, POST_CONVOLUTION_COLOR_TABLE_SGI, 
+    parameter <target> is not one of COLOR_TABLE_EXT, COLOR_TABLE_SGI,
+    POST_CONVOLUTION_COLOR_TABLE_EXT, POST_CONVOLUTION_COLOR_TABLE_SGI,
     POST_COLOR_MATRIX_COLOR_TABLE_EXT, POST_COLOR_MATRIX_COLOR_TABLE_SGI or
     TEXTURE_COLOR_TABLE_SGI.
 

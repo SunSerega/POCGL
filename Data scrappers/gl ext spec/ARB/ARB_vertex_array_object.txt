@@ -233,7 +233,7 @@ Interactions with APPLE_vertex_array_object
     type of object.  Names passed to BindVertexArray must have been
     previously returned by GenVertexArrays, previously returned by
     GenVertexArraysAPPLE, or previously bound by BindVertexArrayAPPLE.
-    BindVertexArrayAPPLE must also accept names that were previously returned 
+    BindVertexArrayAPPLE must also accept names that were previously returned
     by GenVertexArrays and bound with BindVertexArray.
 
     In addition, the enumerant value for VERTEX_ARRAY_BINDING is the same
@@ -347,7 +347,7 @@ New State
     VERTEX_ARRAY_BINDING    GetIntegerv Z+      0       vertex-array
 
 New Implementation Dependent State
-    
+
     None
 
 Issues
@@ -364,7 +364,7 @@ Issues
     (2) What happens when a buffer object that is attached to a non-current
         VAO is deleted?
 
-    RESOLUTION: Nothing (though a reference count may be decremented). 
+    RESOLUTION: Nothing (though a reference count may be decremented).
     A buffer object that is deleted while attached to a non-current VAO
     is treated just like a buffer object bound to another context (or to
     a current VAO in another context).
@@ -395,7 +395,7 @@ Issues
     ARB vertex array object and an Apple vertex array object are bound at the
     same time.
 
-    RESOLUTION: Resolved.  If both extensions are supported by an 
+    RESOLUTION: Resolved.  If both extensions are supported by an
     implementation, both object types share a name space.  Most of the useful
     interactions fall out as a result of that.  Please refer to the section
     "Interactions with APPLE_vertex_array_object" above for more details.
@@ -445,9 +445,9 @@ Revision History
       6   06/15/2008  Jon Leech More minor typos, clarify GenVertexArrays
                                 behavior.
 
-      7   07/08/2008     js    - noted that VAO is not supposed to include 
+      7   07/08/2008     js    - noted that VAO is not supposed to include
                                  CLIENT_ACTIVE_TEXTURE (bugzilla 3611)
-                               - resolved all other open issues as per working 
+                               - resolved all other open issues as per working
                                  group discussions
                                - deleted obsolete INVALID_OPERATION on
                                  draw with client arrays since it's no

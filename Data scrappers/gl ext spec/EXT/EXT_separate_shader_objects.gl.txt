@@ -16,7 +16,7 @@ Contributors
     Eric Werness
     Robert Ohannessian
     Jason Green, TransGaming
-    Kevin Rogovin 
+    Kevin Rogovin
     Greg Roth
 
 Status
@@ -113,7 +113,7 @@ New Tokens
 
 Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
- -- Section 2.20.2 "Program Objects" (page 91) 
+ -- Section 2.20.2 "Program Objects" (page 91)
 
     Add this paragraph after the 6th paragraph:
 
@@ -209,7 +209,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     for all its supported shader types, the program object's shader
     types not bound do not affect GL's current rendering operation."
 
- -- Section 2.15.3 "Shader Variables" (page 97) 
+ -- Section 2.15.3 "Shader Variables" (page 97)
 
     Replace the 15th paragraph of the "Uniform Variables" section:
 
@@ -220,7 +220,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
     "* if there is no active program in use."
 
- -- Section 2.20.4 "Shader Execution" (page 103) 
+ -- Section 2.20.4 "Shader Execution" (page 103)
 
     Change the first paragraph to read:
 
@@ -231,7 +231,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
     processing described in section 2.11 through 2.14.  In particular,
     ..."
 
- -- Section 2.20.5 "Required State" (page 109) 
+ -- Section 2.20.5 "Required State" (page 109)
 
     Change the last paragraph to read:
 
@@ -242,7 +242,7 @@ Additions to Chapter 2 of the OpenGL 3.0 Specification (OpenGL Operation)
 
 Additions to Chapter 3 of the OpenGL 3.0 Specification (Rasterization)
 
- -- Section 3.12 "Fragment Shaders" (page 231) 
+ -- Section 3.12 "Fragment Shaders" (page 231)
 
     Replace the second to the last paragraph with:
 
@@ -253,7 +253,7 @@ Additions to Chapter 3 of the OpenGL 3.0 Specification (Rasterization)
     currently in use, the fixed-function fragment processing operations
     described in the previous sections are used."
 
- -- Section 3.12.1 "Shader Variables" (page 232) 
+ -- Section 3.12.1 "Shader Variables" (page 232)
 
     Add this paragraph after the third paragraph:
 
@@ -296,7 +296,7 @@ Functions)
 Additions to Chapter 6 of the OpenGL 3.0 Specification (State and
 State Requests)
 
- -- Section 5.4 "Display Lists" (page 311) 
+ -- Section 5.4 "Display Lists" (page 311)
 
     Add "CreateShaderProgramEXT" to the "Program and shader objects"
     list of commands that cannot be compiled into a display list but
@@ -407,7 +407,7 @@ New State
                                                            shader program object
     FRAGMENT_SHADER      Z+    GetIntegerv  0              Name of current fragment  2.20.2  -
                                                            shader program object
-                                                    
+
 New Implementation Dependent State
 
     None
@@ -696,7 +696,7 @@ Issues
         an example of creating and using a vertex shader for use with
         separate shader objects that includes explicit binding of output
         varyings to fragment data locations.  First the shader:
-        
+
           varying in vec4 attribA;
           varying in vec4 attribB;
           void main()
@@ -705,7 +705,7 @@ Issues
             gl_FrontColor = attribA;
             gl_BackColor = attribB;
           }
-          
+
         Now creating and using a linked program from this shader where
         attribA is initialized by vertex attribute 5 and attribB is
         initialized by vertex attribute 7.
@@ -881,7 +881,7 @@ Issues
 
     19. In case of indirect rendering, should glCreateShaderProgramEXT
         explicitly send string length parameter to server?
-        
+
         PROPOSED: Yes. Although source code passed to
         glCreateShaderProgramEXT is NUL terminated, the server can not
         safely rely on the client to terminate the string so it must
@@ -889,15 +889,15 @@ Issues
         the GL command processor. The string length is needed to do this
         accurately.
 
-    20. Can glCreateShaderProgramEXT support command larger than the 
+    20. Can glCreateShaderProgramEXT support command larger than the
         maximum command length supported by a single command?
- 
+
         PROPOSED: Yes. Source code passed to glCreateShaderProgramEXT is
         unbounded. Command length can be more than the maximum command
         length supported by a single command. Support for "large single"
         command needs to be added.
-        
-         
+
+
 
 Revision History
 
@@ -917,6 +917,6 @@ Revision History
     9     09/09/09  mjk       Fix transposed page number
     10    24/02/10  srahman   added glx protocol for
                               glCreateShaderProgramEXT
-                              added issues 19 and 20 
+                              added issues 19 and 20
     11    03/07/13  Jon Leech Added note about the unrelated OpenGL ES
                               extension of the same name.

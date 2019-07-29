@@ -27,10 +27,10 @@ Overview
     An additional blending equation is specified using the interface defined
     by EXT_blend_minmax.  This equation generates the product of two complex
     input sources.  Multiplying two complex images is useful for image
-    and signal processing applications; for example, it is another means 
+    and signal processing applications; for example, it is another means
     for computing convolution and correlation filters.
 
-    
+
 New Procedures and Functions
 
     None

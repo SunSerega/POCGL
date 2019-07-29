@@ -25,7 +25,7 @@ Overview
     define a 3D texture image conveniently, this extension also defines the
     in-memory formats for 3D images, and adds pixel storage modes to support
     them.
-    
+
     One important application of 3D textures is rendering volumes of image
     data.
 
@@ -148,7 +148,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
         height = 2**m + (2 * border)
 
         depth = 2**l + (2 * border)
-    
+
     It is acceptable for an implementation to vary its allocation of
     internal component resolution based any TexImage3DEXT parameter, but the
     allocation must not be a function of any other factor, and cannot be
@@ -275,7 +275,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     arrays.  Each subsequent array has dimensions
 
         size(i-1) x size(j-1) x size(k-1)
-    
+
     where the dimensions of the previous array are
 
         size(i) x size(j) x size(k)
@@ -397,26 +397,26 @@ GLX Protocol
             n           LISTofBYTE      pixels
             p                           unused, p=pad(n)
 
-            If the command is encoded in a glXRenderLarge request, the command 
+            If the command is encoded in a glXRenderLarge request, the command
             opcode and command length fields above are expanded to 4 bytes each:
 
             4           88+n+p          rendering command length
             4           4114            rendering command opcode
 
-        If <width> < 0, <height> < 0, <depth> < 0, <format> is invalid or <type> is 
+        If <width> < 0, <height> < 0, <depth> < 0, <format> is invalid or <type> is
         invalid, then the command is erroneous and n=0.
 
         <pixels> is arranged as a sequence of adjacent rectangles. Each rectangle is a
-        2-dimensional image, whose structure is determined by the image height and the 
-        parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>, <skip_pixels>, 
+        2-dimensional image, whose structure is determined by the image height and the
+        parameters <swap_bytes>, <lsb_first>, <row_length>, <skip_rows>, <skip_pixels>,
         <alignment>, <width>, <format>, and <type> given in the request. If <image_height>
         is not positive then the number of rows (i.e., the image height) is <height>;
         otherwise the number of rows is <image_height>.
 
         <skip_images> allows a sub-volume of the 3-dimensional image to be selected.
-        If <skip_images> is positive, then the pointer is advanced by <skip_images> 
-        times the number of elements in one 2-dimensional image. Then <depth> 
-        2-dimensional images are read, each having a subimage extracted in the 
+        If <skip_images> is positive, then the pointer is advanced by <skip_images>
+        times the number of elements in one 2-dimensional image. Then <depth>
+        2-dimensional images are read, each having a subimage extracted in the
         manner described in Appendix A of the GLX Protocol Specification.
 
 

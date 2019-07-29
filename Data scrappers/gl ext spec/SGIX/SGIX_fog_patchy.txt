@@ -22,13 +22,13 @@ Overview
 
     Patchy fog is a fog in which intermittent areas of dense fog may
     be encoutered. This extension explains how the patchy fog
-    extension is supported. Patchy fog is needed because both 
+    extension is supported. Patchy fog is needed because both
     uniform fog density and fog layers can only specify a constant
     density at a given elevation. The SGIX_fog_texture openGL
-    extension gives a mean to specify a patchy fog texture that will 
+    extension gives a mean to specify a patchy fog texture that will
     modulate the fog density at a given elevation. The goal of this
     document is to describe the modulation fuction and the fog
-    equation when patchy fog is enabled. No tokens, states, or 
+    equation when patchy fog is enabled. No tokens, states, or
     procedures are introduced in this extension.
 
 New Procedures and Functions
@@ -63,7 +63,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     the fog density with a texture.
 
                                   _____      _____
-                density (d)   ___|     |    |     | 
+                density (d)   ___|     |    |     |
                                  |  *  |____|  *  |__ To fog equation
                                __|     |  __|     |   (d*p*r)
                               |  |_____| |  |_____|
@@ -75,9 +75,9 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
                                          |
     range (r) ---------------------------|
 
-    
+
     The product (d*p*r) is used in the computation of the fog blending
-    factor (f). If the patchy fog texture is not enabled in SGIX_fog_texture, 
+    factor (f). If the patchy fog texture is not enabled in SGIX_fog_texture,
     then the patchy fog texture has no effect (p = 1.0).
 
     The computation of the fog equation when patchy fog is enabled
@@ -101,10 +101,10 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
         lighting in the rasterization pipeline.
       - [RGBfog] is the fog color.
 
-    2) In the second pass: compute the final fragment color using the 
+    2) In the second pass: compute the final fragment color using the
     result of the previous pass. In the second pass, the fog
     patchiness is taken into account (p=patchy fog texture)
- 
+
     Destination = f2 * [RGBl] + (1-f2) * [RGBcloud],
 
     where,
@@ -117,7 +117,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
       - [RGBl] is the intermediate color. Color that we would get
     without patchy fog.
       - [RGBcloud] is the patchy fog color.
-  
+
 
 Additions to Chapter 4 of the 1.2 Specification (Per-Fragment Operations
 and the Framebuffer)

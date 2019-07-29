@@ -170,20 +170,20 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
         INTENSITY8_EXT                  INTENSITY_EXT                                                        8
         INTENSITY12_EXT                 INTENSITY_EXT                                                       12
         INTENSITY16_EXT                 INTENSITY_EXT                                                       16
-        RGB2_EXT                        RGB                       2       2       2                
-        RGB4_EXT                        RGB                       4       4       4                
-        RGB5_EXT                        RGB                       5       5       5                
-        RGB8_EXT                        RGB                       8       8       8                
-        RGB10_EXT                       RGB                      10      10      10                
-        RGB12_EXT                       RGB                      12      12      12                
-        RGB16_EXT                       RGB                      16      16      16                
-        RGBA2_EXT                       RGBA                      2       2       2       2        
-        RGBA4_EXT                       RGBA                      4       4       4       4        
-        RGB5_A1_EXT                     RGBA                      5       5       5       1        
-        RGBA8_EXT                       RGBA                      8       8       8       8        
-        RGB10_A2_EXT                    RGBA                     10      10      10       2        
-        RGBA12_EXT                      RGBA                     12      12      12      12        
-        RGBA16_EXT                      RGBA                     16      16      16      16        
+        RGB2_EXT                        RGB                       2       2       2
+        RGB4_EXT                        RGB                       4       4       4
+        RGB5_EXT                        RGB                       5       5       5
+        RGB8_EXT                        RGB                       8       8       8
+        RGB10_EXT                       RGB                      10      10      10
+        RGB12_EXT                       RGB                      12      12      12
+        RGB16_EXT                       RGB                      16      16      16
+        RGBA2_EXT                       RGBA                      2       2       2       2
+        RGBA4_EXT                       RGBA                      4       4       4       4
+        RGB5_A1_EXT                     RGBA                      5       5       5       1
+        RGBA8_EXT                       RGBA                      8       8       8       8
+        RGB10_A2_EXT                    RGBA                     10      10      10       2
+        RGBA12_EXT                      RGBA                     12      12      12      12
+        RGBA16_EXT                      RGBA                     16      16      16      16
 
     All implementations of this extension support the base formats ALPHA,
     LUMINANCE, LUMINANCE_ALPHA, RGB, and RGBA.  All implementations also
@@ -194,7 +194,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     base formats (as well as for formats "1", "2", "3", and "4") is an
     implementation dependent compromise of component resolution,
     performance, image size, and memory availability.
-    
+
     It is acceptable for an implementation to vary its allocation of
     internal component resolution based on any TexImage1D or TexImage2D
     parameter, but the allocation must not be a function of any other
@@ -377,7 +377,7 @@ Additions to Chapter 6 of the GL Specification (State and State Requests)
         --------------------    -               -       -       -
 
         ALPHA                   0.0             0.0     0.0     alpha
-        LUMINANCE               luminance       0.0     0.0     0.0                                             
+        LUMINANCE               luminance       0.0     0.0     0.0
         LUMINANCE_ALPHA         luminance       0.0     0.0     alpha
         INTENSITY_EXT           intensity       0.0     0.0     0.0
         RGB                     red             green   blue    0.0

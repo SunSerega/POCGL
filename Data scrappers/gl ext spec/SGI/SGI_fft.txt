@@ -48,7 +48,7 @@ Overview
 
     FFT precision is implementation dependent.
 
-    This extension replaces the convolution block of the pixel pipeline 
+    This extension replaces the convolution block of the pixel pipeline
     with a new pixel transform block.  The pixel transform block
     can be configured to be the convolution operation defined by the
     EXT_convolution extension or the fft operation defined in this extension.
@@ -78,13 +78,13 @@ Issues
       the way CONVOLUTIONS are defined.  We might need a parameter or name that
       specifies in what dimension does a 1D FFT applied to an incoming n-D
       image.
-    
+
     * we refer to the new pixel processing block which can be configured
       as either convolution or fft as the pixel transform.  Is there a better
       name for this.
-    
+
     * it seems the way the spec is defined, that only way to disable the
-      scale and bias is to select convolve as the transform and use disable 
+      scale and bias is to select convolve as the transform and use disable
       the convolve using Disable.  Is there a better way?
 
     * Even though the algorithm is not described in the spec, this
@@ -156,13 +156,13 @@ New Tokens
     and GetDoublev:
 
         PIXEL_TRANSFORM_OPERATOR_SGI        0x81C4
-    
+
     Accepted by the <cap> parameter of Enable, Disable, and IsEnabled,
     and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev:
 
         PIXEL_TRANSFORM_SGI                     0x81C7
-    
+
     Accepted by the <pname> parameter of GetPixelTransformParameterfvSGI
     and GetPixelTransformParameterivSGI:
 
@@ -192,8 +192,8 @@ Additions to Chapter 2 of the OpenGL Specification (OpenGL Operation)
 
 Additions to Chapter 3 of the OpenGL Specification (Rasterization)
 
-    The specification of pixel operators is added to the GL Specification in 
-    section 3.6.2, "Pixel Transfer Modes." 
+    The specification of pixel operators is added to the GL Specification in
+    section 3.6.2, "Pixel Transfer Modes."
 
     The operations of the pixel transforms are added to the GL Specification in
     section 3.6.3, "Rasterization of Pixel Rectangles, immediately following the
@@ -212,11 +212,11 @@ Additions to Chapter 3 of the OpenGL Specification (Rasterization)
     If pixel transform is enabled and FFT_1D_SGI is selected, the 1-dimensional
     fft is applied to the image passed to TexImage1D, and to 1-dimensional
     textures queried by GetTexImage.  It is applied on a per-row basis to
-    the 2-dimensional images passed to DrawPixels, CopyPixels, ReadPixels, 
-    TexImage2D, TexSubImage2DEXT, CopyTexImage2DEXT, CopyTexSubImage2DEXT, 
+    the 2-dimensional images passed to DrawPixels, CopyPixels, ReadPixels,
+    TexImage2D, TexSubImage2DEXT, CopyTexImage2DEXT, CopyTexSubImage2DEXT,
     and to 2-dimensional images queried by GetTexImage. It is also applied
-    on a per-row basis to the 3-dimensional images passed to CopyTexSubImage3DEXT, 
-    TexImage3DEXT, and TexSubImage3DEXT, and to 3-dimensional images queried by 
+    on a per-row basis to the 3-dimensional images passed to CopyTexSubImage3DEXT,
+    TexImage3DEXT, and TexSubImage3DEXT, and to 3-dimensional images queried by
     GetTexImage.
 
     The discrete fourier transform is a complex valued sum of products of
@@ -243,7 +243,7 @@ Additions to Chapter 3 of the OpenGL Specification (Rasterization)
             C[n] = SUM{k = 0 through Ws-1}
 
                         Cs[k]*exp(2PIikn/Ws)
-        
+
     The inverse transform equation is:
 
         1-dimensional transform:
@@ -303,7 +303,7 @@ Additions to the GLX Specification
     None
 
 GLX Protocol
-  
+
     None
 
 Dependencies on EXT_convolution
@@ -321,7 +321,7 @@ Dependencies on EXT_convolution
     equivalent to the corresponding PixelTransformParameterfSGI,
     PixelTransformParameterfvSGI, PixelTransformParameteriSGI,
     PixelTransformParameterivSGI, GetPixelTransformParameterfvSGI, and
-    GetPixelTransformParameterivSGI commands and should be superseded 
+    GetPixelTransformParameterivSGI commands and should be superseded
     by the PixelTransform versions of the commands.
 
     If EXT_convolution is not defined, then specifying CONVOLUTION_SGI for the
@@ -332,7 +332,7 @@ Errors
 
     INVALID_ENUM is generated if PixelTransformParameteriSGI,
     PixelTransformParameterfSGI, PixelTransformParameterivSGI,
-    PixelTransformParameterfvSGI, GetPixelTransformParameterivSGI, or 
+    PixelTransformParameterfvSGI, GetPixelTransformParameterivSGI, or
     GetPixelTransformParameterfvSGI parameter <target> is not
     FFT_1D_SGI.
 

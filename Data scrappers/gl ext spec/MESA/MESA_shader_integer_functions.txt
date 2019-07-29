@@ -173,7 +173,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     operand has a floating-point type.  Otherwise, an unsigned integer type is
     chosen if either operand has an unsigned integer type.  Otherwise, a
     signed integer type is chosen.
-    
+
 
     Modify Section 5.9, Expressions, p. 57
 
@@ -263,7 +263,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
        f(vec4, vec4);        // exact match of vec4 f(in vec4 x, out vec4 y)
        f(vec4, uvec4);       // exact match of vec4 f(in vec4 x, out ivec4 y)
        f(vec4, ivec4);       // matched to vec4 f(in vec4 x, out vec4 y)
-                             //   (C) not relevant, can't convert vec4 to 
+                             //   (C) not relevant, can't convert vec4 to
                              //   ivec4.  (A) better than (B) for 2nd
                              //   argument (rule 2), same on first argument.
        f(ivec4, vec4);       // NOT matched.  All three match by implicit
@@ -290,7 +290,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
     The significand is returned by the function; the exponent is returned in
     the parameter <exp>.  For a floating-point value of zero, the significant
     and exponent are both zero.  For a floating-point value that is an
-    infinity or is not a number, the results of frexp() are undefined.  
+    infinity or is not a number, the results of frexp() are undefined.
 
     If the input <x> is a vector, this operation is performed in a
     component-wise manner; the value returned by the function and the value
@@ -317,9 +317,9 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
       genIType bitfieldExtract(genIType value, int offset, int bits);
       genUType bitfieldExtract(genUType value, int offset, int bits);
 
-      genIType bitfieldInsert(genIType base, genIType insert, int offset, 
+      genIType bitfieldInsert(genIType base, genIType insert, int offset,
                               int bits);
-      genUType bitfieldInsert(genUType base, genUType insert, int offset, 
+      genUType bitfieldInsert(genUType base, genUType insert, int offset,
                               int bits);
 
       genIType bitfieldReverse(genIType value);
@@ -398,7 +398,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50
 
     Syntax:
 
-      void umulExtended(genUType x, genUType y, out genUType msb, 
+      void umulExtended(genUType x, genUType y, out genUType msb,
                         out genUType lsb);
       void imulExtended(genIType x, genIType y, out genIType msb,
                         out genIType lsb);

@@ -60,7 +60,7 @@ Overview
     and also Vulkan to wait for OpenGL to complete work.  Together OpenGL
     and Vulkan can synchronize on the server without application
     interation.
-    
+
     Finally the function GetVkProcAddrNV() is provided to allow the OpenGL
     context to query the Vulkan entry points directly and avoid having to
     load them through the typical Vulkan loader.
@@ -68,25 +68,25 @@ Overview
 New Procedures and Functions
 
     void DrawVkImageNV(GLuint64 vkImage, GLuint sampler,
-                       GLfloat x0, GLfloat y0, 
+                       GLfloat x0, GLfloat y0,
                        GLfloat x1, GLfloat y1,
                        GLfloat z,
-                       GLfloat s0, GLfloat t0, 
+                       GLfloat s0, GLfloat t0,
                        GLfloat s1, GLfloat t1);
-                       
+
     VULKANPROCNV GetVkProcAddrNV(const GLchar *name);
-    
+
     void WaitVkSemaphoreNV (GLuint64 vkSemaphore);
-    
+
     void SignalVkSemaphoreNV (GLuint64 vkSemaphore);
-    
+
     void SignalVkFenceNV (GLuint64 vkFence);
 
 New Types
-    
+
     The Vulkan base entry point type from which all Vulkan functions pointers
     can be cast is:
-    
+
         typedef void (APIENTRY *VULKANPROCNV)(void);
 
     Note that this function pointer is defined as having the
@@ -99,29 +99,29 @@ New Tokens
 Additions to Chapter 1 of the OpenGL 4.5 Specification (Introduction)
 
     (Insert a new section after Section 1.3.6, OpenCL p. 7)
-    
+
     1.3.X Vulkan
-    
+
     Vulkan is a royalty-free, cross-platform explicit API for full-function
     3D graphics and compute.  Designed for a complete range of platforms from
     low-power mobile to high-performance desktop.
-    
+
     OpenGL can interoperate directly with Vulkan to take advantage of Vulkan's
     explicit low-level access to the GPU for the power and performance
     efficiencies it can offet.
-    
+
     An OpenGL application can use the following function to query the Vulkan
     function entry points from within an OpenGL context:
-    
+
       VULKANPROCNV GetVkProcAddrNV(const GLchar *name);
-      
+
     <name> is the name of the Vulkan function, for example "vkCreateInstance"
     and the return is a point to the Vulkan function address.  This allows
-    OpenGL applications that need to interoperate with Vulkan to query the 
+    OpenGL applications that need to interoperate with Vulkan to query the
     entry points directly and bypass the typical Vulkan loader.  The OpenGL
     implementation provides access to the Vulkan implementation through this
     mechanism.
-    
+
     The specification and more information about Vulkan can be found at
     https://www.khronos.org/vulkan/
 
@@ -129,32 +129,32 @@ Additions to Chapter 1 of the OpenGL 4.5 Specification (Introduction)
 Additions to Chapter 4 of the OpenGL 4.5 Specification (Event Model)
 
     (Insert a new section after Section 4.1.3, Sync Object Queries p. 42)
-    
+
     4.1.X Synchronization between OpenGL and Vulkan
-    
+
     The command:
 
       void WaitVkSemaphoreNV (GLuint64 vkSemaphore);
-      
+
     causes the GL server to block until the Vulkan VkSemaphore <vkSemaphore>
     is signalled.  No GL commands after this command are executed by the server
     until the semaphore is signaled.  <vkSemaphore> must be a valid Vulkan
     VkSemaphore non-dispatchable handle otherwise the operation is undefined.
-    
+
     The command:
-    
+
       void SignalVkSemaphoreNV (GLuint64 vkSemaphore);
-      
+
     causes the GL server to signal the Vulkan VkSemaphore <vkSemaphore> when
     it executes this command.  The semaphore is not signalled by GL until all
     commands issued before this have completed execution on the GL server.
     <vkSemaphore> must be a valid Vulkan VkSemaphore non-dispatchable handle
     otherwise the operation is undefined.
-    
+
     The command:
-    
+
       void SignalVkFenceNV (GLuint64 vkFence);
-      
+
     causes the GL server to signal the Vulkan VkFence <vkFence> object when
     it executes this command.  The fence is not signalled by the GL until all
     commands issued before this have completed execution on the GL server.
@@ -194,10 +194,10 @@ and Copying Pixels)
     The command:
 
       void DrawVkImageNV(GLuint64 vkImage, GLuint sampler,
-                         GLfloat x0, GLfloat y0, 
+                         GLfloat x0, GLfloat y0,
                          GLfloat x1, GLfloat y1,
                          GLfloat z,
-                         GLfloat s0, GLfloat t0, 
+                         GLfloat s0, GLfloat t0,
                          GLfloat s1, GLfloat t1);
 
     is used to draw a screen-aligned rectangle displaying a portion of the
@@ -282,7 +282,7 @@ Issues
 
     1) Can Vulkan entry points obtained through the typical Vulkan loader
        be used to interoperate with OpenGL.
-       
+
        UNRESOLVED: Vulkan entry points obtained through the Vulkan loader may
        introduce layers between the application and the Vulkan driver.  These
        layers may modify the Vulkan non-dispatchable handles returned by the
@@ -292,7 +292,7 @@ Issues
        GetVkProcAddrNV().
 
 Revision History
-    
+
     Rev.    Date    Author    Changes
     ----  --------  --------  -----------------------------------------
      1    20160214  pdaniell  Initial draft

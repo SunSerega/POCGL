@@ -1,8 +1,8 @@
-Name 
+Name
 
     DMP_program_binary
 
-Name Strings 
+Name Strings
 
     GL_DMP_program_binary
 
@@ -18,11 +18,11 @@ Contacts
 
     Kazunari Yamamoto, Digital Media Professionals Inc. (Kazunari 'dot' Yamamoto 'at' dmprof 'dot' com)
 
-Status 
+Status
 
     Complete
 
-Version 
+Version
 
     0.1, 29 July 2014
 
@@ -30,31 +30,31 @@ Number
 
     OpenGL ES Extension #192
 
-Dependencies 
+Dependencies
 
     OpenGL ES 2.0 is required.
     OES_get_program_binary is required.
-        
+
     The extension is written against the OpenGL ES 2.0 Specification.
 
-Overview 
-    
+Overview
+
     This extension enables loading precompiled program binaries compatible with
     chips designed by Digital Media Professionals Inc.
-     
-IP Status 
+
+IP Status
 
     Unknown.
 
-Issues 
+Issues
 
     1) Needs enumerant values assigned.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     None.
 
-New Tokens 
+New Tokens
 
     Accepted by the <binaryFormat> parameter of ProgramBinaryOES:
 
@@ -67,7 +67,7 @@ Additions to Chapter 2 of the OpenGL-ES 2.0 Specification (OpenGL Operation)
     Add the following text at the end of the section called Program Binaries:
 
     "If DMP_PROGRAM_BINARY_DMP, SMAPHS_PROGRAM_BINARY_DMP, or SMAPHS30_PROGRAM_BINARY_DMP are queried
-     in the list of PROGRAM_BINARY_FORMATS_OES, a binary format defined by 
+     in the list of PROGRAM_BINARY_FORMATS_OES, a binary format defined by
      Digital Media Professionals Inc. can be loaded via ProgramBinaryOES."
 
 Additions to Chapter 3 of the OpenGL-ES 2.0 Specification (Rasterization)
@@ -94,7 +94,7 @@ GLX Protocol
 
     None
 
-Errors 
+Errors
 
     None
 
@@ -111,4 +111,4 @@ Revision History
     1.0, 2014/09/26 Kazunari Yamamoto   Assigned enum values.
     0.1, 2014/07/29 Kazunari Yamamoto   Initial version
 
-    
+

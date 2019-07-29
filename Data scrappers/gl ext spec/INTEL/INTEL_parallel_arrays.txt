@@ -20,18 +20,18 @@ Dependencies
 
 Overview
 
-        This extension adds the ability to format vertex arrays in a way that's 
-efficient for SIMD architectures as well as caching.  In addition to storing 
-vertex data in staggered in a single array, or sparsely in separate arrays as 
-possible with existing vertex arrays, coordinates may be stored in individual 
-arrays.  
+        This extension adds the ability to format vertex arrays in a way that's
+efficient for SIMD architectures as well as caching.  In addition to storing
+vertex data in staggered in a single array, or sparsely in separate arrays as
+possible with existing vertex arrays, coordinates may be stored in individual
+arrays.
 The parallel array mode is enabled using Enable(PARALLEL_ARRAYS).
 Pointers to the coordinate arrays are specified using new vector versions of the
 Pointer functions.
 
 Issues
 
-        Should an Enable/Disbale be used to switch to/from parallel arrays, or 
+        Should an Enable/Disbale be used to switch to/from parallel arrays, or
         just infer it from the last type of Pointer called?
 
         Is stride needed for anything?
@@ -43,7 +43,7 @@ Issues
 Reasoning
 
         Alternative methods for specifying vertex data are provided for
-        vertex, normal, color, and texture pointers.  Need to put in argument   
+        vertex, normal, color, and texture pointers.  Need to put in argument
         for why this is faster on some architectures (cache lines, etc).
 
 
@@ -84,54 +84,54 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     Array Specification
     -------------------
 
-    VertexPointervINTEL specifies the location and data format of an    
-    array of vertex coordinates.  <pointer> specifies an array of pointers,     
+    VertexPointervINTEL specifies the location and data format of an
+    array of vertex coordinates.  <pointer> specifies an array of pointers,
     where pointer[0] is a pointer to the x coordinate of the first vertex in the
-    array,  pointer[1] specifies a pointer to the y coordinate of the first     
-    vertex in the array, pointer[2] specifies a  pointer to the z coordinate of 
-    the first vertex in the array, and pointer[3] specifies a pointer to the w  
-    coordinate of the first vertex in the array.   
-    <type> specifies the data type of each coordinate in the array, and must be 
-    one of SHORT, INT, FLOAT, or DOUBLE, implying GL data types short, int,     
-    float, and double respectively.  <size> specifies the number of coordinates 
-    per vertex, and must be 2, 3, or 4.  
+    array,  pointer[1] specifies a pointer to the y coordinate of the first
+    vertex in the array, pointer[2] specifies a  pointer to the z coordinate of
+    the first vertex in the array, and pointer[3] specifies a pointer to the w
+    coordinate of the first vertex in the array.
+    <type> specifies the data type of each coordinate in the array, and must be
+    one of SHORT, INT, FLOAT, or DOUBLE, implying GL data types short, int,
+    float, and double respectively.  <size> specifies the number of coordinates
+    per vertex, and must be 2, 3, or 4.
 
-    NormalPointervINTEL specifies the location and data format of an    
-    array of normals.  <pointer> specifies an array of pointers, where          
-    pointer[0] is a pointer to the x coordinate of the first normal in the      
-    array,  pointer[1] specifies a pointer to the y coordinate of the first     
-    normal in the array, pointer[2] specifies a  pointer to the z coordinate of 
-    the first normal in the array, and pointer[3] specifies a pointer to the w  
-    coordinate of the first normal in the array.  <type> specifies the 
-    data type of each coordinate in the array, and must be one of BYTE, SHORT,  
+    NormalPointervINTEL specifies the location and data format of an
+    array of normals.  <pointer> specifies an array of pointers, where
+    pointer[0] is a pointer to the x coordinate of the first normal in the
+    array,  pointer[1] specifies a pointer to the y coordinate of the first
+    normal in the array, pointer[2] specifies a  pointer to the z coordinate of
+    the first normal in the array, and pointer[3] specifies a pointer to the w
+    coordinate of the first normal in the array.  <type> specifies the
+    data type of each coordinate in the array, and must be one of BYTE, SHORT,
     INT, FLOAT, or DOUBLE, implying GL data types byte, short, int, float,
     and double respectively.  It is understood that each normal comprises
-    three coordinates.    
+    three coordinates.
 
-    ColorPointervINTEL specifies the location and data format of an     
-    array of color components.  <pointer> specifies an array of pointers,       
-    where pointer[0] is a pointer to the r coordinate of the first color in the 
-    array,  pointer[1] specifies a pointer to the g coordinate of the first     
-    color in the array, pointer[2] specifies a pointer to the b coordinate of   
-    the first color in the array, and pointer[3] specifies a pointer to the a   
-    coordinate of the first color in the array.  <type> specifies the data type 
-    of each component in the array, and must be one of BYTE, UNSIGNED_BYTE,     
-    SHORT, UNSIGNED_SHORT, INT, UNSIGNED_INT, FLOAT, or DOUBLE_EXT, implying GL 
-    data types byte, ubyte, short, ushort, int, uint, float, and double         
+    ColorPointervINTEL specifies the location and data format of an
+    array of color components.  <pointer> specifies an array of pointers,
+    where pointer[0] is a pointer to the r coordinate of the first color in the
+    array,  pointer[1] specifies a pointer to the g coordinate of the first
+    color in the array, pointer[2] specifies a pointer to the b coordinate of
+    the first color in the array, and pointer[3] specifies a pointer to the a
+    coordinate of the first color in the array.  <type> specifies the data type
+    of each component in the array, and must be one of BYTE, UNSIGNED_BYTE,
+    SHORT, UNSIGNED_SHORT, INT, UNSIGNED_INT, FLOAT, or DOUBLE_EXT, implying GL
+    data types byte, ubyte, short, ushort, int, uint, float, and double
     respectively.  <size> specifies the number of components per color, and must
-    be 3 or 4.  
+    be 3 or 4.
 
-    TexCoordPointervINTEL specifies the location and data format of an  
-    array of texture coordinates.  <pointer> specifies an array of pointers,    
-    where pointer[0] is a pointer to the u coordinate of the first element in   
-    the array,  pointer[1] specifies a pointer to the v coordinate of the first 
+    TexCoordPointervINTEL specifies the location and data format of an
+    array of texture coordinates.  <pointer> specifies an array of pointers,
+    where pointer[0] is a pointer to the u coordinate of the first element in
+    the array,  pointer[1] specifies a pointer to the v coordinate of the first
     element in the array, pointer[2] specifies a  pointer to the s coordinate of
-    the first element in the array, and pointer[3] specifies a pointer to the t 
-    coordinate of the first element in the array.  <type> specifies the data    
-    type of each coordinate in the array, and must be one of SHORT, INT, FLOAT, 
-    or DOUBLE, implying GL data types short, int, float, and double             
-    respectively. <size> specifies the number of coordinates per element, and   
-    must be 1, 2, 3, or 4.  
+    the first element in the array, and pointer[3] specifies a pointer to the t
+    coordinate of the first element in the array.  <type> specifies the data
+    type of each coordinate in the array, and must be one of SHORT, INT, FLOAT,
+    or DOUBLE, implying GL data types short, int, float, and double
+    respectively. <size> specifies the number of coordinates per element, and
+    must be 1, 2, 3, or 4.
 
     Rendering the Arrays
     --------------------
@@ -147,11 +147,11 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
                     px = (byte*)normal_x_pointer + i *  sizeof(normal_type);
                     py = (byte*)normal_y_pointer + i *  sizeof(normal_type);
                     pz = (byte*)normal_z_pointer + i *  sizeof(normal_type);
-                    Normal3<normal_type> (*(normal_type*)px, *(normal_type*)py, 
+                    Normal3<normal_type> (*(normal_type*)px, *(normal_type*)py,
                         *(normal_type*)pz);
                 } else {
                         if (normal_stride == 0)
-                            p = (byte*)normal_pointer + i * 3 *                 
+                            p = (byte*)normal_pointer + i * 3 *
                                         sizeof(normal_type);
                         else
                             p = (byte*)normal_pointer + i * normal_stride;
@@ -165,13 +165,13 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
                     pb = (byte*)color_b_pointer + i *  sizeof(color_type);
                     switch (<color_size>){
                         case 3:
-                            Color<color_size><color_type> (*(color_type*)pr,    
+                            Color<color_size><color_type> (*(color_type*)pr,
                                 *(color_type*)pg, *(color_type*)pb); break;
                         case 4:
-                            pa = (byte*)color_a_pointer + i *                   
+                            pa = (byte*)color_a_pointer + i *
                                         sizeof(color_type);
-                            Color<color_size><color_type> (*(color_type*)pr,    
-                                *(color_type*)pg, *(color_type*)pb,             
+                            Color<color_size><color_type> (*(color_type*)pr,
+                                *(color_type*)pg, *(color_type*)pb,
                                 *(color_type*)pa); break;
                     }
                 } else {
@@ -195,26 +195,26 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
                     pu = (byte*)texcoord_u_pointer + i *  sizeof(texcoord_type);
                     switch (<texcoord_size>){
                         case 1:
-                            TexCoord<texcoord_size><texcoord_type>              
+                            TexCoord<texcoord_size><texcoord_type>
                                 (*(texcoord_type*)pu); break;
                         case 2:
-                            pv = (byte*)texcoord_v_pointer + i *                
+                            pv = (byte*)texcoord_v_pointer + i *
                                 sizeof(texcoord_type);
-                            TexCoord<texcoord_size><texcoord_type>              
-                                (*(texcoord_type*)pu, *(texcoord_type*)pv);     
+                            TexCoord<texcoord_size><texcoord_type>
+                                (*(texcoord_type*)pu, *(texcoord_type*)pv);
                             break;
                         case 3:
-                            ps = (byte*)texcoord_s_pointer + i *                
+                            ps = (byte*)texcoord_s_pointer + i *
                                 sizeof(texcoord_type);
-                            TexCoord<texcoord_size><texcoord_type>              
-                                (*(texcoord_type*)pu, *(texcoord_type*)pv,      
+                            TexCoord<texcoord_size><texcoord_type>
+                                (*(texcoord_type*)pu, *(texcoord_type*)pv,
                                  *(texcoord_type*)ps); break;
                         case 4:
-                            pt = (byte*)texcoord_t_pointer + i *                
+                            pt = (byte*)texcoord_t_pointer + i *
                                 sizeof(texcoord_type);
-                            TexCoord<texcoord_size><texcoord_type>              
-                                (*(texcoord_type*)pu, *(texcoord_type*)pv,      
-                                 *(texcoord_type*)ps, *(texcoord_type*)pt);     
+                            TexCoord<texcoord_size><texcoord_type>
+                                (*(texcoord_type*)pu, *(texcoord_type*)pv,
+                                 *(texcoord_type*)ps, *(texcoord_type*)pt);
                             break;
                     }
                 } else {
@@ -223,7 +223,7 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
                                 i * texcoord_size * sizeof(texcoord_type);
                         else
                             p = (byte*)texcoord_pointer + i * texcoord_stride;
-                        TexCoord<texcoord_size><texcoord_type>v                 
+                        TexCoord<texcoord_size><texcoord_type>v
                                 ((texcoord_type*)p);
                 }
             }
@@ -238,22 +238,22 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
                 if (PARALLEL_ARRAYS) {
                     px = (byte*)vertex_x_pointer + i *  sizeof(vertex_type);
                     py = (byte*)vertex_y_pointer + i *  sizeof(vertex_type);
-                    Normal3<normal_type> ((normal_type*)px, (normal_type*)py,   
+                    Normal3<normal_type> ((normal_type*)px, (normal_type*)py,
                                           (normal_type*)pz);
                     switch (<vertex_size>){
                         case 2:
-                          Vertex<vertex_size><vertex_type> (*(vertex_type*)px,  
+                          Vertex<vertex_size><vertex_type> (*(vertex_type*)px,
                                                             *(vertex_type*)py);
                         case 3:
-                          pz = (byte*)vertex_z_pointer + i *                    
+                          pz = (byte*)vertex_z_pointer + i *
                                 sizeof(vertex_type);
-                          Vertex<vertex_size><vertex_type> (*(vertex_type*)px,  
+                          Vertex<vertex_size><vertex_type> (*(vertex_type*)px,
                                 *(vertex_type*)py, *(vertex_type*)pz);
                         case 4:
-                          pw = (byte*)vertex_w_pointer + i *                    
+                          pw = (byte*)vertex_w_pointer + i *
                                 sizeof(vertex_type);
-                          Vertex<vertex_size><vertex_type> (*(vertex_type*)px,  
-                                *(vertex_type*)py, *(vertex_type*)pz,           
+                          Vertex<vertex_size><vertex_type> (*(vertex_type*)px,
+                                *(vertex_type*)py, *(vertex_type*)pz,
                                 *(vertex_type*)pw);
                     }
                 } else {
@@ -278,20 +278,20 @@ and the Frame buffer)
 
 Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 
-    Array specification commands VertexParallelPointerINTEL,                    
-    NormalParallelPointerINTEL, ColorParallelPointerINTEL, and                  
+    Array specification commands VertexParallelPointerINTEL,
+    NormalParallelPointerINTEL, ColorParallelPointerINTEL, and
     TexCoordParallelPointerINTEL specify client side state, and are therefore
     not included in display lists.  Likewise Enable and Disable, when
-    called with <cap> set to PARALLEL_ARRAYS_INTEL, are not included in display 
+    called with <cap> set to PARALLEL_ARRAYS_INTEL, are not included in display
     lists.
 
 Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 
     GetPointerv returns in <param> the array pointer value specified
     by <pname>.  GetPointerv additional accepts the following values for <pname>
- 
+
     VERTEX_ARRAY_PARALLEL_POINTERS_INTEL, NORMAL_ARRAY_PARALLEL_POINTERS_INTEL,
-    COLOR_ARRAY_PARALLEL_POINTERS_INTEL,                                        
+    COLOR_ARRAY_PARALLEL_POINTERS_INTEL,
     TEXTURE_COORD_ARRAY_PARALLEL_POINTERS_INTEL.
     In this case, <param> will return an array of pointers.
 
@@ -305,10 +305,10 @@ GLX Protocol
 
 Errors
 
-    INVALID_VALUE is generated if VertexPointervINTEL parameter <size>  
+    INVALID_VALUE is generated if VertexPointervINTEL parameter <size>
     is not 2, 3, or 4.
 
-    INVALID_ENUM is generated if VertexPointervINTEL parameter <type> 
+    INVALID_ENUM is generated if VertexPointervINTEL parameter <type>
     is not SHORT, INT, FLOAT, or DOUBLE.
 
     INVALID_ENUM is generated if NormalPointervINTEL parameter <type> is
@@ -317,7 +317,7 @@ Errors
     INVALID_VALUE is generated if ColorPointervINTEL parameter <size> is
     not 3 or 4.
 
-    INVALID_ENUM is generated if ColorPointervINTEL parameter <type> is 
+    INVALID_ENUM is generated if ColorPointervINTEL parameter <type> is
     not BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT, INT, UNSIGNED_INT, FLOAT,
     or DOUBLE.
 
@@ -332,7 +332,7 @@ Errors
     COLOR_ARRAY_POINTER, INDEX_ARRAY_POINTER,
     TEXTURE_COORD_ARRAY_POINTER, EDGE_FLAG_ARRAY_POINTER, or
     VERTEX_ARRAY_PARALLEL_POINTERS_INTEL, NORMAL_ARRAY_PARALLEL_POINTERS_INTEL,
-    COLOR_ARRAY_PARALLEL_POINTERS_INTEL,                                        
+    COLOR_ARRAY_PARALLEL_POINTERS_INTEL,
     TEXTURE_COORD_ARRAY_PARALLEL_POINTERS_INTEL
 
 New State

@@ -167,7 +167,7 @@ New Tokens
 Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
  --  Section 2.11 "Clipping"
- 
+
     Add to the end of the 3rd paragraph:
 
     "Depth clamping is enabled with the generic Enable command and
@@ -187,7 +187,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
     of wc>0 should be produced by clipping."
 
  --  Section 2.12 "Current Raster Position"
- 
+
     Add to the end of the 4th paragraph:
 
     "If depth clamping (see section 2.11) is enabled, then raster position
@@ -203,7 +203,7 @@ Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment Operation
 and the Framebuffer)
 
  --  Section 4.1.5 "Depth buffer test"
- 
+
     Add to the end of the 2nd paragraph:
 
     "If depth clamping (see section 2.11) is enabled, before the incoming

@@ -28,7 +28,7 @@ Dependencies
     OpenGL 1.1 is required.
     ARB_depth_texture is required.
     ARB_shadow is required.
-    This extension is written against the OpenGL 1.3 Specification. 
+    This extension is written against the OpenGL 1.3 Specification.
 
 Overview
 
@@ -100,59 +100,59 @@ Additions to Chapter 3 of the 1.3 Specification (Rasterization)
                  { 1.0,  if R <= Dt
              r = {
                  { 0.0,  if R > Dt
-    
+
             else if TEXTURE_COMPARE_FUNC_ARB = GEQUAL
-    
+
                  { 1.0,  if R >= Dt
              r = {
                  { 0.0,  if R < Dt
-    
+
             else if TEXTURE_COMPARE_FUNC_ARB = LESS
-    
+
                  { 1.0,  if R < Dt
              r = {
                  { 0.0,  if R >= Dt
-    
+
             else if TEXTURE_COMPARE_FUNC_ARB = GREATER
-    
+
                  { 1.0,  if R > Dt
              r = {
                  { 0.0,  if R <= Dt
-    
+
             else if TEXTURE_COMPARE_FUNC_ARB = EQUAL
-    
+
                  { 1.0,  if R == Dt
              r = {
                  { 0.0,  if R != Dt
-    
+
             else if TEXTURE_COMPARE_FUNC_ARB = NOTEQUAL
-    
+
                  { 1.0,  if R != Dt
              r = {
                  { 0.0,  if R == Dt
-    
+
             else if TEXTURE_COMPARE_FUNC_ARB = ALWAYS
-    
+
              r = 1.0
-    
+
             else if TEXTURE_COMPARE_FUNC_ARB = NEVER
-    
+
              r = 0.0
 
             endif
 
             if DEPTH_TEXTURE_MODE_ARB = LUMINANCE
-    
+
                 Lt = r
-    
+
             else if DEPTH_TEXTURE_MODE_ARB = INTENSITY
-    
+
                 It = r
-    
+
             else if DEPTH_TEXTURE_MODE_ARB = ALPHA
-    
+
                 At = r
-    
+
             endif
 
         endif

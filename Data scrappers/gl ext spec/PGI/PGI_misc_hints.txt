@@ -20,7 +20,7 @@ Dependencies
 
 Overview
 
-    The extension allows the app to give various hints regarding 
+    The extension allows the app to give various hints regarding
     desired level of conformance, performance, features, etc.
 
 New Procedures and Functions
@@ -83,7 +83,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     Functions Hint and HintPGI accept the following targets and modes:
 
     [All hints are subject to Push/Pop with the HINT_BIT attributes,
-    except for these hints: PREFER_DOUBLEBUFFER_HINT_PGI, 
+    except for these hints: PREFER_DOUBLEBUFFER_HINT_PGI,
     NATIVE_GRAPHICS_BEGIN_HINT_PGI, NATIVE_GRAPHICS_END_HINT_PGI,
     RECLAIM_MEMORY_HINT_PGI.]
 
@@ -94,7 +94,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     visuals.  If <mode> is TRUE, the client will tend to choose
     doublebuffer in these cases; if <mode> is FALSE, the client
     will tend to choose singlebuffer attributes.
-    
+
     <target> = STRICT_DEPTHFUNC_HINT_PGI
 
     This hint indicates whether the application is willing to accept
@@ -185,7 +185,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     xxx_HINT_PGI hints are set to FALSE.  If ALWAYS_FAST_HINT_PGI is
     FALSE, then all ALLOW_DRAW_xxx_HINT_PGI hints are set TRUE.
     If ALWAYS_SOFT_HINT_PGI is TRUE, then ALLOW_DRAW_OBJ_HINT_PGI
-    is set FALSE, ALLOW_DRAW_MEM_HINT_PGI is set TRUE, and 
+    is set FALSE, ALLOW_DRAW_MEM_HINT_PGI is set TRUE, and
     ALLOW_DRAW_WIN_HINT_PGI and ALLOW_DRAW_SPN_HINT_PGI are set to
     TRUE or FALSE in an implementation-dependent manner.
 

@@ -32,7 +32,7 @@ Dependencies
 
     OpenGL 2.1 is required.
     WGL_NV_DX_interop is required.
-    Windows Display Driver Model (WDDM) capable operating system 
+    Windows Display Driver Model (WDDM) capable operating system
       (such as Vista or Windows 7) required.
     Direct3D 10-capable GPU required for ID3D10Device usage.
     Direct3D 11-capable GPU required for ID3D11Device usage.
@@ -64,7 +64,7 @@ Additions to the WGL_NV_DX_interop specification
 
     Modify the last paragraph in the description of
     wglDXRegisterObjectNV:
-    
+
     If the application explicitly requests a share handle for a DirectX
     resource, results are undefined (and may include data corruption,
     incorrect DirectX operation or program termination) if
@@ -73,7 +73,7 @@ Additions to the WGL_NV_DX_interop specification
     restriction does not apply to non-WDDM operating systems. This
     restriction also does not apply to DirectX version 10 and 11
     resources.
-    
+
     Add the following supported devices to table wgl.devicetypes:
 
     -------------------------------------------------------------------------
@@ -138,7 +138,7 @@ Additions to the WGL_NV_DX_interop specification
 Issues
 
     1) How do we share D3D "tbuffers" with OpenGL?
-    
+
     RESOLUTION: D3D "tbuffers" are analogous to buffer textures in OpenGL
     and do not have their own resource type. The ID3D1xBuffer backing the
     "tbuffer" could be shared with OpenGL and attached to a buffer texture
@@ -147,16 +147,16 @@ Issues
 
 Sample Code
     Example: Render to Direct3D 11 backbuffer with openGL.
-    
+
     // create D3D11 device, context and swap chain.
     ID3D11Device *device;
     ID3D11DeviceContext *devCtx;
     IDXGISwapChain *swapChain;
-    
+
     DXGI_SWAP_CHAIN_DESC scd;
-    
+
     <set appropriate swap chain parameters in scd>
-    
+
     hr = D3D11CreateDeviceAndSwapChain(NULL,                        // pAdapter
                                        D3D_DRIVER_TYPE_HARDWARE,    // DriverType
                                        NULL,                        // Software
@@ -173,27 +173,27 @@ Sample Code
     // Fetch the swapchain backbuffer
     ID3D11Texture2D *dxColorbuffer;
     swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&dxColorbuffer);
-    
+
     // Create depth stencil texture
     ID3D11Texture2D *dxDepthBuffer;
     D3D11_TEXTURE2D_DESC depthDesc;
     depthDesc.Usage = D3D11_USAGE_DEFAULT;
     <set other depthDesc parameters appropriately>
-    
+
     // Create Views
     ID3D11RenderTargetView *colorBufferView;
     D3D11_RENDER_TARGET_VIEW_DESC rtd;
     <set rtd parameters appropriately>
     device->CreateRenderTargetView(dxColorbuffer, &rtd, &colorBufferView);
-    
+
     ID3D11DepthStencilView *depthBufferView;
     D3D11_DEPTH_STENCIL_VIEW_DESC dsd;
     <set dsd parameters appropriately>
     device->CreateDepthStencilView(dxDepthBuffer, &dsd, &depthBufferView);
-    
+
     // Attach back buffer and depth texture to redertarget for the device.
     devCtx->OMSetRenderTargets(1, &colorBufferView, depthBufferView);
-    
+
     // Register D3D11 device with GL
     HANDLE gl_handleD3D;
     gl_handleD3D = wglDXOpenDeviceNV(device);

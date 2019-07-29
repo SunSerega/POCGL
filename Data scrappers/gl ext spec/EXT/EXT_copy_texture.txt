@@ -117,7 +117,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     Figure 3.10 of the GL Specification.  The semantics and accepted values
     of the <level>, <border>, and <internalformat> parameters are exactly
     those of CopyTexImage2DEXT.  <target> accepts only TEXTURE_1D.
-    
+
     If EXT_subtexture is supported, this extension also defines
     CopyTexSubImage1DEXT and CopyTexSubImage2DEXT.  These commands are
     related to TexSubImage1DEXT and TexSubImage2DEXT in exactly the way
@@ -171,8 +171,8 @@ GLX Protocol
             4           ENUM            target
             4           INT32           level
             4           ENUM            internalformat
-            4           INT32           x       
-            4           INT32           y       
+            4           INT32           x
+            4           INT32           y
             4           INT32           width
             4           INT32           border
 
@@ -182,8 +182,8 @@ GLX Protocol
             4           ENUM            target
             4           INT32           level
             4           ENUM            internalformat
-            4           INT32           x       
-            4           INT32           y       
+            4           INT32           x
+            4           INT32           y
             4           INT32           width
             4           INT32           height
             4           INT32           border
@@ -194,8 +194,8 @@ GLX Protocol
             4           ENUM            target
             4           INT32           level
             4           INT32           xoffset
-            4           INT32           x       
-            4           INT32           y       
+            4           INT32           x
+            4           INT32           y
             4           INT32           width
 
         CopyTexSubImage2DEXT
@@ -205,8 +205,8 @@ GLX Protocol
             4           INT32           level
             4           INT32           xoffset
             4           INT32           yoffset
-            4           INT32           x       
-            4           INT32           y       
+            4           INT32           x
+            4           INT32           y
             4           INT32           width
             4           INT32           height
 
@@ -218,8 +218,8 @@ GLX Protocol
             4           INT32           xoffset
             4           INT32           yoffset
             4           INT32           zoffset
-            4           INT32           x       
-            4           INT32           y       
+            4           INT32           x
+            4           INT32           y
             4           INT32           width
             4           INT32           height
 

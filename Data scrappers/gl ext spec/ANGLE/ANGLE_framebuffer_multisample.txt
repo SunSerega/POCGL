@@ -24,7 +24,7 @@ Status
 
 Version
 
-    Last Modified Date: Aug 6, 2010 
+    Last Modified Date: Aug 6, 2010
     Author Revision: #3
 
 Number
@@ -37,7 +37,7 @@ Dependencies
 
     Requires GL_ANGLE_framebuffer_blit (or equivalent functionality).
 
-    The extension is written against the OpenGL ES 2.0 specification. 
+    The extension is written against the OpenGL ES 2.0 specification.
 
     OES_texture_3D affects the definition of this extension.
 
@@ -59,7 +59,7 @@ Overview
     multisample attachments is "framebuffer complete", then the
     framebuffer object behaves as if SAMPLE_BUFFERS is one.
 
-    The resolve operation is affected by calling 
+    The resolve operation is affected by calling
     BlitFramebufferANGLE (provided by the ANGLE_framebuffer_blit
     extension) where the source is a multisample application-created
     framebuffer object and the destination is a single-sample
@@ -123,21 +123,21 @@ Operations and the Framebuffer)
     corresponding to each pixel location in the source are converted to
     a single sample before being written to the destination.
 
-    If SAMPLE_BUFFERS for the draw framebuffer is greater than zero, 
+    If SAMPLE_BUFFERS for the draw framebuffer is greater than zero,
     no copy is performed and an INVALID_OPERATION error is generated.
 
     If SAMPLE_BUFFERS for the read framebuffer is greater than zero and
-    <mask> includes DEPTH_BUFFER_BIT or STENCIL_BUFFER_BIT, no copy is 
+    <mask> includes DEPTH_BUFFER_BIT or STENCIL_BUFFER_BIT, no copy is
     performed and an INVALID_OPERATION error is generated.
 
-    If SAMPLE_BUFFERS for the read framebuffer is greater than zero and 
+    If SAMPLE_BUFFERS for the read framebuffer is greater than zero and
     the format of the read and draw framebuffers are not identical, no
     copy is performed and an INVALID_OPERATION error is generated.
 
     If SAMPLE_BUFFERS for the read framebuffer is greater than zero, the
-    dimensions of the source and destination rectangles provided to 
-    BlitFramebufferANGLE must be identical and must specify the complete 
-    source and destination buffers, otherwise no copy is performed and 
+    dimensions of the source and destination rectangles provided to
+    BlitFramebufferANGLE must be identical and must specify the complete
+    source and destination buffers, otherwise no copy is performed and
     an INVALID_OPERATION error is generated."
 
     Modification to 4.4.3 (Renderbuffer Objects)
@@ -156,10 +156,10 @@ Operations and the Framebuffer)
     RENDERBUFFER.  <internalformat> must be one of the color-renderable,
     depth-renderable, or stencil-renderable formats described in table 4.5.
     <width> and <height> are the dimensions in pixels of the renderbuffer.  If
-    either <width> or <height> is greater than the value of 
-    MAX_RENDERBUFFER_SIZE, or if <samples> is greater than MAX_SAMPLES_ANGLE, 
-    then the error INVALID_VALUE is generated. If OpenGL ES is unable to 
-    create a data store of the requested size, the error OUT_OF_MEMORY 
+    either <width> or <height> is greater than the value of
+    MAX_RENDERBUFFER_SIZE, or if <samples> is greater than MAX_SAMPLES_ANGLE,
+    then the error INVALID_VALUE is generated. If OpenGL ES is unable to
+    create a data store of the requested size, the error OUT_OF_MEMORY
     is generated.
 
     Upon success, RenderbufferStorageMultisampleANGLE deletes any existing
@@ -183,7 +183,7 @@ Operations and the Framebuffer)
     resolution based on any RenderbufferStorageMultisampleANGLE parameter (except
     target), but the allocation and chosen internal format must not be a
     function of any other state and cannot be changed once they are
-    established. The actual resolution in bits of each component of the 
+    established. The actual resolution in bits of each component of the
     allocated image can be queried with GetRenderbufferParameteriv."
 
     Modify the definiton of RenderbufferStorage as follows:
@@ -221,18 +221,18 @@ Additions to Chapter 5 of the OpenGL ES 2.0 Specification (Special Functions)
 Additions to Chapter 6 of the OpenGL ES 2.0 Specification (State and State
 Requests)
 
-    In section 6.1.3 (Enumeraged Queries), modify the third paragraph 
+    In section 6.1.3 (Enumeraged Queries), modify the third paragraph
     of the description of GetRenderbufferParameteriv as follows:
 
     "Upon successful return from GetRenderbufferParameteriv, if
     <pname> is RENDERBUFFER_WIDTH, RENDERBUFFER_HEIGHT,
-    RENDERBUFFER_INTERNAL_FORMAT, or RENDERBUFFER_SAMPLES_ANGLE, then <params> 
-    will contain the width in pixels, height in pixels, internal format, or 
-    number of samples, respectively, of the image of the renderbuffer 
+    RENDERBUFFER_INTERNAL_FORMAT, or RENDERBUFFER_SAMPLES_ANGLE, then <params>
+    will contain the width in pixels, height in pixels, internal format, or
+    number of samples, respectively, of the image of the renderbuffer
     currently bound to <target>."
 
 
-Dependencies on ANGLE_framebuffer_blit    
+Dependencies on ANGLE_framebuffer_blit
 
     ANGLE_framebuffer_blit is required.  Technically, ANGLE_framebuffer_blit
     would not be required to support multisampled rendering, except for
@@ -246,20 +246,20 @@ Dependencies on OES_texture_3D
 
 Errors
 
-    The error INVALID_OPERATION is generated if ReadPixels or 
+    The error INVALID_OPERATION is generated if ReadPixels or
     CopyTex{Sub}Image* is called while READ_FRAMEBUFFER_BINDING_ANGLE
     is non-zero, the read framebuffer is framebuffer complete, and the
     value of SAMPLE_BUFFERS for the read framebuffer is greater than
     zero.
 
     If both the draw and read framebuffers are framebuffer complete and
-    the draw framebuffer has a value of SAMPLE_BUFFERS that is greater 
-    than zero, then the error INVALID_OPERATION is generated if 
+    the draw framebuffer has a value of SAMPLE_BUFFERS that is greater
+    than zero, then the error INVALID_OPERATION is generated if
     BlitFramebufferANGLE is called.
 
     If both the draw and read framebuffers are framebuffer complete and
     the read framebuffer has a value of SAMPLE_BUFFERS that is greater
-    than zero, the error INVALID_OPERATION is generated if 
+    than zero, the error INVALID_OPERATION is generated if
     BlitFramebufferANGLE is called and any of the following conditions
     are true:
      - <mask> includes DEPTH_BUFFER_BIT or STENCIL_BUFFER_BIT.
@@ -281,13 +281,13 @@ Errors
     If RenderbufferStorageMultisampleANGLE is called with <target> not
     equal to RENDERBUFFER, the error INVALID_ENUM is generated.
 
-    If RenderbufferStorageMultisampleANGLE is called with an 
-    <internalformat> that is not listed as one of the color-, depth- 
+    If RenderbufferStorageMultisampleANGLE is called with an
+    <internalformat> that is not listed as one of the color-, depth-
     or stencil-renderable formats in Table 4.5, then the error
     INVALID_ENUM is generated.
 
-    If RenderbufferStorageMultisampleANGLE is called with <width> or 
-    <height> greater than MAX_RENDERBUFFER_SIZE, then the error 
+    If RenderbufferStorageMultisampleANGLE is called with <width> or
+    <height> greater than MAX_RENDERBUFFER_SIZE, then the error
     INVALID_VALUE is generated.
 
     If RenderbufferStorageMultisampleANGLE is called with a value of
@@ -307,7 +307,7 @@ New State
     RENDERBUFFER_SAMPLES_ANGLE         Z+      GetRenderbufferParameteriv  0              number of samples       4.4.3
 
 
-    Add to table 6.yy (Framebuffer Dependent Vaues) (added by 
+    Add to table 6.yy (Framebuffer Dependent Vaues) (added by
     ANGLE_framebuffer_blit), the following new framebuffer dependent state.
 
     Get Value          Type  Get Command     Minimum Value    Description             Section
@@ -315,31 +315,31 @@ New State
     MAX_SAMPLES_ANGLE  Z+    GetIntegerv     1                Maximum number of       4.4.3
                                                               samples supported
                                                               for multisampling
-                                                            
+
 
 
 Issues
-    
+
     Issues from EXT_framebuffer_multisample have been removed.
- 
+
     1) What should we call this extension?
 
-       Resolved: ANGLE_framebuffer_blit.  
+       Resolved: ANGLE_framebuffer_blit.
 
-       This extension is a result of a collaboration between Google and 
+       This extension is a result of a collaboration between Google and
        TransGaming for the open-source ANGLE project. Typically one would
-       label a multi-vendor extension as EXT, but EXT_framebuffer_mulitsample 
+       label a multi-vendor extension as EXT, but EXT_framebuffer_mulitsample
        is already the name for this on Desktop GL.  Additionally this
        isn't truely a multi-vendor extension because there is only one
        implementation of this.  We'll follow the example of the open-source
        MESA project which uses the project name for the vendor suffix.
- 
+
     2) How does this extension differ from EXT_framebuffer_multisample?
 
        This is designed to be a proper subset of EXT_framebuffer_multisample
        functionality as applicable to OpenGL ES 2.0.
 
-       Functionality that is unchanged: 
+       Functionality that is unchanged:
         - creation of multisample renderbuffers.
         - whole buffer multi-sample->single-sample resolve.
         - no format conversions, stretching or flipping supported on multisample blits.
@@ -348,16 +348,16 @@ Issues
         - multisample resolve is only supported on color buffers.
         - no blits to multisample destinations (no single->multi or multi-multi).
         - only entire buffers can be resolved.
-         
+
 Revision History
 
     Revision 1, 2010/07/08
       - copied from revision 7 of EXT_framebuffer_multisample
-      - removed language that was not relevant to ES2 
+      - removed language that was not relevant to ES2
       - rebase changes against the Open GL ES 2.0 specification
       - added ANGLE-specific restrictions
     Revision 2, 2010/07/19
       - fix missing error code
     Revision 3, 2010/08/06
       - add additional contributors, update implementation status
-      - disallow negative samples 
+      - disallow negative samples

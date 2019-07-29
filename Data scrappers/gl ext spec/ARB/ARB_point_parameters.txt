@@ -154,8 +154,8 @@ Issues
 
       factor = (derived_size/threshold)^2
 
-                      factor                  clamp <= factor 
-      clamped_value = 
+                      factor                  clamp <= factor
+      clamped_value =
                       clamp                   factor < clamp
 
                1.0                            derived_size >= threshold
@@ -164,7 +164,7 @@ Issues
 
       where clamp is defined by the POINT_FADE_ALPHA_CLAMP_ARB new
       parameter.
- 
+
 New Procedures and Functions
 
     void PointParameterfARB(enum pname,
@@ -221,7 +221,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     rasterized point is
 
                    derived_size                 derived_size >= threshold
-        diameter = 
+        diameter =
                    threshold                    Otherwise
 
     and the fade factor is computed as follows:

@@ -229,7 +229,7 @@ Usage Examples
         ...
 
         --- Shader ---
-        
+
         ...
         uniform queryResult {
             uint resultAvailable;
@@ -252,10 +252,10 @@ Usage Examples
             }
             ...
         }
-        
+
     Example 3: Using a default value and QUERY_RESULT_NO_WAIT_AMD
 
-        // Create a buffer object for the query result        
+        // Create a buffer object for the query result
         // Store a default value in the buffer that will be used
         // if the query results are not available
         glGenBuffers(1, &queryBuffer);
@@ -263,7 +263,7 @@ Usage Examples
         GLuint defaultValue = 42;
         glBufferData(GL_QUERY_BUFFER_AMD, sizeof(GLuint),
                      &defaultValue, GL_DYNAMIC_COPY);
-        
+
         // Perform occlusion query
         glBeginQuery(GL_SAMPLES_PASSED, queryId)
         ...
@@ -277,7 +277,7 @@ Usage Examples
 
     Example 4: Using transform feedback query result to fill indirect draw buffer
 
-        // Create a buffer object for the indirect draw command        
+        // Create a buffer object for the indirect draw command
         glGenBuffers(1, &drawIndirectBuffer);
 
         // Initialize draw command
@@ -285,7 +285,7 @@ Usage Examples
         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, drawIndirectBuffer);
         glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawArraysIndirectCommand),
                      &cmd, GL_DYNAMIC_COPY);
-        
+
         // Perform transform feedback query
         glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, queryId)
         ...
@@ -362,10 +362,10 @@ Issues
     in case a pixel pack buffer is bound. As pixel buffer objects are part of
     the core specification since version 2.1, no precedence is introduced by
     this extension.
-    
+
     8) What should be written to the query buffer when QUERY_RESULT_NO_WAIT_AMD
     is used but the results are not available?
-    
+
     DISCUSSION: Leaving the written value undefined is an option, however
     in many cases the application can benefit from having a default value in
     the query buffer if the results are not available. The following options

@@ -90,7 +90,7 @@ New Tokens
     glXQueryGLXPbufferSGIX:
 
         GLX_STEREO_TREE_EXT                   0x20F5
-    
+
     Accepted in the <event_mask> parameter of glXSelectEvent and
     glXSelectEventSGIX, and returned in the <event_mask> parameter
     of glXGetSelectedEvent and glXGetSelectedEventSGIX:
@@ -106,7 +106,7 @@ Additions to the GLX 1.4 Specification
     [Modify Section 3.3.6, Querying Attributes]
 
     [Replace the 2nd sentence of the 1st paragraph with the following]
-    
+
     "<attribute> must be set to one of GLX_WIDTH, GLX_HEIGHT,
     GLX_PRESERVED_CONTENTS, GLX_LARGEST_PBUFFER, GLX_FBCONFIG_ID, or
     GLX_STEREO_TREE_EXT"

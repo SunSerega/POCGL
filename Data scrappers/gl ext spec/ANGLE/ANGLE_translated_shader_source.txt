@@ -45,7 +45,7 @@ Overview
 
     This extension addes a new function to query the translated shader source,
     and adds a new enum for GetShaderiv's <pname> parameter to query the
-    translated shader source length. 
+    translated shader source length.
 
 IP Status
 
@@ -89,7 +89,7 @@ Requests)
     the shader object <shader>. The string <source> will be null terminated.
     The actual number of characters written into <source>, excluding the null
     terminator, is returned in <length>. If <length> is NULL, no length is
-    returned. The maximum number of characters that may be written into 
+    returned. The maximum number of characters that may be written into
     <source>, including the null terminator, is speciﬁed by <bufSize>. The
     string <source> is the translated string of a concatenation of the strings
     passed to the GL using ShaderSource. The length of this translated string
@@ -108,7 +108,7 @@ Issues
     1) What enum value should be used for TRANSLATED_SHADER_SOURCE_LENGTH_ANGLE?
 
       RESOLVED: The first draft used a temporary enum value. This been replaced
-      with a enum allocated from the ANGLE range of GL enums. 
+      with a enum allocated from the ANGLE range of GL enums.
 
 Revision History
 

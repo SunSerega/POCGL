@@ -25,7 +25,7 @@ Number
     OpenGL ES Extension #125
 
 Status
-    
+
     Complete
 
 Dependencies
@@ -124,10 +124,10 @@ Operations and the Frame Buffer)
     <locations> depend on whether the GL is using the default
     framebuffer (i.e. DRAW_FRAMEBUFFER_BINDING is non-zero). For more
     information about framebuffer objects, see section 4.4.
-    
+
     If the GL is bound to the default framebuffer, then each of the
     location constants must be MULTIVIEW_EXT or NONE.
-    
+
     If the GL is bound to a framebuffer object, then each of the
     location constants must be COLOR_ATTACHMENT_EXT or NONE.
 
@@ -161,7 +161,7 @@ Operations and the Frame Buffer)
     neither gl_FragColor nor gl_FragData, the values of the fragment
     colors following shader execution are undefined, and may differ
     for each fragment color.
-    
+
     Indicating a buffer or buffers using DrawBuffersIndexedEXT causes
     subsequent pixel color value writes to affect the indicated
     buffers.  If more than one color buffer is selected for drawing,
@@ -184,7 +184,7 @@ Operations and the Frame Buffer)
     the draw buffer location for fragment color zero is COLOR_-
     ATTACHMENT_EXT and the index is 0. The initial state of draw buffers
     for fragment colors other than zero is NONE.
-    
+
     The color buffer location and index to which fragment colors are
     written for an output color index <i> can be queried by calling
     GetIntegeri_vEXT with <target> DRAW_BUFFER_EXT and index
@@ -314,7 +314,7 @@ Dependencies on NV_draw_buffers:
 
     DrawBuffersIndexedEXT generates an INVALID_OPERATION error if the GL
     is bound to a framebuffer object.
-    
+
     Where the constant in <locations> is MULTIVIEW_EXT, the
     corresponding value in <indices> must be a value from 0 through
     MAX_MULTIVIEW_BUFFERS_EXT. Otherwise, an INVALID_OPERATION error is
@@ -333,7 +333,7 @@ Dependencies on NV_draw_buffers:
     gl_FragColor nor gl_FragData[0], the values of the fragment colors
     following shader execution are undefined, and may differ for each
     fragment color.
-    
+
     Indicating a buffer using DrawBuffersIndexedEXT causes subsequent
     pixel color value writes to affect the indicated buffer.
 
@@ -431,7 +431,7 @@ Issues
 Revision History
     Version 4, 25 Sept 2012 Clean up overview. Fix a few typographical
                             errors.
-    Version 3, 03 Sept 2011 EXTify. Remove ALL broadcast. 
+    Version 3, 03 Sept 2011 EXTify. Remove ALL broadcast.
                             Add interactions for ES3 and non-
                             draw_buffers cases
     Version 2, 02 Aug 2011 Responses to feedback.

@@ -67,7 +67,7 @@ Overview
     GL_OES_EGL_image_external extension is present it may
     alternatively be specified from an EGLImage as described in that
     extension.)
-    
+
     There is no support for most of the functions that manipulate
     other texture targets (e.g. you cannot use gl*Tex*Image*()
     functions with TEXTURE_EXTERNAL_OES).  Also, TEXTURE_EXTERNAL_OES
@@ -109,7 +109,7 @@ New Tokens
 
     Accepted as <value> in GetTexParameter*() queries:
         REQUIRED_TEXTURE_IMAGE_UNITS_OES                    0x8D68
-    
+
 
 Additions to Chapter 3 of the OpenGL 1.1 or OpenGL 2.0 Specification
 
@@ -207,10 +207,10 @@ Additions to Chapter 3 of the OpenGL 1.1 or OpenGL 2.0 Specification
         RGB (color conversion matrix, sampling offsets, etc) are taken
         from the producer of the EGLStream that is associated with the
         external texture.
-        
+
         If the image frames in the EGLStream contain alpha values then
         the value of the alpha component returned is taken from the
-        image; otherwise the alpha component is 1.0.  
+        image; otherwise the alpha component is 1.0.
 
 
     - In both OpenGL ES 1.x and OpenGL ES 2.0 add a new subsection after
@@ -241,8 +241,8 @@ Additions to Chapter 3 of the OpenGL 1.1 or OpenGL 2.0 Specification
         supported.) If the TEXTURE_EXTERNAL_OES texture is already
         bound to an EGLImage then that binding is broken when the
         texture becomes the consumer of <stream> (i.e. when
-        eglStreamConsumerGLTextureNV() returns successfully). 
-        
+        eglStreamConsumerGLTextureNV() returns successfully).
+
         The TEXTURE_EXTERNAL_OES texture remains the consumer of
         <stream> until the first of any of these events occur:
             - The texture is associated with a different EGLStream
@@ -255,10 +255,10 @@ Additions to Chapter 3 of the OpenGL 1.1 or OpenGL 2.0 Specification
         EGL_STREAM_STATE_DISCONNECTED_KHR state (as described in the
         EGL_NV_stream_consumer_gltexture and EGL_KHR_stream
         extensions).
-        
+
         Sampling an external texture which is not the consumer of any
         EGLStream and is not associated with any EGLImage sibling will
-        return a sample value of (0,0,0,1). 
+        return a sample value of (0,0,0,1).
 
         Sampling an external texture which is the consumer of an
         EGLStream will return a sample value of (0,0,0,1) unless an
@@ -276,7 +276,7 @@ Additions to Chapter 3 of the OpenGL 1.1 or OpenGL 2.0 Specification
         may or may not "see" the effects of latching until the
         texture is bound (or re-bound) to the context by calling
         glBindTexture.
-        
+
 
 Changes to section "2.10.4 Shader Variables" of the OpenGL ES 2.0
 specification (ignore for OpenGL ES 1.x)
@@ -285,7 +285,7 @@ specification (ignore for OpenGL ES 1.x)
 
         "SAMPLER_EXTERNAL_OES"
     to the list of types that can be returned.
-    
+
 Changes to section "2.10.5 Shader Execution" of the OpenGL ES 2.0
 specification (ignore for OpenGL ES 1.x)
 
@@ -369,7 +369,7 @@ Changes to section "3.7.11 Texture Objects" of the OpenGL ES 1.1 specification
         which it is bound affect the bound object, and queries of the target
         to which it is bound return state from the bound object. If texture
         mapping is enabled, the state of the bound texture object directs the
-        texturing operation. 
+        texturing operation.
 
 *       In the initial state, TEXTURE_2D and TEXTURE_EXTERNAL_OES have
 *       two-dimensional and external texture state vectors respectively
@@ -452,7 +452,7 @@ Changes to section "3.7.13 Texture Objects" of the OpenGL ES 2.0 specification
         texture objects all of whose names are 0. The initial two-dimensional,
 *       cube map, and external texture are therefore operated upon, queried,
 *       and applied as TEXTURE_2D, TEXTURE_CUBE_MAP, or TEXTURE_EXTERNAL_OES
-        respectively while 0 is bound to the corresponding targets. 
+        respectively while 0 is bound to the corresponding targets.
 
             Texture objects are deleted by calling
                void DeleteTextures( sizei n, uint *textures );
@@ -492,7 +492,7 @@ specification (ignore for OpenGL ES 2.x)
         Disable commands, with the symbolic constant TEXTURE_2D or
         TEXTURE_EXTERNAL_OES to enable or disable texturing with the
         TEXTURE_2D or TEXTURE_EXTERNAL_OES texture target, respectively.  If
-        TEXTURE_EXTERNAL_OES is enabled it takes precedence over TEXTURE_2D, 
+        TEXTURE_EXTERNAL_OES is enabled it takes precedence over TEXTURE_2D,
         TEXTURE_CUBE_MAP_OES, TEXTURE_RECTANGLE_ARB, and
         TEXTURE_RECTANGLE_NV."
 
@@ -579,7 +579,7 @@ Changes to section 4.1 of the OpenGL ES Shading Language specification
         "samplerExternalOES   a handle for accessing an external texture"
 
 Changes to section 4.5.3 of the OpenGL ES Shading Language specification
-    
+
     - Add to the list of "vertex language has the following predeclared
     globally scoped default precision statements:"
 
@@ -628,7 +628,7 @@ Shading Language specification
 Issues
 
     In addition to issues below, see issues from the
-    GL_OES_EGL_image_external extension.  
+    GL_OES_EGL_image_external extension.
 
     1.  Is this extension needed, or is the
         EGL_NV_stream_consumer_gltexture extension plus the existing

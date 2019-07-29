@@ -1,5 +1,5 @@
 Name
-    
+
     NV_texgen_emboss
 
 Name Strings

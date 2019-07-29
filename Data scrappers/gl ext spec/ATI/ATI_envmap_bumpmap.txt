@@ -30,21 +30,21 @@ Overview
     This extension adds environment mapped bump mapping (EMBM) to the GL.
     The method exposed by this extension is to use a dependent texture
     read on a bumpmap (du,dv) texture to offset the texture coordinates
-    read into a map on another texture unit.  This (du,dv) offset is also 
-    rotated through a user-specified rotation matrix to get the texture 
+    read into a map on another texture unit.  This (du,dv) offset is also
+    rotated through a user-specified rotation matrix to get the texture
     coordinates into the appropriate space.
 
     A new texture format is introduced in order for specifying the (du,dv)
     bumpmap texture.  This map represents -1 <= du,dv <= 1 offsets to
     be applied to the texture coordinates used to read into the base
     map.  Additionally, the (du,dv) offsets are transformed by a rotation
-    matrix that this extension allows the user to specify.  Further, a 
-    new color operation is added to EXT_texture_env_combine to specify 
-    both that bumpmapping is enabled and which texture unit to apply 
-    the bump offset to.  
-    
+    matrix that this extension allows the user to specify.  Further, a
+    new color operation is added to EXT_texture_env_combine to specify
+    both that bumpmapping is enabled and which texture unit to apply
+    the bump offset to.
+
 Issues
-    
+
     None known.
 
 New Procedures and Functions
@@ -58,10 +58,10 @@ New Tokens
     Accepted by the <pname> parameter of TexBumpParameter[i|f]vATI
 
         BUMP_ROT_MATRIX_ATI            0x8775
-    
+
     Accepted by the <pname> parameter of GetTexBumpParameter[i|f]vATI
 
-        BUMP_ROT_MATRIX_ATI                
+        BUMP_ROT_MATRIX_ATI
         BUMP_ROT_MATRIX_SIZE_ATI       0x8776
         BUMP_NUM_TEX_UNITS_ATI         0x8777
         BUMP_TEX_UNITS_ATI             0x8778
@@ -87,7 +87,7 @@ New Tokens
         BUMP_TARGET_ATI                0x877C
 
     Accepted by the <params> parameter of TexEnvf, TexEnvi, TexEnvfv,
-    and TexEnviv when the <pname> parameter value is BUMP_TARGET_ATI    
+    and TexEnviv when the <pname> parameter value is BUMP_TARGET_ATI
 
         TEXTURE0_ARB
         TEXTURE1_ARB
@@ -156,7 +156,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
      ---------------    ----------------   ----------------
      DUDV_ATI           undefined          undefined"
 
-    
+
         Table 3.23: Correspondence of texture components to source
         components for COMBINE_RGB_EXT and COMBINE_ALPHA_EXT arguments"
 
@@ -171,31 +171,31 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     When pname is BUMP_ROT_MATRIX_ATI, the rotation matrix applied to
     each (du, dv) coordinate read from the bumpmap is specified
-    (see section 3.8.9 on environment mapped bump mapping).  The size 
-    of the rotation matrix can vary across implementations (to allow for 
-    future expansion with support for offsets to more than just two 
+    (see section 3.8.9 on environment mapped bump mapping).  The size
+    of the rotation matrix can vary across implementations (to allow for
+    future expansion with support for offsets to more than just two
     coordinates).  This size can be queried for using:
 
        void GetTexBumpParamter[i|f]vATI(enum pname, TYPE *param)
 
     with pname as BUMP_ROT_MATRIX_SIZE_ATI.  This returns the number
     of entries in the BUMP_ROT_MATRIX.  When pname is BUMP_NUM_TEX_UNITS_ATI,
-    the number of texture units that support bump mapping is returned.  
-    Given this, an array of supported texture units that support bumpmapping 
-    can be queried.  When pname is BUMP_TEX_UNITS_ATI, an array of size 
-    BUMP_NUM_TEX_UNITS_ATI is returned in which each element is one of the 
+    the number of texture units that support bump mapping is returned.
+    Given this, an array of supported texture units that support bumpmapping
+    can be queried.  When pname is BUMP_TEX_UNITS_ATI, an array of size
+    BUMP_NUM_TEX_UNITS_ATI is returned in which each element is one of the
     valid texture units (TEXTURE0_ARB, TEXTURE1_ARB, etc.)."
- 
+
    - After Table 3.20 in EXT_texture_env_combine:
 
    "In addition, a special-case COMBINE_RGB_EXT function exists for performing
-    environment mapped bump mapping.  This function does not behave as 
+    environment mapped bump mapping.  This function does not behave as
     the standard combine functions.  Instead, it specifies that the given
     texture unit has a bumpmap which will be used to offset the texture coordinate
     reads onto another unit.
 
     The texture unit which the bumpmap will bump is specified by setting the
-    BUMP_TARGET_ATI to be a valid texture unit.  
+    BUMP_TARGET_ATI to be a valid texture unit.
 
     Environment mapped bump mapping then works as follows:
 
@@ -214,12 +214,12 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       u = u + du'
       v = v + dv'
 
-    These final coordinates are then used to fetch from the texture on 
+    These final coordinates are then used to fetch from the texture on
     BUMP_TARGET_ATI."
 
-     
+
     - Change to table 3.23 in EXT_texture_env_combine:
-    
+
     "Base Internal Format        RGB Values    Alpha Value
      --------------------        ----------    -----------
      ALPHA                              0,  0,  0       At
@@ -256,9 +256,9 @@ GLX Protocol
 
 Dependencies on EXT_point_parameters
 
-    
+
 Errors
-    
+
     INVALID_ENUM if TexBumpParameter[i|f]vATI is called with pname not equal to
        BUMP_ROT_MATRIX_ATI.
 
@@ -276,8 +276,8 @@ New State
     BUMP_ROT_MATRIX_ATI         GetTexBumpParameterfv n x F    -              Bump rotation matrix on current unit
     BUMP_ROT_MATRIX_SIZE_ATI    GetTexBumpParameteriv Z+       4              Bump rotation matrix size
     BUMP_NUM_TEX_UNITS_ATI      GetTexBumpParameteriv Z+       1              Number of bump texture units
-    BUMP_TEX_UNITS_ATI          GetTexBumpParameteriv n x Z+   -              Supported bump texture units  
-  
+    BUMP_TEX_UNITS_ATI          GetTexBumpParameteriv n x Z+   -              Supported bump texture units
+
 
 New Implementation Dependent State
 

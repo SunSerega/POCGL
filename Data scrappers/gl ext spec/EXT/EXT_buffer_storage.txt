@@ -516,7 +516,7 @@ Revision History
      2    03/27/15  dkoch     Update status, clarify dependencies and tokens
 
      3    05/01/15  dkoch     Change description of MAP_COHERENT_BIT for
-                              buffer storage so that barriers with 
+                              buffer storage so that barriers with
                               CLIENT_MAPPED_BUFFER_BARRIER_BIT do not need
                               to make CPU writes visible to the GPU in
                               this case without an explicit flush (Bug

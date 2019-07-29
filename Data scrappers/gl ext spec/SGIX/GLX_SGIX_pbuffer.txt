@@ -27,21 +27,21 @@ Overview
     following exceptions:
 
     1.    There is no associated X pixmap. Also, since a GLXPbuffer is a GLX
-        resource, it may not be possible to render to it using X or an 
+        resource, it may not be possible to render to it using X or an
        X extension other than GLX.
 
     2.    The format of the color buffers and the type and size of any
          associated ancillary buffers for a GLXPbuffer can only be
         described with a GLXFBConfig -- an X Visual cannot be used.
 
-    3.    It is possible to create a GLXPbuffer whose contents may be 
+    3.    It is possible to create a GLXPbuffer whose contents may be
     asynchronously lost at any time.
 
     4.  GLXPbuffers can be rendered to using either direct or indirect
         rendering contexts.
 
     5.  The allocation of a GLXPbuffer can fail if there are insufficient
-    resources (i.e., all the pbuffer memory has been allocated and 
+    resources (i.e., all the pbuffer memory has been allocated and
     the implementation does not virtualize pbuffer memory.)
 
     The intent of the pbuffer semantics is to enable implementations to
@@ -50,27 +50,27 @@ Overview
     will typically allocate them only once, rather than as a part of its
     rendering loop.  (But they should be deallocated when the program is
     no longer using them -- for example, if the program is iconified.)
-    The frame buffer resources that are associated with a pbuffer are 
-    also static, and are deallocated only when the pbuffer is destroyed, 
-    or, in the case of a "unpreserved" pbuffer, as a result of X server 
+    The frame buffer resources that are associated with a pbuffer are
+    also static, and are deallocated only when the pbuffer is destroyed,
+    or, in the case of a "unpreserved" pbuffer, as a result of X server
     activity that changes its frame buffer requirements.
 
 
 Issues
 
     *   Should the optimum width and height be fixed sizes or a multiple?
-   
+
     *   Any better names for GLX_BUFFER_CLOBBER_MASK_SGIX, etc?
 
     UM  Should we add a command so an application can set the behavior
         when a deep window buffer (e.g., depth buffer or multisample buffer)
         is clobbered by a pbuffer? The choices would be "preserved" or
-        "unpreserved". 
- 
+        "unpreserved".
+
     *   When a pbuffer interferes with a window's ancillary buffer should
         the action -- swapped or saved -- be specified or left as
     implementation dependent?
-    
+
 
 New Procedures and Functions
 
@@ -107,8 +107,8 @@ New Tokens
         GLX_OPTIMAL_PBUFFER_WIDTH_SGIX        0x8019
         GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX        0x801A
 
-    Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to 
-    GLX_DRAWABLE_TYPE_SGIX) and accepted by the <attrib_list> parameter of 
+    Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to
+    GLX_DRAWABLE_TYPE_SGIX) and accepted by the <attrib_list> parameter of
     glXChooseFBConfigSGIX (following the GLX_DRAWABLE_TYPE_SGIX token):
 
     GLX_PBUFFER_BIT_SGIX            0x00000004
@@ -197,7 +197,7 @@ Additions to the GLX Specification
 
     [Add to glXChooseFBConfigSGIX]:
 
-    If GLX_OPTIMAL_PBUFFER_WIDTH_SGIX and/or GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX 
+    If GLX_OPTIMAL_PBUFFER_WIDTH_SGIX and/or GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX
     are specified in <attrib_list> then they are ignored.
 
     [Additions to tables 2 and 3, given in SGIX_FBConfig]
@@ -211,7 +211,7 @@ Additions to the GLX Specification
       GLX_STEREO                      boolean     True if color buffers have
                                 left/right pairs
       GLX_AUX_BUFFERS                 integer     number of auxiliary color
-                          buffers 
+                          buffers
       GLX_RED_SIZE                    integer     number of bits of Red if in
                                 RGB mode
       GLX_GREEN_SIZE                  integer     number of bits of Green if in
@@ -238,7 +238,7 @@ Additions to the GLX Specification
       GLX_X_VISUAL_TYPE_EXT           integer     X visual type of the
                           associated visual
       GLX_TRANSPARENT_TYPE_EXT        enum        GLX_NONE_EXT,
-                                                  TRANSPARENT_RGB_EXT, or 
+                                                  TRANSPARENT_RGB_EXT, or
                                                   TRANSPARENT_INDEX_EXT
       GLX_TRANSPARENT_INDEX_VALUE_EXT integer     transparent index value.
       GLX_TRANSPARENT_RED_VALUE_EXT   color       transparent color value.
@@ -262,7 +262,7 @@ Additions to the GLX Specification
       GLX_OPTIMAL_PBUFFER_WIDTH_SGIX  integer     best width to use when
                           creating pbuffer, or zero if
                           all widths are equally good.
-      GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX integer     best height to use when creating 
+      GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX integer     best height to use when creating
                           pbuffer, or zero if all
                           heights are equally good.
 
@@ -307,7 +307,7 @@ Additions to the GLX Specification
       GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX         ignored          ignored
 
       Table 4: Default values and match criteria for GLX configuration
-               attributes for GLXFBConfigs 
+               attributes for GLXFBConfigs
 
 
     [Add the following to section 3.2.3 on Offscreen Rendering]
@@ -337,7 +337,7 @@ Additions to the GLX Specification
     of the allocated pbuffer never exceed <width> and <height>,
     respectively. Use glXQueryGLXPbufferSGIX to retrieve the dimensions of the
     allocated pbuffer.  By default, GLX_LARGEST_PBUFFER_SGIX is False.
-    
+
     If the GLX_PRESERVED_CONTENTS_SGIX attribute is set to False in
     <attrib_list>, then an "unpreserved" pbuffer is created and the contents
     of the pbuffer may be lost at any time. If this attribute is not
@@ -373,17 +373,17 @@ Additions to the GLX Specification
     a result of other pbuffer activity, the intent is to only have visible
     windows activity "damage" pbuffers.
 
-    Since the contents of a "unpreserved" pbuffer can be lost at anytime 
-    with only asynchronous notification (via the "buffer clobber" event), the 
-    only way a client can guarantee that valid pixels are read back with 
-    glReadPixels is by grabbing the X server. (Note that this operation is 
-    potentially expensive and should not be done frequently. Also, since this 
-    locks out other X clients, it should only be done for short periods of 
-    time.) Clients that don't wish to do this can check if the data returned 
-    by glReadPixels is valid by calling XSync and then checking the event 
-    queue for "buffer clobber" events (assuming that these events had been 
-    pulled off of the queue prior to the glReadPixels call). 
-    
+    Since the contents of a "unpreserved" pbuffer can be lost at anytime
+    with only asynchronous notification (via the "buffer clobber" event), the
+    only way a client can guarantee that valid pixels are read back with
+    glReadPixels is by grabbing the X server. (Note that this operation is
+    potentially expensive and should not be done frequently. Also, since this
+    locks out other X clients, it should only be done for short periods of
+    time.) Clients that don't wish to do this can check if the data returned
+    by glReadPixels is valid by calling XSync and then checking the event
+    queue for "buffer clobber" events (assuming that these events had been
+    pulled off of the queue prior to the glReadPixels call).
+
     When glXCreateGLXPbufferSGIX fails to create a GLXPbuffer due to
     insufficient resources, a BadAlloc error is generated and None is
     returned. If <config> is not a valid GLXFBConfig then a GLXBadFBConfigSGIX
@@ -500,7 +500,7 @@ GLX Protocol
         4        CARD32        width
         4        CARD32        height
         8 * n    LISTofATTRIB    properties
-       
+
          Where n is the number of token/value pairs.  Each token value is
          either a CARD32, BOOL32, or INT32, followed by an attribute
          value which is also either a CARD32, BOOL32, or INT32.
@@ -514,7 +514,7 @@ GLX Protocol
         4                unused
         4        GLX_PBUFFER    pbuffer
 
-    
+
     ChangeDrawableAttributesSGIX
         1        CARD8        opcode (X assigned)
         1        17        GLX opcode (glXVendorPrivateWithReply)
@@ -544,7 +544,7 @@ GLX Protocol
         4        CARD32        numAttribs
         20                unused
         8 * n    LISTofATTRIB    properties
-    
+
          Where n is the number of token/value pairs.  Each token value is
          either a CARD32, BOOL32, or INT32, followed by an attribute
          value which is also either a CARD32, BOOL32, or INT32.

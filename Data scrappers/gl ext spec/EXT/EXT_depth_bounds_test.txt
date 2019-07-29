@@ -178,7 +178,7 @@ New Tokens
 
         DEPTH_BOUNDS_TEST_EXT                       0x8890
 
-    Accepted by the <pname> parameter of GetBooleanv, GetIntegerv, 
+    Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
         DEPTH_BOUNDS_EXT                            0x8891
@@ -198,7 +198,7 @@ and the Framebuffer)
 
     Add a block for the "depth bounds test" after the scissor and before
     the alpha test.
-    
+
  -- Section 4.1.X  Depth Bounds Test (following Section 4.1.2 Scissor Test)
 
     "The depth bounds test determines whether the depth value (Zpixel)
@@ -261,7 +261,7 @@ Additions to the AGL/GLX/WGL Specifications
 
 GLX Protocol
 
-    A new GL rendering command is added. The following command is sent to the 
+    A new GL rendering command is added. The following command is sent to the
     server as part of a glXRender request:
 
         DepthBoundsEXT
@@ -294,7 +294,7 @@ Revision History
 
     NVIDIA exposed a functionally and enumerant identical version of
     this extension under the name NV_depth_bounds_test.  NVIDIA drivers
-    after May 2003 support the EXT_depth_bounds_test name only.  
+    after May 2003 support the EXT_depth_bounds_test name only.
 
     Mesa and NVIDIA agreed to make this an EXT extension in April 2003.
 

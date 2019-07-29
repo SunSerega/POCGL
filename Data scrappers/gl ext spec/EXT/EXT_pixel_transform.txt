@@ -24,9 +24,9 @@ Overview
     shearing of two-dimensional pixel rectangles in the pixel rasterizer.
     The transformation is defined via a 4x4 matrix, where only those entries
     which apply as a 2D affine transformation will be accepted and used.
-    These matrices can be manipulated using the same functions as the other 
+    These matrices can be manipulated using the same functions as the other
     OpenGL matrix stacks.
-   
+
 
 New Procedures and Functions
 
@@ -95,13 +95,13 @@ New Tokens
 
         PIXEL_TRANSFORM_2D_EXT                         0x8330
 
-    Accepted by the <pname> parameter of GetIntegerv, GetFloatv, 
-    and GetDoublev: 
+    Accepted by the <pname> parameter of GetIntegerv, GetFloatv,
+    and GetDoublev:
 
         PIXEL_TRANSFORM_2D_STACK_DEPTH_EXT             0x8336
         MAX_PIXEL_TRANSFORM_2D_STACK_DEPTH_EXT         0x8337
 
-    Accepted by the <pname> parameter of GetFloatv, and GetDoublev: 
+    Accepted by the <pname> parameter of GetFloatv, and GetDoublev:
 
         PIXEL_TRANSFORM_2D_MATRIX_EXT                  0x8338
 
@@ -113,12 +113,12 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
     The projection matrix, model-view matrix and pixel-transform matrix
     are set and modified with a variety of commands. The affected matrix is
     determined by the current matrix mode.  The current matrix mode is set with
-   
+
        void MatrixMode (enum mode);
 
-    which takes one of the four pre-defined constants TEXTURE, MODELVIEW, 
+    which takes one of the four pre-defined constants TEXTURE, MODELVIEW,
     PROJECTION, or PIXEL_TRANSFORM_2D_EXT as the argument value.  TEXTURE is
-    described later.  If the current matrix mode is MODELVIEW, then matrix 
+    described later.  If the current matrix mode is MODELVIEW, then matrix
     operations apply to the model-view matrix; if PROJECTION, then they apply
     to the projection matrix; if PIXEL_TRANSFORM_2D_EXT, then they apply to
     the pixel-transform matrix.
@@ -132,13 +132,13 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     The conversion of a group to fragments is controlled by the pixel
     transformation matrix.  The pixel transformation matrix is defined
-    by calling MatrixMode with <mode> set to PIXEL_TRANSFORM_2D_EXT, then using 
+    by calling MatrixMode with <mode> set to PIXEL_TRANSFORM_2D_EXT, then using
     any of the existing functions which operate on matrices and matrix stacks.
-    (i.e. LoadIdentity, LoadMatrix, MultMatrix, PushMatrix, PopMatrix, Rotate, 
-    Scale, and Translate.)  When using the matrix operators, while in 
-    PIXEL_TRANSFORM_2D_EXT matrix mode, those entries in the 4 x 4 matrix 
-    that are not part of a 2D affine transformation are forced to take on 
-    values of either 0 or 1 so that the final matrix represents a 2D affine 
+    (i.e. LoadIdentity, LoadMatrix, MultMatrix, PushMatrix, PopMatrix, Rotate,
+    Scale, and Translate.)  When using the matrix operators, while in
+    PIXEL_TRANSFORM_2D_EXT matrix mode, those entries in the 4 x 4 matrix
+    that are not part of a 2D affine transformation are forced to take on
+    values of either 0 or 1 so that the final matrix represents a 2D affine
     transformation matrix.  That is to say, of the matrix entries shown below:
 
            --               --
@@ -149,7 +149,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
            --               --
 
     only the matrix entries m0, m1, m4, m5, m12, and m13 are allowed to
-    vary.  The other matrix entries will be forced to be either 0 or 1 as 
+    vary.  The other matrix entries will be forced to be either 0 or 1 as
     shown below:
 
            --               --
@@ -159,7 +159,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
            |  0   0   0    1 |
            --               --
 
-    The pixel transformation operation is always enabled.  The pixel 
+    The pixel transformation operation is always enabled.  The pixel
     transformation operation uses the current pixel transformation
     matrix to compute new window coordinates for each incoming pixel.
     Resampling occurs after the pixel transformation matrix has been
@@ -211,7 +211,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     is required.  Resampling methods are set using the functions
     PixelTransformParameteriEXT, PixelTransformParameterfEXT,
     PixelTransformParameterivEXT, or PixelTransformParameterfvEXT with
-    <target> set to PIXEL_TRANSFORM_2D_EXT. 
+    <target> set to PIXEL_TRANSFORM_2D_EXT.
 
     The resampling method to be used when the pixel rectangle is
     magnified is specified by calling one of these functions with
@@ -222,11 +222,11 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     set to NEAREST, LINEAR, CUBIC_EXT, or AVERAGE_EXT.
     PIXEL_CUBIC_WEIGHT_EXT defines the cubic weighting coefficient
     that is to be used whenever the resampling technique is set to CUBIC_EXT.
-    
+
     If the resampling method is NEAREST, each output pixel will have the
     value of the input pixel whose transformed coordinate value is nearest
     (in Manhattan distance).  If the resampling method is LINEAR, each
-    output pixel will have a value that is the weighted average of the 
+    output pixel will have a value that is the weighted average of the
     four input pixels whose transformed coordinate values are nearest.
 
     If the resampling method is CUBIC_EXT, each output pixel will have a value
@@ -246,10 +246,10 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     If the resampling method is AVERAGE_EXT, the values of all of the input
     pixels that contribute to the final output pixel will be averaged to
     determine the final output pixel value.  That is to say, an output pixel
-    is backward mapped into the input pixel rectangle, then the nearest 
-    neighbor resampling method determines the address of the center input 
-    pixel from which input pixels will be averaged.  All pixels in the input 
-    that forward map into the same location in the output pixel rectangle will 
+    is backward mapped into the input pixel rectangle, then the nearest
+    neighbor resampling method determines the address of the center input
+    pixel from which input pixels will be averaged.  All pixels in the input
+    that forward map into the same location in the output pixel rectangle will
     be added together and divided by the total number of input pixels which
     contribute the same output pixel.  An example would be, if the output
     pixel rectangle is 1/3 the size of the input pixel rectangle, then a
@@ -257,8 +257,8 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     and then the new single value will be written into the output pixel
     rectangle.
 
-    Pixel transformation is defined for pixel rectangles that contain INDEX, 
-    LUMINANCE, LUMINANCE_ALPHA, RGB, RGBA, or ABGR_EXT components or depth 
+    Pixel transformation is defined for pixel rectangles that contain INDEX,
+    LUMINANCE, LUMINANCE_ALPHA, RGB, RGBA, or ABGR_EXT components or depth
     components in pixel rastorization.  Groups arising from DrawPixels with
     a format of STENCIL_INDEX are treated specially and are described in
     section 4.3.1.
@@ -267,7 +267,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     color index or color components of the group; the depth and texture
     coordinates are taken from the current raster position's associated
     data.  A fragment arising from a depth component takes the component's
-    depth value; the color and texture coordinates are given by those 
+    depth value; the color and texture coordinates are given by those
     associated with the current raster position.  In both cases texture
     coordinates s, t, and r are replaced with s/q, t/q, and r/q,
     respectively.
@@ -276,7 +276,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 Additions to Chapter 4 of the 1.1 Specification (Per-Fragment Operations
 and the Frame Buffer)
 
-    The pixel transformation operation occurs in pixel rasterization 
+    The pixel transformation operation occurs in pixel rasterization
     immediately after the operations in the pixel transfer pipeline.
     The operation of pixel transformation during pixel copy
     operations is identical to the operation during pixel drawing.
@@ -292,12 +292,12 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 
     Integer and floating point query functions GetPixelTransformParameterivEXT
     and GetPixelTransformParameterfvEXT are provided.  <target> must be
-    PIXEL_TRANSFORM_2D_EXT.  <pname> is one of PIXEL_MAG_FILTER_EXT, 
-    PIXEL_MIN_FILTER_EXT, or PIXEL_CUBIC_WEIGHT_EXT.  The value of the 
+    PIXEL_TRANSFORM_2D_EXT.  <pname> is one of PIXEL_MAG_FILTER_EXT,
+    PIXEL_MIN_FILTER_EXT, or PIXEL_CUBIC_WEIGHT_EXT.  The value of the
     specified parameter is returned in <params>.
 
 Additions to the GLX Specification
-    
+
     None
 
 GLX Protocol

@@ -5,7 +5,7 @@ Name
 Name Strings
 
     GL_ARB_texture_env_dot3
-    
+
 Contact
 
     Bimal Poddar, Intel (bimal.poddar 'at' intel.com)
@@ -42,7 +42,7 @@ Number
 Dependencies
 
     This extension is written against the OpenGL 1.2.1 Specification.
-    OpenGL 1.1, ARB_multitexture and ARB_texture_env_combine are required 
+    OpenGL 1.1, ARB_multitexture and ARB_texture_env_combine are required
     for this extension.
 
 Overview
@@ -52,22 +52,22 @@ Overview
         DOT3_RGB_ARB                    Arg0 <dotprod> Arg1
         DOT3_RGBA_ARB                   Arg0 <dotprod> Arg1
 
-    where Arg0, Arg1 are specified by <params> parameter of 
+    where Arg0, Arg1 are specified by <params> parameter of
     TexEnvf, TexEnvi, TexEnvfv, and TexEnviv when the <pname>
     parameter value is SOURCE0_RGB_ARB and SOURCE1_RGB_ARB.
-    
+
 Issues
 
  1. This extension is an ARB version of EXT_texture_env_dot3 which bears
     a copyright by ATI Technologies. Is ATI willing to have the ARB
-    go ahead and modify their original spec and use it for the 
+    go ahead and modify their original spec and use it for the
     ARB extension.
 
     - RESOLVED: ATI does not have a problem with the copyright issue.
 
- 2. The EXT version of the spec does not multiply the output by 
+ 2. The EXT version of the spec does not multiply the output by
     RGB_SCALE_ARB and ALPHA_SCALE_ARB. There is no reason to impose this
-    restriction since it makes the scale operations non-orthogonal. 
+    restriction since it makes the scale operations non-orthogonal.
     Should the enum values for the new tokens in this extension should
     be the same as the original EXT version?
 
@@ -108,7 +108,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
                                 This value is placed into all four
                                 r,g,b,a components of the output. Note
-                                that the result generated from 
+                                that the result generated from
                                 COMBINE_ALPHA_ARB function is ignored.
 
 Additions to Chapter 4 of the OpenGL 1.2 Specification (Per-Fragment Operations
@@ -135,7 +135,7 @@ GLX Protocol
 Errors
 
     INVALID_ENUM is generated if <params> value for COMBINE_RGB_ARB
-    is not one of REPLACE, MODULATE, ADD, ADD_SIGNED_ARB, 
+    is not one of REPLACE, MODULATE, ADD, ADD_SIGNED_ARB,
     INTERPOLATE_ARB, SUBTRACT_ARB, DOT3_RGB_ARB or DOT3_RGBA_ARB.
 
 New State
@@ -161,6 +161,6 @@ Revision History
 
     00/12/06  bpoddar   Fixed typos - EXT -> ARB, RED_SCALE -> RGB_SCALE
 
-    00/12/01  bpoddar   Created an ARB version of the ARB_texture_env_dot3 
+    00/12/01  bpoddar   Created an ARB version of the ARB_texture_env_dot3
                         by breaking up the proposed ARB_texture_env_combine
                         spec.

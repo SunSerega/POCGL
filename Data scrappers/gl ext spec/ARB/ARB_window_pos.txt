@@ -290,9 +290,9 @@ GLX Protocol
         WindowPosARB
             2           16              rendering command length
             2           230             rendering command opcode
-            4           FLOAT32         x       
-            4           FLOAT32         y       
-            4           FLOAT32         z       
+            4           FLOAT32         x
+            4           FLOAT32         y
+            4           FLOAT32         z
 
 Errors
 
@@ -347,5 +347,5 @@ Revision History
     Mar 12, 2002
         - Added GLX protocol. (Jon Leech)
     June 11, 2002
-        - Clarifications: RGBA/index color updates apply only in 
+        - Clarifications: RGBA/index color updates apply only in
           RGBA/index mode respectively. Hits are generated in selection mode.

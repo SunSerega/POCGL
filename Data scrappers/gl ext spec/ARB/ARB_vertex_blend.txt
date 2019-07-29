@@ -62,10 +62,10 @@ Overview
     This extension is an orthoganalized version of functionality
     already provided by other 3D graphics API's.
 
-    
+
 IP Status
 
-    Unknown, but believed to be none. 
+    Unknown, but believed to be none.
 
 Issues
 
@@ -93,8 +93,8 @@ Issues
 
         Additionally, NORMALIZE should in general be left on to
         prevent non-unit normals.
-    
-    What about projective modelview matrices?  
+
+    What about projective modelview matrices?
 
         Projective modelview matrices can cause problems with many
         other features in GL, so this should not be a problem in
@@ -106,7 +106,7 @@ Issues
 
         No, this seems to confuse the operation, and it forces
         vertex components to affect setting of GL state.
-      
+
     Some transformations may cause the normals to be transformed in
       such a way that they no longer represent the tangent plane to
       the surface.
@@ -114,7 +114,7 @@ Issues
         This is a basic property of the math of the technique. In
         general with these varying transformations, it is impossible
         to maintain the normal as the tangent plane to the surface
-        without topological information. 
+        without topological information.
 
         Lacking the topological data, the best approximation is to
         transform the normals by the inverse transpose of the
@@ -127,7 +127,7 @@ Issues
         be identical to the normals formed by the more correct math
         when the blending matrices are pair-wise orthogonal and
         the sum of the square of the weights is equal to one.
-        
+
     Should weights be specified as vectors rather than independent
       scalars?
 
@@ -196,12 +196,12 @@ New Tokens
       MODELVIEW29_ARB:                0x873D
       MODELVIEW30_ARB:                0x873E
       MODELVIEW31_ARB:                0x873F
-      
+
     Accepted by the <value> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
-    
-      CURRENT_WEIGHT_ARB              0x86A8 
-      
+
+      CURRENT_WEIGHT_ARB              0x86A8
+
     Accepted by the <value> parameter of GetBooleanv, GetIntegerv,
     GetFloatv, and GetDoublev:
 
@@ -249,7 +249,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           INVALID_OPERATION. Executing Begin after Begin has already
           been executed but before an End is executed generates the
           INVALID_OPERATION error, as does executing End without a
-          previous corresponding Begin." 
+          previous corresponding Begin."
 
     - (2.7, p. 20) Added after the third paragraph:
 
@@ -260,12 +260,12 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           the floating point values are assigned to the current
                   weight vector. The first <size> current weights are
                   replaced with <weights> such that:
-                  
+
                       w[i] = <weights>[i]
-                 
-                  When WEIGHT_SUM_UNITY_ARB is enabled, 
-                  
-                                              <size>-1 
+
+                  When WEIGHT_SUM_UNITY_ARB is enabled,
+
+                                              <size>-1
                       w[<size>] = 1 - SUM <weights>[i]
                                                           i=0
 
@@ -300,7 +300,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
               void ColorPointer( int size, enum type, sizei stride,
                 void *pointer );
 
-              void IndexPointer( enum type, sizei stride, void 
+              void IndexPointer( enum type, sizei stride, void
                 *pointer );
 
               void NormalPointer( enum type, sizei stride, void
@@ -332,10 +332,10 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
                   a value other than that indicated in the table, or if the
                   <size> parameter to WeightPointerARB is outside the range
                   allowed for WeightvARB in section 2.7."
-         
+
     - (2.8, p. 22) Change table 2.4 to read:
 
-          Command            Sizes    Types                     
+          Command            Sizes    Types
           -------            -----    -----
           VertexPointer      2,3,4    short, int, float, double
           NormalPointer      3        byte, short, int, float, double
@@ -397,10 +397,10 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
                   The number of active transformations applied is set by
 
                       void VertexBlendARB(int count)
-                  
+
                   where count is the number of transformations to blend.
                   If count is greater than the implementation defined
-                  maximum number of transformations reported in 
+                  maximum number of transformations reported in
                   MAX_VERTEX_UNITS_ARB, then the error
                   INVALID_VALUE is generated."
 
@@ -415,7 +415,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
             (we)                      (wo)
 
           where M_i is the i'th model-view matrix, w_i is the
-                  vertex's associated weight for vertex unit i, 
+                  vertex's associated weight for vertex unit i,
 
                         and
 
@@ -439,7 +439,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
           matrix; if PROJECTION, then they apply to the projection
           matrix; if MODLEVIEWn_ARB, then they apply to the n'th
           model-view matrix. MODELVIEW0_ARB is aliased to
-          MODELVIEW."  
+          MODELVIEW."
 
         - (2.10.2 p. 34) Changed the second paragraph to read:
 
@@ -453,7 +453,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
               "... and a stack of at least 32 4 x 4 matrices with an
                   associated stack pointer for each MODELVIEWn. ..."
-          
+
 
     - (2.10.3 p. 35) Added after the third paragraph:
 
@@ -463,10 +463,10 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
                                               n-1
               (nx' ny' nz') = (nx ny nz) Inv ( SUM w_i * Mu_i)
                                               i=0
-          
+
             Alternatively implementations may choose to transform the
           normal to eye-space by:
-          
+
                               n-1
               (nx' ny' nz') =  SUM w_i * (nx ny nz) Inv(Mu_i)
                               i=0
@@ -496,7 +496,7 @@ Additions to Chapter 4:
 
 Additions to Chapter 5:
 
-      None 
+      None
 
 Additions to Chapter 6:
 
@@ -517,14 +517,14 @@ GLX Protocol
                 2    220    rendering command opcode
                 4    INT32  size
                 1*n  INT8   weights
-           
+
            WeightubvARB
 
                 2    8+n    rendering command length
                 2    221    rendering command opcode
                 4    INT32  size
                 1*n  CARD8  weights
-           
+
            WeightsvARB
 
                 2    8+2*n  rendering command length
@@ -574,7 +574,7 @@ GLX Protocol
             8*n         FLOAT64         weights
 
 Errors
-      
+
       INVALID_VALUE is generated if the <size> parameter for
           WeightvARB or WeightPointerARB is greater than
           MAX_VERTEX_UNITS_ARB, or if WEIGHT_SUM_UNITY_ARB is enabled
@@ -591,12 +591,12 @@ New State
 Get Value                Get Command Type     Initial Value Attribute
 ---------                ----------- ----     ------------- ---------
 CURRENT_WEIGHT_ARB       GetFloatv   Rn       n=0 - 1.0     current
-                                              n>0 - 0.0 
-    
+                                              n>0 - 0.0
+
       Modified State in Table 6.6:
 
 Get Value                 Get Command Type   Initial Value Attribute
----------                 ----------- ----   ------------- --------- 
+---------                 ----------- ----   ------------- ---------
 WEIGHT_ARRAY_ARB          IsEnabled   1*B    False         vert-array
 WEIGHT_ARRAY_TYPE_ARB     GetIntegerv 1*Z2   FLOAT         vert-array
 WEIGHT_ARRAY_SIZE_ARB     GetIntegerv 1*Z+   0             vert-array

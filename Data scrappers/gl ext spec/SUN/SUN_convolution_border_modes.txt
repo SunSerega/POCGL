@@ -14,7 +14,7 @@ Contact
 
 Status
 
-    Shipping 
+    Shipping
 
 Version
 
@@ -122,7 +122,7 @@ Errors
     or CONVOLUTION_BORDER_COLOR_HP.
 
 New State
-  
+
     None
 
 New Implementation Dependent State

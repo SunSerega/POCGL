@@ -1,12 +1,12 @@
-Name 
+Name
 
     NV_render_depth_texture
 
-Name Strings 
+Name Strings
 
-    WGL_NV_render_depth_texture 
+    WGL_NV_render_depth_texture
 
-Contact 
+Contact
 
     Pat Brown, NVIDIA Corporation (pbrown 'at' nvidia.com)
 
@@ -14,20 +14,20 @@ Notice
 
     Copyright NVIDIA Corporation, 2001, 2002.
 
-Status 
+Status
 
     Shipping, March 2002.
 
-Version 
+Version
 
     Last Modified Date:  2003/01/08
     NVIDIA Revision:     1
 
-Number 
+Number
 
     263
 
-Dependencies 
+Dependencies
 
     OpenGL 1.1 is required.
 
@@ -35,25 +35,25 @@ Dependencies
 
     SGIX_depth_texture is required.
 
-    NV_render_texture_rectangle affects the definition of this extension.  
+    NV_render_texture_rectangle affects the definition of this extension.
 
-Overview 
+Overview
 
     This extension allows a depth buffer to be used for both rendering and
     texturing.  It is built upon the ARB_render_texture extension; the only
     addition in this extension is the ability to use a depth buffer as a
     DEPTH_COMPONENT texture map.
 
-Issues 
+Issues
 
     In the ARB_render_texture spec, the number and size of physical depth
     buffers in a rendered texture is left undefined.  From the
     ARB_render_texture specification:
 
-        The contents of the depth and stencil buffers may not be preserved 
-        when rendering a texture to the pbuffer and switching which image 
-        of the texture is rendered to (e.g., switching from rendering one 
-        mipmap level to rendering another). 
+        The contents of the depth and stencil buffers may not be preserved
+        when rendering a texture to the pbuffer and switching which image
+        of the texture is rendered to (e.g., switching from rendering one
+        mipmap level to rendering another).
 
     That behavior is clearly unacceptable in an implementation where the
     rendered texture IS the depth buffer.
@@ -61,7 +61,7 @@ Issues
       RESOLVED:  Yes, it needs to be fixed.  This extension specifies that
       each mipmap level and cube map face gets its own depth buffer, whose
       contents are preserved when switching render targets.
-    
+
     Should there be separate pixel format attributes for BIND_TO_TEXTURE_DEPTH
     and BIND_TO_TEXTURE_RECTANGLE_DEPTH?  Or is a single attribute sufficient?
 
@@ -92,21 +92,21 @@ Issues
 
       UNRESOLVED.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     None.
 
-New Tokens 
+New Tokens
 
-    Accepted by the <piAttributes> parameter of wglGetPixelFormatAttribivARB, 
+    Accepted by the <piAttributes> parameter of wglGetPixelFormatAttribivARB,
     wglGetPixelFormatAttribfvARB, and the <piAttribIList> and <pfAttribIList>
-    parameters of wglChoosePixelFormatARB: 
+    parameters of wglChoosePixelFormatARB:
 
         WGL_BIND_TO_TEXTURE_DEPTH_NV                    0x20A3
         WGL_BIND_TO_TEXTURE_RECTANGLE_DEPTH_NV          0x20A4
 
     Accepted by the <piAttribList> parameter of wglCreatePbufferARB and
-    by the <iAttribute> parameter of wglQueryPbufferARB: 
+    by the <iAttribute> parameter of wglQueryPbufferARB:
 
         WGL_DEPTH_TEXTURE_FORMAT_NV                     0x20A5
 
@@ -121,29 +121,29 @@ New Tokens
 
         WGL_DEPTH_COMPONENT_NV                          0x20A7
 
-Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation) 
+Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
-    None. 
+    None.
 
-Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
-    None. 
+    None.
 
-Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment 
-Operations and the Frame Buffer) 
+Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
+Operations and the Frame Buffer)
 
-    None. 
+    None.
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
-    None. 
+    None.
 
-Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State 
-Requests) 
+Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State
+Requests)
 
-    None. 
+    None.
 
-Additions to the WGL Specification 
+Additions to the WGL Specification
 
     First, close your eyes and pretend that a WGL specification actually
     existed.  Maybe if we all concentrate hard enough, one will magically
@@ -162,10 +162,10 @@ Additions to the WGL Specification
         TRUE.
 
 
-    (Add new table entries to match criteria in description of 
+    (Add new table entries to match criteria in description of
     wglChoosePixelFormatARB:)
 
-        Attribute                               Type     Match Criteria 
+        Attribute                               Type     Match Criteria
 
         WGL_BIND_TO_TEXTURE_DEPTH_NV            boolean      exact
         WGL_BIND_TO_TEXTURE_RECTANGLE_DEPTH_NV  boolean      exact
@@ -238,11 +238,11 @@ Additions to the WGL Specification
                                WGL_DEPTH_TEXTURE_FORMAT_NV are
                                WGL_NO_TEXTURE_ARB.
 
-    Modify wglDestroyPbufferARB: 
+    Modify wglDestroyPbufferARB:
 
-        A pbuffer is destroyed by calling 
+        A pbuffer is destroyed by calling
 
-        BOOL wglDestroyPbufferARB(HPBUFFERARB hPbuffer); 
+        BOOL wglDestroyPbufferARB(HPBUFFERARB hPbuffer);
 
         The pbuffer is destroyed once it is no longer current to any rendering
         context and once all color and depth buffers that are bound to a
@@ -252,7 +252,7 @@ Additions to the WGL Specification
 
         ....
 
-    Modify wglBindTexImageARB: 
+    Modify wglBindTexImageARB:
 
     ...
 
@@ -261,13 +261,13 @@ Additions to the WGL Specification
         sizes are also determined by pbuffer attributes as shown in the table
         below.  The component sizes are dependent on the format of the
         texture.
-  
+
         Texture Component           Size                 Format
 
             D                   WGL_DEPTH_BITS_ARB       DEPTH_COMPONENT
 
 
-        Table x.x: Size of texture components 
+        Table x.x: Size of texture components
 
         ...
 
@@ -301,7 +301,7 @@ Additions to the WGL Specification
 
     To release a color or depth buffer that is being used as a texture call
 
-        BOOL wglReleaseTexImageARB (HPBUFFERARB hPbuffer, int iBuffer) 
+        BOOL wglReleaseTexImageARB (HPBUFFERARB hPbuffer, int iBuffer)
 
     This releases the specified color or depth buffer back to the pbuffer. The
     pbuffer is made available for reading and writing when it no longer has
@@ -327,15 +327,15 @@ Additions to the WGL Specification
     color buffer become NULL (it is as if TexImage was called with an image of
     zero width).
 
-New State 
+New State
 
-    None 
+    None
 
 Dependencies on NV_render_texture_rectangle
 
     If NV_render_texture_rectangle is not supported, all references to texture
     rectangles and WGL_BIND_TO_TEXTURE_RECTANGLE_DEPTH_NV should be deleted.
-  
-Revision History 
+
+Revision History
 
     None

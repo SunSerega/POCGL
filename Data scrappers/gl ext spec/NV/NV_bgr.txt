@@ -26,7 +26,7 @@ Number
     OpenGL ES Extension #135
 
 Status
-    
+
     Complete.
 
 Dependencies
@@ -46,7 +46,7 @@ Overview
 New Tokens
 
     Accepted by the <internalformat> and <format> parameter of
-    ReadPixels, TexImage2D, TexSubImage2D, TexImage3DNV, and 
+    ReadPixels, TexImage2D, TexSubImage2D, TexImage3DNV, and
     TexSubImage3DNV:
 
         BGR_NV                  0x80E0

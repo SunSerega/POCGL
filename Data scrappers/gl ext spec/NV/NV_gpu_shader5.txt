@@ -1359,41 +1359,41 @@ Dependencies on OES/EXT_tessellation_shader and OpenGL ES 3.2
 
     If implemented in OpenGL ES 3.2 or implemented in
     OpenGL ES 3.1 and OES/EXT_tessellation_shader is supported:
-      
+
     It is legal to send patches past the tessellation stage -- the
     following language from OES/EXT_tessellation_shader is removed:
 
       Patch primitives are not supported by pipeline stages below the
       tessellation evaluation shader.
-      
+
     It is legal to use a tessellation control shader without a tessellation
     evaluation shader.
-    
+
     Remove from the bullet list describing reasons for link failure below the
     LinkProgram command on p. 70 (as modified by OES/EXT_tessellation_shader):
 
       * the program is not separable and contains no object to form a
       tessellation evaluation shader; or
-        
+
     Modify section 11.1.2.1, "Output Variables" on p. 262 (as modified
     by the OES/EXT_geometry_shader extension):
 
-    Into the paragraph starting with 
+    Into the paragraph starting with
      "Each program object can specify a set of output variables from one
       shader to be recorded in transform feedback mode..."
-    
-    Insert after the tesselation evaluation shader bullet point: 
-      * tesselation control shader 
-        
-       
+
+    Insert after the tesselation evaluation shader bullet point:
+      * tesselation control shader
+
+
     Modify section 11.1.3.11, "Validation" to replace the bullet point
     starting with "One but not both of the tessellation..." on p. 271
 
-      * the tessellation evaluation but not tessellation control stage 
+      * the tessellation evaluation but not tessellation control stage
         has an active program with corresponding executable shader.
 
 
-    Modify section 11.1ts, "Tessellation" 
+    Modify section 11.1ts, "Tessellation"
 
     Replace
       "Tessellation is considered active if and only if the active
@@ -1414,9 +1414,9 @@ Dependencies on OES/EXT_tessellation_shader and OpenGL ES 3.2
       transfers vertices to the GL if the current program state has a
       tessellation evaluation shader but not a tessellation control
       shader."
-      
+
     Modify section 12.1.2 "Transform Feedback Primitive Capture"
-    
+
     Replace the second paragraph of the section on p. 274 (as modified
     by OES/EXT_tessellation_shader):
 
@@ -1446,16 +1446,16 @@ Dependencies on OES/EXT_tessellation_shader and OpenGL ES 3.2
 
     Modify section 13.3, "Points"
 
-    After 
+    After
       "The point size is determined by the last active stage before the
       rasterizer:"
-      
+
     Add a new bullet point to the list, between the
     tessellation evaluation shader and the vertex shader:
 
       * the tessellation control shader, if active and no tessellation
         evaluation shader is active;
-    
+
 Dependencies on OES/EXT_geometry_shader
 
     If implemented in GLSL ES and OES/EXT_geometry_shader is not supported,

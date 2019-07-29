@@ -34,7 +34,7 @@ Number
 
 Dependencies
 
-    Written based on the wording of the OpenGL 2.0 specification.  
+    Written based on the wording of the OpenGL 2.0 specification.
 
     OpenGL 1.5 is required.
 
@@ -95,7 +95,7 @@ Issues
     Should the extension measure total time elapsed between the full
     completion of the BeginQuery and EndQuery commands, or just time spent in
     the graphics library?
-   
+
       RESOLVED:  This extension will measure the total time elapsed between
       the full completion of these commands.  Future extensions may implement
       a query to determine time elapsed at different stages of the graphics
@@ -138,7 +138,7 @@ Issues
       started as well.
 
    What should the new 64 bit integer type be called?
-   
+
       RESOLVED: The new types will be called GLint64/GLuint64  The new
       command suffixes will be i64 and ui64.  These names clearly convey the
       minimum size of the types.  These types are similar to the C99 standard
@@ -165,23 +165,23 @@ New Tokens
         TIME_ELAPSED_EXT                               0x88BF
 
 Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
-  
+
     (Modify table 2.1, Correspondence of command suffix letters to GL argument
      types, p. 8) Add two new types and suffixes:
-  
+
     Letter Corresponding GL Type
     ------ ---------------------
     i64    int64
     ui64   uint64
-  
+
     (Modify table 2.2, GL data types, p. 9) Add two new types:
-    
+
               Minimum
     GL Type   Bit Width Description
     --------- --------- ------------------------------------
     int64     64        signed 2's complement binary integer
     uint64    64        unsigned binary integer
-    
+
 Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
 
     None.
@@ -337,7 +337,7 @@ Requests)
     The command
 
       boolean IsQuery(uint id);
-  
+
     returns TRUE if <id> is the name of a query object. If <id> is zero, or if
     <id> is a non-zero value that is not the name of a query object, IsQuery
     returns FALSE.
@@ -374,7 +374,7 @@ Requests)
       void GetQueryObjectiv(uint id, enum pname, int *params);
       void GetQueryObjectuiv(uint id, enum pname, uint *params);
       void GetQueryObjecti64vEXT(uint id, enum pname, int64 *params);
-      void GetQueryObjectui64vEXT(uint id, enum pname, uint64 *params);      
+      void GetQueryObjectui64vEXT(uint id, enum pname, uint64 *params);
     If <id> is not the name of a query object, or if the query object named by
     <id> is currently active, then an INVALID_OPERATION error is generated.
 
@@ -399,11 +399,11 @@ Requests)
     always be from the last query issued.  The results from any queries before
     the last one will be lost if they are not retrieved before starting a new
     query on the same <target> and <id>.
-   
+
 GLX Protocol (Modification to the GLX 1.3 Protocol Encoding Specification)
 
     Add to Section 1.4 (p.2), Common Types
-    
+
         INT64       A 64-bit signed integer value.
 
         CARD64      A 64-bit unsigned integer value.
@@ -411,12 +411,12 @@ GLX Protocol (Modification to the GLX 1.3 Protocol Encoding Specification)
     Two new non-rendering GL commands are added.  These commands are sent
     seperately (i.e., not as part of a glXRender or glXRenderLarge request),
     using the glXVendorPrivateWithReply request:
-    
+
         GetQueryObjecti64vEXT
             1           CARD8           opcode (X assigned)
             1           1328            GLX opcode (glXVendorPrivateWithReply)
             2           4               request length
-            4           GLX_CONTEXT_TAG context tag    
+            4           GLX_CONTEXT_TAG context tag
             4           CARD32          id
             4           ENUM            pname
           =>
@@ -426,22 +426,22 @@ GLX Protocol (Modification to the GLX 1.3 Protocol Encoding Specification)
             4           m               reply length, m=(n==1?0:n)
             4                           unused
             4           CARD32          n
-    
+
             if (n=1) this follows:
-    
+
             8           INT64           params
             8                           unused
-    
+
             otherwise this follows:
-    
+
             16                          unused
             n*8         LISTofINT64     params
-    
+
         GetQueryObjectui64vEXT
             1           CARD8           opcode (X assigned)
             1           1329            GLX opcode (glXVendorPrivateWithReply)
             2           4               request length
-            4           GLX_CONTEXT_TAG context tag    
+            4           GLX_CONTEXT_TAG context tag
             4           CARD32          id
             4           ENUM            pname
           =>
@@ -451,17 +451,17 @@ GLX Protocol (Modification to the GLX 1.3 Protocol Encoding Specification)
             4           m               reply length, m=(n==1?0:n)
             4                           unused
             4           CARD32          n
-    
+
            if (n=1) this follows:
-    
+
             8           CARD64          params
             8                           unused
-    
+
             otherwise this follows:
-    
+
             16                          unused
             n*8         CARD64          params
-    
+
 Errors
 
     All existing errors for query objects apply unchanged from the
@@ -470,15 +470,15 @@ Errors
     The error INVALID_ENUM is generated if BeginQueryARB, EndQueryARB, or
     GetQueryivARB is called where <target> is not SAMPLES_PASSED or
     TIME_ELAPSED_EXT.
-    
+
     The error INVALID_OPERATION is generated if GetQueryObjecti64vEXT or
     GetQueryObjectui64vEXT is called where <id> is not the name of a query
     object.
-    
+
     The error INVALID_OPERATION is generated if GetQueryObjecti64vEXT or
     GetQueryObjectui64vEXT is called where <id> is the name of a currently
     active query object.
-    
+
     The error INVALID_ENUM is generated if GetQueryObjecti64vEXT or
     GetQueryObjectui64vEXT is called where <pname> is not QUERY_RESULT or
     QUERY_RESULT_AVAILABLE.
@@ -506,7 +506,7 @@ New Implementation Dependent State
     Get Value               Type Get Command  Minimum Value  Description                  Sec     Attribute
     --------------------    ---- -----------  -------------  --------------------------   ------  ---------
     QUERY_COUNTER_BITS      2xZ+ GetQueryiv   see 6.1.12     Asynchronous query counter   6.1.12  -
-                                                             bits (occlusion and timer 
+                                                             bits (occlusion and timer
                                                              queries)
 
 Dependencies on ARB_occlusion_query and NV_occlusion_query

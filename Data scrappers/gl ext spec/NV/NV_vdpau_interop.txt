@@ -55,7 +55,7 @@ Overview
 
 IP Status
 
-    There are no known IP issues. 
+    There are no known IP issues.
 
 New Types
 
@@ -103,7 +103,7 @@ New Tokens
 
         SURFACE_STATE_NV                0x86EB
 
-    Returned in <values> for VDPAUGetSurfaceivNV <pname> 
+    Returned in <values> for VDPAUGetSurfaceivNV <pname>
     SURFACE_STATE_NV:
 
         SURFACE_REGISTERED_NV           0x86FD
@@ -462,7 +462,7 @@ Errors
     entry within the <surfaces> parameter of VDPAUMapSurfacesNV is
     SURFACE_MAPPED_NV.
 
-    INVALID_OPERATION is generated if the state of any of the surfaces 
+    INVALID_OPERATION is generated if the state of any of the surfaces
     named by entries within the <surfaces> parameter of
     VDPAUUnmapSurfacesNV is not SURFACE_MAPPED_NV.
 

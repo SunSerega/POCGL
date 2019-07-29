@@ -1,8 +1,8 @@
-Name 
+Name
 
     IMG_shader_binary
 
-Name Strings 
+Name Strings
 
     GL_IMG_shader_binary
 
@@ -21,11 +21,11 @@ Contacts
     Ben Bowman, Imagination Technologies (benji 'dot' bowman 'at'
     imgtec 'dot' com)
 
-Status 
+Status
 
     Complete
 
-Version 
+Version
 
     1.0, 30 September 2009
 
@@ -33,30 +33,30 @@ Number
 
     OpenGL ES Extension #68
 
-Dependencies 
+Dependencies
 
     None.
-    
+
     The extension is written against the OpenGL-ES 2.0 Specification.
 
-Overview 
-    
+Overview
+
     This extension enables loading precompiled binary shaders compatible with
-    chips designed by Imagination Technologies. 
-     
-IP Status 
+    chips designed by Imagination Technologies.
+
+IP Status
 
     Unknown.
 
-Issues 
+Issues
 
     None.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     None.
 
-New Tokens 
+New Tokens
 
     Accepted by the <binaryformat> parameter of ShaderBinary:
 
@@ -94,7 +94,7 @@ GLX Protocol
 
     None
 
-Errors 
+Errors
 
     None
 

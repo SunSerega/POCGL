@@ -45,10 +45,10 @@ Overview
 Issues
 
     * What should the default reference plane be?
-       - (0,0,1,0) in window coords seems good 
+       - (0,0,1,0) in window coords seems good
 
     * What happens if the reference plane does not intersect the view frustum?
-       - can disallow enabling of the plane, or substitute the default plane. 
+       - can disallow enabling of the plane, or substitute the default plane.
 
     * Should it be possible to query the validity of the reference plane just
       like RasterPos?

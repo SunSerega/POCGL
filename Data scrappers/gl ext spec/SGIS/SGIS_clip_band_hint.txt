@@ -27,8 +27,8 @@ Overview
     host processing code not to have to perform clip checking if geometric
     data is known not to require clipping.  Since many applications already
     perform some amount of coarse-grained view volume clipping, this
-    information can be reused efficiently to turn clip-checking on or off.  
-    In addition, certain graphics subsystems are capable of performing fast 
+    information can be reused efficiently to turn clip-checking on or off.
+    In addition, certain graphics subsystems are capable of performing fast
     2D viewport or, in some cases, 3D volume "scissoring" operations within
     some coordinate range much faster that the host CPU could re-tesselate
     clipped primitives.
@@ -37,29 +37,29 @@ Overview
     volume that is an expansion of the clip-space view volume.  This volume
     is the space within which a particular graphics system is much more
     efficient at rejecting fragments that lie outside the view volume than
-    it is at performing strict view volume clipping.  This extended volume 
+    it is at performing strict view volume clipping.  This extended volume
     is characterized by queriable implementation dependent expansion factors
-    to the normal view volume.  Clip-checking can be turned on or off 
+    to the normal view volume.  Clip-checking can be turned on or off
     through the glHint mechanism.
 
 Issues
 
-    * This extension is essentially a superset of the 
+    * This extension is essentially a superset of the
       clip_volume_hint extension.  Do we want to have this extension just
       introduce the notion of clip band factors instead and use the
       clip_volume_hint extension for the hint?
 
-    * It is possible that for certain implementation the X, Y and Z factors 
-      are dependent the size of the viewport and are thus not necessarily 
-      constant throughout the execution of an application.  Is there 
-      a better way of describing this and suggesting when to query these 
+    * It is possible that for certain implementation the X, Y and Z factors
+      are dependent the size of the viewport and are thus not necessarily
+      constant throughout the execution of an application.  Is there
+      a better way of describing this and suggesting when to query these
       factors?
 
     * Better name?  Should it have a different branding that SGIS?
 
     * No mention has been made in the description on the effect user clip
-      planes have on the whether the clip-checking hint is honored or not.  
-      Clip-checking should probably always be performed for user defined 
+      planes have on the whether the clip-checking hint is honored or not.
+      Clip-checking should probably always be performed for user defined
       clip planes independent of the state of the hint.
 
 
@@ -74,7 +74,7 @@ New Tokens
 
         CLIP_CHECK_HINT_SGIS    XXXXX
 
-   Accepted by the <pname> parameter of GetBooleanv, GetIntegerv, 
+   Accepted by the <pname> parameter of GetBooleanv, GetIntegerv,
    GetFloatv, and GetDoublev:
 
         CLIP_BAND_FACTOR_X_SGIS    XXXXX
@@ -98,21 +98,21 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
         -(w_c * bf_z) <= z_c <= (w_c * bf_z)
 
     where bf_x, bf_y and bf_z are implementation dependent values (greater
-    than or equal to 1.0) and can be queried by calling glGet with a 
-    <value> of CLIP_BAND_FACTOR_X_SGIS, CLIP_BAND_FACTOR_Y_SGIS and 
-    CLIP_BAND_FACTOR_X_SGIS respectively.  Clip-checking is disabled when 
+    than or equal to 1.0) and can be queried by calling glGet with a
+    <value> of CLIP_BAND_FACTOR_X_SGIS, CLIP_BAND_FACTOR_Y_SGIS and
+    CLIP_BAND_FACTOR_X_SGIS respectively.  Clip-checking is disabled when
     the <hint> parameter to glHint is FASTEST, it is enabled for all other
     values.
 
     Since implementations may choose to base the clip band factors on a
     function of the viewport size, it is recommended that these factors be
-    queried after the viewport which will be used for rendering has been 
+    queried after the viewport which will be used for rendering has been
     set.
 
-    Results of rasterization for geometric primitives that extend past the 
-    rasterizable volume when clip checking has been disabled are 
-    undefined.  Finally, the state of the current raster position is not 
-    affected by the value of clip_band_hint and is always clipped against 
+    Results of rasterization for geometric primitives that extend past the
+    rasterizable volume when clip checking has been disabled are
+    undefined.  Finally, the state of the current raster position is not
+    affected by the value of clip_band_hint and is always clipped against
     the actual clip volume.
 
 Additions to Chapter 3 of the 1.1 Specification (Rasterization)
@@ -159,7 +159,7 @@ New Implementation Dependent State
                                     Minimum
     Get Value                Get Command    Type        Value
     ---------                -----------    ----        -------
-    
+
     CLIP_BAND_FACTOR_X_SGIS        GetFloatv    R        1.0
     CLIP_BAND_FACTOR_Y_SGIS        GetFloatv    R        1.0
     CLIP_BAND_FACTOR_Z_SGIS        GetFloatv    R        1.0

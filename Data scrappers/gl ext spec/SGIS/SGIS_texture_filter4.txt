@@ -62,7 +62,7 @@ New Procedures and Functions
                const float* weights);
 
     void GetTexFilterFuncSGIS(enum target,
-                  enum filter, 
+                  enum filter,
                   float* weights);
 
 New Tokens
@@ -141,7 +141,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
 
     Let f(x) be the filter weight function of positive distance x.  Let
-    
+
     A = frac(u - 1/2)
 
     where frac(x) denotes the fractional part of x, and u is the texture
@@ -149,7 +149,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     the GL Specification.  Then the texture value T is found as
 
     T = f(1+A) * T[i0] +
-        f(A)   * T[i1] + 
+        f(A)   * T[i1] +
         f(1-A) * T[i2] +
         f(2-A) * T[i3]
 
@@ -191,19 +191,19 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     value T is found as
 
     T = f(1+A) * f(1+B) * T[i0,j0] +
-        f(A)   * f(1+B) * T[i1,j0] + 
+        f(A)   * f(1+B) * T[i1,j0] +
         f(1-A) * f(1+B) * T[i2,j0] +
         f(2-A) * f(1+B) * T[i3,j0] +
         f(1+A) * f(B)   * T[i0,j1] +
-        f(A)   * f(B)   * T[i1,j1] + 
+        f(A)   * f(B)   * T[i1,j1] +
         f(1-A) * f(B)   * T[i2,j1] +
         f(2-A) * f(B)   * T[i3,j1] +
         f(1+A) * f(1-B) * T[i0,j2] +
-        f(A)   * f(1-B) * T[i1,j2] + 
+        f(A)   * f(1-B) * T[i1,j2] +
         f(1-A) * f(1-B) * T[i2,j2] +
         f(2-A) * f(1-B) * T[i3,j2] +
         f(1+A) * f(2-B) * T[i0,j3] +
-        f(A)   * f(2-B) * T[i1,j3] + 
+        f(A)   * f(2-B) * T[i1,j3] +
         f(1-A) * f(2-B) * T[i2,j3] +
         f(2-A) * f(2-B) * T[i3,j3]
 
@@ -227,7 +227,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     The array <weights> contains samples of the filter function f(x),
     0<=x<=2.  Each element <weights>[i] is the value of
     f((2*i)/(<n>-1)), 0<=i<=<n>-1.
-    
+
     The filter function is stored and used by GL as a set of samples
     f((2*i)/(Size-1)), 0<=i<=Size-1, where Size is an implementation
     dependent constant.  If <n> equals Size, the array <weights> is
@@ -317,7 +317,7 @@ GLX Protocol
             16                          unused
             n*4         LISTofFLOAT32   params
 
-        Note that n may be zero, indicating that a GL error occurred. 
+        Note that n may be zero, indicating that a GL error occurred.
 
 Errors
 

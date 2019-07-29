@@ -35,7 +35,7 @@ Dependencies
     This extension is written against the OpenGL 4.3 (Compatibility Profile)
     Specification.
 
-    This extension is written against version 4.30 (revision 07) of the OpenGL 
+    This extension is written against version 4.30 (revision 07) of the OpenGL
     Shading Language Specification.
 
     OpenGL 4.3 and GLSL 4.3 are required.
@@ -44,16 +44,16 @@ Dependencies
 
 Overview
 
-    Implementations of the OpenGL Shading Language may, but are not required, 
-    to run multiple shader threads for a single stage as a SIMD thread group, 
-    where individual execution threads are assigned to thread groups in an 
-    undefined, implementation-dependent order.  This extension provides a set 
-    of new features to the OpenGL Shading Language to share data between 
-    multiple threads within a thread group. 
-    
-    Shaders using the new functionalities provided by this extension should 
+    Implementations of the OpenGL Shading Language may, but are not required,
+    to run multiple shader threads for a single stage as a SIMD thread group,
+    where individual execution threads are assigned to thread groups in an
+    undefined, implementation-dependent order.  This extension provides a set
+    of new features to the OpenGL Shading Language to share data between
+    multiple threads within a thread group.
+
+    Shaders using the new functionalities provided by this extension should
     enable this functionality via the construct
-    
+
         #extension GL_NV_shader_thread_shuffle : require     (or enable)
 
     This extension also specifies some modifications to the program assembly
@@ -67,12 +67,12 @@ New Procedures and Functions
 New Tokens
 
     None
-          
 
-Modifications to The OpenGL Shading Language Specification, Version 4.30 
+
+Modifications to The OpenGL Shading Language Specification, Version 4.30
 (Revision 07)
 
-    Including the following line in a shader can be used to control the 
+    Including the following line in a shader can be used to control the
     language features described in this extension:
 
       #extension GL_NV_shader_thread_shuffle : <behavior>
@@ -85,156 +85,156 @@ Modifications to The OpenGL Shading Language Specification, Version 4.30
 
 
     Modify Section 8.3, Common Functions, p. 133
-    
+
     (add a function to share data between threads in a thread group)
 
     Syntax:
-    
-        int    shuffleDownNV(int data,   uint index, uint width, 
+
+        int    shuffleDownNV(int data,   uint index, uint width,
                             [out bool threadIdValid])
-        ivec2  shuffleDownNV(ivec2 data, uint index, uint width, 
+        ivec2  shuffleDownNV(ivec2 data, uint index, uint width,
                             [out bool threadIdValid])
-        ivec3  shuffleDownNV(ivec3 data, uint index, uint width, 
+        ivec3  shuffleDownNV(ivec3 data, uint index, uint width,
                             [out bool threadIdValid])
-        ivec4  shuffleDownNV(ivec4 data, uint index, uint width, 
+        ivec4  shuffleDownNV(ivec4 data, uint index, uint width,
                             [out bool threadIdValid])
 
-        uint   shuffleDownNV(uint  data, uint index, uint width, 
+        uint   shuffleDownNV(uint  data, uint index, uint width,
                             [out bool threadIdValid])
-        uvec2  shuffleDownNV(uvec2 data, uint index, uint width, 
+        uvec2  shuffleDownNV(uvec2 data, uint index, uint width,
                             [out bool threadIdValid])
-        uvec3  shuffleDownNV(uvec3 data, uint index, uint width, 
+        uvec3  shuffleDownNV(uvec3 data, uint index, uint width,
                             [out bool threadIdValid])
-        uvec4  shuffleDownNV(uvec4 data, uint index, uint width, 
-                            [out bool threadIdValid])
-
-        float  shuffleDownNV(float data, uint index, uint width, 
-                            [out bool threadIdValid])
-        vec2   shuffleDownNV(vec2  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        vec3   shuffleDownNV(vec3  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        vec4   shuffleDownNV(vec4  data, uint index, uint width, 
+        uvec4  shuffleDownNV(uvec4 data, uint index, uint width,
                             [out bool threadIdValid])
 
-        bool   shuffleDownNV(bool data, uint index, uint width, 
+        float  shuffleDownNV(float data, uint index, uint width,
                             [out bool threadIdValid])
-        bvec2  shuffleDownNV(bvec2  data, uint index, uint width, 
+        vec2   shuffleDownNV(vec2  data, uint index, uint width,
                             [out bool threadIdValid])
-        bvec3  shuffleDownNV(bvec3  data, uint index, uint width, 
+        vec3   shuffleDownNV(vec3  data, uint index, uint width,
                             [out bool threadIdValid])
-        bvec4  shuffleDownNV(bvec4  data, uint index, uint width, 
-                            [out bool threadIdValid])
-
-
-        int    shuffleUpNV(int data,   uint index, uint width, 
-                            [out bool threadIdValid])
-        ivec2  shuffleUpNV(ivec2 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        ivec3  shuffleUpNV(ivec3 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        ivec4  shuffleUpNV(ivec4 data, uint index, uint width, 
+        vec4   shuffleDownNV(vec4  data, uint index, uint width,
                             [out bool threadIdValid])
 
-        uint   shuffleUpNV(uint  data, uint index, uint width, 
+        bool   shuffleDownNV(bool data, uint index, uint width,
                             [out bool threadIdValid])
-        uvec2  shuffleUpNV(uvec2 data, uint index, uint width, 
+        bvec2  shuffleDownNV(bvec2  data, uint index, uint width,
                             [out bool threadIdValid])
-        uvec3  shuffleUpNV(uvec3 data, uint index, uint width, 
+        bvec3  shuffleDownNV(bvec3  data, uint index, uint width,
                             [out bool threadIdValid])
-        uvec4  shuffleUpNV(uvec4 data, uint index, uint width, 
-                            [out bool threadIdValid])
-
-        float  shuffleUpNV(float data, uint index, uint width, 
-                            [out bool threadIdValid])
-        vec2   shuffleUpNV(vec2  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        vec3   shuffleUpNV(vec3  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        vec4   shuffleUpNV(vec4  data, uint index, uint width, 
-                            [out bool threadIdValid])
-
-        bool   shuffleUpNV(bool  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        bvec2  shuffleUpNV(bvec2 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        bvec3  shuffleUpNV(bvec3 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        bvec4  shuffleUpNV(bvec4 data, uint index, uint width, 
+        bvec4  shuffleDownNV(bvec4  data, uint index, uint width,
                             [out bool threadIdValid])
 
 
-        int    shuffleXorNV(int data,   uint index, uint width, 
+        int    shuffleUpNV(int data,   uint index, uint width,
                             [out bool threadIdValid])
-        ivec2  shuffleXorNV(ivec2 data, uint index, uint width, 
+        ivec2  shuffleUpNV(ivec2 data, uint index, uint width,
                             [out bool threadIdValid])
-        ivec3  shuffleXorNV(ivec3 data, uint index, uint width, 
+        ivec3  shuffleUpNV(ivec3 data, uint index, uint width,
                             [out bool threadIdValid])
-        ivec4  shuffleXorNV(ivec4 data, uint index, uint width, 
-                            [out bool threadIdValid])
-
-        uint   shuffleXorNV(uint  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        uvec2  shuffleXorNV(uvec2 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        uvec3  shuffleXorNV(uvec3 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        uvec4  shuffleXorNV(uvec4 data, uint index, uint width, 
+        ivec4  shuffleUpNV(ivec4 data, uint index, uint width,
                             [out bool threadIdValid])
 
-        float  shuffleXorNV(float data, uint index, uint width, 
+        uint   shuffleUpNV(uint  data, uint index, uint width,
                             [out bool threadIdValid])
-        vec2   shuffleXorNV(vec2  data, uint index, uint width, 
+        uvec2  shuffleUpNV(uvec2 data, uint index, uint width,
                             [out bool threadIdValid])
-        vec3   shuffleXorNV(vec3  data, uint index, uint width, 
+        uvec3  shuffleUpNV(uvec3 data, uint index, uint width,
                             [out bool threadIdValid])
-        vec4   shuffleXorNV(vec4  data, uint index, uint width, 
-                            [out bool threadIdValid])
-
-        bool   shuffleXorNV(bool  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        bvec2  shuffleXorNV(bvec2 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        bvec3  shuffleXorNV(bvec3 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        bvec4  shuffleXorNV(bvec4 data, uint index, uint width, 
+        uvec4  shuffleUpNV(uvec4 data, uint index, uint width,
                             [out bool threadIdValid])
 
-
-        int    shuffleNV(int data,   uint index, uint width, 
+        float  shuffleUpNV(float data, uint index, uint width,
                             [out bool threadIdValid])
-        ivec2  shuffleNV(ivec2 data, uint index, uint width, 
+        vec2   shuffleUpNV(vec2  data, uint index, uint width,
                             [out bool threadIdValid])
-        ivec3  shuffleNV(ivec3 data, uint index, uint width, 
+        vec3   shuffleUpNV(vec3  data, uint index, uint width,
                             [out bool threadIdValid])
-        ivec4  shuffleNV(ivec4 data, uint index, uint width, 
-                            [out bool threadIdValid])
-
-        uint   shuffleNV(uint  data, uint index, uint width, 
-                            [out bool threadIdValid])
-        uvec2  shuffleNV(uvec2 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        uvec3  shuffleNV(uvec3 data, uint index, uint width, 
-                            [out bool threadIdValid])
-        uvec4  shuffleNV(uvec4 data, uint index, uint width, 
+        vec4   shuffleUpNV(vec4  data, uint index, uint width,
                             [out bool threadIdValid])
 
-        float  shuffleNV(float data, uint index, uint width, 
+        bool   shuffleUpNV(bool  data, uint index, uint width,
                             [out bool threadIdValid])
-        vec2   shuffleNV(vec2  data, uint index, uint width, 
+        bvec2  shuffleUpNV(bvec2 data, uint index, uint width,
                             [out bool threadIdValid])
-        vec3   shuffleNV(vec3  data, uint index, uint width, 
+        bvec3  shuffleUpNV(bvec3 data, uint index, uint width,
                             [out bool threadIdValid])
-        vec4   shuffleNV(vec4  data, uint index, uint width, 
+        bvec4  shuffleUpNV(bvec4 data, uint index, uint width,
                             [out bool threadIdValid])
 
-        bool   shuffleNV(bool  data, uint index, uint width, 
+
+        int    shuffleXorNV(int data,   uint index, uint width,
                             [out bool threadIdValid])
-        bvec2  shuffleNV(bvec2 data, uint index, uint width, 
+        ivec2  shuffleXorNV(ivec2 data, uint index, uint width,
                             [out bool threadIdValid])
-        bvec3  shuffleNV(bvec3 data, uint index, uint width, 
+        ivec3  shuffleXorNV(ivec3 data, uint index, uint width,
                             [out bool threadIdValid])
-        bvec4  shuffleNV(bvec4 data, uint index, uint width, 
+        ivec4  shuffleXorNV(ivec4 data, uint index, uint width,
+                            [out bool threadIdValid])
+
+        uint   shuffleXorNV(uint  data, uint index, uint width,
+                            [out bool threadIdValid])
+        uvec2  shuffleXorNV(uvec2 data, uint index, uint width,
+                            [out bool threadIdValid])
+        uvec3  shuffleXorNV(uvec3 data, uint index, uint width,
+                            [out bool threadIdValid])
+        uvec4  shuffleXorNV(uvec4 data, uint index, uint width,
+                            [out bool threadIdValid])
+
+        float  shuffleXorNV(float data, uint index, uint width,
+                            [out bool threadIdValid])
+        vec2   shuffleXorNV(vec2  data, uint index, uint width,
+                            [out bool threadIdValid])
+        vec3   shuffleXorNV(vec3  data, uint index, uint width,
+                            [out bool threadIdValid])
+        vec4   shuffleXorNV(vec4  data, uint index, uint width,
+                            [out bool threadIdValid])
+
+        bool   shuffleXorNV(bool  data, uint index, uint width,
+                            [out bool threadIdValid])
+        bvec2  shuffleXorNV(bvec2 data, uint index, uint width,
+                            [out bool threadIdValid])
+        bvec3  shuffleXorNV(bvec3 data, uint index, uint width,
+                            [out bool threadIdValid])
+        bvec4  shuffleXorNV(bvec4 data, uint index, uint width,
+                            [out bool threadIdValid])
+
+
+        int    shuffleNV(int data,   uint index, uint width,
+                            [out bool threadIdValid])
+        ivec2  shuffleNV(ivec2 data, uint index, uint width,
+                            [out bool threadIdValid])
+        ivec3  shuffleNV(ivec3 data, uint index, uint width,
+                            [out bool threadIdValid])
+        ivec4  shuffleNV(ivec4 data, uint index, uint width,
+                            [out bool threadIdValid])
+
+        uint   shuffleNV(uint  data, uint index, uint width,
+                            [out bool threadIdValid])
+        uvec2  shuffleNV(uvec2 data, uint index, uint width,
+                            [out bool threadIdValid])
+        uvec3  shuffleNV(uvec3 data, uint index, uint width,
+                            [out bool threadIdValid])
+        uvec4  shuffleNV(uvec4 data, uint index, uint width,
+                            [out bool threadIdValid])
+
+        float  shuffleNV(float data, uint index, uint width,
+                            [out bool threadIdValid])
+        vec2   shuffleNV(vec2  data, uint index, uint width,
+                            [out bool threadIdValid])
+        vec3   shuffleNV(vec3  data, uint index, uint width,
+                            [out bool threadIdValid])
+        vec4   shuffleNV(vec4  data, uint index, uint width,
+                            [out bool threadIdValid])
+
+        bool   shuffleNV(bool  data, uint index, uint width,
+                            [out bool threadIdValid])
+        bvec2  shuffleNV(bvec2 data, uint index, uint width,
+                            [out bool threadIdValid])
+        bvec3  shuffleNV(bvec3 data, uint index, uint width,
+                            [out bool threadIdValid])
+        bvec4  shuffleNV(bvec4 data, uint index, uint width,
                             [out bool threadIdValid])
 
     Shuffle functions allow active threads within a thread group to exchange
@@ -246,13 +246,13 @@ Modifications to The OpenGL Shading Language Specification, Version 4.30
     <index> is a 5 bits value in the range 0 to 31, MSBs are ignored.
     <threadIdValid> is an optional operand.  It hold the value of the predicate
     that specifies if the source thread from which the current thread reads
-    data is in range or not.  
-      
+    data is in range or not.
+
     <width> is used for segmenting the thread group in multiple segments.  The
     segments need to be subdivided equally, so <width> needs to be a power of 2
     in the range 2 to 32.  Using a <width> of 32 would divide the thread
     group in a single segment.  A <width> of 8 would divide the thread group in
-    4 segments of size 8.  Using a <width> that is not a power of 2, that is 
+    4 segments of size 8.  Using a <width> that is not a power of 2, that is
     lower than 2 or larger than 32 will return an undefined value.
 
     Threads can only share data within their own segment.  Each thread
@@ -263,22 +263,22 @@ Modifications to The OpenGL Shading Language Specification, Version 4.30
 
     When a shuffle function attempts to access the value of <data> from another
     thread, it determines whether the other thread is in accessible range or
-    not.  If it is in range, true will be returned in the optional 
+    not.  If it is in range, true will be returned in the optional
     <threadIdValid> parameter, if provided by the caller.  If it's out of
     range, false will be returned in <threadIdValid>, if provided by the
-    caller, and the value returned by the function will come from the current 
+    caller, and the value returned by the function will come from the current
     thread.
 
 
-    The 4 modes use the following logic to compute the source thread index and 
+    The 4 modes use the following logic to compute the source thread index and
     the <threadIdValid> value:
-    
+
     shuffleNV computes the source index using <index> as an absolute address
     within the thread group segment.
-    
+
         srcThreadId = <index>
         <threadIdValid> = <index> < <width>
-    
+
       For example, with this thread group segment:
 
                         -----------------
@@ -305,17 +305,17 @@ Modifications to The OpenGL Shading Language Specification, Version 4.30
        <threadIdValid>  |0|0|0|0|0|0|0|0|
                         -----------------
        result           |a|b|c|d|e|f|g|h|
-                        -----------------       
+                        -----------------
 
-       
+
     shuffleUpNV subtracts <index> from the current thread id to get the source
-    thread id.  This have the effect of shifting up the segment by <index> 
+    thread id.  This have the effect of shifting up the segment by <index>
     threads.  Source thread id do not wrap around, so lower thread id
     will be left unchanged.
-    
+
         srcThreadId = currentThreadId - <index>
         <threadIdValid> = srcThreadId >= 0
-    
+
       For example, with this thread group segment:
 
                         -----------------
@@ -332,14 +332,14 @@ Modifications to The OpenGL Shading Language Specification, Version 4.30
        <threadIdValid>  |0 |1|1|1|1|1|1|1|
                         ------------------
        result           |a |a|b|c|d|e|f|g|
-                        ------------------     
+                        ------------------
 
-        
-    shuffleDownNV adds <index> to the current thread id to get the source 
-    thread id.  This have the effect of shifting down the segment by 
+
+    shuffleDownNV adds <index> to the current thread id to get the source
+    thread id.  This have the effect of shifting down the segment by
     <index> threads. Source thread id do not wrap around, so higher thread id
     will be left unchanged.
-    
+
         srcThreadId = currentThreadId + <index>
         <threadIdValid> = srcThreadId < <width>
 
@@ -359,12 +359,12 @@ Modifications to The OpenGL Shading Language Specification, Version 4.30
        <threadIdValid>  |1|1|1|1|1|1|0|0|
                         -----------------
        result           |c|d|e|f|g|h|g|h|
-                        -----------------  
+                        -----------------
 
-        
-    shuffleXorNv does a bitwise xor between the <index> and the current 
+
+    shuffleXorNv does a bitwise xor between the <index> and the current
     thread id to get the src thread id:
-    
+
         srcThreadId = currentThreadId ^ <index>
         <threadIdValid> = srcThreadId < <width>
 
@@ -384,16 +384,16 @@ Modifications to The OpenGL Shading Language Specification, Version 4.30
        <threadIdValid>  |1|1|1|1|1|1|1|1|
                         -----------------
        result           |b|a|d|c|f|e|h|g|
-                        -----------------  
+                        -----------------
 
 Dependencies on NV_gpu_program5
 
-    If NV_gpu_program5 is supported and "OPTION NV_shader_thread_shuffle" is 
-    specified in an assembly program, the following edits are made to extend 
+    If NV_gpu_program5 is supported and "OPTION NV_shader_thread_shuffle" is
+    specified in an assembly program, the following edits are made to extend
     the assembly programming model documented in the NV_gpu_program4 extension
     and extended by NV_gpu_program5.
 
-    If NV_gpu_program5 is not supported, or if 
+    If NV_gpu_program5 is not supported, or if
     "OPTION NV_shader_thread_shuffle" is not specified in an assembly program,
     the contents of this dependencies section should be ignored.
 
@@ -407,33 +407,33 @@ Dependencies on NV_gpu_program5
                               | "SHFXOR"
 
 
-    Modify Section 2.X.4, Program Execution Environment  
+    Modify Section 2.X.4, Program Execution Environment
 
-    (Add the table entries and relevant text describing the program 
+    (Add the table entries and relevant text describing the program
      instructions to exchange data between threads.)
-    
-      Instr-      Modifiers 
+
+      Instr-      Modifiers
       uction  V  F I C S H D  Out   Inputs    Description
-      ------- -- - - - - - -  ---   --------  --------------------------------      
+      ------- -- - - - - - -  ---   --------  --------------------------------
       ...
       SHFDOWN 50 X X - - - - F  v   v,vu,vu   warp shuffle with added index
       SHFIDX  50 X X - - - - F  v   v,vu,vu   warp shuffle with absolute index
       SHFUP   50 X X - - - - F  v   v,vu,vu   warp shuffle with subtracted index
-      SHFXOR  50 X X - - - - F  v   v,vu,vu   warp shuffle with XORed index    
+      SHFXOR  50 X X - - - - F  v   v,vu,vu   warp shuffle with XORed index
       ...
 
 
-    (Add to "Section 2.X.6, Program Options" of the NV_gpu_program4 extension, 
+    (Add to "Section 2.X.6, Program Options" of the NV_gpu_program4 extension,
      as extended by NV_gpu_program5)
 
     + Shader thread shuffle (NV_shader_thread_shuffle)
 
     If a program specifies the "NV_shader_thread_shuffle" option, it may use
     the "SHFXOR", "SHFDOWN", "SHFIDX" and "SHFUP" instructions.  If this option
-    is not specified, a program will fail to compile if it uses those 
+    is not specified, a program will fail to compile if it uses those
     instructions.
 
-    
+
     Section 2.X.8.Z, SHFDOWN:  warp shuffle with added index
 
     The SHFDOWN instruction allows a 32-bit scalar value to be exchanged
@@ -445,43 +445,43 @@ Dependencies on NV_gpu_program5
     the 32-bit scalar value.  For the SHFDOWN instruction this source thread is
     the id of the current thread added with the index operand.
 
-    The last operand is an unsigned integer mask.  The mask is used for 
+    The last operand is an unsigned integer mask.  The mask is used for
     segmenting the thread group and limiting the source thread index.  Bits 0
-    to 4 of <mask> are a clamp value that limits the source thread index and 
-    bits 8 to 12 a segmentation mask used to segment the thread group in 
+    to 4 of <mask> are a clamp value that limits the source thread index and
+    bits 8 to 12 a segmentation mask used to segment the thread group in
     multiple smaller groups.  Together the clamp value and the segmentation
     mask will generate 2 internal values, the minThreadId and the maxThreadId,
     using the following logic:
-    
+
       minThreadId = current thread id & segmentationMask
-      
+
       maxThreadId = minThreadId | (clamp & ~segmentationMask)
 
     Those 2 values will segment the thread group by restricting the address
     range a specific thread can access.
 
     SHFDOWN returns a 2-component vector.  The first component is a predicate
-    that is TRUE when the computed source thread id is in range and FALSE when 
+    that is TRUE when the computed source thread id is in range and FALSE when
     it's out of bounds.  For SHFDOWN, the source thread id is in range when it
     is lower than maxThreadId.  The second component holds a 32-bit value.
-    When the source thread id is in range, this value comes from the source 
+    When the source thread id is in range, this value comes from the source
     thread.  When the source thread id is out of range, it read the value from
     the current thread.  If the source thread id reference to an inactive
     thread, the returned result will be undefined.
 
-    SHFDOWN supports all data type modifiers.  For floating-point data types, 
+    SHFDOWN supports all data type modifiers.  For floating-point data types,
     the TRUE value is 1.0 and the FALSE value is 0.0.  For signed integer data
     types, the TRUE value is -1 and the FALSE value is 0.  For unsigned integer
-    data types, the TRUE value is the maximum integer value (all bits are ones) 
+    data types, the TRUE value is the maximum integer value (all bits are ones)
     and the FALSE value is zero.
-    
-    
+
+
     Section 2.X.8.Z, SHFIDX:  warp shuffle with absolute index
 
     The SHFIDX instruction allows a 32-bit scalar value to be exchanged between
     multiple thread within a thread group.  The instruction has 3 operands as
     input.  The first operand is a 32-bit scalar.  This value will be shared
-    between thread, it can be a float, a signed or an unsigned integer.  The 
+    between thread, it can be a float, a signed or an unsigned integer.  The
     second operand is an unsigned integer index in the range 0 to 31.  It is
     used to compute from which thread the current thread will read the
     32-bit scalar value.  For the SHFIDX instruction, this source thread id is
@@ -489,34 +489,34 @@ Dependencies on NV_gpu_program5
 
       source thread id =( index operand & ~segmentationMask) | minThreadId
 
-    The last operand is an unsigned integer mask.  The mask is used for 
+    The last operand is an unsigned integer mask.  The mask is used for
     segmenting the thread group and limiting the source thread index.  Bits 0
-    to 4 of <mask> are a clamp value that limits the source thread index and 
-    bits 8 to 12 a segmentation mask used to segment the thread group in 
+    to 4 of <mask> are a clamp value that limits the source thread index and
+    bits 8 to 12 a segmentation mask used to segment the thread group in
     multiple smaller groups.  Together the clamp value and the segmentation
     mask will generate 2 internal values, the minThreadId and the maxThreadId,
     using the following logic:
-    
+
       minThreadId = current thread id & segmentationMask
-      
+
       maxThreadId = minThreadId | (clamp & ~segmentationMask)
 
     Those 2 values will segment the thread group by restricting the address
     range a specific thread can access.
 
     SHFIDX returns a 2-component vector.  The first component is a predicate
-    that is TRUE when the computed source thread id is in range and FALSE when 
+    that is TRUE when the computed source thread id is in range and FALSE when
     it's out of bounds.  For SHFIDX, the source thread id is in range when it
     is lower than maxThreadId.  The second component holds a 32-bit value.
-    When the source thread id is in range, this value comes from the source 
-    thread. When the source thread id is out of range, it read the value from 
-    the current thread.  If the source thread id reference to an inactive 
+    When the source thread id is in range, this value comes from the source
+    thread. When the source thread id is out of range, it read the value from
+    the current thread.  If the source thread id reference to an inactive
     thread, the returned result will be undefined.
 
-    SHFIDX supports all data type modifiers.  For floating-point data types, 
+    SHFIDX supports all data type modifiers.  For floating-point data types,
     the TRUE value is 1.0 and the FALSE value is 0.0.  For signed integer data
     types, the TRUE value is -1 and the FALSE value is 0.  For unsigned integer
-    data types, the TRUE value is the maximum integer value (all bits are ones) 
+    data types, the TRUE value is the maximum integer value (all bits are ones)
     and the FALSE value is zero.
 
 
@@ -524,85 +524,85 @@ Dependencies on NV_gpu_program5
 
     The SHFUP instruction allows a 32-bit scalar value to be exchanged between
     multiple thread within a thread group.  The instruction has 3 operands as
-    input.  The first operand is a 32-bit scalar.  This value will be shared 
-    between thread, it can be a float, a signed or an unsigned integer.  The 
+    input.  The first operand is a 32-bit scalar.  This value will be shared
+    between thread, it can be a float, a signed or an unsigned integer.  The
     second operand is an unsigned integer index in the range 0 to 31.  It is
     used to compute from which thread the current thread will read the 32-bit
     scalar value.  For the SHFUP instruction this source thread is the id of
     the current thread subtracted with the index operand.
 
-    The last operand is an unsigned integer mask.  The mask is used for 
+    The last operand is an unsigned integer mask.  The mask is used for
     segmenting the thread group and limiting the source thread index.  Bits 0
-    to 4 of <mask> are a clamp value that limits the source thread index and 
-    bits 8 to 12 a segmentation mask used to segment the thread group in 
+    to 4 of <mask> are a clamp value that limits the source thread index and
+    bits 8 to 12 a segmentation mask used to segment the thread group in
     multiple smaller groups.  Together the clamp value and the segmentation
     mask will generate 2 internal values, the minThreadId and the maxThreadId,
     using the following logic:
-    
+
       minThreadId = current thread id & segmentationMask
-      
+
       maxThreadId = minThreadId | (clamp & ~segmentationMask)
 
     Those 2 values will segment the thread group by restricting the address
     range a specific thread can access.
 
     SHFUP returns a 2-component vector.  The first component is a predicate
-    that is TRUE when the computed source thread id is in range and FALSE when 
+    that is TRUE when the computed source thread id is in range and FALSE when
     it's out of bounds.  For SHFUP, the source thread id is in range when it
     is greater than maxThreadId.  The second component holds a 32-bit value.
-    When the source thread id is in range, this value comes from the source 
+    When the source thread id is in range, this value comes from the source
     thread.  When the source thread id is out of range, it read the value from
-    the current thread.  If the source thread id reference to an inactive 
+    the current thread.  If the source thread id reference to an inactive
     thread, the returned result will be undefined.
 
-    SHFUP supports all data type modifiers.  For floating-point data types, 
+    SHFUP supports all data type modifiers.  For floating-point data types,
     the TRUE value is 1.0 and the FALSE value is 0.0.  For signed integer data
     types, the TRUE value is -1 and the FALSE value is 0.  For unsigned integer
     data types, the TRUE value is the maximum integer value (all bits are ones)
     and the FALSE value is zero.
 
-    
+
     Section 2.X.8.Z, SHFXOR:  warp shuffle with XORed index
 
     The SHFXOR instruction allows a 32-bit scalar value to be exchanged
     between multiple threads within a thread group.  The instruction has 3
     operands as input.  The first operand is a 32-bit scalar.  This value will
-    be shared between threads, it can be a float, a signed or an unsigned 
+    be shared between threads, it can be a float, a signed or an unsigned
     integer.  The second operand is an unsigned integer index in the range 0 to
     31.  It is used to compute from which thread the current thread will read
     the 32-bit scalar value.  For the SHFXOR instruction this source thread is
     the id of the current thread XORed with the index operand.
 
-    The last operand is an unsigned integer mask.  The mask is used for 
+    The last operand is an unsigned integer mask.  The mask is used for
     segmenting the thread group and limiting the source thread index.  Bits 0
-    to 4 of <mask> are a clamp value that limits the source thread index and 
-    bits 8 to 12 a segmentation mask used to segment the thread group in 
+    to 4 of <mask> are a clamp value that limits the source thread index and
+    bits 8 to 12 a segmentation mask used to segment the thread group in
     multiple smaller groups.  Together the clamp value and the segmentation
     mask will generate 2 internal values, the minThreadId and the maxThreadId,
     using the following logic:
-    
+
       minThreadId = current thread id & segmentationMask
-      
+
       maxThreadId = minThreadId | (clamp & ~segmentationMask)
 
     Those 2 values will segment the thread group by restricting the address
     range a specific thread can access.
 
     SHFXOR returns a 2-component vector.  The first component is a predicate
-    that is TRUE when the computed source thread id is in range and FALSE when 
+    that is TRUE when the computed source thread id is in range and FALSE when
     it's out of bounds.  For SHFXOR, the source thread id is in range when it
     is lower than maxThreadId.  The second component holds a 32-bit value.
-    When the source thread id is in range, this value comes from the source 
+    When the source thread id is in range, this value comes from the source
     thread.  When the source thread id is out of range, it read the value from
-    the current thread.  If the source thread id reference to an inactive 
+    the current thread.  If the source thread id reference to an inactive
     thread, the returned result will be undefined.
 
-    SHFXOR supports all data type modifiers.  For floating-point data types, 
+    SHFXOR supports all data type modifiers.  For floating-point data types,
     the TRUE value is 1.0 and the FALSE value is 0.0.  For signed integer data
     types, the TRUE value is -1 and the FALSE value is 0.  For unsigned integer
-    data types, the TRUE value is the maximum integer value (all bits are ones) 
+    data types, the TRUE value is the maximum integer value (all bits are ones)
     and the FALSE value is zero.
-  
+
 Errors
 
     None.

@@ -1,5 +1,5 @@
 Name
-    
+
     NV_vertex_program
 
 Name Strings
@@ -369,7 +369,7 @@ Issues
       normal arrays).
 
     Should programs be C-style null-terminated strings?
-      
+
       RESOLUTION:  No.  Programs should be specified as an array of
       GLubyte with an explicit length parameter.  OpenGL has no precedent
       for passing null-terminated strings into the API (though glGetString
@@ -914,7 +914,7 @@ Issues
       DP4   o[HPOS].z, c[2], v[OPOS];
       DP4   o[HPOS].w, c[3], v[OPOS];
       DP3   R0.x, c[4], v[NRML];
-      DP3   R0.y, c[5], v[NRML]; 
+      DP3   R0.y, c[5], v[NRML];
       DP3   R0.z, c[6], v[NRML];           # R0 = n' = transformed normal
       DP3   R1.x, c[32], R0;               # R1.x = Lpos DOT n'
       DP3   R1.y, c[33], R0;               # R1.y = hHat DOT n'
@@ -941,15 +941,15 @@ Issues
         # outputs diffuse illumination for color and perturbed position
         #
         DP3   R0, c[32], v[NRML];     # light direction DOT normal
-        MUL   o[COL0].xyz, R0, c[35]; 
-        MAX   R0, c[64].x, R0; 
-        MUL   R0, R0, v[NRML]; 
-        MUL   R0, R0, c[64].z;  
+        MUL   o[COL0].xyz, R0, c[35];
+        MAX   R0, c[64].x, R0;
+        MUL   R0, R0, v[NRML];
+        MUL   R0, R0, c[64].z;
         ADD   R1, v[OPOS], -R0;       # perturb object space position
-        DP4   o[HPOS].x, c[0], R1; 
-        DP4   o[HPOS].y, c[1], R1; 
-        DP4   o[HPOS].z, c[2], R1; 
-        DP4   o[HPOS].w, c[3], R1; 
+        DP4   o[HPOS].x, c[0], R1;
+        DP4   o[HPOS].y, c[1], R1;
+        DP4   o[HPOS].z, c[2], R1;
+        DP4   o[HPOS].w, c[3], R1;
         END
 
     What if more exponential precision is needed than provided by the
@@ -988,7 +988,7 @@ Issues
 
         The pseudo-macro requires 10 instructions, 1 temp register,
         and 3 constant locations.
-   
+
         CL0 = { 2.41873696e-01, -1.37531206e-01, 5.20646796e-02, -9.31049418e-03 };
         CL1 = { 1.44268966e+00, -7.21165776e-01, 4.78684813e-01, -3.47305417e-01 };
         CL2 = { 1.0, NA, NA, NA };
@@ -1006,7 +1006,7 @@ Issues
            MAD Rt.w, Rt.w, Rt.y,c[CL1].x;
            MAD Ro, Rt.w, Rt.y, Rt.x;       /* Apply user write mask to Ro */
         }
-  
+
         Simulation gives |max abs error| < 1.79e-07 over the range (1.0
         <= x < 2.0).  Actual vertex program precision may be slightly
         less accurate than this.
@@ -1120,7 +1120,7 @@ New Tokens
     ExecuteProgramNV, GetProgramParameter[df]vNV, GetTrackMatrixivNV,
     LoadProgramNV, ProgramParameter[s]4[df][v]NV, and TrackMatrixNV:
 
-        VERTEX_PROGRAM_NV                              0x8620 
+        VERTEX_PROGRAM_NV                              0x8620
 
     Accepted by the <cap> parameter of Disable, Enable, and IsEnabled,
     and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
@@ -1131,8 +1131,8 @@ New Tokens
 
     Accepted by the <target> parameter of ExecuteProgramNV and
     LoadProgramNV:
-    
-        VERTEX_STATE_PROGRAM_NV                        0x8621 
+
+        VERTEX_STATE_PROGRAM_NV                        0x8621
 
     Accepted by the <pname> parameter of GetVertexAttrib[dfi]vNV:
 
@@ -1176,7 +1176,7 @@ New Tokens
         PROGRAM_ERROR_POSITION_NV                      0x864B
 
     Accepted by the <matrix> parameter of TrackMatrixNV:
-    
+
         NONE
         MODELVIEW
         PROJECTION
@@ -1190,7 +1190,7 @@ New Tokens
 
     Accepted by the <matrix> parameter of TrackMatrixNV and by the
     <mode> parameter of MatrixMode:
-    
+
         MATRIX0_NV                                     0x8630
         MATRIX1_NV                                     0x8631
         MATRIX2_NV                                     0x8632
@@ -1208,7 +1208,7 @@ New Tokens
         IDENTITY_NV                                    0x862A
         INVERSE_NV                                     0x862B
         TRANSPOSE_NV                                   0x862C
-        INVERSE_TRANSPOSE_NV                           0x862D 
+        INVERSE_TRANSPOSE_NV                           0x862D
 
     Accepted by the <array> parameter of EnableClientState and
     DisableClientState, by the <cap> parameter of IsEnabled, and by
@@ -1457,7 +1457,7 @@ Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
     2.14.3).
 
     The commands
-     
+
       void ProgramParameter4fNV(enum target, uint index,
                                 float x, float y, float z, float w)
       void ProgramParameter4dNV(enum target, uint index,
@@ -1950,7 +1950,7 @@ mnemonics, and meanings.
     A successfully loaded vertex program is parsed into a sequence of
     instructions.  Each instruction is identified by its tokenized name.
     The operation of these instructions when executed is defined in
-    section 2.14.1.10.  
+    section 2.14.1.10.
 
     A successfully loaded program replaces the program previously assigned
     to the name specified by id.  If the OUT_OF_MEMORY error is generated
@@ -1977,7 +1977,7 @@ mnemonics, and meanings.
     named by id as the current vertex program. The error INVALID_OPERATION
     is generated if id names a program that is not a vertex program
     (for example, if id names a vertex state program as described in
-    section 2.14.4).  
+    section 2.14.4).
 
     Binding to a nonexistent program id does not generate an error.
     In particular, binding to program id zero does not generate an error.
@@ -2020,7 +2020,7 @@ mnemonics, and meanings.
     be resident.
 
     The command
-      
+
       boolean AreProgramsResidentNV(sizei n, const uint *ids,
                                     boolean *residences);
 
@@ -2696,7 +2696,7 @@ a scalar output replicated across a 4-component vector.
 
     where APPX is an implementation dependent approximation of logarithm
     base 2 such that
-    
+
         | log(q.y)/log(2.0) - APPX(q.y) | < 1/(2^11)
 
     for all 1.0 <= q.y < 2.0.
@@ -2971,7 +2971,7 @@ a scalar output replicated across a 4-component vector.
     program.  A vertex state program may not be valid for reasons
     explained in section 2.14.5.
 
-    2.14.5  Tracking Matrices 
+    2.14.5  Tracking Matrices
 
     As a convenience to applications, standard GL matrix state can be
     tracked into program parameter vectors.  This permits vertex programs
@@ -3045,7 +3045,7 @@ a scalar output replicated across a 4-component vector.
     parameter register that is currently tracking a matrix because the
     program is considered invalid.
 
-    2.14.6  Required Vertex Program State 
+    2.14.6  Required Vertex Program State
 
     The state required for vertex programs consists of:
 
@@ -3104,7 +3104,7 @@ a scalar output replicated across a 4-component vector.
    the strides are each zero, the array types are each FLOAT, and the
    integers representing values per element are each four."
 
-Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
  --  Section 3.3 "Points"
 
@@ -3154,11 +3154,11 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
    (0,0,0,1) in eye-coordinates, to the fragment center." ...
 
 Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
-Operations and the Framebuffer) 
+Operations and the Framebuffer)
 
     None
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
  --  Section 5.1 "Evaluators"
 
@@ -3353,7 +3353,7 @@ State Requests)
 
       void GetVertexAttribPointervNV(uint index,
                                      enum pname, void **pointer);
-    
+
     obtains the pointer named pname in the array params for vertex
     attribute numbered index.  pname must be ATTRIB_ARRAY_POINTER_NV.
     The INVALID_VALUE error is generated if index greater than 15.
@@ -4021,7 +4021,7 @@ GLX Protocol
             4           BOOL32          return value
             20                          unused
 
-Errors 
+Errors
 
     The error INVALID_VALUE is generated if VertexAttribNV is called
     where index is greater than 15.
@@ -4093,7 +4093,7 @@ Errors
 
     The error INVALID_OPERATION is generated if ExecuteProgramNV is called
     and the vertex state program to execute writes program parameters
-    that are currently being tracked.  
+    that are currently being tracked.
 
     The error INVALID_VALUE is generated if TrackMatrixNV has a target
     of VERTEX_PROGRAM_NV and attempts to track an address is not a

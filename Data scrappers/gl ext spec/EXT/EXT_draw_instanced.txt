@@ -29,7 +29,7 @@ Dependencies
     OpenGL 2.0 or OpenGL ES 2.0 is required.
 
     EXT_gpu_shader4 or NV_vertex_shader4 is required if the GL is not OpenGL ES 2.0.
-    
+
     OES_element_index_uint affects the definition of this extension.
 
 Overview
@@ -115,7 +115,7 @@ Dependencies on OpenGL ES 2.0
     If the GL is OpenGL ES 2.0, all references to vertex programs and display lists
     are deleted, and primcount is replaced by instanceCount in the function prototype
     and pseudocode.
-    
+
     Add a new section in 2.10.5 called "Shader Inputs" between "Texture Access" and
     "Validation"
 
@@ -125,8 +125,8 @@ Dependencies on OpenGL ES 2.0
     index of the current primitive in an instanced draw call.  See also
     section 7.1 of the OpenGL ES Shading Language Specification."
 
-    
-    Additionally, the following is added to The OpenGL ES Shading Language Specification, 
+
+    Additionally, the following is added to The OpenGL ES Shading Language Specification,
     Version 1.00.17:
 
     "Including the following line in a shader can be used to control the
@@ -157,17 +157,17 @@ Dependencies on OpenGL ES 2.0
 
 Dependencies on NV_vertex_program4
 
-    If NV_vertex_program4 is not supported and the GL is not OpenGL ES 2.0, 
+    If NV_vertex_program4 is not supported and the GL is not OpenGL ES 2.0,
     all references to vertex.instance are deleted.
 
 Dependencies on EXT_gpu_shader4
 
-    If EXT_gpu_shader4 is not supported and the GL is not OpenGL ES 2.0, 
+    If EXT_gpu_shader4 is not supported and the GL is not OpenGL ES 2.0,
     all references to gl_InstanceID are deleted.
 
 Dependencies on OES_element_index_uint
 
-    If OES_element_index_uint is not supported and the GL is OpenGL ES 2.0, 
+    If OES_element_index_uint is not supported and the GL is OpenGL ES 2.0,
     omit UNSIGNED_INT and uint from the description of DrawElementsInstancedEXT.
 
 Errors
@@ -189,7 +189,7 @@ Issues
         by EXT_gpu_shader4; also, the spec language is cleaner if
         EXT_gpu_shader4 assumes instanceID is always available, even
         if its value is always zero without this extension.
-        
+
         For OpenGL ES 2.0: This extension does stand alone, introducing
         gl_InstanceID in GLSL-ES 1.00.
 
@@ -205,16 +205,16 @@ Issues
         Resolved: No, calling these during display list compilation
         generate INVALID_OPERATION.
 
-  (4) What is the maximum range of instances that gl_InstanceIDEXT can index 
+  (4) What is the maximum range of instances that gl_InstanceIDEXT can index
       in an OpenGL ES 2.0 vertex shader?
 
-        Resolved: According to the The OpenGL ES Shading Language 
+        Resolved: According to the The OpenGL ES Shading Language
         1.00.17 Specification, section 4.5.2 Precision Qualifiers, highp integer
-        range is (-2^16, 2^16). So even though the DrawArraysInstancedEXT and 
+        range is (-2^16, 2^16). So even though the DrawArraysInstancedEXT and
         DrawElementsInstancedEXT take instanceCount as a 32-bit unsigned int,
-        the maximum instance the gl_InstanceIDEXT variable can index is 
-        2^16 - 1. If Instance count exceeds 2^16 - 1, it results in an undefined 
-        value due to integer overflow and it is possible that gl_InstanceIDEXT 
+        the maximum instance the gl_InstanceIDEXT variable can index is
+        2^16 - 1. If Instance count exceeds 2^16 - 1, it results in an undefined
+        value due to integer overflow and it is possible that gl_InstanceIDEXT
         wraps, or that it does not.
 
 Revision History

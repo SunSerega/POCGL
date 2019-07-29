@@ -838,5 +838,5 @@ Revision History
           is RG instead of RGB, matching core GL spec (Bug 7812).
 
     Revision 1.7, January 27, 2015: jleech
-        - Fix table 3.17 so base type for COMRPESSED*RED_RGTC1 formats 
+        - Fix table 3.17 so base type for COMRPESSED*RED_RGTC1 formats
           is RED instead of RGB, matching core GL spec (Bug 13260).

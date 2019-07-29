@@ -40,9 +40,9 @@ Dependencies
 
     OES_texture_border_clamp affects the definition of this extension.
 
-    The portions of this extension that modify/extend 
+    The portions of this extension that modify/extend
     OES_EGL_image_external are written against OpenGL ES 2.0.
-    The portions of this extension that modify/extend 
+    The portions of this extension that modify/extend
     OES_texture_border_clamp are written against OpenGL ES 3.0.
     The portions of this extension that modify/extend OES_EGL_image_external_essl3 are
     written against OpenGL ES 3.0.
@@ -52,7 +52,7 @@ Overview
     This extension builds on OES_EGL_image_external, which only allows
     a external images to use a single clamping wrap mode:  CLAMP_TO_EDGE.
     This extension relaxes that restriction, allowing wrap modes REPEAT
-    and MIRRORED_REPEAT.  If OES_texture_border_clamp is supported, then 
+    and MIRRORED_REPEAT.  If OES_texture_border_clamp is supported, then
     CLAMP_TO_BORDER is also allowed.
 
     This extension similarly adds to the capabilities of OES_EGL_image_external_essl3,
@@ -81,7 +81,7 @@ Changes to Chapter 3 of the OpenGL ES 2.0 Specification
 
     Modify the fourth sentence of the first paragraph of Section 3.7.14,
     as added by OES_EGL_image_external
-    
+
     from:
          "The default s and t wrap modes are CLAMP_TO_EDGE and it is an
          INVALID_ENUM error to set the wrap mode to any other value."
@@ -108,13 +108,13 @@ Changes to Chapter 3 of the OpenGL ES 2.0 Specification
         in(non-linear) ITU-R Rec. 601 YV12, the TEXTURE_BORDER_COLOR_OES
         must still be specified as an RGBA color in linear color space.
 
-Changes to section "3.7.4 Texture Parameters" of the OpenGL ES 2.0 
+Changes to section "3.7.4 Texture Parameters" of the OpenGL ES 2.0
 Specification
 
     Modify the paragraph as added by OES_EGL_image_external
-    
+
     from:
-            "When <target> is TEXTURE_EXTERNAL_OES only NEAREST and 
+            "When <target> is TEXTURE_EXTERNAL_OES only NEAREST and
         LINEAR are accepted as TEXTURE_MIN_FILTER and only CLAMP_TO_EDGE
         is accepted as TEXTURE_WRAP_S and TEXTURE_WRAP_T."
     to:
@@ -129,7 +129,7 @@ Specification
 
             "When <target> is TEXTURE_EXTERNAL_OES only NEAREST and
         LINEAR are accepted as TEXTURE_MIN_FILTER and only CLAMP_TO_EDGE,
-        REPEAT, MIRRORED_REPEAT, or CLAMP_TO_BORDER are accepted as 
+        REPEAT, MIRRORED_REPEAT, or CLAMP_TO_BORDER are accepted as
         TEXTURE_WRAP_S and TEXTURE_WRAP_T."
 
 [[ The following applies if OES_texture_border_clamp is supported. ]]
@@ -140,8 +140,8 @@ Specification
     Modify the sentence added by OES_texture_border_clamp
 
     From:
-        "If the texture contains color components, the values of 
-        TEXTURE_BORDER_COLOR_OES are interpreted as an RGBA color to 
+        "If the texture contains color components, the values of
+        TEXTURE_BORDER_COLOR_OES are interpreted as an RGBA color to
         match the texture's internal format in a manner consistent with
         table 3.11."
 
@@ -187,12 +187,12 @@ Specification
 
 Issues
 
-    1) For YUV texture formats, should the should the border color be 
+    1) For YUV texture formats, should the should the border color be
     specified as RGBA or YUVA ?
 
-    Resolved:  The border color should be specified as linear RGBA since the 
-    application may not know the underlying texture format/colorspace.  The 
-    color should be converted by the implementation to a colorspace (e.g., 
+    Resolved:  The border color should be specified as linear RGBA since the
+    application may not know the underlying texture format/colorspace.  The
+    color should be converted by the implementation to a colorspace (e.g.,
     ITU-R Rec. 601) matching the texture's internal format.
 
 

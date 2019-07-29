@@ -22,7 +22,7 @@ IP Status
 Version
 
     Date: 11/04/2006 Revision: 1.02
-    
+
 Number
 
     None.
@@ -50,7 +50,7 @@ Overview
 
     In addition, the result may be scaled by 1.0, 2.0 or 4.0.
 
-    Note that in addition to providing more flexible equations new source 
+    Note that in addition to providing more flexible equations new source
     inputs have been added for zero and one.
 
 Issues
@@ -124,12 +124,12 @@ Additions to Chapter 3 of the OpenGL 1.2 Specification (Rasterization)
     The arguments Arg0, Arg1 and Arg2 are determined by the values of
     SOURCE<n>_RGB_ARB, SOURCE<n>_ALPHA_ARB, OPERAND<n>_RGB_ARB and
     OPERAND<n>_ALPHA_ARB. In the following two tables, Ct and At are
-    the filtered texture RGB and alpha values; Cc and Ac are the 
-    texture environment RGB and alpha values; Cf and Af are the RGB 
-    and alpha of the primary color of the incoming fragment; and Cp 
-    and Ap are the RGB and alpha values resulting from the previous 
-    texture environment. On texture environment 0, Cp and Ap are 
-    identical to Cf and Af, respectively. The relationship is 
+    the filtered texture RGB and alpha values; Cc and Ac are the
+    texture environment RGB and alpha values; Cf and Af are the RGB
+    and alpha of the primary color of the incoming fragment; and Cp
+    and Ap are the RGB and alpha values resulting from the previous
+    texture environment. On texture environment 0, Cp and Ap are
+    identical to Cf and Af, respectively. The relationship is
     described in tables 3.21 and 3.22.
 
         SOURCE<n>_RGB_ARB       OPERAND<n>_RGB_ARB      Argument
@@ -207,7 +207,7 @@ Revision History
    Date: 3/29/2010
    Revision: 1.03
       - (pbrown @ NVIDIA) Fix the "Name Strings" section to include a "GL"
-        prefix. 
+        prefix.
 
    Date: 11/4/2006
    Revision: 1.02

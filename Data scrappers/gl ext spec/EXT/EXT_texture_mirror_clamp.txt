@@ -83,7 +83,7 @@ Issues
 
     Do these three new wrap modes work with ARB_texture_non_power_of_two
     functionality?
-    
+
          RESOLUTION: Yes.
 
     Do these three new wrap modes interact with NV_texture_rectangle?

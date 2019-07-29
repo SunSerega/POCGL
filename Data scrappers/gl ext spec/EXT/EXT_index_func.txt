@@ -67,7 +67,7 @@ and the Frame Buffer)
     it is as if the comparison always passes.  The test is controlled with
 
         void IndexFunc (enum func, float ref);
-    
+
     <func> is a symbolic constant indicating the index test function; <ref>
     is a reference value.  <ref> is converted to a fixed-point value
     according to the rules given for a color index in section 2.13.9.  For

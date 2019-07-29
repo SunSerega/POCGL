@@ -113,7 +113,7 @@ New Procedures and Functions
 
 New Tokens
 
-    Accepted by the <format> parameter of CompressedTexSubImage2D, and 
+    Accepted by the <format> parameter of CompressedTexSubImage2D, and
     by the <internalformat> parameter of CompressedTexImage2D, TexStorage2D,
     TextureStorage2D, TexStorage3D, and TextureStorage3D:
 
@@ -151,7 +151,7 @@ New Tokens
     accepted by TexStorage2DEXT, TextureStorage2DEXT, TexStorage3DEXT and
     TextureStorage3DEXT.
 
-    Accepted by the <format> parameter of CompressedTexSubImage3D, and 
+    Accepted by the <format> parameter of CompressedTexSubImage3D, and
     by the <internalformat> parameter of CompressedTexImage3D, TexStorage3D,
     and TextureStorage3D:
 
@@ -348,7 +348,7 @@ Additions to Appendix C of the OpenGL ES 3.0 Specification (Compressed
     implemented, both "GL_KHR_texture_compression_astc_ldr"
     and "GL_KHR_texture_compression_astc_hdr" must be published. If the full
     profile (including 3D textures) is implemented, then all three extension
-    strings "GL_KHR_texture_compression_astc_ldr", 
+    strings "GL_KHR_texture_compression_astc_ldr",
     "GL_KHR_texture_compression_astc_hdr"
     and "GL_OES_texture_compression_astc" must be published.
 
@@ -1285,7 +1285,7 @@ R   Weight Range  Trits  Quints  Bits       Weight Range  Trits  Quints  Bits
 
     For HDR endpoint modes, color values are represented in a 12-bit
     pseudo-logarithmic representation.
-    
+
     HDR Endpoint Mode 2
 
     Mode 2 represents luminance-only data with a large range. It encodes
@@ -1408,13 +1408,13 @@ R   Weight Range  Trits  Quints  Bits       Weight Range  Trits  Quints  Bits
         {
             majcomp = 0; mode = 5;
         }
-        
+
         // Extract low-order bits of r, g, b, and s.
         int red   = v0 & 0x3f;
         int green = v1 & 0x1f;
         int blue  = v2 & 0x1f;
         int scale = v3 & 0x1f;
-        
+
         // Extract high-order bits, which may be assigned depending on mode
         int x0 = (v1 >> 6) & 1; int x1 = (v1 >> 5) & 1;
         int x2 = (v2 >> 6) & 1; int x3 = (v2 >> 5) & 1;
@@ -1600,7 +1600,7 @@ R   Weight Range  Trits  Quints  Bits       Weight Range  Trits  Quints  Bits
 
         // Decode RGB as for mode 11
         (e0,e1) = decode_mode_11(v0,v1,v2,v3,v4,v5)
-        
+
         // Now fill in the alphas
         e0.alpha = v6;
         e1.alpha = v7;
@@ -1650,7 +1650,7 @@ R   Weight Range  Trits  Quints  Bits       Weight Range  Trits  Quints  Bits
             v7 -= 0x20 >> mode;
             v6 <<= (4-mode);
             v7 <<= (4-mode);
-        
+
             // Add delta and clamp
             v7 += v6;
             v7 = clamp(v7, 0, 0xFFF);
@@ -1728,7 +1728,7 @@ R   Weight Range  Trits  Quints  Bits       Weight Range  Trits  Quints  Bits
 
     As a final step, for all types of value, the range is expanded from
     0..63 up to 0..64 as follows:
-        
+
         if (T > 32) { T += 1; }
 
     This allows the implementation to use 64 as a divisor during inter-
@@ -2005,9 +2005,9 @@ R   Weight Range  Trits  Quints  Bits       Weight Range  Trits  Quints  Bits
                 config_bits = 29;
             else
                 config_bits = 25 + 3*num_partitions;
-        
+
         num_weights = M * N * Q; // size of weight grid
-        
+
         if(dual_plane)
             config_bits += 2;
             num_weights *= 2;
@@ -2029,13 +2029,13 @@ R   Weight Range  Trits  Quints  Bits       Weight Range  Trits  Quints  Bits
     An equivalent iterative algorithm would be:
 
         num_CEM_values = num_CEM_pairs*2;
-        
+
         for(range = each possible CEM range in descending order of size)
         {
             CEM_bits = ceil(num_CEM_values*8*trits_in_CEM_range/5) +
                        ceil(num_CEM_values*7*quints_in_CEM_range/3) +
                        num_CEM_values*bits_in_CEM_range;
-        
+
             if(CEM_bits <= remaining_bits)
                 break;
         }

@@ -39,7 +39,7 @@ Version
 
 Number
 
-    OpenGL ES Extension #32    
+    OpenGL ES Extension #32
 
 Dependencies
 
@@ -54,12 +54,12 @@ Overview
 
 Issues
 
- 
+
 New Tokens
 
     Accepted by the <internalformat> parameter of RenderbufferStorageOES:
 
-        STENCIL_INDEX4_OES                 0x8D47 
+        STENCIL_INDEX4_OES                 0x8D47
 
 New Procedures and Functions
 

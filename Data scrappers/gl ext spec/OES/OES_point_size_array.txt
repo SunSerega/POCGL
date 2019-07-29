@@ -56,7 +56,7 @@ Overview
 
     The point size array, if enabled, controls the sizes used to render
     points and point sprites.  If point size array is enabled, the point
-    size defined by PointSize is ignored.  The point sizes supplied in the 
+    size defined by PointSize is ignored.  The point sizes supplied in the
     point size arrays will be the sizes used to render both points and
     point sprites.
 
@@ -66,7 +66,7 @@ IP Status
 
 Issues
 
- 
+
 New Procedures and Functions
 
     void PointSizePointerOES(enum type, sizei stride, const void *ptr )

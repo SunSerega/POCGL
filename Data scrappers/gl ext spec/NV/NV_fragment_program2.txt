@@ -121,7 +121,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     (mostly add to existing grammar rules, as extended by
     NV_fragment_program_option)
-    
+
     <optionName>            ::= "NV_fragment_program2"
 
     <statement>             ::= <branchLabel> ":"
@@ -138,7 +138,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     <VECTORop>              ::= "NRM"
 
-    <VECSCAop_instruction>  ::= <VECSCAop> <instResult> "," <instOperandV> "," 
+    <VECSCAop_instruction>  ::= <VECSCAop> <instResult> "," <instOperandV> ","
                                 <instOperandS>
 
     <VECSCAop>              ::= "DIV"
@@ -199,7 +199,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     matches the <addrVarName> grammar rule and can be used as a loop counter
     (Section 3.11.3.Y).  It is not possible to declare additional address
     register variables.
-    
+
 
     Modify Section 3.11.3.1, Fragment Attributes
 
@@ -248,7 +248,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     for A0.x, but only the A0.x value for the innermost block can be used. The
     value of A0.x is clamped to be greater than or equal to 0.
 
-    
+
     Modify Section 3.11.4, Fragment Program Execution Environment
 
     (modify instruction table) There are sixty-seven fragment program
@@ -283,7 +283,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       KIL      - - - - -  v or c  -        kill fragment
       LG2      X X - X X  s       ssss     logarithm base 2
       LIT      X X - X X  v       v        compute light coefficients
-      LOOP     - - - - -  v       -        start of loop block        
+      LOOP     - - - - -  v       -        start of loop block
       LRP      X X X X X  v,v,v   v        linear interpolation
       MAD      X X X X X  v,v,v   v        multiply and add
       MAX      X X X X X  v,v     v        maximum
@@ -315,7 +315,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       SWZ      X X - X X  v       v        extended swizzle
       TEX      - - - X X  v       v        texture sample
       TXB      - - - X X  v       v        texture sample with bias
-      TXD      - - - X X  v,v,v   v        texture sample w/partials      
+      TXD      - - - X X  v,v,v   v        texture sample w/partials
       TXL      - - - X X  v       v        texture same w/explicit LOD
       TXP      - - - X X  v       v        texture sample with projection
       UP2H     - - - X X  s       v        unpack two 16-bit floats
@@ -589,8 +589,8 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     The level of detail is computed as specified in section 3.8.8, except that
     rho(x,y) is given by 2^w, where w is the w component of the vector
     operand.
-    
-    The resulting sample is mapped to RGBA as described in table 3.21 
+
+    The resulting sample is mapped to RGBA as described in table 3.21
     and written to the result vector.
 
       tmp = VectorLoad(op0);
@@ -609,7 +609,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     The following pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         continue execution at instruction following the next ENDLOOP or
           ENDREP;
@@ -625,8 +625,8 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     When executed, the CAL instruction pushes a reference to the instruction
     immediately following the CAL instruction onto the call stack.  When a
     matching RET instruction is executed, execution will continue at that
-    instruction after executing the matching RET instruction.  
-    
+    instruction after executing the matching RET instruction.
+
     Implementations may have a limited call stack.  If the number of CAL
     instructions that have been performed without returning is
     MAX_PROGRAM_CALL_DEPTH_NV, a CAL instruction will cause the call stack to
@@ -634,7 +634,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     The following pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
 
         // Check for call stack overflow.
@@ -650,7 +650,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     3.11.X.3, ELSE:  Beginning of ELSE Block
 
     The ELSE instruction signifies the end of the "execute if true" portion of
-    an IF/ELSE/ENDIF block.  
+    an IF/ELSE/ENDIF block.
 
     If the condition evaluated at the IF statement was TRUE, when a program
     reaches the ELSE statement, it has completed the entire "execute if true"
@@ -714,8 +714,8 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       }
 
       // Evaluate the condition.  If the condition is true, continue at the
-      // next instruction.  Otherwise, continue at the 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      // next instruction.  Otherwise, continue at the
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         continue execution at the next instruction;
       } else if (IF block contains an ELSE statement) {
@@ -813,13 +813,13 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     If a RET instruction is issued when the call stack is empty, the fragment
     program is terminated.
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
 
         if (callStackDepth <= 0) {
           terminate fragment program;
         }
-        
+
         pop instruction following the CAL instruction off the call stack;
         continue execution at that instruction;
       }
@@ -908,8 +908,8 @@ Revision History
                              table.
 
     6     05/16/04  pbrown   Documented that "A0" is a pre-defined address
-                             register variable for the purposes of the 
+                             register variable for the purposes of the
                              grammar, and that no other address register
-                             variables can be declared. 
+                             variables can be declared.
 
     5     --------  pbrown   Internal pre-release revisions.

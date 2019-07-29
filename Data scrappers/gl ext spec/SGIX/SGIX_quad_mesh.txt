@@ -50,8 +50,8 @@ Issues
     implementation that just wants to draw the quad mesh as a bunch of
     independent quads only needs to amount of state listed in the spec.
     Every time glVertex is then called, one new quad is drawn.
-    
-    * Kurt: Is it implementable on all current SGI platforms?  
+
+    * Kurt: Is it implementable on all current SGI platforms?
 
     Matt: If it is implemented as drawing independent quads, then yes.  On
     platforms where you really want to take advantage of the fact that you can
@@ -67,7 +67,7 @@ New Procedures and Functions
 
 New Tokens
 
-    Accepted by the <mode> parameter of Begin, and 
+    Accepted by the <mode> parameter of Begin, and
     also accepted by the <mode> parameter of DrawArrays:
 
     QUAD_MESH_SGIX         0x????
@@ -80,7 +80,7 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     Quad meshes and line meshes use an auxilliary function, MeshBreadthSGIX to
     define GL state which affects the quads and lines drawn by these
     primitives.  The <breadth> parameter to MeshBreadthSGIX is used in the
-    descriptions of quad meshes and line meshes below.  
+    descriptions of quad meshes and line meshes below.
 
     Quadrilateral (quad) meshes:
 

@@ -95,7 +95,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     where i, j, and k are indexes as described in Figure 3.10 of the GL
     Specification.  It is an error for this region to include any texels
-    outside the range of the texture array as it was originally specified.  
+    outside the range of the texture array as it was originally specified.
     Specifically, the error INVALID_VALUE results if any of the following
     conditions are met:
 
@@ -161,7 +161,7 @@ Additions to the GLX Specification
 GLX Protocol
 
     Several new GL rendering commands are added. All of these commands have pixel
-    data; thus they are sent to the server either as part of a glXRender request or 
+    data; thus they are sent to the server either as part of a glXRender request or
     a glXRenderLarge request:
 
         TexSubImage1DEXT
@@ -192,13 +192,13 @@ GLX Protocol
             4           64+n+p          rendering command length
             4           4099            rendering command opcode
 
-        If <width> < 0, <format> is invalid or <type> is invalid, then the command is 
-        erroneous and n=0. The <yoffset> and <height> parameters in this request are 
+        If <width> < 0, <format> is invalid or <type> is invalid, then the command is
+        erroneous and n=0. The <yoffset> and <height> parameters in this request are
         ignored.
 
-        The structure of <pixels> is described in Appendix A of the GLX Protocol 
-        Specification, "Pixel Data", using the parameters <swap_bytes>, <lsb_first>, 
-        <row_length>, <skip_rows>, <skip_pixels>, <alignment>, <width>, <format>, and 
+        The structure of <pixels> is described in Appendix A of the GLX Protocol
+        Specification, "Pixel Data", using the parameters <swap_bytes>, <lsb_first>,
+        <row_length>, <skip_rows>, <skip_pixels>, <alignment>, <width>, <format>, and
         <type> as given in the request and height = 1.
 
 
@@ -230,12 +230,12 @@ GLX Protocol
             4           64+n+p          rendering command length
             4           4100            rendering command opcode
 
-        If <width> < 0, <height> < 0, <format> is invalid or <type> is invalid, then 
+        If <width> < 0, <height> < 0, <format> is invalid or <type> is invalid, then
         the command is erroneous and n=0.
 
-        The structure of <pixels> is described in Appendix A of the GLX Protocol 
-        Specification, "Pixel Data", using the parameters <swap_bytes>, <lsb_first>, 
-        <row_length>, <skip_rows>, <skip_pixels>, <alignment>, <width>, <height>, 
+        The structure of <pixels> is described in Appendix A of the GLX Protocol
+        Specification, "Pixel Data", using the parameters <swap_bytes>, <lsb_first>,
+        <row_length>, <skip_rows>, <skip_pixels>, <alignment>, <width>, <height>,
         <format>, and <type> as given in the request.
 
 
@@ -275,7 +275,7 @@ GLX Protocol
             4           92+n+p          rendering command length
             4           4115            rendering command opcode
 
-        If <width> < 0, <height> < 0, <depth> < 0, <format> is invalid or <type> is 
+        If <width> < 0, <height> < 0, <depth> < 0, <format> is invalid or <type> is
         invalid, then the command is erroneous and n=0. The <woffset>, <size4d>,
         <image_depth>, and <skip_volumes> parameters in this request are ignored.
 

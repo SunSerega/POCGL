@@ -70,7 +70,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
 Additions to Chapter 4 of the 1.0 Specification (Per-Fragment Operations
 and the Framebuffer)
-   
+
     None
 
 

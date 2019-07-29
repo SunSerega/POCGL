@@ -52,14 +52,14 @@ Number
 
 Dependencies
 
-    This extension is written against the OpenGL 3.2 specification (Core 
+    This extension is written against the OpenGL 3.2 specification (Core
     Profile).
 
 Overview
 
-    This extension adds three new buffer texture formats - RGB32F, RGB32I, 
-    and RGB32UI.  This partially addresses one of the limitations of buffer 
-    textures in the original EXT_texture_buffer_object extension and in 
+    This extension adds three new buffer texture formats - RGB32F, RGB32I,
+    and RGB32UI.  This partially addresses one of the limitations of buffer
+    textures in the original EXT_texture_buffer_object extension and in
     OpenGL 3.1, which provide no support for three-component formats.
 
 IP Status
@@ -83,7 +83,7 @@ Additions to Chapter 3 of the OpenGL 3.2 Specification (Rasterization)
     Add to Table 3.15 "Internal formats for buffer textures", p.158
 
     Sized Internal Format   Base Type   Components  Norm    Component
-                                                             0 1 2 3    
+                                                             0 1 2 3
     ---------------------   ---------   ----------  ----    ---------
     RGB32F                  float       3           No       R G B 1
     RGB32I                  int         3           No       R G B 1

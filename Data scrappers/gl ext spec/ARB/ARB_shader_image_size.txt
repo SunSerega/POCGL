@@ -13,7 +13,7 @@ Contact
 Contributors
 
     Jeannot Breton, NVIDIA
-    
+
 Notice
 
     Copyright (c) 2012-2013 The Khronos Group Inc. Copyright terms at
@@ -49,12 +49,12 @@ Dependencies
 
     OpenGL Shading Language 4.20 is required
 
-    This extension is written against the OpenGL 4.2 specification and 
+    This extension is written against the OpenGL 4.2 specification and
     version 4.20 of the OpenGL Shading Language Specification.
 
-    This extension interacts with NV_gpu_program5 and 
+    This extension interacts with NV_gpu_program5 and
     EXT_shader_image_load_store.
-    
+
 Overview
     This extension provides GLSL built-in functions allowing shaders to query
     the size of an image.
@@ -129,23 +129,23 @@ Modifications to The OpenGL Shading Language Specification, Version 4.20.11
       int imageSize(gimageBuffer image)
       ivec2 imageSize(gimage2DMS image)
       ivec3 imageSize(gimage2DMSArray image)
-      
+
 Description:
 
-    Returns the dimensions of the image or images bound to <image>.  For arrayed 
-    images, the last component of the return value will hold the size of the 
-    array.  Cube images return the dimensions of one face, and number of cubes 
+    Returns the dimensions of the image or images bound to <image>.  For arrayed
+    images, the last component of the return value will hold the size of the
+    array.  Cube images return the dimensions of one face, and number of cubes
     in the cube map array, if arrayed.
 
 Dependencies on NV_gpu_program5 and EXT_shader_image_load_store
 
-    If NV_gpu_program5 and EXT_shader_image_load_store are supported and 
-    "OPTION ARB_shader_image_size" is specified in an assembly program, the 
-    following edits are made to extend the assembly programming model 
-    documented in the NV_gpu_program4 extension and extended by NV_gpu_program5 
-    and EXT_shader_image_load_store.  
+    If NV_gpu_program5 and EXT_shader_image_load_store are supported and
+    "OPTION ARB_shader_image_size" is specified in an assembly program, the
+    following edits are made to extend the assembly programming model
+    documented in the NV_gpu_program4 extension and extended by NV_gpu_program5
+    and EXT_shader_image_load_store.
 
-    If NV_gpu_program5 and EXT_shader_image_load_store are not supported, or if 
+    If NV_gpu_program5 and EXT_shader_image_load_store are not supported, or if
     "OPTION ARB_shader_image_size" is not specified in an assembly program, the
     contents of this dependencies section should be ignored.
 
@@ -157,15 +157,15 @@ Dependencies on NV_gpu_program5 and EXT_shader_image_load_store
 
       <IMQop_instruction:>    ::= <IMQop> <opModifiers> <instResult> ","
                                        <imageAccess>
-   
+
       <IMQop>                 ::= "IMQ"
 
 
-    Modify Section 2.X.4, Program Execution Environment  
+    Modify Section 2.X.4, Program Execution Environment
 
-      Instr-      Modifiers 
+      Instr-      Modifiers
       uction  V  F I C S H D  Out Inputs    Description
-      ------- -- - - - - - -  --- --------  --------------------------------      
+      ------- -- - - - - - -  --- --------  --------------------------------
       IMQ     50 - - - - - S  vs  i         image size query
 
     (Add to "Section 2.X.6, Program Options" of the NV_gpu_program4 extension,
@@ -181,28 +181,28 @@ Dependencies on NV_gpu_program5 and EXT_shader_image_load_store
 
     The IMQ instruction returns the dimensions of the image unit specified by
     <imageUnit>.  Eleven image targets are supported:  1D, 2D, 3D, RECT, CUBE,
-    BUFFER, ARRAY1D, ARRAY2D, ARRAYCUBE, 2DMS, and ARRAY2DMS. 
+    BUFFER, ARRAY1D, ARRAY2D, ARRAYCUBE, 2DMS, and ARRAY2DMS.
 
-    For one-dimensional, one-dimensional array and buffer textures, the "x" 
+    For one-dimensional, one-dimensional array and buffer textures, the "x"
     component of the result vector is filled with the width of the image(s).
     For two-dimensional, rectangle, cube map, two-dimensional array, cube map
-    array, three-dimensional, two-dimensional multisample and two-dimensional 
+    array, three-dimensional, two-dimensional multisample and two-dimensional
     multisample array textures, the "x" and "y" components are filled with the
-    width and height of the image(s).  
-    
+    width and height of the image(s).
+
     Additionally, when the entire one-dimensional array texture level is bound,
     the "y" component of the result vector is filled with the number of layers
     in the image(s).  When the entire two-dimensional array or two-dimensional
-    multisample array texture level is bound, the "z" component of the result 
-    vector is filled with the number of layers in the image(s).  When the 
-    entire cube map array texture level is bound, the "z" component of the 
+    multisample array texture level is bound, the "z" component of the result
+    vector is filled with the number of layers in the image(s).  When the
+    entire cube map array texture level is bound, the "z" component of the
     result vector is filled with the number of cubes in the cube map array.
     When the entire three-dimensional texture level is bound, the "z" component
     of the result vector is filled with the depth of the image(s).  All other
-    components of the result vector are undefined.  
+    components of the result vector are undefined.
 
-    IMQ supports no storage modifier, since the image size is independent of 
-    the image unit format.  It supports no data type modifiers; the result 
+    IMQ supports no storage modifier, since the image size is independent of
+    the image unit format.  It supports no data type modifiers; the result
     vector is interpreted as signed integers.
 
 Conformance Tests
@@ -212,7 +212,7 @@ Conformance Tests
 Issues
 
     none
-    
+
 Revision History
 
     Revision 3, 2012/7/19 (JBreton)

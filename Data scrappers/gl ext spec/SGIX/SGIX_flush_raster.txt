@@ -22,17 +22,17 @@ Dependencies
 
 Overview
 
-    This extensions provides a way to ensure that all raster operations 
-    currently in the pipeline will be completed before the next 
+    This extensions provides a way to ensure that all raster operations
+    currently in the pipeline will be completed before the next
     raster operation begins. We define a raster operation as an operation
     that involves the rasterization stage of the OpenGL pipeline.
     The implementation is free to decide what consitutes flushing the
     raster subsystem.
 
-    The motivation is to allow accurate instrumentation by 
+    The motivation is to allow accurate instrumentation by
     including this call before stopping rasterization measurements.
     There are cases where Finish() is used, but a FlushRaster()
-    would suffice, so this extension is deliberately kept independent 
+    would suffice, so this extension is deliberately kept independent
     of the instruments extension.
 
 Issues
@@ -45,7 +45,7 @@ New Procedures and Functions
 
 New Tokens
 
-    None 
+    None
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 

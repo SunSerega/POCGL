@@ -110,7 +110,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     might occur between Begin/End pairs.  If <mode> does not contain a
     given bit, then GL may assume that associated functions will not occur
     between Begin/End pairs -- in this case, behavior of these functions
-    is undefined.  (But the functions will not cause program termination.)  
+    is undefined.  (But the functions will not cause program termination.)
 
     <target> = VERTEX_CONSISTENT_HINT_PGI
 
@@ -123,7 +123,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     will occur before all Vertex calls.  (Where "before" means the
     function will occur between the current Vertex function and the
     previous Vertex of Begin function.)  If <mode> is NICEST, DONT_CARE,
-    or FALSE, the application is asserting that any sequence of 
+    or FALSE, the application is asserting that any sequence of
     functions might occur between Begin/End pairs.
 
     If both VERTEX_CONSISTENT_HINT_PGI and  VERTEX_DATA_HINT_PGI are
@@ -202,13 +202,13 @@ New State
     Get Value                Get Command    Type    Value    Attrib
     ---------                -----------    ----    -------    ------
 
-    VERTEX_DATA_HINT_PGI                GetIntegerv      Z       FALSE    
+    VERTEX_DATA_HINT_PGI                GetIntegerv      Z       FALSE
 
-    VERTEX_CONSISTENT_HINT_PGI          GetIntegerv      Z       FALSE    
+    VERTEX_CONSISTENT_HINT_PGI          GetIntegerv      Z       FALSE
 
-    MAX_VERTEX_HINT_PGI                 GetIntegerv      Z       FALSE    
+    MAX_VERTEX_HINT_PGI                 GetIntegerv      Z       FALSE
 
-    MATERIAL_SIDE_HINT_PGI              GetIntegerv      Z       FALSE    
+    MATERIAL_SIDE_HINT_PGI              GetIntegerv      Z       FALSE
 
 New Implementation Dependent State
 

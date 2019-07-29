@@ -57,9 +57,9 @@ Overview
     The ATI_fragment_shader extension exposes a powerful fragment
     processing model that provides a very general means of expressing
     fragment color blending and dependent texture address modification.
-    The processing is termed a fragment shader or fragment program and 
-    is specifed using a register-based model in which there are fixed 
-    numbers of instructions, texture lookups, read/write registers, and 
+    The processing is termed a fragment shader or fragment program and
+    is specifed using a register-based model in which there are fixed
+    numbers of instructions, texture lookups, read/write registers, and
     constants.
 
     ATI_fragment_shader provides a unified instruction set
@@ -68,13 +68,13 @@ Overview
     interfaces necessary to fully expose this programmable fragment
     processor in GL.
 
-    ATI_text_fragment_shader is a redefinition of the 
-    ATI_fragment_shader functionality, using a slightly different 
+    ATI_text_fragment_shader is a redefinition of the
+    ATI_fragment_shader functionality, using a slightly different
     interface.  The intent of creating ATI_text_fragment_shader is to
-    take a step towards treating fragment programs similar to other 
-    programmable parts of the GL rendering pipeline, specifically 
-    vertex programs. This new interface is intended to appear 
-    similar to the ARB_vertex_program API, within the limits of the 
+    take a step towards treating fragment programs similar to other
+    programmable parts of the GL rendering pipeline, specifically
+    vertex programs. This new interface is intended to appear
+    similar to the ARB_vertex_program API, within the limits of the
     feature set exposed by the original ATI_fragment_shader extension.
 
     The most significant differences between the two extensions are:
@@ -110,7 +110,7 @@ Overview
     reason you will now find a fixed set of features and resources
     exposed, and the queries to determine this set have been deprecated
     in ATI_fragment_shader.  Further, in ATI_text_fragment_shader,
-    most of these resource limits are fixed by the text grammar and 
+    most of these resource limits are fixed by the text grammar and
     the queries have been removed altogether.
 
 Issues
@@ -143,11 +143,11 @@ New Procedures and Functions
 
 New Tokens
 
-    Accepted by the <cap> parameter of Disable, Enable, and IsEnabled, 
-    and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv, 
+    Accepted by the <cap> parameter of Disable, Enable, and IsEnabled,
+    and by the <pname> parameter of GetBooleanv, GetIntegerv, GetFloatv,
     and GetDoublev, and by the <target> parameter of ProgramStringARB,
     BindProgramARB, ProgramEnvParameter4{d,dv,f,fv}ARB,
-    ProgramLocalParameter4{d,dv,f,fv}ARB, 
+    ProgramLocalParameter4{d,dv,f,fv}ARB,
     GetProgramEnvParameter{dv,fv}ARB, GetProgramLocalParameter{dv,fv}ARB,
     GetProgramivARB, GetProgramfvATI, and GetProgramStringARB.
 
@@ -165,10 +165,10 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     3.10  Fragment Programs
 
-    The texture application and texture environments may optionally be 
-    replaced by an application supplied program referred to here as a 
-    fragment program.  In this case, subsequent processing is still 
-    applied normally, including fog, color sum, and antialiasing 
+    The texture application and texture environments may optionally be
+    replaced by an application supplied program referred to here as a
+    fragment program.  In this case, subsequent processing is still
+    applied normally, including fog, color sum, and antialiasing
     application.
 
     The framework for specifying and managing fragment programs is
@@ -189,7 +189,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     Fragment programs are specified as string of ASCII characters
     encoding the programs.  When a program is loaded by a call to
-    ProgramStringARB (section 5.7.1), with a target of 
+    ProgramStringARB (section 5.7.1), with a target of
     TEXT_FRAGMENT_SHADER_ATI, the program string is parsed into
     a set of tokens possibly separated by white space.  Spaces, tabs,
     newlines, carriage returns, and comments are considered whitespace.
@@ -202,10 +202,10 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     string and is used to indicate optional rules.  A program is invalid
     if it contains any undefined tokens or characters.
 
-    A text fragment shader program is required to begin with the header 
-    string "!!ATIfs1.0", without any preceding whitespace.  This string 
+    A text fragment shader program is required to begin with the header
+    string "!!ATIfs1.0", without any preceding whitespace.  This string
     identifies the subsequent program text as a text fragment shader
-    program (version 1.0) that should be parsed according to the 
+    program (version 1.0) that should be parsed according to the
     following grammar and semantic rules.  Program string parsing begins
     with the character immediately following the header string.
 
@@ -227,25 +227,25 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                               | <programLocalParam>
                               | <literalConstBinding>
 
-    <progEnvParam>          ::= "program" "." "env" 
+    <progEnvParam>          ::= "program" "." "env"
                                  "[" <progEnvParamNum> "]"
 
     <progEnvParamNum>      ::= <integer> from 0 to 7
 
-    <progLocalParam>       ::= "program" "." "local" 
+    <progLocalParam>       ::= "program" "." "local"
                                  "[" <progLocalParamNum> "]"
 
     <progLocalParamNum>    ::= <integer> from 0 to 7
 
     <literalConstBinding>  ::= "{" <normalizedFloat> "}"
-                             | "{" <normalizedFloat> "," 
+                             | "{" <normalizedFloat> ","
                                    <normalizedFloat> "}"
-                             | "{" <normalizedFloat> "," 
+                             | "{" <normalizedFloat> ","
                                    <normalizedFloat> ","
                                    <normalizedFloat> "}"
-                             | "{" <normalizedFloat> "," 
+                             | "{" <normalizedFloat> ","
                                    <normalizedFloat> ","
-                                   <normalizedFloat> "," 
+                                   <normalizedFloat> ","
                                    <normalizedFloat> "}"
 
     <optionalPrelimPassBlock> ::= ""
@@ -270,8 +270,8 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     <initRegDst>           ::= <regName>
 
-    <initRegSrc>           ::= <regName> <threeTupleSelect> 
-                             | <texCoordName> <threeTupleSelect> 
+    <initRegSrc>           ::= <regName> <threeTupleSelect>
+                             | <texCoordName> <threeTupleSelect>
 
     <aluSequence>          ::= <aluSequence> <aluStatement>
                              | ""
@@ -393,10 +393,10 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
                              | "CND0"
                              | "DOT2ADD"
 
-    The <integer> rule matches an integer constant.  The integer 
+    The <integer> rule matches an integer constant.  The integer
     consists of a sequence of one or more digits ("0" through "9").
 
-    The <normalizedFloat> rule matches a floating-point constant in the 
+    The <normalizedFloat> rule matches a floating-point constant in the
     range of 0.0 to 1.0, inclusive.
 
     If TEXT_FRAGMENT_SHADER_ATI is enabled, but the currently bound
@@ -408,7 +408,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     Summary of semantic restrictions:
     ---------------------------------
-    1.  All "cX" constants used by a program must be declared in a 
+    1.  All "cX" constants used by a program must be declared in a
         constant block, and program constants can be bound at most once.
     2.  If an instruction refers to "cX" constants as arguments, at most
         2 different constants can be used in a single instruction.
@@ -417,28 +417,28 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     5.  A maximum of 8 pairs or implicit pairs of color and alpha
         instructions (not including "PassTexCoord and" "SampleMap") can
         be used in a single pass.
-    6.  A given destination register can only be written by a SampleMap 
+    6.  A given destination register can only be written by a SampleMap
         or PassTexCoord instruction once in a given pass.
     7.  The second argument to "PassTexCoord" and "SampleMap" can not be
         an "rX" register in the first pass.
     8.  Once a texture coordinate source is specified with a particular
         choice for coordinate selection, (i.e "str" or "stq"), the
-        program may not refer to that same texture coordinate with a 
-        different choice later on.  The exception is that a different 
-        projection can be specified (i.e. using both "t2.str" and 
-        "t2.str_dr" on the same texture coordinate set is legal, but 
+        program may not refer to that same texture coordinate with a
+        different choice later on.  The exception is that a different
+        projection can be specified (i.e. using both "t2.str" and
+        "t2.str_dr" on the same texture coordinate set is legal, but
         using "t2.str" and "t2.stq" is not)
     9.  The second argument to "PassTexCoord" and "SampleMap" in the
         output pass can not be a register that uses "stq" or "stq_dq"
         as a component choice selection.
-    10. Alpha destination masks for DOT2ADD, DOT3, and DOT4 instructions 
+    10. Alpha destination masks for DOT2ADD, DOT3, and DOT4 instructions
         can only be specified in combination with color destination masks.
-    11. If a DOT4 is specified to not write the alpha channel of it's 
-        destination, then it is illegal to specify the next instruction 
+    11. If a DOT4 is specified to not write the alpha channel of it's
+        destination, then it is illegal to specify the next instruction
         to write *only* the alpha channel of it's destination.
     12. A program can not issue an instruction which requires the
-        use of the alpha component of a "color1" (secondary color) 
-        parameter. 
+        use of the alpha component of a "color1" (secondary color)
+        parameter.
     13. A program may not refer to a register number greater than
         the number of supported texture units.
     14. A program may not refer to a texture coordinate set greater
@@ -460,16 +460,16 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     constant declaration block which indicates how the constants are
     to be bound.  Constants can be bound to program local parameters,
     program global parameters, or literal string constants.  Program
-    locals represent per-program storage, while program environment 
+    locals represent per-program storage, while program environment
     parameters are global to all programs.  See the ARB_vertex_program
-    documentation for details on the use of 
-    ProgramLocalParameter4{d,dv,f,fv}ARB, and 
+    documentation for details on the use of
+    ProgramLocalParameter4{d,dv,f,fv}ARB, and
     ProgramEnvParameter4{d,dv,f,fv}ARB to set these bound constants.
     Constants can also be bound to a constant floating point vector
     within the program text itself, such as "{ 1.0, 0.0, 0.2, 0.5 }".
- 
+
     "cX" constants can be used as source in any instruction,
-    but at most 2 different constants may be used as source arguments 
+    but at most 2 different constants may be used as source arguments
     in any single instruction.
 
     Additionally, the primary and secondary color interpolators are
@@ -485,7 +485,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     "StartOutputPass" and "EndPass" tokens for the output pass.  Note
     that in a two-pass shader, the preliminary pass must contain
     at least one match for the <aluStatement> rule in the grammar.
-    Or put another way, the preliminary pass can not consist solely of 
+    Or put another way, the preliminary pass can not consist solely of
     PassTexCoord and SampleMap operations.
 
     Each pass may use up to 8 pairs of instructions for a total of at
@@ -519,7 +519,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
        "MUL  r1.rgba, r0, r2;"
 
     Therefore, the following examples indicate legal pairs of
-    instructions, each of which would count against the limit of 8 
+    instructions, each of which would count against the limit of 8
     instruction pairs per pass.
 
         # pair #1
@@ -575,12 +575,12 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
       "PassTexCoord <initRegDst> <initRegSrc>;"
 
-    specifies that the value present in <initRegSrc> is passed directly 
-    into the contents of <initRegDst> (one of the registers "rX").  
-    This value is then available for use as a source argument to 
-    subsequent color and alpha instructions following in the same pass.  
-    <initRegSrc> may either be the texture coordinates on a texture unit 
-    ("tX"), or in the case of a two-pass program's second pass, it may 
+    specifies that the value present in <initRegSrc> is passed directly
+    into the contents of <initRegDst> (one of the registers "rX").
+    This value is then available for use as a source argument to
+    subsequent color and alpha instructions following in the same pass.
+    <initRegSrc> may either be the texture coordinates on a texture unit
+    ("tX"), or in the case of a two-pass program's second pass, it may
     be the value of a register set in the first pass ("rX").
 
     Note that in order to preserve the contents of a register from the
@@ -600,26 +600,26 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
       "SampleMapATI <initRegDst> <initRegSrc>;"
 
     specifies that the value present in the texture data bound on the
-    unit associated with <initRegDst> will be written to that register.  
-    A value for <initRegDst> of "rX" means that the actively bound 
-    texture on texture unit X will be sampled, and the result written to 
+    unit associated with <initRegDst> will be written to that register.
+    A value for <initRegDst> of "rX" means that the actively bound
+    texture on texture unit X will be sampled, and the result written to
     "rX". The <initRegSrc> parameter specifies which texture coordinate
     interpolator is used to sample the map.  A value of "rX" for
-    <initRegSrc> in the second pass of a two-pass program will do 
+    <initRegSrc> in the second pass of a two-pass program will do
     dependent texture read sampling using the value in register X.
-    Otherwise, specifying "tX" will sample the map using the texture 
+    Otherwise, specifying "tX" will sample the map using the texture
     coordinates on unit X.
 
-    Only the first 3 components of <initRegSrc> are used in 
-    "PassTexCoord" and "SampleMap".  As such, it is necessary to 
+    Only the first 3 components of <initRegSrc> are used in
+    "PassTexCoord" and "SampleMap".  As such, it is necessary to
     identify which 3 components are to be used.  To do so, one can append
-    a component selection operator on to the end of the <initRegSrc> 
+    a component selection operator on to the end of the <initRegSrc>
     This parameter was called a swizzle in ATI_fragment_shader and is
     referred to by the <threeTupleSelect> token in the
-    ATI_text_fragment_shader grammar.  This parameter is used to select 
-    which of the 4 original components of the source register or 
-    texture coordinates will be mapped to the 3 available positions, 
-    and whether or not a projection (division by the q component) will 
+    ATI_text_fragment_shader grammar.  This parameter is used to select
+    which of the 4 original components of the source register or
+    texture coordinates will be mapped to the 3 available positions,
+    and whether or not a projection (division by the q component) will
     occur.
 
     Table 3.20 shows the <swizzle> modes:
@@ -641,16 +641,16 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
         or
         "SampleMap    r1, t2.stq_dq;"
 
-    Each texture coordinate source ("tX") used as a <initRegSrc> can 
-    only draw upon "str" or "stq" components throughout the program.  
-    For example, if "t2" is used in a SampleMapATI as "t2.str", it 
-    cannot be used again later as "t2.stq".  The projection, however, 
+    Each texture coordinate source ("tX") used as a <initRegSrc> can
+    only draw upon "str" or "stq" components throughout the program.
+    For example, if "t2" is used in a SampleMapATI as "t2.str", it
+    cannot be used again later as "t2.stq".  The projection, however,
     may vary.  That is, it would be okay to later use "t2.str_dr".
 
-    Additionally, when the <initRegSrc> is a register (in the second 
-    pass of a two-pass program), only "str" and "str_dr" are allowed.  
-    Note that if this is a PassTexCoord, the fourth component (alpha 
-    channel if the register contains RGBA) is not passed along and the 
+    Additionally, when the <initRegSrc> is a register (in the second
+    pass of a two-pass program), only "str" and "str_dr" are allowed.
+    Note that if this is a PassTexCoord, the fourth component (alpha
+    channel if the register contains RGBA) is not passed along and the
     fourth component of <initRegDst> becomes undefined.
 
     The color and alpha instructions are divided into unary, binary, and
@@ -754,7 +754,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
            ** - If a DOT4 is specified with a destination mask that
                 does not include alpha (i.e. ".r", ".rb", "g", etc)
                 then the immediately following instruction must write
-                at least one color channel and can not use the 
+                at least one color channel and can not use the
                 alpha only destination mask specifier ".a".
           *** - The blend factor (a1) of LERP_ATI must be in the range
                 [0,1] or the results are undefined.
@@ -763,19 +763,19 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     result of the instruction is written.
 
     Each <dst> parameter can optionally have a mask appended to the
-    "rX" name, as in "r1.r", or "r3.gb".  The mask parameter 
-    specifies which of the color components in <dst> will be written.  
-    If there is no mask specified, everything is written, or any of the 
-    masks "r", "g", "b", and/or "a" can be added to enable writing the 
-    output red, green, blue, and/or alpha channels, respectively.  The 
+    "rX" name, as in "r1.r", or "r3.gb".  The mask parameter
+    specifies which of the color components in <dst> will be written.
+    If there is no mask specified, everything is written, or any of the
+    masks "r", "g", "b", and/or "a" can be added to enable writing the
+    output red, green, blue, and/or alpha channels, respectively.  The
     masks must be specified in "rgba" order.
 
     Further, each <dst> parameter can optionally have appended a
     modification parameter, as in "r3.2x" or "r3.half".  These can
-    be combined with the mask parameter as in "r4.rg.8x".  The result 
-    of an instruction can be modulated by appending *one* of the 
-    following: "2x", "4x", "8x", "half", "quarter", or "eighth".  
-    These are all mutually exclusive. However, you can optionally add 
+    be combined with the mask parameter as in "r4.rg.8x".  The result
+    of an instruction can be modulated by appending *one* of the
+    following: "2x", "4x", "8x", "half", "quarter", or "eighth".
+    These are all mutually exclusive. However, you can optionally add
     "sat" that clamps the result after any modulation occurs.
 
     Table 3.22 shows the result of each modification.
@@ -798,10 +798,10 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     Note that the internal precision of the fragment program allows
     values in the range [-8, 8].
 
-    The <a1>, <a2>, and <a3 parameters specify the source arguments.  
+    The <a1>, <a2>, and <a3 parameters specify the source arguments.
     The source can come from "rX", "cX", "0", "1", "color0", or "color1",
-    where "color0" is the primary fragment color and "color1" is the 
-    secondary fragment color.  Note that in a two-pass program, "color0" 
+    where "color0" is the primary fragment color and "color1" is the
+    secondary fragment color.  Note that in a two-pass program, "color0"
     and "color1" cannot be used in the first pass of the program.
 
     Each source argument can be given a single optional replication
@@ -842,12 +842,12 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     Note that the GL secondary color is specified to contain red,
     green, and blue components only.  It is therefore illegal to specify
-    a program which requires the use of the alpha component of the 
+    a program which requires the use of the alpha component of the
     "color1" parameters.  This means that using "color1.a" source argument
     replication would be prohibited.  Additionally, issuing an alpha
     operation using the alpha component of "color1", either implicitly
     or explicitly would also be prohibited.
-    
+
     For instance, the following statements would all be illegal:
 
       "MOV r0, color1;      # implicit alpha op in pair                  "
@@ -914,48 +914,48 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     but rather to the parameter index (env or local) to which "cX" is
     bound in the constant declaration block at the beginning of the
     program.  For instance, if constant "c1" is bound as follows:
-    
+
         "StartConstants;                      "
         "    CONSTANT c1 = program.local[3];  "
         "EndConstants;                        "
-    
+
     then to set the value of constant "c1", to the vector value of
     { 0.4, 0.0, 0.5, 0.25), the application could call
-    
+
         glProgramLocalParameter4dARB(TEXT_FRAGMENT_SHADER_ATI, // target
                                      3,                        // index
                                      0.4,                      // x
                                      0.0,                      // y
                                      0.5,                      // z
                                      0.25);                    // w
-    
-    The <params> pointer, must contain four floating point values in 
-    the range [0, 1] to set the components of the constant.  Similarly, 
-    the <x>, <y>, <z>, and <w> parameters must also be in the range 
-    [0,1].  Constant registers loaded with floating point values 
+
+    The <params> pointer, must contain four floating point values in
+    the range [0, 1] to set the components of the constant.  Similarly,
+    the <x>, <y>, <z>, and <w> parameters must also be in the range
+    [0,1].  Constant registers loaded with floating point values
     outside of this range will have undefined values.
-    
+
     Note that binding a program constant to a literal string constant
-    within the program text is roughly analogous to 
+    within the program text is roughly analogous to
     ATI_fragment_shader's use of the call to SetFragmentShaderConstant
     within a BeginFragmentShader/EndFragmentShader pair.  That is, the
     constant value can not be changed without respecifying the program
     and the program constant value is local to the program.
-    
-    Binding a program constant to a program environment parameter is 
-    roughly analogous to ATI_fragment_shader's use of a call to 
-    SetFragmentShaderConstant outside of a BeginFragmentShader / 
-    EndFragmentShader pair.  That is, the program constant's value can 
+
+    Binding a program constant to a program environment parameter is
+    roughly analogous to ATI_fragment_shader's use of a call to
+    SetFragmentShaderConstant outside of a BeginFragmentShader /
+    EndFragmentShader pair.  That is, the program constant's value can
     be changed without redefining the program and the program constant
-    value is global to all programs with a binding to that specific 
+    value is global to all programs with a binding to that specific
     program environment parameter.
-    
+
     Binding a program constant to a program local parameter has no
     direct analogue in ATI_fragment_shader as it represents a way
     to specify a program parameter which is local to a given
     fragment program object, but allows the parameter's value to
     be changed without redefining the fragment program itself.
-    
+
 Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
 Operations and the Framebuffer)
 
@@ -984,10 +984,10 @@ Additions to the AGL/GLX/WGL Specifications
 
 Interactions with ARB_shadow
 
-    The texture comparison introduced by ARB_shadow can be expressed in 
-    terms of a fragment shader, and in fact use the same internal 
-    resources on some implementations.  Therefore, if fragment shader 
-    mode is enabled, the GL behaves as if TEXTURE_COMPARE_MODE_ARB is 
+    The texture comparison introduced by ARB_shadow can be expressed in
+    terms of a fragment shader, and in fact use the same internal
+    resources on some implementations.  Therefore, if fragment shader
+    mode is enabled, the GL behaves as if TEXTURE_COMPARE_MODE_ARB is
     NONE.
 
 Errors
@@ -1038,7 +1038,7 @@ Sample Usage
 
     StartOutputPass;
         SampleMap r0, t0.stq_dq; #sample the texture
-        
+
         MUL r0, r0, color0;      #perform the modulation
     EndPass;
 
@@ -1047,7 +1047,7 @@ Sample Usage
     # The following program shows how to use the constant
     # declaration block in a fragment program.
     !!ATIfs1.0
-    
+
     StartConstants;
         CONSTANT c0 = program.env[0];
         CONSTANT c1 = program.local[3];
@@ -1117,7 +1117,7 @@ Sample Usage
         PassTexCoord r4, r4.str;   # pass N.L through
 
         # this ensures a pixel is only lit if facing the light
-        # (since the spec exp makes negative N.H positive 
+        # (since the spec exp makes negative N.H positive
         # we must do this)
         MUL r3, r3, r4;             # reg3 = ((N.H)^256 *  N.L)
 
@@ -1135,12 +1135,12 @@ Sample Usage
     StartPrelimPass;
         # get the outputs from the vertex shader
         SampleMap r1, t0.str;    # N from bump map
-        PassTexCoord r2, t2.str; # light to vertex vector in light space  
+        PassTexCoord r2, t2.str; # light to vertex vector in light space
         PassTexCoord r3, t3.str; # H
         SampleMap r4, t4.str;    # L (sample cubemap normalizer)
         SampleMap r5, t0.str;    # specular map (provides our k term for computing N.H^k)
 
-        
+
         DOT3 r4, r1.2x.bias, r4.2x.bias; # reg4 = N.L
         DOT3 r1, r1.2x.bias, r3;         # reg1 = N.H
         MUL  r1, r1, r1;                 # reg1 = N.H * N.H = (N.H)^2
@@ -1148,7 +1148,7 @@ Sample Usage
         MUL  r1.g.half, r1.b, r5;        # reg1(green) = |H|^2 * 0.5 * k
         DOT3 r2, r2, r2;                 # reg2 = |light to vertex|^2
     EndPass;
-    
+
     StartOutputPass;
         SampleMap r0, t0.str;    # base map
         SampleMap r2, r2.str;    # attenuation
@@ -1162,12 +1162,12 @@ Sample Usage
         SampleMap r3, r1.str_dr; # (N.H)^k
         PassTexCoord r4, r4.str; # N.L
 
-        # reg3 = (N.H)^k * (N.L) 
-        # this ensures a pixel is only lit if facing the light 
-        # (since the specular exponent makes negative N.H look positive, 
+        # reg3 = (N.H)^k * (N.L)
+        # this ensures a pixel is only lit if facing the light
+        # (since the specular exponent makes negative N.H look positive,
         # we must do this)
         MUL r3, r3, r4;
-        
+
         MUL r3, r0, r3;       # reg3 = specular * basemap
         MUL r4, r0, r4;       # reg4 = diffuse * basemap
         ADD r0, r3, r4;       # reg0 = specular + diffuse
@@ -1186,7 +1186,7 @@ Revision History
     Revision: 1.0.10
       - final version for submission to registry
       - clarified contact/contributor info
-      - fixed a misplaced ".half" typo in the rusty shader example 
+      - fixed a misplaced ".half" typo in the rusty shader example
         code
 
     Date: 8/9/2002
@@ -1194,8 +1194,8 @@ Revision History
       - fixed a typo which refered to "color1" and "color2" instead of
         "color0" and "color1"
       - clarified semantic restrictrions surrounding DOT2ADD/DOT3/DOT4
-        to make them slightly less restrictive and more closely aligned 
-        with underlying hardware implementation and original 
+        to make them slightly less restrictive and more closely aligned
+        with underlying hardware implementation and original
         ATI_fragment_shader restrictions.
 
     Date: 7/9/2002
@@ -1216,7 +1216,7 @@ Revision History
       - Very minor spec bug fixes:
       - removed _ATI from several instructions
       - fixed up some wrong line wrappings
-      - formally listed the <optionalDstMask> options to disallow 
+      - formally listed the <optionalDstMask> options to disallow
         masks of the form ".r.g.b.a." which were never really legal,
         but were allowed by the grammar as specified before.
       - cleaned up the list of GL functions which accept
@@ -1240,14 +1240,14 @@ Revision History
         to "c1". "c1" is correct.
       - Synced spec with version 1.4 and 1.5 of ATI_fragment_shader
         1.5: Added interaction with ARB_shadow.
-        1.4: Specified that LERP's blend factor must be in the range 
+        1.4: Specified that LERP's blend factor must be in the range
              [0,1].
 
     Date: 5/31/2002
     Revision: 1.0.4
       - To get the equivalent functionality to ATI_fragment_shader,
         we only need inline constants and program env parameters,
-        So,based on some feedback from Apple, for simplicity, we remove 
+        So,based on some feedback from Apple, for simplicity, we remove
         the usage of program locals that was added in 1.0.3 .
         We keep program env parameters however.
 
@@ -1266,7 +1266,7 @@ Revision History
       - fixed a bug in the grammar where it was possible to specify the
         "." of a <dstMask> (now <optionalDstMask>) without specifying
         the "r","g","b", or "a" mask values.
-      
+
     Date: 5/26/2002
     Revision: 1.0.2
       - some spec language english grammatical fixes
@@ -1280,7 +1280,7 @@ Revision History
         required it to identify the subsequent language as
         was done for ARB_vertex_program, version 24.
       - clarified that the restriction on using a destination
-        register once in a singe pass applies only to 
+        register once in a singe pass applies only to
         the PassTexCoord and SampleMap instructions.
 
     Date: 5/23/2002

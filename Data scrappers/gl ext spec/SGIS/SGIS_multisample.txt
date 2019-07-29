@@ -406,7 +406,7 @@ and the Frame Buffer)
     more color buffers are cleared, as specified by the Clear mask bit
     COLOR_BUFFER_BIT and the DrawBuffers mode.  If the DrawBuffers mode is
     NONE, the color samples of the multisample buffer cannot be cleared.
-    
+
     Clear mask bits DEPTH_BUFFER_BIT and STENCIL_BUFFER_BIT indicate that
     the depth and stencil samples of the multisample buffer are to be
     cleared.  If Clear mask bit DEPTH_BUFFER_BIT is specified, and if

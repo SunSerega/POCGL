@@ -43,10 +43,10 @@ Dependencies
 
 Overview
 
-    This extension allows specifying, additionally to all existing 
+    This extension allows specifying, additionally to all existing
     values, byte-valued vertex and texture coordinates to be used.
 
-    The main reason for introducing the byte-argument is to allow 
+    The main reason for introducing the byte-argument is to allow
     storing data more compactly on memory-restricted environments.
 
 IP Status

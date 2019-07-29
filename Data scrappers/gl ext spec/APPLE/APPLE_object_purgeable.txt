@@ -35,7 +35,7 @@ Number
 Dependencies
 
     OpenGL 1.5 is required.
-    
+
     The extension is written against the OpenGL 1.5 Specification.
 
 Overview
@@ -56,7 +56,7 @@ Overview
     computational expense in the cases where the data is not going to be
     used again or where the content can be reproduced by the application
     with less expense than the paging operation would require.
-    
+
     This extension defines a mechanism for the application to mark the
     storage of OpenGL objects as "purgeable" in order to influence these
     paging operations.  The application can further control the
@@ -98,8 +98,8 @@ IP Status
 
 Issues
 
-    1. Why use two functions rather than just one? 
-    
+    1. Why use two functions rather than just one?
+
         The reason we chose two functions is that switching between the
         two possible object states - purgeable and unpurgeable - might
         be expensive.  In addition, the return values of the operation
@@ -115,7 +115,7 @@ Issues
 
     2. What does calling ObjectUnpurgeable with <option> set to
        UNDEFINED_APPLE really mean?
-    
+
         An application calls ObjectUnpurgeable in order to change the
         state of the object storage to unpurgeable.  This is the
         "default" state for object storage as defined traditionally in
@@ -140,7 +140,7 @@ Issues
 
     3. What's the difference between calling ObjectPurgeable and calling
        DeleteTextures?
-    
+
         Calling ObjectPurgeable allows the GL to release all storage
         that the GL has allocated for the object's contents, but will
         still retain the object name and other non-content related state
@@ -178,13 +178,13 @@ Issues
 
     4. What should happen when ObjectPurgeable or ObjectUnpurgeable is
        called between Begin/End?
-    
+
         This is illegal and returns INVALID_OPERATION error.
 
     5. What should happen if ObjectPurgeable or ObjectUnpurgeable is
        called on a currently bound texture, whether it is bound to the
        current context or another context?
-    
+
         If the current context marks the storage of a currently bound
         object as "purgeable", then attempts to read from or write to
         the contents of that storage will result in undefined behavior.
@@ -217,7 +217,7 @@ Issues
     6. What should happen if the TestObject routine from the APPLE_fence
        extension is called on an object whose storage has been marked
        purgeable?
-    
+
         In short, it should operate "normally".
 
         To be specific, if TestObject is called after calling
@@ -234,7 +234,7 @@ Issues
 
     7. How does APPLE_object_purgeable interact with the
        APPLE_texture_range extension?
-    
+
         First note that depending on the value of the storage hint
         provided in the APPLE_texture_range extension, the GL may have
         made multiple copies of the texture data.
@@ -249,11 +249,11 @@ Issues
 
     8. How does APPLE_object_purgeable interact with the
        APPLE_client_storage extension?
-    
+
         For reference, APPLE_client_storage allows the application to
         indicate that it will be responsible for allocating and
         retaining the storage for a texture object.
-        
+
         In the APPLE_object_purgeable extension it is up to the
         implementation to determine what happens when an object's
         storage is marked purgeable and its up to the application to
@@ -275,10 +275,10 @@ Issues
         APPLE_object_purgeable to mark a texture object's storage as
         purgeable, but there is no direct interaction between the two
         API's.
-    
+
     9. How does APPLE_object_purgeable interact with the
        aglSurfaceTexture API?
-    
+
         For reference, the aglSurfaceTexture allows the application to
         specify an AGL drawable as the storage for a GL texture object.
         Such a texture object is informally called a "surface texture".
@@ -287,17 +287,17 @@ Issues
         that allocated the storage object to handle the purgeability of
         that object.  Given that, the APPLE_client_storage has no real
         practical interactions with AGL surface textures.
-        
+
 
     10. How does APPLE_object_purgeable interact with the
         ARB_vertex_buffer_object and ARB_pixel_buffer_object extensions?
-    
+
         The interactions should be analogous to those that occur with
         texture objects.
-        
+
         To mark the storage for a buffer object as purgeable or
         unpurgeable, the application can specify BUFFER_OBJECT_APPLE as
-        the <objectType> parameter in ObjectPurgeable or 
+        the <objectType> parameter in ObjectPurgeable or
         ObjectUnpurgeable, respectively.  The same rules about undefined
         results from reading from or writing to the buffer object
         storage while PURGEABLE_APPLE is TRUE apply as well.
@@ -306,10 +306,10 @@ Issues
         should happen if CopyTexImage{1|2}D, CopyTexSubImage{1|2}D,
         TexSubImage{1|2|3}D, or TexImage{1|2|3}D is called on the
         texture? What if user try to texture from it or render to it?
-        
+
         After an object's storage has been marked purgeable, any usage
         of the object is undefined until it is marked unpurgeable.
-    
+
 
 New Procedures and Functions
 
@@ -326,28 +326,28 @@ New Tokens
 
     Accepted by the <option> parameter of ObjectPurgeable, and returned
     by ObjectPurgeable:
-    
+
     RELEASED_APPLE        0x8A19
     VOLATILE_APPLE        0x8A1A
 
     Accepted by the <option> parameters of ObjectUnpurgeable, and
     returned by ObjectUnpurgeable:
-    
+
     RETAINED_APPLE        0x8A1B
     UNDEFINED_APPLE       0x8A1C
 
     Accepted by the <pname> parameters of GetObjectParameteriv:
-    
+
     PURGEABLE_APPLE        0x8A1D
 
     Accepted by the <objectType> parameters of ObjectPurgeableAPPLE,
     ObjectUnpurgeableAPPLE and GetObjectParameteriv:
-    
+
     BUFFER_OBJECT_APPLE        0x85B3
-    
+
     (Note: BUFFER_OBJECT_APPLE is also defined in APPLE_fence extension
     with the same value.)
-    
+
 Additions to Chapter 2 of the OpenGL 1.5 Specification
 (OpenGL Operation)
 
@@ -366,9 +366,9 @@ Additions to Chapter 3 of the OpenGL 1.5 Specification (Rasterization)
     influences how the object's storage is managed by the GL.  The
     initial value of PURGEABLE_APPLE is FALSE.  The application can
     change the value of PURGEABLE_APPLE by using the routines below.
-    
+
     The routine
- 
+
       enum ObjectPurgeableAPPLE(enum objectType, uint name, enum option)
 
     sets PURGEABLE_APPLE to TRUE for the object of type <objectType>
@@ -376,7 +376,7 @@ Additions to Chapter 3 of the OpenGL 1.5 Specification (Rasterization)
     BUFFER_OBJECT_APPLE, or RENDERBUFFER_EXT. If ObjectPurgeableAPPLE is
     called and PURGEABLE_APPLE is already TRUE, the error
     INVALID_OPERATION is generated.
-    
+
     While PURGEABLE_APPLE is TRUE, the GL may release the storage for
     this object and the results of issuing any commands that read from
     or write to the storage of that object are undefined.
@@ -386,10 +386,10 @@ Additions to Chapter 3 of the OpenGL 1.5 Specification (Rasterization)
     TRUE, but the value of <option> is used by the GL as a hint to
     indicate the application's intended future use of the named object's
     storage.
-    
+
     By calling ObjectPurgeableAPPLE with an <option> of VOLATILE_APPLE,
     the application is indicating that it does not know if it will want
-    to re-use the current contents of the object storage again later. 
+    to re-use the current contents of the object storage again later.
     Further, the application is stating that it would like the GL to do
     only the minimal amount of work required to set PURGEABLE_APPLE to
     TRUE. If ObjectPurgeableAPPLE is called with an <option> of
@@ -413,9 +413,9 @@ Additions to Chapter 3 of the OpenGL 1.5 Specification (Rasterization)
     ObjectPurgeableAPPLE returns.  In contrast, if ObjectPurgeableAPPLE
     returns the value RELEASED_APPLE, this means that the storage for
     the object has been released when ObjectPurgeableAPPLE returns.
-    
+
     The routine
- 
+
       enum ObjectUnpurgeableAPPLE(enum object, uint name, enum option)
 
     sets the value of PURGEABLE_APPLE to FALSE for the object of type
@@ -527,7 +527,7 @@ Errors
 
     INVALID_OPERATION is generated if ObjectUnpurgeableAPPLE is called
     on an object with a current value of PURGEABLE set to FALSE
-    
+
     INVALID_ENUM is generated if the <objectType> parameter of
     GetObjectParameterivAPPLE is not one of TEXTURE,
     BUFFER_OBJECT_APPLE, or RENDERBUFFER_EXT.
@@ -538,10 +538,10 @@ Errors
 
     INVALID_VALUE is generated if the <name> parameter of
     GetObjectParameterivAPPLE is zero.
-    
+
     INVALID_ENUM is generated if the <pname> parameter of
     GetObjectParameterivAPPLE is PURGEABLE_APPLE.
-    
+
 
 New State
 
@@ -586,7 +586,7 @@ Sample Code
     expecting to use this texture later on.  In the mean time it does
     not want the GL to page it off because it is easy to recreate if
     needed.
-    
+
         /* during system idle time, bind the fbo and render into it */
         BindFramebufferEXT(FRAMEBUFFER_EXT, fbo_name);
         MyDrawRoutineToSpecifyTextureContents(...);
@@ -595,7 +595,7 @@ Sample Code
         /* need for it to remain valid if the GL wants to release it */
         /* so we mark it as purgeable                                */
         ObjectPurgeable(TEXTURE, texture_name, VOLATILE_APPLE);
-    
+
         /* now do some other unrelated rendering */
         MyOtherDrawRoutineGoesHere(...);
 
@@ -618,13 +618,13 @@ Sample Code
             /* We must recreate the original texture contents */
             BindFramebufferEXT(FRAMEBUFFER_EXT, fbo_name);
             MyDrawRoutineToRespecifyTextureContents(...);
-            
+
             /* object storage has been re-specified so we can go */
             /* ahead and use it now                              */
             BindFramebufferEXT(FRAMEBUFFER_EXT, 0);
             BindTexture(TEXTURE_2D, texture_name);
             MyDrawRoutineThatUsesTheOriginalTexture(...);
-        }    
+        }
 
 Revision History
 

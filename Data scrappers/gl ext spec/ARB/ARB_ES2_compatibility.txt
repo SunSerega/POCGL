@@ -283,7 +283,7 @@ Additions to Chapter 3 of the OpenGL 4.0 Specification (Rasterization)
 
     Add to Table 3.17 (Correspondance of sized ...) on page 265, following
     the row for format RGB5:
-    
+
     Sized Internal Format  Base Internal Format  R bits  G bits  B bits  A bits  Shared bits
     ---------------------  --------------------  ------  ------  ------  ------  -----------
     RGB565                 RGB                    5      6       5
@@ -779,7 +779,7 @@ Issues
     context supporting ES2_compatibility, since this extension can't change
     default GL state values or prevent behavior defined to work by the GL
     specification. How do we deal with these differences?
-       
+
     RESOLVED: If the application needs a strict OpenGL ES 2.0
     implementation, it should not attempt to use a desktop GL context
     with the ES2_compatibility extension supported. Instead, use the

@@ -25,15 +25,15 @@ Overview
     This extension provides a framework for asynchronous OpenGL
     commands.  It also provides commands allowing a program to wait
     for the completion of asynchronous commands.
-    
+
     Asynchronous commands have two properties:
-    
+
     1) Asynchronous commands are non-blocking.  For example, an
     asynchronous ReadPixels command returns control to the program
     immediately rather than blocking until the command completes.
     This property allows the program to issue other OpenGL commands in
     parallel with the execution of commands that normally block.
-    
+
     2) Asynchronous commands may complete out-of-order with respect to
     other OpenGL commands.  For example, an asynchronous TexImage
     command may complete after subsequent OpenGL commands issued by
@@ -43,7 +43,7 @@ Overview
     normal command stream, for instance using a secondary path to
     transfer data from or to the host, without doing any dependency
     checking.
-    
+
     Programs that issue asynchronous commands must also be able to
     determine when the commands have completed.  The completion status
     may be needed so that results can be retrieved (e.g. the image
@@ -85,7 +85,7 @@ Issues
 
     * Should the order of asynchronous operations be preserved, even
       if they are executed out-of-order with respect to normal commands?
-    
+
       Ans: No, let the extensions that define the async operations choose
       whether or not to preserve order.
 
@@ -105,7 +105,7 @@ Issues
       is as if errors are detected at the time a command is issued rather
       than when it is executed.  In this respect asynchronous commands
       are no different from synchronous commands.
-      
+
     * Should a call to MakeCurrent implicitly force all pending
       asynchronous commands to complete?
 
@@ -115,7 +115,7 @@ Issues
     * Should there be an implementation-dependent limit on the
       number of outstanding asynchronous commands before the
       application calls FinishAsync?
-      
+
       Ans: This extension does not impose such a limit, but the
       extensions that introduce asynchronous commands must address the
       issue.  An asynchronous command that uses an application-allocated
@@ -193,7 +193,7 @@ Frame Buffer)
 Additions to Chapter 5 of the 1.1 Specification (Special Functions)
 
     Add to section 5.4 (Display Lists):
-    
+
     The following commands are not included in display lists:
 
     FinishAsyncSGIX
@@ -264,13 +264,13 @@ Additions to Chapter 5 of the 1.1 Specification (Special Functions)
     which asynchronous commands are reported is undefined by this
     extension, although the extensions that define asynchronous
     commands may guarantee a particular order.
-    
+
     A program may guarantee that all outstanding asynchronous commands
     have completed by calling Finish.  A call to Finish does not cause
     the completion status of outstanding commands to be reported, so
     subsequent calls to FinishAsyncSGIX or PollAsyncSGIX will report
     the status of such commands.
-    
+
     Three commands are provided to manage asynchronous command
     markers.  A marker is "in use" if it is the current value of
     ASYNC_MARKER_SGIX or if it is associated with any asynchronous
@@ -282,7 +282,7 @@ Additions to Chapter 5 of the 1.1 Specification (Special Functions)
     parameter, or it returns 0 if no contiguous range of the specified
     length could be reserved.  The command also records that each of
     the markers in the returned range is reserved.
-    
+
     DeleteAsyncMarkersSGIX records that each of the markers in the
     range n, n+1, n+2, ..., n+s-1 is no longer reserved, where n is
     the value of the <marker> parameter and s is the value of the
@@ -295,7 +295,7 @@ Additions to Chapter 5 of the 1.1 Specification (Special Functions)
 
     Note that the marker name space is never shared across contexts,
     as the name spaces for texture objects and display lists may be.
-    
+
 Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 
     None
@@ -303,7 +303,7 @@ Additions to Chapter 6 of the 1.1 Specification (State and State Requests)
 Additions to the GLX Specification
 
     Add to the end of Section 4.4 (Sequentiality):
-    
+
     Asynchronous OpenGL commands do not obey the normal sequentiality
     guarantees for OpenGL commands.  Any command issued asynchronously
     may be inserted into the GLX protocol stream at any command

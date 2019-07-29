@@ -27,7 +27,7 @@ Overview
     are specified by name rather than by accessing them directly as
     fields in a structure.  Thus the list of attributes can be easily
     extended.
-    
+
     Attribute names are defined which correspond to all of the values
     in the PIXELFORMATDESCRIPTOR and LAYERPLANEDESCRIPTOR data structures.
     Additionally this interface allows pixel formats to be supported
@@ -451,7 +451,7 @@ Additions to the WGL Specification
     3. Generic pixel formats
 
     4. Accelerated pixel formats that are non displayable
-    
+
     ChoosePixelFormat will never select pixel formats from either
     group 2 or group 4.  Each pixel format in group 2 is required to
     appear identical to some pixel format in group 1 when queried by

@@ -218,7 +218,7 @@ New Tokens
     MULTISAMPLE_SUB_RECT_DIMS_SGIS
 
     Accepted by the <attrib> parameter of glXGetConfig, and by the
-    <attrib_list> parameter of glXChooseVisual: 
+    <attrib_list> parameter of glXChooseVisual:
 
         GLX_MULTISAMPLE_SUB_RECT_WIDTH_SGIS   0x8026
         GLX_MULTISAMPLE_SUB_RECT_HEIGHT_SGIS  0x8027

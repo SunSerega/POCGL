@@ -349,8 +349,8 @@ GLX Protocol
 Dependencies on EXT_framebuffer_object
 
     EXT_framebuffer_object is required.
-    
-Dependencies on EXT_framebuffer_blit    
+
+Dependencies on EXT_framebuffer_blit
 
     EXT_framebuffer_blit is required.  Technically, EXT_framebuffer_blit
     would not be required to support multisampled rendering, except for
@@ -410,7 +410,7 @@ dependent state.
     MAX_SAMPLES_EXT  Z+    GetIntegerv     1                Maximum number of       4.4.2.1  -
                                                             samples supported
                                                             for multisampling
-                                                            
+
 
 
 Usage Examples
@@ -423,9 +423,9 @@ Issues
          a revision of EXT_framebuffer_object?
 
          RESOLVED, separate extension
-         
+
             Resolved by consensus, May 9, 2005
-         
+
          This extension requires EXT_framebuffer_object but the reverse
          is not true.  In addition, the cross framebuffer copy operation
          that will be used to handle the multisample resolution
@@ -462,7 +462,7 @@ Issues
          bound to a multisample framebuffer object?
 
          RESOLVED, no
-         
+
              Resolved by consensus, prior to May 9, 2005
 
          No, those operations will produce INVALID_OPERATION.  To read
@@ -487,18 +487,18 @@ Issues
 
             Resolved by consensus, May 23, 2005
 
-         
+
          Given the routine,
-        
+
             void RenderbufferStorageMultisampleEXT(
                     enum target, uint samples,
                     enum internalformat,
                     uint width, uint height);
-        
+
          If an implementation supports several sample counts (say, 2x,
          4x, 8x multisample), and the user requests a sample count of
          <samples>, the implementation must do one of the following:
-         
+
             - succeed in giving the user exactly <samples>, or
 
             - succeed in giving the user a number of samples greater
@@ -515,7 +515,7 @@ Issues
          RESOLVED, no
 
             Resolved by consensus, May 23, 2005
-            
+
             No, by resolution of issue (4) above, the user must get at
             least what they asked for or higher, which precludes getting
             a single sampled format if they asked for a multisampled
@@ -528,7 +528,7 @@ Issues
          RESOLVED, yes
 
             Resolved by consensus, May 23, 2005
-    
+
          Yes.  Success or failure is determined by <width>, <height>,
          <internalformat>, and <samples>, and the implementation can
          always return OUT_OF_MEMORY. Note that while an implementation
@@ -537,9 +537,9 @@ Issues
          issue of resolution (4), it must give at least the number of
          samples requested or it must fail the
          RenderbufferStorageMultisampleEXT call.
-         
+
              Update from June 2006 ARB meeting:
-             
+
              The appropriate error for the case where the number of
              samples is larger than the maximum supported by the
              implementation is INVALID_VALUE.  To allow an application
@@ -560,9 +560,9 @@ Issues
     (8)  Does this extension require our new framebuffer-to-framebuffer
          copy extension, EXT_framebuffer_blit, or is it merely affected
          by the presence of that extension.
-         
+
          RESOLVED, EXT_framebuffer_blit is required.
-         
+
          EXT_framebuffer_multisample by itself enable the user to
          perform multisampled rendering.  However, you can't copy or
          read from a multisampled renderbuffer using {Read|Copy}Pixels
@@ -571,11 +571,11 @@ Issues
          without EXT_framebuffer_blit.  That makes the
          EXT_framebuffer_multisample extension arguably kind of useless
          without the EXT_framebuffer_blit.
-         
+
          However, the reverse is not true.  The EXT_framebuffer_blit is
          useful on its own, which is why it is a separate extension from
          this one.
-         
+
          So we decided to state that EXT_framebuffer_multisample
          requires EXT_framebuffer_blit instead of merely stating that
          that extension affects this one.
@@ -587,7 +587,7 @@ Issues
          This is no different than DrawPixels to a multisample window
          (framebuffer zero).  Note that ReadPixels and CopyPixels are
          disallowed when the read framebuffer is multisample.
-         
+
 Revision History
     #7, Jan 10, 2007: jjuliano
         - add missing constraint that a multisample blit requires
@@ -616,7 +616,7 @@ Revision History
         - added GLX protocol, assigned enumerant values
 
     #4, September 28, 2005: jsandmel, jjuliano
-        - moved the multisample languge from GL_EXT_framebuffer_blit to 
+        - moved the multisample languge from GL_EXT_framebuffer_blit to
           this spec.
         - added description of using BlitFramebufferEXT for resolving
           multisample buffer

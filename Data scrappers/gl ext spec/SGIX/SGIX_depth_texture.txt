@@ -30,7 +30,7 @@ Overview
     environment functions, such as filtering or applying the depth values
     computed from a texture, but leaves this to other extensions, such as
     the shadow extension.
-        
+
 New Procedures and Functions
 
     None

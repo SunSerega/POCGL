@@ -1,4 +1,4 @@
-Name 
+Name
 
     EXT_provoking_vertex
 
@@ -109,7 +109,7 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification (OpenGL Operation)
 
        void ShadeModel(enum shadeMode);
        void ProvokingVertexEXT(enum provokeMode);
-    
+
     shadeMode value must be either the symbolic constants SMOOTH or FLAT.
     If shadeMode is SMOOTH (the initial state), the vertex colors are
     treated individually.  If shadeMode is FLAT, flatshading is turned on.
@@ -134,7 +134,7 @@ Additions to Chapter 2 of the OpenGL 2.1 Specification (OpenGL Operation)
         ===========================  ============  ==================================================
         point                             i        i                                                   <- same
 
-        independent line                  2i-1     2i 
+        independent line                  2i-1     2i
         line loop                         i        i+1, if i<n
                                                    1,   if i==n
         line strip                        i        i+1
@@ -201,7 +201,7 @@ NV_geometry_shader4, and/or NV_gpu_program4:
 
 Dependencies on EXT_transform_feedback, NV_transform_feedback, and/or the
 transform feedback functionality integrated into the core by OpenGL 3.0:
-    
+
     Clarify the statement describing when transform feedback occurs
     (in section 2.18 of the OpenGL 3.1 specification) to read:
 
@@ -212,7 +212,7 @@ transform feedback functionality integrated into the core by OpenGL 3.0:
 
 GLX Protocol
 
-    A new GL rendering command is added. The following command is sent to the 
+    A new GL rendering command is added. The following command is sent to the
     server as part of a glXRender request:
 
         ProvokingVertexEXT

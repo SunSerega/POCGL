@@ -1,50 +1,50 @@
-Name 
+Name
 
     NV_video_output
 
-Name Strings 
+Name Strings
 
     WGL_NV_video_output
 
-Contact 
+Contact
 
     Thomas True, Nvidia, ttrue@nvidia.com
     Ian Williams, Nvidia, iwilliams@nvidia.com
     Martin Schwarzer, Nvidia, mschwarzer@nvidia.com
 
-Status 
+Status
 
     Shipping since 2004 for NVIDIA Quadro SDI (Serial Digital Interface)
 
-Version 
+Version
 
     Last Modified Date: February 20, 2008
 
-Number 
+Number
 
     349
 
-Dependencies 
+Dependencies
 
-    OpenGL 1.1 is required. 
-    WGL_ARB_extension_string is required. 
-    WGL_ARB_pixel_format is required. 
-    WGL_ARB_pbuffer is required. 
+    OpenGL 1.1 is required.
+    WGL_ARB_extension_string is required.
+    WGL_ARB_pixel_format is required.
+    WGL_ARB_pbuffer is required.
 
-Overview 
+Overview
 
     This extension permits a color and or depth buffer of a pbuffer to
-    be used for rendering and subsequent video output.  After a pbuffer 
-    has been bound to a video device, subsequent color and or depth 
+    be used for rendering and subsequent video output.  After a pbuffer
+    has been bound to a video device, subsequent color and or depth
     rendering into that buffer is displayed on the video output.
 
-Issues 
+Issues
 
- 1. Should the new pbuffer attributes be available through GL queries? 
+ 1. Should the new pbuffer attributes be available through GL queries?
 
-    No, like other pbuffer attributes you need to query them through the 
-    window system extension. This extension does not make any changes to 
-    OpenGL. 
+    No, like other pbuffer attributes you need to query them through the
+    window system extension. This extension does not make any changes to
+    OpenGL.
 
 Implementation Notes
 
@@ -55,10 +55,10 @@ Implementation Notes
     to send frames/fields to a video device.  In the first case, an
     application should block on the call to wglSendPbufferToVideoNV()
     to ensure synchronization.  In the second caes, an application
-    should utilize wglGetVideoInfoNV() in order to query vblank and 
+    should utilize wglGetVideoInfoNV() in order to query vblank and
     buffer counters for synchronization.
 
-Intended Usage 
+Intended Usage
 
     1) Configure the video output device via the NVCPL API or via
        the control panel which uses the NVCPL API.
@@ -67,17 +67,17 @@ Intended Usage
        for rendering images.  WGL_DRAW_TO_PBUFFER and one of
        WGL_BIND_TO_VIDEO_RGB_NV, WGL_BIND_TO_VIDEO_RGBA_NV or
        WGL_BIND_TO_VIDEO_RGB_AND_DEPTH_NV must be TRUE.  The
-       per-component pixel depth of the pbuffer must be equal to or 
+       per-component pixel depth of the pbuffer must be equal to or
        greater than the per-component depth of the video output.
 
     3) Create pbuffers and associated rendering contexts for each
-       channel of video by calling wglCreatePbufferARB with one 
+       channel of video by calling wglCreatePbufferARB with one
        of WGL_BIND_TO_VIDEO_RGB_NV, WGL_BIND_TO_VIDEO_RGBA_NV or
-       WGL_BIND_TO_VIDEO_RGB_AND_DEPTH_NV tokens in the attribute 
-       list set to TRUE.  Set the width and height for each pbuffer 
+       WGL_BIND_TO_VIDEO_RGB_AND_DEPTH_NV tokens in the attribute
+       list set to TRUE.  Set the width and height for each pbuffer
        to match that of the intended video output device.
 
-    4) Call wglGetVideoDeviceNV to retrieve the handles for all 
+    4) Call wglGetVideoDeviceNV to retrieve the handles for all
        video devices available.  A video device handle is required
        for each video stream.
 
@@ -102,7 +102,7 @@ Intended Usage
     11) Call wglReleaseVideoImageNV to unbind each pbuffer drawable
         from its associated video device.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     DECLARE_HANDLE(HPVIDEODEV);
 
@@ -111,31 +111,31 @@ New Procedures and Functions
 
     BOOL wglReleaseVideoDeviceNV(HPVIDEODEV hVideoDevice);
 
-    BOOL wglBindVideoImageNV (HPVIDEODEV hVideoDevice, 
+    BOOL wglBindVideoImageNV (HPVIDEODEV hVideoDevice,
                               HPBUFFERARB hPbuffer, int iVideoBuffer);
 
     BOOL wglReleaseVideoImageNV (HPBUFFERARB hPbuffer, int iVideoBuffer);
 
-    BOOL wglSendPbufferToVideoNV (HPBUFFERARB hPbuffer, int iBufferType, 
+    BOOL wglSendPbufferToVideoNV (HPBUFFERARB hPbuffer, int iBufferType,
                                   unsigned long *pulCounterPbuffer,
                                   BOOL bBlock);
 
-    BOOL wglGetVideoInfoNV (HPVIDEODEV hpVideoDevice, 
+    BOOL wglGetVideoInfoNV (HPVIDEODEV hpVideoDevice,
                             unsigned long *pulCounterOutputPbuffer,
                             unsigned long *pulCounterOutputVideo);
 
-New Tokens 
+New Tokens
 
-    Accepted by the <piAttributes> parameter of wglGetPixelFormatAttribivARB, 
+    Accepted by the <piAttributes> parameter of wglGetPixelFormatAttribivARB,
     wglGetPixelFormatAttribfvARB, and the <piAttribIList> and <pfAttribIList>
-    parameters of wglChoosePixelFormatARB and wglCreatePbufferARB: 
+    parameters of wglChoosePixelFormatARB and wglCreatePbufferARB:
 
         WGL_BIND_TO_VIDEO_RGB_NV                        0x20C0
         WGL_BIND_TO_VIDEO_RGBA_NV                       0x20C1
         WGL_BIND_TO_VIDEO_RGB_AND_DEPTH_NV              0x20C2
 
-    Accepted by the <iVideoBuffer> parameter of wglBindVideoImageNV and 
-    wglReleaseVideoImageNV: 
+    Accepted by the <iVideoBuffer> parameter of wglBindVideoImageNV and
+    wglReleaseVideoImageNV:
 
         WGL_VIDEO_OUT_COLOR_NV                          0x20C3
         WGL_VIDEO_OUT_ALPHA_NV                          0x20C4
@@ -151,41 +151,41 @@ New Tokens
         WGL_VIDEO_OUT_STACKED_FIELDS_1_2                0x20CB
         WGL_VIDEO_OUT_STACKED_FIELDS_2_1                0x20CC
 
-Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation) 
+Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
-    None. 
+    None.
 
-Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
-    None. 
+    None.
 
-Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment 
-Operations and the Frame Buffer) 
+Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
+Operations and the Frame Buffer)
 
-    None. 
+    None.
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
-    None. 
+    None.
 
-Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State 
-Requests) 
+Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State
+Requests)
 
-    None. 
+    None.
 
-Additions to the WGL Specification 
+Additions to the WGL Specification
 
-    Add to the description of <piAttributes> in wglGetPixelFormatAttribivARB 
-    and <pfAttributes> in wglGetPixelFormatfv: 
+    Add to the description of <piAttributes> in wglGetPixelFormatAttribivARB
+    and <pfAttributes> in wglGetPixelFormatfv:
 
         WGL_BIND_TO_VIDEO_RGB_NV
         WGL_BIND_TO_VIDEO_RGBA_NV
         WGL_BIND_TO_VIDEO_RGB_AND_DEPTH_NV
 
-    Add new table entries to match criteria in description of 
-    wglChoosePixelFormatARB: 
+    Add new table entries to match criteria in description of
+    wglChoosePixelFormatARB:
 
-        Attribute                           Type        Match Criteria 
+        Attribute                           Type        Match Criteria
 
         WGL_BIND_TO_VIDEO_RGB_NV            boolean     exact
         WGL_BIND_TO_VIDEO_RGBA_NV           boolean     exact
@@ -195,23 +195,23 @@ Additions to the WGL Specification
 
     The command
 
-        BOOL wglGetVideoDeviceNV(HDC hDC, int numDevices, 
+        BOOL wglGetVideoDeviceNV(HDC hDC, int numDevices,
                                  HPVIDEODEV hpVideoDevice)
 
-     returns an array of upto <numDevices> handles to the available video 
-     devices in the array <hpVideoDevice>.  <numDevices> must be 
+     returns an array of upto <numDevices> handles to the available video
+     devices in the array <hpVideoDevice>.  <numDevices> must be
      non-negative, and <hpVideoDevice> must not be NULL.
 
      It is not an error if the number of available video devices is larger
      that <numDevices>; in that case the first <numDevices> device handles
-     are returned.  It is an error if <numDevices> is larger than the 
+     are returned.  It is an error if <numDevices> is larger than the
      number of available video devices.  The order of devices returned in
      <hpVideoDevice> is implementation dependent.
 
      if wglGetVideoDeviceNV fails, FALSE is returned.  To get extended
      error information, call GetLastError.  Possible errors are as follows:
 
-     ERROR_INVALID_HANDLE           <hDC> is not a valid handle. 
+     ERROR_INVALID_HANDLE           <hDC> is not a valid handle.
 
      ERROR_INVALID_HANDLE           <hpVideoDevice> is NULL.
 
@@ -225,13 +225,13 @@ Additions to the WGL Specification
 
     Add wglReleaseVideoDeviceNV:
 
-    The command 
-    
-        BOOL wglReleaseVideoDeviceNV(HPVIDEODEV hVideoDevice) 
+    The command
+
+        BOOL wglReleaseVideoDeviceNV(HPVIDEODEV hVideoDevice)
 
     releases all resources associated with <hpVideoDevice>.
 
-    If wglReleaseVideoDeviceNV fails, FALSE is returned.  To get extended 
+    If wglReleaseVideoDeviceNV fails, FALSE is returned.  To get extended
     error information, call GetLastError.  Possible errors are as follows:
 
     ERROR_INVALID_HANDLE            <hpVideoDevice> is not a valid handle.
@@ -239,22 +239,22 @@ Additions to the WGL Specification
     ERROR_INVALID_OPERATION         The video device is not allocated.
 
 
-    Add wglBindVideoImageNV and wglReleaseVideoImageNV: 
+    Add wglBindVideoImageNV and wglReleaseVideoImageNV:
 
-    The command 
+    The command
 
         BOOL wglBindVideoImageNV (HPVIDEODEV hpVideoDevice,
-                                  HPBUFFERARB hPbuffer, 
+                                  HPBUFFERARB hPbuffer,
                                   int iVideoBuffer);
 
     binds <hPbuffer> to <hpVideoDevice> for subsequent scanout where
     <iVideoBuffer> specifies that <pbuffer> contains color, alpha or
-    depth data.  Neither <pbuffer> nor <hpVideoDevice) can be NULL.  
+    depth data.  Neither <pbuffer> nor <hpVideoDevice) can be NULL.
 
-    If  wglBindVideoImageNV fails, FALSE is returned.  To get extended 
-    error information, call GetLastError. Possible errors are as follows: 
+    If  wglBindVideoImageNV fails, FALSE is returned.  To get extended
+    error information, call GetLastError. Possible errors are as follows:
 
-    ERROR_INVALID_HANDLE            <hPbuffer> is not a valid handle. 
+    ERROR_INVALID_HANDLE            <hPbuffer> is not a valid handle.
 
     ERROR_INVALID_DATA              The pbuffer size is not correct.
 
@@ -270,64 +270,64 @@ Additions to the WGL Specification
     parameter <iVideoBuffer> specifies that the pbuffer contains
     color, alpha or depth data.  <hPbuffer> may not be NULL.
 
-    If  wglReleaseVideoImageNV fails, FALSE is returned. To get extended 
-    error information, call GetLastError. Possible errors are as follows: 
+    If  wglReleaseVideoImageNV fails, FALSE is returned. To get extended
+    error information, call GetLastError. Possible errors are as follows:
 
-    ERROR_INVALID_HANDLE            <hPbuffer> is not a valid handle. 
+    ERROR_INVALID_HANDLE            <hPbuffer> is not a valid handle.
 
-    ERROR_INVALID_DATA              <iBuffer> is not a valid value. 
-        
+    ERROR_INVALID_DATA              <iBuffer> is not a valid value.
 
-    Add wglSendPbufferToVideoNV and wglGetVideoInfoNV: 
+
+    Add wglSendPbufferToVideoNV and wglGetVideoInfoNV:
 
     The command
 
-       BOOL wglSendPbufferToVideoNV (HPBUFFER hPbuffer, int iBufferType, 
+       BOOL wglSendPbufferToVideoNV (HPBUFFER hPbuffer, int iBufferType,
                                      unsigned long *pulCounterPbuffer,
                                      BOOL bBlock);
 
-    indicates that rendering to the <hPbuffer> is complete and that the 
-    completed frame/field contained within <hPbuffer> is ready for scan out 
+    indicates that rendering to the <hPbuffer> is complete and that the
+    completed frame/field contained within <hPbuffer> is ready for scan out
     by the video device where <iBufferType> specifies that <hPbuffer>
-    contains the first field, second field, two stacked fields or a complete 
-    frame. <hPbuffer> cannot be NULL. 
+    contains the first field, second field, two stacked fields or a complete
+    frame. <hPbuffer> cannot be NULL.
     An <iBufferType> of WGL_VIDEO_OUT_STACKED_FIELDS_1_2 indicates that
-    <hPbuffer> does contain field1 and field2 with field1 in the upper half 
-    of <hPbuffer> and filed2 in the lower half, while 
-    WGL_VIDEO_OUT_STACKED_FIELDS_2_1 indicates field2 in the upper half 
+    <hPbuffer> does contain field1 and field2 with field1 in the upper half
+    of <hPbuffer> and filed2 in the lower half, while
+    WGL_VIDEO_OUT_STACKED_FIELDS_2_1 indicates field2 in the upper half
     of <hPbuffer> and filed1 in the lower half.
-    The flag <bBlock> specifies whether or not the call should block until 
+    The flag <bBlock> specifies whether or not the call should block until
     scan out of the specified frame/field is complete.
-    <pulCounterPbuffer> returns the total number of frames/fields sent to 
+    <pulCounterPbuffer> returns the total number of frames/fields sent to
     the video device.
 
-    If  wglSendPbufferToVideoNV fails, FALSE is returned. To get extended 
-    error information, call GetLastError. Possible errors are as follows: 
+    If  wglSendPbufferToVideoNV fails, FALSE is returned. To get extended
+    error information, call GetLastError. Possible errors are as follows:
 
-    ERROR_INVALID_HANDLE            <HPBUFFER> is not a valid handle. 
+    ERROR_INVALID_HANDLE            <HPBUFFER> is not a valid handle.
 
-    ERROR_INVALID_DATA              <iBufferType> is not a valid value. 
-        
+    ERROR_INVALID_DATA              <iBufferType> is not a valid value.
+
 
     The command
 
-        BOOL wglGetVideoInfoNV (HPVIDEODEV hpVideoDevice, 
+        BOOL wglGetVideoInfoNV (HPVIDEODEV hpVideoDevice,
                                 unsigned long *pulCounterOutputPbuffer,
                                 unsigned long *pulCounterOutputVideo);
 
-    returns in <pulCounterOutputVideo> the absolute count of vertical 
-    blanks on <hpVideoDevice> since transfers were started while 
-    <pulCounterOutputPbuffer> returns the count of the current pbuffer 
+    returns in <pulCounterOutputVideo> the absolute count of vertical
+    blanks on <hpVideoDevice> since transfers were started while
+    <pulCounterOutputPbuffer> returns the count of the current pbuffer
     being scanned out by <hpVideoDevice>.
 
-    If wglGetVideoInfoNV fails, FALSE is returned.  To get extended error 
+    If wglGetVideoInfoNV fails, FALSE is returned.  To get extended error
     information, call GetLastError.  Possible errors include:
 
     ERROR_INVALID_HANDLE             <hPVIDEODEVICE> is not a valid handle.
 
 New State
 
-    None 
+    None
 
 Usage Examples
 

@@ -14,8 +14,8 @@ Contact
 Status
 
     Multi vendor extension
- 
-    Shipping for GeForce 8 Series (November 2006) 
+
+    Shipping for GeForce 8 Series (November 2006)
 
 Version
 
@@ -404,7 +404,7 @@ Operation)
       UNSIGNED_INT_SAMPLER_1D_ARRAY_EXT,
       UNSIGNED_INT_SAMPLER_2D_ARRAY_EXT,
       UNSIGNED_INT_SAMPLER_BUFFER_EXT.
-  
+
     Add the following uniform loading command prototypes on p. 81 as follows:
 
       void Uniform{1234}uiEXT(int location, T value);
@@ -596,7 +596,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     Let
 
       u(x,y) = w_t * s(x,y) + offsetu_shader,
-      v(x,y) = h_t * t(x,y) + offsetv_shader, 
+      v(x,y) = h_t * t(x,y) + offsetv_shader,
       w(x,y) = d_t * r(x,y) + offsetw_shader, and
 
     where w_t, h_t, and d_t are as defined by equations 3.15, 3.16, and 3.17
@@ -661,16 +661,16 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
       --------------------------  ------------------------------------------
       CLAMP_TO_EDGE               clamp(coord, 0, size-1)
       CLAMP_TO_BORDER             clamp(coord, -1, size)
-      CLAMP                       { clamp(coord, 0, size-1), 
+      CLAMP                       { clamp(coord, 0, size-1),
                                   {         for NEAREST filtering
-                                  { clamp(coord, -1, size), 
+                                  { clamp(coord, -1, size),
                                   {         for LINEAR filtering
       REPEAT                      mod(coord, size)
       MIRROR_CLAMP_TO_EDGE_EXT    clamp(mirror(coord), 0, size-1)
       MIRROR_CLAMP_TO_BORDER_EXT  clamp(mirror(size), 0, size)
-      MIRROR_CLAMP_EXT            { clamp(mirror(coord), 0, size-1), 
+      MIRROR_CLAMP_EXT            { clamp(mirror(coord), 0, size-1),
                                   {         for NEAREST filtering
-                                  { clamp(mirror(size), 0, size), 
+                                  { clamp(mirror(size), 0, size),
                                   {         for LINEAR filtering
       MIRRORED_REPEAT             (size-1) - mirror(mod(coord, 2*size)-size)
 
@@ -686,12 +686,12 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     that satisfies any of the following conditions:
 
       i < -b_s,
-      j < -b_s, 
-      k < -b_s, 
-      i >= w_t + b_s, 
+      j < -b_s,
+      k < -b_s,
+      i >= w_t + b_s,
       j >= h_t + b_s, or
       j >= d_t + b_s,
- 
+
     then the border values defined by TEXTURE_BORDER_COLOR are used in place
     of the non-existent texel. If the texture contains color components, the
     values of TEXTURE_BORDER_COLOR are interpreted as an RGBA color to match
@@ -1321,7 +1321,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
 
     Add a table 4.1.4 called "unsigned integer sampler types":
 
-      usampler1D             handle for accessing an unsigned integer 
+      usampler1D             handle for accessing an unsigned integer
                              1D texture
       usampler2D             handle for accessing an unsigned integer
                              2D texture
@@ -1332,7 +1332,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
       usampler2DRect         handle for accessing an unsigned integer
                              rectangle texture
       usampler1DArray        handle for accessing an unsigned integer 1D
-                             array texture 
+                             array texture
       usampler2DArray        handle for accessing an unsigned integer 2D
                              array texture
       usamplerBuffer         handle for accessing an unsigned integer
@@ -1959,13 +1959,13 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
 
     Syntax:
 
-      vec4 texture1DGrad(sampler1D sampler, float coord, 
+      vec4 texture1DGrad(sampler1D sampler, float coord,
                          float ddx, float ddy);
-      vec4 texture1DProjGrad(sampler1D sampler, vec2 coord, 
+      vec4 texture1DProjGrad(sampler1D sampler, vec2 coord,
                              float ddx, float ddy);
-      vec4 texture1DProjGrad(sampler1D sampler, vec4 coord, 
+      vec4 texture1DProjGrad(sampler1D sampler, vec4 coord,
                              float ddx, float ddy);
-      vec4 texture1DArrayGrad(sampler1DArray sampler, vec2 coord, 
+      vec4 texture1DArrayGrad(sampler1DArray sampler, vec2 coord,
                               float ddx, float ddy);
 
       vec4 texture2DGrad(sampler2D sampler, vec2 coord,
@@ -2082,7 +2082,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
                               int offset [,float bias])
       vec4 shadow2DProjOffset(sampler2DShadow sampler, vec4 coord,
                               ivec2 offset [,float bias])
-      vec4 shadow1DLodOffset(sampler1DShadow sampler, vec3 coord, 
+      vec4 shadow1DLodOffset(sampler1DShadow sampler, vec3 coord,
                              float lod, int offset)
       vec4 shadow2DLodOffset(sampler2DShadow sampler, vec3 coord,
                              float lod, ivec2 offset)
@@ -2099,20 +2099,20 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
                                    ivec2 offset)
       vec4 shadow2DRectOffset(sampler2DRectShadow sampler, vec3 coord,
                               ivec2 offset)
-      vec4 shadow2DRectProjOffset(sampler2DRectShadow sampler, vec4 coord, 
+      vec4 shadow2DRectProjOffset(sampler2DRectShadow sampler, vec4 coord,
                                   ivec2 offset)
 
       vec4 texelFetch1DOffset(sampler1D sampler, int coord, int lod,
                               int offset)
-      vec4 texelFetch2DOffset(sampler2D sampler, ivec2 coord, int lod, 
+      vec4 texelFetch2DOffset(sampler2D sampler, ivec2 coord, int lod,
                               ivec2 offset)
-      vec4 texelFetch3DOffset(sampler3D sampler, ivec3 coord, int lod, 
+      vec4 texelFetch3DOffset(sampler3D sampler, ivec3 coord, int lod,
                               ivec3 offset)
-      vec4 texelFetch2DRectOffset(sampler2DRect sampler, ivec2 coord, 
+      vec4 texelFetch2DRectOffset(sampler2DRect sampler, ivec2 coord,
                                   ivec2 offset)
-      vec4 texelFetch1DArrayOffset(sampler1DArray sampler, ivec2 coord, 
+      vec4 texelFetch1DArrayOffset(sampler1DArray sampler, ivec2 coord,
                                    int lod, int offset)
-      vec4 texelFetch2DArrayOffset(sampler2DArray sampler, ivec3 coord, 
+      vec4 texelFetch2DArrayOffset(sampler2DArray sampler, ivec3 coord,
                                    int lod, ivec2 offset)
 
       vec4 texture1DArrayOffset(sampler1DArray sampler, vec2 coord,
@@ -2167,24 +2167,24 @@ Modifications to The OpenGL Shading Language Specification, Version 1.10.59
 
       vec4 shadow2DGradOffset(sampler2DShadow sampler, vec3 coord,
                               vec2 ddx, vec2 ddy, ivec2 offset);
-      vec4 shadow2DProjGradOffset(sampler2DShadow sampler, vec4 coord, 
+      vec4 shadow2DProjGradOffset(sampler2DShadow sampler, vec4 coord,
                                   vec2 ddx, vec2 ddy, ivec2 offset);
-      vec4 shadow2DArrayGradOffset(sampler2DArrayShadow sampler, 
-                                   vec4 coord, vec2 ddx, vec2 ddy, 
+      vec4 shadow2DArrayGradOffset(sampler2DArrayShadow sampler,
+                                   vec4 coord, vec2 ddx, vec2 ddy,
                                    ivec2 offset);
 
       vec4 texture2DRectGradOffset(sampler2DRect sampler, vec2 coord,
                                    vec2 ddx, vec2 ddy, ivec2 offset);
-      vec4 texture2DRectProjGradOffset(sampler2DRect sampler, vec3 coord, 
+      vec4 texture2DRectProjGradOffset(sampler2DRect sampler, vec3 coord,
                                        vec2 ddx, vec2 ddy, ivec2 offset);
       vec4 texture2DRectProjGradOffset(sampler2DRect sampler, vec4 coord,
                                        vec2 ddx, vec2 ddy, ivec2 offset);
 
-      vec4 shadow2DRectGradOffset(sampler2DRectShadow sampler, 
-                                  vec3 coord, vec2 ddx, vec2 ddy, 
+      vec4 shadow2DRectGradOffset(sampler2DRectShadow sampler,
+                                  vec3 coord, vec2 ddx, vec2 ddy,
                                   ivec2 offset);
-      vec4 shadow2DRectProjGradOffset(sampler2DRectShadow sampler, 
-                                      vec4 coord, vec2 ddx, vec2 ddy, 
+      vec4 shadow2DRectProjGradOffset(sampler2DRectShadow sampler,
+                                      vec4 coord, vec2 ddx, vec2 ddy,
                                       ivec2 offset);
 
     Description:
@@ -2451,7 +2451,7 @@ Issues
       DISCUSSION:  This extension adds "Grad" functions which are functionally
       equivalent to those defined by ARB_shader_texture_lod, but do not have
       an ARB suffix.
-      
+
       RESOLUTION: There is no interaction. If both extensions are supported,
       both sets of functions are available and can be controlled independently
       via the #extension mechanism.
@@ -2466,7 +2466,7 @@ Revision History
      15   04/09/09  pbrown    Fixed a typo in the texture size query spec
                               language - returns a layer count, not "index".
 
-     14   07/29/08  pbrown    Discovered additional issues with texture wrap 
+     14   07/29/08  pbrown    Discovered additional issues with texture wrap
                               handling, replaced with logic that applies wrap
                               modes per sample.
 
@@ -2481,7 +2481,7 @@ Revision History
      11   05/08/07  pbrown    Add VertexAttribIPointerEXT to the list of
                               commands that can't go in display lists.
 
-     10   01/23/07  pbrown    Fix prototypes for a variety of functions 
+     10   01/23/07  pbrown    Fix prototypes for a variety of functions
                               that were specified with an incorrect sampler
                               type.
 

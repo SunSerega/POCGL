@@ -15,7 +15,7 @@ Contributors
     Pierre Boudier
     Eric Boumaour
     Alex Chalfin
-    Nick Haemel    
+    Nick Haemel
     Evan Hart
     Bill Licea-Kane
     Benj Lipchak
@@ -36,7 +36,7 @@ Number
 
 Dependencies
 
-    OpenGL 1.1 is required. 
+    OpenGL 1.1 is required.
 
     The extension is written against the OpenGL 2.0 Specification.
 
@@ -85,7 +85,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     of texels in the image array of level levelbase is selected.  These
     texels are selected in the same way as when the value of TEXTURE_MIN_FILTER
     is LINEAR, but instead of these texels being filtered to generate the
-    texture value, the R, G, B and A texture values are derived directly 
+    texture value, the R, G, B and A texture values are derived directly
     from these four texels,
 
         TauR = Taui0j1                                            (3.26a)
@@ -128,18 +128,18 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
 
     Add to caption of Table 3.21 (p. 184)
 
-     "If the texture4 built-in function is used to access a sampler, 
+     "If the texture4 built-in function is used to access a sampler,
      texture source components are derived as if the Texture Base
      Internal Format is RGBA.
 
     Add to Section 3.11.2, Shader Execution, Texture Access
     (p. 195) Prior to paragraph beginning "If a fragment shader uses a sampler..."
- 
-    Texture4 lookups must be consistent with the texture state; the 
+
+    Texture4 lookups must be consistent with the texture state; the
     results of the texture4 lookup are undefined if:
- 
+
        - The base internal format of the texture not one of ALPHA,
-         DEPTH_COMPONENT, INTENSITY, or LUMINANCE. 
+         DEPTH_COMPONENT, INTENSITY, or LUMINANCE.
 
        - The wrap modes is not either CLAMP_TO_EDGE or REPEAT.
 
@@ -184,21 +184,21 @@ Additions to Chapter 8 of the OpenGL Shading Language 1.20 Specification
 
     Add to 8.7, Texture Lookup Functions
     (p. 85) prior to paragraph beginning "In all functions below..."
- 
+
     Add to 8.7, Texture Lookup Functions,
     (p. 85) to the texture built-in function table:
- 
+
     Syntax
     vec4 texture4( sampler2D sampler, vec2 coord)
     Description
     Use the texture coordinate coord to do a texture lookup
-    in the 2D texture currently bound to sampler, and return 
+    in the 2D texture currently bound to sampler, and return
     the four nearest (unfiltered) texels.
 
 Additions to Chapter 9 of the OpenGL Shading Language 1.20 Specification
 (Shading Language Grammar)
 
-Additions to Chapter 10 of the OpenGL Shading Language 1.20 
+Additions to Chapter 10 of the OpenGL Shading Language 1.20
 Specification (Issues)
 
 Errors
@@ -218,7 +218,7 @@ Interactions with EXT_texture_filter_anisotropic
     Texture4 is not an area filter.  No LOD calculations are performed
     and only texels in the baselevel can be returned.
 
-    Therefore, for the texture4 built-in function the preferred implementation 
+    Therefore, for the texture4 built-in function the preferred implementation
     would sample four texels even if TEXTURE_MAX_ANISOTROPY_EXT is greater than 1.0.
 
 Issues
@@ -238,11 +238,11 @@ Issues
 
     3)  What about the use of this extension with fixed function?
 
-    Resolution - The built-in functions are added to the shading 
-    language only.  There is no ability to fetch four texels in 
+    Resolution - The built-in functions are added to the shading
+    language only.  There is no ability to fetch four texels in
     fixed function.
 
-    4)  What naming convention do we use for the new texture built-in 
+    4)  What naming convention do we use for the new texture built-in
     functions?
 
     Resolution - Even though this extension is written against
@@ -261,10 +261,10 @@ Issues
     wrap modes are not clamp_to_edge or repeat, is the texture
     treated as incomplete, or are the values returned by the
     texture4 built-in undefined?
- 
+
     Unresolved.  This draft makes them undefined.
 
-    7)  Can both texture *AND* texture4 built-in functions 
+    7)  Can both texture *AND* texture4 built-in functions
     sample from the same sampler in a shader?
 
     No.

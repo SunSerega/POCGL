@@ -34,9 +34,9 @@ Dependencies
 
     This extension is written against the OpenGL 1.2.1 Specification.
     OpenGL 1.1 is required. ATI_vertex_array_object is required by
-    this extension. 
+    this extension.
 
-    
+
 Overview
 
     This extension provides a mechanism for an application to obtain
@@ -44,11 +44,11 @@ Overview
     application to directly update the contents of an object buffer
     and avoid any intermediate copies.
 
-    
+
 Issues
 
     Should we use Lock and Unlock terminology?
-    
+
     UNRESOLVED: This could be confusing. D3D uses "Lock" to mean
      that something is available for the application to update and
      won't be changed by the driver. However, in the compiled
@@ -56,16 +56,16 @@ Issues
      application will not be changing the contents of a vertex
      buffer.
 
-    
+
 New Procedures and Functions
-    
+
     void *MapObjectBufferATI(uint buffer)
-    
+
     void UnmapObjectBufferATI(uint buffer)
-    
+
 
 New Tokens
-    
+
     None
 
 
@@ -152,7 +152,7 @@ Errors
 
     INVALID_VALUE is generated if the <buffer> argument of
     MapObjectBuffer or UnmapObjectBuffer does not specify a valid
-    object buffer. 
+    object buffer.
 
     INVALID_OPERATION may be generated if a rendering command is
     issued that uses an object buffer that is currently mapped.
@@ -160,7 +160,7 @@ Errors
 New State
 
     None
-    
+
 
 Implementation Notes
 

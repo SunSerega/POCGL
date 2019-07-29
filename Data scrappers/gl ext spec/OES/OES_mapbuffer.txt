@@ -39,7 +39,7 @@ Version
 
 Number
 
-    OpenGL ES Extension #29    
+    OpenGL ES Extension #29
 
 Dependencies
 
@@ -53,7 +53,7 @@ Overview
 
 Issues
 
- 
+
 New Tokens
 
     Accepted by the <access> parameter of MapBufferOES:
@@ -80,7 +80,7 @@ New Procedures and Functions
     Please refer to the OpenGL 2.0 specification for details on how
     these functions work.  One departure from desktop OpenGL 2.0 is
     that the <access> parameter to MapBufferOES must be WRITE_ONLY_OES.
-    
+
     Note that any portion of a mapped buffer that is not written
     will retain its original contents.
 

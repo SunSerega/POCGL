@@ -22,7 +22,7 @@ Dependencies
 Overview
 
     This extension adds a decimation operation to the pixel transfer
-    path.  
+    path.
 
     Decimation occurs after convolution and prior to the post-convolution
     color table.
@@ -32,7 +32,7 @@ Overview
     directions, respectively.  During a pixel transfer, the decimation
     operation passes only those pixels which are at a position (i*stepx,
     j*stepy), for integers (i, j), relative to the bottom left corner of
-    the image that is being transferred.  All other pixels are discarded. 
+    the image that is being transferred.  All other pixels are discarded.
     Decimation is applied to the image that results from convolution,
     which may differ in size from the source image if convolution is
     enabled.
@@ -42,13 +42,13 @@ Overview
 Issues
 
     * This spec allows for future extension to 3D decimation.
-    
+
     * What is a reasonable minimum maximum decimation step that we should
       enforce?  Two is probably sufficient.
-      
+
     * Future extensions that redefine the convolution operation at the border
       of an image may affect this specification.
-    
+
     * Decimation doesn't apply to bitmaps because they are not affected
       by the PixelTransfer state.  This is probably best.
 
@@ -61,7 +61,7 @@ Issues
 New Procedures and Functions
 
     None
-    
+
 New Tokens
 
     Accepted by the <pname> parameter of glPixelTransferf,
@@ -84,13 +84,13 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     The specification of the decimation operation is added to the GL
-    Specification in section 3.6.2, "Pixel Transfer Modes."  
-    
+    Specification in section 3.6.2, "Pixel Transfer Modes."
+
     The decimation operation is added to the GL Specification in section
     3.6.3, "Rasterization of Pixel Rectangles, immediately following the
     operations described in EXT_convolution, and prior to the
     post-convolution color table operation that is described in the
-    SGI_color_table extension.  
+    SGI_color_table extension.
 
     Decimation operates on the image of pixels resulting from the
     convolution stage of the pixel transfer path.  If stepx and stepy are
@@ -112,7 +112,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     If this extension is implemented, decimation is always active, and is
     applied to any pixel transfer, regardless of the command used to
-    generate it.  (There is no enable or disable of decimation.)       
+    generate it.  (There is no enable or disable of decimation.)
 
     The x and y decimation parameters are specified by calling
     PixelTransfer with <pname> set to DECIMATION_X_SGIX, and
@@ -151,11 +151,11 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 Additions to the GLX Specification
 
     None
-    
+
 GLX Protocol
 
-    None 
-                    
+    None
+
 Dependencies on EXT_convolution
 
     The decimation operation follows the convolution operation (and its
@@ -195,5 +195,5 @@ New Implementation Dependent State
     ---------                           -----------                     ----            -------------
     MAX_DECIMATION_X_SGIX                GetIntegerv                     Z+              2
     MAX_DECIMATION_Y_SGIX                GetIntegerv                     Z+              2
-    
-    
+
+

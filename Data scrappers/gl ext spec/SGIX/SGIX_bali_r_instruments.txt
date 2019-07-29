@@ -125,7 +125,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
     in words of the size of the instrument.  However, the values from
     each R are returned atomically from the point of view of
     glGetInstrumentsSGIX so the return value must be a multiple of the
-    size in words of the instrument.  
+    size in words of the instrument.
 
     If more than one R instrument is enabled and ReadInstrumentsSGIX
     or StopInstrumentsSGIX is called, no guarantees are made with
@@ -151,7 +151,7 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 
 Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 
-    XXX    
+    XXX
 
 Additions to the GLX Specification
 

@@ -8,8 +8,8 @@ Name Strings
 
 Contributors
 
-    Contributors to ARB_separate_shader_objects and 
-    ARB_explicit_attrib_location desktop OpenGL extensions from which this 
+    Contributors to ARB_separate_shader_objects and
+    ARB_explicit_attrib_location desktop OpenGL extensions from which this
     extension borrows heavily
 
 Contact
@@ -43,7 +43,7 @@ Dependencies
 
     Written based on the wording of The OpenGL ES Shading Language 1.0.17
     Specification (May 12, 2009).
-    
+
     OpenGL ES 3.0 affects the definition of this extension.
 
     NV_non_square_matrices affects the definition of this extension.
@@ -54,54 +54,54 @@ Overview
     OpenGL ES, and also tacks on ARB_explicit_attrib_location functionality.
 
     Conventional GLSL requires multiple shader stages (vertex and fragment) to
-    be linked into a single monolithic program object to specify a GLSL shader 
+    be linked into a single monolithic program object to specify a GLSL shader
     for each stage.
 
-    While GLSL's monolithic approach has some advantages for optimizing shaders 
-    as a unit that span multiple stages, GPU hardware supports a more flexible 
-    mix-and-match approach to specifying shaders independently for these 
+    While GLSL's monolithic approach has some advantages for optimizing shaders
+    as a unit that span multiple stages, GPU hardware supports a more flexible
+    mix-and-match approach to specifying shaders independently for these
     different shader stages.  Many developers build their shader content around
-    the mix-and-match approach where they can use a single vertex shader with 
+    the mix-and-match approach where they can use a single vertex shader with
     multiple fragment shaders (or vice versa).
 
-    This extension adopts a "mix-and-match" shader stage model for GLSL 
-    allowing multiple different GLSL program objects to be bound at once each 
-    to an individual rendering pipeline stage independently of other stage 
-    bindings. This allows program objects to contain only the shader stages 
+    This extension adopts a "mix-and-match" shader stage model for GLSL
+    allowing multiple different GLSL program objects to be bound at once each
+    to an individual rendering pipeline stage independently of other stage
+    bindings. This allows program objects to contain only the shader stages
     that best suit the application's needs.
 
-    This extension introduces the program pipeline object that serves as a 
-    container for the program bound to any particular rendering stage.  It can 
-    be bound, unbound, and rebound to simply save and restore the complete 
+    This extension introduces the program pipeline object that serves as a
+    container for the program bound to any particular rendering stage.  It can
+    be bound, unbound, and rebound to simply save and restore the complete
     shader stage to program object bindings.  Like framebuffer
     and vertex array objects, program pipeline objects are "container"
     objects that are not shared between contexts.
 
-    To bind a program object to a specific shader stage or set of stages, 
-    UseProgramStagesEXT is used.  The VERTEX_SHADER_BIT_EXT and 
-    FRAGMENT_SHADER_BIT_EXT tokens refer to the conventional vertex and 
-    fragment stages, respectively. ActiveShaderProgramEXT specifies the 
+    To bind a program object to a specific shader stage or set of stages,
+    UseProgramStagesEXT is used.  The VERTEX_SHADER_BIT_EXT and
+    FRAGMENT_SHADER_BIT_EXT tokens refer to the conventional vertex and
+    fragment stages, respectively. ActiveShaderProgramEXT specifies the
     program that Uniform* commands will update.
 
-    While ActiveShaderProgramEXT provides a selector for setting and querying 
+    While ActiveShaderProgramEXT provides a selector for setting and querying
     uniform values of a program object with the conventional Uniform* commands,
     the ProgramUniform* commands provide a selector-free way to modify uniforms
     of a GLSL program object without an explicit bind. This selector-free model
     reduces API overhead and provides a cleaner interface for applications.
 
-    Separate linking creates the possibility that certain output varyings of a 
-    shader may go unread by the subsequent shader input varyings. In this 
-    case, the output varyings are simply ignored. It is also possible input 
+    Separate linking creates the possibility that certain output varyings of a
+    shader may go unread by the subsequent shader input varyings. In this
+    case, the output varyings are simply ignored. It is also possible input
     varyings from a shader may not be written as output varyings of a preceding
     shader. In this case, the unwritten input varying values are undefined.
 
     This extension also introduces a layout location qualifier to GLSL to pre-
-    assign attribute and varying locations to shader variables.  This allows 
-    applications to globally assign a particular semantic meaning, such as 
-    diffuse color or vertex normal, to a particular attribute and/or varying 
-    location without knowing how that variable will be named in any particular 
+    assign attribute and varying locations to shader variables.  This allows
+    applications to globally assign a particular semantic meaning, such as
+    diffuse color or vertex normal, to a particular attribute and/or varying
+    location without knowing how that variable will be named in any particular
     shader.
-    
+
 New Procedures and Functions
 
     void UseProgramStagesEXT(uint pipeline, bitfield stages,
@@ -240,31 +240,31 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
 
     Modify the fourth and fifth paragraphs:
 
-    "To use a vertex shader, shader source code is first loaded into a shader 
-    object and then compiled. Alternatively, pre-compiled shader binary code 
-    may be directly loaded into a shader object. An OpenGL ES implementation 
+    "To use a vertex shader, shader source code is first loaded into a shader
+    object and then compiled. Alternatively, pre-compiled shader binary code
+    may be directly loaded into a shader object. An OpenGL ES implementation
     must support one of these methods for loading shaders. If the boolean value
-    SHADER_COMPILER is TRUE, then the shader compiler is supported. If the 
-    integer value NUM_SHADER_BINARY_FORMATS is greater than zero, then shader 
+    SHADER_COMPILER is TRUE, then the shader compiler is supported. If the
+    integer value NUM_SHADER_BINARY_FORMATS is greater than zero, then shader
     binary loading is supported.
-    
-    A shader object corresponds to a stage in the rendering pipeline referred 
-    to as its shader stage or type. A vertex shader object is attached to a 
-    program object. The program object is then linked, which generates 
-    executable code from the compiled shader object(s) attached to the program. 
-    When program objects are bound to a shader stage, they become the current 
-    program object for that stage. When the current program object for the 
-    vertex stage includes a vertex shader, it is considered the active program 
+
+    A shader object corresponds to a stage in the rendering pipeline referred
+    to as its shader stage or type. A vertex shader object is attached to a
+    program object. The program object is then linked, which generates
+    executable code from the compiled shader object(s) attached to the program.
+    When program objects are bound to a shader stage, they become the current
+    program object for that stage. When the current program object for the
+    vertex stage includes a vertex shader, it is considered the active program
     object for the vertex stage. The current program object for all stages may
-    be set at once using a single unified program object, or the current 
-    program object may be set for each stage individually using a separable 
+    be set at once using a single unified program object, or the current
+    program object may be set for each stage individually using a separable
     program object where different separable program objects may be current for
     other stages. The set of separable program objects current for all stages
     are collected in a program pipeline object that must be bound for use.
-    When a linked program object is made active for the vertex stage, the 
-    executable code for the vertex shaders it contains is used to process 
+    When a linked program object is made active for the vertex stage, the
+    executable code for the vertex shaders it contains is used to process
     vertices."
-    
+
     Modify the last sentence in the sixth paragraph:
 
     "... A single program object can contain either a vertex shader, a fragment
@@ -278,11 +278,11 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     object has no vertex shader or no program object is current for the
     vertex stage, the results of vertex shader execution are undefined."
 
- -- Section 2.10.3 "Program Objects" (page 30) 
+ -- Section 2.10.3 "Program Objects" (page 30)
 
     Modify the description of linking failures following the description of
     LinkProgram to read:
-    
+
     "... if <program> is not separable and does not contain both a vertex and a
     fragment shader, ..."
 
@@ -313,7 +313,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     current program for a stage is considered active if it contains executable
     code for that stage; otherwise, no program is considered active for that
     stage. If there is no active program for the vertex or fragment shader
-    stages, the results of vertex and/or fragment processing will be undefined. 
+    stages, the results of vertex and/or fragment processing will be undefined.
     However, this is not an error."
 
     Modify fourth and fifth paragraphs, p. 31:
@@ -329,15 +329,15 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     unsuccessfully, the link status will be set to FALSE, but existing
     executables and associated state will remain part of the current rendering
     state until a subsequent call to UseProgram, UseProgramStagesEXT, or
-    BindProgramPipelineEXT removes them from use. If such a program is 
-    attached to any program pipeline object, the existing executables and 
-    associated state will remain part of the program pipeline object until a 
-    subsequent call to UseProgramStagesEXT removes them from use. An 
-    unsuccessfully linked program may not be made part of the current rendering 
-    state by UseProgram or added to program pipeline objects by 
-    UseProgramStagesEXT until it is successfully re-linked. If such a program 
-    was attached to a program pipeline at the time of a failed link, its 
-    existing executable may still be made part of the current rendering state 
+    BindProgramPipelineEXT removes them from use. If such a program is
+    attached to any program pipeline object, the existing executables and
+    associated state will remain part of the program pipeline object until a
+    subsequent call to UseProgramStagesEXT removes them from use. An
+    unsuccessfully linked program may not be made part of the current rendering
+    state by UseProgram or added to program pipeline objects by
+    UseProgramStagesEXT until it is successfully re-linked. If such a program
+    was attached to a program pipeline at the time of a failed link, its
+    existing executable may still be made part of the current rendering state
     indirectly by BindProgramPipelineEXT."
 
     Insert prior to the description of DeleteProgram, p. 31:
@@ -349,11 +349,11 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
 
     <pname> identifies which parameter to set for program object
     <program>. <value> holds the value being set.
-    
+
     If <pname> is PROGRAM_SEPARABLE_EXT, <value> must be TRUE or FALSE
     and indicates whether the <program> can be bound for individual
     pipeline stages via UseProgramStagesEXT after it is next linked."
-        
+
     Modify the last paragraph of the section, p. 31:
 
     "If <program> is not current for any GL context, is not the active
@@ -368,7 +368,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
         uint CreateShaderProgramvEXT(enum type, sizei count,
                                      const char **strings);
 
-    creates a stand-alone program from an array of null-terminated source 
+    creates a stand-alone program from an array of null-terminated source
     code strings for a single shader type.  CreateShaderProgramvEXT
     is equivalent to the following command sequence:
 
@@ -430,7 +430,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     Program pipeline objects are deleted by calling
 
         void DeleteProgramPipelinesEXT(sizei n, const uint *pipelines);
-    
+
     <pipelines> contains <n> names of program pipeline objects to be
     deleted. Once a program pipeline object is deleted, it has no
     contents and its name becomes unused. If an object that is currently
@@ -479,9 +479,9 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     shader stages, and <program> is the program object from which the
     executables are taken. The bits set in <stages> indicate the program
     stages for which the program object named by <program> becomes
-    current. These stages may include vertex or fragment indicated by 
-    VERTEX_SHADER_BIT_EXT or FRAGMENT_SHADER_BIT_EXT respectively. The 
-    constant ALL_SHADER_BITS_EXT indicates <program> is to be made current 
+    current. These stages may include vertex or fragment indicated by
+    VERTEX_SHADER_BIT_EXT or FRAGMENT_SHADER_BIT_EXT respectively. The
+    constant ALL_SHADER_BITS_EXT indicates <program> is to be made current
     for all shader stages. If <program> refers to a program object with a valid
     shader attached for an indicated shader stage, this call installs
     the executable code for that stage in the indicated program pipeline
@@ -489,11 +489,11 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     zero or with a program object that contains no executable code for the
     given stages, it is as if the pipeline object has no programmable stage
     configured for the indicated shader stages.  If <stages> is not the
-    special value ALL_SHADER_BITS_EXT and has a bit set that is not 
-    recognized, the error INVALID_VALUE is generated. If the program object 
+    special value ALL_SHADER_BITS_EXT and has a bit set that is not
+    recognized, the error INVALID_VALUE is generated. If the program object
     named by <program> was linked without the PROGRAM_SEPARABLE_EXT parameter
-    set or was not linked successfully, the error INVALID_OPERATION is 
-    generated and the corresponding shader stages in the <pipeline> 
+    set or was not linked successfully, the error INVALID_OPERATION is
+    generated and the corresponding shader stages in the <pipeline>
     program pipeline object are not modified.
 
     If <pipeline> is a name that has been generated (without subsequent
@@ -502,7 +502,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     new state vector in the same manner as when BindProgramPipelineEXT
     creates a new program pipeline object. If <pipeline> is not a name
     returned from a previous call to GenProgramPipelinesEXT or if such a
-    name has since been deleted by DeleteProgramPipelinesEXT, an 
+    name has since been deleted by DeleteProgramPipelinesEXT, an
     INVALID_OPERATION error is generated.
 
     The command
@@ -521,7 +521,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     new state vector in the same manner as when BindProgramPipelineEXT
     creates a new program pipeline object. If <pipeline> is not a name
     returned from a previous call to GenProgramPipelinesEXT or if such a
-    name has since been deleted by DeleteProgramPipelinesEXT, an 
+    name has since been deleted by DeleteProgramPipelinesEXT, an
     INVALID_OPERATION error is generated.
 
 
@@ -571,15 +571,15 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     well-defined as long as the other program writes to an output with the
     same location qualifier, data type, and qualification.  Also, an input
     will be well-defined if the other program writes to an output matching
-    the input in everything but data type as long as the output data type  
-    has the same basic component type and more components.  The names of 
-    variables need not match when matching by location.  For the purposes 
-    of interface matching, an input with a location qualifier is considered 
-    to match a corresponding output only if that output has an identical 
+    the input in everything but data type as long as the output data type
+    has the same basic component type and more components.  The names of
+    variables need not match when matching by location.  For the purposes
+    of interface matching, an input with a location qualifier is considered
+    to match a corresponding output only if that output has an identical
     location qualifier.
 
-    Built-in inputs or outputs do not affect interface matching.  Any such 
-    built-in inputs are well-defined unless they are derived from built-in 
+    Built-in inputs or outputs do not affect interface matching.  Any such
+    built-in inputs are well-defined unless they are derived from built-in
     outputs not written by the previous shader stage.
 
 
@@ -593,7 +593,7 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     The state of each program pipeline object consists of:
 
     * Three unsigned integers (initially all zero) are  required to hold
-      each respective name of the current vertex stage program, current 
+      each respective name of the current vertex stage program, current
       fragment stage program, and active program respectively.
     * A Boolean holding the status of the last validation attempt,
       initially false.
@@ -602,46 +602,46 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     * An integer holding the length of the information log."
 
  -- Section 2.10.4 "Shader Variables" subsection "Vertex Attributes"
- 
+
     Change the first sentence of the second full paragraph (p. 34):
-    
+
     "When a program is linked, any active attributes without a binding
     specified either through BindAttribLocation or explicitly set
     within the shader text will be automatically bound to vertex
     attributes by the GL."
-    
+
     Add the following sentence to the end of that same paragraph:
-    
+
     "If an active attribute has a binding explicitly set within the shader text
-    and a different binding assigned by BindAttribLocation, the assignment in 
+    and a different binding assigned by BindAttribLocation, the assignment in
     the shader text is used."
 
  -- Section 2.10.4 "Shader Variables" subsection "Uniform Variables"
 
     Replace the paragraph introducing Uniform* (p. 37):
 
-    "To load values into the uniform variables of the active program object, 
+    "To load values into the uniform variables of the active program object,
     use the commands
 
-        ... 
-    
+        ...
+
     If a non-zero program object is bound by UseProgram, it is the
     active program object whose uniforms are updated by these commands.
     If no program object is bound using UseProgram, the active program
-    object of the current program pipeline object set by 
-    ActiveShaderProgramEXT is the active program object. If the current 
-    program pipeline object has no active program or there is no current 
+    object of the current program pipeline object set by
+    ActiveShaderProgramEXT is the active program object. If the current
+    program pipeline object has no active program or there is no current
     program pipeline object, then there is no active program.
-        
+
     The given values are loaded into the ... "
 
     Change the last bullet in the "Uniform Variables" subsection (p. 38) to:
 
     "* if there is no active program in use."
 
-    Add to the end of the "Uniform Variables" subsection (p. 38): 
+    Add to the end of the "Uniform Variables" subsection (p. 38):
 
-    To load values into the uniform variables of a program which may not 
+    To load values into the uniform variables of a program which may not
     necessarily be bound, use the commands
 
         void ProgramUniform{1234}{if}EXT(uint program, int location,
@@ -656,9 +656,9 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
                                             sizei count, boolean transpose,
                                             const float *value);
         void ProgramUniformMatrix{2x3,3x2,2x4,
-                                  4x2,3x4,4x3}fvEXT(uint program, 
+                                  4x2,3x4,4x3}fvEXT(uint program,
                                                     int location,
-                                                    sizei count, 
+                                                    sizei count,
                                                     boolean transpose,
                                                     const float *value);
 
@@ -673,21 +673,21 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     identifies a shader object or a program object that has not been
     linked successfully, the error INVALID_OPERATION is generated.
 
- -- Section 2.10.5 "Shader Execution" (p. 40) 
+ -- Section 2.10.5 "Shader Execution" (p. 40)
 
     Change the first paragraph:
 
-    "If there is an active program object present for the vertex stage, the 
+    "If there is an active program object present for the vertex stage, the
     executable code for this active program is used to process incoming vertex
     values."
 
     Change first paragraph of subsection "Validation", p. 41:
 
-    "It is not always possible to determine at link time if a program object 
-    can execute successfully, given that LinkProgram can not know the state of 
+    "It is not always possible to determine at link time if a program object
+    can execute successfully, given that LinkProgram can not know the state of
     the remainder of the pipeline.  Therefore validation is done when the first
-    rendering command (DrawArrays or DrawElements) is issued, to determine if 
-    the set of active program objects can be executed. If the current set of 
+    rendering command (DrawArrays or DrawElements) is issued, to determine if
+    the set of active program objects can be executed. If the current set of
     active program objects cannot be executed, no primitives
     are processed and the error INVALID_OPERATION will be generated."
 
@@ -711,13 +711,13 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     program objects. As a development aid, use the command
 
         void ValidateProgramPipelineEXT(uint pipeline);
-    
+
     to validate the program pipeline object <pipeline> against the
     current GL state. Each program pipeline object has a boolean status,
     VALIDATE_STATUS, that is modified as a result of validation. This
     status can be queried with GetProgramPipelineivEXT (See section 6.1.8).
     If validation succeeded, the program pipeline object is guaranteed
-    to execute given the current GL state. 
+    to execute given the current GL state.
 
     If <pipeline> is a name that has been generated (without subsequent
     deletion) by GenProgramPipelinesEXT, but refers to a program pipeline
@@ -725,12 +725,12 @@ Additions to Chapter 2 of the OpenGL ES 2.0 Specification (OpenGL Operation):
     new state vector in the same manner as when BindProgramPipelineEXT
     creates a new program pipeline object. If <pipeline> is not a name
     returned from a previous call to GenProgramPipelinesEXT or if such a
-    name has since been deleted by DeleteProgramPipelinesEXT, an 
+    name has since been deleted by DeleteProgramPipelinesEXT, an
     INVALID_OPERATION error is generated.
 
 Additions to Chapter 3 of the OpenGL ES 2.0 Specification (Rasterization)
 
- -- Section 3.8 "Fragment Shaders" (p. 86) 
+ -- Section 3.8 "Fragment Shaders" (p. 86)
 
     Replace the last paragraph with:
 
@@ -739,8 +739,8 @@ Additions to Chapter 3 of the OpenGL ES 2.0 Specification (Rasterization)
     is used to process fragments. If the current fragment stage program
     object has no fragment shader or no program object is current for the
     fragment stage, the results of fragment shader execution are undefined."
-    
-Additions to Chapter 4 of the OpenGL ES 2.0 Specification (Per-Fragment 
+
+Additions to Chapter 4 of the OpenGL ES 2.0 Specification (Per-Fragment
 Operations and the Frame Buffer)
 
     None
@@ -749,11 +749,11 @@ Additions to Chapter 5 of the OpenGL ES 2.0 Specification (Special Functions)
 
     None
 
-Additions to Chapter 6 of the OpenGL ES 2.0 Specification (State and State 
+Additions to Chapter 6 of the OpenGL ES 2.0 Specification (State and State
 Requests)
 
  -- Section 6.1.8 "Shader and Program Queries"
-    
+
     Add to GetProgramiv description:
 
     "If <pname> is PROGRAM_SEPARABLE_EXT, TRUE is returned if the program has
@@ -762,7 +762,7 @@ Requests)
 
     Add after GetProgramiv description:
 
-    "The command 
+    "The command
 
         boolean IsProgramPipelineEXT(uint pipeline);
 
@@ -785,20 +785,20 @@ Requests)
     new state vector in the same manner as when BindProgramPipelineEXT
     creates a new program pipeline object. If <pipeline> is not a name
     returned from a previous call to GenProgramPipelinesEXT or if such a
-    name has since been deleted by DeleteProgramPipelinesEXT, an 
+    name has since been deleted by DeleteProgramPipelinesEXT, an
     INVALID_OPERATION error is generated.
 
     If <pname> is ACTIVE_PROGRAM_EXT, the name of the active program
     object of the program pipeline object is returned.
-    
+
     If <pname> is VERTEX_SHADER, the name of the current program
     object for the vertex shader type of the program pipeline object is
     returned.
-       
+
     If <pname> is FRAGMENT_SHADER, the name of the current program
     object for the fragment shader type of the program pipeline object
     is returned.
-       
+
     If <pname> is VALIDATE_STATUS, the validation status of the
     program pipeline object, as determined by ValidateProgramPipelineEXT
     (see section 2.10.5) is returned.
@@ -806,7 +806,7 @@ Requests)
     If <pname> is INFO_LOG_LENGTH, the length of the info log,
     including a null terminator, is returned. If there is no info log,
     zero is returned."
-    
+
     Change paragraph describing GetShaderInfoLog and GetProgram:
 
     "A string that contains information about the last compilation
@@ -838,7 +838,7 @@ Requests)
     returned info log will either be an empty string or it will contain
     information about the last validation attempt for that object.
 
-Additions to Appendix D of the OpenGL ES 2.0 Specification (Shared Objects and 
+Additions to Appendix D of the OpenGL ES 2.0 Specification (Shared Objects and
 Multiple Contexts)
 
     (add sentence to third paragraph, p. 164) Program pipeline objects are not
@@ -860,9 +860,9 @@ Additions to the OpenGL ES Shading Language Specification, Version 1.0.17
  -- Section 4.3.3 "Attribute" (page 30):
 
     Add new section 4.3.3.1 "Attribute Layout Qualifiers"
-    
+
     "Vertex shaders allow location layout qualifiers on attribute variable
-    declarations.  The location layout qualifier identifier for vertex shader 
+    declarations.  The location layout qualifier identifier for vertex shader
     attributes is:
 
       layout-qualifier-id
@@ -889,11 +889,11 @@ Additions to the OpenGL ES Shading Language Specification, Version 1.0.17
 
     "When an interface between shader stages is formed using shaders from two
     separate program objects, it is not possible to detect mismatches between
-    vertex shader varying outputs and fragment shader varying inputs when the 
-    programs are linked. When there are mismatches between inputs and outputs 
-    on such interfaces, the values passed across the interface will be 
-    partially or completely undefined. Shaders can ensure matches across such 
-    interfaces either by using varying layout qualifiers (Section 4.3.5.1) or 
+    vertex shader varying outputs and fragment shader varying inputs when the
+    programs are linked. When there are mismatches between inputs and outputs
+    on such interfaces, the values passed across the interface will be
+    partially or completely undefined. Shaders can ensure matches across such
+    interfaces either by using varying layout qualifiers (Section 4.3.5.1) or
     by using identical varying declarations.  Complete rules for interface
     matching are found in the "Shader Interface Matching" portion of section
     2.10.PPO of the OpenGL Specification."
@@ -921,9 +921,9 @@ Additions to the OpenGL ES Shading Language Specification, Version 1.0.17
     will establish that the input <colors> is assigned to vector
     location numbers 6, 7, and 8.
 
-    If the declared varying is an <n>x<m> matrix, it will be assigned multiple 
-    locations starting with the location specified. The number of locations 
-    assigned for each matrix will be the same as for an <n>-element array of 
+    If the declared varying is an <n>x<m> matrix, it will be assigned multiple
+    locations starting with the location specified. The number of locations
+    assigned for each matrix will be the same as for an <n>-element array of
     <m>-component vectors. For example,
 
         layout(location = 9) varying mat4 transforms[2];
@@ -932,15 +932,15 @@ Additions to the OpenGL ES Shading Language Specification, Version 1.0.17
     numbers 9-16, with transforms[0] being assigned to locations 9-12 and
     transforms[1] being assigned to locations 13-16.
 
-    The number of varying locations available to a shader is limited to the 
+    The number of varying locations available to a shader is limited to the
     implementation-dependent advertised maximum varying vector count.
     A program will fail to link if any attached shader uses a location greater
     than or equal to the number of supported locations, unless
     device-dependent optimizations are able to make the program fit within
     available hardware resources.
 
-    A program will fail to link if any two varying variables are assigned to 
-    the same location, or if explicit location assignments leave the linker 
+    A program will fail to link if any two varying variables are assigned to
+    the same location, or if explicit location assignments leave the linker
     unable to find space for other variables without explicit assignments."
 
 Dependencies on OpenGL ES 3.0
@@ -953,20 +953,20 @@ Dependencies on OpenGL ES 3.0
     If neither OpenGL ES 3.0 nor NV_non_square_matrices is present,
     references to ProgramUniformMatrix{2x3,3x2,2x4,4x2,3x4,4x3}fv
     should be ignored.
-    
+
     The behavior of mixing GLSL ES 1.00 shaders with GLSL ES 3.00 shaders
     in the same rendering pipeline is undefined.
-    
+
     If the GL is OpenGL ES 3.0, make the following changes:
-    
-    Replace this sentence from the first paragraph of section 2.10.PPO Shader 
+
+    Replace this sentence from the first paragraph of section 2.10.PPO Shader
     Interface Matching:
-    
-    "These inputs and outputs must typically match in name, type, and 
+
+    "These inputs and outputs must typically match in name, type, and
     qualification."
-    
+
     with the following language:
-    
+
     "An output variable is considered to match an input variable in the
     subequent shader if:
 
@@ -974,38 +974,38 @@ Dependencies on OpenGL ES 3.0
 
         * the two variables are declared with the same location layout
           qualifier and match in type and qualification."
-    
+
     Add this paragraph after the first paragraph of section 2.10.PPO:
-    
-    "Variables declared as structures are considered to match in type if and 
-    only if structure members match in name, type, qualification, and 
-    declaration order.  Variables declared as arrays are considered to match 
-    in type only if both declarations specify the same element type and array 
+
+    "Variables declared as structures are considered to match in type if and
+    only if structure members match in name, type, qualification, and
+    declaration order.  Variables declared as arrays are considered to match
+    in type only if both declarations specify the same element type and array
     size.  The rules for determining if variables match in qualification are
     found in the OpenGL Shading Language Specification."
-    
+
     Replace the last paragraph from section 2.10.PPO:
-    
-    "Built-in inputs or outputs do not affect interface matching.  Any such 
-    built-in inputs are well-defined unless they are derived from built-in 
+
+    "Built-in inputs or outputs do not affect interface matching.  Any such
+    built-in inputs are well-defined unless they are derived from built-in
     outputs not written by the previous shader stage."
-    
+
     with the following new language:
-    
-    "When using GLSL ES 1.00 shaders, built-in inputs or outputs do not affect 
-    interface matching. Any such built-in inputs are well-defined unless they 
+
+    "When using GLSL ES 1.00 shaders, built-in inputs or outputs do not affect
+    interface matching. Any such built-in inputs are well-defined unless they
     are derived from built-in outputs not written by the previous shader stage.
-    
-    When using GLSL ES 3.00 shaders in separable programs, gl_Position and 
-    gl_PointSize built-in outputs must be redeclared according to Section 7.5 
-    of the OpenGL Shading Language Specification. Other built-in inputs or 
-    outputs do not affect interface matching. Any such built-in inputs are 
-    well-defined unless they are derived from built-in outputs not written by 
+
+    When using GLSL ES 3.00 shaders in separable programs, gl_Position and
+    gl_PointSize built-in outputs must be redeclared according to Section 7.5
+    of the OpenGL Shading Language Specification. Other built-in inputs or
+    outputs do not affect interface matching. Any such built-in inputs are
+    well-defined unless they are derived from built-in outputs not written by
     the previous shader stage."
-    
-    and add to GLSL ES 3.00 new section 7.5, Built-In Redeclaration and 
+
+    and add to GLSL ES 3.00 new section 7.5, Built-In Redeclaration and
     Separable Programs:
-    
+
     "The following vertex shader outputs may be redeclared at global scope to
     specify a built-in output interface, with or without special qualifiers:
 
@@ -1032,23 +1032,23 @@ Errors
     parameter has not been successfully linked.
 
     UseProgramStagesEXT generates INVALID_VALUE if <stages> has a bit
-    set for any other than VERTEX_SHADER_BIT_EXT or 
+    set for any other than VERTEX_SHADER_BIT_EXT or
     FRAGMENT_SHADER_BIT_EXT, unless <stages> is ALL_SHADER_BITS_EXT.
 
     ActiveShaderProgramEXT generates INVALID_OPERATION if <program>
     has not been successfully linked.
 
-    DrawArrays and DrawElements generate INVALID_OPERATION when a program 
-    object with multiple attached shaders is active for one or more, but not 
+    DrawArrays and DrawElements generate INVALID_OPERATION when a program
+    object with multiple attached shaders is active for one or more, but not
     all of the shader program types corresponding to the shaders that are
     attached.
 
 New State
 
     Add to table 6.15 (Program Object State):
-    
+
                                                        Initial
-    Get Value           Type  Get Command              Value    Description               Sec   
+    Get Value           Type  Get Command              Value    Description               Sec
     ------------------  ----  -----------------------  -------  ------------------------  ------
     PROGRAM_PIPELINE_-  Z+    GetIntegerv              0        Current program pipeline  2.10.PPO
     BINDING_EXT                                                 object binding
@@ -1056,7 +1056,7 @@ New State
     Add new table 6.PPO (Program Pipeline Object State):
 
                                                             Initial
-    Get Value           Type  Get Command                   Value    Description               Sec   
+    Get Value           Type  Get Command                   Value    Description               Sec
     ------------------  ----  ----------------------------  -------  ------------------------  ------
     ACTIVE_PROGRAM_EXT  Z+    GetProgramPipelineivEXT       0        The program object        2.10.PPO
                                                                      that Uniform* commands
@@ -1068,9 +1068,9 @@ New State
     VALIDATE_STATUS     B     GetProgramPipelineivEXT       FALSE    Validate status of        2.10.PPO
                                                                      program pipeline object
                         S     GetProgramPipelineInfoLogEXT  empty    Info log for program      6.1.8
-                                                                     pipeline object                                                      
+                                                                     pipeline object
     INFO_LOG_LENGTH     Z+    GetProgramPipelineivEXT       0        Length of info log        6.1.8
-                                                    
+
 New Implementation Dependent State
 
     None
@@ -1079,7 +1079,7 @@ Issues
 
     See ARB_separate_shader_objects extension specification for issues
     documented while working on the original desktop OpenGL extension.
-    
+
 Revision History
 
     Rev.    Date      Author     Changes
@@ -1091,12 +1091,12 @@ Revision History
                                  not shareable.
 
     3     2011-07-26  Benj       Add VALIDATE_STATUS to state tables and
-                                 GetProgramPipelineivEXT description, remove 
+                                 GetProgramPipelineivEXT description, remove
                                  the language erroneously deleting
                                  CURRENT_PROGRAM.
 
-    4     2013-03-07  Jon Leech  Added note about the unrelated OpenGL 
-                                 extension of the same name.             
+    4     2013-03-07  Jon Leech  Added note about the unrelated OpenGL
+                                 extension of the same name.
 
     5     2013-03-25  Benj       Add interactions with OpenGL ES 3.0.
     6     2013-09-20  dkoch      Add interactions with NV_non_square_matrices.

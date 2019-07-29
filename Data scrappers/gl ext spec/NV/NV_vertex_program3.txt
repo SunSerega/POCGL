@@ -41,7 +41,7 @@ Overview
     to the beginning of their vertex programs.
 
     New functionality provided by this extension, above and beyond that
-    already provided by NV_vertex_program2_option extension, includes: 
+    already provided by NV_vertex_program2_option extension, includes:
 
         * texture lookups in vertex programs,
 
@@ -138,7 +138,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
 
     <POPAop>                ::= "POPA"
 
-    <TEXop_instruction>     ::= <TEXop> <instResult> "," <instOperandV> "," 
+    <TEXop_instruction>     ::= <TEXop> <instResult> "," <instOperandV> ","
                                 <texTarget>
 
     <TEXop>                 ::= "TEX"
@@ -153,7 +153,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     <optTexImageUnitNum>    ::= /* empty */
                               | "[" <texImageUnitNum> "]"
 
-    <texImageUnitNum>       ::= <integer> 
+    <texImageUnitNum>       ::= <integer>
                                 /*[0,MAX_TEXTURE_IMAGE_UNITS_ARB-1]*/
 
     <texTargetType>         ::= "1D"
@@ -185,7 +185,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
                               | "FL1"
 
     (modify description of reserved identifiers)
-    
+
     ... The following strings are reserved keywords and may not be used
     as identifiers:
 
@@ -273,7 +273,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     may be lower than the total number of texture image units provided.  If
     the number of texture image units referenced by a vertex program exceeds
     this limit, the program will fail to load.
-    
+
     Modify Section 2.14.4, Vertex Program Execution Environment
 
     (modify Begin-time error language for vertex program execution to cover
@@ -532,7 +532,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
 
         * several new instructions:
 
-          * POPA -- pop address register off stack        
+          * POPA -- pop address register off stack
           * PUSHA -- push address register onto stack
           * TEX -- texture lookup
           * TXB -- texture lookup w/LOD bias
@@ -556,7 +556,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     instruction.  The following pseudocode describes the operation of
     the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         if (callStackDepth <= 0) {
           // terminate vertex program normally
@@ -588,7 +588,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
 
     Add to Section 2.14.5,  Vertex Program Instruction Set
 
-    Section 2.14.5.43, POPA:  Pop Address Register Stack    
+    Section 2.14.5.43, POPA:  Pop Address Register Stack
 
     The POPA instruction generates a integer result vector by popping
     an entry off of the call stack.
@@ -609,14 +609,14 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     code write mask test other than "TR".
 
     In the pseudocode, <callStackDepth> is the current depth of the call
-    stack and <callStack> is an array holding the call stack.  
+    stack and <callStack> is an array holding the call stack.
 
     The vertex program terminates abnormally if it executes a POPA instruction
     when the call stack is empty, or when the entry at the top of the call
     stack is not an address register pushed by PUSHA.  When a vertex program
     terminates abnormally, all of the vertex program results are undefined.
 
-    Section 2.14.5.44, PUSHA:  Push Address Register Stack    
+    Section 2.14.5.44, PUSHA:  Push Address Register Stack
 
     The PUSHA instruction pushes the address register operand onto the
     call stack, which is also used for subroutine calls.  The PUSHA
@@ -686,7 +686,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     Since partial derivatives of the texture coordinates are not defined,
     the base LOD value for vertex texture lookups is defined to be
     zero.  The value of lambda' used in equation 3.16 will be simply
-    clamp(texobj_bias + texunit_bias + tmp.w).  
+    clamp(texobj_bias + texunit_bias + tmp.w).
 
     Since the base LOD value is zero, the TXB instruction is completely
     equivalent to the TXL instruction, where the w component contains
@@ -701,7 +701,7 @@ Additions to Chapter 2 of the OpenGL 1.4 Specification (OpenGL Operation)
     components of the vector operand.  The w component of the operand
     is used as the base LOD for the texture lookup.
 
-      tmp = VectorLoad(op0); 
+      tmp = VectorLoad(op0);
       result = TextureSampleLOD(tmp.x, tmp.y, tmp.z, 1.0, tmp.w, unit, target);
 
     where <unit> and <target> are the texture image unit number and
@@ -779,7 +779,7 @@ Dependencies on ARB_vertex_program
 
 Dependencies on NV_vertex_program2_option
 
-    NV_vertex_program2_option is required.  
+    NV_vertex_program2_option is required.
 
     If the NV_vertex_program3 program option is specified, all
     the functionality described in both this extension and the

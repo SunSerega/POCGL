@@ -5,11 +5,11 @@ Name
 Name Strings
 
     WGL_EXT_swap_control_tear
-    
+
 Contact
 
     Piers Daniell, NVIDIA (pdaniell 'at' nvidia.com)
-    
+
 Contributors
 
     Antonio Tejada, NVIDIA
@@ -20,7 +20,7 @@ Contributors
 Status
 
     Complete. Shipping with NVIDIA Forceware 285.62 and AMD Catalyst 11.10
-    drivers. 
+    drivers.
 
 Version
 
@@ -34,7 +34,7 @@ Number
 Dependencies
 
     WGL_EXT_extensions_string is required.
-    
+
     WGL_EXT_swap_control is required.
 
 Overview
@@ -70,8 +70,8 @@ Additions to the WGL Specification
     Add the following paragraph:
 
     "If <interval> is negative, the minimum number of video frames between
-    buffer swaps is the absolute value of <interval>. In this case, if 
-    abs(<interval>) video frames have already passed from the previous swap 
+    buffer swaps is the absolute value of <interval>. In this case, if
+    abs(<interval>) video frames have already passed from the previous swap
     when the swap is ready to be performed, the swap will occur without
     synchronization to a video frame. When an unsynchronized swap happens,
     the missed frame will count towards the minimum number of video frames
@@ -92,7 +92,7 @@ Errors
     "If the function succeeds, the return value is TRUE. If the function
     fails, the return value is FALSE.  To get extended error information,
     call GetLastError."
-    
+
     Remove the following error:
 
        ERROR_INVALID_DATA      The <interval> parameter is negative.
@@ -109,7 +109,7 @@ Issues
 
     1) This extension doesn't provide a way to know when a video frame was
        missed and an unsynchronized swap was performed.
-    
+
        UNRESOLVED: This extensions isn't meant to solve the issue of repeated
        tearing if the application falls behind the vsync. This extension just
        eliminates the extra stall that will occur if the application misses

@@ -50,11 +50,11 @@ Overview
     any (possibly proprietary) floating point format, or in a fixed point
     format that has the range and accuracy of at least 16.16 (signed 16 bit
     integer part, unsigned 16 bit fractional part).
-    
+
     This extension is intended to allow application to query the components
     of the matrix and also their status, regardless whether the internal
     representation is in fixed point or floating point.
-     
+
 IP Status
 
     There is no intellectual property associated with this extension.

@@ -22,10 +22,10 @@ Dependencies
 Overview
 
     This extension affect the way the fog coefficient (f) is used to
-    blend the rasterized fragments in non-indexed color mode. 
-    When enabled using the GL_FOG_BLEND_ALPHA_SGIX parameter, 
+    blend the rasterized fragments in non-indexed color mode.
+    When enabled using the GL_FOG_BLEND_ALPHA_SGIX parameter,
     the alpha component of the fog color is used to change the
-    resulting alpha, as well as the RGB components. 
+    resulting alpha, as well as the RGB components.
     The color components may stay unchanged by the fog computation
     if the GL_FOG_BLEND_COLOR_SGIX is disabled.
     No change is done to the equation C = f*Cr + (1-f)Cf

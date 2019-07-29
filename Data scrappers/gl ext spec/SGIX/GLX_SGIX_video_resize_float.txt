@@ -1,4 +1,4 @@
-XXX not complete yet 
+XXX not complete yet
 
 
 Name
@@ -92,14 +92,14 @@ Additions to the GLX Specification
 
 Errors
 
-    all SGIX_video_resize commands mentioned here return GLX_BAD_CONTEXT 
+    all SGIX_video_resize commands mentioned here return GLX_BAD_CONTEXT
     if there is no current GLXContext.
 
     glXChannelRectSGIX returns GLX_BAD_CONTEXT if the current context is
     not direct, or if there is no current context.
 
-    glXChannelRectSGIX returns GLX_BAD_VALUE if the x,y,w,h rectangle specified 
-    does not fit within the channel's rectangle that was current at the time of the 
+    glXChannelRectSGIX returns GLX_BAD_VALUE if the x,y,w,h rectangle specified
+    does not fit within the channel's rectangle that was current at the time of the
     glXBindChannelToWindowSGIX call.
 
     glXBindChannelToWindowSGIX returns GLX_BAD_VALUE if window passed to it
@@ -111,7 +111,7 @@ Errors
 New State
      Get Value                   Get Command             Type    Initial Value
      ---------                   -----------             ----    -------------
-     [deltas]            glXQueryChannelDeltasfSGIX Z+    dx=4,dy=1,dw=4,dh=1 
+     [deltas]            glXQueryChannelDeltasfSGIX Z+    dx=4,dy=1,dw=4,dh=1
      [resize rect]        glXQueryChannelRectfSGIX   Z+    current pan/zoom rect
 
 

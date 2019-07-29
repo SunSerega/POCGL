@@ -227,7 +227,7 @@ Revision History
 
     Rev.    Date      Author    Changes
     ----  --------    --------  -----------------------------------------
-     4    06/09/2014  Jon Leech Note that errors can be generated from   
+     4    06/09/2014  Jon Leech Note that errors can be generated from
                                 the non-Multi Draw*Indirect commands
                                 in the equivalent pseudocode (Bug 11946).
      3    06/14/2012  Jon Leech Change to ARB extension & remove suffixes

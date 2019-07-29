@@ -9,7 +9,7 @@ Name Strings
     GL_SGIX_color_type
 
 Version
-    
+
     $Date: 1996/10/01 21:31:47 $ $Revision: 1.5 $
 
 Number
@@ -53,14 +53,14 @@ Issues
       extended range.  Integer colors are still scaled to [0,1].
       This means that GetIntegerv of an extended range color can not
       represent an extended color range. Is this okay?
-    
+
     * when the color range is extended this implies that accumulation buffers
       and texture colors also support the extended range. Is this okay?
 
     * if a component isn't stored in the framebuffer (bits == 0) what should
       range queries return.  0 seems obvious for R, G, and B, but what about
       alpha.  If there is no alpha value, should alpha be the max value?
-    
+
     * do transparent pixel values need to be embellished?
 
     * is a complex ClearColor and ClearAccum needed?
@@ -85,8 +85,8 @@ New Tokens
     MAX_BLUE_SGIX            0x????
     MIN_ALPHA_SGIX            0x????
     MAX_ALPHA_SGIX            0x????
-    
-    Accepted by the <attributes> parameter of glXGetFBConfigAttribSGIX, and 
+
+    Accepted by the <attributes> parameter of glXGetFBConfigAttribSGIX, and
     by the <attrib_list> parameter of glXChooseFBConfigSGIX:
 
         GLX_COLOR_TYPE_SGIX        0x????
@@ -100,8 +100,8 @@ New Tokens
     GLX_MIN_ALPHA_SGIX        0x????
     GLX_MAX_ALPHA_SGIX        0x????
 
-    Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to 
-    GLX_COLOR_TYPE_SGIX) and accepted by the <attrib_list> parameter of 
+    Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to
+    GLX_COLOR_TYPE_SGIX) and accepted by the <attrib_list> parameter of
     glXChooseFBConfigSGIX (following the GLX_COLOR_TYPE_SGIX token):
 
         GLX_REAL_COLOR_SGIX        0x????
@@ -139,10 +139,10 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
     min+(max-min)k/(2^m - 1),
     where k is in {0, 1, ..., 2^m - 1}, as k (e.g. <max> is represented
     in binary as a string of all ones).  m must be at least as large as
-    the number of bits in the corresponding component of the framebuffer.  
+    the number of bits in the corresponding component of the framebuffer.
     If the framebuffer is complex, then m must be at least as large as
     the number of bits in the corresponding real or imaginary part of the
-    component of the framebuffer.  
+    component of the framebuffer.
 
     [are the rules for the msbs of unsigned color values matching the
      framebuffer components true for color ranges outside [0,1]?]
@@ -198,7 +198,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     Section 3.8 (Texturing)
 
-    Each R, G, B, and A value so extracted is clamped to [min,max]. 
+    Each R, G, B, and A value so extracted is clamped to [min,max].
     Each of the four values set by TEXTURE_BORDER_COLOR is clamped to lie
     in [min,max].
 
@@ -250,7 +250,7 @@ and the Frame buffer)
     Section 4.2.4 (The Accumulation Buffer)
 
     Accumulation buffer values are taken to be signed values in the range
-    [min2,max] where min2 = minimum(-1,<min>).  Using ACCUM obtains the R, G, 
+    [min2,max] where min2 = minimum(-1,<min>).  Using ACCUM obtains the R, G,
     B, and A components from the buffer current selected for
     reading (section 4.3.2).  Each component, considered as a fixed-point
     values in [min,max] (see section 2.12.9) is converted to floating-point.
@@ -301,7 +301,7 @@ Additions to the GLX Specification
     represent values between the minimum and maximum range.  Values
     are specified as integral numerator, denominator pairs (rational
     numbers).
-    
+
     If GLX_COLOR_TYPE_SGIX is in <attrib_list> then the value that follows
     indicates how color values are represented in the framebuffer:
 
@@ -324,7 +324,7 @@ Additions to the GLX Specification
     GLX_ACCUM_RED_SIZE, GLX_ACCUM_GREEN_SIZE, GLX_ACCUM_BLUE_SIZE, and
     GLX_ACCUM_ALPHA_SIZE are equal to the total number of bits used to
     store each complex component.
-    
+
     In general, only non-displayable drawable types (e.g. GLXPbuffers) will
     be able to be created with FBConfigs which support extended range real or
     complex color component types (see GLX_DRAWABLE_TYPE_SGIX).

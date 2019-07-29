@@ -49,7 +49,7 @@ Number
 Dependencies
 
     The ARB_robustness extension is required.
-    
+
     This extension is written against The OpenGL 4.2 (Compatibility Profile)
     specification.
 
@@ -93,7 +93,7 @@ Specification (OpenGL Operation)
 
     Add to Section 2.9.4 (Effects of Accessing Outside Buffer Bounds) on
     page 65 the following:
-    
+
     "Robust buffer access can be enabled by creating a context with robust
     access enabled through the window system binding APIs. When enabled, any
     command unable to set a GL error as described above, for example buffer
@@ -110,7 +110,7 @@ Specification (OpenGL Operation)
 
     Add a new paragraph to the end of the "Texel Fetches" sub-section on page
     147 that reads:
-    
+
     "In all the above cases, if the context was created with robust buffer
     access enabled then instead of undefined behavior the result of the
     texel fetch is zero. For the case of a texel fetch on an incomplete
@@ -118,7 +118,7 @@ Specification (OpenGL Operation)
 
     Add the following paragraph to the sub-section titled "Undefined Behavior"
     near the bottom of page 152:
-    
+
     "Robust buffer access can be enabled by creating a context with robust
     access enabled through the window system binding APIs. When enabled,
     out-of-bounds accesses will be bounded within the working memory of the
@@ -129,7 +129,7 @@ Specification (OpenGL Operation)
     from the active program's working memory or zero. An out-of-bounds
     write may overwrite a value from the active program's working memory
     or be discarded.
-    
+
     Out-of-bounds accesses to resources backed by buffer objects cannot
     read or modify data outside of the buffer object. For resources bound
     to buffer ranges, access is restricted within the buffer object from
@@ -137,7 +137,7 @@ Specification (OpenGL Operation)
     itself. Out-of-bounds reads may return values from within the buffer
     object or zero. Out-of-bounds writes may modify values within the buffer
     object or be discarded.
-    
+
     Out-of-bounds accesses to arrays of resources, such as an array of
     textures, can only access the data of bound resources. Reads from
     unbound resources return zero and writes are discarded. It is not
@@ -151,7 +151,7 @@ Additions to The OpenGL Shading Language Specification, Version 4.20.6
 
     Add a new Section 5.11 (Out-of-Bounds Access and Robust Buffer Access
     Behavior)
-    
+
     "In the sub-sections described above for array, vector, matrix and
     structure accesses, any out-of-bounds access produced undefined behavior.
     However, if robust buffer access is enabled via the OpenGL API, such accesses will
@@ -182,15 +182,15 @@ Issues
     1) Why are out-of-bounds reads of buffer object backed resourced defined
        to "return zero or a value from the current buffer object" rather than
        just "return zero"?
-       
+
        RESOLVED: This is necessary to allow the implementation to either
        range check, apply a mask/modulus or apply a clamp to the index.
-       
+
     2) Why do out-of-bounds writes to buffer object backed resources have a
        stronger guarantee than reads? The spec says that writes outside of
        the bounded range are discarded but reads are only protected within
        the buffer object.
-       
+
        RESOLVED: This stronger guarentee for writes can be made because
        GPUs made since around 2008 (DX10) already implement this behavior.
 
@@ -207,12 +207,12 @@ Revision History
                                   robust buffer access is enabled.
 
       8   20 Apr 2012  pdaniell   Mark issues 1 and 2 resolved.
-    
+
       7   15 Mar 2012  pdaniell   Edits based on reviews from Kenneth Russel
                                   and Jan-Harald Fredriksen.
 
       6   30 Jan 2012  pdaniell   Edits based on internal review.
-    
+
       5   24 Jan 2012  pdaniell   Add spec language to define out of bounds
                                   access behavior of vertex array index,
                                   buffer objects and shader arrays, vectors

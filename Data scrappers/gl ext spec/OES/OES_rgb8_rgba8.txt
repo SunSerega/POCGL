@@ -32,14 +32,14 @@ IP Status
 Status
 
     Ratified by the Khronos BOP, July 22, 2005.
-    
+
 Version
 
     Last Modifed Date: June 9, 2006
 
 Number
 
-    OpenGL ES Extension #30    
+    OpenGL ES Extension #30
 
 Dependencies
 
@@ -54,12 +54,12 @@ Overview
 
 Issues
 
- 
+
 New Tokens
 
     Accepted by the <internalformat> parameter of RenderbufferStorageOES:
 
-        RGB8_OES             0x8051 
+        RGB8_OES             0x8051
         RGBA8_OES            0x8058
 
 New Procedures and Functions

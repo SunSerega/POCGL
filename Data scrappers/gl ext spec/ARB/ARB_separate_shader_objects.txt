@@ -22,7 +22,7 @@ Contributors
     Jason Green, TransGaming
     John Kessenich, Intel
     Jon Leech
-    Kevin Rogovin 
+    Kevin Rogovin
     Nick Haemel, AMD
     Robert Ohannessian
 
@@ -160,7 +160,7 @@ Overview
 
     This ARB extension extends the GLSL language's use of layout
     qualifiers to provide cross-stage interfacing.
-    
+
 IP Status
 
     No known IP claims.
@@ -388,7 +388,7 @@ Specification (OpenGL Operation):
     object has no vertex shader or no program object is current for the
     vertex stage, ..."
 
- -- Section 2.14.2 "Program Objects" (page 91) 
+ -- Section 2.14.2 "Program Objects" (page 91)
 
     In the list of linking failures following the description of
     LinkProgram, modify the bullets reading "the program contains no objects
@@ -426,11 +426,11 @@ Specification (OpenGL Operation):
     code for that stage; otherwise, no program is considered active for that
     stage.  If there is no active program for the vertex or fragment shader
     stages,
-      [[ Compatibility Profile ]] 
+      [[ Compatibility Profile ]]
     fixed-function vertex and/or fragment processing will be used to process
     vertices and/or fragments.
-      [[ Core Profile ]] 
-    the results of vertex and/or fragment processing will be undefined. 
+      [[ Core Profile ]]
+    the results of vertex and/or fragment processing will be undefined.
     However, this is not an error.
       [[ End Profile-Specific Language ]]
     If there is no active program for the tessellation control, tessellation
@@ -553,7 +553,7 @@ Specification (OpenGL Operation):
     Program pipeline objects are deleted by calling
 
         void DeleteProgramPipelines(sizei n, const uint *pipelines);
-    
+
     <pipelines> contains <n> names of program pipeline objects to be
     deleted. Once a program pipeline object is deleted, it has no
     contents and its name becomes unused. If an object that is currently
@@ -618,8 +618,8 @@ Specification (OpenGL Operation):
     special value ALL_SHADER_BITS and has a bit set that is not recognized,
     the error INVALID_VALUE is generated.  If the program object named
     by <program> was linked without the PROGRAM_SEPARABLE parameter set
-    or was not linked successfully, the error INVALID_OPERATION is 
-    generated and the corresponding shader stages in the <pipeline> 
+    or was not linked successfully, the error INVALID_OPERATION is
+    generated and the corresponding shader stages in the <pipeline>
     program pipeline object are not modified.
 
     If <pipeline> is a name that has been generated (without subsequent
@@ -770,13 +770,13 @@ Specification (OpenGL Operation):
        one for the compatibility profile and the other for the core
        profile. ]]
 
-    [[ Compatibility Profile ]] 
+    [[ Compatibility Profile ]]
 
     As described above, an exact interface match requires matching built-in
-    input and output blocks.  At an interface between two non-fragment 
-    shader stages, the gl_PerVertex input and output blocks are considered 
-    to match if and only if the block members members match exactly in 
-    name, type, qualification, and declaration order.  At an interface 
+    input and output blocks.  At an interface between two non-fragment
+    shader stages, the gl_PerVertex input and output blocks are considered
+    to match if and only if the block members members match exactly in
+    name, type, qualification, and declaration order.  At an interface
     involving the fragment shader stage, a gl_PerVertex output block is
     considered to match a gl_PerFragment input block if all of the
     following conditions apply:
@@ -787,7 +787,7 @@ Specification (OpenGL Operation):
 
       * the gl_PerVertex block includes either gl_FrontSecondaryColor or
         gl_BackSecondaryColor if and only if the gl_PerFragment block
-        includes gl_SecondaryColor; 
+        includes gl_SecondaryColor;
 
       * the gl_PerVertex block includes gl_FogFragCoord if and only if the
         gl_PerFragment block also includes gl_FogFragCoord; and
@@ -799,12 +799,12 @@ Specification (OpenGL Operation):
     the presence or absence of any block members other than those listed
     immediately above does not affect interface matching.
 
-    [[ Core Profile ]] 
+    [[ Core Profile ]]
 
     As described above, an exact interface match requires matching built-in
-    input and output blocks.  At an interface between two non-fragment 
-    shader stages, the gl_PerVertex input and output blocks are considered 
-    to match if and only if the block members members match exactly in 
+    input and output blocks.  At an interface between two non-fragment
+    shader stages, the gl_PerVertex input and output blocks are considered
+    to match if and only if the block members members match exactly in
     name, type, qualification, and declaration order.  At an interface
     involving the fragment shader stage, the presence or absence of any
     built-in output does not affect interface matching.
@@ -836,7 +836,7 @@ Specification (OpenGL Operation):
       empty.
     * An integer holding the length of the information log"
 
- -- Section 2.14.4 "Uniform Variables" (page 97) 
+ -- Section 2.14.4 "Uniform Variables" (page 97)
 
     Replace the 1st paragraph of the "Loading Uniform Variables In The
     Default Uniform Block" section (page 108):
@@ -859,7 +859,7 @@ Specification (OpenGL Operation):
     "* if there is no active program in use."
 
     Add to the end of the subsection "Loading Uniform Variables In The
-    Default Uniform Block" section (page 110): 
+    Default Uniform Block" section (page 110):
 
     To load values into the uniform variables of the default uniform
     block of a program which may not necessarily be bound, use the
@@ -893,7 +893,7 @@ Specification (OpenGL Operation):
     identifies a shader object or a program object that has not been
     linked successfully, the error INVALID_OPERATION is generated.
 
- -- Section 2.14.4 "Subroutine Uniform Variables" (page 114) 
+ -- Section 2.14.4 "Subroutine Uniform Variables" (page 114)
 
     Modify the last paragraph of the section, p. 117
 
@@ -903,7 +903,7 @@ Specification (OpenGL Operation):
     with compatible subroutine types.
 
 
- -- Section 2.14.8 "Shader Execution" (page 122) 
+ -- Section 2.14.8 "Shader Execution" (page 122)
 
     Change the first paragraph:
 
@@ -954,13 +954,13 @@ Specification (OpenGL Operation):
     program objects. As a development aid, use the command
 
         void ValidateProgramPipeline(uint pipeline );
-    
+
     to validate the program pipeline object <pipeline> against the
     current GL state. Each program pipeline object has a boolean status,
     VALIDATE_STATUS, that is modified as a result of validation. This
     status can be queried with GetProgramPipelineiv (See section 6.1.18).
     If validation succeeded, the program pipeline object is guaranteed
-    to execute given the current GL state. 
+    to execute given the current GL state.
 
     If <pipeline> is a name that has been generated (without subsequent
     deletion) by GenProgramPipelines, but refers to a program pipeline
@@ -1079,7 +1079,7 @@ Specification (OpenGL Operation):
 Additions to Chapter 3 of the OpenGL 4.0 Compatibility Profile
 Specification (Rasterization)
 
- -- Section 3.12 "Fragment Shaders" (page 321) 
+ -- Section 3.12 "Fragment Shaders" (page 321)
 
     Replace the second to the last paragraph with:
 
@@ -1098,7 +1098,7 @@ Specification (Per-Fragment Operations and the Frame Buffer)
 Additions to Chapter 5 of the OpenGL 4.0 Compatibility Profile
 Specification (Special Functions)
 
- -- Section 5.5 "Display Lists" (page 410) 
+ -- Section 5.5 "Display Lists" (page 410)
 
     Add CreateShaderProgram, GenProgramPipelines, DeleteProgram-
     Pipelines, and BindProgramPipelines to the "Program and shader
@@ -1109,7 +1109,7 @@ Additions to Chapter 6 of the OpenGL 4.0 Compatibility Profile Specific-
 ation (State and State Requests)
 
  -- Section 6.1.18 "Shader and Program Queries"
-    
+
     Add to GetProgramiv description:
 
     "If <pname> is PROGRAM_SEPARABLE, TRUE is returned if the program has
@@ -1118,7 +1118,7 @@ ation (State and State Requests)
 
     Add after GetProgramiv description:
 
-    "The command 
+    "The command
 
         boolean IsProgramPipeline(uint pipeline);
 
@@ -1206,7 +1206,7 @@ Additions to Appendix D of the OpenGL 4.0 Compatibility Profile Specific-
 ation (Shared Objects and Multiple Contexts)
 
     (modify third paragraph, p. 533, making program pipeline objects
-    non-shared) Framebuffer, query, vertex array, and program pipeline 
+    non-shared) Framebuffer, query, vertex array, and program pipeline
     objects are not shared.
 
 
@@ -1276,7 +1276,7 @@ Additions to the OpenGL Shading Language Specification, Version 4.00.8
     3.  For vertex shader inputs, the location specifies the number of the
     generic vertex attribute from which input values are taken.  For inputs of
     all other shader types, the location specifies a vector number that can be
-    used to match against outputs from a previous shader stage, even if that 
+    used to match against outputs from a previous shader stage, even if that
     shader is in a different program object.
 
     If the declared input has a scalar or vector type, it will consume a
@@ -1523,10 +1523,10 @@ Dependencies on OpenGL 4.0 (Core Profile)
 
 Dependencies on GLSL 1.40 and earlier
 
-    This extension typically requires that shaders redeclare "gl_PerVertex" 
+    This extension typically requires that shaders redeclare "gl_PerVertex"
     or "gl_PerFragment" to use members of built-in input or output blocks in
-    separable shaders.  However, since input and output interface blocks 
-    are not supported in GLSL 1.40 or earlier, such redeclarations are not 
+    separable shaders.  However, since input and output interface blocks
+    are not supported in GLSL 1.40 or earlier, such redeclarations are not
     even possible using older versions of GLSL.
 
     To deal with this case, this extension provides a specific exception to
@@ -1547,7 +1547,7 @@ Dependencies on GLSL 1.40 and earlier
 
     This exception is important because we expect this extension to be
     supported on implementations and GPUs supporting only OpenGL 2.1, which
-    doesn't support the interface blocks added by GLSL 1.50.  
+    doesn't support the interface blocks added by GLSL 1.50.
 
     Note that this exception applies only to shaders using #version 140.  When
     using this extension with shaders using #version 150 or higher, the
@@ -1742,9 +1742,9 @@ New State
                                                                     program object
     VALIDATE_STATUS        B   GetProgramPipelineiv  FALSE          Validate status of        2.14.8   -
                                                                     program pipeline object
-    PROGRAM_PIPELINE_-     Z+  GetIntegerv           0              Current program pipeline  2.14.PPO - 
+    PROGRAM_PIPELINE_-     Z+  GetIntegerv           0              Current program pipeline  2.14.PPO -
     BINDING                                                         object binding
-                                                    
+
 New Implementation Dependent State
 
     None
@@ -1793,7 +1793,7 @@ Issues
            *  CreateShaderProgramv takes multiple strings to better
               match ShaderSource
 
-           *  More. . . 
+           *  More. . .
 
     2.  What happens to a user-defined input varying variable that are
         not written by a preceding shader's write to the corresponding
@@ -2070,7 +2070,7 @@ Issues
         an example of creating and using a vertex shader for use with
         separate shader objects that includes explicit binding of output
         varyings to fragment data locations.  First the shader:
-        
+
           varying in vec4 attribA;
           varying in vec4 attribB;
           void main()
@@ -2079,7 +2079,7 @@ Issues
             gl_FrontColor = attribA;
             gl_BackColor = attribB;
           }
-          
+
         Now creating and using a linked program from this shader where
         attribA is initialized by vertex attribute 5 and attribB is
         initialized by vertex attribute 7.
@@ -2340,7 +2340,7 @@ Issues
             shader stages.  These inputs and outputs are not treated as
             having dedicated locations.  To ensure an exact match between
             two shader stages, the set of non-system inputs and outputs on
-            the interface must match.  
+            the interface must match.
 
         All built-in inputs and outputs not found in the gl_PerVertex and
         gl_PerFragment blocks are treated as belonging to categories (a)
@@ -2485,7 +2485,7 @@ Issues
         appropriate extension(s) using #extension or select a GLSL version
         incorporating the functionality using #version.  In vertex and
         fragment shaders, it may be necessary to enable both extensions -- one
-        for inputs and the other for outputs.  
+        for inputs and the other for outputs.
 
         A shader using location layout qualifiers without an appropriate
         #extension or #version directive will fail to compile.
@@ -2533,7 +2533,7 @@ Issues
         eight vectors worth of attributes.
 
         Arrays or matrix types with double-precision components are treated as
-        comprising 
+        comprising
 
     33. Are location layout qualifiers allowed on block declarations?  On
         block member declarations?
@@ -2566,8 +2566,8 @@ Issues
 
         We do not permit this behavior for double-precision vectors, because
         large types (dvec3, dvec4) consume two locations while smaller types
-        (double, dvec2) consume only one.  Allowing this behavior would be 
-        problematic for arrays.  For example, in a vertex shader output 
+        (double, dvec2) consume only one.  Allowing this behavior would be
+        problematic for arrays.  For example, in a vertex shader output
         declared as:
 
           layout(location = 4) out dvec4 vsout[2];
@@ -2617,7 +2617,7 @@ Issues
         However, the ability to enforce matching requirements differs between
         program types.  In non-separable programs, both sides of an interface
         are contained in the same linked program.  In this case, if the linker
-        detects a mismatch, it will generate a link error.  
+        detects a mismatch, it will generate a link error.
 
         For separable programs, the two sides of an interface may be in
         different programs, so the linker will be unable to detect a mismatch.
@@ -2674,7 +2674,7 @@ Revision History
 
     21    9 Aug 2010   pbrown    Expand ProgramUniform* function prototypes
                                  to individual entries for tools parsing
-                                 extension specs.  Add missing "*" characters 
+                                 extension specs.  Add missing "*" characters
                                  for ProgramUniform*v functions.
 
     20    15 Jul 2010  pbrown    Proposed update to locations for vectors
@@ -2690,7 +2690,7 @@ Revision History
                                  and per-stage subroutine uniforms (bug 6641).
                                  Specify behavior for successful and failed
                                  links of programs bound to PPOs (bug 6642).
-                                 Add interactions for assembly program 
+                                 Add interactions for assembly program
                                  extensions and EXT_separate_shader_objects.
                                  Add missing code for CreateShaderProgramv
                                  treating such programs as separable.
@@ -2711,10 +2711,10 @@ Revision History
                                  input aliasing (bug 6599).  Further work on
                                  block matching rules for built-in input and
                                  output blocks, including final rules for
-                                 #version 140 shaders (bug 6636).  
+                                 #version 140 shaders (bug 6636).
                                  Miscellaneous typo fixes.
 
-    15    07 Jul 2010  pbrown    Minor typo corrections.  Add specific 
+    15    07 Jul 2010  pbrown    Minor typo corrections.  Add specific
                                  language for the core profile, which won't
                                  have gl_PerFragment.  Add issue on the use
                                  of location qualifiers and #extension; fix
@@ -2740,7 +2740,7 @@ Revision History
 
     9     20 May 2010  groth     Add validateProgramPipeline/infolog
                                  clarify xfb interaction
-                                 complete interface location allocation 
+                                 complete interface location allocation
                                  language.  mention location limits.
 
     8     19 May 2010  groth     Finish responding to Pat's feedback.
@@ -2753,7 +2753,7 @@ Revision History
                                  Sundry corrections.
 
     5     08 May 2010  groth     remove default PPO. add active program
-                                 definitively to PPO. add a few issues. 
+                                 definitively to PPO. add a few issues.
                                  fix nits.
 
     4     06 May 2010  groth     Clarify PPO role. Add language about implicit

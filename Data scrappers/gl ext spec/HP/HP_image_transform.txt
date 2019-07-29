@@ -202,7 +202,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     nearest (in Manhattan distance).  If the resampling method is LINEAR, each
     output pixel will have a value that is the weighted average of the four input
     pixels whose transformed coordinate values are nearest.
-    
+
     If the resampling method is CUBIC_HP, each output pixel will have a value
     that is affected by the 16 input pixels whose transformed coordinate
     values are nearest.  The 16 input pixels will be used to perform a cubic
@@ -258,7 +258,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     returned in <params>.
 
 Additions to the GLX Specification
-    
+
     None
 
 Dependencies on EXT_texture

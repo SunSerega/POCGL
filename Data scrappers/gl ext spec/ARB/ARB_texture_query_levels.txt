@@ -9,12 +9,12 @@ Name Strings
 Contact
 
     Christophe Riccio, AMD (christophe.riccio'at'amd.com)
-    
-Contributors  
-    
+
+Contributors
+
     Pat Brown, NVIDIA
     Bruce Merry
-    
+
 Notice
 
     Copyright (c) 2012-2013 The Khronos Group Inc. Copyright terms at
@@ -50,7 +50,7 @@ Dependencies
 
     OpenGL Shading Language 1.30 is required
 
-    This extension is written against the OpenGL 4.2 specification and 
+    This extension is written against the OpenGL 4.2 specification and
     version 4.20 of the OpenGL Shading Language Specification.
 
 Overview
@@ -104,7 +104,7 @@ Additions to Chapter 2 of the OpenGL 4.2 (Core Profile) Specification
     with an immutable-format texture object (section 3.9.16), the value
     returned will be:
 
-      min(TEXTURE_IMMUTABLE_LEVELS - 1, TEXTURE_MAX_LEVEL) - 
+      min(TEXTURE_IMMUTABLE_LEVELS - 1, TEXTURE_MAX_LEVEL) -
         TEXTURE_BASE_LEVEL + 1
 
     where TEXTURE_IMMUTABLE_LEVELS gives the number of levels present in the
@@ -170,7 +170,7 @@ Modifications to The OpenGL Shading Language Specification, Version 4.20.8
       #define GL_ARB_texture_query_levels 1
 
     Add to section 8.9.1 "Texture Query Functions"
-        
+
     Syntax:
 
       int textureQueryLevels(gsampler1D sampler);
@@ -201,7 +201,7 @@ Conformance Tests
 
 Issues
 
-    (1) Is the value returned by textureQueryLevels clamped by the number of 
+    (1) Is the value returned by textureQueryLevels clamped by the number of
         levels present in a texture? (bug 7941)
 
       RESOLVED:  Yes, the set of accessible levels needs to be computed by
@@ -226,9 +226,9 @@ Issues
       levels.  For other textures, the set of levels present and resident in
       the texture is less well-defined since levels can be added or removed at
       random.
-       
-    (2) What value is returned for textures that have an incomplete set of  
-        mipmaps?  
+
+    (2) What value is returned for textures that have an incomplete set of
+        mipmaps?
 
       RESOLVED:  The values returned in this case are largely
       implementation-dependent.  Textures have two different notions of
@@ -245,11 +245,11 @@ Issues
         mapping.  A texture that is not mipmap complete can still be
         considered complete, as long as it isn't used with a mipmapped
         minification filter.
-      
+
       Immutable-format TexStorage* textures always specify a full set of
       mipmap levels and are always considered mipmap complete; however,
       applications can add (or delete) mipmap levels to TexImage* textures at
-      arbitrary times.  
+      arbitrary times.
 
       If the texture has some (but not all) of the mipmaps necessary to be
       mipmap complete, an implementation might choose to manage the texture in
@@ -276,10 +276,10 @@ Issues
       TexImage* texture with only the base level is usable when used with a
       LINEAR minification filter and should have an allocation with at least
       one level present.
-        
+
     (3) What values are returned by the built-in for textures that aren't
         complete or aren't defined at all?
-        
+
       RESOLVED:  As with the mipmap-incomplete case, the value returned is
       largely implementation-dependent, even though the incomplete texture
       can't be used for texture mapping.
@@ -326,7 +326,7 @@ Issues
         create level 0 of a 2D texture (256x256)
         set the texture's min filter to LINEAR
         (A) render using the texture
-        create level 1 of a 2D texture (128x128) 
+        create level 1 of a 2D texture (128x128)
         (B) render using the texture
         create levels 2..8 of a 2D texture (64x64 down to 1x1)
         (C) render using the texture
@@ -366,14 +366,14 @@ Revision History
         TexImage* textures.  The value is implementation-dependent, but must
         be in the range 0..q-BASE_LEVEL+1, and must satisfy the following
         constraints:
-          - fully undefined textures must return zero 
+          - fully undefined textures must return zero
           - complete textures must return at least one
           - complete textures with a mipmapped min filter must return
-            q-BASE_LEVEL+1 
+            q-BASE_LEVEL+1
 
     Revision 7, 2012/05/17 (criccio)
-      - Fix textureQueryLevels calculation for immutable texture. 
-        min(TEXTURE_IMMUTABLE_LEVELS - 1, TEXTURE_MAX_LEVEL) instead of 
+      - Fix textureQueryLevels calculation for immutable texture.
+        min(TEXTURE_IMMUTABLE_LEVELS - 1, TEXTURE_MAX_LEVEL) instead of
         min(TEXTURE_IMMUTABLE_LEVELS, TEXTURE_MAX_LEVEL)
 
     Revision 6, 2012/05/16 (pbrown)
@@ -384,7 +384,7 @@ Revision History
       - Specify the level count to include only those levels between the base
         level and the maximum level.
       - Update the introduction.
-      - Update the discussion for issues 1, 2, and 3.  
+      - Update the discussion for issues 1, 2, and 3.
       - Add issue 4, describing what happens for mipmap complete textures that
         don't need to be (because they're used with non-mipmapped filters).
         Implementations are allowed but not required to treat the entire
@@ -396,12 +396,12 @@ Revision History
     Revision 4, 2012/04/26 (criccio)
       - Resolved issue 1 for mutable texture
       - Added issue 2, 3 from Pat's comments
-      
+
     Revision 3, 2012/03/15 (criccio)
       - Added issue
-      
+
     Revision 2, 2011/11/01 (criccio)
       - Updated overview
-          
+
     Revision 1, 2011/10/24 (criccio)
       - First draft

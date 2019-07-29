@@ -155,7 +155,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     eight bits, and then for each specific GL data type only if that type
     is represented with 8, 16, or 32 bits.
 
-        Element         Default 
+        Element         Default
         Size            Bit Ordering    Modified Bit Ordering
         -------         ------------    ---------------------
         8-bit           [7..0]          [7..0]
@@ -293,7 +293,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
         RGBA            red         green       blue        alpha
         ABGR_EXT        alpha       blue        green       red
         CMYK_EXT        cyan        magenta     yellow      black
-    
+
     Byte swapping, if enabled, is performed before the elements are
     extracted from each pixel.  The above discussions of row length and
     image extraction are valid for packed pixels, if "group" is substituted

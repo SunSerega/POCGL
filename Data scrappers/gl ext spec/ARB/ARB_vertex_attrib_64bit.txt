@@ -220,7 +220,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
 
     Modify Section 2.8, Vertex Arrays, p. 34
 
-    (insert new paragraph after first paragraph, p. 37)  
+    (insert new paragraph after first paragraph, p. 37)
 
     The command
 
@@ -249,12 +249,12 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
           } else if (generic attribute j array set by VertexAttribIPointer) {
             VertexAttribI[size][type]v(j, generic vertex attribute j
                                           array element i);
-          } else if (generic vertex attribute j array normalization flag 
+          } else if (generic vertex attribute j array normalization flag
                      is set, and type is not FLOAT or DOUBLE) {
             VertexAttrib[size]N[type]v(j, generic vertex attribute j
                                           array element i);
           } else {
-            VertexAttrib[size][type]v(j, generic vertex attribute j 
+            VertexAttrib[size][type]v(j, generic vertex attribute j
                                          array element i);
           }
         }
@@ -267,7 +267,7 @@ Additions to Chapter 2 of the OpenGL 3.2 (Compatibility Profile) Specification
           } else if (generic attribute 0 array set by VertexAttribIPointer) {
             VertexAttribI[size][type]v(0, generic vertex attribute 0
                                           array element i);
-          } else if (generic vertex attribute 0 array normalization flag 
+          } else if (generic vertex attribute 0 array normalization flag
                      is set, and type is not FLOAT or DOUBLE) {
             VertexAttrib[size]N[type]v(0, generic vertex attribute 0
                                           array element i);
@@ -581,7 +581,7 @@ Issues
       vertex APIs (e.g., VertexAttrib4dv) to feed shading language variables
       with double-precision types, any such approach involves the prohibitive
       dynamic typing overhead discussed above.  As a result, we chose to
-      create a parallel VertexAttribL* API.  
+      create a parallel VertexAttribL* API.
 
       A similar approach was chosen for the integer attributes in OpenGL 3.0,
       where there was a pre-existing set of vertex APIs that accepted integers
@@ -626,7 +626,7 @@ Issues
 
       The APIs for loading 64-bit vertex attributes were designed to limit the
       amount of data type conversion required of the implementation; providing
-      new type-dependent default values runs contrary to that design.  
+      new type-dependent default values runs contrary to that design.
 
       Note that the original defaults were present in part to accommodate
       fixed-function vertex and fragment processing, where certain operations
@@ -687,8 +687,8 @@ Revision History
                               GLSL types to API entry points.
 
      6    04/09/10  pdaniell  ARBify the spec for inclusion in OpenGL 4.1.
-    
-     5    03/21/10  pbrown    Minor wording updates to the spec overview, 
+
+     5    03/21/10  pbrown    Minor wording updates to the spec overview,
                               dependencies, issues, and body.
 
      4    01/29/10  pbrown    Update extension to accomodate the removal of

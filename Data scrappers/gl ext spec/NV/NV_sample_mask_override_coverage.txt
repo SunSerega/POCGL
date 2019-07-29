@@ -213,7 +213,7 @@ Interactions with OpenGL ES 3.0 and 3.1
 
     Modify OpenGL ES Shading Language 3.00 Specification, section 3.8
     "Identifiers:"
-    
+
         Replace the second paragraph with the following:
 
         Identifiers starting with "gl_" are reserved for use by OpenGL ES, and

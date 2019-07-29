@@ -15,7 +15,7 @@ Status
     Shipping (version 1.3)
 
 Version
-   
+
  $Date: 02/03/13 15:15:35  $Revision: 1.3 $
 
 Number
@@ -24,7 +24,7 @@ Number
 
 Dependencies
 
-    The extension is written against the OpenGL 1.3 Specification. 
+    The extension is written against the OpenGL 1.3 Specification.
 
 Overview
 
@@ -54,7 +54,7 @@ New Tokens
 
 Additions to Chapter 2 of the 1.3 GL Specification (OpenGL Operation)
 
-    None 
+    None
 
 Additions to Chapter 3 of the 1.3 GL Specification (Rasterization)
 
@@ -92,9 +92,9 @@ GLX Protocol
     None
 
 Errors
-   
+
     None
- 
+
 New State
 
     None

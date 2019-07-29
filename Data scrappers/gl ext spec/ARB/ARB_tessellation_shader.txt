@@ -44,7 +44,7 @@ Status
 
     Complete. Approved by the ARB at the 2010/01/22 F2F meeting.
     Approved by the Khronos Board of Promoters on March 10, 2010.
-    
+
 Version
 
     Last Modified Date:         April 20, 2015
@@ -221,7 +221,7 @@ New Tokens
         MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS 0x8E1F
 
     Accepted by the <pname> parameter of GetActiveUniformBlockiv:
-    
+
         UNIFORM_BLOCK_REFERENCED_BY_TESS_CONTROL_SHADER     0x84F0
         UNIFORM_BLOCK_REFERENCED_BY_TESS_EVALUATION_SHADER  0x84F1
 
@@ -468,7 +468,7 @@ Operation)
     ability to do a lookup into a texture map.  The maximum number of texture
     image units available to vertex, tessellation control, tessellation
     evaluation, geometry, or fragment shaders are the values of
-    the implementation-dependent constants 
+    the implementation-dependent constants
 
       * MAX_VERTEX_TEXTURE_IMAGE_UNITS (vertex),
       * MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS (tessellation control),
@@ -847,19 +847,19 @@ Operation)
     process is explained in more detail in subsequent sections.
 
         (0,1)   OL3   (1,1)          (0,1,0)         (0,1)          (1,1)
-         +--------------+              +             ^  +  <no edge>   +  
-         |              |             / \            |                
-         |  +--------+  |            /   \           |  +--------------+  
-         |  |   IL0  |  |       OL0 /  +  \ OL2      |                  
-      OL0|  |IL1     |  |OL2       /  / \  \         |  +--------------+  
-         |  |        |  |         /  /IL0\  \       OL0                  
-         |  +--------+  |        /  +-----+  \       |  +--------------+  
-         |              |       /             \      |                 
-         +--------------+      +---------------+     v  +--------------+  
+         +--------------+              +             ^  +  <no edge>   +
+         |              |             / \            |
+         |  +--------+  |            /   \           |  +--------------+
+         |  |   IL0  |  |       OL0 /  +  \ OL2      |
+      OL0|  |IL1     |  |OL2       /  / \  \         |  +--------------+
+         |  |        |  |         /  /IL0\  \       OL0
+         |  +--------+  |        /  +-----+  \       |  +--------------+
+         |              |       /             \      |
+         +--------------+      +---------------+     v  +--------------+
         (0,0)   OL1   (1,0) (0,0,1)   OL1   (1,0,0)   (0,0)   OL1   (1,0)
 
               quads                triangles                isolines
-           
+
       Figure X.1:  Domain parameterization for tessellation generator
       primitive modes (triangles, quads, or isolines).  The coordinates
       illustrate the value of gl_TessCoord at the corners of the domain.  The
@@ -1013,7 +1013,7 @@ Operation)
           O----O----O----O----O          /   .    .       .    .   \
        (0,0,1)             (1,0,0)      O----O----O-------O----O----O
                                      (0,0,1)                     (1,0,0)
-        
+
       Figure X.2, Inner Triangle Tessellation with inner tessellation levels
       of four and five (not to scale).  This figure depicts the vertices along
       the bottom edge of the concentric triangles.  The edges of inner
@@ -1462,7 +1462,7 @@ Requests)
 
     returns integer-valued properties of the program object...
 
-    (add two paragraphs after the first paragraph, p. 385) 
+    (add two paragraphs after the first paragraph, p. 385)
 
     If <pname> is TESS_CONTROL_OUTPUT_VERTICES, the number of vertices in the
     tessellation control shader output patch is returned.  If
@@ -1681,7 +1681,7 @@ Additions to the OpenGL Shading Language Specification, version 1.50 (Revision
     patch in    linkage of per-patch attributes into a shader from a previous
                 stage (tessellation evaluation shaders only)
 
-    patch out   linkage out of a shader to a subsequent stage (tessellation 
+    patch out   linkage out of a shader to a subsequent stage (tessellation
                 control shaders only)
 
 
@@ -1856,7 +1856,7 @@ Additions to the OpenGL Shading Language Specification, version 1.50 (Revision
     shaders do not have any input layout qualifiers.
 
     (insert after first paragraph of the section)
-    
+
     Tessellation evaluation shaders allow input layout qualifiers only on the
     interface qualifier in, not on an input block, block member, or variable
     declarations.  The input layout qualifier identifiers allowed for
@@ -1942,7 +1942,7 @@ Additions to the OpenGL Shading Language Specification, version 1.50 (Revision
     fragment shaders cannot have output layout qualifiers.
 
     (insert after first paragraph of the section)
-    
+
     Tessellation control shaders allow output layout qualifiers only on the
     interface qualifier out, not on an output block, block member, or variable
     declarations.  The output layout qualifier identifiers allowed for
@@ -1977,7 +1977,7 @@ Additions to the OpenGL Shading Language Specification, version 1.50 (Revision
     layout qualifier specifying an output patch vertex count in any program
     containing tessellation control shaders; however, such a declaration is
     not required in all tessellation control shader compilation units.
-    
+
 
     (Coalesce Sections 7.1., 7.2, and 7.6 into a single section, as described
      below.)
@@ -2247,7 +2247,7 @@ Additions to the OpenGL Shading Language Specification, version 1.50 (Revision
 
     The variable gl_ClipVertex provides a place for vertex and geometry
     shaders to write the coordinate to be used with the user clipping planes.
-    
+
     The user must ensure the clip vertex and user clipping planes are defined
     in the same coordinate space.  User clip planes work properly only under
     linear transform. It is undefined what happens under nonlinear transform.
@@ -2359,7 +2359,7 @@ Additions to the OpenGL Shading Language Specification, version 1.50 (Revision
 
     Insert a new section after Section 8.10, Geometry Shader Functions,
     p. 103.
-    
+
     Section 8.X, Shader Invocation Control Functions
 
     Shader invocation control functions are available only in tessellation
@@ -2468,7 +2468,7 @@ New State
     Get Value                Type  Get Command     Value     Description                Sec.    Attr.
     ------------------------ ----  --------------  --------- ------------------------   ------  -------
     PATCH_VERTICES           Z+    GetIntegerv     3         Number of vertices in      2.6.1   current
-                                                             input patch         
+                                                             input patch
     PATCH_DEFAULT_OUTER_     4xR   GetFloatv       4 x 1.0   Default outer tessellation 2.X.2    -
       LEVEL                                                  level w/o control shader
     PATCH_DEFAULT_INNER_     2xR   GetFloatv       2 x 1.0   Default outer tessellation 2.X.2    -
@@ -2490,7 +2490,7 @@ New State
                                                              tess. prim generator
     TESS_GEN_POINT_MODE      Z+    GetProgramiv     FALSE    Tess prim. generator       2.X.2    -
                                                              emits points?
-    UNIFORM_BLOCK_REF-       B     GetActive-       0        True if uniform block is   
+    UNIFORM_BLOCK_REF-       B     GetActive-       0        True if uniform block is
       ERENCED_BY_TESS_              UniformBlockiv           actively referenced by     2.14.4   -
       CONTROL_SHADER                                         tess. control stage
     UNIFORM_BLOCK_REF-       B     GetActive-       0        True if uniform block is   2.14.4   -
@@ -2515,7 +2515,7 @@ New Implementation Dependent State
     MAX_TESS_EVALUATION_       Z+    GetIntegerv   16    number of tex. image units   2.14.7
       TEXTURE_IMAGE_UNITS                                for tess. eval. shaders
     MAX_TESS_CONTROL_          Z+    GetIntegerv   128   num. components for per-     2.X.1.2
-      OUTPUT_COMPONENTS                                  vertex outputs in tess. 
+      OUTPUT_COMPONENTS                                  vertex outputs in tess.
                                                          control shaders
     MAX_TESS_PATCH_            Z+    GetIntegerv   120   num. components for per-     2.X.1.2
       COMPONENTS                                         patch output varyings
@@ -2524,7 +2524,7 @@ New Implementation Dependent State
       OUTPUT_COMPONENTS                                  tess. control shader
                                                          outputs
     MAX_TESS_EVALUATION_       Z+    GetIntegerv   128   num. components for per-     2.X.3.2
-      OUTPUT_COMPONENTS                                  vertex outputs in tess. 
+      OUTPUT_COMPONENTS                                  vertex outputs in tess.
                                                          evaluation shaders
     MAX_TESS_CONTROL_          Z+    GetIntegerv   128   num. components for per-     2.X.1.2
       INPUT_COMPONENTS                                   vertex inputs in tess.
@@ -2541,11 +2541,11 @@ New Implementation Dependent State
     MAX_COMBINED_TESS_         Z+    GetIntegerv   *     number of words for tess.    2.X.1.1
       CONTROL_UNIFORM_                                   control uniform variables
       COMPONENTS                                         in all uniform blocks
-                                                         (including default) 
+                                                         (including default)
     MAX_COMBINED_TESS_         Z+    GetIntegerv   *     number of words for tess.    2.X.3.1
       EVALUATION_UNIFORM_                                evaluation uniform vari-
       COMPONENTS                                         ables in all uniform
-                                                         blocks (including default) 
+                                                         blocks (including default)
 
     The minimum values for MAX_COMBINED_*_UNIFORM_COMPONENTS by computing the
     value of:
@@ -2665,7 +2665,7 @@ Issues
                          |               processing
                          |                    |
                          |                    |
-                         +<-------------------+                
+                         +<-------------------+
                          |
                          |position, color,
                          |other vertex data
@@ -2739,7 +2739,7 @@ Issues
                          +------------------+ | +-------------+
                                             | | |
                                             V V V
-                                        rasterization 
+                                        rasterization
                                               |
                                               |
                                               V
@@ -2864,7 +2864,7 @@ Issues
       are complementary.  Walking along a shared patch edge may take you from
       a u/v/w coordinate of 0.0 to 1.0 in one patch, and from 1.0 to 0.0.  In
       this case, the u/v/w coordinates generated for any given vertex along
-      this edge should sum to *exactly* 1.0.  
+      this edge should sum to *exactly* 1.0.
 
       Even with proper hardware support, tessellation evaluation shaders need
       to be crafted carefully to avoid arithmetic errors caused by the order
@@ -3098,7 +3098,7 @@ Issues
       RESOLVED:  If the tessellator is being used, we will require a patch
       primitive as input and throw an INVALID_OPERATION error if any other
       primitive type is provided.  This is consistent with geometry shaders
-      requiring primitives consistent with their input topology.  
+      requiring primitives consistent with their input topology.
 
       If no tessellation evaluation shader is present, a patch primitive would
       need to be passed through to the geometry shader, or potentially
@@ -3219,7 +3219,7 @@ Issues
       RESOLVED:  No, the only tessellation levels directly available to the
       tessellation evaluation shaders will be the raw values written by the
       tessellation control shaders or taken from default tessellation
-      levels.  
+      levels.
 
       If a tessellation evaluation shader requires clamped or rounded levels,
       it can perform the clamping itself.  Alternately, the clamped levels can
@@ -3227,7 +3227,7 @@ Issues
       evaluation shader using a per-patch output declared as "patch out".
 
     (31) Should any of the patch parameters or the maximum input patch size
-         parameter have a "TESS_" prefix?  
+         parameter have a "TESS_" prefix?
 
       RESOLVED:  No.  These are properties of patches, not any tessellation
       units.  While patches may be commonly used for tessellation, they might
@@ -3389,7 +3389,7 @@ Issues
       have problems if/when OpenGL releases the monolithic single program
       model in the current GLSL API.  In such an API, it would be necessary to
       generate code for a vertex shader without knowledge of whether it would
-      be run with or without tessellation.  
+      be run with or without tessellation.
 
       In the model we do expose, developers need to keep in mind that with
       tessellation:
@@ -3528,7 +3528,7 @@ Revision History
                               (Bug 13765).
 
      20   04/25/14  pbrown    Clarify that the tessellation primitive
-                              generator may produce multiple vertices with 
+                              generator may produce multiple vertices with
                               the same gl_TessCoord values in point mode when
                               fractional odd spacing is used with an inner
                               tessellation level less than or equal to 1.0
@@ -3578,7 +3578,7 @@ Revision History
                               arrays for tessellation control and evaluation
                               shaders.
 
-      9   12/10/09  pbrown    Rename the layout qualifiers for vertex order to 
+      9   12/10/09  pbrown    Rename the layout qualifiers for vertex order to
                               "cw" and "ccw".  Minor changes to invariance
                               rules, including addition of a rule guaranteeing
                               that <x> + (1-<x>) is exactly 1.0 for
@@ -3608,7 +3608,7 @@ Revision History
       3   10/01/09  pbrown    Renamed some of the tessellation evaluation
                               shader input layout qualifiers to more closely
                               match geometry shader conventions.  Renamed
-                              gl_ThreadID to gl_InvocationID.  Fixed one 
+                              gl_ThreadID to gl_InvocationID.  Fixed one
                               reference to an old layout qualifier name.
 
       2   09/28/09  pbrown    Typo fix.

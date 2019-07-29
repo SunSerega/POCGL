@@ -244,7 +244,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     guaranteed to be constant, but array members are not guaranteed to be
     stored in adjacent locations.  For example, some implementations may pad
     scalars, or two- or three-component vectors out to a four-component
-    vector.  
+    vector.
 
     Change the first paragraph below the sub-heading 'Samplers', p.  82, as
     follows:
@@ -390,7 +390,7 @@ New Implementation Dependent State
     Get Value              Type Get Command  Value   Description             Section Attrib
     ---------------------- ---- -----------  -----  ---------------------    ------- ------
     MAX_BINDABLE_VERTEX_   Z+   GetIntegerv    8    Number of bindable       2.15    -
-      UNIFORMS_EXT                                  uniforms per vertex 
+      UNIFORMS_EXT                                  uniforms per vertex
                                                     shader
     MAX_BINDABLE_FRAGMENT_ Z+   GetIntegerv    8    Number of bindable       3.11.1  -
       UNIFORMS_EXT                                  uniforms per fragment
@@ -493,7 +493,7 @@ Issues
       directly. Or, the application can use the BufferSubData() command to
       store data in a buffer object. They can also be filled using ReadPixels
       (with ARB_pixel_buffer_object), or filled using extensions such as the
-      new transform feedback extension.  
+      new transform feedback extension.
 
       If the layout of a uniform in buffer object memory is known, these
       different ways of filling a buffer object could be leveraged.  On the
@@ -691,7 +691,7 @@ Issues
       a <target> to which a buffer object must be bound.  In this extension,
       buffer objects are bound to uniforms stored in a program, and are not
       bound directly to the context.  So these bindings may not be used to
-      manipulate the 
+      manipulate the
 
       RESOLUTION:  Yes, a new <target> called UNIFORM_BUFFER_EXT is provided.
 

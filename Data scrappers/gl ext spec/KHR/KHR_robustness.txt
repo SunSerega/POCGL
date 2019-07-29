@@ -14,7 +14,7 @@ Contributors
 
 Contact
 
-    Jon Leech (oddhack 'at' sonic.net) 
+    Jon Leech (oddhack 'at' sonic.net)
     Greg Roth, NVIDIA (groth 'at' nvidia.com)
 
 Notice
@@ -34,7 +34,7 @@ Specification Update Policy
 
 Status
 
-    Complete. 
+    Complete.
     Approved by the OpenGL ES Working Group on June 25, 2014.
     Approved by the ARB on June 26, 2014.
     Ratified by the Khronos Board of Promoters on August 7, 2014.
@@ -67,7 +67,7 @@ Overview
     Several recent trends in how OpenGL ES integrates into modern computer
     systems have created new requirements for robustness and security for GL
     rendering contexts.
-    
+
     Additionally GPU architectures now support hardware fault detection;
     for example, video memory supporting ECC (error correcting codes)
     and error detection.  GL contexts should be capable of recovering
@@ -100,8 +100,8 @@ Overview
     The intent of this extension is to address some specific robustness
     goals:
 
-    *   For all existing GL queries, provide additional "safe" APIs 
-        that limit data written to user pointers to a buffer size in 
+    *   For all existing GL queries, provide additional "safe" APIs
+        that limit data written to user pointers to a buffer size in
         bytes that is an explicit additional parameter of the query.
 
     *   Provide a mechanism for a GL application to learn about
@@ -188,13 +188,13 @@ Additions to the OpenGL ES 3.1 Specification
 
 
     Add to table 2.3 "Summary of GL errors" on p. 15:
-    
+
     Error          Description               Offending command ignored?
     ------------   -----------------------   --------------------------
     CONTEXT_LOST   Context has been lost     Except as noted for
                    and reset by the driver   specific commands
-    
-    
+
+
     Add a new subsection 2.3.1rob after 2.3.1 "GL Errors", and renumber
     subsequent sections accordingly:
 
@@ -303,11 +303,11 @@ Additions to the OpenGL ES 3.1 Specification
     Robust buffer access is enabled by creating a context with robust access
     enabled through the window system binding APIs. When enabled, indices
     within the element array that reference vertex data that lies outside
-    the enabled attribute's vertex buffer object 
+    the enabled attribute's vertex buffer object
         [for OpenGL ES] result in undefined values
         [for OpenGL] result in reading zero
     for the corresponding attributes, but cannot result in application
-    failure. 
+    failure.
 
     Robust buffer access behavior may be queried by calling
     GetIntegerv with the symbolic constant CONTEXT_ROBUST_ACCESS.
@@ -406,7 +406,7 @@ Issues
        via two unique attributes. These attributes differ from those
        specified by KHR_create_context to allow for differences in what
        functionality those attributes define.
-        
+
     4. What can cause a graphics reset?
 
        Either user or implementor errors may result in a graphics reset. If

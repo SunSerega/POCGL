@@ -37,7 +37,7 @@ Dependencies
     OpenGL ES 2.0 is required.
 
     IMG_texture_compression_pvrtc is required.
-    
+
     This extension extends the OpenGL ES 2.0.25 (Full Specification) and
     the OpenGL ES Shading Language Specification v1.00 revision 16.
 
@@ -46,7 +46,7 @@ Dependencies
         http://www.opengl.org/registry/specs/EXT/texture_sRGB.txt
         http://www.khronos.org/registry/gles/extensions/OES/OES_framebuffer_object.txt
 
-    For single-reference completeness, some of the issues from the issues lists 
+    For single-reference completeness, some of the issues from the issues lists
     of these specifications have been copied into this extension.
 
     This extension follows the conventions of and extends the EXT_sRGB
@@ -59,33 +59,33 @@ Dependencies
 
 Overview
 
-    The response from electronic display systems given RGB tristimulus values 
-    for each pixel is non-linear.  Gamma correction is the process of encoding 
-    or decoding images in a manner that will correct for non-linear response 
-    profiles of output devices.  The displayed results of gamma-corrected pixel 
-    data are more consistent and predictable for the author of such pixel data 
+    The response from electronic display systems given RGB tristimulus values
+    for each pixel is non-linear.  Gamma correction is the process of encoding
+    or decoding images in a manner that will correct for non-linear response
+    profiles of output devices.  The displayed results of gamma-corrected pixel
+    data are more consistent and predictable for the author of such pixel data
     than it would otherwise be with linearly encoded pixel data.
 
-    This EXT_pvrtc_sRGB extension specifies additional tokens for gamma 
-    corrected PVRTC compressed sRGB data.  
+    This EXT_pvrtc_sRGB extension specifies additional tokens for gamma
+    corrected PVRTC compressed sRGB data.
 
-    Texture assets are developed and evaluated for use in OpenGL applications 
-    using electronic displays with non-linear responses.  This extension 
-    provides a better measure of consistency between textures developed within 
-    an asset toolchain and their final rendered result with an OpenGL 
+    Texture assets are developed and evaluated for use in OpenGL applications
+    using electronic displays with non-linear responses.  This extension
+    provides a better measure of consistency between textures developed within
+    an asset toolchain and their final rendered result with an OpenGL
     application that uses those textures.
 
-    Conventional OpenGL texture tristimulus values as well as their alpha 
-    component are encoded linearly.  The textures introduced by this extension 
-    are encoded with gamma correction in the tristimulus components but 
+    Conventional OpenGL texture tristimulus values as well as their alpha
+    component are encoded linearly.  The textures introduced by this extension
+    are encoded with gamma correction in the tristimulus components but
     linearly in the alpha component.
 
-    When gamma corrected texture samples are fetched and operated on by ALU 
-    operations in an OpenGL shading program those samples will be converted 
-    from gamma corrected space to linear space for logical simplicity and 
+    When gamma corrected texture samples are fetched and operated on by ALU
+    operations in an OpenGL shading program those samples will be converted
+    from gamma corrected space to linear space for logical simplicity and
     performance of the shader.
 
-    Texture filtering operations as well as mipmap generation are carried out 
+    Texture filtering operations as well as mipmap generation are carried out
     in linear space.
 
 IP Status
@@ -118,12 +118,12 @@ Issues
             } else {
                 cs = 1.055 * pow(cl, 0.41666) - 0.055;
             }
-    
+
          sRGB components are typically stored as unsigned 8-bit
          fixed-point values.  If cs is computed with the above
          pseudo-code, cs can be converted to a [0,255] integer with this
          formula:
-    
+
             csi = floor(255.0 * cs + 0.5)
 
     (2) Does this extension guarantee images rendered with sRGB textures will
@@ -167,12 +167,12 @@ Issues
 
      (4) If hardware doesn't support rendering to sRGB textures to levels
          other than the base level 0 how is this expressed through the API?
-        
+
           RESOLVED: Yes
 
          N/A.  This specification only includes compressed formats which are
          not color-renderable per the ES 2.0 specification.
-      
+
      (5) Can PVRTC gamma corrected textures, as described in this
          specification, cannot be used as a framebuffer-attachable image and
          thus cannot be rendered to:
@@ -183,7 +183,7 @@ Issues
          hardware and this specification makes no exceptions to that effect.
 
      (6) The desktop extension EXT_texture_sRGB_decode to allow toggling
-         texel fetch gamma decoding on and off.  Is this capability 
+         texel fetch gamma decoding on and off.  Is this capability
          warranted for this OpenGL ES specification ?
 
          RESOLVED: Yes
@@ -195,27 +195,27 @@ Issues
      (7) Generating mipmaps without hardware support for linearizing,
          processing then re-applying gamma is a costly operation and
          brings into question having sRGB support for GenerateMipmaps().
-         Evaluate hardware aspects to this issue and update this 
+         Evaluate hardware aspects to this issue and update this
          specification accordingly.
 
          RESOLVED: No
 
      (8) Should there be an interaction with IMG_texture_compression_pvrtc2?
-        
+
          RESOLVED: Yes
 
-         If PVRTC2 is supported, then further enums are added to enable 
+         If PVRTC2 is supported, then further enums are added to enable
          sRGB decode of those formats.  Note that these formats are not
-         available on all implementations (namely iOS), so be sure to 
+         available on all implementations (namely iOS), so be sure to
          check for the extension string.
 
 New Procedures and Functions
-    
+
     None
 
 New Tokens
 
-    Accepted by the <internalformat> parameter of CompressedTexImage2D and 
+    Accepted by the <internalformat> parameter of CompressedTexImage2D and
     TexStorage2DEXT and the <format> parameter of CompressedTexSubImage2D:
 
         COMPRESSED_SRGB_PVRTC_2BPPV1_EXT               0x8A54
@@ -234,7 +234,7 @@ Additions to Chapter 3 of the 2.0.25 Specification (Rasterization)
         COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV1_EXT
         COMPRESSED_SRGB_ALPHA_PVRTC_4BPPV1_EXT
 
-    -- Section 3.8, Texture Access, Add paragraph after first paragraph 
+    -- Section 3.8, Texture Access, Add paragraph after first paragraph
        (page 85):
 
     When a texture, of formats included in table 3.9.1, sample is performed
@@ -251,18 +251,18 @@ document version 1.00, document revision 16:
     functions is a gamma corrected 2D texture (as listed in Table 3.9.1
     of the OpenGL ES 2.0 specification) the vec4 return value of the
     sampler functions will be converted into its linear space equivalent value
-    in accordance with the parameters established by the EXT_pvrtc_sRGB 
+    in accordance with the parameters established by the EXT_pvrtc_sRGB
     extension.
 
 Dependencies on IMG_texture_compression_pvrtc2
 
-    If IMG_texture_compression_pvrtc2 is supported, then 
+    If IMG_texture_compression_pvrtc2 is supported, then
 
     COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV2_IMG 0x93F0
     COMPRESSED_SRGB_ALPHA_PVRTC_4BPPV2_IMG 0x93F1
-        
-    are accepted by the <internalformat> parameter of CompressedTexImage2D and 
-    TexStorage2DEXT and the <format> parameter of CompressedTexSubImage2D, and 
+
+    are accepted by the <internalformat> parameter of CompressedTexImage2D and
+    TexStorage2DEXT and the <format> parameter of CompressedTexSubImage2D, and
     are added to table 3.9.1 "Gamma Corrected Compressed Texture Formats".
 
     Errors
@@ -270,7 +270,7 @@ Dependencies on IMG_texture_compression_pvrtc2
     Modify the errors introduced by IMG_texture_compression_pvrtc2 as below:
 
     INVALID_OPERATION is generated by CompressedTexSubImage2D if
-    INTERNAL_FORMAT is COMPRESSED_RGBA_PVRTC_2BPPV2_IMG or 
+    INTERNAL_FORMAT is COMPRESSED_RGBA_PVRTC_2BPPV2_IMG or
     COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV2_IMG and any of the following apply:
 
         * <xoffset> is not a multiple of eight.
@@ -309,9 +309,9 @@ Errors
 
     INVALID_OPERATION is generated by CompressedTexSubImage2D if <format>
     is COMPRESSED_SRGB_PVRTC_4BPPV1_EXT, COMPRESSED_SRGB_PVRTC_2BPPV1_EXT,
-    COMPRESSED_SRGB_ALPHA_PVRTC_4BPPV1_EXT, or 
-    COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV1_EXT and any of the following apply: 
-    <width> is not equal to TEXTURE_WIDTH; <height> is not equal to 
+    COMPRESSED_SRGB_ALPHA_PVRTC_4BPPV1_EXT, or
+    COMPRESSED_SRGB_ALPHA_PVRTC_2BPPV1_EXT and any of the following apply:
+    <width> is not equal to TEXTURE_WIDTH; <height> is not equal to
     TEXTURE_HEIGHT; <xoffset> and <yoffset> are not zero.
 
 Revision History

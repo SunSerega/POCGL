@@ -27,7 +27,7 @@ Version
 Number
 
     OpenGL Extension #437
-    OpenGL ES Extension #161 
+    OpenGL ES Extension #161
 
 Dependencies
 

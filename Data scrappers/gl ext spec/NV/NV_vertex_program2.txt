@@ -64,7 +64,7 @@ Overview
 
       * A four-component condition code register allows an application to
         compute a component-wise write mask at run time and apply that mask to
-        register writes.  
+        register writes.
 
       * Conditional branches are supported, where the condition code register
         is used to determine if a branch should be taken.
@@ -133,7 +133,7 @@ Overview
 
       * 256 total vertex program instructions (versus 128 in
         NV_vertex_program).
-      
+
       * Including loops, programs can execute up to 64K instructions.
 
 
@@ -156,7 +156,7 @@ Issues
       time for random geometry), the only contribution to the light is
       ambient.  In this case, condition codes and branching can skip over a
       number of unneeded instructions.
-      
+
           # R0 holds accumulated light color
           # R2 holds normal
           # R3 holds computed light vector
@@ -181,13 +181,13 @@ Issues
       With subroutines, a program can encapsulate a small piece of
       functionality into a subroutine and call it multiple times, as in CPU
       code.  Applications will need to identify the registers used to pass
-      data to and from the subroutine.  
+      data to and from the subroutine.
 
       Subroutines could be used for applications like evaluating lighting
       equations for a single light.  With conditional branching and
       subroutines, a variable number of lights (which could even vary
       per-vertex) can be easily supported.
-    
+
         accumulate:
           # R0 holds the accumulated result
           # R1 holds the value to add
@@ -195,7 +195,7 @@ Issues
           RET;
 
           # Compute floor(A)*B by repeated addition using a subroutine.  Yes,
-          # this is a stupid example. 
+          # this is a stupid example.
           #
           # c[0] holds (A,B,0,1).
           # R0 holds the accumulated result
@@ -278,7 +278,7 @@ Issues
           BRA  startLoop (GT.x);            # if (counter > 0) goto start;
         endLoop:
           ...
-          
+
     Should this specification add support for vertex state programs beyond the
     VP1 execution environment?
 
@@ -341,7 +341,7 @@ Issues
           BRA end (LT.y);                 # stop on a negative matrix index
 
           ...                             # 6th, 7th, and 8th matrix transform
-        
+
         end:
           ...                             # any additional instructions
 
@@ -537,7 +537,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
     Begin/End pair (vertex state programs are discussed in section 2.14.3).
 
     The commands
-     
+
       void ProgramParameter4fNV(enum target, uint index,
                                 float x, float y, float z, float w)
       void ProgramParameter4dNV(enum target, uint index,
@@ -762,7 +762,7 @@ Additions to Chapter 2 of the OpenGL 1.3 Specification (OpenGL Operation)
 
 
     Section 2.14.1.7,  Semantic Meaning for Vertex Attributes and Program
-                       Parameters 
+                       Parameters
 
     One important distinction between the conventional GL vertex
     transformation mode and the vertex program mode is that per-vertex
@@ -1005,7 +1005,7 @@ parameters.
                              | "STR" | "STRC"
                              |         "SUBC"
 
-    <TRIop-instruction>    ::= <TRIop> <maskedDstReg> "," <vectorSrc> "," 
+    <TRIop-instruction>    ::= <TRIop> <maskedDstReg> "," <vectorSrc> ","
                                <vectorSrc> "," <vectorSrc>
 
     <TRIop>                ::= "MAD"
@@ -1043,8 +1043,8 @@ parameters.
                              | <progParamRegister>
                              | <tempRegister>
 
-    <maskedDstReg>         ::= <dstRegister> <optionalWriteMask> 
-                                   <optionalCCMask> 
+    <maskedDstReg>         ::= <dstRegister> <optionalWriteMask>
+                                   <optionalCCMask>
 
     <dstRegister>          ::= <vtxResultRegister>
                              | <tempRegister>
@@ -1108,7 +1108,7 @@ parameters.
                              | "R4"  | "R5"  | "R6"  | "R7"
                              | "R8"  | "R9"  | "R10" | "R11"
 
-    <vp2-tempRegister>     ::= "R12" | "R13" | "R14" | "R15" 
+    <vp2-tempRegister>     ::= "R12" | "R13" | "R14" | "R15"
 
     <vtxResultRegister>    ::= "o" "[" <vtxResultRegName> "]"
 
@@ -1171,9 +1171,9 @@ parameters.
                              | "."     "y" "z" "w"
                              | "." "x" "y" "z" "w"
 
-    
+
     <optionalSign>         ::= ""
-                             | "-" 
+                             | "-"
                              | <vp2-optionalSign>
 
     <vp2-optionalSign>     ::= "+"
@@ -1204,7 +1204,7 @@ parameters.
 
     <vp2-ccMask>           ::= "(" <vp2-ccMaskRule> <swizzleSuffix> ")"
 
-    <vp2-ccMaskRule>       ::= "EQ" | "GE" | "GT" | "LE" | "LT" | "NE" 
+    <vp2-ccMaskRule>       ::= "EQ" | "GE" | "GT" | "LE" | "LT" | "NE"
                              | "TR" | "FL"
 
     <scalarSuffix>         ::= "." <component>
@@ -1214,9 +1214,9 @@ parameters.
                              | "." <component> <component>
                                    <component> <component>
 
-    <component>            ::= "x" 
-                             | "y" 
-                             | "z" 
+    <component>            ::= "x"
+                             | "y"
+                             | "z"
                              | "w"
 
     The <identifier> rule matches a sequence of one or more letters ("A"
@@ -1309,7 +1309,7 @@ parameters.
     named by id as the current vertex program. The error INVALID_OPERATION
     is generated if id names a program that is not a vertex program
     (for example, if id names a vertex state program as described in
-    section 2.14.4).  
+    section 2.14.4).
 
     Binding to a nonexistent program id does not generate an error.
     In particular, binding to program id zero does not generate an error.
@@ -1352,7 +1352,7 @@ parameters.
     be resident.
 
     The command
-      
+
       boolean AreProgramsResidentNV(sizei n, const uint *ids,
                                     boolean *residences);
 
@@ -1512,7 +1512,7 @@ parameters.
     operand are taken from the vector components named by the first, second,
     third, and fourth character of the pattern, respectively.  For example, if
     the swizzle suffix is ".yzzx" and the specified source contains {2,8,9,0},
-    the swizzled operand used by the instruction is {8,9,9,2}.  
+    the swizzled operand used by the instruction is {8,9,9,2}.
 
     If the <swizzleSuffix> rule matches "", it is treated as though it were
     ".xyzw".  If the <swizzleSuffix> rule matches (ignoring whitespace) ".x",
@@ -1578,7 +1578,7 @@ parameters.
           return operand;
       }
 
-      float ScalarLoad(floatVec source) 
+      float ScalarLoad(floatVec source)
       {
           float operand;
 
@@ -1615,7 +1615,7 @@ parameters.
 
     If an operand is obtained from a program parameter register, by matching
     the <progParamRegister> rule, the register number can be obtained by
-    absolute or relative addressing.  
+    absolute or relative addressing.
 
     When absolute addressing is used, by matching the <absProgParamReg> rule,
     the program parameter register number is the number matching the
@@ -1639,7 +1639,7 @@ parameters.
       floatVec ProgramParameterLoad(intVec addrReg)
       {
         int index;
-        
+
         if (absolute) {
           index = paramNumber;
         } else {
@@ -1835,7 +1835,7 @@ parameters.
     is popped off the call stack and program execution continues with the
     popped instruction.  A vertex program will terminate if a CAL instruction
     is executed with four entries already in the call stack or if a RET
-    instruction is executed with an empty call stack.    
+    instruction is executed with an empty call stack.
 
     If a VP2 vertex program has an instruction label "main", program execution
     begins with the instruction immediately following the instruction label.
@@ -1864,7 +1864,7 @@ parameters.
 
     The following sections describe the set of supported vertex program
     instructions.  Instructions available only in the VP1.1 or VP2 execution
-    environment will be noted in the instruction description.  
+    environment will be noted in the instruction description.
 
     Each section will contain pseudocode describing the instruction.
     Instructions will have up to three operands, referred to as "op0", "op1",
@@ -1892,7 +1892,7 @@ parameters.
     The ABS instruction performs a component-wise absolute value operation on
     the single operand to yield a result vector.
 
-      tmp = VectorLoad(op0); 
+      tmp = VectorLoad(op0);
       result.x = abs(tmp.x);
       result.y = abs(tmp.y);
       result.z = abs(tmp.z);
@@ -1905,7 +1905,7 @@ parameters.
       3. abs(-0.0) = abs(+0.0) = +0.0.
 
     The ABS instruction is available only in the VP1.1 and VP2 execution
-    environments.  
+    environments.
 
     In the VP1.0 execution environment, the same functionality can be achieved
     with "MAX result, src, -src".
@@ -2040,7 +2040,7 @@ parameters.
     following the label specified in the instruction.  The following
     pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         // continue execution at instruction following <branchLabel>
       } else {
@@ -2062,7 +2062,7 @@ parameters.
     matching RET instruction.  The following pseudocode describes the
     operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         if (callStackDepth >= 4) {
           // terminate vertex program
@@ -2080,7 +2080,7 @@ parameters.
     current depth of the call stack, <callStack> is an array holding the call
     stack, and <nextInstruction> is a reference to the instruction immediately
     following the present one in the program string.
-    
+
     The CAL instruction is available only in the VP2 execution environment.
 
 
@@ -2122,13 +2122,13 @@ parameters.
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z);
-      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z);
-      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z);
-      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z);
 
 
@@ -2140,13 +2140,13 @@ parameters.
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + (tmp0.w * tmp1.w);
-      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + (tmp0.w * tmp1.w);
-      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + (tmp0.w * tmp1.w);
-      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + (tmp0.w * tmp1.w);
 
 
@@ -2159,13 +2159,13 @@ parameters.
 
       tmp0 = VectorLoad(op0);
       tmp1 = VectorLoad(op1):
-      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.x = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + tmp1.w;
-      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.y = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + tmp1.w;
-      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.z = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + tmp1.w;
-      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) + 
+      result.w = (tmp0.x * tmp1.x) + (tmp0.y * tmp1.y) +
                  (tmp0.z * tmp1.z) + tmp1.w;
 
     The DPH instruction is available only in the VP1.1 and VP2 execution
@@ -2216,7 +2216,7 @@ parameters.
       | Approx2ToX(x) - 2^x | < 1.0 / 2^22, if 0.0 <= x < 1.0,
 
     and, in general,
-   
+
       | Approx2ToX(x) - 2^x | < (1.0 / 2^22) * (2^floor(x)).
 
     The following special-case rules apply to exponential approximation:
@@ -2238,10 +2238,10 @@ parameters.
     approximation by evaluating
 
         result.x * f(result.y),
-    
+
     where f(x) is a user-defined function that approximates 2^x over the
     domain [0.0, 1.0).  The "w" component of the result vector is always 1.0.
-    
+
     The exact behavior is specified in the following pseudo-code:
 
       tmp = ScalarLoad(op0);
@@ -2255,7 +2255,7 @@ parameters.
       | RoughApprox2ToX(x) - 2^x | < 1.0 / 2^11, if 0.0 <= x < 1.0,
 
     and, in general,
-   
+
       | RoughApprox2ToX(x) - 2^x | < (1.0 / 2^11) * (2^floor(x)).
 
     The following special cases apply to the EXP instruction:
@@ -2330,7 +2330,7 @@ parameters.
       result.y = ApproxLog2(tmp);
       result.z = ApproxLog2(tmp);
       result.w = ApproxLog2(tmp);
-   
+
     The approximation function is accurate to at least 22 bits:
 
       | ApproxLog2(x) - log_2(x) | < 1.0 / 2^22.
@@ -2418,7 +2418,7 @@ parameters.
     more accurate approximation by evaluating
 
         result.x + f(result.y),
-    
+
     where f(x) is a user-defined function that approximates 2^x over the
     domain [1.0, 2.0).  The "w" component of the result vector is always 1.0.
 
@@ -2429,7 +2429,7 @@ parameters.
       result.y = tmp / (2^floor(log2(tmp)));
       result.z = RoughApproxLog2(tmp);
       result.w = 1.0;
-   
+
     The approximation function is accurate to at least 11 bits:
 
       | RoughApproxLog2(x) - log_2(x) | < 1.0 / 2^11.
@@ -2527,7 +2527,7 @@ parameters.
       4. +/-0.0 * <x> = +/-0.0, for all <x> except -INF, +INF, and NaN.  The
          sign of the result is positive if the signs of the two operands match
          and negative otherwise.
-      5. +/-INF * <x> = +/-INF, for all <x> except -0.0, +0.0, and NaN.  The 
+      5. +/-INF * <x> = +/-INF, for all <x> except -0.0, +0.0, and NaN.  The
          sign of the result is positive if the signs of the two operands match
          and negative otherwise.
       6. +1.0 * <x> = <x>, for all <x>.
@@ -2600,7 +2600,7 @@ parameters.
     call stack and transferring control to the referenced instruction.  The
     following pseudocode describes the operation of the instruction:
 
-      if (TestCC(cc.c***) || TestCC(cc.*c**) || 
+      if (TestCC(cc.c***) || TestCC(cc.*c**) ||
           TestCC(cc.**c*) || TestCC(cc.***c)) {
         if (callStackDepth <= 0) {
           // terminate vertex program
@@ -2617,7 +2617,7 @@ parameters.
     In the pseudocode, <callStackDepth> is the depth of the call stack,
     <callStack> is an array holding the call stack, and <instruction> is a
     reference to an instruction previously pushed onto the call stack.
-    
+
     The RET instruction is available only in the VP2 execution environment.
 
 
@@ -3111,7 +3111,7 @@ parameters.
     respectively.
 
 
-    2.14.7  Tracking Matrices 
+    2.14.7  Tracking Matrices
 
     As a convenience to applications, standard GL matrix state can be
     tracked into program parameter vectors.  This permits vertex programs
@@ -3185,7 +3185,7 @@ parameters.
     parameter register that is currently tracking a matrix because the
     program is considered invalid.
 
-    2.14.8  Required Vertex Program State 
+    2.14.8  Required Vertex Program State
 
     The state required for vertex programs consists of:
 
@@ -3442,8 +3442,8 @@ Revision History
     30    02/28/03  pbrown   Fixed incorrect condition code example.
 
     29    12/08/02  pbrown   Fixed minor bug where "ABS" and "DPH" were listed
-                             twice in the grammar. 
-    
+                             twice in the grammar.
+
     28    10/29/02  pbrown   Remove support for indirect branching.  Added
                              missing o[CLPx] outputs to the grammar.  Minor
                              typo fixes.
@@ -3458,13 +3458,13 @@ Revision History
     22    06/06/02  pbrown   Added missing items from NV_vertex_program1_1, in
                              particular, program options.  Documented the
                              VP2.0 position-invariant programs have no
-                             restrictions on indirect addressing.  
+                             restrictions on indirect addressing.
 
     21    06/19/02  pbrown   Cleaned up miscellaneous errors and issues
                              in the spec.
 
-    20    05/17/02  pbrown   Documented LOG instruction as taking the 
-                             absolute value of the operand, as in VP1.0.  
+    20    05/17/02  pbrown   Documented LOG instruction as taking the
+                             absolute value of the operand, as in VP1.0.
                              Fixed special-case rules for MUL.  Added clamps
                              to special-case clamping rules for RCC.
 
@@ -3489,7 +3489,7 @@ Revision History
                              special cases for MIN, MAX, SEQ, SGE, SGT, SLE,
                              SLT, and SNE.  Fix completely botched description
                              of RET.
- 
+
     15    04/05/02  pbrown   Updated introduction to indicate that
                              ARL/ARR/ARA all can update condition code.
                              Minor fixes and optimizations to the looping

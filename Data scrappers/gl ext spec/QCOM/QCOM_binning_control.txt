@@ -71,17 +71,17 @@ New Tokens
 Additions to Section 5.1 (Hints) of the OpenGL ES 2.0 Specification
 
     Replace "target is a symoblic...." with:
-    
+
     target is a symbolic constant indicating the behavior to be controlled, and
-    hint is a symbolic constant indicating what type of behavior is desired. 
+    hint is a symbolic constant indicating what type of behavior is desired.
     target can be GENERATE_MIPMAP_HINT or BINNING_CONTROL_HINT_QCOM.
     GENERATE_MIPMAP_HINT  indicates the desired quality and performance of
     mipmap level generation with GenerateMipmap. When target is
     GENERATE_MIPMAP_HINT hint must be one of FASTEST, indicating that the most
     efficient option should be chosen; NICEST, indicating that the highest
     quality option should be chosen; and DONT_CARE, indicating no preference in
-    the matter.  A target of BINNING_CONTROL_HINT_QCOM gives hints at what 
-    binning algorithm is to be used.  When the target is BINNING_CONTROL_QCOM 
+    the matter.  A target of BINNING_CONTROL_HINT_QCOM gives hints at what
+    binning algorithm is to be used.  When the target is BINNING_CONTROL_QCOM
     the hint must be one of the values below:
 
     CPU_OPTIMIZED_QCOM                - binning algorithm focuses on lower CPU
@@ -90,21 +90,21 @@ Additions to Section 5.1 (Hints) of the OpenGL ES 2.0 Specification
     GPU_OPTIMIZED_QCOM                - binning algorithm focuses on lower GPU
                                         utilization (this path increases CPU
                                         usage)
-    RENDER_DIRECT_TO_FRAMEBUFFER_QCOM - render directly to the final 
-                                        framebuffer and bypass tile memory 
+    RENDER_DIRECT_TO_FRAMEBUFFER_QCOM - render directly to the final
+                                        framebuffer and bypass tile memory
                                         (this path has a low CPU usage, but
-                                        in some cases uses more memory 
+                                        in some cases uses more memory
                                         bandwidth)
-    DONT_CARE                         - the driver picks which binning 
+    DONT_CARE                         - the driver picks which binning
                                         algorithm to use (default)
 
-    The Qualcomm Adreno 200 family does not support 
+    The Qualcomm Adreno 200 family does not support
     RENDER_DIRECT_TO_FRAMEBUFFER_QCOM option and this hint will be ignored on that
     hardware.
 
     When BINNING_CONTROL_QCOM do so right before changing rendertargets or right after
     swap or there will be a large performance penalty.
-    
+
 New State
 
 Get Value                                 Type          Command      Value

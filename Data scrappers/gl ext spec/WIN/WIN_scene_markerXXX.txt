@@ -26,15 +26,15 @@ June 23, 1997
 
 
 Abstract
-A generation of hardware is appearing that uses embedded memory for its pixel 
+A generation of hardware is appearing that uses embedded memory for its pixel
 and depth buffers.
 
-However, these buffers do not cover the entire screen and therefore require 
-multiple passes of the primitives in a scene in order to fully render them to 
-the entire screen. This proposal extends the API of OpenGL to delimit scenes 
-by defining their boundaries, enabling the device driver to capture the scene's 
-data base and take multiple passes over the scene to present it to the 
-rasterizer. Also included in this proposal is a query mechanism to determine 
+However, these buffers do not cover the entire screen and therefore require
+multiple passes of the primitives in a scene in order to fully render them to
+the entire screen. This proposal extends the API of OpenGL to delimit scenes
+by defining their boundaries, enabling the device driver to capture the scene's
+data base and take multiple passes over the scene to present it to the
+rasterizer. Also included in this proposal is a query mechanism to determine
 whether scene delimiting must be used by the application.
 
 NAME
@@ -45,21 +45,21 @@ void glBeginScene ( void void )
 void glEndScene ( void void )
 
 DESCRIPTION
-glBeginScene and glEndScene delimit the primitives that are associated with 
+glBeginScene and glEndScene delimit the primitives that are associated with
 a single scene.
 
-Any changes to GL state which affect primitives drawn between glBeginScene 
-and glEndScene must also be made between glBeginScene and glEndScene. The 
+Any changes to GL state which affect primitives drawn between glBeginScene
+and glEndScene must also be made between glBeginScene and glEndScene. The
 failure to do so may result in those state changes not being observable.
 
 EXAMPLES
 
 NOTES
-glBeginScene and glEndScene only need to be used if glGet with parameter 
+glBeginScene and glEndScene only need to be used if glGet with parameter
 GL_SCENE_REQUIRED returns GL_TRUE.
 
 ERRORS
-GL_INVALID_OPERATION is generated if glEndScene is called before the 
+GL_INVALID_OPERATION is generated if glEndScene is called before the
 corresponding glBeginScene is called.
 
 ASSOCIATED GETS
@@ -81,6 +81,6 @@ void glGetBooleanv (    GLenum pname,
 
 DESCRIPTION
 GL_SCENE_REQUIRED
-params returns a single Boolean value indicating whether scene delimiting is required. 
+params returns a single Boolean value indicating whether scene delimiting is required.
 
 See glBeginScene and glEndScene.

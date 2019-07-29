@@ -78,7 +78,7 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     undefined.  An implementation may choose to execute asynchronous
     commands in parallel with the normal command stream or at some
     convenient time in the future.
-    
+
     Calling Disable with the <cap> parameter set to
     ASYNC_DRAW_PIXELS_SGIX restores the default synchronous behavior
     for subsequent DrawPixels commands.  It does not affect any

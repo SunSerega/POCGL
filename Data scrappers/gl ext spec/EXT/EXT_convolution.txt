@@ -196,18 +196,18 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     retained; it must be one of ALPHA, LUMINANCE, LUMINANCE_ALPHA,
     INTENSITY_EXT, RGB, or RGBA.  Its <width>, <height>, <format>, <type>,
     and <image> parameters specify an image in memory with exactly the same
-    semantics of the corresponding parameters to DrawPixels.  
+    semantics of the corresponding parameters to DrawPixels.
 
     The specified image is extracted from memory and processed just as if
     DrawPixels were called, stopping after the Final Expansion to RGBA step
     is completed. The R, G, B, and A components of each pixel are then scaled
     by the four 2D CONVOLUTION_FILTER_SCALE_EXT parameters, then biased by the
     four 2D CONVOLUTION_FILTER_BIAS_EXT parameters.  These parameters are
-    themselves specified by calling ConvolutionParameterivEXT or 
+    themselves specified by calling ConvolutionParameterivEXT or
     ConvolutionParameterfvEXT with <target> CONVOLUTION_2D_EXT, <pname>
     CONVOLUTION_FILTER_SCALE_EXT or CONVOLUTION_FILTER_BIAS_EXT, and <params>
     pointing to a vector of four values: red, green, blue, and alpha, in that
-    order.  The R, G, B, and A values are not clamped to [0,1] at any time 
+    order.  The R, G, B, and A values are not clamped to [0,1] at any time
     during this process.
 
     Each pixel is then converted to have the specified internal format.
@@ -245,7 +245,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     Its <target> parameter must be CONVOLUTION_1D_EXT.  Its <internalformat>,
     <format>, and <type> parameters have identical semantics and accept the
     same values as do their 2D counterparts.  <image> must point to a
-    1-dimensional image, however.  
+    1-dimensional image, however.
 
     The 1-dimensional image is taken from memory and processed as if
     ConvolutionFilter2DEXT were called with a height of 1, except that it is
@@ -270,7 +270,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     color buffer region whose lower-left pixel has window coordinates <x>,<y>.
     If any pixels within this region are outside the window that is
     associated with the GL context, the values obtained for those pixels
-    are undefined.  
+    are undefined.
 
     These pixel values are obtained from the framebuffer exactly as if
     ReadPixels had been called with <format> set to RGBA, with processing
@@ -290,7 +290,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     window that is associated with the GL context, the values obtained for
     those pixels are undefined.
 
-    The pixels are processed just as those of CopyConvolutionFilter2DEXT are, 
+    The pixels are processed just as those of CopyConvolutionFilter2DEXT are,
     and they define a filter image such that lower X window coordinates
     correspond to lower i filter image coordinates.  The semantics and
     accepted values of the <target> and <internalformat> parameters are
@@ -324,7 +324,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     enabled and disabled by calling Enable and Disable with filter name
     passed as the <cap> parameter.  Convolution is performed only for RGBA
     groups, though these groups may have been specified as color indexes
-    and converted to RGBA by index table lookup.  
+    and converted to RGBA by index table lookup.
 
     If CONVOLUTION_1D_EXT is enabled, the 1-dimensional convolution filter
     is applied only to the image passed to TexImage1D, and to 1-dimensional
@@ -347,7 +347,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     pixel are convolved with one filter component, or are passed unmodified.
     The rules for this are:
 
-        Filter format           
+        Filter format
         -------------
         ALPHA                   R = Rs                  G = Gs                  B = Bs                  A = convolve(As,Af)
         LUMINANCE               R = convolve(Rs,Lf)     G = convolve(Gs,Lf)     B = convolve(Bs,Lf)     A = As
@@ -358,9 +358,9 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
     The convolution operation is defined differently for each of the three
     convolution filters.  In the following equations the
-    
+
         SUM{}{}equation
-        
+
     notation indicate the sum of the equation evaluated for all combinations
     of conditions indicated within the sets of curly brackets.  The
     variables Wf and Hf refer to the dimensions of the convolution filter.
@@ -373,14 +373,14 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
         1-dimensional filter:
 
             C[i] = SUM{n = 0 through Wf-1}
-            
+
                       Cs[i+n] * Cf[n]
 
         2-dimensional filter:
 
             C[i,j] = SUM{n = 0 through Wf-1}
                         {m = 0 through Hf-1}
-                        
+
                         Cs[i+n,j+m] * Cf[n,m]
 
         2-dimensional separable filter:
@@ -411,7 +411,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     TexImage2D, which specify constraints for image dimensions.  Even if
     TexImage1D or TexImage2D is called with a null pixel pointer, the
     dimensions of the resulting texture image are those that would result
-    from the convolution of the specified image.)  
+    from the convolution of the specified image.)
 
     If a convolution operation is performed, the resulting image is scaled
     and biased by parameters specified using the PixelTransfer command.
@@ -493,7 +493,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 Additions to the GLX Specification
 
     None
-    
+
 GLX Protocol
 
     Thirteen new GL commands are added.
@@ -537,8 +537,8 @@ GLX Protocol
                         0x8014    n=4   CONVOLUTION_FILTER_SCALE_EXT
                         0x8015    n=4   CONVOLUTION_FILTER_BIAS_EXT
                         0x8017    n=1   CONVOLUTION_FORMAT_EXT
-                        0x8018    n=1   CONVOLUTION_WIDTH_EXT  
-                        0x8019    n=1   CONVOLUTION_HEIGHT_EXT  
+                        0x8018    n=1   CONVOLUTION_WIDTH_EXT
+                        0x8019    n=1   CONVOLUTION_HEIGHT_EXT
                         0x801A    n=1   MAX_CONVOLUTION_WIDTH_EXT
                         0x801B    n=1   MAX_CONVOLUTION_HEIGHT_EXT
             4*n         LISTofINT32     params
@@ -560,8 +560,8 @@ GLX Protocol
                         0x8014    n=4   CONVOLUTION_FILTER_SCALE_EXT
                         0x8015    n=4   CONVOLUTION_FILTER_BIAS_EXT
                         0x8017    n=1   CONVOLUTION_FORMAT_EXT
-                        0x8018    n=1   CONVOLUTION_WIDTH_EXT  
-                        0x8019    n=1   CONVOLUTION_HEIGHT_EXT  
+                        0x8018    n=1   CONVOLUTION_WIDTH_EXT
+                        0x8019    n=1   CONVOLUTION_HEIGHT_EXT
                         0x801A    n=1   MAX_CONVOLUTION_WIDTH_EXT
                         0x801B    n=1   MAX_CONVOLUTION_HEIGHT_EXT
             4*n         LISTofFLOAT32   params
@@ -630,7 +630,7 @@ GLX Protocol
         If <width> < 0, <height> < 0, <format> is invalid or <type> is
         invalid, then the command is erroneous and n=0. The structure of
         <pixels> is described in Appendix A of the GLX Protocol
-        Specification, "Pixel Data", using the parameters <swap_bytes>, 
+        Specification, "Pixel Data", using the parameters <swap_bytes>,
         <lsb_first>, <row_length>, <skip_rows>, <skip_pixels>, <alignment>,
         <width>, <height>, <format>, and <type> as given in the request.
 
@@ -665,7 +665,7 @@ GLX Protocol
         invalid, then the command is erroneous and n=0. The structure of
         <row> is described in Appendix A of the GLX Protocol Specification,
         "Pixel Data", using the parameters <swap_bytes>, <lsb_first>,
-        <row_length>, <skip_rows>, <skip_pixels>, <alignment>, <width>, 
+        <row_length>, <skip_rows>, <skip_pixels>, <alignment>, <width>,
         <format>, and <type> as given in the request, and and a height of 1.
         The structure of <column> is the same (it is also a one-dimensional
         image) except that it is <height> pixels wide, instead of <width>
@@ -701,7 +701,7 @@ GLX Protocol
             16                          unused
             n*4         LISTofINT32     params
 
-        Note that n may be zero, indicating that a GL error occurred. 
+        Note that n may be zero, indicating that a GL error occurred.
 
 
         GetConvolutionParameterfvEXT
@@ -730,7 +730,7 @@ GLX Protocol
             16                          unused
             n*4         LISTofFLOAT32   params
 
-        Note that n may be zero, indicating that a GL error occurred. 
+        Note that n may be zero, indicating that a GL error occurred.
 
 
         GetConvolutionFilterEXT
@@ -763,7 +763,7 @@ GLX Protocol
         <swap_bytes>, <format>, and <type>. No extra padding is needed after
         <pixels> because the image format already pads to 32 bits.
 
- 
+
         GetSeparableFilterEXT
             1           CARD8           opcode (X assigned)
             1           17              GLX opcode (glXVendorPrivateWithReply)

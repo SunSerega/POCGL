@@ -174,7 +174,7 @@ Modifications to Section 3.8.7 "Buffer Textures"
 Modifications to Section 3.9.15 "Texture and Proxy State"
 
     Add to the state required for buffer textures:
-    
+
     ... The buffer texture target has associated an integer containing the name
     of the buffer object that provided the data store for the texture,
     initially zero, and two pointer sized integers containing the offset and

@@ -10,7 +10,7 @@ Name Strings
     GLX_SGIX_color_typeXXX
 
 Version
-    
+
     $Date: 1999/04/03 08:40:47 $ $Revision: 1.2 $
 
 Number
@@ -33,7 +33,7 @@ Issues
 
    * at some point in the future, we may also need to add an internal
      format attribute.  For Redtail, we currently can not interleave
-     complex components; the plan is to have them "striped". 
+     complex components; the plan is to have them "striped".
 
    * we may also want to add GLX_FLOAT_COMPONENTS_SGIX at some point.
 
@@ -54,13 +54,13 @@ New Procedures and Functions
 
 New Tokens
 
-    Accepted by the <attributes> parameter of glXGetFBConfigAttribSGIX, and 
+    Accepted by the <attributes> parameter of glXGetFBConfigAttribSGIX, and
     by the <attrib_list> parameter of glXChooseFBConfigSGIX:
 
         GLX_COLOR_TYPE_SGIX        0x????
 
-    Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to 
-    GLX_COLOR_TYPE_SGIX) and accepted by the <attrib_list> parameter of 
+    Returned by glXGetFBConfigAttribSGIX (when <attribute> is set to
+    GLX_COLOR_TYPE_SGIX) and accepted by the <attrib_list> parameter of
     glXChooseFBConfigSGIX (following the GLX_COLOR_TYPE_SGIX token):
 
         GLX_UNSIGNED_COMPONENTS_SGIX        0x00000001
@@ -112,7 +112,7 @@ Additions to the GLX Specification
     used to represent the real and imaginary portions of the
     complex number are unspecified as is the actual representation
     of the data (two's complement, sign magnitude, floating point etc).
-    
+
     In general, only non-displayable drawable types (e.g. GLXPbuffers) will
     be able to be created with FBConfigs which support signed or complex color
     component types (see GLX_DRAWABLE_TYPE_SGIX).
@@ -122,7 +122,7 @@ Errors
 
     [ Do we need a new error to indicate if a system doesn't
       support signed and/or complex buffers? ]
- 
+
 New State
 
     None

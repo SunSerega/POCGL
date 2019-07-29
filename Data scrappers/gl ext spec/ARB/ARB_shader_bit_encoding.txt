@@ -73,7 +73,7 @@ New Tokens
 
 Additions to Chapter 8 of the OpenGL Shading Language 1.50 Specification
 (Built-in Functions)
-    
+
 
     Modify Section 8.3, Common Functions, p. 84
 
@@ -118,7 +118,7 @@ Issues
     Resolved.  Certainly.  They will be found in ARB_gpu_shader5.  This
     extension will track resolutions of ARB_gpu_shader5.  It is a simple
     subset of ARB_gpu_shader5.
- 
+
 
 Revision History
 

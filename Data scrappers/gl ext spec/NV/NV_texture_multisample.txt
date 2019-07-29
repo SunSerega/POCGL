@@ -27,7 +27,7 @@ Dependencies
 
     OpenGL 2.0 is required.
 
-    This extension is written against the OpenGL 3.1 specification and the 
+    This extension is written against the OpenGL 3.1 specification and the
     NV_gpu_program4 extension.
 
     ARB_texture_multisample is required.
@@ -50,7 +50,7 @@ Overview
         ARB_texture_multisample.
 
       * A program option to enable these features.
-      
+
     This specification also extends the ARB_texture_multisample extension
     by adding support for EXT_direct_state_access and VCAA multisample
     coverage with seperate <colorSamples> and <coverageSamples> parameters.
@@ -62,29 +62,29 @@ New Procedures and Functions
                                          int internalFormat,
                                          sizei width, sizei height,
                                          boolean fixedSampleLocations);
-                                         
+
     void TexImage3DMultisampleCoverageNV(enum target,
                                          sizei coverageSamples, sizei colorSamples,
                                          int internalFormat,
                                          sizei width, sizei height, sizei depth,
                                          boolean fixedSampleLocations);
-                                         
+
     void TextureImage2DMultisampleNV(uint texture, enum target,
                                      sizei samples, int internalFormat,
                                      sizei width, sizei height,
                                      boolean fixedSampleLocations);
-                                     
+
     void TextureImage3DMultisampleNV(uint texture, enum target,
                                      sizei samples, int internalFormat,
                                      sizei width, sizei height, sizei depth,
                                      boolean fixedSampleLocations);
-                                     
+
     void TextureImage2DMultisampleCoverageNV(uint texture, enum target,
                                              sizei coverageSamples, sizei colorSamples,
                                              int internalFormat,
                                              sizei width, sizei height,
                                              boolean fixedSampleLocations);
-                                             
+
     void TextureImage3DMultisampleCoverageNV(uint texture, enum target,
                                              sizei coverageSamples, sizei colorSamples,
                                              int internalFormat,
@@ -158,104 +158,104 @@ Additions to Chapter 2 of the OpenGL 3.1 Specification (OpenGL Operation)
 Additions to Chapter 3 of the OpenGL 3.1 Specification (Rasterization)
 
     Add to the end of Section 3.8.4 (Multisample Textures):
-    
+
     The commands
-    
+
         void TexImage2DMultisampleCoverageNV(enum target,
                                          sizei coverageSamples, sizei colorSamples,
                                          int internalFormat,
                                          sizei width, sizei height,
                                          boolean fixedSampleLocations);
-                                         
+
         void TexImage3DMultisampleCoverageNV(enum target,
                                          sizei coverageSamples, sizei colorSamples,
                                          int internalFormat,
                                          sizei width, sizei height, sizei depth,
                                          boolean fixedSampleLocations);
-                                         
+
     establish the data storage, format, dimensions, and number of samples of a
     multisample texture's image where the number of <colorSamples> and
     <coverageSamples> can be explicitly specified.
-    
-    If <coverageSamples> is zero, then TEXTURE_COVERAGE_SAMPLES_NV 
-    is set to zero.  Otherwise <coverageSamples> represents a request 
-    for a desired minimum number of coverage samples. Since different 
-    implementations may support different coverage sample counts for 
-    multisampled rendering, the actual number of coverage samples 
-    allocated for the renderbuffer image is implementation dependent.  
+
+    If <coverageSamples> is zero, then TEXTURE_COVERAGE_SAMPLES_NV
+    is set to zero.  Otherwise <coverageSamples> represents a request
+    for a desired minimum number of coverage samples. Since different
+    implementations may support different coverage sample counts for
+    multisampled rendering, the actual number of coverage samples
+    allocated for the renderbuffer image is implementation dependent.
     However, the resulting value for TEXTURE_COVERAGE_SAMPLES_NV is
-    guaranteed to be greater than or equal to <coverageSamples> and no 
-    more than the next larger coverage sample count supported by the 
+    guaranteed to be greater than or equal to <coverageSamples> and no
+    more than the next larger coverage sample count supported by the
     implementation.
 
     If <colorSamples> is zero then TEXTURE_COLOR_SAMPLES_NV is set
-    to zero.  Otherwise, <colorSamples> represents a request for a 
-    desired minimum number of colors samples.  Since different 
-    implementations may support different color sample counts for 
-    multisampled rendering, the actual number of color samples 
+    to zero.  Otherwise, <colorSamples> represents a request for a
+    desired minimum number of colors samples.  Since different
+    implementations may support different color sample counts for
+    multisampled rendering, the actual number of color samples
     allocated for the renderbuffer image is implementation dependent.
-    Furthermore, a given implementation may support different color 
+    Furthermore, a given implementation may support different color
     sample counts for each supported coverage sample count.  The
     resulting value for TEXTURE_COLOR_SAMPLES_NV is determined
     after resolving the value for TEXTURE_COVERAGE_SAMPLES_NV.
     If the requested color sample count exceeds the maximum number of
     color samples supported by the implementation given the value of
     TEXTURE_COVERAGE_SAMPLES_NV, the implementation will set
-    TEXTURE_COLOR_SAMPLES_NV to the highest supported value.  
+    TEXTURE_COLOR_SAMPLES_NV to the highest supported value.
     Otherwise, the resulting value for TEXTURE_COLOR_SAMPLES_NV is
-    guaranteed to be greater than or equal to <colorSamples> and no 
-    more than the next larger color sample count supported by the 
+    guaranteed to be greater than or equal to <colorSamples> and no
+    more than the next larger color sample count supported by the
     implementation given the value of TEXTURE_COVERAGE_SAMPLES_NV.
 
     If <colorSamples> is greater than <coverageSamples>, the error
     INVALID_VALUE is generated.
 
-    If <coverageSamples> or <colorSamples> is greater than 
+    If <coverageSamples> or <colorSamples> is greater than
     MAX_SAMPLES_EXT, the error INVALID_VALUE is generated.
 
     If <coverageSamples> is greater than zero, and <colorSamples> is
     zero, RENDERBUFFER_COLOR_SAMPLES_NV is set to an implementation
     dependent value based on RENDERBUFFER_COVERAGE_SAMPLES_NV.
-    
+
     An implementation may only support a subset of the possible
     combinations of coverage samples and color samples.  Requests for
     combinations not supported by the implementation are resolved to
-    a supported combination using the rules above.  The number of 
+    a supported combination using the rules above.  The number of
     supported combinations is MAX_MULTISAMPLE_COVERAGE_MODES_NV.
-    MULTISAMPLE_COVERAGE_MODES_NV is an array of 
+    MULTISAMPLE_COVERAGE_MODES_NV is an array of
     MAX_MULTISAMPLE_COVERAGE_MODES_NV pairs of integers representing
     the combinations of coverage samples and color samples supported
     by the implementation.  The first integer in each pair corresponds
     to coverage samples, while the second corresponds to color samples.
-    
+
     (Note: MULTISAMPLE_COVERAGE_MODES_NV and MAX_MULTISAMPLE_COVERAGE_MODES_NV
     are specified in the NV_framebuffer_multisample_coverage extension.)
 
     Add to the end of section 3.8.14 (Texture Objects):
-        
+
     The following multisample texture update commands:
-    
+
         void TextureImage2DMultisampleNV(uint texture, enum target,
                                      sizei samples, int internalFormat,
                                      sizei width, sizei height,
                                      boolean fixedSampleLocations);
-                                         
+
         void TextureImage3DMultisampleNV(uint texture, enum target,
                                      sizei samples, int internalFormat,
                                      sizei width, sizei height, sizei depth,
                                      boolean fixedSampleLocations);
-                                         
+
         void TextureImage2DMultisampleCoverageNV(uint texture, enum target,
                                              sizei coverageSamples, sizei colorSamples,
                                              int internalFormat,
                                              sizei width, sizei height,
                                              boolean fixedSampleLocations);
-                                                 
+
         void TextureImage3DMultisampleCoverageNV(uint texture, enum target,
                                              sizei coverageSamples, sizei colorSamples,
                                              int internalFormat,
                                              sizei width, sizei height, sizei depth,
-                                             boolean fixedSampleLocations);        
+                                             boolean fixedSampleLocations);
 
     operate identically to the corresponding command where "Texture"
     is substituted for "Tex" (and extension suffixes are dropped or
@@ -297,7 +297,7 @@ State Requests)
 Additions to the AGL/GLX/WGL Specifications
 
     None.
-    
+
 New State
 
     (add to table 6.14, Textures (state per texture image p. 252)
@@ -314,12 +314,12 @@ Interactions with NV_explicit_multisample
     If NV_explicit_multisample is not present, the language following the discussion
     of Texelfetch in section 2.X.4.4, Program Texture Access will be new and should
     omit any mention of sampling from renderbuffers.
-    
+
 Dependencies on EXT_direct_state_access
 
     If EXT_direct_state_access is not supported, remove references to the
     TextureImage* commands added by this extension.
-    
+
 Issues
 
     (1) What should this extension be called?
@@ -340,6 +340,6 @@ Revision History
     Rev.    Date    Author    Changes
     ----  --------  --------  -----------------------------------------
     1     6/23/09   groth     Extracted from portions of an earlier version of
-                              ARB_texture_multisample 
+                              ARB_texture_multisample
 
     2     9/10/09   pdaniell  Add support for VCAA and DSA

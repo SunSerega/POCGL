@@ -35,7 +35,7 @@ Dependencies
 
 Overview
 
-    Extend GL_ARB_copy_buffer to have GLX bindings. 
+    Extend GL_ARB_copy_buffer to have GLX bindings.
 
 New Procedures and Functions
 
@@ -148,7 +148,7 @@ Errors
 
     The error INVALID_VALUE is generated if readTarget/readBuffer and
     writeTarget/writeBuffer are the same buffer object, and the ranges
-    [readOffset, readOffset+size) and [writeOffset, writeOffset+size) overlap. 
+    [readOffset, readOffset+size) and [writeOffset, writeOffset+size) overlap.
 
 Usage Examples
 

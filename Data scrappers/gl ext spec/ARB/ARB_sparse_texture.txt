@@ -99,7 +99,7 @@ New Procedures and Functions
                                       sizei depth,
                                       boolean commit);
 
-        [[ Note: TexturePageCommitmentEXT is supported if and only if 
+        [[ Note: TexturePageCommitmentEXT is supported if and only if
            the EXT_direct_state_access or the ARB_direct_state_access extension
            is supported. ]]
 
@@ -424,7 +424,7 @@ Samplers)
     can be partially populated is implementation-dependent.  The total number
     of levels that may be partially populated may be queried by calling
     GetTexParameteriv with the <pname> NUM_SPARSE_LEVELS_ARB.
-    
+
     The collection of texture levels that may not be partially populated, if
     any, consists of levels NUM_SPARSE_LEVELS_ARB and higher, and is referred
     to as the mipmap 'tail'.  The levels comprising the tail are made resident

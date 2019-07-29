@@ -95,7 +95,7 @@ Issues
       target.
 
     Should 3D textures be allowed to be NPOTD?
-    
+
       RESOLUTION:  No.  That should be left to another extension.
 
     Should cube map textures be allowed to be NPOTD?
@@ -212,7 +212,7 @@ New Tokens
     Accepted by the <target> parameter of GetTexLevelParameteriv,
     GetTexLevelParameterfv, GetTexParameteriv, and TexImage2D:
 
-        PROXY_TEXTURE_RECTANGLE_NV          0x84F7 
+        PROXY_TEXTURE_RECTANGLE_NV          0x84F7
 
     Accepted by the <pname> parameter of GetBooleanv, GetDoublev,
     GetIntegerv, and GetFloatv:
@@ -419,7 +419,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
               /  floor(w),    r < 1
              /
         k = {    2^l-1,       r == 1, non-rectangular texture     (3.19)
-             \  
+             \
               \  0,           r == 1, rectangular texture"
 
      Change the last sentence in the partial paragraph after equation
@@ -542,7 +542,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
      the three-dimensional texture is used.  If the cube map texture
      and any of the three-dimensional, rectangular, two-dimensional,
      or one-dimensional textures is enabled, then cube map texturing is
-     used. 
+     used.
 
 Additions to Chapter 4 of the GL Specification (Per-Fragment Operations
 and the Framebuffer)

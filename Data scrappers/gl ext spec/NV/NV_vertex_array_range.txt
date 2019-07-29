@@ -114,7 +114,7 @@ Overview
 Issues
 
     How does this extension interact with the compiled_vertex_array
-    extension?  
+    extension?
 
        I think they should be independent and not interfere with
        each other.  In practice, if you use NV_vertex_array_range,
@@ -238,7 +238,7 @@ Additions to Chapter 2 of the OpenGL 1.1 Specification (OpenGL Operation)
     After the discussion of vertex arrays (Section 2.8) add a
     description of the vertex array range:
 
-    "The command 
+    "The command
 
        void VertexArrayRangeNV(sizei length, void *pointer)
 
@@ -368,17 +368,17 @@ Additions to the WGL interface:
 
     "When establishing a vertex array range, certain types of memory
     may be more efficient than other types of memory.  The commands
-     
+
        void *wglAllocateMemoryNV(sizei size,
                                  float readFrequency,
                                  float writeFrequency,
                                  float priority)
        void wglFreeMemoryNV(void *pointer)
-    
+
     allocate and free memory that may be more suitable for establishing
     an efficient vertex array range than memory allocated by other means.
     The wglAllocateMemoryNV command allocates <size> bytes of contiguous
-    memory.  
+    memory.
 
     The <readFrequency>, <writeFrequency>, and <priority> parameters are
     usage hints that the OpenGL implementation can use to determine the
@@ -500,7 +500,7 @@ NV10 Implementation Details
 
     This section describes the implementation-dependent validity
     checks for NV10.
-     
+
       o  For the NV10 implementation-dependent validity check for the
          vertex array range region of memory to be true, all of the
          following must be true:
@@ -540,7 +540,7 @@ NV10 Implementation Details
                 ( The normal array type must be SHORT -AND-
                   The normal array stride must be a multiple of 8 bytes -AND-
                   The normal array pointer must be 8-byte aligned. ) ) )
-                   
+
         3.  ( COLOR_ARRAY must be disabled. ) -OR -
             ( COLOR_ARRAY must be enabled -AND-
               The color array type must be FLOAT or UNSIGNED_BYTE -AND-
@@ -563,26 +563,26 @@ NV10 Implementation Details
             ( TEXTURE_COORD_ARRAY must be enabled -AND-
               The texture coord array stride must be less than 256 -AND-
               ( ( The texture coord array type must be FLOAT -AND-
-                  The texture coord array pointer must be 4-byte aligned. ) 
+                  The texture coord array pointer must be 4-byte aligned. )
                   The texture coord array stride must be a multiple of 4 bytes -AND-
                   The texture coord array size must be 1, 2, 3, or 4 ) -OR-
                 ( The texture coord array type must be SHORT -AND-
-                  The texture coord array pointer must be 4-byte aligned. ) 
+                  The texture coord array pointer must be 4-byte aligned. )
                   The texture coord array stride must be a multiple of 4 bytes -AND-
                   The texture coord array size must be 1 ) -OR-
                 ( The texture coord array type must be SHORT -AND-
-                  The texture coord array pointer must be 4-byte aligned. ) 
+                  The texture coord array pointer must be 4-byte aligned. )
                   The texture coord array stride must be a multiple of 4 bytes -AND-
                   The texture coord array size must be 2 ) -OR-
                 ( The texture coord array type must be SHORT -AND-
-                  The texture coord array pointer must be 8-byte aligned. ) 
+                  The texture coord array pointer must be 8-byte aligned. )
                   The texture coord array stride must be a multiple of 8 bytes -AND-
                   The texture coord array size must be 3 ) -OR-
                 ( The texture coord array type must be SHORT -AND-
-                  The texture coord array pointer must be 8-byte aligned. ) 
+                  The texture coord array pointer must be 8-byte aligned. )
                   The texture coord array stride must be a multiple of 8 bytes -AND-
                   The texture coord array size must be 4 ) ) )
-            
+
         6.  ( EDGE_FLAG_ARRAY must be disabled. )
 
         7.  ( VERTEX_WEIGHT_ARRAY_NV must be disabled. ) -OR -

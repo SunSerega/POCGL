@@ -17,7 +17,7 @@ Status
 Version
 
     $Date: 2002/08/23 00:31:45 $ $Revision: 1.3 $
-    
+
 Number
 
     272
@@ -75,11 +75,11 @@ Overview
     This ensures that the vertex data memory corresponding to the issued vertex
     indices can be safely modified (assuming no other outstanding vertex indices
     are issued subsequent to the fence).
-    
+
 Issues
 
     How is TestObjectAPPLE or FinishObjectAPPLE used with DRAW_PIXELS_APPLE?
-        
+
         Resolution:  Currently there is no support DrawPixels with storage using
         the APPLE_client_storage extension and thus this option has no utility,
         due to implementation specifics, which always copy the DrawPixels
@@ -118,7 +118,7 @@ Issues
 
         RESOLUTION:  DeleteFencesAPPLE, GenFencesAPPLE, TestFenceAPPLE,
         TestObjectAPPLE, and IsFenceAPPLE are executed immediately while
-        FinishFenceAPPLE, FinishObjectAPPLE and SetFenceAPPLE are compiled. 
+        FinishFenceAPPLE, FinishObjectAPPLE and SetFenceAPPLE are compiled.
         None of these commands are allowed within Begin/End pairs.
 
 New Procedures and Functions
@@ -159,7 +159,7 @@ Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
     "5.X  Fences
 
-    The command 
+    The command
 
        void SetFenceAPPLE(uint fence);
 
@@ -208,15 +208,15 @@ Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
     Once the status of a fence has been finished (via FinishFenceAPPLE) or
     tested and the returned status is TRUE (via TestFenceAPPLE), the status
     remains TRUE until the next SetFenceAPPLE of the fence.
-    
+
     The command
-    
+
       boolean TestObjectAPPLE(enum object, uint name);
-    
+
     and the command
 
       void FinishObjectAPPLE(enum object, int name);
-    
+
     work in a similar fashion to TestFenceAPPLE and FinishFenceAPPLE but on
     other types of "objects".  Both of these commands take an object, which can
     be FENCE_APPLE, TEXTURE, VERTEX_ARRAY, or DRAW_PIXELS_APPLE and an object
@@ -275,8 +275,8 @@ Errors
     INVALID_VALUE is generated if DeleteFencesAPPLE parameter <n> is negative.
 
     INVALID_OPERATION is generated if the fence used in TestFenceAPPLE or
-    FinishFenceAPPLE is not the name of a fence. 
-    
+    FinishFenceAPPLE is not the name of a fence.
+
     INVALID_OPERATION is generated if the object name used in TestObjectAPPLE or
     FinishObjectAPPLE is not the name of an object of the type requested in the
     object parameter.
@@ -284,12 +284,12 @@ Errors
     INVALID_OPERATION is generated if any of the commands defined in
     this extension is executed between the execution of Begin and the
     corresponding execution of End.
-    
+
     INVALID_VALUE is generated if DeleteFencesAPPLE or GenFencesAPPLE are
     called where n is negative.
 
 New State
-    
+
     None
 
 New Implementation Dependent State

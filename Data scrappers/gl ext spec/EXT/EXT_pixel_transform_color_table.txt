@@ -59,13 +59,13 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
 
 Additions to the GLX Specification
-    
+
     None
 
 
 Dependencies on SGI_color_table
 
-    SGI_color_table is required.  
+    SGI_color_table is required.
     This extension adds another table to the list specified by SGI_color_table.
     This new table can be manipulated using the procedures defined by
     SGI_color_table.

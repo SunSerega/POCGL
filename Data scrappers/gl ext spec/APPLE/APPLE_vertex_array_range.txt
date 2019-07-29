@@ -44,7 +44,7 @@ Overview
     relaxed by the vertex array range extension.  Vertex data may be cached
     by the GL so there is no guarantee that changes to the vertex data will
     be reflected in following drawing commands unless it is flushed with
-    FlushVertexArrayRangeAPPLE.  The reading of vertex data may be deferred 
+    FlushVertexArrayRangeAPPLE.  The reading of vertex data may be deferred
     by the GL so there is no guarantee that the GL will be finished reading
     the data until completion is forced by the use of Finish or the APPLE_fence
     extension.
@@ -111,7 +111,7 @@ Overview
     location and length of 0 to allow the internal memory managers to complete
     any commitments for the array range.  In this case once
     VertexArrayRangeAPPLE returns it is safe to de-allocate the memory.
-    
+
     Three types of storage hints are available for vertex array ranges; client,
     shared, and cached.  These hints are set by passing the
     STORAGE_CLIENT_APPLE, STORAGE_SHARED_APPLE, or STORAGE_CACHED_APPLE param to
@@ -126,25 +126,25 @@ Overview
     being set, or in all cases when the STORAGE_SHARED_APPLE hint is set.
     Finally, the cached storage is designed to support static data and data which
     could be cached in VRAM. This provides maximum access bandwidth for the
-    vertex array and occurs when the STORAGE_CACHED_APPLE hint is set. 
-    
+    vertex array and occurs when the STORAGE_CACHED_APPLE hint is set.
+
     The following pseudo-code represents the treatment of a vertex array range
     memory depending on the hint setting and whether vertex array range is
     enabled for the client context:
-    
+
     if (VERTEX_ARRAY_STORAGE_HINT_APPLE == STORAGE_CACHED_APPLE)
         vertex array is treated as cached
     else if (VERTEX_ARRAY_STORAGE_HINT_APPLE == STORAGE_SHARED_APPLE)
         vertex array is treated as shared
     else if (VERTEX_ARRAY_RANGE_APPLE enabled)
         vertex array is treated as shared
-    else 
+    else
         vertex array is treated as client
-        
+
     Note, these hints can affect how array flushes are handled and the overhead
     associated with flushing the array, it is recommended that data be handled
     as shared unless it really is static and there are no plans to modify it.
-    
+
     To summarize the vertex array range extension provides relaxed
     synchronization rules for handling vertex array data allowing high bandwidth
     asynchronous data transfer from client memory to graphics hardware.
@@ -156,7 +156,7 @@ Issues
 
     How does one get the current VERTEX_ARRAY_STORAGE_HINT_APPLE (storage hint)
     for a vertex array range?
-    
+
        RESOLUTION: The current VERTEX_ARRAY_STORAGE_HINT_APPLE can be retrieved
        via GetIntegerv with VERTEX_ARRAY_STORAGE_HINT_APPLE as the pname.
 
@@ -227,7 +227,7 @@ Additions to Chapter 2 of the OpenGL 1.1 Specification (OpenGL Operation)
     After the discussion of vertex arrays (Section 2.8) add a
     description of the vertex array range:
 
-    "The command 
+    "The command
 
        void VertexArrayRangeAPPLE(sizei length, void *pointer)
 
@@ -305,7 +305,7 @@ Additions to Chapter 2 of the OpenGL 1.1 Specification (OpenGL Operation)
     drawing, and synchronize with Finish or a fence after drawing, prior to
     modifying the data.
 
-    The command 
+    The command
 
         void VertexArrayParameteriAPPLE(enum pname, int param)
 
@@ -313,7 +313,7 @@ Additions to Chapter 2 of the OpenGL 1.1 Specification (OpenGL Operation)
     pname must be VERTEX_ARRAY_STORAGE_HINT_APPLE.  param can either be
     STORAGE_CACHED_APPLE or STORAGE_SHARED_APPLE and can be used by the system
     to tune the handling of the vertex array range data. These
-    parameters are just hints and require no specific handling by the system. 
+    parameters are just hints and require no specific handling by the system.
     The default state is STORAGE_SHARED_APPLE which, indicates that the vertex
     data is expected to be dynamic and should be handled in a way to optimize
     modification and flushing of the vertex array range, if possible.

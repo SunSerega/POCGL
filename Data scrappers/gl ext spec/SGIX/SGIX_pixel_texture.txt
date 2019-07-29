@@ -48,7 +48,7 @@ New Tokens
     and GetDoublev:
 
         PIXEL_TEX_GEN_MODE_SGIX                 = 0x832B
-    
+
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
 
     None
@@ -86,7 +86,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     The assignment of the fragment color components is determined by value of
     PIXEL_TEX_GEN_MODE_SGIX as defined as defined by the following table:
 
-      PIXEL_TEX_GEN_MODE_SGIX    Fragment's color component value 
+      PIXEL_TEX_GEN_MODE_SGIX    Fragment's color component value
       value                    R          G         B          A
       -----------------------    -------    -------   -------    -------
       NONE                      PG's R     PG's G    PG's B     PG's A
@@ -100,7 +100,7 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
       controls the assignment of fragment color components in second thru the
       fifth columns.  PG, CRP, R, G, B, A are abbreviations of "current raster
       position", "pixel group", "red", "green", "blue", and "alpha"
-      respectively.  
+      respectively.
 
     The <mode> parameter of PixelTexGenSGIX is used to set the value of
     PIXEL_TEX_GEN_MODE_SGIX.  (It is NONE by default.)
@@ -128,7 +128,7 @@ Additions to the GLX Specification
 Errors
 
     INVALID_ENUM is generated if PixelTexGenSGIX parameter <mode> is not NONE,
-    ALPHA, RGB, or RGBA. 
+    ALPHA, RGB, or RGBA.
 
     INVALID_OPERATION is generated if PixelTexGenSGIX is called between
     execution of Begin and the execution of the corresponding End.

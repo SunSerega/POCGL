@@ -32,13 +32,13 @@ Number
 Dependencies
 
     OpenGL 1.0 is required.
-    
+
     The extension is written against the OpenGL 1.5 Specification.
 
 Overview
 
     This extension defines a mechanism to insert textual markers into
-    the OpenGL stream. 
+    the OpenGL stream.
 
     When debugging or profiling an OpenGL application some of the most
     important tools are stream loggers, which just output a list of the
@@ -70,29 +70,29 @@ IP Status
 Issues
 
    (1) Should the extension use \0-terminated strings to simplify use?
-    
+
     RESOLVED: yes.
 
     This extension follows the latest precedent for strings, which is the ShaderSource().
-    It uses strings that are given as a list of ubytes with explicit length. However, If 
+    It uses strings that are given as a list of ubytes with explicit length. However, If
     lengths is 0, then the string is assumed to be null-terminated.
 
 
    (2) Should it be legal to call this inside Begin/End?
-    
+
     RESOLVED: no.
-    
+
     The benefit is questionable, and it would probably add
     overhead to a very critical path.
-        
+
    (3) Should this be supported by GLX?
-    
+
     UNRESOLVED
-    
+
     Not strictly necessary, as most debugging is done locally. It would
-    be cleaner, but I don't see a case for the effort. 
-    
-    
+    be cleaner, but I don't see a case for the effort.
+
+
 New Procedures and Functions
 
     void StringMarkerGREMEDY(sizei len, const void *string);
@@ -123,13 +123,13 @@ Additions to Chapter 5 of the OpenGL 1.5 Specification
 (Special Functions)
 
     Add section 5.7 on page 212
-    
+
     5.7 Markers
-    
+
     The command
-    
+
         void StringMarkerGREMEDY(sizei len, const void *string);
-    
+
     can be used to insert arbitrary marker strings into the command
     stream that can be recorded by appropriate debugging tools / profiling tools /
     drivers. They have no influence on the rendered image or the OpenGL state.
@@ -180,11 +180,11 @@ Sample Code
 Revision History
 
     1.4, 10/16/07 yt:   - Minor text changes.
-    1.3, 06/08/05 yt:   - Enable the use of \0-terminated strings by specifying 
+    1.3, 06/08/05 yt:   - Enable the use of \0-terminated strings by specifying
                           a 0 string length.
     1.2, 02/01/05 dr:   - Change the extension Status
-                        - Change the name of the extension 
+                        - Change the name of the extension
     1.1, 01/20/05 dr:     (Thanks to Yaki Tebeka for suggestions!)
                         - Switched to programString style
-                        - renamed to marker_string  
+                        - renamed to marker_string
     1.0, 01/17/05 dr:   - Initial revision

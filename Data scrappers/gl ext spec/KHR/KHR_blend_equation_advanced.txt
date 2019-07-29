@@ -975,7 +975,7 @@ Issues
          step where colors may be "clipped" if the blend would produce
          components are outside the range [0,1]. Are there inputs where this
          blend could produce ill-defined or nonsensical results?
-         
+
       RESOLVED: Yes, the results of HSL blend equations are undefined if the
       input colors have components outside the range [0,1]. Even if the input
       colors are in-range, the basic color adjustment done in these blends

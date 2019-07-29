@@ -48,7 +48,7 @@ Issues
     environment.  There would likely be a clash with SGIX_texture_add_env
     and with the DECAL/BLEND environment which are similar yet different
     from the new BLEND function.  Also the separate specification of
-    the alpha texture function seems awkward, and we specified a new 
+    the alpha texture function seems awkward, and we specified a new
     behavior for the new texture environment when texturing is disabled.
 
   * I chose the name EXT_texture_env as it really is an extension to
@@ -98,7 +98,7 @@ Issues
   * Possible add-on extensions (in the context of multitexture):
 
         1) source and blend factor specification for the BLEND/REVERSE_BLEND
-           functions by generalizing BLEND/REVERSE_BLEND to 
+           functions by generalizing BLEND/REVERSE_BLEND to
                 x*Cf + y*Ct   /    x*Ct + y*Cf
            and allow x to be specified by TEXTURE_ENV_SRC_FACTOR and
            y by TEXTURE_ENV_DST_FACTOR with possible src and dst factors
@@ -110,14 +110,14 @@ Issues
            FRAGMENT_ALPHA_MINUS_ONE
            TEXTURE_ALPHA_MINUS_ONE
            PRETEXTURE_ALPHA_MINUS_ONE
-        
+
         2) Add some muxing to the inputs of the equations.
            The basic equation set is
                 Cf            (copy)
                 Cf*Ct         (modulate)
                 Cf+Ct         (add/sub/rsub)
                 a*Cf+(1-a)*Ct (blend/rblend)
-            
+
             so allow a more flexible binding on Cf & Ct
             TEXTURE_ENV_SRC  (default is FRAGMENT)
             TEXTURE_ENV_DST  (default is TEXTURE)
@@ -173,7 +173,7 @@ New Tokens
     ENV_BLEND_EXT               0x????
     ENV_REVERSE_BLEND_EXT       0x????
 
-    Accepted by the <pname> parameter of TexEnvf, TexEnvi, TexEnvfv, 
+    Accepted by the <pname> parameter of TexEnvf, TexEnvi, TexEnvfv,
     TexEnvfi, GetTexEnviv, and GetTexEnvfv
 
     TEXTURE_ENV_SHIFT_EXT       0x????
@@ -357,7 +357,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
     whether TEXTURE_ENV1 is enabled, and one MAX_TEXTURE_COORD_SETS_EXT-valued
     integer indicating the texture coordinate set binding.  In the initial
     state, the texture functions for both environments is given by MODULATE,
-    TEXTURE_ENV_COORD_SET_EXT is given by TEXTURE0_EXT in both environments, 
+    TEXTURE_ENV_COORD_SET_EXT is given by TEXTURE0_EXT in both environments,
     TEXTURE_ENV_COLOR in environment zero is (0,0,0,0), TEXTURE_ENV_SHIFT_EXT
     in environment one is (0,0,0,0) and TEXTURE_ENV1_EXT is FALSE.
 
@@ -365,7 +365,7 @@ Additions to Chapter 3 of the GL Specification (Rasterization)
 
     Texture is enabled or disabled using the generic Enable and Disable
     commands, respectively, with the symbolic constant TEXTURE_1D or TEXTURE_2D
-    to enable the one-dimensional or two-dimensional texture, respectively.  
+    to enable the one-dimensional or two-dimensional texture, respectively.
     If both one- and two-dimensional textures are enabled, the two dimensional
     texture is used. If all texturing is disabled and the currently bound
     texture environment is TEXTURE_ENV0_EXT, a rasterized fragment is
@@ -397,7 +397,7 @@ Additions to Chapter 5 of the GL Specification (Special Functions)
 
 Additions to Chapter 6 of the GL Specification (State and State Requests)
 
-    The value of the texture environment shift is queried by calling 
+    The value of the texture environment shift is queried by calling
     GetTexEnviv, and GetTexEnvfv with the <target> parameter set of TEXTURE_ENV1
     and the <pname> parameter to TEXTURE_ENV_SHIFT_EXT.
 

@@ -672,7 +672,7 @@ Additions to the GLX Specification
             2           12                   rendering command length
             2           ????                 rendering command opcode
             4           ENUM                 target
-            4           ENUM                 mode 
+            4           ENUM                 mode
 
     The following rendering command is potentially large and can be sent
     in a glXRender or glXRenderLarge request:
@@ -868,7 +868,7 @@ Errors
 
     The error INVALID_VALUE is generated if MapControlPointsNV
     or GetMapControlPointsNV is called where ustride or vstride is
-    negative.  
+    negative.
 
     The error INVALID_VALUE is generated if MapControlPointsNV is
     called where uorder or vorder is less than one or greater than

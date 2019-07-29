@@ -28,21 +28,21 @@ Overview
     shares the per fragment processing with the geometry pipeline, the
     fragments produced by the pixel pipeline must have the same fields
     as the ones produced by the geometry pipeline.  When
-    pixel groups are being converted to fragments, the parts 
-    of the fragment that aren't derived from the pixel groups 
+    pixel groups are being converted to fragments, the parts
+    of the fragment that aren't derived from the pixel groups
     are taken from the associated values in the current raster position.
 
     A fragment consists of x and y window coordinates and their
     associated color value, depth value, and texture coordinates.
     In the 1.1 OpenGL specification, when the pixel group is RGBA
-    the fragment color is always derived from the pixel group, 
-    and the depth value and texture coordinates always come 
+    the fragment color is always derived from the pixel group,
+    and the depth value and texture coordinates always come
     from the raster position.
 
     This extension provides a way to specify how the texture coordinates
     of the fragments can be derived from RGBA pixel groups.  When
     this option is enabled, the source of the fragment color value
-    when the pixel group is RGBA can be specified to come from either 
+    when the pixel group is RGBA can be specified to come from either
     the raster position or the pixel group.
 
     Deriving the fragment texture coordinates from the pixel group
@@ -61,12 +61,12 @@ Overview
     Enabling pixel_texture introduces changes in the texture
     coordinates from pixel to pixel which are not necessarily
     meaningful for texture lookups.  This problem is addressed
-    by specifying that lambda is always set to zero when pixel_texture 
-    is enabled.  
+    by specifying that lambda is always set to zero when pixel_texture
+    is enabled.
 
 Issues
 
-    * Why do we need the named param?  
+    * Why do we need the named param?
 
       Originally the single mode parameter was sufficient to control
       the fragment's color source.  However, new extensions (currently
@@ -78,14 +78,14 @@ Issues
       parameter provides a way to set the multiple pixel_texture
       parameters.
 
-    * Should LOD be supported?  
+    * Should LOD be supported?
 
       This has been addressed by the GL_SGIX_pixel_texture_lod extension.
 
     * The fragment color source can be viewed as having its own
       distinct functionality separate from the role it plays in
-      PIXEL_TEXTURE_SGIS.  Should it have its own extension?  
-      
+      PIXEL_TEXTURE_SGIS.  Should it have its own extension?
+
       No.
 
     * We chose the name PixelTexGenParameterSGIS because PixelTexGenSGIX
@@ -99,16 +99,16 @@ Issues
 
     * Should the PIXEL_TEXTURE_SGIS pipeline include a texture matrix?
 
-      No.  The color matrix can be used if needed.  
+      No.  The color matrix can be used if needed.
       The texture matrix takes place during geometry rasterization --
-      it's nice to keep that part of the pipeline separate 
+      it's nice to keep that part of the pipeline separate
       from the pixel part.
 
     * Do we need to include PixelTexGenParameter{if}vSGIS to be
-      complete?  
-      
+      complete?
+
       Yes.  This will make things less confusing if future
-      extensions want to define a float named param.  
+      extensions want to define a float named param.
 
 New Procedures and Functions
 
@@ -125,12 +125,12 @@ New Tokens
 
     Accepted by the <pname> parameter of PixelTexGenParameteriSGIS
     and GetPixelTexGenParameterivSGIS:
-    
+
         PIXEL_FRAGMENT_RGB_SOURCE_SGIS          = 0x8354
         PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS        = 0x8355
 
     Accepted by the <param> parameter of PixelTexGenParameteriSGIS:
-    
+
         PIXEL_GROUP_COLOR_SGIS                  = 0x8356
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
@@ -146,11 +146,11 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     are given by those associated with the current raster position."
     The rest of the paragraph, beginning with "In both cases texture
     coordinates..." is replaced with the following:
-    
+
     In all cases texture coordinates s, t, and r are replaced with
     s/q, t/q, and r/q, respectively.  If q is less than or equal to
     zero, the results are undefined.  Groups arising from DrawPixels
-    with a format of STENCIL_INDEX are treated specially and 
+    with a format of STENCIL_INDEX are treated specially and
     are described in section 4.3.1.
 
     The treatment of fragments arising from groups consisting of RGBA color
@@ -158,9 +158,9 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     calling Enable and Disable with PIXEL_TEXTURE_SGIS passed as the <cap>
     parameter.
 
-    When PIXEL_TEXTURE_SGIS is enabled, a fragment arising from 
-    a group consisting of RGBA color data takes its depth component 
-    from the current raster position depth, and the texture coordinates 
+    When PIXEL_TEXTURE_SGIS is enabled, a fragment arising from
+    a group consisting of RGBA color data takes its depth component
+    from the current raster position depth, and the texture coordinates
     are assigned as follows:
 
       Pixel group's red becomes the fragment S texture coordinate
@@ -169,10 +169,10 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
       Pixel group's alpha becomes the fragment Q texture coordinate
 
     The default operation is to set the texture coordinate value to
-    the color component value with no conversion.  
+    the color component value with no conversion.
 
     Various parameters control how the fragment is derived from
-    the pixel group when PIXEL_TEXTURE_SGIS is enabled.  
+    the pixel group when PIXEL_TEXTURE_SGIS is enabled.
     Each parameter is set by calling
 
     PixelTexGenParameter{if}(enum pname, T param) ;
@@ -182,15 +182,15 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
     set.  In the first form of the command, params is value to which
     to set a single-valued parameter; in the second form of the
     command, params is an array of parameters whose type depends
-    on the parameter being set.  
-    
-    If pname is PIXEL_FRAGMENT_RGB_SOURCE_SGIS or 
-    PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS, param is an integer 
-    that is one of the symbolic constants CURRENT_RASTER_COLOR or 
-    PIXEL_GROUP_COLOR_SGIS.  
+    on the parameter being set.
+
+    If pname is PIXEL_FRAGMENT_RGB_SOURCE_SGIS or
+    PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS, param is an integer
+    that is one of the symbolic constants CURRENT_RASTER_COLOR or
+    PIXEL_GROUP_COLOR_SGIS.
 
     The assignment of the fragment color components when PIXEL_TEXTURE_SGIS
-    is enabled is determined by the values of PIXEL_FRAGMENT_RGB_SOURCE_SGIS 
+    is enabled is determined by the values of PIXEL_FRAGMENT_RGB_SOURCE_SGIS
     and PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS as defined by the following tables:
 
       PIXEL_FRAGMENT_RGB_SOURCE_SGIS       Resulting fragment RGB
@@ -205,8 +205,8 @@ Additions to Chapter 3 of the 1.0 Specification (Rasterization)
 
       PG, CRP, R, G, B, A are abbreviations of "current raster
       position", "pixel group", "red", "green", "blue", and "alpha"
-      respectively.  
-   
+      respectively.
+
     When the pixel_texture extension is enabled, the lambda
     value used in the texture mapping equations is set to zero.
 
@@ -225,15 +225,15 @@ Additions to Chapter 5 of the 1.0 Specification (Special Functions)
 Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
 
     Add to the list of Get commands following the paragraph starting
-    with "Other commands exist to obtain state variables that are 
+    with "Other commands exist to obtain state variables that are
     indexed by a target...":
 
     GetPixelTexGenParameter{if}vSGIS( enum value, T data );
 
-    Change the phrase a few paragraph later "GetMaterial, GetTexGen, 
-    GetTexEnv, and GetTexParameter are similar to GetLight, 
-    placing information..." to "GetMaterial, GetTexGen, GetTexEnv, 
-    GetTexParameter, and GetPixelTexGenParameter{if}vSGIS 
+    Change the phrase a few paragraph later "GetMaterial, GetTexGen,
+    GetTexEnv, and GetTexParameter are similar to GetLight,
+    placing information..." to "GetMaterial, GetTexGen, GetTexEnv,
+    GetTexParameter, and GetPixelTexGenParameter{if}vSGIS
     are similar to GetLight, placing information..."
 
 Additions to the GLX Specification
@@ -242,17 +242,17 @@ Additions to the GLX Specification
 
 Errors
 
-    INVALID_ENUM is generated if PixelTexGenParameterSGIS parameter <pname> 
+    INVALID_ENUM is generated if PixelTexGenParameterSGIS parameter <pname>
     is not PIXEL_FRAGMENT_RGB_SOURCE_SGIS or PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS.
 
     INVALID_ENUM is generated if PixelTexGenParameterSGIS parameter <pname>
-    is one of PIXEL_FRAGMENT_RGB_SOURCE_SGIS or 
-    PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS and parameter <param> is not 
+    is one of PIXEL_FRAGMENT_RGB_SOURCE_SGIS or
+    PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS and parameter <param> is not
     CURRENT_RASTER_COLOR or PIXEL_GROUP_COLOR_SGIS.
 
     INVALID_OPERATION is generated if PixelTexGenParameteriSGIS,
-    PixelTexGenParameterivSGIS, or GetPixelTexGenParameterivSGIS 
-    are called between the execution of Begin and the execution 
+    PixelTexGenParameterivSGIS, or GetPixelTexGenParameterivSGIS
+    are called between the execution of Begin and the execution
     of the corresponding End.
 
 New State

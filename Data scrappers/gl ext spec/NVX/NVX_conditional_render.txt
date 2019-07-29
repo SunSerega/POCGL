@@ -190,7 +190,7 @@ Issues
 
     (6) Should conditional rendering work with any type of query other than
     SAMPLES_PASSED (occlusion)?
-   
+
       RESOLVED:  Not in this extension.  The spec currently requires that <id>
       be the name of an occlusion query.  There might be other query types
       where such an operation would make sense, but there aren't any in the
@@ -211,11 +211,11 @@ Usage Example
     GLuint queryID = 0x12345678;
 
     // Use an occlusion query while rendering the bounding box of the real
-    // object. 
+    // object.
     glBeginQuery(GL_SAMPLES_PASSED, queryID);
        drawBoundingBox();
     glEndQuery(GL_SAMPLES_PASSED);
- 
+
     // Do some unrelated rendering in hope that the query result will be
     // available by the time we call glBeginConditionalRenderNV.
 

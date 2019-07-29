@@ -1,5 +1,5 @@
 Name
-    
+
      NV_register_combiners2
 
 Name Strings
@@ -74,7 +74,7 @@ Issues
 
     How do is compatibility maintained with the original register
     combiners?
-      
+
       RESOLUTION:  Initially, per general combiner stage constants are
       disabled and the register combiners operate as described in the
       original NV_register_combiners specification.  A distinct "per
@@ -117,7 +117,7 @@ New Tokens
         CONSTANT_COLOR1_NV                             (see NV_register_combiners)
 
     Accepted by the <stage> parameter of CombinerStageParameterfvNV and
-    GetCombinerStageParameterfvNV: 
+    GetCombinerStageParameterfvNV:
 
         COMBINER0_NV                                   (see NV_register_combiners)
         COMBINER1_NV                                   (see NV_register_combiners)
@@ -142,7 +142,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
 
     "The initial value of the alpha portion of register SECONDARY_COLOR_NV
     is undefined."
- 
+
     Add a paragraph immediately before section 3.8.12.1:
 
     "The ccc0 and ccc1 values map to particular constant color values.
@@ -166,7 +166,7 @@ Additions to Chapter 3 of the 1.2 Specification (Rasterization)
     following section."
 
  --  Section 3.8.12.1 "Combiner Parameters"
- 
+
     Change Table NV_register_combiners.3 to read "gccc0" instead of
     "ccc0" and "gccc1" instead of "ccc1".
 

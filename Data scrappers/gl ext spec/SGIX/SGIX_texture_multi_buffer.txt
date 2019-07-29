@@ -26,7 +26,7 @@ Overview
     in parallel with rendering that uses a different texture.
 
     The texture_object extension allows the simultaneous definition
-    of multiple textures; any texture that is not being used for 
+    of multiple textures; any texture that is not being used for
     rendering can, in principle, have its definition or operations
     in its definition (e.g. downloading to hardware) occur in parallel
     with the use of another texture. This is true as long as all
@@ -41,9 +41,9 @@ Overview
     from such a hint.
 
     GL_FASTEST in this context means that texture multi-buffering
-    is being used whenever possible to improve performance. 
+    is being used whenever possible to improve performance.
     Generally, textures that are adjacent in a sequence of multiple
-    texture definitions have the greatest chance of being in 
+    texture definitions have the greatest chance of being in
     different buffers. The number of buffers available at any time
     depends on various factors, such as the machine being used and
     the textures' internal formats.
@@ -70,7 +70,7 @@ Additions to the GLX Specification
 
 Dependencies on EXT_texture_object
 
-    If EXT_texture_object is not implemented, then references to 
+    If EXT_texture_object is not implemented, then references to
     GL_TEXTURE_MULTI_BUFFER_HINT_SGIX in this specification are void.
 
 Errors

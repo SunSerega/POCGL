@@ -10,7 +10,7 @@ Version
         Date: 1996/04/19
 
 Number
-        
+
         100
 
 Dependencies
@@ -34,9 +34,9 @@ Issues
      affine ones? Are there any circumstances where the user prefers
      to have the homogeneous coordinates?
 
-New Procedures and Functions    
+New Procedures and Functions
 
-     gluNurbsCallbackDataEXT(GLUnurbsObj* theNurb, 
+     gluNurbsCallbackDataEXT(GLUnurbsObj* theNurb,
                      void* userData);
 
 New Tokens
@@ -49,7 +49,7 @@ New Tokens
 
         GLU_NURBS_TESSELLATOR_EXT      100161
         GLU_NURBS_RENDERER_EXT         100162
-  
+
 
       Accepted by the <which> parameter of NurbsCallback:
 
@@ -86,7 +86,7 @@ Additions to the GLU Specification version 1.2, section 7.1
     rendering and for returning tessellations are not guaranteed to produce
     identical results.
 
-    
+
 Additions to the GLU Specification version 1.2, section 7.2
 
     7.2 Callbacks
@@ -95,10 +95,10 @@ Additions to the GLU Specification version 1.2, section 7.2
     void gluNurbsCallback(GLUnurbsObj *nurbsObj, GLenum which, void (*fn)());
 
     The parameter <which> can be one of the following:
-    GLU_NURBS_BEGIN_EXT, GLU_NURBS_VERTEX_EXT, GLU_NORMAL_EXT, 
+    GLU_NURBS_BEGIN_EXT, GLU_NURBS_VERTEX_EXT, GLU_NORMAL_EXT,
     GLU_NURBS_COLOR_EXT, GLU_NURBS_TEXTURE_COORD_EXT, GLU_END_EXT,
-    GLU_NURBS_BEGIN_DATA_EXT, GLU_NURBS_VERTEX_DATA_EXT, GLU_NORMAL_DATA_EXT, 
-    GLU_NURBS_COLOR_DATA_EXT, GLU_NURBS_TEXTURE_COORD_DATA_EXT, GLU_END_DATA_EXT, 
+    GLU_NURBS_BEGIN_DATA_EXT, GLU_NURBS_VERTEX_DATA_EXT, GLU_NORMAL_DATA_EXT,
+    GLU_NURBS_COLOR_DATA_EXT, GLU_NURBS_TEXTURE_COORD_DATA_EXT, GLU_END_DATA_EXT,
     and GLU_ERROR,
 
     These callbacks have the following prototypes:
@@ -118,35 +118,35 @@ Additions to the GLU Specification version 1.2, section 7.2
     void endData(void* userData);
 
     void error(GLenum errno);
-    
+
     The first 12 callbacks are for the user to get the primitives back from the
-    NURBS  tessellator when the GLU_NURBS_MODE_EXT is set to GLU_NURBS_TESSELLATOR_EXT. 
+    NURBS  tessellator when the GLU_NURBS_MODE_EXT is set to GLU_NURBS_TESSELLATOR_EXT.
     These callbacks have no effects when the GLU_NURBS_MODE_EXT is set to GLU_NURBS_RENDERER_EXT.
 
     There are two forms of each callback: one with a pointer to application
     supplied data and one without. If both versions of a particular callback
     are specified then the callback with <userData> will be used. <userData>
-    is a copy of the pointer that was specified at the last call to 
+    is a copy of the pointer that was specified at the last call to
     gluNurbsCallbackDataEXT.
 
     All callback functions can be set to NULL even when GLU_NURBS_MODE_EXT is set to
     GLU_NURBS_TESSELLATOR_EXT.  When a callback function is set to NULL,
     this callback function will not get invoked and the related data, if any, will be lost.
-    
+
     The <begin> callback indicates the start of a primitive. <type> is
-    one of GL_LINES, GL_LINE_STRIPS, GL_TRIANGLE_FAN, GL_TRIANGLE_STRIP, GL_TRIANGLES, 
+    one of GL_LINES, GL_LINE_STRIPS, GL_TRIANGLE_FAN, GL_TRIANGLE_STRIP, GL_TRIANGLES,
     or GL_QUAD_STRIP.
     The default begin callback function is NULL.
 
     The <vertex> callback  indicates a vertex of the primitive.
     The coordinates of the vertex are stored in the parameter <vertex>
-    All the generated vertices have dimension 3, that is, homogeneous 
+    All the generated vertices have dimension 3, that is, homogeneous
     coordinates have been transformed into affine coordinates.
     The default vertex callback function is NULL.
-    
+
     The <normal> callback is invoked as the vertex normal is generated.
     The components of the normal are stored in the parameter <normal>.
-    In the case of a NURBS curve, the callback function is effective only when 
+    In the case of a NURBS curve, the callback function is effective only when
     the user provides a normal map (GLU_MAP1_NORMAL).
     In the case of a NURBS surface, if a normal map (GLU_MAP2_NORMAL) is provided,
     then the generated normal is computed from the normal map.
@@ -160,7 +160,7 @@ Additions to the GLU Specification version 1.2, section 7.2
     (GL_MAP1_COLOR_4 or GL_MAP2_COLOR_4). <color> contains four components: R,G,B,A.
     The default color callback function is NULL.
 
-    The <texCoord> callback is invoked as the texture coordinates 
+    The <texCoord> callback is invoked as the texture coordinates
     of a vertex are generated. These coordinates are stored in the parameter
     <tex_coord>. The number of texture coordinates can be 1,2,3,or 4 depending
     on which type of texture map is specified (GL_MAP*_TEXTURE_COORD_1,
@@ -169,11 +169,11 @@ Additions to the GLU Specification version 1.2, section 7.2
     If no texture map is specified, this callback function will not be called.
     The default texCoord callback function is NULL.
 
-    The <end> callback is invoked at the end of a primitive. 
+    The <end> callback is invoked at the end of a primitive.
     The default end callback function is NULL.
 
     The <error> callback is invoked when a NURBS function detects an error
-    condition. There are 37 errors specific to NURBS functions, and they are 
+    condition. There are 37 errors specific to NURBS functions, and they are
     named GLU_NURBS_ERROR1 through GLU_NURBS_ERROR37. Strings describing
     the meaning of these error codes can be retrieved with gluErrorString.
 
@@ -191,30 +191,30 @@ Additions to the GLU Specification version 1.2, section 7.6
 
     allows the user to set one of the following properties: GLU_CULLING,
     GLU_SAMPLING_TOLERANCE, GLU_SAMPLING_METHOD, GLU_PARAMETRIC_TOLERANCE,
-    GLU_DISPLAY_MODE, GLU_AUTO_LOAD_MATRIX, GLU_U_STEP,  GLU_V_STEP, and 
+    GLU_DISPLAY_MODE, GLU_AUTO_LOAD_MATRIX, GLU_U_STEP,  GLU_V_STEP, and
     GLU_NURBS_MODE_EXT. property indicates the property to be
-    modified, and value specifies the new value.  
+    modified, and value specifies the new value.
 
     GLU_NURBS_MODE_EXT property should be set to be either GLU_NURBS_RENDERER_EXT
     or GLU_NURBS_TESSELLATOR_EXT. When set to GLU_NURBS_RENDERER_EXT, NURBS
     objects are tessellated into openGL primitives and sent to the pipeline for
     rendering. When set to GLU_NURBS_TESSELLATOR_EXT, NURBS objects are
-    tessellated into a sequence of primitives such as lines, triangles and triangle strips, 
+    tessellated into a sequence of primitives such as lines, triangles and triangle strips,
     but the vertices,
-    normals, colors, and/or textures are retrieved back through a callback interface 
-    as specified in Section 7.2. This allows the user to cache the tessellated results 
+    normals, colors, and/or textures are retrieved back through a callback interface
+    as specified in Section 7.2. This allows the user to cache the tessellated results
     for further processing.
 
     When GLU_NURBS_MODE_EXT is set to be GLU_NURBS_RENDERER_EXT,
     GLU_DISPLAY_MODE specifies how a NURBS surface should be rendered. value
     may be set to one of GLU_FILL, GLU_OUTLINE_POLY, or GLU_OUTLINE_PATCH. When set to GLU_FILL,
-    the surface is rendered as a set of polygons. GLU_OUTLINE_POLY instructs the NURBS library to 
+    the surface is rendered as a set of polygons. GLU_OUTLINE_POLY instructs the NURBS library to
     draw only the outlines of the polygons created by tessellation. GLU_OUTLINE_PATCH will cause
     just the outlines of patches and trim curves defined by the user to be drawn.
-    The default is GLU_FILL. 
+    The default is GLU_FILL.
     When GLU_NURBS_MODE_EXT is set to be GLU_NURBS_TESSELLATOR_EXT,
     if GLU_DISPLAY_MODE is set to GLU_FILL or GLU_OUTLINE_POLY, the NURBS surface is tessellated
-    into triangles and triangle strips and these polygon primitives are retrieved back 
+    into triangles and triangle strips and these polygon primitives are retrieved back
     through callback functions. If GLU_DISPLAY_MODE is set to GLU_OUTLINE_PATCH, only the outlines
     of the patches and trim curves are generated as a sequence of line strips and can be
     retrieved back through callback functions.

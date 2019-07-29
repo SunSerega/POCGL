@@ -48,7 +48,7 @@ Additions to Chapter 4 of the 1.1 Specification (Fragments and the
 Frame Buffer)
 
     None
-    
+
 Additions to Chapter 5 of the 1.1 Specification (Special Functions)
 
     Add to section 5.6 ("Hints"):

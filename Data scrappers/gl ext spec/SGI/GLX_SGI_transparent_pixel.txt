@@ -82,7 +82,7 @@ Additions to Chapter 6 of the 1.0 Specification (State and State Requests)
     None
 
 Additions to the GLX Specification
-    
+
     [Add to Section 3.2.2 of the 1.0 GLX Specification (Configuration
      Management)]
 
@@ -94,7 +94,7 @@ Additions to the GLX Specification
     GLX_TRANSPARENT_COLOR_SGI     Color*4    if index mode or no transparent
                         pixel 0, else scaled component
                         values
-    
+
     type Color is essentially the OpenGL signed integer color type which
     maps to an OpenGL float color in the range (0.0,1.0) as described
     in table 2.4 of the 1.0 OpenGL specification.

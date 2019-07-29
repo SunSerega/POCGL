@@ -155,7 +155,7 @@ Additions to Chapter 3 of the OpenGL 1.3 Specification (Rasterization)
         PALETTE8_RGBA4_OES                    RGBA
         PALETTE8_RGB5_A1_OES                  RGBA
 
-    Add to Section 3.8.3, Alternate Image Specification 
+    Add to Section 3.8.3, Alternate Image Specification
 
     If <internalformat> is PALETTE4_RGB8, PALETTE4_RGBA8, PALETTE4_R5_G6_B5,
     PALETTE4_RGBA4, PALETTE4_RGB5_A1, PALETTE8_RGB8, PALETTE8_RGBA8,
@@ -259,7 +259,7 @@ Errors
 
 New State
 
-    The queries for NUM_COMPRESSED_TEXTURE_FORMATS and 
+    The queries for NUM_COMPRESSED_TEXTURE_FORMATS and
     COMPRESSED_TEXTURE_FORMATS include these ten new formats.
 
 Revision History

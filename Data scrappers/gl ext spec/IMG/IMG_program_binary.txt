@@ -1,8 +1,8 @@
-Name 
+Name
 
     IMG_program_binary
 
-Name Strings 
+Name Strings
 
     GL_IMG_program_binary
 
@@ -20,11 +20,11 @@ Contacts
     Ben Bowman, Imagination Technologies (benji 'dot' bowman 'at'
     imgtec 'dot' com)
 
-Status 
+Status
 
     Complete
 
-Version 
+Version
 
     0.3, 22 October 2009
 
@@ -32,32 +32,32 @@ Number
 
     OpenGL ES Extension #67
 
-Dependencies 
+Dependencies
 
     OpenGL ES 2.0 is required.
     OES_get_program_binary is required.
-    The extension is written against the OpenGL-ES 2.0 full 
+    The extension is written against the OpenGL-ES 2.0 full
     specification (revision 2.0.23).
 
-Overview 
-    
+Overview
+
     This extension makes available a program binary format, SGX_PROGRAM_BINARY_IMG.
-    It enables retrieving and loading of pre-linked program objects on chips designed 
-    by Imagination Technologies. 
-     
-IP Status 
+    It enables retrieving and loading of pre-linked program objects on chips designed
+    by Imagination Technologies.
+
+IP Status
 
     Unknown.
 
-Issues 
+Issues
 
     None.
 
-New Procedures and Functions 
+New Procedures and Functions
 
     None.
 
-New Tokens 
+New Tokens
 
     Accepted by the <binaryFormat> parameter of ProgramBinaryOES:
 
@@ -66,9 +66,9 @@ New Tokens
 Additions to Chapter 2 of the OpenGL-ES 2.0 Specification (OpenGL Operation)
 
     Add the following paragraph to the end of section called Program Binaries:
-    
+
     "SGX_PROGRAM_BINARY_IMG, returned in the list of PROGRAM_BINARY_FORMATS_OES, is a
-    format that may be loaded into a program object via ProgramBinaryOES."    
+    format that may be loaded into a program object via ProgramBinaryOES."
 
 Additions to Chapter 3 of the OpenGL-ES 2.0 Specification (Rasterization)
 
@@ -94,7 +94,7 @@ GLX Protocol
 
     None
 
-Errors 
+Errors
 
     None
 

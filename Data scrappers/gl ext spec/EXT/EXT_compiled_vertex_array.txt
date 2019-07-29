@@ -48,7 +48,7 @@ Issues
       Probably not, the lock request can always be ignored with no resulting
       change in functionality if there are insufficent resources, and allowing
       the GL to define this limit can make things difficult for applications.
-    
+
     * Should there be any restrictions on what state can be changed while
       the vertex array data is locked?
 
@@ -56,7 +56,7 @@ Issues
       any cached vertex state that may be affected.  This is likely to
       cause a performance hit, so the preferred use will be to not change
       state while the vertex array data is locked.
-    
+
 New Procedures and Functions
 
     void LockArraysEXT (int first, sizei count)

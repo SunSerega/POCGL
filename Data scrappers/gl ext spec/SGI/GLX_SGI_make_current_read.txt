@@ -19,7 +19,7 @@ Dependencies
     EXT_copy_texture is affected by this specification.
     EXT_convolution is affected by this specification.
     SGI_color_table is affected by this specification.
-    
+
 Overview
 
     The association of the current context with a drawable is extended to allow
@@ -133,7 +133,7 @@ Additions to the GLX Specification
     specification, but it will help allow early implementations to
     be completed.
 
-    *   glXMakeCurrentReadSGI may return False if <draw> and <read> cannot 
+    *   glXMakeCurrentReadSGI may return False if <draw> and <read> cannot
         exist in framebuffer memory simultaneously.
 
     *    glXGetCurrentReadDrawableSGI returns the name of the GLXDrawable

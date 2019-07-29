@@ -65,23 +65,23 @@ Operations and the Frame Buffer)
 
     (Replace the complicated set of conditions with the following)
 
-    Specifically, the values of rendered fragments are undefined if any 
-    shader stage fetches texels and the same texels are written via fragment 
-    shader outputs, even if the reads and writes are not in the same Draw 
+    Specifically, the values of rendered fragments are undefined if any
+    shader stage fetches texels and the same texels are written via fragment
+    shader outputs, even if the reads and writes are not in the same Draw
     call, unless any of the following exceptions apply:
 
-    - The reads and writes are from/to disjoint sets of texels (after 
+    - The reads and writes are from/to disjoint sets of texels (after
       accounting for texture filtering rules).
 
-    - There is only a single read and write of each texel, and the read is in 
-      the fragment shader invocation that writes the same texel (e.g. using 
+    - There is only a single read and write of each texel, and the read is in
+      the fragment shader invocation that writes the same texel (e.g. using
       "texelFetch2D(sampler, ivec2(gl_FragCoord.xy), 0);").
 
     - If a texel has been written, then in order to safely read the result
       a texel fetch must be in a subsequent Draw separated by the command
-    
+
         void TextureBarrierNV(void);
-        
+
       TextureBarrierNV() will guarantee that writes have completed and caches
       have been invalidated before subsequent Draws are executed.
 
@@ -154,7 +154,7 @@ Issues
       This can be used to accomplish a limited form of programmable blending
       for applications where a single Draw call does not self-intersect, by
       binding the same texture as both render target and texture and applying
-      blending operations in the fragment shader. Additionally, bounding-box 
+      blending operations in the fragment shader. Additionally, bounding-box
       optimizations can be used to minimize the number of TextureBarrierNV
       calls between Draws. For example:
 
@@ -170,10 +170,10 @@ Issues
 
       Another application is to render-to-texture algorithms that ping-pong
       between two textures, using the result of one rendering pass as the input
-      to the next. Existing mechanisms require expensive FBO Binds, DrawBuffer 
-      changes, or FBO attachment changes to safely swap the render target and 
-      texture. With texture barriers, layered geometry shader rendering, and 
-      texture arrays, an application can very cheaply ping-pong between two 
+      to the next. Existing mechanisms require expensive FBO Binds, DrawBuffer
+      changes, or FBO attachment changes to safely swap the render target and
+      texture. With texture barriers, layered geometry shader rendering, and
+      texture arrays, an application can very cheaply ping-pong between two
       layers of a single texture. i.e.
 
         X = 0;
@@ -181,17 +181,17 @@ Issues
         // Attach the array texture to an FBO using FramebufferTexture3D
         while (!done) {
           // Stuff X in a constant, vertex attrib, etc.
-          Draw - 
+          Draw -
             Texturing from layer X;
             Writing gl_Layer = 1 - X in the geometry shader;
-          
+
           TextureBarrierNV();
           X = 1 - X;
         }
 
-      However, be warned that this requires geometry shaders and hence adds 
+      However, be warned that this requires geometry shaders and hence adds
       the overhead that all geometry must pass through an additional program
-      stage, so an application using large amounts of geometry could become 
+      stage, so an application using large amounts of geometry could become
       geometry-limited or more shader-limited.
 
     (2) Does this support OpenGL ES?

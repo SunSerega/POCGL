@@ -24,15 +24,15 @@ Dependencies
 Overview
 
     This extension specifies that the fragment lighting vectors including
-    the view vector, light vectors, halfangle vectors and 
-    spotlight direction vectors, be transformed into either eye-space, 
-    object-space or tangent-space on a per-vertex basis. 
-    The default is eye-space. 
+    the view vector, light vectors, halfangle vectors and
+    spotlight direction vectors, be transformed into either eye-space,
+    object-space or tangent-space on a per-vertex basis.
+    The default is eye-space.
 
     Combined with the ability to take a normal vector from texture memory,
-    as specified by the SGIX_light_texture extension, 
-    the ability to transform other shading vectors to the same space 
-    as the normal vector allows advanced shading effects such as 
+    as specified by the SGIX_light_texture extension,
+    the ability to transform other shading vectors to the same space
+    as the normal vector allows advanced shading effects such as
     bump mapping to be realized.
 
     The tangent-space transform uses the per-vertex tangent and binormal
@@ -42,19 +42,19 @@ Issues
 
     * A suggestion for a different way to attack this is to introduce the
     concept of a per-vertex matrix which is applied to lighting vectors.
-    Coupled with a new matrix-gen function, we could generate the necessary 
+    Coupled with a new matrix-gen function, we could generate the necessary
     per-vertex matrices.
 
     * Are we really dependent upon fragment light?
 
-    Theoretically, no, but doing lighting in a space other than 
-    eye-space doesn't help one much unless we can do something 
-    like get normal vectors from texture.  
+    Theoretically, no, but doing lighting in a space other than
+    eye-space doesn't help one much unless we can do something
+    like get normal vectors from texture.
     For that reason it doesn't seem to make sense to burden per-vertex
     lighting with this generality.
 
     * If we are dependent upon fragment light are we not also dependent
-    upon SGIX_light_texture? 
+    upon SGIX_light_texture?
 
     It would seem to make little sense to implement light_space and not
     light texture because the combination of the two of them is what
@@ -80,21 +80,21 @@ New Tokens
     FRAGMENT_LIGHT_SPACE_SGIX    0x843D
 
 Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
- 
-    The fragment_light.spec section 3.9.2 Lighting Operation is amended: 
 
-    If FragmentLightSpaceSGIX specifies 
-    EYE_SPACE_SGIX            <default> 
+    The fragment_light.spec section 3.9.2 Lighting Operation is amended:
+
+    If FragmentLightSpaceSGIX specifies
+    EYE_SPACE_SGIX            <default>
     then calculations are carried out in eye space.
 
-    If FragmentLightSpaceSGIX specifies 
-    TANGENT_SPACE_SGIX  
+    If FragmentLightSpaceSGIX specifies
+    TANGENT_SPACE_SGIX
     then calculations are carried out in tangent space  by
     constructing an orthonormal basis from the per-vertex tangent,
     binormal and normal vectors and using that matrix to transform
-    eye-space shading vectors into tangent space on a 
+    eye-space shading vectors into tangent space on a
     per-vertex basis. The vectors are normalized before being passed
-    to the rasterization stage where the fragment lighting calculations 
+    to the rasterization stage where the fragment lighting calculations
     are performed.
 
     The matrix is constructed as follows:
@@ -131,16 +131,16 @@ Additions to Chapter 2 of the 1.0 Specification (OpenGL Operation)
              n to (0,0,1), ie, maps vectors to tangent space.
 
     Any shading vectors required by the fragment lighting rasterization
-    stages, which could include the view vector V, light vector VPli, 
-    halfangle vector hi and spotlight direction vector, sdli, 
-    are first computed in eye space on a per-vertex basis and then 
+    stages, which could include the view vector V, light vector VPli,
+    halfangle vector hi and spotlight direction vector, sdli,
+    are first computed in eye space on a per-vertex basis and then
     transformed by Mi to the tangent space shading vectors, Vts, Ltsi, Htsi, sdltsi.
 
-    if FragmentLightSpaceSGIX specifies 
-    OBJECT_SPACE_SGIX  
-    then fragment lighting calculations can be carried out in object space 
-    by transforming the eye-space shading vectors by the 
-    inverse of the current modelview matrix and subsequently normalizing 
+    if FragmentLightSpaceSGIX specifies
+    OBJECT_SPACE_SGIX
+    then fragment lighting calculations can be carried out in object space
+    by transforming the eye-space shading vectors by the
+    inverse of the current modelview matrix and subsequently normalizing
     them.
 
 Additions to Chapter 3 of the 1.0 Specification (Rasterization)

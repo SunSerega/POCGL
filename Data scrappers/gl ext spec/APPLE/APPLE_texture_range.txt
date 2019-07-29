@@ -113,7 +113,7 @@ New State
 
    Get Value                       Get Command             Type    Value    Attrib
    ---------                       -----------             ----    -------  ------------
-   TEXTURE_RANGE_POINTER_APPLE     GetTexParameterPointerv Y       0        texture 
+   TEXTURE_RANGE_POINTER_APPLE     GetTexParameterPointerv Y       0        texture
    TEXTURE_RANGE_LENGTH_APPLE      GetTexParameteriv       Z+      0        texture
 
 New Implementation Dependent State

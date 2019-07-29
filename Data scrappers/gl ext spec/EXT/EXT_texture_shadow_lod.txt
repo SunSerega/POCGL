@@ -12,10 +12,10 @@ Contact
 
 Contributors
 
-    Ashwin Lele, NVIDIA Corporation 
-    Daniel Koch, NVIDIA Corporation 
+    Ashwin Lele, NVIDIA Corporation
+    Daniel Koch, NVIDIA Corporation
     Graeme Leese, Broadcom Corporation
-    Pyarelal Knowles, NVIDIA Corporation 
+    Pyarelal Knowles, NVIDIA Corporation
     Sagar Ghuge, Intel Corporation
     Mark Janes, Intel Corporation
 
@@ -39,7 +39,7 @@ Dependencies
 
     This extension is written against the OpenGL Shading Language
     Specification, version 4.60.5 dated July 14, 2018.
-    
+
     The same shading language modifications should also be applied to the
     OpenGL ES Shading Language Specification, version 3.20.4 under the
     corresponding sections.

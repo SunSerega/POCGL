@@ -24,7 +24,7 @@ Version
 Number
 
     289
-    
+
 Dependencies
 
     This spec is written against the 1.2.1 version of the GL spec.
@@ -38,7 +38,7 @@ Overview
 
 Issues
 
-    
+
 
 
 New Procedure and Functions
@@ -49,10 +49,10 @@ New Procedure and Functions
 
 New Tokens
 
-      
+
     Accepted by the <fail>, <zfail>, and <zpass> parameters of
     StencilOpSeparateATI:
-    
+
       KEEP                                             0x1E00
       ZERO                                             0x0000
       REPLACE                                          0x1E01
@@ -84,7 +84,7 @@ New Tokens
       STENCIL_BACK_FAIL_ATI                            0x8801
       STENCIL_BACK_PASS_DEPTH_FAIL_ATI                 0x8802
       STENCIL_BACK_PASS_DEPTH_PASS_ATI                 0x8803
-   
+
 Additions to Chapter 2 of the OpenGL 1.2.1 Specification (Operation)
 
     None
@@ -133,7 +133,7 @@ Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment Operation
 
     The test is enabled or disabled with the Enable and Disable
     commands, using the symbolic constant STENCIL_TEST. When disabled,
-    the stencil test and the associated modifications are not made, 
+    the stencil test and the associated modifications are not made,
     and the fragment is always passed. Additionally, the stencil test
     may treat front and back faces separately. The function
     StencilFuncSeparateATI sets each independently, while the function
@@ -152,7 +152,7 @@ Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
     None
 
-Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State Requests) 
+Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State Requests)
 
     Additions to Table 6.15 Pixel Operations
 
@@ -164,5 +164,5 @@ Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State Reques
     STENCIL_BACK_PASS_DEPTH_FAIL_ATI  Z6     GetIntegerv  KEEP                   4.1.4  Stencil-buffer
     STENCIL_BACK_PASS_DEPTH_PASS_ATI  Z6     GetIntegerv  KEEP                   4.1.4  Stencil-buffer
     STENCIL_OP_SEPARATE_FACE_ATI      B      IsEnabled    FALSE                  4.1.4  Stencil-buffer
-    
- 
+
+

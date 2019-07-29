@@ -12,7 +12,7 @@ Contact
 
 Notice
 
-    Copyright (c) 2019 Collabora LTD 
+    Copyright (c) 2019 Collabora LTD
     Copyright (c) 2009-2013 The Khronos Group Inc. Copyright terms at
         http://www.khronos.org/registry/speccopyright.html
 
@@ -116,9 +116,9 @@ New State
 
 Add to table 6.4, transformation state
 
-Get Value       Type  Get Command  Initial Value  Description     Sec    
---------------  ----  -----------  -------------  --------------  ------ 
-DEPTH_CLAMP_EXT  B     IsEnabled    False          Depth clamping  12.5  
+Get Value       Type  Get Command  Initial Value  Description     Sec
+--------------  ----  -----------  -------------  --------------  ------
+DEPTH_CLAMP_EXT  B     IsEnabled    False          Depth clamping  12.5
                                                   on/off
 
 New Implementation Dependent State
@@ -130,17 +130,17 @@ Issues
     See the issue list in GL_ARB_depth_clamp.
 
     Can fragments with w_c <=0 be generated when this extension is supported?
- 
-      RESOLUTION: No. The inequalities in OpenGL ES Specification 12.5 clarify 
+
+      RESOLUTION: No. The inequalities in OpenGL ES Specification 12.5 clarify
       that only primitives that lie in the region w_c >= 0 can be produced by
-      clipping and the vertex normalization in 12.6 clarifies that values 
+      clipping and the vertex normalization in 12.6 clarifies that values
       w_c = 0 are prohibited. Hence fragments with w_c <= 0 should also never
       be generated when this extension is supported.
 
-    How does this extension differ from ARB_depth_clamp? 
-      
+    How does this extension differ from ARB_depth_clamp?
+
       Instead of DEPTH_CLAMP the parameter is called DEPTH_CLAMP_EXT.
-      Push/pop attrib bits are not relevant for OpenGL ES. 
+      Push/pop attrib bits are not relevant for OpenGL ES.
 
 Revision History
 

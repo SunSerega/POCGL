@@ -29,7 +29,7 @@ Overview
     color components is determined by a comparison of just the alpha
     component's source and destination values.  These equations are useful
     in image processing and advanced shading algorithms.
-    
+
 New Procedures and Functions
 
     None

@@ -75,7 +75,7 @@ Overview
 
       * for fixed-function fragment processing, or
 
-      * for shader texture accesses expecting floating-point return values.  
+      * for shader texture accesses expecting floating-point return values.
 
     The color components used for per-fragment operations and written into a
     color buffer are undefined:
@@ -444,7 +444,7 @@ Additions to Chapter 3 of the OpenGL 2.0 Specification (Rasterization)
     If the internalformat is integer, TEXTURE_MAG_FILTER must be
     NEAREST and TEXTURE_MIN_FILTER must be NEAREST or
     NEAREST_MIPMAP_NEAREST.
-    
+
     Modify Section 3.11.2 (Shader Execution), p. 194
 
     (modify Shader Outputs, first paragraph, p. 196)
@@ -489,7 +489,7 @@ Operations and the Frame Buffer)
 
     Modify Section 4.1.4 (Alpha Test), p. 201
 
-    (modify the first paragraph in this section)    
+    (modify the first paragraph in this section)
     This step applies only in RGBA mode and only if the color buffer
     has a fixed-point or floating-point format. In color index mode or
     if the color buffer has an integer format, proceed to the next

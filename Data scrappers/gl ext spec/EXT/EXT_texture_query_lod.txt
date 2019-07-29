@@ -18,7 +18,7 @@ Contributors
 
 Notice
 
-    Copyright (c) 2019 Collabora LTD 
+    Copyright (c) 2019 Collabora LTD
     Copyright (c) 2009-2013 The Khronos Group Inc. Copyright terms at
         http://www.khronos.org/registry/speccopyright.html
 

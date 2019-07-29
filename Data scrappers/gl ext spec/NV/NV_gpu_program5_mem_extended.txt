@@ -57,10 +57,10 @@ Overview
         LOADIM          Image load (via EXT_shader_image_load_store)
         STOREIM         Image store (via EXT_shader_image_load_store)
 
-        LDB             Load from storage buffer (via 
-                          NV_shader_storage_buffer_object) 
-        STB             Store to storage buffer (via 
-                          NV_shader_storage_buffer_object) 
+        LDB             Load from storage buffer (via
+                          NV_shader_storage_buffer_object)
+        STB             Store to storage buffer (via
+                          NV_shader_storage_buffer_object)
 
         LDS             Load from shared memory (via NV_compute_program5)
         STS             Store to shared memory (via NV_compute_program5)
@@ -114,7 +114,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
 
       Modifier  Description
       --------  ---------------------------------------------------
-      F16       Convert to or from one 16-bit floating-point value, 
+      F16       Convert to or from one 16-bit floating-point value,
                 or access one 16-bit floating-point value
 
       F16X2     Access two 16-bit floating-point values
@@ -147,7 +147,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
       {
         result_t_vec result = { 0, 0, 0, 0 };
         switch (modifier) {
-        
+
         /* Existing cases and code from NV_gpu_program5 unchanged. */
 
         case F16:
@@ -203,7 +203,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
 
     (update pseudocode for BufferMemoryStore)
 
-      void BufferMemoryStore(char *address, operand_t_vec operand, 
+      void BufferMemoryStore(char *address, operand_t_vec operand,
                              OpModifier modifier)
       {
         switch (modifier) {

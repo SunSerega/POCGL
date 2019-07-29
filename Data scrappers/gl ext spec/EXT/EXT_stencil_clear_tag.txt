@@ -371,7 +371,7 @@ Issues
           glStencilMask(~0);
 
         Then rendering one frame of a shadowed scene looks like:
-          
+
           int i;
 
           glDepthMask(1);
@@ -479,7 +479,7 @@ Issues
 
 New Procedures and Functions
 
-    StencilClearTagEXT(sizei stencilTagBits, 
+    StencilClearTagEXT(sizei stencilTagBits,
                        uint stencilClearTag)
 
 New Tokens

@@ -417,7 +417,7 @@ Additions to Chapter 6 of the GL Specification (State and State Requests)
     None
 
 Additions to the GLX / WGL / AGL Specifications
- 
+
      None
 
 GLX Protocol
@@ -472,9 +472,9 @@ New State
     REPLACEMENT_CODE_ARRAY_POINTER_SUN    vertex-array
 
 New Implementation Dependent State
- 
+
      None
 
 Revision History
-    
+
     6/25/99 Added fields from the new extension template.

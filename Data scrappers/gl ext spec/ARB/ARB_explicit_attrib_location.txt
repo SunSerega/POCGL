@@ -72,7 +72,7 @@ New Procedures and Functions
 New Tokens
 
     None
-    
+
 Additions to Chapter 2 of the OpenGL 3.2 Specification (OpenGL Operation)
 
     Section 2.11.3 "Vertex Attributes":
@@ -178,7 +178,7 @@ and OpenGL 4.1
     location qualifier introduced by this extension is extended to apply to
     inputs for non-vertex shaders and outputs for non-fragment shaders.  If
     ARB_gpu_shader_fp64 (or OpenGL 4.0) is supported, such inputs and outputs
-    can have double-precision component types.  
+    can have double-precision component types.
 
     When these extensions are supported, there are special rules for the
     number of locations consumed by "dvec3" and "dvec4" types, which require
@@ -231,7 +231,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50.09
 
     Replace the first paragraph of section 4.3.8.1 "Input Layout Qualifiers"
     with:
-    
+
     Vertex shaders allow input layout qualifiers on input variable
     declarations.  The layout qualifier identifier for vertex shader inputs
     is:
@@ -283,7 +283,7 @@ Modifications to The OpenGL Shading Language Specification, Version 1.50.09
     Add the following text after the second paragraph on page 39:
 
     Fragment shaders allow output layout qualifiers on output variable
-    declarations.  The layout qualifier identifier for fragment shader 
+    declarations.  The layout qualifier identifier for fragment shader
     outputs is:
 
       layout-qualifier-id
@@ -326,10 +326,10 @@ Issues
 
     1. How should the error be reported when the attribute location
        specified in the shader source is larger than MAX_VERTEX_ATTRIBUTES?
-       
+
        RESOLVED.  Generate a link error.  The existing spec language already
        covers this case:
-       
+
        "LinkProgram will fail if the assigned binding of an active attribute
        variable would cause the GL to reference a non-existent generic
        attribute (one greater than or equal to MAX_VERTEX_ATTRIBS)."
@@ -381,7 +381,7 @@ Issues
 
 Revision History
 
-    (v12, 2011-08-01, Pat Brown) 
+    (v12, 2011-08-01, Pat Brown)
         Add GLSL spec language explicitly specifying the number of vertex
         shader input locations consumed by basic scalar/vector types and by
         basic matrix types (bug 7809).  Also add interactions with

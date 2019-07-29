@@ -73,9 +73,9 @@ New Tokens
 
     Accepted by the <pname> parameter of PixelStoref, PixelStorei,
     GetBooleanv, GetIntegerv, GetFloatv and GetDoublev:
-    
+
         PACK_MAX_COMPRESSED_SIZE_SGIX    0x831B
-    
+
     Accepted by the <type> parameter of all routines which take
     one or two dimensional color pixel data from client memory or
     write it to client memory including DrawPixels, ReadPixels,
@@ -96,9 +96,9 @@ Additions to Chapter 2 of the 1.1 Specification (OpenGL Operation)
 Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
     3.6.3 Rasterization of Pixel Rectangles
-    
+
     The SLIM/RICE <type>s are added to Table 3.4:
-    
+
     <type> Parameter                Corresponding   Special
         Token Value                     GL Data Type    Interpretation
         ----------------                -------------   --------------
@@ -179,7 +179,7 @@ Additions to Chapter 4 of the 1.1 Specification (Per-Fragment Operations
 and the Frame Buffer)
 
     4.3.2 Reading Pixels
-    
+
     The following entries are added to Table 4.5:
 
     Parameter Name            Type        Initial Value        Valid Range
@@ -236,7 +236,7 @@ and the Frame Buffer)
     PACK_ROW_LENGTH, PACK_SKIP_ROWS, PACK_SKIP_PIXELS, and
     PACK_ALIGNMENT are not considered when reading back compressed
     images.
-    
+
 Additions to Chapter 5 of the 1.1 Specification (Special Functions)
 
     None.
@@ -270,7 +270,7 @@ New State
 
     Get Value                Get Command    Type    Initial Value    Attribute
     ---------                -----------    ----    -------------    ---------
-    PACK_MAX_COMPRESSED_SIZE_SGIX    GetIntegerv    Z+    0        client    
+    PACK_MAX_COMPRESSED_SIZE_SGIX    GetIntegerv    Z+    0        client
 
 New Implementation Dependent State
 

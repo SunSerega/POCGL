@@ -164,7 +164,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
 
     (Add to the set of opcodes in Table X.13)
 
-                  Modifiers 
+                  Modifiers
       Instruction F I C S H D  Out Inputs    Description
       ----------- - - - - - -  --- --------  --------------------------------
       ATOMCTR     - X X - - U  s   -         atomic counter operation
@@ -225,7 +225,7 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
     ATOMCTR performs a scalar atomic operation and returns an atomic counter
     value in the <x> component of the result vector.  The <y>, <z>, and <w>
     components of the result vector are undefined.
-      
+
       address = AtomicCounterAddress(op0);
       result = BufferMemoryLoad(address, U32);
       switch (atomicModifier) {

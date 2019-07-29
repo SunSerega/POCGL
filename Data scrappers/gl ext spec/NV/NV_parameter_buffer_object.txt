@@ -67,9 +67,9 @@ New Procedures and Functions
     void BindBufferBaseNV(enum target, uint index, uint buffer);
     void ProgramBufferParametersfvNV(enum target, uint bindingIndex, uint wordIndex,
                                      sizei count, const float *params);
-    void ProgramBufferParametersIivNV(enum target, uint bindingIndex, uint wordIndex, 
+    void ProgramBufferParametersIivNV(enum target, uint bindingIndex, uint wordIndex,
                                       sizei count, const int *params);
-    void ProgramBufferParametersIuivNV(enum target, uint bindingIndex, uint wordIndex, 
+    void ProgramBufferParametersIuivNV(enum target, uint bindingIndex, uint wordIndex,
                                        sizei count, const uint *params);
     void GetIntegerIndexedvEXT(enum value, uint index, int *data);
 
@@ -153,9 +153,9 @@ Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
 
       void ProgramBufferParametersfvNV(enum target, uint bindingIndex, uint wordIndex,
                                        sizei count, const float *params);
-      void ProgramBufferParametersIivNV(enum target, uint bindingIndex, uint wordIndex, 
+      void ProgramBufferParametersIivNV(enum target, uint bindingIndex, uint wordIndex,
                                         sizei count, const int *params);
-      void ProgramBufferParametersIuivNV(enum target, uint bindingIndex, uint wordIndex, 
+      void ProgramBufferParametersIuivNV(enum target, uint bindingIndex, uint wordIndex,
                                         sizei count, const uint *params);
 
     update words <wordIndex> through <wordIndex>+<count>-1 in the buffer object bound

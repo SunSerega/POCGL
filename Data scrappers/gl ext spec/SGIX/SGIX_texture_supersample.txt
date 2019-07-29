@@ -20,10 +20,10 @@ Dependencies
 
 Overview
 
-    This extension introduces high quality texture minification 
+    This extension introduces high quality texture minification
     filters which do not require prefiltering or multiple level of detail
-    maps.  The texture map is supersampled based on a pixel's projected 
-    footprint in texture space.  The weighted average of the samples is 
+    maps.  The texture map is supersampled based on a pixel's projected
+    footprint in texture space.  The weighted average of the samples is
     used as the texture value for the pixel.
 
 Issues
@@ -45,7 +45,7 @@ New Tokens
 
     Accepted by the <param> parameter of TexParameteri and TexParameterf,
     and by the <params> parameter of TexParameteriv and TexParameterfv, when
-    their <pname> parameter is TEXTURE_MIN_FILTER.  
+    their <pname> parameter is TEXTURE_MIN_FILTER.
 
         LINEAR_SUPERSAMPLE_SGIX
         FILTER4_SUPERSAMPLE_SGIX
@@ -75,8 +75,8 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
    Px = sqrt(dudx^2 + dvdx^2)
    Py = sqrt(dudy^2 + dvdy^2)
- 
-   It is also acceptable for an implementation to approximate the ideal 
+
+   It is also acceptable for an implementation to approximate the ideal
    functions Px and Py with functions Fx and Fy subject to the following
    conditions:
 
@@ -91,16 +91,16 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
    Nx = round (2^LamdaX);
    Ny = round (2^LamdaY);
-  
 
-   Instead of a single sample, Tau, at (u,v), Nx x Ny locations of the 
+
+   Instead of a single sample, Tau, at (u,v), Nx x Ny locations of the
    texture at LOD 0 are sampled and averaged as follows:
 
                   i=Nx,j=Ny
                   ---
    Tau =1/(Nx*Ny) \ Tau( u_sub_ij, v_sub_ij);
-              /          
-                  ---           
+              /
+                  ---
                i=1,j=1
     where:
 
@@ -108,16 +108,16 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
     v_sub_ij = v(x - 0.5 + i/(Nx+1), y - 0.5 + j/(Ny+1));
 
 
-    It is acceptable to reduce the smaller of Nx and Ny as the pixel 
+    It is acceptable to reduce the smaller of Nx and Ny as the pixel
     footprint collapses to a line, so long as the sampling rate of the texture
     coordinates with respect to each of the screen coordinates is maintained.
 
-    The sampling function for Tau(u,v) will be LINEAR if TEXTURE_MIN_FILTER is 
-    LINEAR_SUPERSAMPLE_SGIX, and FILTER4_SGIS if TEXTURE_MIN_FILTER is 
+    The sampling function for Tau(u,v) will be LINEAR if TEXTURE_MIN_FILTER is
+    LINEAR_SUPERSAMPLE_SGIX, and FILTER4_SGIS if TEXTURE_MIN_FILTER is
     FILTER4_SUPERSAMPLE_SGIX.
 
     The default resampling filter is an equal weighted box filter.  A linear
-    or cubic filter may be specified by setting the 
+    or cubic filter may be specified by setting the
     TEXTURE_SUPERSAMPLE_WIDTH_SGIX from 1 to 2 or 4.
 
     When TEXTURE_SUPERSAMPLE_WIDTH_SGIX is 2, the width and height
@@ -147,13 +147,13 @@ Additions to the GLX Specification
 
 Dependencies on SGIX_texture_lod_bias
 
-    If SGIX_texture_lod_bias is supported, dudx, dvdx, dwdx, dudy, dvdy, dwdy 
-    are replaced with dlodudx, dlodvdx, dlodwdx, dlodudy, dlodvdy, dlodwdy in 
+    If SGIX_texture_lod_bias is supported, dudx, dvdx, dwdx, dudy, dvdy, dwdy
+    are replaced with dlodudx, dlodvdx, dlodwdx, dlodudy, dlodvdy, dlodwdy in
     the Px and Py functions.
 
 Dependencies on SGIX_texture_lod
 
-   LamdaX and LamdaY are clamped to the range [MIN_LOD, MAX_LOD] if the 
+   LamdaX and LamdaY are clamped to the range [MIN_LOD, MAX_LOD] if the
    SGIS_texture_lod extension is supported.
 
 Errors

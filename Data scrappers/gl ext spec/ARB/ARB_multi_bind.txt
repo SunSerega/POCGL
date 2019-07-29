@@ -87,10 +87,10 @@ Overview
 
 New Procedures and Functions
 
-    void BindBuffersBase(enum target, uint first, sizei count, 
+    void BindBuffersBase(enum target, uint first, sizei count,
                          const uint *buffers);
 
-    void BindBuffersRange(enum target, uint first, sizei count, 
+    void BindBuffersRange(enum target, uint first, sizei count,
                           const uint *buffers, const intptr *offsets,
                           const sizeiptr *sizes);
 
@@ -128,10 +128,10 @@ Modifications to the OpenGL 4.3 (Compatibility Profile) Specification
 
     The commands
 
-      void BindBuffersBase(enum target, uint first, sizei count, 
+      void BindBuffersBase(enum target, uint first, sizei count,
                            const uint *buffers);
 
-      void BindBuffersRange(enum target, uint first, sizei count, 
+      void BindBuffersRange(enum target, uint first, sizei count,
                             const uint *buffers, const intptr *offsets,
                             const sizeiptr *sizes);
 
@@ -166,7 +166,7 @@ Modifications to the OpenGL 4.3 (Compatibility Profile) Specification
         if (buffers == NULL) {
           glBindBufferRange(target, first + i, 0, 0, 0);
         } else {
-          glBindBufferRange(target, first + i, buffers[i], offsets[i], 
+          glBindBufferRange(target, first + i, buffers[i], offsets[i],
                             sizes[i]);
         }
       }
@@ -229,7 +229,7 @@ Modifications to the OpenGL 4.3 (Compatibility Profile) Specification
 
       for (i = 0; i < count; i++) {
         uint texture;
-        if (textures == NULL) { 
+        if (textures == NULL) {
           texture = 0;
         } else {
           texture = textures[i];
@@ -690,7 +690,7 @@ Issues
       RESOLVED:  No.  We could consider an API like:
 
         void FramebufferColorTextures(enum target, uint first, sizei count,
-                                      const uint *textures, 
+                                      const uint *textures,
                                       const uint *levels);
 
       One might omit the <levels> parameter, since level 0 is used most
@@ -717,7 +717,7 @@ Issues
       RESOLVED:  No.  We could provide a command such as:
 
         void BindTexturesSamplers(uint first, sizei count,
-                                  const uint *textures, 
+                                  const uint *textures,
                                   const uint *samplers);
 
       that would be roughly equivalent to:
@@ -856,7 +856,7 @@ Revision History
 
     Revision 8, May 28, 2013
       - Change the error thrown when an object name passed to a multi-bind
-        command doesn't yet exist from INVALID_VALUE to INVALID_OPERATION 
+        command doesn't yet exist from INVALID_VALUE to INVALID_OPERATION
         (bug 10264).
       - Disallow the use of multi-bind commands in display lists (bug 10322).
       - Change the <count> parameter in multi-bind commands to use the type
@@ -866,7 +866,7 @@ Revision History
         bindings <first> through <first>+<count>-1 (bug 10289).
       - In the errors section for multi-bind commands, clarify which errors
         apply to only a single binding and which apply to the entire call (bug
-        10289). 
+        10289).
       - Clarify in the spec language that BindImageTextures sets <access> to
         READ_WRITE for all bindings, which was already in the pseudocode (bug
         10289).

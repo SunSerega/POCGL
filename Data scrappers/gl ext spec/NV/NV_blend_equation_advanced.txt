@@ -287,7 +287,7 @@ Operations and the Frame Buffer)
     where the function f and terms X, Y, and Z are specified in the table.
     The R, G, and B components of the source color used for blending are
     derived according to the premultiplied source color blending parameter,
-    which is set by calling BlendParameteriNV with <pname> set to 
+    which is set by calling BlendParameteriNV with <pname> set to
     BLEND_PREMULTIPLIED_SRC_NV, and <param> set to TRUE or FALSE.
     If the parameter is set to TRUE, the fragment color components are
     considered to have been premultiplied by the A component prior to
@@ -421,9 +421,9 @@ Operations and the Frame Buffer)
 
       SOFTLIGHT_NV              (X,Y,Z)  = (1,1,1)
                                 f(Cs,Cd) =
-                                  Cd-(1-2*Cs)*Cd*(1-Cd), 
+                                  Cd-(1-2*Cs)*Cd*(1-Cd),
                                     if Cs <= 0.5
-                                  Cd+(2*Cs-1)*Cd*((16*Cd-12)*Cd+3), 
+                                  Cd+(2*Cs-1)*Cd*((16*Cd-12)*Cd+3),
                                     if Cs > 0.5 and Cd <= 0.25
                                   Cd+(2*Cs-1)*(sqrt(Cd)-Cd),
                                     if Cs > 0.5 and Cd > 0.25
@@ -446,7 +446,7 @@ Operations and the Frame Buffer)
                                   1, otherwise
 
       LINEARBURN_NV             (X,Y,Z)  = (1,1,1)
-                                f(Cs,Cd) = 
+                                f(Cs,Cd) =
                                   Cs+Cd-1, if Cs+Cd>1
                                   0, otherwise
 
@@ -458,7 +458,7 @@ Operations and the Frame Buffer)
                                   1, if Cs >= 1
 
       LINEARLIGHT_NV            (X,Y,Z)  = (1,1,1)
-                                f(Cs,Cd) = 
+                                f(Cs,Cd) =
                                   1,            if 2*Cs+Cd>2
                                   2*Cs+Cd-1,    if 1 < 2*Cs+Cd <= 2
                                   0,            if 2*Cs+Cd<=1
@@ -470,7 +470,7 @@ Operations and the Frame Buffer)
                                   2*Cs,    if 2*Cs-1<=Cd and Cs<0.5*Cd
                                   Cd,      if 2*Cs-1<=Cd and Cs>=0.5*Cd
                                 ???
-                                      
+
       HARDMIX_NV                (X,Y,Z) = (1,1,1)
                                 f(Cs,Cd) = 0, if Cs+Cd<1
                                            1, otherwise
@@ -581,16 +581,16 @@ Operations and the Frame Buffer)
       --------------------      ----------------------------------------
       PLUS_NV                   (R,G,B,A) = (Rs'+Rd, Gs'+Gd, Bs'+Bd,As'+Ad)
 
-      PLUS_CLAMPED_NV           (R,G,B,A) = 
+      PLUS_CLAMPED_NV           (R,G,B,A) =
                                   (min(1,Rs'+Rd), min(1,Gs'+Gd),
                                    min(1,Bs'+Bd), min(1,As+Ad))
 
-      PLUS_CLAMPED_ALPHA_NV     (R,G,B,A) = 
+      PLUS_CLAMPED_ALPHA_NV     (R,G,B,A) =
                                   (min(min(1,As+Ad),Rs'+Rd),
                                    min(min(1,As+Ad),Gs'+Gd),
                                    min(min(1,As+Ad),Bs'+Bd), min(1,As+Ad))
 
-      PLUS_DARKER_NV            (R,G,B,A) = 
+      PLUS_DARKER_NV            (R,G,B,A) =
                                   (max(0,min(1,As+Ad)-((As-Rs')+(Ad-Rd))),
                                    max(0,min(1,As+Ad)-((As-Gs')+(Ad-Gd))),
                                    max(0,min(1,As+Ad)-((As-Bs')+(Ad-Bd))),
@@ -598,11 +598,11 @@ Operations and the Frame Buffer)
 
       MINUS_NV                  (R,G,B,A) = (Rd-Rs', Gd-Gs', Bd-Bs', Ad-As)
 
-      MINUS_CLAMPED_NV          (R,G,B,A) = 
+      MINUS_CLAMPED_NV          (R,G,B,A) =
                                   (max(0,Rd-Rs'), max(0,Gd-Gs'),
                                    max(0,Bd-Bs'), max(0,Ad-As))
 
-      CONTRAST_NV               (R,G,B,A) = 
+      CONTRAST_NV               (R,G,B,A) =
                                  (Ad/2 + 2*(Rd-Ad/2)*(Rs'-As/2),
                                   Ad/2 + 2*(Gd-Ad/2)*(Gs'-As/2),
                                   Ad/2 + 2*(Bd-Ad/2)*(Bs'-As/2),
@@ -775,7 +775,7 @@ Errors
 
       * the draw buffer for any other color output is not NONE.
 
-    If BlendParameteriNV is called and <pname> is not 
+    If BlendParameteriNV is called and <pname> is not
     BLEND_PREMULTIPLIED_SRC_NV or BLEND_OVERLAP_NV the error INVALID_ENUM is
     generated.
 
@@ -855,7 +855,7 @@ Issues
 
       RESOLVED:  Yes, we will provide support for non-premultiplied fragment
       colors (via a blending parameter), in which case the RGB color
-      components are multiplied by alpha prior to blending.  
+      components are multiplied by alpha prior to blending.
 
       We considered requiring premultiplication in the fragment shader, but
       opted to provide a fixed-function premultiply operation for cases where
@@ -919,7 +919,7 @@ Issues
       We could provide for a "general" blend equation API specifying multiple
       parameters at once, such as:
 
-        void BlendEquationGeneralNV(enum blend, enum overlap, 
+        void BlendEquationGeneralNV(enum blend, enum overlap,
                                     boolean swapSrcDst);
 
       but that API would require applications to pass parameters that are
@@ -1257,7 +1257,7 @@ Issues
       INVERT equation used in this extension uses X=Z=1 and Y=0, which means
       that blending with this equation never changes destination alpha.
 
-      We provide a separate blend equation INVERT_OVG_NV to provide 
+      We provide a separate blend equation INVERT_OVG_NV to provide
       compatibility with the formulation in the KHR extension.  The math in
       the KHR extension does perform a "valid" blending operation -- it will
       produce results that remain in [0,1] when inputs are in [0,1], and its
@@ -1476,7 +1476,7 @@ Issues
         OpenGL COLOR_LOGIC_OP    -     -     -     -     -     -     X     -
         (not in this extension)
 
-        Notes:  
+        Notes:
 
         * The PLUS_NV, PLUS_CLAMPED_NV, and PLUS_CLAMPED_ALPHA_NV equations
           are very similar and may be indistinguishable when the destination
@@ -1600,7 +1600,7 @@ Issues
       Note, however, that older versions of this extension and older NVIDIA
       drivers implementing it will lack these special cases.  A driver update
       may be required to get the new behavior.
-      
+
       There is some disagreement in different published specifications about
       how these two blend equations should be handled.  At the time this
       extension was initially developed, all specifications we found that
@@ -1680,7 +1680,7 @@ Issues
          step where colors may be "clipped" if the blend would produce
          components are outside the range [0,1]. Are there inputs where this
          blend could produce ill-defined or nonsensical results?
-         
+
       RESOLVED: Yes, the results of HSL blend equations are undefined if the
       input colors have components outside the range [0,1]. Even if the input
       colors are in-range, the basic color adjustment done in these blends
@@ -1695,7 +1695,7 @@ Issues
 
 
 Revision History
-    
+
     Rev.    Date    Author    Changes
     ----  --------  --------  ----------------------------------------------
     10    02/14/18  pdaniell  Fix ClipColor() equation where in the
@@ -1705,7 +1705,7 @@ Revision History
                               inputs to SetLum() are outside the range
                               [0..1] and could cause a divide-by-zero in
                               ClipColor().
-    
+
      9    09/30/14  pbrown    Fix incorrectly specified color clamping in
                               the HSL blend modes.
 

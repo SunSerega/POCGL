@@ -22,19 +22,19 @@ Dependencies
 Overview
 
     This extension improves the filtering quality over the standard mipmap
-    algorithm.  The limitation of the standard mipmap algorithm is that a 
+    algorithm.  The limitation of the standard mipmap algorithm is that a
     pixel's footprint in texture space is approximated by a symmetrically
     filtered sample.  The approximation becomes worse as the pixel footprint
     becomes more anisotropic.  The poor approximation usually results in
     the mapped image appearing excessively blurry.  This extension replaces
-    a single symmetric sample with the average of distributed smaller samples, 
+    a single symmetric sample with the average of distributed smaller samples,
     which better approximates the pixel footprint shape.  This anisotropic
     filtering method uses the existing mipmap and clipmap structures.
 
 Issues
 
     *    Should this extension handle all anisotropic filtering methods?
-        -- No.  Since all other known anisotropic filter methods (summed-area, 
+        -- No.  Since all other known anisotropic filter methods (summed-area,
            ripmap, non-mip supersampling) use different data structures,
          the control mechanisms will be different and therefore should
          be separate extensions.
@@ -112,19 +112,19 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
 
    Px = sqrt(dudx^2 + dvdx^2)
    Py = sqrt(dudy^2 + dvdy^2)
-  
+
    Pmax = max(Px,Py)
    Pmin = min(Px,Py)
 
    N = min(ceil(Pmax/Pmin),TEXTURE_MIPMAP_ANISOTROPY_SGIX);
    Lamda = log2(Pmax/N)
-   
+
 
    It is acceptable for implementation to round 'N' up to the nearest supported
    sampling rate.  For example an implementation may only support power-of-two
    sampling rates.
 
-   It is also acceptable for an implementation to approximate the ideal 
+   It is also acceptable for an implementation to approximate the ideal
    functions Px and Py with functions Fx and Fy subject to the following
    conditions:
 
@@ -140,15 +140,15 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
              i=N
              ---
    Tau = 1/N \ Tau(u(x - 1/2 + i/(N+1), y), v(x - 1/2 + i/(N+1), y)),  Px > Py
-             /          
-             ---           
+             /
+             ---
              i=1
 
              i=N
              ---
    Tau = 1/N \ Tau(u(x, y - 1/2 + i/(N+1)), v(x, y - 1/2 + i/(N+1))),  Py >= Px
-             /          
-             ---           
+             /
+             ---
              i=1
 
 
@@ -158,15 +158,15 @@ Additions to Chapter 3 of the 1.1 Specification (Rasterization)
              i=N
              ---
    Tau = 1/N \ Tau(u(x,y)+dudx(i/(N+1)-1/2), v(x,y)+dvdx(i/(N+1)-1/2)), Px > Py
-             /          
-             ---           
+             /
+             ---
              i=1
 
              i=N
              ---
    Tau = 1/N \ Tau(u(x,y)+dudy(i/(N+1)-1/2), v(x,y)+dvdy(i/(N+1)-1/2)), Py >= Px
-             /          
-             ---           
+             /
+             ---
              i=1
 
 
@@ -196,8 +196,8 @@ Dependencies on EXT_texture3D
 
 Dependencies on SGIX_texture_lod_bias
 
-    If SGIX_texture_lod_bias is supported, dudx, dvdx, dwdx, dudy, dvdy, dwdy 
-    are replaced with dlodudx, dlodvdx, dlodwdx, dlodudy, dlodvdy, dlodwdy in 
+    If SGIX_texture_lod_bias is supported, dudx, dvdx, dwdx, dudy, dvdy, dwdy
+    are replaced with dlodudx, dlodvdx, dlodwdx, dlodudy, dlodvdy, dlodwdy in
     the Px and Py functions.
 
 Errors

@@ -33,7 +33,7 @@ Dependencies
     The extension is written against the OpenGL 2.0 Specification.
 
 Overview
-    
+
     This extension adds the capability to associate a tag with one or more
     memory resource allocations. This tag can be reported back during
     queryResource operations and also be used to limit resource reporting to
@@ -47,7 +47,7 @@ New Procedures and Functions
     QueryResourceTagNV(GLuint tagId, const GLchar *tagString)
 
 New Tokens
-    
+
     none
 
 Additions to Chapter 2 of the OpenGL 2.0 Specification (OpenGL Operation)
@@ -90,9 +90,9 @@ State Requests)
     NULL then the return value specifies the size of buffer needed to hold the
     results from the query call.
 
-  At the end of the "Section 6.1.x GPU Query Resource" of the 
+  At the end of the "Section 6.1.x GPU Query Resource" of the
   GL_NV_query_resource extension add the following:
-  
+
     The command GenQueryResourceTagNV returns <n> previously unused query
     resource tag object names in the buffer <tagIds>.  These names are reserved
     as used for the purposes of GenQueryResourceTagNV only, but they acquire
@@ -147,7 +147,7 @@ Replace the format descriptor in this section with:
     note: sizes are in int's
 
     Stepping through the buffer can be accomplished by:
-    
+
         fixedHeader addr = address of buffer
 
         deviceBlk[0] addr = fixedHeader addr + fixedBlkSize
@@ -179,7 +179,7 @@ Issue:
        and marking the tagId as unused should the tagId be purged from the
        memory allocations. This could be a potentially expensive operation,
        the memory allocation structures need to be walked for every tagId
-       in the list while a log is taken. 
+       in the list while a log is taken.
 
        PROPOSED RESOLUTION: Mark the tagId as invalid, ignore invalid tags in
        the QueryResource command, not hand it out in future GenQueryResourceTag

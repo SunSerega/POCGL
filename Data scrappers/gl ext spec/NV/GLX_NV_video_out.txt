@@ -1,52 +1,52 @@
-Name 
+Name
 
     NV_video_output
 
-Name Strings 
+Name Strings
 
     GLX_NV_video_out
 
-Contact 
+Contact
 
     Thomas True, Nvidia, ttrue@nvidia.com
     Ian Williams, Nvidia, iwilliams@nvidia.com
     Martin Schwarzer, Nvidia, mschwarzer@nvidia.com
     Andy Ritger, Nvidia, aritger@nvidia.com
 
-Status 
+Status
 
     Shipping since 2004 for NVIDIA Quadro SDI (Serial Digital Interface)
 
-Version 
+Version
     Last Modified:      2014/06/04
     NVIDIA Revision:    8
 
-Number 
+Number
 
     348
 
-Dependencies 
+Dependencies
 
     OpenGL 1.1 is required.
     GLX 1.3 is required.
 
-Overview 
+Overview
 
     This extension permits a color and or depth buffer of a pbuffer to
-    be used for rendering and subsequent video output.  After a pbuffer 
-    has been bound to a video device, subsequent color and or depth 
+    be used for rendering and subsequent video output.  After a pbuffer
+    has been bound to a video device, subsequent color and or depth
     rendering into that buffer may be displayed on the video output.
 
     This is intended for use with NVIDIA products such as the Quadro FX
     4000 SDI.
 
-Issues 
+Issues
 
- 1. Should the new pbuffer attributes be available through GL queries? 
+ 1. Should the new pbuffer attributes be available through GL queries?
 
-    No, like other pbuffer attributes you need to query them through the 
-    window system extension. This extension does not make any changes to 
-    OpenGL. 
+    No, like other pbuffer attributes you need to query them through the
+    window system extension. This extension does not make any changes to
+    OpenGL.
 
  2. Should glXSendPbufferToVideoNV require that the pbuffer be current?
 
@@ -63,7 +63,7 @@ Implementation Notes
     utilize glXGetVideoInfoNV() in order to query vblank and
     buffer counters for synchronization.
 
-Intended Usage 
+Intended Usage
 
     1) Configure the video output device via the NV-CONTROL X extension.
 
@@ -77,7 +77,7 @@ Intended Usage
        glXCreatePbuffer.  Set the width and height for each GLXPbuffer
        to match that of the intended video output device.
 
-    4) Call glXGetVideoDeviceNV to retrieve the handles for all 
+    4) Call glXGetVideoDeviceNV to retrieve the handles for all
        video devices available.  A video device handle is required
        for each video stream.  glXGetVideoDeviceNV will lock the
        video device for exclusive use by this GLX client.  The NV-CONTROL
@@ -103,14 +103,14 @@ Intended Usage
     9) Call glXReleaseVideoDeviceNV to release the video device.
 
 New Types
-    
+
     /*
      * GLXVideoDeviceNV is an opaque handle to a video device.
      */
     typedef unsigned int GLXVideoDeviceNV;
 
 
-New Procedures and Functions 
+New Procedures and Functions
 
     int glXGetVideoDeviceNV(Display *dpy, int screen, int numVideoDevices,
                             GLXVideoDeviceNV *pVideoDevice);
@@ -133,7 +133,7 @@ New Procedures and Functions
                           unsigned long *pulCounterOutputPbuffer,
                           unsigned long *pulCounterOutputVideo);
 
-New Tokens 
+New Tokens
 
     Accepted by the <iVideoBuffer> parameter of glXBindVideoImageNV:
 
@@ -151,27 +151,27 @@ New Tokens
         GLX_VIDEO_OUT_STACKED_FIELDS_1_2_NV             0x20CB
         GLX_VIDEO_OUT_STACKED_FIELDS_2_1_NV             0x20CC
 
-Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation) 
+Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
 
-    None. 
+    None.
 
-Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization) 
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
-    None. 
+    None.
 
-Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment 
-Operations and the Frame Buffer) 
+Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
+Operations and the Frame Buffer)
 
-    None. 
+    None.
 
-Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions) 
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
 
-    None. 
+    None.
 
-Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State 
-Requests) 
+Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and State
+Requests)
 
-    None. 
+    None.
 
 
 Additions to the GLX 1.3 Specification
@@ -180,7 +180,7 @@ Additions to the GLX 1.3 Specification
 
     Video out functions permit color and depth buffers from a
     pbuffer to be sent to a video output device.
-    
+
     The command
 
         int glXGetVideoDeviceNV(Display *dpy, int screen, int numVideoDevices,
@@ -235,7 +235,7 @@ Additions to the GLX 1.3 Specification
     glXBindVideoImageNV will fail.
 
 
-    If glXBindVideoImageNV succeeds, 0 is returned.  Otherwise, 
+    If glXBindVideoImageNV succeeds, 0 is returned.  Otherwise,
     a non-zero error code is returned.
 
 
@@ -329,7 +329,7 @@ GLX Protocol
       =>
         1       CARD8       reply
         1                   unused
-        2       CARD16      sequence number 
+        2       CARD16      sequence number
         4       0           reply length
         4       CARD32      status
         20                  unused
@@ -425,4 +425,4 @@ History
 
     Revision 6, February 20, 2008
       - Internal revisions.
-    
+

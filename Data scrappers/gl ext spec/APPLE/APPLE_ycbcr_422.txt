@@ -17,7 +17,7 @@ Status
 Version
 
     $Date: 2002/09/19 00:01:25 $ $Revision: 1.6 $
-    
+
 Number
 
     275
@@ -94,7 +94,7 @@ New Tokens
     ConvolutionFilter2D, ConvolutionFilter3D, GetConvolutionFilter,
     SeparableFilter2D, SeparableFilter3D, GetSeparableFilter, ColorTable,
     GetColorTable:
-    
+
       YCBCR_422_APPLE                 0x85B9
 
     Accepted by the <type> parameter of DrawPixels, ReadPixels, TexImage1D,
@@ -103,7 +103,7 @@ New Tokens
     ConvolutionFilter2D, ConvolutionFilter3D, GetConvolutionFilter,
     SeparableFilter2D, SeparableFilter3D, GetSeparableFilter, ColorTable,
     GetColorTable:
-    
+
       UNSIGNED_SHORT_8_8_APPLE        0x85BA
       UNSIGNED_SHORT_8_8_REV_APPLE    0x85BB
 
@@ -111,7 +111,7 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
     Two entries are added to table 3.5 (DrawPixels and ReadPixels type parameter
     values and the corresponding OpenGL data types):
-    
+
     type Parameter                Corresponding         Special
       Token Name                  GL Data Type       Interpretation
     --------------                -------------      --------------
@@ -120,31 +120,31 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
 
 
     One entry is added to table 3.6 (DrawPixels and ReadPixels formats):
-                                    
+
     Format Name            Element Meaning and Order         Target Buffer
     -----------            -------------------------        -------------
     YCBCR_422_APPLE           Y luminance value,               Color
-                          [Cb,Cr] chroma value               
-                              
+                          [Cb,Cr] chroma value
+
 
     Two entries are added to table 3.8 (Packed pixel formats):
-    
+
     type Parameter                 GL Data    Number of        Matching
       Token Name                    Type      Components     Pixel Formats
     --------------                 -------    ----------     -------------
     UNSIGNED_SHORT_8_8_APPLE       ushort         3          YCBCR_422_APPLE
     UNSIGNED_SHORT_8_8_REV_APPLE   ushort         3          YCBCR_422_APPLE
-    
-    
+
+
     Two entries are added to table 3.10 (UNSIGNED SHORT formats):
-    
+
     UNSIGNED_SHORT_8_8_APPLE:
 
           15  14  13  12  11  10  9   8   7   6   5   4   3   2   1   0
         +-------------------------------+-------------------------------+
         |              1st              |              2nd              |
         +-------------------------------+-------------------------------+
-                        
+
 
     UNSIGNED_SHORT_8_8_REV_APPLE:
 
@@ -160,10 +160,10 @@ Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
     Format             Element     Element     Element     Element
     ------             -------     -------     -------     -------
     YCBCR_422_APPLE   luminance    chroma
-    
+
 
     The new format YCBCR_422_APPLE is added to the discussion of Conversion to
-    RGB: 
+    RGB:
 
     If the format is YCBCR_422_APPLE, the chroma and luminance values in each
     group are converted to R, G, and B values using an undefined algorithm. This
@@ -180,14 +180,14 @@ Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment Operation
 and the Framebuffer)
 
     Add after last paragraph of Final Conversion:
-    
+
     For an RGBA color and if the <type> is UNSIGNED_SHORT_8_8_APPLE or
     UNSIGNED_SHORT_8_8_REV_APPLE, the conversion to Y'CbCr occurs via an
     undefined reverse component conversion.  The actual equation used may vary
     per implementation.  If the row length is odd the final pixel maybe defined
     otherwise the conversion to the requested Y'CbCr output <type> is in all
     ways the same and any other <type>.
-        
+
 Additions to the GLX Specification
 
     None
@@ -201,7 +201,7 @@ Errors
     None
 
 New State
-    
+
     None
 
 New Implementation Dependent State

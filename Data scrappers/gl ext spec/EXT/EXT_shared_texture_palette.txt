@@ -204,7 +204,7 @@ Revision History
     into the registry. (Jon Leech)
 
     July 10, 2002 (version 1.3) - Added "New State" tables entries.
-    Clarify that there is a single global shared texture palette, 
+    Clarify that there is a single global shared texture palette,
     rather than a per-texture unit palette when multitexture is
     available. (Mark Kilgard)
 
