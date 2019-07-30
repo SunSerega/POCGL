@@ -61,6 +61,51 @@ begin
   Result := (ind1,ind2);
 end;
 
+function SkipCharsFromTo(self: sequence of char; f,t: string): sequence of char; extensionmethod;
+begin
+  var enm := self.GetEnumerator;
+  if not enm.MoveNext then exit;
+  var q := new Queue<char>;
+  
+  while true do
+  begin
+    while q.Count<f.Length do
+    begin
+      q += enm.Current;
+      if not enm.MoveNext then
+      begin
+        yield sequence q;
+        exit;
+      end;
+    end;
+    
+    if q.SequenceEqual(f) then
+    begin
+      q.Clear;
+      
+      while true do
+      begin
+        while q.Count<t.Length do
+        begin
+          q += enm.Current;
+          if not enm.MoveNext then exit;
+        end;
+        
+        if q.SequenceEqual(t) then
+          break else
+          q.Dequeue;
+        
+      end;
+      
+      q.Clear;
+    end else
+      yield q.Dequeue;
+    
+  end;
+  
+  yield sequence q;
+end;
+
 {$endregion}
 
 type
@@ -176,9 +221,53 @@ type
   NewFuncsChapter = class(ExtSpecChapter)
     funcs := new List<(string,string)>;
     
+    procedure DeTemplateFuncs(templ, TName: string; params repls: array of (string, string));
+    begin
+      for var i := funcs.Count-1 downto 0 do
+        if funcs[i][0].Contains(templ) then
+        begin
+          var func := funcs[i];
+          funcs.RemoveAt(i);
+          
+          foreach var repl in repls do
+          begin
+            var id := repl[0].TrimEnd('&');
+            funcs += (
+              func[0].Replace(templ,id),
+              func[1].Replace(templ,id).Replace(TName, repl[1].TrimEnd('&'))
+            );
+          end;
+          
+        end;
+    end;
+    
+    function FindFuncNameInd(i: integer): integer;
+    begin
+      
+      while i>0 do
+      begin
+        if contents[i+1] in ' *' then
+        begin
+          Result := i+1;
+          exit;
+        end;
+        
+        if contents[i+1] in ']}' then
+          while not (contents[i+1] in '[{') do
+            i -= 1;
+        
+        i-=1;
+      end;
+      
+      Result := -1;
+    end;
+    
     static function TryCreate(s: string): NewFuncsChapter;
     begin
       Result := new NewFuncsChapter(s);
+      Result.contents := Result.contents.Replace(#10,' ').SkipCharsFromTo('/*','*/').JoinIntoString;
+      while Result.contents.Contains('  ') do Result.contents := Result.contents.Replace('  ',' ');
+      s := Result.contents;
       
       var last_ind := 0;
       while true do
@@ -186,24 +275,115 @@ type
         var t := s.FindBrackets(last_ind);
         if t=nil then break;
         last_ind := t[1]+1;
+        case s.Substring(t[0],last_ind-t[0]) of
+          '(GLenum)',
+          '(added if EXT_fog_coord is supported)',
+          '(added if EXT_secondary_color is supported)',
+          '(added if EXT_vertex_weighting is supported)',
+          '(the following two functions are provided if and only if EXT_direct_state_access is supported)',
+          '(the following two commands are supported only if EXT_direct_state_access is supported)',
+          '(seperate primitive mode for each primitive)',
+          '(single primitive mode for all primitives)':
+            continue;
+        end;
         
         if s.IndexOf('.', t[0]+1, t[1]-t[0]-1) <> -1 then continue; // в скобках бывают комментарии. Благо, их можно отличить - у них в конце точка
         
-        var name_ind := s.LastIndexOfAny(' *'.ToArray,t[0]-1)+1;
-        if name_ind=-1 then raise new System.ArgumentException(s);
+        var name_ind := Result.FindFuncNameInd(t[0]-1);
+        if name_ind=-1 then
+        begin
+          Result.funcs += ( s.Remove(t[0]), 'void '+s.Substring(0,t[1]+1) );
+          continue;
+        end;
         var func_name := s.Substring(name_ind, t[0]-name_ind);
         while s[name_ind] in ' *' do name_ind -= 1;
+        if s[name_ind] in ');' then
+        begin
+          Result.funcs += ( func_name, 'void '+s.Substring(name_ind, t[1]+1-name_ind) );
+          continue;
+        end;
         
         var f_ind := s.LastIndexOf(' ',name_ind-1)+1; // даже если вернёт -1, это вполне устраивает как ответ
         
-        var func_text := s.Substring(f_ind, t[1]+1-f_ind);
-        func_text := func_text.Replace(#10,' ');
-        while func_text.Contains('  ') do func_text := func_text.Replace('  ',' ');
-        
-        Result.funcs += ( func_name, func_text );
+        Result.funcs += ( func_name, s.Substring(f_ind, t[1]+1-f_ind) );
       end;
       
-      if Result.funcs.Count=0 then Result := nil;
+      Result.funcs.RemoveAll(t->t[0]='DECLARE_HANDLE');
+      
+      if Result.funcs.Count=0 then
+      begin
+        Result := nil;
+        exit;
+      end;
+      
+      for var i := 0 to Result.funcs.Count-1 do
+      begin
+        var func_text := Result.funcs[i][1];
+        while func_text.Contains('  ') do func_text := func_text.Replace('  ',' ');
+        Result.funcs[i] := (Result.funcs[i][0], func_text);
+      end;
+      
+      
+      
+      Result.DeTemplateFuncs('[v]', 'T',
+        ( '',   'T&'  ),
+        ( 'v&', 'T *' )
+      );
+      
+      
+      
+      Result.DeTemplateFuncs('{1234}{sifd}', 'T', //ToDo может лучше оставлять T[N] ?
+        Range(1,4).Cartesian(Arr('s','i','f','d'))
+        .Select(t->t[0]+t[1])
+        .Select(s->(s,'Vec'+s))
+        .ToArray
+      );
+      
+      
+      
+      Result.DeTemplateFuncs('[fd]v', 'T ',
+        ( 'iv', 'glint * '   ),
+        ( 'fv', 'glfloat * ' )
+      );
+      
+      Result.DeTemplateFuncs('[fd]', 'T ',
+        ( 'i&', 'glint '   ),
+        ( 'f&', 'glfloat ' )
+      );
+      
+      
+      
+      Result.DeTemplateFuncs('[bsifd ubusui]v', 'T ',
+        ( 'bv', 'glbyte * '   ),
+        ( 'sv', 'glshort * ' ),
+        ( 'iv', 'glint * '   ),
+        ( 'fv', 'glfloat * ' ),
+        ( 'dv', 'gldouble * '   ),
+        ( 'ubv', 'glubyte * ' ),
+        ( 'usv', 'glushort * '   ),
+        ( 'uiv', 'gluint * ' )
+      );
+      
+      Result.DeTemplateFuncs('[bsifd ubusui]', 'T ',
+        ( 'b&', 'glbyte '   ),
+        ( 's&', 'glshort ' ),
+        ( 'i&', 'glint '   ),
+        ( 'f&', 'glfloat ' ),
+        ( 'd&', 'gldouble '   ),
+        ( 'ub', 'glubyte ' ),
+        ( 'us', 'glushort '   ),
+        ( 'ui', 'gluint ' )
+      );
+      
+      
+      
+      Result.DeTemplateFuncs('[i|f]', 'TYPE',
+        ( 'i&', 'int'   ),
+        ( 'f&', 'float' )
+      );
+      
+      
+      
     end;
     
   end;
@@ -278,8 +458,7 @@ type
     
     static function InitFromFile(fname: string): ExtSpec;
     begin
-      var spec_text := ReadAllText(fname).Remove(#13).Replace(#9,' '*4);
-      while spec_text.Contains(' '#10) do spec_text := spec_text.Replace(' '#10, #10); //ToDo переместить в скачивающую программу
+      var spec_text := ReadAllText(fname);
       
       // у незаконченных расширений - криво прописана спецификация (не приведена в общий вид с остальными расширениями)
       if spec_text.Split(#10).Any(l->l.StartsWith('XXX')) then exit;
@@ -318,7 +497,7 @@ type
       
       inds.AddRange(spec_text.FindAllIndexes(#10'Issues'#10                       ).Select(ind->('Issues', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Keyword'#10                  ).Select(ind->('NewKeywords', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Keywords'#10                  ).Select(ind->('NewKeywords', ind)));
       
       inds.AddRange(spec_text.FindAllIndexes(#10'New State'#10                    ).Select(ind->('NewState', ind)));
       

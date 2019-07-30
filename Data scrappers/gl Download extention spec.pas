@@ -33,9 +33,15 @@ begin
   
   foreach var link in GetAllFileRefs('https://www.khronos.org/registry/OpenGL/extensions/') do
   begin
+    
+    var text := wc.DownloadString(link);
+    text := text.Remove(#13).Replace(#9,' '*4);
+    while text.Contains(' '#10) do text := text.Replace(' '#10, #10);
+    
     var fname := link.Replace('https://www.khronos.org/registry/OpenGL/extensions', 'gl ext spec').Println;
     System.IO.Directory.CreateDirectory(fname.Remove(fname.LastIndexOf('/')));
-    wc.DownloadFile(link, fname);
+    WriteAllText(fname, text);
+    
   end;
   
   writeln;
