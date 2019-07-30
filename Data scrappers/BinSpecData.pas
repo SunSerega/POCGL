@@ -243,6 +243,7 @@ type
     
     function FindFuncNameInd(i: integer): integer;
     begin
+      while contents[i+1]=' ' do i -= 1;
       
       while i>0 do
       begin
@@ -277,6 +278,13 @@ type
         last_ind := t[1]+1;
         case s.Substring(t[0],last_ind-t[0]) of
           '(GLenum)',
+          '(1<<i)',
+          '(if any)',
+          '(*glXGetProcAddressARB(const GLubyte *procName))', //ToDo это, вроде, нужная функция, возвращающая адрес функции... но это не точно
+          '(to identify the texture unit)',
+          '(to identify the texture unit index)',
+          '(for most systems this is bytes)',
+          '(added for indexed texture state)',
           '(added if EXT_fog_coord is supported)',
           '(added if EXT_secondary_color is supported)',
           '(added if EXT_vertex_weighting is supported)',
@@ -292,10 +300,10 @@ type
         var name_ind := Result.FindFuncNameInd(t[0]-1);
         if name_ind=-1 then
         begin
-          Result.funcs += ( s.Remove(t[0]), 'void '+s.Substring(0,t[1]+1) );
+          Result.funcs += ( s.Remove(t[0]).TrimEnd, 'void '+s.Substring(0,t[1]+1) );
           continue;
         end;
-        var func_name := s.Substring(name_ind, t[0]-name_ind);
+        var func_name := s.Substring(name_ind, t[0]-name_ind).TrimEnd;
         while s[name_ind] in ' *' do name_ind -= 1;
         if s[name_ind] in ');' then
         begin
@@ -354,25 +362,42 @@ type
       
       
       Result.DeTemplateFuncs('[bsifd ubusui]v', 'T ',
-        ( 'bv', 'glbyte * '   ),
-        ( 'sv', 'glshort * ' ),
-        ( 'iv', 'glint * '   ),
-        ( 'fv', 'glfloat * ' ),
+        ( 'bv', 'glbyte * '     ),
+        ( 'sv', 'glshort * '    ),
+        ( 'iv', 'glint * '      ),
+        ( 'fv', 'glfloat * '    ),
         ( 'dv', 'gldouble * '   ),
-        ( 'ubv', 'glubyte * ' ),
-        ( 'usv', 'glushort * '   ),
-        ( 'uiv', 'gluint * ' )
+        ( 'ubv', 'glubyte * '   ),
+        ( 'usv', 'glushort * '  ),
+        ( 'uiv', 'gluint * '    )
       );
       
       Result.DeTemplateFuncs('[bsifd ubusui]', 'T ',
         ( 'b&', 'glbyte '   ),
-        ( 's&', 'glshort ' ),
-        ( 'i&', 'glint '   ),
-        ( 'f&', 'glfloat ' ),
-        ( 'd&', 'gldouble '   ),
-        ( 'ub', 'glubyte ' ),
-        ( 'us', 'glushort '   ),
-        ( 'ui', 'gluint ' )
+        ( 's&', 'glshort '  ),
+        ( 'i&', 'glint '    ),
+        ( 'f&', 'glfloat '  ),
+        ( 'd&', 'gldouble ' ),
+        ( 'ub', 'glubyte '  ),
+        ( 'us', 'glushort ' ),
+        ( 'ui', 'gluint '   )
+      );
+      
+      Result.DeTemplateFuncs('{bsifd ubusui}v', 'T*',
+        ( 'bv', 'glbyte *'     ),
+        ( 'sv', 'glshort *'    ),
+        ( 'iv', 'glint *'      ),
+        ( 'fv', 'glfloat *'    ),
+        ( 'dv', 'gldouble *'   ),
+        ( 'ubv', 'glubyte *'   ),
+        ( 'usv', 'glushort *'  ),
+        ( 'uiv', 'gluint *'    )
+      );
+      
+      Result.DeTemplateFuncs('{ubusui}', 'T ',
+        ( 'ub', 'glubyte '  ),
+        ( 'us', 'glushort ' ),
+        ( 'ui', 'gluint '   )
       );
       
       
