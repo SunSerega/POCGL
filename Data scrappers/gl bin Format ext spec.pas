@@ -1,6 +1,6 @@
 ﻿uses BinSpecData;
 
-begin//ToDo раскрывать {} и [] в именах функций
+begin
   
   var db := BinSpecDB.InitFromFolder('gl ext spec');
   db.Save('gl ext spec.bin');

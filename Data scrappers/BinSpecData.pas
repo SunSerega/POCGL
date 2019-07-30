@@ -229,13 +229,13 @@ type
           var func := funcs[i];
           funcs.RemoveAt(i);
           
-          foreach var repl in repls do
+          foreach var repl in repls.Reverse do
           begin
             var id := repl[0].TrimEnd('&');
-            funcs += (
+            funcs.Insert(i, (
               func[0].Replace(templ,id),
               func[1].Replace(templ,id).Replace(TName, repl[1].TrimEnd('&'))
-            );
+            ));
           end;
           
         end;
@@ -333,9 +333,9 @@ type
       
       
       
-      Result.DeTemplateFuncs('[v]', 'T',
-        ( '',   'T&'  ),
-        ( 'v&', 'T *' )
+      Result.DeTemplateFuncs('[v]', 'T ',
+        ( '',   'T '  ),
+        ( 'v&', 'T * ' )
       );
       
       
@@ -383,6 +383,46 @@ type
         ( 'ui', 'gluint '   )
       );
       
+      Result.DeTemplateFuncs('{bsifd}v', 'T ',
+        ( 'bv', 'glbyte * '   ),
+        ( 'sv', 'glshort * '  ),
+        ( 'iv', 'glint * '    ),
+        ( 'fv', 'glfloat * '  ),
+        ( 'dv', 'gldouble * ' )
+      );
+      
+      Result.DeTemplateFuncs('{bsifd}', 'T ',
+        ( 'b&', 'glbyte '   ),
+        ( 's&', 'glshort '  ),
+        ( 'i&', 'glint '    ),
+        ( 'f&', 'glfloat '  ),
+        ( 'd&', 'gldouble ' )
+      );
+      
+      Result.DeTemplateFuncs('{bdfis}EXTv', 'T ',
+        ( 'bEXTv', 'glbyte * '   ),
+        ( 'sEXTv', 'glshort * '  ),
+        ( 'iEXTv', 'glint * '    ),
+        ( 'fEXTv', 'glfloat * '  ),
+        ( 'dEXTv', 'gldouble * ' )
+      );
+      
+      Result.DeTemplateFuncs('{bdfis}v', 'T ',
+        ( 'bv', 'glbyte * '   ),
+        ( 'sv', 'glshort * '  ),
+        ( 'iv', 'glint * '    ),
+        ( 'fv', 'glfloat * '  ),
+        ( 'dv', 'gldouble * ' )
+      );
+      
+      Result.DeTemplateFuncs('{bdfis}', 'T ',
+        ( 'b&', 'glbyte '   ),
+        ( 's&', 'glshort '  ),
+        ( 'i&', 'glint '    ),
+        ( 'f&', 'glfloat '  ),
+        ( 'd&', 'gldouble ' )
+      );
+      
       Result.DeTemplateFuncs('{bsifd ubusui}v', 'T*',
         ( 'bv', 'glbyte *'     ),
         ( 'sv', 'glshort *'    ),
@@ -400,11 +440,77 @@ type
         ( 'ui', 'gluint '   )
       );
       
+      Result.DeTemplateFuncs('{fd}', 'T ',
+        ( 'f&', 'glfloat '  ),
+        ( 'd&', 'gldouble ' )
+      );
       
+      Result.DeTemplateFuncs('{if}v', 'T ',
+        ( 'iv', 'glint * '    ),
+        ( 'fv', 'glfloat * '  )
+      );
+      
+      Result.DeTemplateFuncs('{if}', 'T ',
+        ( 'i&', 'glint '    ),
+        ( 'f&', 'glfloat '  )
+      );
+      
+      Result.DeTemplateFuncs('{i,f,d}', 'T ',
+        ( 'i&', 'glint '    ),
+        ( 'f&', 'glfloat '  ),
+        ( 'd&', 'gldouble ' )
+      );
+      
+      Result.DeTemplateFuncs('{sifx}v', 'T*',
+        ( 'sv', 'glshort *' ),
+        ( 'iv', 'glint *'   ),
+        ( 'fv', 'glfloat *' ),
+        ( 'xv', 'glfixed *' )
+      );
+      
+      Result.DeTemplateFuncs('{sifx}', 'T ',
+        ( 's&', 'glshort ' ),
+        ( 'i&', 'glint '   ),
+        ( 'f&', 'glfloat ' ),
+        ( 'x&', 'glfixed ' )
+      );
+      
+      Result.DeTemplateFuncs('{ifx}v', 'T ',
+        ( 'iv', 'glint *'   ),
+        ( 'fv', 'glfloat *' ),
+        ( 'xv', 'glfixed *' )
+      );
       
       Result.DeTemplateFuncs('[i|f]', 'TYPE',
-        ( 'i&', 'int'   ),
-        ( 'f&', 'float' )
+        ( 'i&', 'glint'   ),
+        ( 'f&', 'glfloat' )
+      );
+      
+      
+      
+      //ToDo у следующих 4 - разное кол-во параметров разное, в зависмости от цифры
+      
+      Result.DeTemplateFuncs('{1234}x', 'T ',
+        ( '1x', 'glfixed ' ),
+        ( '2x', 'glfixed ' ),
+        ( '3x', 'glfixed ' ),
+        ( '4x', 'glfixed ' )
+      );
+      
+      Result.DeTemplateFuncs('{234}x', 'T ',
+        ( '2x', 'glfixed ' ),
+        ( '3x', 'glfixed ' ),
+        ( '4x', 'glfixed ' )
+      );
+      
+      Result.DeTemplateFuncs('{34}x', 'T ',
+        ( '3x', 'glfixed ' ),
+        ( '4x', 'glfixed ' )
+      );
+      
+      Result.DeTemplateFuncs('{12}x', 'T ',
+        ( '1x', 'glfixed ' ),
+        ( '2x', 'glfixed ' )
       );
       
       
