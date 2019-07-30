@@ -207,13 +207,34 @@ type
     constructor(s: string);
     begin
       inherited Create(s);
+      if header_end<>'' then raise new System.ArgumentException($'ExtStringsChapter had header_end of "{header_end}"');
+      
       self.strings :=
         contents
         .Split(#10)
         .Select(s->s.Trim(' '))
         .Where(s->s<>'')
         .Where(s->s.All(ch->  ch.IsDigit or ch.IsLetter or (ch='_')  ))
-        .ToArray;
+        .ToArray
+      ;
+      
+    end;
+    
+    
+    
+    procedure Save(bw: System.IO.BinaryWriter);
+    begin
+      bw.Write(strings.Length);
+      foreach var s in strings do
+        bw.Write(s);
+    end;
+    
+    static function Load(br: System.IO.BinaryReader): ExtStringsChapter;
+    begin
+      Result := new ExtStringsChapter;
+      Result.strings := ArrGen(br.ReadInt32,
+        i->br.ReadString
+      );
     end;
     
   end;
@@ -266,6 +287,8 @@ type
     static function TryCreate(s: string): NewFuncsChapter;
     begin
       Result := new NewFuncsChapter(s);
+      if Result.header_end<>'' then raise new System.ArgumentException($'NewFuncsChapter had header_end of "{Result.header_end}"');
+      
       Result.contents := Result.contents.Replace(#10,' ').SkipCharsFromTo('/*','*/').JoinIntoString;
       while Result.contents.Contains('  ') do Result.contents := Result.contents.Replace('  ',' ');
       s := Result.contents;
@@ -517,6 +540,26 @@ type
       
     end;
     
+    
+    
+    procedure Save(bw: System.IO.BinaryWriter);
+    begin
+      bw.Write(funcs.Count);
+      foreach var t in funcs do
+      begin
+        bw.Write(t[0]);
+        bw.Write(t[1]);
+      end;
+    end;
+    
+    static function Load(br: System.IO.BinaryReader): NewFuncsChapter;
+    begin
+      Result := new NewFuncsChapter;
+      Result.funcs.Capacity := br.ReadInt32;
+      loop Result.funcs.Capacity do
+        Result.funcs += (br.ReadString,br.ReadString);
+    end;
+    
   end;
   
   AuthorContactsChapter = class(ExtSpecChapter)
@@ -701,6 +744,30 @@ type
       
     end;
     
+    
+    
+    procedure Save(bw: System.IO.BinaryWriter);
+    begin
+      bw.Write(self.fname);
+      
+      self.ExtStrings.Save(bw);
+      
+      bw.Write(self.NewFuncs<>nil);
+      if self.NewFuncs<>nil then self.NewFuncs.Save(bw);
+      
+    end;
+    
+    static function Load(br: System.IO.BinaryReader): ExtSpec;
+    begin
+      Result := new ExtSpec;
+      Result.fname := br.ReadString;
+      
+      Result.ExtStrings := ExtStringsChapter.Load(br);
+      
+      if br.ReadBoolean then Result.NewFuncs := NewFuncsChapter.Load(br);
+      
+    end;
+    
   end;
   
   BinSpecDB = class
@@ -730,23 +797,25 @@ type
     
     procedure Save(fname: string);
     begin
-      var ToDo := 0;
+      var bw := new System.IO.BinaryWriter(System.IO.File.Create(fname));
       
+      bw.Write(exts.Count);
       foreach var ext in exts do
-        if ext.NewFuncs<>nil then
-        begin
-          ext.NewFuncs.funcs.Select(t->t[1]).PrintLines;
-          Writeln('='*50);
-        end;
+        ext.Save(bw);
       
+      bw.Close;
     end;
     
-    static function InitFromFile(fname: string): BinSpecDB;
+    static function LoadFromFile(fname: string): BinSpecDB;
     begin
-      var ToDo := 0;
+      var br := new System.IO.BinaryReader(System.IO.File.Create(fname));
       
+      Result := new BinSpecDB;
+      Result.exts.Capacity := br.ReadInt32;
+      loop Result.exts.Capacity do
+        Result.exts += ExtSpec.Load(br);
       
-      
+      br.Close;
     end;
     
   end;
