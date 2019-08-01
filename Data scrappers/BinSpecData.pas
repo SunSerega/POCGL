@@ -196,27 +196,28 @@ type
     
   end;
   
-  SpecModificationsChapter = class(ExtSpecChapter)
-    
-  end;
-  
-  ExtStringsChapter = class(ExtSpecChapter)
-    
-    strings: array of string;
+  ExtNamesChapter = class(ExtSpecChapter)
+    names: List<string>;
     
     constructor(s: string);
     begin
       inherited Create(s);
-      if header_end<>'' then raise new System.ArgumentException($'ExtStringsChapter had header_end of "{header_end}"');
+      if header_end<>'' then raise new System.ArgumentException($'ExtNameChapter had header_end of "{header_end}"');
       
-      self.strings :=
+      self.names :=
         contents
-        .Split(#10)
+        .Split(#10, ',')
         .Select(s->s.Trim(' '))
         .Where(s->s<>'')
-        .Where(s->s.All(ch->  ch.IsDigit or ch.IsLetter or (ch='_')  ))
-        .ToArray
+        .Select(s->
+        begin
+          
+          Result := s;
+        end)
+        .ToList
       ;
+      
+      if names.Count=0 then raise new System.ArgumentException('no valid ext names was found');
       
     end;
     
@@ -224,7 +225,71 @@ type
     
     procedure Save(bw: System.IO.BinaryWriter);
     begin
-      bw.Write(strings.Length);
+      bw.Write(names.Count);
+      foreach var s in names do
+        bw.Write(s);
+    end;
+    
+    static function Load(br: System.IO.BinaryReader): ExtNamesChapter;
+    begin
+      Result := new ExtNamesChapter;
+      Result.names := new List<string>(br.ReadInt32);
+      loop Result.names.Capacity do
+        Result.names += br.ReadString;
+    end;
+    
+  end;
+  
+  SpecModificationsChapter = class(ExtSpecChapter)
+    
+  end;
+  
+  ExtStringsChapter = class(ExtSpecChapter)
+    
+    strings: List<string>;
+    
+    static function TryCreate(s: string): ExtStringsChapter;
+    begin
+      Result := new ExtStringsChapter(s);
+      if Result.header_end<>'' then raise new System.ArgumentException($'ExtStringsChapter had header_end of "{Result.header_end}"');
+      
+      var none_declared := false;
+      
+      Result.strings :=
+        Result.contents
+        .Split(#10, ',')
+        .Select(s->s.Trim(' '))
+        .Where(s->s<>'')
+        .Select(s->
+        begin
+          
+          if Arr('(none)', 'none', 'None').Any(mask->s.StartsWith(mask)) then none_declared := true;
+          
+          case s of
+            
+            // " " вместо "_"
+            'GL_EXT_primitive_bounding box': s := 'GL_EXT_primitive_bounding_box';
+            'GL_OES_primitive_bounding box': s := 'GL_OES_primitive_bounding_box';
+            
+          end;
+          
+          Result := s;
+        end)
+        .Where(s->s.All(ch->  ch.IsDigit or ch.IsLetter or (ch = '_')  ))
+        .ToList
+      ;
+      
+      if Result.strings.Count=0 then
+        if none_declared then Result := nil else
+        raise new System.ArgumentException('no valid ext strings was found');
+      
+    end;
+    
+    
+    
+    procedure Save(bw: System.IO.BinaryWriter);
+    begin
+      bw.Write(strings.Count);
       foreach var s in strings do
         bw.Write(s);
     end;
@@ -232,15 +297,15 @@ type
     static function Load(br: System.IO.BinaryReader): ExtStringsChapter;
     begin
       Result := new ExtStringsChapter;
-      Result.strings := ArrGen(br.ReadInt32,
-        i->br.ReadString
-      );
+      Result.strings := new List<string>(br.ReadInt32);
+      loop Result.strings.Capacity do
+        Result.strings += br.ReadString;
     end;
     
   end;
   
   NewFuncsChapter = class(ExtSpecChapter)
-    funcs := new List<(string,string)>;
+    funcs := new List<(string,string)>; // (name, text)
     
     procedure DeTemplateFuncs(templ, TName: string; params repls: array of (string, string));
     begin
@@ -613,6 +678,7 @@ type
   ExtSpec = class
     fname: string;
     
+    ExtNames:         ExtNamesChapter := nil;
     SpecModifications := new List<SpecModificationsChapter>;
     ExtStrings:       ExtStringsChapter := nil;
     NewFuncs:         NewFuncsChapter := nil;
@@ -635,7 +701,7 @@ type
       var spec_text := ReadAllText(fname);
       
       // у незаконченных расширений - криво прописана спецификация (не приведена в общий вид с остальными расширениями)
-      if spec_text.Split(#10).Any(l->l.StartsWith('XXX')) then exit;
+      if spec_text.Split(#10).Any(l->l.StartsWith('XXX') or l.EndsWith('XXX')) then exit;
       
       // OES\OES_stencil_wrap.txt
       // SGI\akeley_future_extensions.txt
@@ -651,6 +717,9 @@ type
       var inds := new List<(string, integer)>;
       
       {$region inds fill}
+      
+      if spec_text.StartsWith('Name'#10) then inds += ('Name',4);
+      inds.AddRange(spec_text.FindAllIndexes(#10'Name'#10                         ).Select(ind->('Name', ind)));
       
       inds.AddRange(spec_text.FindAllIndexes(#10'Addition to '                    ).Select(ind->('SpecModifications', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Additions to '                   ).Select(ind->('SpecModifications', ind)));
@@ -720,26 +789,26 @@ type
         
         case p[0][0] of
           
-          'SpecModifications':                                      Result.SpecModifications  += SpecModificationsChapter .Create   (chapt_contents);
-          'ExtStrings':       if (Result.ExtStrings      =nil) then Result.ExtStrings         := ExtStringsChapter        .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ExtStrings chapters in {fname}');
-          'NewFuncs':         if (Result.NewFuncs        =nil) then Result.NewFuncs           := NewFuncsChapter          .TryCreate(chapt_contents) else raise new System.InvalidOperationException($'multiple NewFuncs chapters in {fname}');
-          'AuthorContacts':   if (Result.AuthorContacts  =nil) then Result.AuthorContacts     := AuthorContactsChapter    .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple AuthorContacts chapters in {fname}');
-          'ContributorsList': if (Result.ContributorsList=nil) then Result.ContributorsList   := ContributorsListChapter  .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ContributorsList chapters in {fname}');
-          'Errors':           if (Result.Errors          =nil) then Result.Errors             := ErrorsChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Errors chapters in {fname}');
-          'Issues':                                                 Result.Issues             += IssuesChapter            .Create   (chapt_contents);
-          'NewKeywords':      if (Result.NewKeywords     =nil) then Result.NewKeywords        := NewKeywordsChapter       .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewKeywords chapters in {fname}');
-          'NewState':         if (Result.NewState        =nil) then Result.NewState           := NewStateChapter          .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewState chapters in {fname}');
-          'NewTokens':                                              Result.NewTokens          += NewTokensChapter         .Create   (chapt_contents);
-          'Notice':           if (Result.Notice          =nil) then Result.Notice             := NoticeChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Notice chapters in {fname}');
-          'Status':           if (Result.Status=nil)    or sf1 then Result.Status             := StatusChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Status chapters in {fname}');
-          'Version':          if (Result.Version         =nil) then Result.Version            := VersionChapter           .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Version chapters in {fname}');
+          'Name':               if (Result.ExtNames         =nil) then Result.ExtNames           := ExtNamesChapter          .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ExtNames chapters in {fname}');
+          'SpecModifications':                                         Result.SpecModifications  += SpecModificationsChapter .Create   (chapt_contents);
+          'ExtStrings':         if (Result.ExtStrings       =nil) then Result.ExtStrings         := ExtStringsChapter        .TryCreate(chapt_contents) else raise new System.InvalidOperationException($'multiple ExtStrings chapters in {fname}');
+          'NewFuncs':           if (Result.NewFuncs         =nil) then Result.NewFuncs           := NewFuncsChapter          .TryCreate(chapt_contents) else raise new System.InvalidOperationException($'multiple NewFuncs chapters in {fname}');
+          'AuthorContacts':     if (Result.AuthorContacts   =nil) then Result.AuthorContacts     := AuthorContactsChapter    .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple AuthorContacts chapters in {fname}');
+          'ContributorsList':   if (Result.ContributorsList =nil) then Result.ContributorsList   := ContributorsListChapter  .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ContributorsList chapters in {fname}');
+          'Errors':             if (Result.Errors           =nil) then Result.Errors             := ErrorsChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Errors chapters in {fname}');
+          'Issues':                                                    Result.Issues             += IssuesChapter            .Create   (chapt_contents);
+          'NewKeywords':        if (Result.NewKeywords      =nil) then Result.NewKeywords        := NewKeywordsChapter       .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewKeywords chapters in {fname}');
+          'NewState':           if (Result.NewState         =nil) then Result.NewState           := NewStateChapter          .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewState chapters in {fname}');
+          'NewTokens':                                                 Result.NewTokens          += NewTokensChapter         .Create   (chapt_contents);
+          'Notice':             if (Result.Notice           =nil) then Result.Notice             := NoticeChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Notice chapters in {fname}');
+          'Status':             if (Result.Status=nil)     or sf1 then Result.Status             := StatusChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Status chapters in {fname}');
+          'Version':            if (Result.Version          =nil) then Result.Version            := VersionChapter           .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Version chapters in {fname}');
           
         end;
         
       end;
       
-      if Result.ExtStrings=nil then raise new System.InvalidOperationException($'no ExtStrings chapter in file {fname}');
-      
+      if Result.ExtNames=nil then raise new System.InvalidOperationException($'no ExtNames chapter in file {fname}');
       
       
     end;
@@ -750,7 +819,10 @@ type
     begin
       bw.Write(self.fname);
       
-      self.ExtStrings.Save(bw);
+      self.ExtNames.Save(bw);
+      
+      bw.Write(self.ExtStrings<>nil);
+      if self.ExtStrings<>nil then self.ExtStrings.Save(bw);
       
       bw.Write(self.NewFuncs<>nil);
       if self.NewFuncs<>nil then self.NewFuncs.Save(bw);
@@ -762,8 +834,9 @@ type
       Result := new ExtSpec;
       Result.fname := br.ReadString;
       
-      Result.ExtStrings := ExtStringsChapter.Load(br);
+      Result.ExtNames := ExtNamesChapter.Load(br);
       
+      if br.ReadBoolean then Result.ExtStrings := ExtStringsChapter.Load(br);
       if br.ReadBoolean then Result.NewFuncs := NewFuncsChapter.Load(br);
       
     end;
@@ -799,6 +872,11 @@ type
     begin
       var bw := new System.IO.BinaryWriter(System.IO.File.Create(fname));
       
+      exts.SelectMany(ext->ext.ExtNames.names)
+      .Distinct
+      .Sorted
+      .PrintLines;
+      
       bw.Write(exts.Count);
       foreach var ext in exts do
         ext.Save(bw);
@@ -808,7 +886,7 @@ type
     
     static function LoadFromFile(fname: string): BinSpecDB;
     begin
-      var br := new System.IO.BinaryReader(System.IO.File.Create(fname));
+      var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
       
       Result := new BinSpecDB;
       Result.exts.Capacity := br.ReadInt32;

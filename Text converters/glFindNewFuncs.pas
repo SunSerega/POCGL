@@ -2,50 +2,20 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
-function SkipCharsFromTo(self: sequence of char; f,t: string): sequence of char; extensionmethod;
-begin
-  var enm := self.GetEnumerator;
-  enm.MoveNext;
-  var q := new Queue<char>;
-  
-  while true do
-  begin
-    while q.Count<f.Length do
+uses BinSpecData in 'Data scrappers\BinSpecData.pas';
+
+type
+  ListSeqEqualityComparer = class(System.Collections.Generic.EqualityComparer<List<string>>)
+    
+    public function Equals(x, y: List<string>): boolean; override;
     begin
-      q += enm.Current;
-      if not enm.MoveNext then
-      begin
-        yield sequence q;
-        exit;
-      end;
+      Result := x.SequenceEqual(y);
     end;
     
-    if q.SequenceEqual(f) then
-    begin
-      q.Clear;
-      
-      while true do
-      begin
-        while q.Count<t.Length do
-        begin
-          q += enm.Current;
-          if not enm.MoveNext then exit;
-        end;
-        
-        if q.SequenceEqual(t) then
-          break else
-          q.Dequeue;
-        
-      end;
-      
-      q.Clear;
-    end else
-      yield q.Dequeue;
+    public function GetHashCode(obj: List<string>): integer; override :=
+    obj.Count=0?0:obj[0].GetHashCode;
     
   end;
-  
-  yield sequence q;
-end;
 
 function TakeCharsFromTo(self: sequence of char; fa,ta: array of string): sequence of array of char; extensionmethod;
 begin
@@ -104,6 +74,10 @@ const
   
 begin
   try
+    
+    {$region Read used funcs}
+    writeln('Read used funcs');
+    
     var used_funcs := new HashSet<string>;
     
     var org_glpas_text := ReadAllText(GLpas);
@@ -123,6 +97,42 @@ begin
       used_funcs += res;
     end;
     
+    {$endregion Read used funcs}
+    
+    {$region construct func name tables}
+    writeln('construct func name tables');
+    
+    var func_name_ext_name_table := new Dictionary<string, List<string>>;
+    
+    var ext_spec_db := BinSpecDB.LoadFromFile('Data scrappers\gl ext spec.bin');
+    foreach var ext in ext_spec_db.exts do
+      if ext.NewFuncs<>nil then
+        foreach var func in ext.NewFuncs.funcs do
+        begin
+          if not func_name_ext_name_table.ContainsKey(func[0]) then
+            func_name_ext_name_table[func[0]] := new List<string> else
+//            writeln($'func {func[0]} was defined in multiple exts')
+          ;
+          func_name_ext_name_table[func[0]].AddRange(ext.ExtNames.names);
+        end;
+    
+    var ext_name_func_name_table := new Dictionary<List<string>, HashSet<string>>(new ListSeqEqualityComparer);
+    
+    foreach var key in func_name_ext_name_table.Keys do
+    begin
+      var val := func_name_ext_name_table[key];
+      if not ext_name_func_name_table.ContainsKey(val) then
+        ext_name_func_name_table[val] := new HashSet<string>;
+      ext_name_func_name_table[val].Add(key);
+    end;
+    ext_name_func_name_table.Add(new List<string>, new HashSet<string>);
+    
+    {$endregion construct [ name => ext_str ] table}
+    
+    {$region Read funcs from .h's}
+    writeln('Read funcs from .h''s');
+    
+    // including used
     var all_funcs := new HashSet<string>;
     
     foreach var fname in System.IO.Directory.EnumerateFiles(HeadersFolder, '*.h', System.IO.SearchOption.AllDirectories) do
@@ -137,7 +147,6 @@ begin
       all_funcs +=
         ('    ' + text)
         .Split(Arr(#10'    '#10), System.StringSplitOptions.RemoveEmptyEntries)
-        .Where(f->not used_funcs.Any(uf->f.Contains(uf)))
       ;
       
 //      if funcs.Count=0 then continue;
@@ -153,7 +162,13 @@ begin
       
     end;
     
-    var funcs_data :=
+    {$endregion Read funcs from .h's}
+    
+    {$region Tabulate all funcs with name (and delete used)}
+    writeln('Tabulate all funcs with name (and delete used)');
+    
+    // (text, name)
+    var funcs_data: List<(string,string)> :=
       all_funcs.Tabulate(f->
       begin
         
@@ -167,49 +182,82 @@ begin
         
         Result := f.Substring(ind, ind2-ind);
       end)
+      .Where(t->not used_funcs.Contains(t[1]))
       .OrderBy(t->t[1])
       .ToList;
     
-    var ext_types :=
+    {$endregion Tabulate all funcs with name (and delete used)}
+    
+    {$region Find ext types}
+    writeln('Find ext types');
+    
+    var ext_types: List<string> :=
       funcs_data
       .Select(t->t[1])
       .Select(s->s.Reverse.TakeWhile(ch->ch.IsUpper).Reverse.JoinIntoString(''))
       .Where(s->not (s in ['', 'D', 'A', 'W', 'CMAAINTEL', 'DEXT', 'DARB', 'DOES', 'GPUIDAMD', 'DC', 'DCARB', 'DCEXT', 'DCNV', 'DFX', 'DINTEL', 'DL', 'DSGIS']))
       .Distinct
       .ToList;
-    ext_types += '';
     
+    {$endregion Find ext types}
+    
+    {$region Sort by ext type}
+    writeln('Sort by ext type');
+    
+    // ext_type (or nil) => (func_text, func_name)
     var funcs_by_ext_type := new Dictionary<string, List<(string,string)>>;
+    
     foreach var t in funcs_data do
     begin
-      var ext_t := ext_types.Single(ext_t->t[1].EndsWith(ext_t));
+      var ext_ts := ext_types.Where(ext_t->t[1].EndsWith(ext_t)).ToList;
+      if ext_ts.Count>1 then raise new System.ArgumentException($'func {t[1]} had multiple ext types: {ext_ts.JoinIntoString}');
+      var ext_t := ext_ts.SingleOrDefault;
+      if ext_t=nil then ext_t := '';
       if not funcs_by_ext_type.ContainsKey(ext_t) then funcs_by_ext_type[ext_t] := new List<(string,string)>;
-      funcs_by_ext_type[ext_t] += t;
+      funcs_by_ext_type[ext_t].Add(t);
     end;
     
-    var funcs_sorted := new Dictionary<string, Dictionary<string, (string,string)>>;
+    {$endregion Sort by ext type}
+    
+    {$region Then sort by ext string}
+    writeln('Then sort by ext string');
+    
+    // ext_type (or nil) => ext names => (func_text, func_name)
+    var funcs_sorted := new Dictionary<string, Dictionary<List<string>, List<(string,string)>>>;
+    
     foreach var ext_t in funcs_by_ext_type.Keys do
     begin
-      var funcs_by_ext := new Dictionary<string, (string,string)>;
+      var funcs_by_ext := new Dictionary<List<string>, List<(string,string)>>;
       
-      foreach var t in funcs_by_ext_type[ext_t] do
+      var l := funcs_by_ext_type[ext_t].ToList;
+      while l.Count>0 do
       begin
+        var funcs := Lst(l[l.Count-1]);
+        l.RemoveLast;
         
+        var ext_names: List<string>;
+        if not func_name_ext_name_table.TryGetValue(funcs[0][1], ext_names) then
+          ext_names := new List<string>;
+        var ext_funcs := ext_name_func_name_table[ext_names];
+        
+        foreach var fn in ext_funcs do
+          if fn<>funcs[0][1] then
+          begin
+            var ind := l.FindIndex(f->f[1]=fn);
+            if ind=-1 then writeln($'"{funcs[0][1]}": can''t find func "{fn}" from "{ext_names.JoinIntoString}"') else
+            begin
+              funcs += l[ind];
+              l.RemoveAt(ind);
+            end;
+          end;
+        
+        funcs_by_ext.Add(ext_names, funcs);
       end;
       
       funcs_sorted[ext_t] := funcs_by_ext;
     end;
     
-//    foreach var f in all_funcs do
-//    begin
-//      for var n := f.Length downto 2 do
-//        if all_funcs.Any(f2-> (f2<>f) and f2.
-//      begin
-//        
-//      end;
-//    end;
-    
-    
+    {$endregion Then sort by ext string}
     
     
     
@@ -221,10 +269,51 @@ begin
     
     var res := new StringBuilder;
     
-    res += #10 + funcs_data.Select(t->t[0]).JoinIntoString(#10'    '#10) + #10'    ';
+    foreach var kvp1 in funcs_sorted.OrderBy(kvp->kvp.Key) do
+    begin
+      res += #10;
+      
+      res += '  gl_';
+      if kvp1.Key='' then
+        res += 'Deprecated' else
+        res += kvp1.Key;
+      res += ' = static class'#10;
+      
+      res += '    ';
+      
+      foreach var kvp2 in kvp1.Value.OrderBy(kvp->kvp.Key.Count).ThenBy(kvp->kvp.Key.FirstOrDefault) do
+      begin
+        res += #10;
+        
+        var reg_name := kvp2.Key.Count=0 ? 'Unsorted' : kvp2.Key.JoinIntoString(', ');
+        res += $'    {{$region {reg_name}}}' + #10;
+        
+        res += '    ';
+        
+        foreach var f in kvp2.Value do
+          res += f[0];
+        
+        res += #10;
+        
+        res += $'    {{$endregion {reg_name}}}' + #10;
+        
+        res += '    ';
+      end;
+      
+      res += #10;
+      
+      res += '  end;'#10;
+      
+      res += '  ';
+    end;
+    
+    
+    
+    
+//    res += #10 + funcs_data.Select(t->t[0]).JoinIntoString(#10'    '#10) + #10'    ';
 //    res += funcs_data.Select(t->t[1]).JoinIntoString(#10);
 //    res += ext_types.Sorted.JoinIntoString(#10);
-//    res += funcs_data.Select(t->t[1]).Where(s->s.EndsWith('A')).JoinIntoString(#10);
+//    res += ext_name_func_name_table.OrderBy(kvp->kvp.Key.Count).ThenBy(kvp->kvp.Key[0]).Select(kvp->$'{kvp.Key.JoinIntoString} : {kvp.Value.JoinIntoString}').JoinIntoString(#10);
     
     writeln('done');
     if res.Length<>0 then

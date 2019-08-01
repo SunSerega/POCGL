@@ -320,7 +320,7 @@ type
             exit;
           end;
           
-          var ind1 := tt[0].IndexOf('[')+1;
+          var ind1 := tt[0].IndexOf('[',tt[0].IndexOf('[MarshalAs')+1)+1;
           var ind2 := tt[0].IndexOf(']',ind1);
 //          tt[0].SubString(ind1,ind2-ind1).Println;
           var n := tt[0].SubString(ind1,ind2-ind1).ToInteger;
