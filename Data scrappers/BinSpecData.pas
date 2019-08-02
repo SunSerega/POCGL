@@ -719,42 +719,46 @@ type
       {$region inds fill}
       
       if spec_text.StartsWith('Name'#10) then inds += ('Name',4);
-      inds.AddRange(spec_text.FindAllIndexes(#10'Name'#10                         ).Select(ind->('Name', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Name'#10                                     ).Select(ind->('Name', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Addition to '                    ).Select(ind->('SpecModifications', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'Additions to '                   ).Select(ind->('SpecModifications', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'Modifications to '               ).Select(ind->('SpecModifications', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Addition to '                                ).Select(ind->('SpecModifications', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Additions to '                               ).Select(ind->('SpecModifications', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Modifications to '                           ).Select(ind->('SpecModifications', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Name String'#10                  ).Select(ind->('ExtStrings', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'Name Strings'#10                 ).Select(ind->('ExtStrings', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Name String'#10                              ).Select(ind->('ExtStrings', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Name Strings'#10                             ).Select(ind->('ExtStrings', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions'#10 ).Select(ind->('NewFuncs', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions:'#10).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Functions and Procedures'#10              ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedure and Functions'#10              ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions'#10             ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures And Functions'#10             ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions:'#10            ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures, Functions and Structures:'#10).Select(ind->('NewFuncs', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Contact'#10                      ).Select(ind->('AuthorContacts', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'Contacts'#10                     ).Select(ind->('AuthorContacts', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Contact'#10                                  ).Select(ind->('AuthorContacts', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Contacts'#10                                 ).Select(ind->('AuthorContacts', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Contributors'#10                 ).Select(ind->('ContributorsList', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Contributors'#10                             ).Select(ind->('ContributorsList', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Errors'#10                       ).Select(ind->('Errors', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Errors'#10                                   ).Select(ind->('Errors', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Issues'#10                       ).Select(ind->('Issues', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Issues'#10                                   ).Select(ind->('Issues', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Keywords'#10                  ).Select(ind->('NewKeywords', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Keywords'#10                             ).Select(ind->('NewKeywords', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'New State'#10                    ).Select(ind->('NewState', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New State'#10                                ).Select(ind->('NewState', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Tokens:'#10                  ).Select(ind->('NewTokens', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Tokens'                      ).Select(ind->('NewTokens', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Tokens:'#10                              ).Select(ind->('NewTokens', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Tokens'                                  ).Select(ind->('NewTokens', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Types'#10                    ).Select(ind->('NewTypes', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Types'#10                                ).Select(ind->('NewTypes', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Notice'#10                       ).Select(ind->('Notice', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Notice'#10                                   ).Select(ind->('Notice', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Status'#10                       ).Select(ind->('Status', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Status'#10                                   ).Select(ind->('Status', ind)));
       
-      inds.AddRange(spec_text.FindAllIndexes(#10'Version:'#10                     ).Select(ind->('Version', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'Version'#10                      ).Select(ind->('Version', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Version:'#10                                 ).Select(ind->('Version', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Version'#10                                  ).Select(ind->('Version', ind)));
       
       {$endregion inds fill}
       
@@ -872,10 +876,10 @@ type
     begin
       var bw := new System.IO.BinaryWriter(System.IO.File.Create(fname));
       
-      exts.SelectMany(ext->ext.ExtNames.names)
-      .Distinct
-      .Sorted
-      .PrintLines;
+//      exts.SelectMany(ext->ext.ExtNames.names)
+//      .Distinct
+//      .Sorted
+//      .PrintLines;
       
       bw.Write(exts.Count);
       foreach var ext in exts do

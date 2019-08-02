@@ -149,7 +149,6 @@ begin
     'int':                    s := 'Int32';
     'int32':                  s := 'Int32';
     'gluint':                 s := 'UInt32';
-    'glbitfield':             s := 'UInt32';
     'uint':                   s := 'UInt32';
     'dword':                  s := 'UInt32';
     'unsignedint':            s := 'UInt32';
@@ -181,6 +180,7 @@ begin
     'pgpu_device':            s := '^GPU_Device_Affinity_Info';
     
     'glenum':                 s := 'ErrorCode';
+    'glbitfield':             s := 'ErrorCodeFlags';
     
     'glsync':                 s := 'GLsync';
     'gleglimageoes':          s := 'GLeglImageOES';
@@ -365,7 +365,7 @@ type
         sb.AppendLine;
         sb += $'    external ''{lib_name}'' name ''';
         sb += name_header;
-        sb += name;
+        sb += name.TrimStart('&');
         sb += ''';';
         
         sb.AppendLine;

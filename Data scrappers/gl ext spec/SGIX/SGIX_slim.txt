@@ -64,8 +64,7 @@ Issues
       the advantage that it keeps the length associated with
       the image data automatically.
 
-New Procedures and
-Functions
+New Procedures and Functions
 
     None.
 

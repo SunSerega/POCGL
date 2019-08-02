@@ -40,6 +40,7 @@ begin
     
     var fname := link.Replace('https://www.khronos.org/registry/OpenGL/extensions', 'gl ext spec').Println;
     System.IO.Directory.CreateDirectory(fname.Remove(fname.LastIndexOf('/')));
+    text := text.Replace('New Procedures and'#10'Functions', 'New Procedures and Functions');
     WriteAllText(fname, text);
     
   end;

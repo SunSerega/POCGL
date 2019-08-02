@@ -65,6 +65,14 @@ begin
   
 end;
 
+function DistinctBy<T1,T2>(self: sequence of T1; selector: T1->T2): sequence of T1; extensionmethod;
+begin
+  var prev := new HashSet<T2>;
+  foreach var a in self do
+    if prev.Add(selector(a)) then
+      yield a;
+end;
+
 const
 //  GLpas = 'Temp.pas';
   GLpas = 'OpenGL.pas';
@@ -149,17 +157,6 @@ begin
         .Split(Arr(#10'    '#10), System.StringSplitOptions.RemoveEmptyEntries)
       ;
       
-//      if funcs.Count=0 then continue;
-//      
-//      res += #10;
-//      res += $'  {System.IO.Path.GetFileNameWithoutExtension(fname)} = static class' + #10;
-//      res += $'    ' + #10;
-//      res += funcs.JoinIntoString(#10'    '#10);
-//      res += #10;
-//      res += $'    ' + #10;
-//      res += $'  end;' + #10;
-//      res += $'  ';
-      
     end;
     
     {$endregion Read funcs from .h's}
@@ -182,9 +179,11 @@ begin
         
         Result := f.Substring(ind, ind2-ind);
       end)
-      .Where(t->not used_funcs.Contains(t[1]))
-      .OrderBy(t->t[1])
-      .ToList;
+      .Where(f->not used_funcs.Contains(f[1]))
+      .DistinctBy(f->f[1])
+      .OrderBy(f->f[1])
+      .ToList
+    ;
     
     {$endregion Tabulate all funcs with name (and delete used)}
     
@@ -201,82 +200,110 @@ begin
     
     {$endregion Find ext types}
     
-    {$region Sort by ext type}
-    writeln('Sort by ext type');
+    {$region Sort by ext names}
+    writeln('Sort by ext name');
     
-    // ext_type (or nil) => (func_text, func_name)
-    var funcs_by_ext_type := new Dictionary<string, List<(string,string)>>;
+    // ext_name (or string[0]) => (func_text, func_name)
+    var funcs_by_ext_name := new Dictionary<List<string>, List<(string,string)>>(new ListSeqEqualityComparer);
+    funcs_by_ext_name[new List<string>] := new List<(string,string)>;
     
-    foreach var t in funcs_data do
+    while funcs_data.Count<>0 do
     begin
-      var ext_ts := ext_types.Where(ext_t->t[1].EndsWith(ext_t)).ToList;
-      if ext_ts.Count>1 then raise new System.ArgumentException($'func {t[1]} had multiple ext types: {ext_ts.JoinIntoString}');
-      var ext_t := ext_ts.SingleOrDefault;
-      if ext_t=nil then ext_t := '';
-      if not funcs_by_ext_type.ContainsKey(ext_t) then funcs_by_ext_type[ext_t] := new List<(string,string)>;
-      funcs_by_ext_type[ext_t].Add(t);
-    end;
-    
-    {$endregion Sort by ext type}
-    
-    {$region Then sort by ext string}
-    writeln('Then sort by ext string');
-    
-    // ext_type (or nil) => ext names => (func_text, func_name)
-    var funcs_sorted := new Dictionary<string, Dictionary<List<string>, List<(string,string)>>>;
-    
-    foreach var ext_t in funcs_by_ext_type.Keys do
-    begin
-      var funcs_by_ext := new Dictionary<List<string>, List<(string,string)>>;
       
-      var l := funcs_by_ext_type[ext_t].ToList;
-      while l.Count>0 do
+      var ext_names: List<string>;
+      var fn1 := funcs_data[0][1];
+      if func_name_ext_name_table.TryGetValue(fn1, ext_names) then
       begin
-        var funcs := Lst(l[l.Count-1]);
-        l.RemoveLast;
+        var fs := new List<(string,string)>;
         
-        var ext_names: List<string>;
-        if not func_name_ext_name_table.TryGetValue(funcs[0][1], ext_names) then
-          ext_names := new List<string>;
-        var ext_funcs := ext_name_func_name_table[ext_names];
-        
-        foreach var fn in ext_funcs do
-          if fn<>funcs[0][1] then
+        foreach var fn in ext_name_func_name_table[ext_names] do
+        begin
+          var ind := funcs_data.FindIndex(f->f[1]=fn);
+          if ind=-1 then writeln($'"{fn1}": can''t find func "{fn}" from "{ext_names.JoinIntoString}"') else
           begin
-            var ind := l.FindIndex(f->f[1]=fn);
-            if ind=-1 then writeln($'"{funcs[0][1]}": can''t find func "{fn}" from "{ext_names.JoinIntoString}"') else
-            begin
-              funcs += l[ind];
-              l.RemoveAt(ind);
-            end;
+            fs += funcs_data[ind];
+            funcs_data.RemoveAt(ind);
           end;
+        end;
         
-        funcs_by_ext.Add(ext_names, funcs);
+//        writeln(ext_names, fs.Select(f->f[1]));
+        funcs_by_ext_name.Add(ext_names, fs);
+      end else
+      begin
+        funcs_by_ext_name[new List<string>].Add(funcs_data[0]);
+        funcs_data.RemoveAt(0);
       end;
       
-      funcs_sorted[ext_t] := funcs_by_ext;
     end;
     
-    {$endregion Then sort by ext string}
+    {$endregion Sort by ext names}
     
+    {$region Then sort by ext type}
+    writeln('Then sort by ext type');
     
+    // class name => ext names (or string[0]) => (func_text, func_name)
+    var funcs_sorted := new Dictionary<string, Dictionary<List<string>, List<(string,string)>>>;
     
+    foreach var ext_names in funcs_by_ext_name.Keys do
+    begin
+      var ofs := funcs_by_ext_name[ext_names];
+      
+      foreach var fs in ext_names.Count=0 ? ofs.Select(f->Lst&<(string,string)>(f)) : Seq&<List<(string,string)>>(ofs) do
+      begin
+        
+        var t_name: string;
+        if fs.Any(f->f[0].Contains('wgl')) then
+          t_name := 'wgl' else
+        begin
+          var ext_ts := fs.Select(f->
+          begin
+            var ext_ts := ext_types.Where(ext_t->f[1].EndsWith(ext_t)).ToList;
+            if ext_ts.Count>1 then raise new System.ArgumentException($'func {f[1]} had multiple ext types: {ext_ts.JoinIntoString}');
+            Result := ext_ts.Count=0?'gl_Deprecated':ext_ts[0];
+          end).Distinct.ToList;
+          
+          // can't be 0
+          if ext_ts.Count=1 then
+            t_name := 'gl_'+ext_ts[0] else
+          if ext_ts.Contains('gl_EXT') then
+            t_name := 'gl_EXT' else
+            t_name := 'gl_ARB';
+          
+        end;
+        
+        if not funcs_sorted.ContainsKey(t_name) then funcs_sorted[t_name] := new Dictionary<List<string>, List<(string,string)>>(new ListSeqEqualityComparer);
+        
+        if not funcs_sorted[t_name].ContainsKey(ext_names) then
+          funcs_sorted[t_name][ext_names] := fs else
+        if ext_names.Count=0 then
+          funcs_sorted[t_name][ext_names].AddRange(fs) else
+          raise new System.ArgumentException($'funcs "{fs.JoinIntoString}" are already added to {t_name} : ({ext_names.JoinIntoString})');
+      end;
+      
+    end;
     
+    {$endregion Then sort by ext type}
     
-    
-    
-    
+    {$region contruct new code}
+    writeln('contruct new code');
     
     var res := new StringBuilder;
     
-    foreach var kvp1 in funcs_sorted.OrderBy(kvp->kvp.Key) do
+    foreach var kvp1 in funcs_sorted.OrderBy(kvp->
+    begin
+      case kvp.Key of
+        'gl_Deprecated':  Result := 1;
+        'wgl':            Result := 2;
+        'gl_ARB':         Result := 3;
+        'gl_EXT':         Result := 4;
+        else              Result := 5;
+      end;
+    end).ThenBy(kvp->kvp.Key) do
     begin
       res += #10;
       
-      res += '  gl_';
-      if kvp1.Key='' then
-        res += 'Deprecated' else
-        res += kvp1.Key;
+      res += '  ';
+      res += kvp1.Key;
       res += ' = static class'#10;
       
       res += '    ';
@@ -288,12 +315,12 @@ begin
         var reg_name := kvp2.Key.Count=0 ? 'Unsorted' : kvp2.Key.JoinIntoString(', ');
         res += $'    {{$region {reg_name}}}' + #10;
         
-        res += '    ';
+        res += '    '#10;
         
-        foreach var f in kvp2.Value do
-          res += f[0];
+        res += kvp2.Value.Select(f->f[0]).JoinIntoString(#10'    '#10);
         
         res += #10;
+        res += '    '#10;
         
         res += $'    {{$endregion {reg_name}}}' + #10;
         
@@ -307,13 +334,7 @@ begin
       res += '  ';
     end;
     
-    
-    
-    
-//    res += #10 + funcs_data.Select(t->t[0]).JoinIntoString(#10'    '#10) + #10'    ';
-//    res += funcs_data.Select(t->t[1]).JoinIntoString(#10);
-//    res += ext_types.Sorted.JoinIntoString(#10);
-//    res += ext_name_func_name_table.OrderBy(kvp->kvp.Key.Count).ThenBy(kvp->kvp.Key[0]).Select(kvp->$'{kvp.Key.JoinIntoString} : {kvp.Value.JoinIntoString}').JoinIntoString(#10);
+    {$endregion contruct new code}
     
     writeln('done');
     if res.Length<>0 then
