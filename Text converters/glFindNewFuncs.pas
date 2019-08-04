@@ -4,6 +4,20 @@
 
 uses BinSpecData in 'Data scrappers\BinSpecData.pas';
 
+function RemoveFuncNameExt(self: string): string; extensionmethod;
+begin
+  var i := self.Length;
+  while self[i].IsUpper do i -= 1;
+  Result := self.Substring(0,i);
+end;
+
+function TakeFuncNameExt(self: string): string; extensionmethod;
+begin
+  var i := self.Length;
+  while self[i].IsUpper do i -= 1;
+  Result := self.Remove(0,i);
+end;
+
 type
   ListSeqEqualityComparer = class(System.Collections.Generic.EqualityComparer<List<string>>)
     
@@ -16,7 +30,17 @@ type
     obj.Count=0?0:obj[0].GetHashCode;
     
   end;
-
+  
+  FuncNameEqualityComparer = class(System.Collections.Generic.EqualityComparer<string>)
+    
+    public function Equals(x, y: string): boolean; override :=
+    x.RemoveFuncNameExt = y.RemoveFuncNameExt;
+    
+    public function GetHashCode(obj: string): integer; override :=
+    obj.RemoveFuncNameExt.GetHashCode;
+    
+  end;
+  
 function TakeCharsFromTo(self: sequence of char; fa,ta: array of string): sequence of array of char; extensionmethod;
 begin
   var enm := self.GetEnumerator;
@@ -74,11 +98,15 @@ begin
 end;
 
 const
+  
 //  GLpas = 'Temp.pas';
   GLpas = 'OpenGL.pas';
+  
 //  HeadersFolder = 'D:\0\Temp';
 //  HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\GL .h';
   HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\OpenGL-Registry';
+  
+  BrokenHeadersFolder = 'Data scrappers\BrokenSource';
   
 begin
   try
@@ -107,43 +135,16 @@ begin
     
     {$endregion Read used funcs}
     
-    {$region construct func name tables}
-    writeln('construct func name tables');
-    
-    var func_name_ext_name_table := new Dictionary<string, List<string>>;
-    
-    var ext_spec_db := BinSpecDB.LoadFromFile('Data scrappers\gl ext spec.bin');
-    foreach var ext in ext_spec_db.exts do
-      if ext.NewFuncs<>nil then
-        foreach var func in ext.NewFuncs.funcs do
-        begin
-          if not func_name_ext_name_table.ContainsKey(func[0]) then
-            func_name_ext_name_table[func[0]] := new List<string> else
-//            writeln($'func {func[0]} was defined in multiple exts')
-          ;
-          func_name_ext_name_table[func[0]].AddRange(ext.ExtNames.names);
-        end;
-    
-    var ext_name_func_name_table := new Dictionary<List<string>, HashSet<string>>(new ListSeqEqualityComparer);
-    
-    foreach var key in func_name_ext_name_table.Keys do
-    begin
-      var val := func_name_ext_name_table[key];
-      if not ext_name_func_name_table.ContainsKey(val) then
-        ext_name_func_name_table[val] := new HashSet<string>;
-      ext_name_func_name_table[val].Add(key);
-    end;
-    ext_name_func_name_table.Add(new List<string>, new HashSet<string>);
-    
-    {$endregion construct [ name => ext_str ] table}
-    
     {$region Read funcs from .h's}
     writeln('Read funcs from .h''s');
     
     // including used
     var all_funcs := new HashSet<string>;
     
-    foreach var fname in System.IO.Directory.EnumerateFiles(HeadersFolder, '*.h', System.IO.SearchOption.AllDirectories) do
+    foreach var fname in
+      System.IO.Directory.EnumerateFiles(HeadersFolder, '*.h', System.IO.SearchOption.AllDirectories) +
+      System.IO.Directory.EnumerateFiles(BrokenHeadersFolder, '*.h', System.IO.SearchOption.AllDirectories)
+    do
     begin
       writeln(fname);
       System.Windows.Forms.Clipboard.SetText(ReadAllText(fname));
@@ -180,7 +181,7 @@ begin
         Result := f.Substring(ind, ind2-ind);
       end)
       .Where(f->not used_funcs.Contains(f[1]))
-      .DistinctBy(f->f[1])
+      .DistinctBy(f->f[1].RemoveFuncNameExt)
       .OrderBy(f->f[1])
       .ToList
     ;
@@ -193,12 +194,44 @@ begin
     var ext_types: List<string> :=
       funcs_data
       .Select(t->t[1])
-      .Select(s->s.Reverse.TakeWhile(ch->ch.IsUpper).Reverse.JoinIntoString(''))
-      .Where(s->not (s in ['', 'D', 'A', 'W', 'CMAAINTEL', 'DEXT', 'DARB', 'DOES', 'GPUIDAMD', 'DC', 'DCARB', 'DCEXT', 'DCNV', 'DFX', 'DINTEL', 'DL', 'DSGIS']))
+      .Select(s->s.TakeFuncNameExt)
+      .Where(s->not (s in ['', 'D', 'A', 'W', 'CMAAINTEL', 'IDEXT', 'DEXT', 'DARB', 'DOES', 'GPUIDAMD', 'DC', 'DCARB', 'DCEXT', 'DCNV', 'DFX', 'DINTEL', 'DL', 'DSGIS']))
       .Distinct
-      .ToList;
+      .ToList
+    ;
+    
+//    ext_types.Sorted.PrintLines;
+//    exit;
     
     {$endregion Find ext types}
+    
+    {$region construct func name tables}
+    writeln('construct func name tables');
+    var ext_spec_db := BinSpecDB.LoadFromFile('Data scrappers\gl ext spec.bin');
+    
+    var func_name_ext_name_table := new Dictionary<string, List<string>>(new FuncNameEqualityComparer);
+    foreach var ext in ext_spec_db.exts do
+      if ext.NewFuncs<>nil then
+        foreach var func in ext.NewFuncs.funcs do
+        begin
+          if not func_name_ext_name_table.ContainsKey(func[0]) then
+            func_name_ext_name_table[func[0]] := new List<string> else
+//            writeln($'func {func[0]} was defined in multiple exts')
+          ;
+          func_name_ext_name_table[func[0]].AddRange(ext.ExtNames.names);
+        end;
+    
+    var ext_name_func_name_table := new Dictionary<List<string>, HashSet<string>>(new ListSeqEqualityComparer);
+    foreach var key in func_name_ext_name_table.Keys do
+    begin
+      var val := func_name_ext_name_table[key];
+      if not ext_name_func_name_table.ContainsKey(val) then
+        ext_name_func_name_table[val] := new HashSet<string>;
+      ext_name_func_name_table[val].Add(key);
+    end;
+    ext_name_func_name_table.Add(new List<string>, new HashSet<string>);
+    
+    {$endregion construct construct func name tables}
     
     {$region Sort by ext names}
     writeln('Sort by ext name');
@@ -206,6 +239,8 @@ begin
     // ext_name (or string[0]) => (func_text, func_name)
     var funcs_by_ext_name := new Dictionary<List<string>, List<(string,string)>>(new ListSeqEqualityComparer);
     funcs_by_ext_name[new List<string>] := new List<(string,string)>;
+    
+    var unused_exts := new HashSet<List<string>>(func_name_ext_name_table.Values, new ListSeqEqualityComparer);
     
     while funcs_data.Count<>0 do
     begin
@@ -218,7 +253,7 @@ begin
         
         foreach var fn in ext_name_func_name_table[ext_names] do
         begin
-          var ind := funcs_data.FindIndex(f->f[1]=fn);
+          var ind := funcs_data.FindIndex(f->f[1].RemoveFuncNameExt=fn.RemoveFuncNameExt);
           if ind=-1 then writeln($'"{fn1}": can''t find func "{fn}" from "{ext_names.JoinIntoString}"') else
           begin
             fs += funcs_data[ind];
@@ -227,7 +262,10 @@ begin
         end;
         
 //        writeln(ext_names, fs.Select(f->f[1]));
-        funcs_by_ext_name.Add(ext_names, fs);
+        if funcs_by_ext_name.ContainsKey(ext_names) then
+          raise new System.InvalidOperationException($'key = [{ext_names.JoinIntoString}], val1 = [{funcs_by_ext_name[ext_names].Select(f->f[1]).JoinIntoString}], val2 = [{fs.Select(f->f[1]).JoinIntoString}]') else
+          funcs_by_ext_name.Add(ext_names, fs);
+        unused_exts.Remove(ext_names);
       end else
       begin
         funcs_by_ext_name[new List<string>].Add(funcs_data[0]);
@@ -235,6 +273,9 @@ begin
       end;
       
     end;
+    
+    foreach var ext in unused_exts do
+      writeln($'[{ext.JoinIntoString}]: funcs [{ext_name_func_name_table[ext].JoinIntoString}] wasn''t found');
     
     {$endregion Sort by ext names}
     
@@ -254,15 +295,18 @@ begin
         var t_name: string;
         if fs.Any(f->f[0].Contains('wgl')) then
           t_name := 'wgl' else
+        if fs.Any(f->f[0].Contains('glX')) then
+          t_name := 'glX' else
         begin
           var ext_ts := fs.Select(f->
           begin
             var ext_ts := ext_types.Where(ext_t->f[1].EndsWith(ext_t)).ToList;
             if ext_ts.Count>1 then raise new System.ArgumentException($'func {f[1]} had multiple ext types: {ext_ts.JoinIntoString}');
-            Result := ext_ts.Count=0?'gl_Deprecated':ext_ts[0];
-          end).Distinct.ToList;
+            Result := ext_ts.Count=0?'':ext_ts[0];
+          end).Where(ext_t->ext_t<>'').Distinct.ToList;
           
-          // can't be 0
+          if ext_ts.Count=0 then
+            t_name := 'gl_Deprecated' else
           if ext_ts.Count=1 then
             t_name := 'gl_'+ext_ts[0] else
           if ext_ts.Contains('gl_EXT') then
@@ -294,9 +338,10 @@ begin
       case kvp.Key of
         'gl_Deprecated':  Result := 1;
         'wgl':            Result := 2;
-        'gl_ARB':         Result := 3;
-        'gl_EXT':         Result := 4;
-        else              Result := 5;
+        'glX':            Result := 3;
+        'gl_ARB':         Result := 4;
+        'gl_EXT':         Result := 5;
+        else              Result := 6;
       end;
     end).ThenBy(kvp->kvp.Key) do
     begin

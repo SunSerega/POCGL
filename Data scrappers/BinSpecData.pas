@@ -414,9 +414,21 @@ type
       
       for var i := 0 to Result.funcs.Count-1 do
       begin
+        
+        var func_name := Result.funcs[i][0];
+        foreach var pnh in Arr('wgl', 'glX', 'gl') do
+          if func_name.StartsWith(pnh) then
+          begin
+            func_name := func_name.SubString(pnh.Length);
+            break;
+          end;
+        func_name := func_name.Replace('Tangent3{bdfis}EXTv', 'Tangent3{bdfis}vEXT');
+        
         var func_text := Result.funcs[i][1];
         while func_text.Contains('  ') do func_text := func_text.Replace('  ',' ');
-        Result.funcs[i] := (Result.funcs[i][0], func_text);
+        func_text := func_text.Replace('Tangent3{bdfis}EXTv', 'Tangent3{bdfis}vEXT');
+        
+        Result.funcs[i] := (func_name, func_text);
       end;
       
       
@@ -438,13 +450,13 @@ type
       
       
       Result.DeTemplateFuncs('[fd]v', 'T ',
-        ( 'iv', 'glint * '   ),
-        ( 'fv', 'glfloat * ' )
+        ( 'fv', 'glfloat * '   ),
+        ( 'dv', 'gldouble * ' )
       );
       
       Result.DeTemplateFuncs('[fd]', 'T ',
-        ( 'i&', 'glint '   ),
-        ( 'f&', 'glfloat ' )
+        ( 'f&', 'glfloat '   ),
+        ( 'd&', 'gldouble ' )
       );
       
       

@@ -132,83 +132,135 @@ begin
   
   case s.ToLower of
     
-    'bool':                   s := 'boolean';
+    'bool':                     s := 'UInt32';
+    'boolean':                  s := 'UInt32';
+    'eglboolean':               s := 'UInt32';
     
-    'glbyte':                 s := 'SByte';
-    'glubyte':                s := 'Byte';
-    'glchararb':              s := 'Byte';
-    'glboolean':              s := 'Byte';
+    'glbyte':                   s := 'SByte';
+    'glubyte':                  s := 'Byte';
+    'glchararb':                s := 'Byte';
+    'glboolean':                s := 'Byte';
     
-    'glshort':                s := 'Int16';
-    'glushort':               s := 'UInt16';
-    'ushort':                 s := 'UInt16';
+    'glshort':                  s := 'Int16';
+    'glushort':                 s := 'UInt16';
+    'ushort':                   s := 'UInt16';
     
-    'glint':                  s := 'Int32';
-    'glsizei':                s := 'Int32';
-    'glclampx':               s := 'Int32';
-    'int':                    s := 'Int32';
-    'int32':                  s := 'Int32';
-    'gluint':                 s := 'UInt32';
-    'uint':                   s := 'UInt32';
-    'dword':                  s := 'UInt32';
-    'unsignedint':            s := 'UInt32';
+    'glint':                    s := 'Int32';
+    'eglint':                   s := 'Int32';
+    'glsizei':                  s := 'Int32';
+    'glclampx':                 s := 'Int32';
+    'int':                      s := 'Int32';
+    'sizei':                    s := 'Int32';
+    'int32':                    s := 'Int32';
+    'int32_t':                  s := 'Int32';
+    'gluint':                   s := 'UInt32';
+    'uint':                     s := 'UInt32';
+    'dword':                    s := 'UInt32';
+    'unsignedint':              s := 'UInt32';
     
-    'glint64':                s := 'Int64';
-    'glint64ext':             s := 'Int64';
-    'int64':                  s := 'Int64';
-    'gluint64':               s := 'UInt64';
-    'gluint64ext':            s := 'UInt64';
-    'unsignedlong':           s := 'UInt64';
+    'glint64':                  s := 'Int64';
+    'glint64ext':               s := 'Int64';
+    'int64':                    s := 'Int64';
+    'int64_t':                  s := 'Int64';
+    'gluint64':                 s := 'UInt64';
+    'gluint64ext':              s := 'UInt64';
+    'unsignedlong':             s := 'UInt64';
+    'uint64':                   s := 'UInt64';
     
-    'glfloat':                s := 'single';
-    'glclampf':               s := 'single';
-    'float':                  s := 'single';
-    'gldouble':               s := 'double';
-    'glclampd':               s := 'double';
+    'glfloat':                  s := 'single';
+    'glclampf':                 s := 'single';
+    'float':                    s := 'single';
+    'gldouble':                 s := 'double';
+    'glclampd':                 s := 'double';
     
-    'glfixed':                s := 'fixed';
-    'glhalfnv':               s := 'half';
+    'glfixed':                  s := 'fixed';
+    'glhalfnv':                 s := 'half';
     
-    'glintptr':               s := 'IntPtr';
-    'glintptrarb':            s := 'IntPtr';
-    'proc':                   s := 'IntPtr';
-    'handle':                 s := 'IntPtr';
-    'lpvoid':                 s := 'IntPtr';
-    'glsizeiptr':             s := 'UIntPtr';
-    'glsizeiptrarb':          s := 'UIntPtr'; 
+    'glintptr':                 s := 'IntPtr';
+    'glintptrarb':              s := 'IntPtr';
+    'proc':                     s := 'IntPtr';
+    'handle':                   s := 'IntPtr';
+    'lpvoid':                   s := 'IntPtr';
+    'glsizeiptr':               s := 'UIntPtr';
+    'glsizeiptrarb':            s := 'UIntPtr';
+    'sizeiptr':                 s := 'UIntPtr';
     
-    'pgpu_device':            s := '^GPU_Device_Affinity_Info';
+    'enum':                     s := 'DummyEnum';
+    'glenum':                   s := 'DummyEnum';
+    'eglenum':                  s := 'DummyEnum';
+    'bitfield':                 s := 'DummyFlags';
+    'glbitfield':               s := 'DummyFlags';
     
-    'glenum':                 s := 'ErrorCode';
-    'glbitfield':             s := 'ErrorCodeFlags';
+    'egltimekhr':               s := 'TimeSpan';
     
-    'glsync':                 s := 'GLsync';
-    'gleglimageoes':          s := 'GLeglImageOES';
-    'glhandlearb':            s := 'GLhandleARB';
-    'hgpunv':                 s := 'GPUAffinityHandle';
-    'hvideooutputdevicenv':   s := 'VideoOutputDeviceHandleNV';
-    'hvideoinputdevicenv':    s := 'VideoInputDeviceHandleNV';
-    'hpvideodev':             s := 'VideoDeviceHandleNV';
-    'gleglclientbufferext':   s := 'GLeglClientBufferEXT';
-    'glvdpausurfacenv':       s := 'GLvdpauSurfaceNV';
-    'hpbufferext':            s := 'PBufferName';
-    'lpcstr':                 s := 'string';
-    'hpbufferarb':            s := 'HPBufferARB';
-    'hdc':                    s := 'GDI_DC';
-    'pixelformatdescriptor':  s := 'GDI_PixelFormatDescriptor';
-    'henhmetafile':           s := 'GDI_HENHMetafile';
-    'layerplanedescriptor':   s := 'GDI_LayerPlaneDescriptor';
-    'colorref':               s := 'GDI_COLORREF';
-    'hglrc':                  s := 'HGLRC';
-    'lpglyphmetricsfloat':    s := 'GDI_LPGlyphmetricsFloat';
+    'glsync':                   s := 'GLsync';
+    'sync':                     s := 'GLsync';
+    'eglsynckhr':               s := 'EGLsync';
+    'egldisplay':               s := 'EGLDisplay';
+    'glunurbsobj':              s := 'GLUnurbs';
+    'glxwindow':                s := 'GLXWindow';
+    'window':                   s := 'GLXWindow';
+    'glxpixmap':                s := 'GLXPixmap';
+    'pixmap':                   s := 'GLXPixmap';
+    'colormap':                 s := 'GLXColormap';
+    'dmparams':                 s := 'GLXDMparams';
+    'dmbuffer':                 s := 'GLXDMbuffer';
+    'vlserver':                 s := 'GLXVLServer';
+    'vlpath':                   s := 'GLXVLPath';
+    'vlnode':                   s := 'GLXVLNode';
+    'status':                   s := 'GLXStatus';
+    'glxdrawable':              s := 'GLXDrawable';
+    'glxcontext':               s := 'GLXContext';
+    'glxpbuffer':               s := 'GLXPbuffer';
+    'glxpbuffersgix':           s := 'GLXPbuffer';
+    'glxfbconfig':              s := 'GLXFBConfig';
+    'glxfbconfigsgix':          s := 'GLXFBConfig';
+    'glxcontextid':             s := 'GLXContextID';
+    'glxvideosourcesgix':       s := 'GLXVideoSourceSGIX';
+    'glxvideocapturedevicenv':  s := 'GLXVideoCaptureDeviceNV';
+    'glxvideodevicenv':         s := 'GLXVideoDeviceNV';
+    '__glxextfuncptr':          s := 'GLXFuncPtr';
+    'gleglimageoes':            s := 'GLeglImageOES';
+    'glhandlearb':              s := 'GLhandleARB';
+    'hgpunv':                   s := 'GPUAffinityHandle';
+    'hvideooutputdevicenv':     s := 'VideoOutputDeviceHandleNV';
+    'hvideoinputdevicenv':      s := 'VideoInputDeviceHandleNV';
+    'hpvideodev':               s := 'VideoDeviceHandleNV';
+    'gleglclientbufferext':     s := 'GLeglClientBufferEXT';
+    'glvdpausurfacenv':         s := 'GLvdpauSurfaceNV';
+    'hpbufferext':              s := 'PBufferName';
+    'lpcstr':                   s := 'string';
+    'hpbufferarb':              s := 'PBufferName';
+    'hdc':                      s := 'GDI_DC';
+    'pixelformatdescriptor':    s := 'GDI_PixelFormatDescriptor';
+    'henhmetafile':             s := 'GDI_HENHMetafile';
+    'layerplanedescriptor':     s := 'GDI_LayerPlaneDescriptor';
+    'colorref':                 s := 'GDI_COLORREF';
+    'hglrc':                    s := 'GLContext';
+    
+    'glxhyperpipenetworksgix':  s := 'GLXHyperpipeNetworkSGIX';
+    'glxhyperpipeconfigsgix':   s := 'GLXHyperpipeConfigSGIX';
+    'glxpiperect':              s := 'GLXPipeRect';
+    'glxpiperectlimits':        s := 'GLXPipeRectLimits';
+    'pgpu_device':              s := '^GPU_Device_Affinity_Info';
+    'lpglyphmetricsfloat':      s := '^GDI_GlyphmetricsFloat';
+    
+    'display', 'xvisualinfo':
+    if rc<>0 then
+    begin
+      s := 'P' + s;
+      rc -= 1;
+    end else
+      raise new System.InvalidOperationException($'Запись "{s}" не описана полностью в данной версии, доступны только указатели на неё');
     
     'struct_cl_context':      s := 'cl_context';
     'struct_cl_event':        s := 'cl_event';
     
     'gldebugproc':            s := 'GLDEBUGPROC';
     'gldebugprocarb':         s := 'GLDEBUGPROC';
+    'gldebugprocamd':         s := 'GLDEBUGPROC';
+    'gldebugprockhr':         s := 'GLDEBUGPROC';
     'glvulkanprocnv':         s := 'GLVULKANPROCNV';
-    'gldebugprocamd':         s := 'GLDEBUGPROCAMD';
     
     'glvoid',
     'void':
@@ -237,6 +289,7 @@ begin
   
   if s.Count(ch->ch='^')=1 then
   begin
+    s := s.Replace('pointer', 'IntPtr');
     yield ('[MarshalAs(UnmanagedType.LPArray)] ', s.Replace('^', 'array of '));
     yield ('var ', s.Remove('^'));
     yield ('', 'pointer');
@@ -264,19 +317,20 @@ type
     constructor(s: string);
     begin
       
-      s := s.Remove('GL_APIENTRY', 'GLAPI', 'GL_API', 'WINAPI', 'APIENTRY');
+      s := s.Remove('GL_APIENTRY', 'GL_APICALL', 'GLAPI', 'GL_API', 'WINAPI', 'APIENTRY');
       
       var ind1 := s.IndexOf('(');
       var ind2 := s.LastIndexOf(')');
       
       begin
         var nts := s.Remove(ind1).Trim;
-        var ind := nts.LastIndexOf(' ');
+        var ind := nts.LastIndexOf('*');
+        if ind=-1 then ind := nts.LastIndexOf(' ');
         
-        name := nts.Substring(ind+1);
+        name := nts.Substring(ind+1).Trim(' ');
         
         name_header := nil;
-        foreach var pnh in Arr('wgl', 'gl') do
+        foreach var pnh in Arr('wgl', 'glX', 'gl') do
           if name.StartsWith(pnh) then
           begin
             name_header := pnh;
@@ -290,12 +344,12 @@ type
         end;
         if name.ToLower() in keywords then name := '&'+name;
         
-//        name.Println;
-        res := GetTypeDefString(nts.Remove(ind)).Last[1];
+//        writeln((nts.Remove(ind+1),name));
+        res := GetTypeDefString(nts.Remove(ind+1)).Last[1];
         
       end;
       
-      foreach var p in s.Substring(ind1+1,ind2-ind1-1).Replace('*','* ').Split(',') do
+      foreach var p in s.Substring(ind1+1,ind2-ind1-1).Replace('*','* ').ToWords(',').Select(p->p.Trim(' ')) do
       begin
         if p = 'void' then break;
         var ind := p.LastIndexOf(' ');
@@ -387,13 +441,17 @@ begin
     text := text
       .Remove(#13)
       .SkipCharsFromTo('/*', '*/')
-      .SkipCharsFromTo('typedef',';')
-      .SkipCharsFromTo('#',#10)
       .JoinIntoString('')
       .ToWords(#10)
-      .Where(l->l.Contains('API '))
+      .Where(l->l.Contains('('))
+      .Where(l-> not(
+        l.Contains('typedef') or
+        l.Contains('#') or
+        l.Contains('DECLARE_HANDLE')
+      ))
       .Select(l->FuncDef.Create(l).ToString)
-      .JoinIntoString('    '#10);
+      .JoinIntoString('    '#10)
+    ;
     
     text += '    ';
     
