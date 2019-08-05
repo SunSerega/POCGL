@@ -368,9 +368,13 @@ uses System.Runtime.CompilerServices;
 
 //ToDo клонирование очередей
 // - для паралельного выполнения из разных потоков
+// - #2080 мешает
 
 //ToDo Buffer.WriteValue принимающее очередь
-// - иначе не работает пример "1.2 : Использование очереди как параметра"
+// - иначе не работает пример "Использование очереди как параметра"
+
+//ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
+// - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
 
 //===================================
 
@@ -381,8 +385,6 @@ uses System.Runtime.CompilerServices;
 // - ну да, "protected .AddParameter", как .AddQueue, только для отдельного списка
 
 //ToDo больше примеров... Желательно хотя бы по примеру на под-раздел справки
-
-//ToDo перенести CommandQueueHostFunc в implementation
 
 //ToDo BufferCommandQueue.AddQueue
 
@@ -403,9 +405,6 @@ uses System.Runtime.CompilerServices;
 
 //ToDo Read/Write для массивов - надо иметь возможность указывать отступ в массиве
 
-//ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
-// - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
-
 //ToDo У всего, у чего есть Finalize - проверить чтоб было и .Dispose, если надо
 // - и добавить в справку, про то что этот объект можно удалять
 
@@ -413,6 +412,7 @@ uses System.Runtime.CompilerServices;
 // - #1952
 // - #1981
 // - #2067, #2068
+// - #2080
 
 type
   
@@ -446,6 +446,11 @@ type
     
     protected function GetRes: object; override := self.res;
     
+//    ///Создаёт полную копию данной очереди,
+//    ///Всех очередей из которых она состоит,
+//    ///А так же всех очередей-параметров, использованных в данной очереди
+//    public function Clone: CommandQueue<T>; abstract;
+    
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f
     public function ThenConvert<T2>(f: T->T2): CommandQueue<T2>;
@@ -457,34 +462,6 @@ type
     public static procedure operator*=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1*q2;
     
     public static function operator implicit(o: T): CommandQueue<T>;
-    
-  end;
-  
-  ///Обёртка для выполнения кода на хосте, то есть на CPU
-  ///Которая так же является очередью, а значит совместима и со всеми остальными очередями
-  CommandQueueHostFunc<T> = sealed class(CommandQueue<T>)
-    private f: ()->T;
-    
-    ///Самый прямой и простой способ создания объекта типа CommandQueueHostFunc
-    ///Но лучше используйте HFQ и HPQ, они записываются короче
-    public constructor(f: ()->T) :=
-    self.f := f;
-    
-    ///Создаёт объект CommandQueueHostFunc, который как будто уже завершил выполнятся и вернул o
-    ///Вообще, это больше для внутренних вещей в OpenCLABC
-    ///Любой тип T и так можно использовать там где принимает CommandQueue<T>
-    ///Эта возможность как раз и реализовано через данный конструктор
-    public constructor(o: T);
-    begin
-      self.res := o;
-      self.f := nil;
-    end;
-    
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
-    
-    ///--
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -553,11 +530,11 @@ type
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
-    public function WriteArray(a: &Array) := WriteArray(new CommandQueueHostFunc<&Array>(a));
+    public function WriteArray(a: &Array) := WriteArray(CommandQueue&<&Array>(a));
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
-    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(new CommandQueueHostFunc&<&Array>(a), offset, len);
+    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(CommandQueue&<&Array>(a), offset, len);
     
     
     ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
@@ -597,10 +574,10 @@ type
     
     ///- function ReadArray(a: Array): BufferCommandQueue;
     ///Копирует всё содержимое буффера в содержимое массива
-    public function ReadArray(a: &Array) := ReadArray(new CommandQueueHostFunc<&Array>(a));
+    public function ReadArray(a: &Array) := ReadArray(CommandQueue&<&Array>(a));
     ///- function ReadArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в содержимое массива
-    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(new CommandQueueHostFunc&<&Array>(a), offset, len);
+    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(CommandQueue&<&Array>(a), offset, len);
     
     ///- function ReadValue<TRecord>(var val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
     ///Читает значение любого размерного типа из данного буфера
@@ -641,10 +618,10 @@ type
     
     ///- function PatternFill(a: Array): BufferCommandQueue;
     ///Заполняет весь буфер копиями содержимого массива
-    public function PatternFill(a: &Array) := PatternFill(new CommandQueueHostFunc<&Array>(a));
+    public function PatternFill(a: &Array) := PatternFill(CommandQueue&<&Array>(a));
     ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(new CommandQueueHostFunc&<&Array>(a), offset, len);
+    public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(CommandQueue&<&Array>(a), offset, len);
     
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
@@ -697,6 +674,14 @@ type
     private function GetHashCode: integer; reintroduce := 0;
     
     {$endregion reintroduce методы}
+    
+//    ///Создаёт полную копию данной очереди,
+//    ///Всех команд из которых она состоит,
+//    ///А так же всех очередей-параметров, использованных в данной очереди
+//    public function Clone: CommandQueue<T>; override;
+//    begin
+//      
+//    end;
     
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
@@ -805,11 +790,11 @@ type
     ///- function WriteArray(a: Array): Buffer;
     ///Копирует содержимое массива в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
-    public function WriteArray(a: &Array) := WriteArray(new CommandQueueHostFunc<&Array>(a));
+    public function WriteArray(a: &Array) := WriteArray(CommandQueue&<&Array>(a));
     ///- function WriteArray(a: Array; offset, len: integer): Buffer;
     ///Копирует содержимое массива в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
-    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(new CommandQueueHostFunc<&Array>(a), offset,len);
+    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(CommandQueue&<&Array>(a), offset,len);
     
     ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): Buffer; where TRecord: record;
     ///Записывает значение любого размерного типа в данный буфер
@@ -846,10 +831,10 @@ type
     
     ///- function ReadArray(a: Array): Buffer;
     ///Копирует всё содержимое буффера в содержимое массива
-    public function ReadArray(a: &Array) := ReadArray(new CommandQueueHostFunc<&Array>(a));
+    public function ReadArray(a: &Array) := ReadArray(CommandQueue&<&Array>(a));
     ///- function ReadArray(a: Array; offset, len: integer): Buffer;
     ///Копирует len байт, начиная с байта №offset в буфере, в содержимое массива
-    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(new CommandQueueHostFunc<&Array>(a), offset,len);
+    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(CommandQueue&<&Array>(a), offset,len);
     
     ///- function ReadValue<TRecord>(var val: TRecord; offset: integer := 0): Buffer; where TRecord: record;
     ///Читает значение любого размерного типа из данного буфера
@@ -887,12 +872,12 @@ type
     ///Создаёт новый массив с размерностями szs
     ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
     public function GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of integer): TArray; where TArray: &Array;
-    begin Result := GetArrayAt&<TArray>(offset, new CommandQueueHostFunc<array of integer>(szs)); end;
+    begin Result := GetArrayAt&<TArray>(offset, CommandQueue&<array of integer>(szs)); end;
     ///- function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
     ///И копирует в него достаточно байт чтоб заполнить весь массив
     public function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
-    begin Result := GetArrayAt&<TArray>(0, new CommandQueueHostFunc<array of integer>(szs)); end;
+    begin Result := GetArrayAt&<TArray>(0, CommandQueue&<array of integer>(szs)); end;
     
     ///- function GetArray1At<TRecord>(offset: integer; length: integer): array of TRecord; where TRecord: record;
     ///Создаёт новый 1-мерный массив, с length элементами типа TRecord
@@ -904,6 +889,11 @@ type
     ///И копирует в него достаточно байт чтоб заполнить весь массив
     public function GetArray1<TRecord>(length: integer): array of TRecord; where TRecord: record;
     begin Result := GetArray&<array of TRecord>(length); end;
+    ///- function GetArray1<TRecord>: array of TRecord; where TRecord: record;
+    ///Создаёт новый 1-мерный массив, с максимальным кол-вом элементов типа TRecord
+    ///И копирует в него достаточно байт чтоб заполнить весь массив
+    public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
+    begin Result := GetArray&<array of TRecord>(sz.ToUInt32 div Marshal.SizeOf&<TRecord>); end;
     
     ///- function GetArray2At<TRecord>(offset: integer; length: integer): array[,] of TRecord; where TRecord: record;
     ///Создаёт новый 2-мерный массив, с length элементами типа TRecord
@@ -959,9 +949,9 @@ type
     public function PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
     
     ///Заполняет весь буфер копиями содержимого массива
-    public function PatternFill(a: &Array) := PatternFill(new CommandQueueHostFunc<&Array>(a));
+    public function PatternFill(a: &Array) := PatternFill(CommandQueue&<&Array>(a));
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(new CommandQueueHostFunc<&Array>(a), offset,len);
+    public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(CommandQueue&<&Array>(a), offset,len);
     
     ///Заполняет весь буфер копиями значения любого размерного типа
     public function PatternFill<TRecord>(val: TRecord): Buffer; where TRecord: record;
@@ -1405,6 +1395,26 @@ implementation
 
 {$region HostFunc}
 
+type
+  CommandQueueHostFunc<T> = sealed class(CommandQueue<T>)
+    private f: ()->T;
+    
+    public constructor(f: ()->T) :=
+    self.f := f;
+    
+    public constructor(o: T);
+    begin
+      self.res := o;
+      self.f := nil;
+    end;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  
 function CommandQueueHostFunc<T>.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task;
 begin
   var ec: ErrorCode;
