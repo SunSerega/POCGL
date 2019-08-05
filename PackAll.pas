@@ -61,7 +61,8 @@ begin
     System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
     .Where(fname->
       fname.EndsWith('.pas') or
-      fname.EndsWith('.cl')
+      fname.EndsWith('.cl') or
+      fname.EndsWith('.txt')
     ).ForEach(fname->System.IO.File.Copy(fname, 'Release\Installer'+fname));
     
     // ====================================================
