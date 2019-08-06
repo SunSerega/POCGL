@@ -407,13 +407,8 @@ uses System.Threading.Tasks;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
-//ToDo Buffer.WriteValue принимающее очередь
-// - иначе не работает пример "Использование очереди как параметра"
-
 //ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
 // - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
-
-//ToDo проверить чтоб у всех методов очередей был дубль с неявной очередью
 
 //===================================
 
@@ -634,48 +629,48 @@ type
     ///- function PatternFill(ptr: IntPtr): BufferCommandQueue;
     ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue;
     ///- function PatternFill(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function PatternFill(ptr: pointer): BufferCommandQueue;
     ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function AddPatternFill(ptr: pointer; pattern_len: CommandQueue<integer>) := AddPatternFill(IntPtr(ptr), pattern_len);
+    public function AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>) := AddFillData(IntPtr(ptr), pattern_len);
     ///- function PatternFill(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function AddPatternFill(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := AddPatternFill(IntPtr(ptr), pattern_len, offset, len);
+    public function AddFillData(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := AddFillData(IntPtr(ptr), pattern_len, offset, len);
     
     ///- function PatternFill(a: Array): BufferCommandQueue;
     ///Заполняет весь буфер копиями содержимого массива
-    public function AddPatternFill(a: CommandQueue<&Array>): BufferCommandQueue;
+    public function AddFillArray(a: CommandQueue<&Array>): BufferCommandQueue;
     ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function AddPatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddFillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function PatternFill(a: Array): BufferCommandQueue;
     ///Заполняет весь буфер копиями содержимого массива
-    public function AddPatternFill(a: &Array) := AddPatternFill(CommandQueue&<&Array>(a));
+    public function AddFillArray(a: &Array) := AddFillArray(CommandQueue&<&Array>(a));
     ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function AddPatternFill(a: &Array; offset, len: CommandQueue<integer>) := AddPatternFill(CommandQueue&<&Array>(a), offset, len);
+    public function AddFillArray(a: &Array; offset, len: CommandQueue<integer>) := AddFillArray(CommandQueue&<&Array>(a), offset, len);
     
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddPatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddFillValue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddPatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddFillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
-    public function AddPatternFill<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
+    public function AddFillValue<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
     ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
-    public function AddPatternFill<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddFillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
     {$endregion Fill}
     
@@ -800,83 +795,88 @@ type
     
     {$region Write}
     
-    ///- function WriteData(ptr: IntPtr): Buffer;
+    ///- function WriteData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
     public function WriteData(ptr: CommandQueue<IntPtr>): Buffer;
-    ///- function WriteData(ptr: IntPtr; offset, len: integer): Buffer;
+    ///- function WriteData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
     public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
     
-    ///- function WriteData(ptr: pointer): Buffer;
+    ///- function WriteData(ptr: pointer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
     public function WriteData(ptr: pointer) := WriteData(IntPtr(ptr));
-    ///- function WriteData(ptr: pointer; offset, len: integer): Buffer;
+    ///- function WriteData(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
     public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>) := WriteData(IntPtr(ptr), offset, len);
     
-    ///- function WriteArray(a: Array): Buffer;
+    
+    ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
     public function WriteArray(a: CommandQueue<&Array>): Buffer;
-    ///- function WriteArray(a: Array; offset, len: integer): Buffer;
+    ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
     public function WriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
     
-    ///- function WriteArray(a: Array): Buffer;
+    ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
     public function WriteArray(a: &Array) := WriteArray(CommandQueue&<&Array>(a));
-    ///- function WriteArray(a: Array; offset, len: integer): Buffer;
+    ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
-    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(CommandQueue&<&Array>(a), offset,len);
+    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(CommandQueue&<&Array>(a), offset, len);
     
-    ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): Buffer; where TRecord: record;
+    
+    ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
     ///Записывает значение любого размерного типа в данный буфер
     ///С отступом в offset байт в буфере
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
-    begin
-      Result := WriteData(@val, offset, Marshal.SizeOf&<TRecord>);
-    end;
+    begin Result := WriteData(@val, offset, Marshal.SizeOf&<TRecord>); end;
+    
+    ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
+    ///Записывает значение любого размерного типа в данный буфер
+    ///С отступом в offset байт в буфере
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
     
     {$endregion Write}
     
     {$region Read}
     
-    ///- function ReadData(ptr: IntPtr): Buffer;
+    ///- function ReadData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует всё содержимое буффера в область оперативной памяти, на которую указывает ptr
     public function ReadData(ptr: CommandQueue<IntPtr>): Buffer;
-    ///- function ReadData(ptr: IntPtr; offset, len: integer): Buffer;
+    ///- function ReadData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в область оперативной памяти, на которую указывает ptr
     public function ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
     
-    ///- function ReadData(ptr: pointer): Buffer;
+    ///- function ReadData(ptr: pointer): BufferCommandQueue;
     ///Копирует всё содержимое буффера в область оперативной памяти, на которую указывает ptr
     public function ReadData(ptr: pointer) := ReadData(IntPtr(ptr));
-    ///- function ReadData(ptr: pointer; offset, len: integer): Buffer;
+    ///- function ReadData(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в область оперативной памяти, на которую указывает ptr
     public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>) := ReadData(IntPtr(ptr), offset, len);
     
-    ///- function ReadArray(a: Array): Buffer;
+    ///- function ReadArray(a: Array): BufferCommandQueue;
     ///Копирует всё содержимое буффера в содержимое массива
     public function ReadArray(a: CommandQueue<&Array>): Buffer;
-    ///- function ReadArray(a: Array; offset, len: integer): Buffer;
+    ///- function ReadArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в содержимое массива
     public function ReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
     
-    ///- function ReadArray(a: Array): Buffer;
+    ///- function ReadArray(a: Array): BufferCommandQueue;
     ///Копирует всё содержимое буффера в содержимое массива
     public function ReadArray(a: &Array) := ReadArray(CommandQueue&<&Array>(a));
-    ///- function ReadArray(a: Array; offset, len: integer): Buffer;
+    ///- function ReadArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в содержимое массива
-    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(CommandQueue&<&Array>(a), offset,len);
+    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(CommandQueue&<&Array>(a), offset, len);
     
-    ///- function ReadValue<TRecord>(var val: TRecord; offset: integer := 0): Buffer; where TRecord: record;
+    ///- function ReadValue<TRecord>(var val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
     ///Читает значение любого размерного типа из данного буфера
     ///С отступом в offset байт в буфере
     public function ReadValue<TRecord>(var val: TRecord; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
@@ -885,6 +885,80 @@ type
     end;
     
     {$endregion Read}
+    
+    {$region Fill}
+    
+    ///- function PatternFill(ptr: IntPtr): BufferCommandQueue;
+    ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
+    ///прочитанным из области оперативной памяти, на которую указывает ptr
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): Buffer;
+    ///- function PatternFill(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
+    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
+    ///прочитанным из области оперативной памяти, на которую указывает ptr
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): Buffer;
+    
+    ///- function PatternFill(ptr: pointer): BufferCommandQueue;
+    ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
+    ///прочитанным из области оперативной памяти, на которую указывает ptr
+    public function FillData(ptr: pointer; pattern_len: CommandQueue<integer>) := FillData(IntPtr(ptr), pattern_len);
+    ///- function PatternFill(ptr: pointer; offset, len: integer): BufferCommandQueue;
+    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
+    ///прочитанным из области оперативной памяти, на которую указывает ptr
+    public function FillData(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := FillData(IntPtr(ptr), pattern_len, offset, len);
+    
+    ///- function PatternFill(a: Array): BufferCommandQueue;
+    ///Заполняет весь буфер копиями содержимого массива
+    public function FillArray(a: CommandQueue<&Array>): Buffer;
+    ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
+    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
+    public function FillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
+    
+    ///- function PatternFill(a: Array): BufferCommandQueue;
+    ///Заполняет весь буфер копиями содержимого массива
+    public function FillArray(a: &Array) := FillArray(CommandQueue&<&Array>(a));
+    ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
+    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
+    public function FillArray(a: &Array; offset, len: CommandQueue<integer>) := FillArray(CommandQueue&<&Array>(a), offset, len);
+    
+    ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    ///Заполняет весь буфер копиями значения любого размерного типа
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FillValue<TRecord>(val: TRecord): Buffer; where TRecord: record;
+    ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
+    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    
+    ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    ///Заполняет весь буфер копиями значения любого размерного типа
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>): Buffer; where TRecord: record;
+    ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
+    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    
+    {$endregion Fill}
+    
+    {$region Copy}
+    
+    ///- function CopyFrom(b: Buffer; from, &to, len: integer): BufferCommandQueue;
+    ///Копирует содержимое буфера b в данный буфер
+    ///from - отступ в буффере b
+    ///to   - отступ в данном буффере
+    ///len  - кол-во копируемых байт
+    public function CopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): Buffer;
+    ///- function CopyTo(b: Buffer; from, &to, len: integer): BufferCommandQueue;
+    ///Копирует содержимое данного буфера в буфер b
+    ///from - отступ в данном буффере
+    ///to   - отступ в буффере b
+    ///len  - кол-во копируемых байт
+    public function CopyTo  (b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): Buffer;
+    
+    ///- function CopyFrom(b: Buffer): BufferCommandQueue;
+    ///Копирует всё содержимое буфера b в данный буфер
+    public function CopyFrom(b: CommandQueue<Buffer>): Buffer;
+    ///- function CopyTo(b: Buffer): BufferCommandQueue;
+    ///Копирует всё содержимое данного буфера в буфер b
+    public function CopyTo  (b: CommandQueue<Buffer>): Buffer;
+    
+    {$endregion Copy}
     
     {$region Get}
     
@@ -966,66 +1040,6 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetValue<TRecord>: TRecord; where TRecord: record; begin Result := GetValueAt&<TRecord>(0); end;
     
     {$endregion Get}
-    
-    {$region Fill}
-    
-    ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
-    ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): Buffer;
-    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
-    ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): Buffer;
-    
-    ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
-    ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: pointer; pattern_len: CommandQueue<integer>) := PatternFill(IntPtr(ptr), pattern_len);
-    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
-    ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := PatternFill(IntPtr(ptr), pattern_len, offset, len);
-    
-    ///Заполняет весь буфер копиями содержимого массива
-    public function PatternFill(a: CommandQueue<&Array>): Buffer;
-    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
-    
-    ///Заполняет весь буфер копиями содержимого массива
-    public function PatternFill(a: &Array) := PatternFill(CommandQueue&<&Array>(a));
-    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(CommandQueue&<&Array>(a), offset,len);
-    
-    ///Заполняет весь буфер копиями значения любого размерного типа
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord): Buffer; where TRecord: record;
-    begin
-      Result := PatternFill(@val, Marshal.SizeOf&<TRecord>);
-    end;
-    
-    ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
-    begin
-      Result := PatternFill(@val, Marshal.SizeOf&<TRecord>, offset,len);
-    end;
-    
-    {$endregion Fill}
-    
-    {$region Copy}
-    
-    ///Копирует содержимое буфера arg в данный буфер
-    ///from - отступ в буффере arg
-    ///to   - отступ в данном буффере
-    ///len  - кол-во копируемых байт
-    public function CopyFrom(arg: Buffer; from, &to, len: CommandQueue<integer>): Buffer;
-    ///Копирует содержимое данного буфера в буфер arg
-    ///from - отступ в данном буффере
-    ///to   - отступ в буффере arg
-    ///len  - кол-во копируемых байт
-    public function CopyTo  (arg: Buffer; from, &to, len: CommandQueue<integer>): Buffer;
-    
-    ///Копирует всё содержимое буфера arg в данный буфер
-    public function CopyFrom(arg: Buffer): Buffer;
-    ///Копирует всё содержимое данного буфера в буфер arg
-    public function CopyTo  (arg: Buffer): Buffer;
-    
-    {$endregion Copy}
     
     ///Высвобождает выделенную на GPU память
     ///Если такой нету - не делает ничего
@@ -1170,16 +1184,42 @@ type
     public function NewQueue :=
     new KernelCommandQueue(self);
     
-    public function Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>): Kernel;
+    {$endregion Queue's}
     
+    {$region Exec}
+    
+    public function Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>): Kernel;
     public function Exec(work_szs: array of integer; params args: array of CommandQueue<Buffer>) :=
     Exec(work_szs.ConvertAll(sz->new UIntPtr(sz)), args);
     
-    public function Exec(work_sz1: integer; params args: array of CommandQueue<Buffer>) := Exec(new integer[](work_sz1), args);
-    public function Exec(work_sz1, work_sz2: integer; params args: array of CommandQueue<Buffer>) := Exec(new integer[](work_sz1, work_sz2), args);
-    public function Exec(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<Buffer>) := Exec(new integer[](work_sz1, work_sz2, work_sz3), args);
+    public function Exec1(work_sz1: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1), args);
+    public function Exec1(work_sz1: integer; params args: array of CommandQueue<Buffer>) := Exec1(new UIntPtr(work_sz1), args);
     
-    {$endregion Queue's}
+    public function Exec2(work_sz1, work_sz2: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1, work_sz2), args);
+    public function Exec2(work_sz1, work_sz2: integer; params args: array of CommandQueue<Buffer>) := Exec2(new UIntPtr(work_sz1), new UIntPtr(work_sz2), args);
+    
+    public function Exec3(work_sz1, work_sz2, work_sz3: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1, work_sz2, work_sz3), args);
+    public function Exec3(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<Buffer>) := Exec3(new UIntPtr(work_sz1), new UIntPtr(work_sz2), new UIntPtr(work_sz3), args);
+    
+    
+    public function Exec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>): Kernel;
+    public function Exec(work_szs: array of CommandQueue<integer>; params args: array of CommandQueue<Buffer>) :=
+    Exec(work_szs.ConvertAll(sz_q->sz_q.ThenConvert(sz->new UIntPtr(sz))), args);
+    
+    public function Exec1(work_sz1: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1), args);
+    public function Exec1(work_sz1: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec1(work_sz1.ThenConvert(sz->new UIntPtr(sz)), args);
+    
+    public function Exec2(work_sz1, work_sz2: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2), args);
+    public function Exec2(work_sz1, work_sz2: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec2(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), args);
+    
+    public function Exec3(work_sz1, work_sz2, work_sz3: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2, work_sz3), args);
+    public function Exec3(work_sz1, work_sz2, work_sz3: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec3(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), work_sz3.ThenConvert(sz->new UIntPtr(sz)), args);
+    
+    
+    public function Exec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>): Kernel;
+    public function Exec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>): Kernel;
+    
+    {$endregion Exec}
     
     public procedure Finalize; override :=
     cl.ReleaseKernel(self._kernel).RaiseIfError;
@@ -2195,16 +2235,18 @@ type
   end;
   
   
-function BufferCommandQueue.AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandDataFill(ptr,pattern_len, offset,len));
-function BufferCommandQueue.AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) := AddPatternFill(ptr,pattern_len, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) :=
+AddFillData(ptr,pattern_len, 0,integer(res.sz.ToUInt32));
 
-function BufferCommandQueue.AddPatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddFillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandArrayFill(a, offset,len));
-function BufferCommandQueue.AddPatternFill(a: CommandQueue<&Array>) := AddPatternFill(a, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddFillArray(a: CommandQueue<&Array>) :=
+AddFillArray(a, 0,integer(res.sz.ToUInt32));
 
 
-function BufferCommandQueue.AddPatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue;
+function BufferCommandQueue.AddFillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue;
 begin
   var sz := Marshal.SizeOf&<TRecord>;
   var ptr := Marshal.AllocHGlobal(sz);
@@ -2213,7 +2255,7 @@ begin
   Result := AddCommand(new BufferCommandValueFill(ptr,Marshal.SizeOf&<TRecord>, offset,len));
 end;
 
-function BufferCommandQueue.AddPatternFill<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddFillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandValueFill(
   val.ThenConvert&<IntPtr>(vval-> //ToDo #2067
   begin
@@ -2227,11 +2269,11 @@ AddCommand(new BufferCommandValueFill(
   offset, len
 ));
 
-function BufferCommandQueue.AddPatternFill<TRecord>(val: TRecord) :=
-AddPatternFill(val, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddFillValue<TRecord>(val: TRecord) :=
+AddFillValue(val, 0,integer(res.sz.ToUInt32));
 
-function BufferCommandQueue.AddPatternFill<TRecord>(val: CommandQueue<TRecord>) :=
-AddPatternFill(val, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddFillValue<TRecord>(val: CommandQueue<TRecord>) :=
+AddFillValue(val, 0,integer(res.sz.ToUInt32));
 
 {$endregion PatternFill}
 
@@ -2502,34 +2544,70 @@ end;
 {$region Write}
 
 function Buffer.WriteData(ptr: CommandQueue<IntPtr>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr) as CommandQueue<Buffer>);
-
+Context.Default.SyncInvoke(NewQueue.AddWriteData(ptr) as CommandQueue<Buffer>);
 function Buffer.WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(NewQueue.AddWriteData(ptr, offset, len) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray(a: CommandQueue<&Array>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a) as CommandQueue<Buffer>);
-
+Context.Default.SyncInvoke(NewQueue.AddWriteArray(a) as CommandQueue<Buffer>);
 function Buffer.WriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(NewQueue.AddWriteArray(a, offset, len) as CommandQueue<Buffer>);
+
+function Buffer.WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddWriteValue(val, offset) as CommandQueue<Buffer>);
 
 {$endregion Write}
 
 {$region Read}
 
 function Buffer.ReadData(ptr: CommandQueue<IntPtr>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr) as CommandQueue<Buffer>);
-
+Context.Default.SyncInvoke(NewQueue.AddReadData(ptr) as CommandQueue<Buffer>);
 function Buffer.ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(NewQueue.AddReadData(ptr, offset, len) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray(a: CommandQueue<&Array>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a) as CommandQueue<Buffer>);
-
+Context.Default.SyncInvoke(NewQueue.AddReadArray(a) as CommandQueue<Buffer>);
 function Buffer.ReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(NewQueue.AddReadArray(a, offset, len) as CommandQueue<Buffer>);
 
 {$endregion Read}
+
+{$region PatternFill}
+
+function Buffer.FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddFillData(ptr, pattern_len) as CommandQueue<Buffer>);
+function Buffer.FillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddFillData(ptr, pattern_len, offset, len) as CommandQueue<Buffer>);
+
+function Buffer.FillArray(a: CommandQueue<&Array>) :=
+Context.Default.SyncInvoke(NewQueue.AddFillArray(a) as CommandQueue<Buffer>);
+function Buffer.FillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddFillArray(a, offset, len) as CommandQueue<Buffer>);
+
+function Buffer.FillValue<TRecord>(val: TRecord) :=
+Context.Default.SyncInvoke(NewQueue.AddFillValue(val) as CommandQueue<Buffer>);
+function Buffer.FillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddFillValue(val, offset, len) as CommandQueue<Buffer>);
+function Buffer.FillValue<TRecord>(val: CommandQueue<TRecord>) :=
+Context.Default.SyncInvoke(NewQueue.AddFillValue(val) as CommandQueue<Buffer>);
+function Buffer.FillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddFillValue(val, offset, len) as CommandQueue<Buffer>);
+
+{$endregion PatternFill}
+
+{$region Copy}
+
+function Buffer.CopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddCopyFrom(b, from, &to, len) as CommandQueue<Buffer>);
+function Buffer.CopyFrom(b: CommandQueue<Buffer>) :=
+Context.Default.SyncInvoke(NewQueue.AddCopyFrom(b) as CommandQueue<Buffer>);
+
+function Buffer.CopyTo(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
+Context.Default.SyncInvoke(NewQueue.AddCopyTo(b, from, &to, len) as CommandQueue<Buffer>);
+function Buffer.CopyTo(b: CommandQueue<Buffer>) :=
+Context.Default.SyncInvoke(NewQueue.AddCopyTo(b) as CommandQueue<Buffer>);
+
+{$endregion Copy}
 
 {$region Get}
 
@@ -2571,35 +2649,11 @@ end;
 
 {$endregion Get}
 
-{$region Fill}
-
-function Buffer.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(ptr,pattern_len) as CommandQueue<Buffer>);
-
-function Buffer.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(ptr,pattern_len, offset,len) as CommandQueue<Buffer>);
-
-function Buffer.PatternFill(a: CommandQueue<&Array>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(a) as CommandQueue<Buffer>);
-
-function Buffer.PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(a, offset,len) as CommandQueue<Buffer>);
-
-{$endregion Fill}
-
-{$region Copy}
-
-function Buffer.CopyFrom(arg: Buffer; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(arg, from,&to, len) as CommandQueue<Buffer>);
-function Buffer.CopyTo  (arg: Buffer; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo  (arg, from,&to, len) as CommandQueue<Buffer>);
-
-function Buffer.CopyFrom(arg: Buffer) := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(arg) as CommandQueue<Buffer>);
-function Buffer.CopyTo  (arg: Buffer) := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo  (arg) as CommandQueue<Buffer>);
-
-{$endregion Copy}
-
 {$endregion Buffer}
 
 {$region Kernel}
+
+{$region constructor's}
 
 constructor Kernel.Create(prog: ProgramCode; name: string);
 begin
@@ -2610,8 +2664,20 @@ begin
   
 end;
 
+{$endregion constructor's}
+
+{$region Exec}
+
 function Kernel.Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>) :=
-Context.Default.SyncInvoke(self.NewQueue.AddExec(work_szs, args) as CommandQueue<Kernel>);
+Context.Default.SyncInvoke(NewQueue.AddExec(work_szs, args) as CommandQueue<Kernel>);
+function Kernel.Exec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) :=
+Context.Default.SyncInvoke(NewQueue.AddExec(work_szs, args) as CommandQueue<Kernel>);
+function Kernel.Exec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>) :=
+Context.Default.SyncInvoke(NewQueue.AddExec(work_szs, args) as CommandQueue<Kernel>);
+function Kernel.Exec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>) :=
+Context.Default.SyncInvoke(NewQueue.AddExec(work_szs, args) as CommandQueue<Kernel>);
+
+{$endregion Exec}
 
 {$endregion Kernel}
 
