@@ -413,6 +413,8 @@ uses System.Runtime.CompilerServices;
 //ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
 // - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
 
+//ToDo проверить чтоб у всех методов очередей был дубль с неявной очередью
+
 //===================================
 
 //ToDo Клонирование очередей
@@ -540,50 +542,50 @@ type
     ///- function WriteData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
-    public function WriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
+    public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
     ///- function WriteData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
-    public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function WriteData(ptr: pointer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
-    public function WriteData(ptr: pointer) := WriteData(IntPtr(ptr));
+    public function AddWriteData(ptr: pointer) := AddWriteData(IntPtr(ptr));
     ///- function WriteData(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
-    public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>) := WriteData(IntPtr(ptr), offset, len);
+    public function AddWriteData(ptr: pointer; offset, len: CommandQueue<integer>) := AddWriteData(IntPtr(ptr), offset, len);
     
     
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
-    public function WriteArray(a: CommandQueue<&Array>): BufferCommandQueue;
+    public function AddWriteArray(a: CommandQueue<&Array>): BufferCommandQueue;
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
-    public function WriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddWriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///Копируется нужное кол-во байт чтоб заполнить весь буфер
-    public function WriteArray(a: &Array) := WriteArray(CommandQueue&<&Array>(a));
+    public function AddWriteArray(a: &Array) := AddWriteArray(CommandQueue&<&Array>(a));
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
-    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(CommandQueue&<&Array>(a), offset, len);
+    public function AddWriteArray(a: &Array; offset, len: CommandQueue<integer>) := AddWriteArray(CommandQueue&<&Array>(a), offset, len);
     
     
     ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
     ///Записывает значение любого размерного типа в данный буфер
     ///С отступом в offset байт в буфере
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
     
     ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
     ///Записывает значение любого размерного типа в данный буфер
     ///С отступом в offset байт в буфере
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
+    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
     
     {$endregion Write}
     
@@ -591,38 +593,38 @@ type
     
     ///- function ReadData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует всё содержимое буффера в область оперативной памяти, на которую указывает ptr
-    public function ReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
+    public function AddReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
     ///- function ReadData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в область оперативной памяти, на которую указывает ptr
-    public function ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function ReadData(ptr: pointer): BufferCommandQueue;
     ///Копирует всё содержимое буффера в область оперативной памяти, на которую указывает ptr
-    public function ReadData(ptr: pointer) := ReadData(IntPtr(ptr));
+    public function AddReadData(ptr: pointer) := AddReadData(IntPtr(ptr));
     ///- function ReadData(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в область оперативной памяти, на которую указывает ptr
-    public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>) := ReadData(IntPtr(ptr), offset, len);
+    public function AddReadData(ptr: pointer; offset, len: CommandQueue<integer>) := AddReadData(IntPtr(ptr), offset, len);
     
     ///- function ReadArray(a: Array): BufferCommandQueue;
     ///Копирует всё содержимое буффера в содержимое массива
-    public function ReadArray(a: CommandQueue<&Array>): BufferCommandQueue;
+    public function AddReadArray(a: CommandQueue<&Array>): BufferCommandQueue;
     ///- function ReadArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в содержимое массива
-    public function ReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function ReadArray(a: Array): BufferCommandQueue;
     ///Копирует всё содержимое буффера в содержимое массива
-    public function ReadArray(a: &Array) := ReadArray(CommandQueue&<&Array>(a));
+    public function AddReadArray(a: &Array) := AddReadArray(CommandQueue&<&Array>(a));
     ///- function ReadArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в содержимое массива
-    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(CommandQueue&<&Array>(a), offset, len);
+    public function AddReadArray(a: &Array; offset, len: CommandQueue<integer>) := AddReadArray(CommandQueue&<&Array>(a), offset, len);
     
     ///- function ReadValue<TRecord>(var val: TRecord; offset: integer := 0): BufferCommandQueue; where TRecord: record;
     ///Читает значение любого размерного типа из данного буфера
     ///С отступом в offset байт в буфере
-    public function ReadValue<TRecord>(var val: TRecord; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
+    public function AddReadValue<TRecord>(var val: TRecord; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
     begin
-      Result := ReadData(@val, offset, Marshal.SizeOf&<TRecord>);
+      Result := AddReadData(@val, offset, Marshal.SizeOf&<TRecord>);
     end;
     
     {$endregion Read}
@@ -632,48 +634,48 @@ type
     ///- function PatternFill(ptr: IntPtr): BufferCommandQueue;
     ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue;
     ///- function PatternFill(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function PatternFill(ptr: pointer): BufferCommandQueue;
     ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: pointer; pattern_len: CommandQueue<integer>) := PatternFill(IntPtr(ptr), pattern_len);
+    public function AddPatternFill(ptr: pointer; pattern_len: CommandQueue<integer>) := AddPatternFill(IntPtr(ptr), pattern_len);
     ///- function PatternFill(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function PatternFill(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := PatternFill(IntPtr(ptr), pattern_len, offset, len);
+    public function AddPatternFill(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := AddPatternFill(IntPtr(ptr), pattern_len, offset, len);
     
     ///- function PatternFill(a: Array): BufferCommandQueue;
     ///Заполняет весь буфер копиями содержимого массива
-    public function PatternFill(a: CommandQueue<&Array>): BufferCommandQueue;
+    public function AddPatternFill(a: CommandQueue<&Array>): BufferCommandQueue;
     ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddPatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function PatternFill(a: Array): BufferCommandQueue;
     ///Заполняет весь буфер копиями содержимого массива
-    public function PatternFill(a: &Array) := PatternFill(CommandQueue&<&Array>(a));
+    public function AddPatternFill(a: &Array) := AddPatternFill(CommandQueue&<&Array>(a));
     ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
-    public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(CommandQueue&<&Array>(a), offset, len);
+    public function AddPatternFill(a: &Array; offset, len: CommandQueue<integer>) := AddPatternFill(CommandQueue&<&Array>(a), offset, len);
     
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddPatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddPatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
-    public function PatternFill<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
+    public function AddPatternFill<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
     ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
-    public function PatternFill<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddPatternFill<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
     {$endregion Fill}
     
@@ -684,20 +686,20 @@ type
     ///from - отступ в буффере b
     ///to   - отступ в данном буффере
     ///len  - кол-во копируемых байт
-    public function CopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddCopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): BufferCommandQueue;
     ///- function CopyTo(b: Buffer; from, &to, len: integer): BufferCommandQueue;
     ///Копирует содержимое данного буфера в буфер b
     ///from - отступ в данном буффере
     ///to   - отступ в буффере b
     ///len  - кол-во копируемых байт
-    public function CopyTo  (b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddCopyTo  (b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///- function CopyFrom(b: Buffer): BufferCommandQueue;
     ///Копирует всё содержимое буфера b в данный буфер
-    public function CopyFrom(b: CommandQueue<Buffer>): BufferCommandQueue;
+    public function AddCopyFrom(b: CommandQueue<Buffer>): BufferCommandQueue;
     ///- function CopyTo(b: Buffer): BufferCommandQueue;
     ///Копирует всё содержимое данного буфера в буфер b
-    public function CopyTo  (b: CommandQueue<Buffer>): BufferCommandQueue;
+    public function AddCopyTo  (b: CommandQueue<Buffer>): BufferCommandQueue;
     
     {$endregion Copy}
     
@@ -791,7 +793,7 @@ type
     begin
       Result := 
         Buffer.Create(Marshal.SizeOf&<TRecord>)
-        .NewQueue.WriteValue(val);
+        .NewQueue.AddWriteValue(val);
     end;
     
     {$endregion Queue's}
@@ -1090,36 +1092,36 @@ type
     
     {$region Exec}
     
-    public function Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
-    public function Exec(work_szs: array of integer; params args: array of CommandQueue<Buffer>) :=
-    Exec(work_szs.ConvertAll(sz->new UIntPtr(sz)), args);
+    public function AddExec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
+    public function AddExec(work_szs: array of integer; params args: array of CommandQueue<Buffer>) :=
+    AddExec(work_szs.ConvertAll(sz->new UIntPtr(sz)), args);
     
-    public function Exec1(work_sz1: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1), args);
-    public function Exec1(work_sz1: integer; params args: array of CommandQueue<Buffer>) := Exec1(new UIntPtr(work_sz1), args);
+    public function AddExec1(work_sz1: UIntPtr; params args: array of CommandQueue<Buffer>) := AddExec(new UIntPtr[](work_sz1), args);
+    public function AddExec1(work_sz1: integer; params args: array of CommandQueue<Buffer>) := AddExec1(new UIntPtr(work_sz1), args);
     
-    public function Exec2(work_sz1, work_sz2: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1, work_sz2), args);
-    public function Exec2(work_sz1, work_sz2: integer; params args: array of CommandQueue<Buffer>) := Exec2(new UIntPtr(work_sz1), new UIntPtr(work_sz2), args);
+    public function AddExec2(work_sz1, work_sz2: UIntPtr; params args: array of CommandQueue<Buffer>) := AddExec(new UIntPtr[](work_sz1, work_sz2), args);
+    public function AddExec2(work_sz1, work_sz2: integer; params args: array of CommandQueue<Buffer>) := AddExec2(new UIntPtr(work_sz1), new UIntPtr(work_sz2), args);
     
-    public function Exec3(work_sz1, work_sz2, work_sz3: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1, work_sz2, work_sz3), args);
-    public function Exec3(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<Buffer>) := Exec3(new UIntPtr(work_sz1), new UIntPtr(work_sz2), new UIntPtr(work_sz3), args);
-    
-    
-    public function Exec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
-    public function Exec(work_szs: array of CommandQueue<integer>; params args: array of CommandQueue<Buffer>) :=
-    Exec(work_szs.ConvertAll(sz_q->sz_q.ThenConvert(sz->new UIntPtr(sz))), args);
-    
-    public function Exec1(work_sz1: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1), args);
-    public function Exec1(work_sz1: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec1(work_sz1.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    public function Exec2(work_sz1, work_sz2: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2), args);
-    public function Exec2(work_sz1, work_sz2: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec2(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    public function Exec3(work_sz1, work_sz2, work_sz3: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2, work_sz3), args);
-    public function Exec3(work_sz1, work_sz2, work_sz3: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec3(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), work_sz3.ThenConvert(sz->new UIntPtr(sz)), args);
+    public function AddExec3(work_sz1, work_sz2, work_sz3: UIntPtr; params args: array of CommandQueue<Buffer>) := AddExec(new UIntPtr[](work_sz1, work_sz2, work_sz3), args);
+    public function AddExec3(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<Buffer>) := AddExec3(new UIntPtr(work_sz1), new UIntPtr(work_sz2), new UIntPtr(work_sz3), args);
     
     
-    public function Exec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
-    public function Exec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
+    public function AddExec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
+    public function AddExec(work_szs: array of CommandQueue<integer>; params args: array of CommandQueue<Buffer>) :=
+    AddExec(work_szs.ConvertAll(sz_q->sz_q.ThenConvert(sz->new UIntPtr(sz))), args);
+    
+    public function AddExec1(work_sz1: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := AddExec(new CommandQueue<UIntPtr>[](work_sz1), args);
+    public function AddExec1(work_sz1: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := AddExec1(work_sz1.ThenConvert(sz->new UIntPtr(sz)), args);
+    
+    public function AddExec2(work_sz1, work_sz2: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := AddExec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2), args);
+    public function AddExec2(work_sz1, work_sz2: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := AddExec2(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), args);
+    
+    public function AddExec3(work_sz1, work_sz2, work_sz3: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := AddExec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2, work_sz3), args);
+    public function AddExec3(work_sz1, work_sz2, work_sz3: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := AddExec3(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), work_sz3.ThenConvert(sz->new UIntPtr(sz)), args);
+    
+    
+    public function AddExec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
+    public function AddExec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
     
     {$endregion Exec}
     
@@ -1900,16 +1902,16 @@ type
   end;
   
   
-function BufferCommandQueue.WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandWriteData(ptr, offset, len));
-function BufferCommandQueue.WriteData(ptr: CommandQueue<IntPtr>) := WriteData(ptr, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddWriteData(ptr: CommandQueue<IntPtr>) := AddWriteData(ptr, 0,integer(res.sz.ToUInt32));
 
-function BufferCommandQueue.WriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddWriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandWriteArray(a, offset, len));
-function BufferCommandQueue.WriteArray(a: CommandQueue<&Array>) := WriteArray(a, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddWriteArray(a: CommandQueue<&Array>) := AddWriteArray(a, 0,integer(res.sz.ToUInt32));
 
 
-function BufferCommandQueue.WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): BufferCommandQueue;
+function BufferCommandQueue.AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): BufferCommandQueue;
 begin
   var sz := Marshal.SizeOf&<TRecord>;
   var ptr := Marshal.AllocHGlobal(sz);
@@ -1918,7 +1920,7 @@ begin
   Result := AddCommand(new BufferCommandWriteValue(ptr, offset,Marshal.SizeOf&<TRecord>));
 end;
 
-function BufferCommandQueue.WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>) :=
+function BufferCommandQueue.AddWriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>) :=
 AddCommand(new BufferCommandWriteValue(
   val.ThenConvert&<IntPtr>(vval-> //ToDo #2067
   begin
@@ -2033,13 +2035,13 @@ type
   end;
   
   
-function BufferCommandQueue.ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandReadData(ptr, offset, len));
-function BufferCommandQueue.ReadData(ptr: CommandQueue<IntPtr>) := ReadData(ptr, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddReadData(ptr: CommandQueue<IntPtr>) := AddReadData(ptr, 0,integer(res.sz.ToUInt32));
 
-function BufferCommandQueue.ReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandReadArray(a, offset, len));
-function BufferCommandQueue.ReadArray(a: CommandQueue<&Array>) := ReadArray(a, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>) := AddReadArray(a, 0,integer(res.sz.ToUInt32));
 
 {$endregion ReadData}
 
@@ -2193,16 +2195,16 @@ type
   end;
   
   
-function BufferCommandQueue.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandDataFill(ptr,pattern_len, offset,len));
-function BufferCommandQueue.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) := PatternFill(ptr,pattern_len, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddPatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) := AddPatternFill(ptr,pattern_len, 0,integer(res.sz.ToUInt32));
 
-function BufferCommandQueue.PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddPatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandArrayFill(a, offset,len));
-function BufferCommandQueue.PatternFill(a: CommandQueue<&Array>) := PatternFill(a, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddPatternFill(a: CommandQueue<&Array>) := AddPatternFill(a, 0,integer(res.sz.ToUInt32));
 
 
-function BufferCommandQueue.PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue;
+function BufferCommandQueue.AddPatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue;
 begin
   var sz := Marshal.SizeOf&<TRecord>;
   var ptr := Marshal.AllocHGlobal(sz);
@@ -2211,7 +2213,7 @@ begin
   Result := AddCommand(new BufferCommandValueFill(ptr,Marshal.SizeOf&<TRecord>, offset,len));
 end;
 
-function BufferCommandQueue.PatternFill<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddPatternFill<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandValueFill(
   val.ThenConvert&<IntPtr>(vval-> //ToDo #2067
   begin
@@ -2225,11 +2227,11 @@ AddCommand(new BufferCommandValueFill(
   offset, len
 ));
 
-function BufferCommandQueue.PatternFill<TRecord>(val: TRecord) :=
-PatternFill(val, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddPatternFill<TRecord>(val: TRecord) :=
+AddPatternFill(val, 0,integer(res.sz.ToUInt32));
 
-function BufferCommandQueue.PatternFill<TRecord>(val: CommandQueue<TRecord>) :=
-PatternFill(val, 0,integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddPatternFill<TRecord>(val: CommandQueue<TRecord>) :=
+AddPatternFill(val, 0,integer(res.sz.ToUInt32));
 
 {$endregion PatternFill}
 
@@ -2290,13 +2292,13 @@ type
     
   end;
 
-function BufferCommandQueue.CopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddCopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandCopy(b,res, from,&to, len));
-function BufferCommandQueue.CopyFrom(b: CommandQueue<Buffer>) := CopyFrom(b, 0,0, integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddCopyFrom(b: CommandQueue<Buffer>) := AddCopyFrom(b, 0,0, integer(res.sz.ToUInt32));
 
-function BufferCommandQueue.CopyTo(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
+function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandCopy(res,b, &to,from, len));
-function BufferCommandQueue.CopyTo(b: CommandQueue<Buffer>) := CopyTo(b, 0,0, integer(res.sz.ToUInt32));
+function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>) := AddCopyTo(b, 0,0, integer(res.sz.ToUInt32));
 
 {$endregion Copy}
 
@@ -2436,24 +2438,24 @@ type
     
   end;
   
-function KernelCommandQueue.Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>) :=
+function KernelCommandQueue.AddExec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>) :=
 AddCommand(new KernelCommandExec(work_szs, args));
 
-function KernelCommandQueue.Exec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) :=
+function KernelCommandQueue.AddExec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) :=
 AddCommand(new KernelQCommandExec(
   AddParameter(CombineAsyncQueue(work_szs)),
   ()->work_szs.ConvertAll(sz_q->sz_q.res),
   args
 ));
 
-function KernelCommandQueue.Exec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>) :=
+function KernelCommandQueue.AddExec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>) :=
 AddCommand(new KernelQCommandExec(
   AddParameter(work_szs),
   ()->work_szs.res,
   args
 ));
 
-function KernelCommandQueue.Exec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>) :=
+function KernelCommandQueue.AddExec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>) :=
 AddCommand(new KernelQCommandExec(
   AddParameter(work_szs),
   ()->work_szs.res.ConvertAll(sz->new UIntPtr(sz)),
@@ -2500,32 +2502,32 @@ end;
 {$region Write}
 
 function Buffer.WriteData(ptr: CommandQueue<IntPtr>) :=
-Context.Default.SyncInvoke(self.NewQueue.WriteData(ptr) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr) as CommandQueue<Buffer>);
 
 function Buffer.WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.WriteData(ptr, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, offset,len) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray(a: CommandQueue<&Array>) :=
-Context.Default.SyncInvoke(self.NewQueue.WriteArray(a) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.WriteArray(a, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a, offset,len) as CommandQueue<Buffer>);
 
 {$endregion Write}
 
 {$region Read}
 
 function Buffer.ReadData(ptr: CommandQueue<IntPtr>) :=
-Context.Default.SyncInvoke(self.NewQueue.ReadData(ptr) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr) as CommandQueue<Buffer>);
 
 function Buffer.ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.ReadData(ptr, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, offset,len) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray(a: CommandQueue<&Array>) :=
-Context.Default.SyncInvoke(self.NewQueue.ReadArray(a) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.ReadArray(a, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, offset,len) as CommandQueue<Buffer>);
 
 {$endregion Read}
 
@@ -2536,7 +2538,7 @@ begin
   var len_val := Context.Default.SyncInvoke(len);
   Result := Marshal.AllocHGlobal(len_val);
   Context.Default.SyncInvoke(
-    self.NewQueue.ReadData(Result, offset,len_val) as CommandQueue<Buffer>
+    self.NewQueue.AddReadData(Result, offset,len_val) as CommandQueue<Buffer>
   );
 end;
 
@@ -2554,7 +2556,7 @@ begin
   
   Context.Default.SyncInvoke(
     self.NewQueue
-    .ReadArray(Result, offset, Marshal.SizeOf(el_t) * res_len) as CommandQueue<Buffer> //ToDo #1981
+    .AddReadArray(Result, offset, Marshal.SizeOf(el_t) * res_len) as CommandQueue<Buffer> //ToDo #1981
   );
   
 end;
@@ -2563,7 +2565,7 @@ function Buffer.GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord;
 begin
   Context.Default.SyncInvoke(
     self.NewQueue
-    .ReadValue(Result, offset) as CommandQueue<Buffer> //ToDo #1981
+    .AddReadValue(Result, offset) as CommandQueue<Buffer> //ToDo #1981
   );
 end;
 
@@ -2572,26 +2574,26 @@ end;
 {$region Fill}
 
 function Buffer.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.PatternFill(ptr,pattern_len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(ptr,pattern_len) as CommandQueue<Buffer>);
 
 function Buffer.PatternFill(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.PatternFill(ptr,pattern_len, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(ptr,pattern_len, offset,len) as CommandQueue<Buffer>);
 
 function Buffer.PatternFill(a: CommandQueue<&Array>) :=
-Context.Default.SyncInvoke(self.NewQueue.PatternFill(a) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(a) as CommandQueue<Buffer>);
 
 function Buffer.PatternFill(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-Context.Default.SyncInvoke(self.NewQueue.PatternFill(a, offset,len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddPatternFill(a, offset,len) as CommandQueue<Buffer>);
 
 {$endregion Fill}
 
 {$region Copy}
 
-function Buffer.CopyFrom(arg: Buffer; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.CopyFrom(arg, from,&to, len) as CommandQueue<Buffer>);
-function Buffer.CopyTo  (arg: Buffer; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.CopyTo  (arg, from,&to, len) as CommandQueue<Buffer>);
+function Buffer.CopyFrom(arg: Buffer; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(arg, from,&to, len) as CommandQueue<Buffer>);
+function Buffer.CopyTo  (arg: Buffer; from, &to, len: CommandQueue<integer>) := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo  (arg, from,&to, len) as CommandQueue<Buffer>);
 
-function Buffer.CopyFrom(arg: Buffer) := Context.Default.SyncInvoke(self.NewQueue.CopyFrom(arg) as CommandQueue<Buffer>);
-function Buffer.CopyTo  (arg: Buffer) := Context.Default.SyncInvoke(self.NewQueue.CopyTo  (arg) as CommandQueue<Buffer>);
+function Buffer.CopyFrom(arg: Buffer) := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(arg) as CommandQueue<Buffer>);
+function Buffer.CopyTo  (arg: Buffer) := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo  (arg) as CommandQueue<Buffer>);
 
 {$endregion Copy}
 
@@ -2609,7 +2611,7 @@ begin
 end;
 
 function Kernel.Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>) :=
-Context.Default.SyncInvoke(self.NewQueue.Exec(work_szs, args) as CommandQueue<Kernel>);
+Context.Default.SyncInvoke(self.NewQueue.AddExec(work_szs, args) as CommandQueue<Kernel>);
 
 {$endregion Kernel}
 
