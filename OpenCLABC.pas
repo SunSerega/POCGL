@@ -104,22 +104,11 @@ unit OpenCLABC;
 // Программы на GPU не могут пользоваться оперативной памятью (без определённых расширений)
 // Поэтому для передачи данных в такую программу и чтения результата - надо выделять память на самом GPU
 // 
-// Буфер создаётся через конструктор ("new Buffer(...)")
-// Однако память на GPU выделяется только тогда, когда он будет первый раз изпользован для чтения/записи данных в памяти GPU
-// Но если у вас первая операция это чтение - это плохо. Вы получите мусор, потому что буфер не отчищается нулями при инициализации
-// 
-// Буфер можно так же удалить, вызвав метод Buffer.Dispose
-// Однако этот метод только освобождает память на GPU
-// Если после .Dispose использовать буфер снова - память будет заново выделена
-// .Dispose вызывается автоматически, если в программе не остаётся ссылок на буфер
-// 
 
 {$endregion 1.4 - Буфер (Buffer)}
 
-{$region 1.5 - Карнел (Kernel)}
+{$region 1.5 - Контейнер для кода (ProgramCode)}
 
-// 1.5 - Карнел (Kernel)
-// (вообще, по английски правильно - кёрнел, но карн́ел легче произнести)
 // 
 // Обычные программы невозможно запустить на GPU
 // Специальные программы для GPU запускаемые через OpenCL - пишутся на особом языке "OpenCL C" (который основан на языке "C")
@@ -127,16 +116,22 @@ unit OpenCLABC;
 // Максимум что вы можете найти тут - ссылку на 1 из последних версий его спецификации:
 // https://www.khronos.org/registry/OpenCL/specs/2.2/pdf/OpenCL_C.pdf
 // 
-// Для создания объекта типа Kernel - надо сначала иметь объект типа ProgramCode
-// Он содержит откомпилированные исходники программы
-// Делается это обычным конструктором ("new ProgramCode(...)")
-// Далее - можно воспользоваться индексным свойство:
-// "code['TestKernel1']", где code имеет тип ProgramCode - вернёт объект типа Kernel
-// 'TestKernel1' это имя подпрограммы, содержащейся в code и объявленной там карнелом (регистр важен!)
-// См. пример "1.4 - Карнел\Вызов карнела.pas"
+// Код на языке OpenCL-C храниться в объектах типа ProgramCode
+// Объекты этого типа используются только как контейнеры
+// 1 объект ProgramCode может содержать любое кол-во подпрограмм-карнелов
 // 
 
-{$endregion 1.5 - Карнел (Kernel)}
+{$endregion 1.5 - Контейнер для кода (ProgramCode)}
+
+{$region 1.6 - Карнел (Kernel)}
+
+// (вообще, по английски правильно кёрнел, но карн́ел легче произнести)
+// 
+// Объект типа Kernel представляет 1 подпрограмму-карнел
+// Карнелы используются для выполнения кода на GPU
+// 
+
+{$endregion 1.6 - Карнел (Kernel)}
 
 {$endregion 1. Основные принципы}
 
@@ -286,18 +281,33 @@ unit OpenCLABC;
 
 {$region 3.2 - Выполнение очередей}
 
-// 
 // Самый простой способ выполнить очередь - метод Context.SyncInvoke
 // Он выполняет очередь и после того как она завершилась - возвращает то, что вернула эта очередь
 // 
 // Но Context.SyncInvoke в свою очередь работает через метод Context.BeginInvoke
 // метод Context.BeginInvoke начинает выполнение очереди и возвращает объект типа Task
 // 
+
 // У Task, так же как у очереди - в <> указывается возвращаемое значение
 // Через объект типа Task можно:
 // - Следить за выполнением
 // - Ожидать пока выполнение не закончиться, методом Task.Wait
 // - Получать возвращаемое значение после выполнения, свойством Task.Result
+// 
+
+// Если при выполнении очереди возникнет ошибка - о ней выведет не полную информацию
+// Чтоб получить достаточно информации чтоб понять что за ошибка - используйте следующую конструкцию:
+// <------------------------->
+// try
+//   
+//   // ваш код, вызывающий ошибку
+//   
+// except
+//   on e: Exception do writeln(e); // writeln выводит все внутренние исключения, поэтому в нём видно что произошло на самом деле
+// end;
+// <------------------------->
+// Для данного кода есть стандартный снипет
+// Чтоб активировать его - напишите "tryo" и нажмите Shift+Space
 // 
 
 {$endregion 3.2 - Выполнение очередей}
@@ -325,6 +335,7 @@ unit OpenCLABC;
 
 {$region 3.4 - Клонирование очередей}
 
+//ToDo СЕЙЧАС НЕ РАБОТАЕТ ПОТОМУ ЧТО issue компилятора #2070
 // 
 // Одна и та же очередь не может выполнятся в 2 местах одновременно
 // Чтоб выполнить одну и ту же очередь в нескольких местах - надо клонировать её
@@ -344,17 +355,42 @@ unit OpenCLABC;
 
 {$endregion 3. Очередь [команд] (CommandQueue)}
 
-{$region 4. Буфер (Buffer)}
+{$region 4 Буфер (Buffer)}
 
 // 
-
-{$endregion 4. Буфер (Buffer)}
-
-{$region 5. Карнел (Kernel)}
-
+// Буфер создаётся через конструктор ("new Buffer(...)")
+// Однако память на GPU выделяется только тогда, когда он будет первый раз изпользован для чтения/записи данных в памяти GPU
+// После выделения памяти - содержимое буфера не отчищается нулями, поэтому обычно в нём содержится мусор
+// 
+// Буфер можно так же удалить, вызвав метод Buffer.Dispose
+// Однако этот метод только освобождает память на GPU
+// Если после .Dispose использовать буфер снова - память будет заново выделена
+// .Dispose вызывается автоматически, если в программе не остаётся ссылок на буфер
 // 
 
-{$endregion 5. Карнел (Kernel)}
+{$endregion 4 Буфер (Buffer)}
+
+{$region 5 - Контейнер для кода (ProgramCode)}
+
+// 
+// ProgramCode создаётся через конструктор ("new ProgramCode(...)")
+// 
+
+{$endregion 5 - Контейнер для кода (ProgramCode)}
+
+{$region 6 - Карнел (Kernel)}
+
+// 
+// Карнел создаётся через индесной свойтсво ProgramCode:
+// code['KernelName']
+// Где code имеет тип ProgramCode
+// А 'KernelName' - имя подпрограммы-карнела в исходном коде (регистр важен!)
+// 
+// Карнелы вызываются методом очереди .Exec
+// См. пример "1.4 - Карнел\Вызов карнела.pas"
+// 
+
+{$endregion 6 - Карнел (Kernel)}
 
 {$endregion Подробное описание OpenCLABC (аля справка)}
 
@@ -366,17 +402,19 @@ uses System.Threading.Tasks;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
-//ToDo клонирование очередей
-// - для паралельного выполнения из разных потоков
-// - #2080 мешает
-
 //ToDo Buffer.WriteValue принимающее очередь
 // - иначе не работает пример "Использование очереди как параметра"
 
 //ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
 // - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
 
+//ToDo написать в справке про Buffer.Init
+
 //===================================
+
+//ToDo клонирование очередей
+// - для паралельного выполнения из разных потоков
+// - #2070 мешает
 
 //ToDo в справке:
 // - "Все очереди-параметры начинают выполняться прямо при вызове Context.BeginInvoke"
@@ -412,7 +450,7 @@ uses System.Runtime.CompilerServices;
 // - #1952
 // - #1981
 // - #2067, #2068
-// - #2080
+// - #2070
 
 type
   
@@ -1221,11 +1259,17 @@ type
       var cq := cl.CreateCommandQueue(_context, _device, CommandQueuePropertyFlags.QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, ec);
       ec.RaiseIfError;
       
-      var tasks := q.Invoke(self, cq, cl_event.Zero).ToArray;
+      var tasks := q.Invoke(self, cq, cl_event.Zero).ToList;
       
       var костыль_для_Result: ()->T := ()-> //ToDo #1952
       begin
-        Task.WaitAll(tasks);
+        while tasks.Count>0 do
+          for var i := tasks.Count-1 downto 0 do
+            if tasks[i].Status <> TaskStatus.Running then
+            begin
+              if tasks[i].Exception<>nil then raise tasks[i].Exception;
+              tasks.RemoveAt(i);
+            end;
         if q.ev<>cl_event.Zero then cl.WaitForEvents(1, @q.ev).RaiseIfError;
         
         cl.ReleaseCommandQueue(cq).RaiseIfError;
@@ -1702,6 +1746,8 @@ type
       yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
+      if b.memobj=cl_mem.Zero then b.Init(c);
+      
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
@@ -1747,6 +1793,8 @@ type
       yield sequence a     .Invoke(c, cq, cl_event.Zero);
       yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      if b.memobj=cl_mem.Zero then b.Init(c);
       
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
@@ -1798,6 +1846,8 @@ type
       yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
+      if b.memobj=cl_mem.Zero then b.Init(c);
+      
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
@@ -1842,7 +1892,7 @@ begin
   var ptr := Marshal.AllocHGlobal(sz);
   var typed_ptr: ^TRecord := pointer(ptr);
   typed_ptr^ := val;
-  Result := AddCommand(new BufferCommandWriteValue(ptr,Marshal.SizeOf&<TRecord>, offset));
+  Result := AddCommand(new BufferCommandWriteValue(ptr, offset,Marshal.SizeOf&<TRecord>));
 end;
 
 function BufferCommandQueue.WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>) :=
@@ -1855,8 +1905,8 @@ AddCommand(new BufferCommandWriteValue(
     typed_ptr^ := TRecord(object(vval)); //ToDo #2068
     Result := ptr;
   end),
-  Marshal.SizeOf&<TRecord>,
-  offset
+  offset,
+  Marshal.SizeOf&<TRecord>
 ));
 
 {$endregion WriteData}
@@ -1883,6 +1933,8 @@ type
       yield sequence ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
       yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      if b.memobj=cl_mem.Zero then b.Init(c);
       
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
@@ -1929,6 +1981,8 @@ type
       yield sequence a     .Invoke(c, cq, cl_event.Zero);
       yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      if b.memobj=cl_mem.Zero then b.Init(c);
       
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
@@ -1997,6 +2051,8 @@ type
       yield sequence offset      .Invoke(c, cq, cl_event.Zero); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len         .Invoke(c, cq, cl_event.Zero); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
       
+      if b.memobj=cl_mem.Zero then b.Init(c);
+      
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
@@ -2042,6 +2098,8 @@ type
       yield sequence a     .Invoke(c, cq, cl_event.Zero);
       yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      if b.memobj=cl_mem.Zero then b.Init(c);
       
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
@@ -2095,6 +2153,8 @@ type
       yield sequence pattern_len .Invoke(c, cq, cl_event.Zero); if pattern_len .ev<>cl_event.Zero then ev_lst += pattern_len.ev;
       yield sequence offset      .Invoke(c, cq, cl_event.Zero); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
       yield sequence len         .Invoke(c, cq, cl_event.Zero); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
+      
+      if b.memobj=cl_mem.Zero then b.Init(c);
       
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
@@ -2185,9 +2245,11 @@ type
     begin
       var ec: ErrorCode;
       
+      var buf_ev_lst := new List<cl_event>;
+      yield sequence f_buf.Invoke(c, cq, cl_event.Zero); if f_buf.ev<>cl_event.Zero then buf_ev_lst += f_buf.ev;
+      yield sequence t_buf.Invoke(c, cq, cl_event.Zero); if t_buf.ev<>cl_event.Zero then buf_ev_lst += t_buf.ev;
+      
       var ev_lst := new List<cl_event>;
-      yield sequence f_buf.Invoke(c, cq, cl_event.Zero); if f_buf.ev<>cl_event.Zero then ev_lst += f_buf.ev;
-      yield sequence t_buf.Invoke(c, cq, cl_event.Zero); if t_buf.ev<>cl_event.Zero then ev_lst += t_buf.ev;
       yield sequence f_pos.Invoke(c, cq, cl_event.Zero); if f_pos.ev<>cl_event.Zero then ev_lst += f_pos.ev;
       yield sequence t_pos.Invoke(c, cq, cl_event.Zero); if t_pos.ev<>cl_event.Zero then ev_lst += t_pos.ev;
       yield sequence len  .Invoke(c, cq, cl_event.Zero); if len  .ev<>cl_event.Zero then ev_lst += len.ev;
@@ -2198,6 +2260,10 @@ type
       
       yield Task.Run(()->
       begin
+        if buf_ev_lst.Count<>0 then cl.WaitForEvents(buf_ev_lst.Count, buf_ev_lst.ToArray).RaiseIfError;
+        if f_buf.res.memobj=cl_mem.Zero then f_buf.res.Init(c);
+        if t_buf.res.memobj=cl_mem.Zero then t_buf.res.Init(c);
+        
         if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
         
         var buff_ev: cl_event;
