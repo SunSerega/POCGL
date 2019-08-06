@@ -1027,7 +1027,7 @@ type
     
     ///Высвобождает выделенную на GPU память
     ///Если такой нету - не делает ничего
-    ///Память будет заново выделена, если снова использовать данный буфер для чтения/записи
+    ///Память будет заново выделена, если снова использовать данный буфер
     public procedure Dispose :=
     if self.memobj<>cl_mem.Zero then
     begin
@@ -1037,7 +1037,7 @@ type
     
     ///--
     public procedure Finalize; override :=
-    if self.memobj<>cl_mem.Zero then cl.ReleaseMemObject(self.memobj);
+    self.Dispose;
     
   end;
   
@@ -1269,13 +1269,17 @@ type
       
       var костыль_для_Result: ()->T := ()-> //ToDo #1952
       begin
-        while tasks.Count>0 do
+        while true do
+        begin
           for var i := tasks.Count-1 downto 0 do
             if tasks[i].Status <> TaskStatus.Running then
             begin
               if tasks[i].Exception<>nil then raise tasks[i].Exception;
               tasks.RemoveAt(i);
             end;
+          if tasks.Count=0 then break;
+          Sleep(10);
+        end;
         if q.ev<>cl_event.Zero then cl.WaitForEvents(1, @q.ev).RaiseIfError;
         
         cl.ReleaseCommandQueue(cq).RaiseIfError;
@@ -1795,11 +1799,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   BufferCommandWriteArray = sealed class(BufferCommand)
@@ -1847,11 +1848,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   BufferCommandWriteValue = sealed class(BufferCommand)
@@ -1896,11 +1894,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   
@@ -1983,11 +1978,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   BufferCommandReadArray = sealed class(BufferCommand)
@@ -2035,11 +2027,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   
@@ -2100,11 +2089,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   BufferCommandArrayFill = sealed class(BufferCommand)
@@ -2153,11 +2139,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   BufferCommandValueFill = sealed class(BufferCommand)
@@ -2204,11 +2187,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
   
@@ -2305,11 +2285,8 @@ type
       
     end;
     
-    public procedure Finalize; override;
-    begin
-      inherited Finalize;
-      ClearEvent;
-    end;
+    public procedure Finalize; override :=
+    ClearEvent;
     
   end;
 
