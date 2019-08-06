@@ -407,8 +407,14 @@ uses System.Threading.Tasks;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
+//ToDo CommandQueueBase.is_busy
+// - ":= false" обязательно должно быть только когда вся очередь закончила выполняться
+// - не забыть добавить MakeBusy всюду
+
 //ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
 // - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
+
+//ToDo написать в справке про CommandQueue.Multiusable
 
 //===================================
 
@@ -418,14 +424,11 @@ uses System.Runtime.CompilerServices;
 
 //ToDo Больше примеров... Желательно хотя бы по примеру на под-раздел справки
 
-//ToDo CommandQueueBase.is_busy
-// - И protected процедура "MakeBusy", проводящая проверку
-// - ":= false" обязательно должно быть только когда вся очередь закончила выполняться
-
 //ToDo CommandQueue.Cycle(integer)
 //ToDo CommandQueue.Cycle // бесконечность циклов
 //ToDo CommandQueue.CycleWhile(***->boolean)
 // - после is_busy
+// - возможность передать свой обработчик ошибок как procedure->()
 
 //ToDo Типы Device и Platform
 //ToDo А связь с OpenCL.pas сделать всему (и буферам и карнелам), но более человеческую
@@ -434,6 +437,9 @@ uses System.Runtime.CompilerServices;
 
 //ToDo У всего, у чего есть Finalize - проверить чтоб было и .Dispose, если надо
 // - и добавить в справку, про то что этот объект можно удалять
+
+//ToDo Combine что то там
+// - для использования результатов нескольких очередей
 
 //ToDo Тесты всех фич модуля
 
@@ -453,6 +459,13 @@ type
   ProgramCode = class;
   DeviceTypeFlags = OpenCL.DeviceTypeFlags;
   
+  QueueDoubleInvokeException = class(Exception)
+    
+    public constructor :=
+    inherited Create('Нельзя выполнять одну и ту же очередь в 2 местах одновременно. Используйте .Clone или .Multiusable');
+    
+  end;
+  
   {$endregion misc class def}
   
   {$region CommandQueue}
@@ -460,11 +473,19 @@ type
   ///--
   CommandQueueBase = abstract class
     protected ev: cl_event;
+    protected is_busy: boolean;
     
     protected procedure ClearEvent :=
     if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
+    protected procedure MakeBusy :=
+    if not self.is_busy then is_busy := true else
+      raise new QueueDoubleInvokeException;
+    
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
+    protected procedure UnInvoke; virtual :=
+    if self.is_busy then is_busy := false else
+      raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
     
     protected function GetRes: object; abstract;
     
@@ -475,20 +496,27 @@ type
     
     protected function GetRes: object; override := self.res;
     
+    
 //    ///Создаёт полную копию данной очереди,
 //    ///Всех очередей из которых она состоит,
 //    ///А так же всех очередей-параметров, использованных в данной очереди
 //    public function Clone: CommandQueue<T>; abstract;
     
+    
+    public function Multiusable(n: integer): array of CommandQueue<T>;
+    
+    
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f
     public function ThenConvert<T2>(f: T->T2): CommandQueue<T2>;
+    
     
     public static function operator+<T2>(q1: CommandQueue<T>; q2: CommandQueue<T2>): CommandQueue<T2>;
     public static procedure operator+=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1+q2;
     
     public static function operator*<T2>(q1: CommandQueue<T>; q2: CommandQueue<T2>): CommandQueue<T2>;
     public static procedure operator*=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1*q2;
+    
     
     public static function operator implicit(o: T): CommandQueue<T>;
     
@@ -973,6 +1001,8 @@ type
     ///Обязательно вызовите Marshal.FreeHGlobal на полученном дескрипторе, после использования
     public function GetData := GetData(0,integer(self.Size32));
     
+    
+    
     ///- function GetArrayAt<TArray>(offset: integer; params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
     ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
@@ -980,7 +1010,8 @@ type
     ///- function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
     ///И копирует в него достаточно байт чтоб заполнить весь массив
-    public function GetArray<TArray>(szs: CommandQueue<array of integer>): TArray; where TArray: &Array; begin Result := GetArrayAt&<TArray>(0, szs); end;
+    public function GetArray<TArray>(szs: CommandQueue<array of integer>): TArray; where TArray: &Array;
+    begin Result := GetArrayAt&<TArray>(0, szs); end;
     
     ///- function GetArrayAt<TArray>(offset: integer; params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
@@ -1540,6 +1571,116 @@ new CommandQueueHostFunc<T>(o);
 
 {$endregion HostFunc}
 
+{$region Multiusable}
+
+type
+  MutiusableCommandQueueNode<T>=class;
+  
+  // invoke_status:
+  // 0 - выполнение не начато
+  // 1 - выполнение начинается
+  // 3 - выполнение прекращается
+  
+  MutiusableCommandQueueHub<T> = class
+    
+    public q: CommandQueue<T>;
+    public q_task: Task;
+    
+    public invoke_status := 0;
+    public invoked_count := 0;
+    
+    public constructor(q: CommandQueue<T>) :=
+    self.q := q;
+    
+    public function OnNodeInvoked(c: Context; cq: cl_command_queue): sequence of Task;
+    public procedure OnNodeUnInvoked;
+    
+  end;
+  
+  MutiusableCommandQueueNode<T> = sealed class(CommandQueue<T>)
+    public hub: MutiusableCommandQueueHub<T>;
+    
+    public constructor(hub: MutiusableCommandQueueHub<T>) :=
+    self.hub := hub;
+    
+    public function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      yield sequence hub.OnNodeInvoked(c,cq);
+      
+      ClearEvent;
+      self.ev := cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
+      
+      yield Task.Run(()->
+      begin
+        if hub.q_task<>nil then hub.q_task.Wait;
+        self.res := hub.q.res;
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+      end);
+      
+    end;
+    
+    public procedure UnInvoke; override;
+    begin
+      inherited;
+      hub.OnNodeUnInvoked;
+    end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  
+//ToDo почему то нет точки сворачивания, разобраться
+function MutiusableCommandQueueHub<T>.OnNodeInvoked(c: Context; cq: cl_command_queue): sequence of Task;
+begin
+  lock self do
+  begin
+    case invoke_status of
+      0: invoke_status := 1;
+      2: raise new QueueDoubleInvokeException;
+    end;
+    
+    if invoked_count=0 then
+    begin
+      Result := q.Invoke(c,cq, cl_event.Zero);
+      q_task := q.ev=cl_event.Zero ? nil : Task.Run(()->cl.WaitForEvents(1,@q.ev).RaiseIfError());
+    end else
+      Result := System.Linq.Enumerable.Empty&<Task>;
+    
+    invoked_count += 1;
+    
+  end;
+end;
+
+procedure MutiusableCommandQueueHub<T>.OnNodeUnInvoked :=
+lock self do
+begin
+  case invoke_status of
+    //0: raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
+    1: invoke_status := 2;
+  end;
+  
+  invoked_count -= 1;
+  if invoked_count=0 then
+  begin
+    invoke_status := 0;
+    q_task := nil;
+  end;
+  
+end;
+
+function CommandQueue<T>.Multiusable(n: integer): array of CommandQueue<T>;
+begin
+  var hub := new MutiusableCommandQueueHub<T>(self);
+  Result := ArrGen(n, i->new MutiusableCommandQueueNode<T>(hub) as CommandQueue<T>);
+end;
+
+{$endregion Multiusable}
+
 {$region ThenConvert}
 
 type
@@ -1577,7 +1718,7 @@ type
     ClearEvent;
     
   end;
-
+  
 function CommandQueue<T>.ThenConvert<T2>(f: T->T2) :=
 new CommandQueueResConvertor<T,T2>(self, f);
 
@@ -2613,37 +2754,53 @@ Context.Default.SyncInvoke(NewQueue.AddCopyTo(b) as CommandQueue<Buffer>);
 
 function Buffer.GetData(offset, len: CommandQueue<integer>): IntPtr;
 begin
-  var len_val := Context.Default.SyncInvoke(len);
-  Result := Marshal.AllocHGlobal(len_val);
+  var res: IntPtr;
+  
+  var Qs_len := len.Multiusable(2);
+  
+  var Q_res := Qs_len[0].ThenConvert(len_val->
+  begin
+    Result := Marshal.AllocHGlobal(len_val);
+    res := Result;
+  end);
+  
   Context.Default.SyncInvoke(
-    self.NewQueue.AddReadData(Result, offset,len_val) as CommandQueue<Buffer>
+    self.NewQueue.AddReadData(Q_res, offset,Qs_len[1]) as CommandQueue<Buffer>
   );
+  
+  Result := res;
 end;
 
 function Buffer.GetArrayAt<TArray>(offset: CommandQueue<integer>; szs: CommandQueue<array of integer>): TArray;
 begin
   var el_t := typeof(TArray).GetElementType;
+  var res: &Array;
   
-  var szs_val: array of integer := Context.Default.SyncInvoke(szs);
-  Result := TArray(System.Array.CreateInstance(
-    el_t,
-    szs_val
-  ));
+  var Qs_szs := szs.Multiusable(2);
   
-  var res_len := Result.Length;
+  var Q_res := Qs_szs[0].ThenConvert(szs_val->
+  begin
+    Result := System.Array.CreateInstance(
+      el_t,
+      szs_val
+    );
+    res := Result;
+  end);
+  var Q_res_len := Qs_szs[1].ThenConvert( szs_val -> Marshal.SizeOf(el_t)*szs_val.Aggregate((i1,i2)->i1*i2) );
   
   Context.Default.SyncInvoke(
     self.NewQueue
-    .AddReadArray(Result, offset, Marshal.SizeOf(el_t) * res_len) as CommandQueue<Buffer> //ToDo #1981
+    .AddReadArray(Q_res, offset, Q_res_len) as CommandQueue<Buffer>
   );
   
+  Result := TArray(res);
 end;
 
 function Buffer.GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord;
 begin
   Context.Default.SyncInvoke(
     self.NewQueue
-    .AddReadValue(Result, offset) as CommandQueue<Buffer> //ToDo #1981
+    .AddReadValue(Result, offset) as CommandQueue<Buffer>
   );
 end;
 
