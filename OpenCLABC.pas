@@ -413,38 +413,35 @@ uses System.Runtime.CompilerServices;
 //ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
 // - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
 
-//===================================
-
-//ToDo Клонирование очередей
-// - для паралельного выполнения из разных потоков
-// - #2070 мешает
-
 //ToDo В справке:
 // - "Все очереди-параметры начинают выполняться прямо при вызове Context.BeginInvoke"
 // - вроде, это не совсем правда для Kernel.Q.Exec
 // - поидее, это можно исправить
 // - ну да, "protected .AddParameter", как .AddQueue, только для отдельного списка
 
+//===================================
+
+//ToDo Клонирование очередей
+// - для паралельного выполнения из разных потоков
+// - #2070 мешает
+
 //ToDo Больше примеров... Желательно хотя бы по примеру на под-раздел справки
 
 //ToDo BufferCommandQueue.AddQueue
-
-//ToDo Агресивный инлайнинг функций, принимающий произвольную запись
-// - иначе для больших записей - будет бить по производительности
-// - кстати записи есть и в возвращаемых значениях, у .Get... к примеру
-
-//ToDo CommandQueue.Cycle(integer)
-//ToDo CommandQueue.Cycle // бесконечность циклов
-//ToDo CommandQueue.CycleWhile(***->boolean)
 
 //ToDo CommandQueueBase.is_busy
 // - И protected процедура "MakeBusy", проводящая проверку
 // - ":= false" обязательно должно быть только когда вся очередь закончила выполняться
 
+//ToDo CommandQueue.Cycle(integer)
+//ToDo CommandQueue.Cycle // бесконечность циклов
+//ToDo CommandQueue.CycleWhile(***->boolean)
+// - после is_busy
+
 //ToDo Типы Device и Platform
 //ToDo А связь с OpenCL.pas сделать всему (и буферам и карнелам), но более человеческую
 
-//ToDo Read/Write для массивов - надо иметь возможность указывать отступ в массиве
+//ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
 
 //ToDo У всего, у чего есть Finalize - проверить чтоб было и .Dispose, если надо
 // - и добавить в справку, про то что этот объект можно удалять
@@ -668,10 +665,10 @@ type
     
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
-    public function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
-    public function PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
@@ -792,7 +789,7 @@ type
     /// - static function ValueQueue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Создаёт новый буфер того же размера что и val, оборачивает в очередь
     ///И вызывает у полученной очереди .WriteValue(val)
-    public static function ValueQueue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ValueQueue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     begin
       Result := 
         Buffer.Create(Marshal.SizeOf&<TRecord>)
@@ -842,7 +839,7 @@ type
     ///- function WriteValue<TRecord>(val: TRecord; offset: integer := 0): Buffer; where TRecord: record;
     ///Записывает значение любого размерного типа в данный буфер
     ///С отступом в offset байт в буфере
-    public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
     begin
       Result := WriteData(@val, offset, Marshal.SizeOf&<TRecord>);
     end;
@@ -963,10 +960,10 @@ type
     ///- function GetValueAt<TRecord>(offset: integer): TRecord; where TRecord: record;
     ///Читает значение любого размерного типа из данного буфера
     ///С отступом в offset байт в буфере
-    public function GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord; where TRecord: record;
     ///- function GetValue<TRecord>: TRecord; where TRecord: record;
     ///Читает значение любого размерного типа из начала данного буфера
-    public function GetValue<TRecord>: TRecord; where TRecord: record; begin Result := GetValueAt&<TRecord>(0); end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetValue<TRecord>: TRecord; where TRecord: record; begin Result := GetValueAt&<TRecord>(0); end;
     
     {$endregion Get}
     
@@ -997,13 +994,13 @@ type
     public function PatternFill(a: &Array; offset, len: CommandQueue<integer>) := PatternFill(CommandQueue&<&Array>(a), offset,len);
     
     ///Заполняет весь буфер копиями значения любого размерного типа
-    public function PatternFill<TRecord>(val: TRecord): Buffer; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord): Buffer; where TRecord: record;
     begin
       Result := PatternFill(@val, Marshal.SizeOf&<TRecord>);
     end;
     
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
-    public function PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function PatternFill<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     begin
       Result := PatternFill(@val, Marshal.SizeOf&<TRecord>, offset,len);
     end;
