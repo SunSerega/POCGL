@@ -427,8 +427,6 @@ uses System.Runtime.CompilerServices;
 
 //ToDo Больше примеров... Желательно хотя бы по примеру на под-раздел справки
 
-//ToDo BufferCommandQueue.AddQueue
-
 //ToDo CommandQueueBase.is_busy
 // - И protected процедура "MakeBusy", проводящая проверку
 // - ":= false" обязательно должно быть только когда вся очередь закончила выполняться
@@ -536,6 +534,12 @@ type
     end;
     
     {$endregion constructor's}
+    
+    {$region AddQueue}
+    
+    public function AddQueue<T>(q: CommandQueue<T>): BufferCommandQueue;
+    
+    {$endregion AddQueue}
     
     {$region Write}
     
@@ -1724,6 +1728,28 @@ end;
 {$endregion AsyncList}
 
 {$region Buffer}
+
+{$region AddQueue}
+
+type
+  BufferQueueCommand<T> = sealed class(BufferCommand)
+    public q: CommandQueue<T>;
+    
+    public constructor(q: CommandQueue<T>) :=
+    self.q := q;
+    
+    protected function Invoke(k: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      yield sequence q.Invoke(c,cq,prev_ev);
+      self.ev := q.ev;
+    end;
+    
+  end;
+  
+function BufferCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
+AddCommand(new BufferQueueCommand<T>(q));
+
+{$endregion AddQueue}
 
 {$region WriteData}
 
