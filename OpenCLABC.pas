@@ -494,45 +494,45 @@ uses System.Threading.Tasks;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
-//ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
-// - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
-
 //===================================
+// Обязательно сделать до следующего пула:
 
-//ToDo посмотреть на lock, может некоторые - лишние
+//ToDo написать в справке про Combine*** принимающем функцию
 
 //ToDo параметры не нужны для решения szs: array of CommandQueue<integer>
 // - всё равно отдельный тип для этого есть, надо всего лишь хранить очередь в нём вместо функции и индекса параметра
+
+//===================================
+// Запланированное:
+
+//ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
+
+//ToDo CommandQueue.Cycle(integer)
+//ToDo CommandQueue.Cycle // бесконечность циклов
+//ToDo CommandQueue.CycleWhile(***->boolean)
+// - возможность передать свой обработчик ошибок как procedure->()
+
+//ToDo может лучше передавать List<Task> в Invoke, чем использовать yield?
+// - должно быть проще в реализации, быстрее и меньше ограничений...
+
+//ToDo Типы Device и Platform
+//ToDo А связь с OpenCL.pas сделать всему (и буферам и карнелам), но более человеческую
+
+//ToDo Сделать методы BufferCommandQueue.AddGet
+// - они особенные, потому что возвращают не BufferCommandQueue, а каждый свою очередь
+// - полезно, потому что SyncInvoke такой очереди будет возвращать полученное значение
+
+//ToDo У всего, у чего есть Finalize - проверить чтоб было и .Dispose, если надо
+// - и добавить в справку, про то что этот объект можно удалять
+
+//===================================
+// Сделать когда-нибуть:
 
 //ToDo Клонирование очередей
 // - для паралельного выполнения из разных потоков
 // - #2070 мешает
 
 //ToDo Больше примеров... Желательно хотя бы по примеру на под-раздел справки
-
-//ToDo CommandQueue.Cycle(integer)
-//ToDo CommandQueue.Cycle // бесконечность циклов
-//ToDo CommandQueue.CycleWhile(***->boolean)
-// - после is_busy
-// - возможность передать свой обработчик ошибок как procedure->()
-
-//ToDo Типы Device и Platform
-//ToDo А связь с OpenCL.pas сделать всему (и буферам и карнелам), но более человеческую
-
-//ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
-
-//ToDo У всего, у чего есть Finalize - проверить чтоб было и .Dispose, если надо
-// - и добавить в справку, про то что этот объект можно удалять
-
-//ToDo Combine что то там
-// - для использования результатов нескольких очередей
-
-//ToDo Сделать методы очередей буфера .AddGet
-// - они особенные, потому что возвращают не BufferCommandQueue, а каждый свою очередь
-// - полезно, потому что SyncInvoke такой очереди будет возвращать полученное значение
-
-//ToDo может лучше передавать List<Task> в Invoke, чем использовать yield?
-// - должно быть проще в реализации, быстрее и меньше ограничений...
 
 //ToDo Тесты всех фич модуля
 
@@ -1790,27 +1790,23 @@ type
 //ToDo почему то нет точки сворачивания, разобраться
 function MutiusableCommandQueueHub<T>.OnNodeInvoked(c: Context; cq: cl_command_queue): sequence of Task;
 begin
-  lock self do
-  begin
-    case invoke_status of
-      0: invoke_status := 1;
-      2: raise new QueueDoubleInvokeException;
-    end;
-    
-    if invoked_count=0 then
-    begin
-      Result := q.Invoke(c,cq, cl_event.Zero);
-      q_task := q.ev=cl_event.Zero ? nil : Task.Run(()->cl.WaitForEvents(1,@q.ev).RaiseIfError());
-    end else
-      Result := System.Linq.Enumerable.Empty&<Task>;
-    
-    invoked_count += 1;
-    
+  case invoke_status of
+    0: invoke_status := 1;
+    2: raise new QueueDoubleInvokeException;
   end;
+  
+  if invoked_count=0 then
+  begin
+    Result := q.Invoke(c,cq, cl_event.Zero);
+    q_task := q.ev=cl_event.Zero ? nil : Task.Run(()->cl.WaitForEvents(1,@q.ev).RaiseIfError());
+  end else
+    Result := System.Linq.Enumerable.Empty&<Task>;
+  
+  invoked_count += 1;
+  
 end;
 
-procedure MutiusableCommandQueueHub<T>.OnNodeUnInvoked :=
-lock self do
+procedure MutiusableCommandQueueHub<T>.OnNodeUnInvoked;
 begin
   case invoke_status of
     //0: raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
