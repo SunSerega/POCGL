@@ -497,11 +497,12 @@ uses System.Runtime.CompilerServices;
 //ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
 // - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
 
-//ToDo написать в справке про CommandQueue.Multiusable
-
 //===================================
 
 //ToDo посмотреть на lock, может некоторые - лишние
+
+//ToDo параметры не нужны для решения szs: array of CommandQueue<integer>
+// - всё равно отдельный тип для этого есть, надо всего лишь хранить очередь в нём вместо функции и индекса параметра
 
 //ToDo Клонирование очередей
 // - для паралельного выполнения из разных потоков
@@ -1117,51 +1118,56 @@ type
     ///- function GetArrayAt<TArray>(offset: integer; params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
     ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
-    public function GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of integer): TArray; where TArray: &Array;
-    begin Result := GetArrayAt&<TArray>(offset, CommandQueue&<array of integer>(szs)); end;
+    public function GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of CommandQueue<integer>): TArray; where TArray: &Array;
     ///- function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
     ///И копирует в него достаточно байт чтоб заполнить весь массив
     public function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
     begin Result := GetArrayAt&<TArray>(0, CommandQueue&<array of integer>(szs)); end;
     
+    
     ///- function GetArray1At<TRecord>(offset: integer; length: integer): array of TRecord; where TRecord: record;
     ///Создаёт новый 1-мерный массив, с length элементами типа TRecord
     ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
-    public function GetArray1At<TRecord>(offset: CommandQueue<integer>; length: integer): array of TRecord; where TRecord: record;
+    public function GetArray1At<TRecord>(offset, length: CommandQueue<integer>): array of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array of TRecord>(offset, length); end;
     ///- function GetArray1<TRecord>(length: integer): array of TRecord; where TRecord: record;
     ///Создаёт новый 1-мерный массив, с length элементами типа TRecord
     ///И копирует в него достаточно байт чтоб заполнить весь массив
-    public function GetArray1<TRecord>(length: integer): array of TRecord; where TRecord: record;
-    begin Result := GetArray&<array of TRecord>(length); end;
+    public function GetArray1<TRecord>(length: CommandQueue<integer>): array of TRecord; where TRecord: record;
+    begin Result := GetArrayAt&<array of TRecord>(0,length); end;
+    
     ///- function GetArray1<TRecord>: array of TRecord; where TRecord: record;
     ///Создаёт новый 1-мерный массив, с максимальным кол-вом элементов типа TRecord
     ///И копирует в него достаточно байт чтоб заполнить весь массив
     public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
-    begin Result := GetArray&<array of TRecord>(sz.ToUInt32 div Marshal.SizeOf&<TRecord>); end;
+    begin Result := GetArrayAt&<array of TRecord>(0, integer(sz.ToUInt32) div Marshal.SizeOf&<TRecord>); end;
+    
     
     ///- function GetArray2At<TRecord>(offset: integer; length: integer): array[,] of TRecord; where TRecord: record;
     ///Создаёт новый 2-мерный массив, с length элементами типа TRecord
     ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
-    public function GetArray2At<TRecord>(offset: CommandQueue<integer>; length1, length2: integer): array[,] of TRecord; where TRecord: record;
+    public function GetArray2At<TRecord>(offset, length1, length2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array[,] of TRecord>(offset, length1, length2); end;
     ///- function GetArray2<TRecord>(length: integer): array of TRecord; where TRecord: record;
     ///Создаёт новый 2-мерный массив, с length элементами типа TRecord
     ///И копирует в него достаточно байт чтоб заполнить весь массив
-    public function GetArray2<TRecord>(length1, length2: integer): array[,] of TRecord; where TRecord: record;
-    begin Result := GetArray&<array[,] of TRecord>(length1, length2); end;
+    public function GetArray2<TRecord>(length1, length2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
+    begin Result := GetArrayAt&<array[,] of TRecord>(0, length1, length2); end;
+    
     
     ///- function GetArray3At<TRecord>(offset: integer; length: integer): array[,,] of TRecord; where TRecord: record;
     ///Создаёт новый 3-мерный массив, с length элементами типа TRecord
     ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
-    public function GetArray3At<TRecord>(offset: CommandQueue<integer>; length1, length2, length3: integer): array[,,] of TRecord; where TRecord: record;
+    public function GetArray3At<TRecord>(offset, length1, length2, length3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array[,,] of TRecord>(offset, length1, length2, length3); end;
     ///- function GetArray3<TRecord>(length: integer): array[,,] of TRecord; where TRecord: record;
     ///Создаёт новый 3-мерный массив, с length элементами типа TRecord
     ///И копирует в него достаточно байт чтоб заполнить весь массив
-    public function GetArray3<TRecord>(length1, length2, length3: integer): array[,,] of TRecord; where TRecord: record;
-    begin Result := GetArray&<array[,,] of TRecord>(length1, length2, length3); end;
+    public function GetArray3<TRecord>(length1, length2, length3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
+    begin Result := GetArrayAt&<array[,,] of TRecord>(0, length1, length2, length3); end;
+    
+    
     
     ///- function GetValueAt<TRecord>(offset: integer): TRecord; where TRecord: record;
     ///Читает значение любого размерного типа из данного буфера
@@ -1613,6 +1619,22 @@ function CombineSyncQueue<T>(params qs: array of CommandQueueBase): CommandQueue
 ///Складывает все очереди qs
 ///Возвращает очередь, по очереди выполняющую все очереди из qs
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
+///Складывает все очереди qs
+///Возвращает очередь, по очереди выполняющую все очереди из qs
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineSyncQueue<T,TRes>(conv: Func<array of object, TRes>; qs: List<CommandQueueBase>): CommandQueue<TRes>;
+///Складывает все очереди qs
+///Возвращает очередь, по очереди выполняющую все очереди из qs
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineSyncQueue<T,TRes>(conv: Func<array of T, TRes>; qs: List<CommandQueue<T>>): CommandQueue<TRes>;
+///Складывает все очереди qs
+///Возвращает очередь, по очереди выполняющую все очереди из qs
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineSyncQueue<T,TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
+///Складывает все очереди qs
+///Возвращает очередь, по очереди выполняющую все очереди из qs
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineSyncQueue<T,TRes>(conv: Func<array of T, TRes>; params qs: array of CommandQueue<T>): CommandQueue<TRes>;
 
 ///Умножает все очереди qs
 ///Возвращает очередь, параллельно выполняющую все очереди из qs
@@ -1626,6 +1648,23 @@ function CombineAsyncQueue<T>(params qs: array of CommandQueueBase): CommandQueu
 ///Умножает все очереди qs
 ///Возвращает очередь, параллельно выполняющую все очереди из qs
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
+///Умножает все очереди qs
+///Возвращает очередь, параллельно выполняющую все очереди из qs
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineAsyncQueue<T,TRes>(conv: Func<array of object, TRes>; qs: List<CommandQueueBase>): CommandQueue<TRes>;
+///Умножает все очереди qs
+///Возвращает очередь, параллельно выполняющую все очереди из qs
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineAsyncQueue<T,TRes>(conv: Func<array of T, TRes>; qs: List<CommandQueue<T>>): CommandQueue<TRes>;
+///Умножает все очереди qs
+///Возвращает очередь, параллельно выполняющую все очереди из qs
+///И затем применяет conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineAsyncQueue<T,TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
+///Умножает все очереди qs
+///Возвращает очередь, параллельно выполняющую все очереди из qs
+///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+function CombineAsyncQueue<T,TRes>(conv: Func<array of T, TRes>; params qs: array of CommandQueue<T>): CommandQueue<TRes>;
 
 {$endregion Сахарные подпрограммы}
 
@@ -1848,6 +1887,8 @@ new CommandQueueResConvertor<T,T2>(self, f);
 
 {$region SyncList}
 
+//ToDo лучше всё же хранить массив а не список... И для Async тоже
+
 type
   CommandQueueSyncList<T> = sealed class(CommandQueue<T>)
     public lst: List<CommandQueueBase>;
@@ -1858,18 +1899,8 @@ type
     public constructor(qs: List<CommandQueueBase>) :=
     lst := qs;
     
-    public constructor(qs: List<CommandQueue<T>>) :=
-    lst := qs.ConvertAll(q->q as CommandQueueBase);
-    
     public constructor(qs: array of CommandQueueBase) :=
     lst := qs.ToList;
-    
-    public constructor(qs: array of CommandQueue<T>);
-    begin
-      lst := new List<CommandQueueBase>(qs.Length);
-      foreach var q in qs do
-        lst += q as CommandQueueBase;
-    end;
     
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
@@ -1896,8 +1927,8 @@ type
         end);
       end else
       begin
-        self.ev := cl_event.Zero;
         self.res := T(lst[lst.Count-1].GetRes);
+        self.ev := cl_event.Zero;
       end;
       
     end;
@@ -1912,43 +1943,231 @@ type
     ClearEvent;
     
   end;
-
+  CommandQueueTSyncList<T> = sealed class(CommandQueue<T>)
+    public lst: List<CommandQueue<T>>;
+    
+    public constructor :=
+    lst := new List<CommandQueue<T>>;
+    
+    public constructor(qs: List<CommandQueue<T>>) :=
+    lst := qs;
+    
+    public constructor(qs: array of CommandQueue<T>) :=
+    lst := qs.ToList;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      foreach var sq in lst do
+      begin
+        yield sequence sq.Invoke(c, cq, prev_ev);
+        prev_ev := sq.ev;
+      end;
+      
+      if prev_ev<>cl_event.Zero then
+      begin
+        ClearEvent;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        yield Task.Run(()->
+        begin
+          cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+          self.res := lst[lst.Count-1].res;
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+      end else
+      begin
+        self.res := lst[lst.Count-1].res;
+        self.ev := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
+    end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  CommandQueueCSyncList<TRes> = sealed class(CommandQueue<TRes>)
+    public lst: List<CommandQueueBase>;
+    public conv: Func<array of object,TRes>;
+    
+    public constructor :=
+    lst := new List<CommandQueueBase>;
+    
+    public constructor(qs: List<CommandQueueBase>; conv: Func<array of object,TRes>);
+    begin
+      self.lst := qs;
+      self.conv := conv;
+    end;
+    
+    public constructor(qs: array of CommandQueueBase; conv: Func<array of object,TRes>);
+    begin
+      self.lst := qs.ToList;
+      self.conv := conv;
+    end;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      foreach var sq in lst do
+      begin
+        yield sequence sq.Invoke(c, cq, prev_ev);
+        prev_ev := sq.ev;
+      end;
+      
+      if prev_ev<>cl_event.Zero then
+      begin
+        ClearEvent;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        yield Task.Run(()->
+        begin
+          cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+          
+          var a := new object[lst.Count];
+          for var i := 0 to lst.Count-1 do a[i] := lst[i].GetRes;
+          self.res := conv(a);
+          
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+      end else
+      begin
+        
+        var a := new object[lst.Count];
+        for var i := 0 to lst.Count-1 do a[i] := lst[i].GetRes;
+        self.res := conv(a);
+        
+        self.ev := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
+    end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  CommandQueueCTSyncList<T,TRes> = sealed class(CommandQueue<TRes>)
+    public lst: List<CommandQueue<T>>;
+    public conv: Func<array of T,TRes>;
+    
+    public constructor :=
+    lst := new List<CommandQueue<T>>;
+    
+    public constructor(qs: List<CommandQueue<T>>; conv: Func<array of T,TRes>);
+    begin
+      self.lst := qs;
+      self.conv := conv;
+    end;
+    
+    public constructor(qs: array of CommandQueue<T>; conv: Func<array of T,TRes>);
+    begin
+      self.lst := qs.ToList;
+      self.conv := conv;
+    end;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      foreach var sq in lst do
+      begin
+        yield sequence sq.Invoke(c, cq, prev_ev);
+        prev_ev := sq.ev;
+      end;
+      
+      if prev_ev<>cl_event.Zero then
+      begin
+        ClearEvent;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        yield Task.Run(()->
+        begin
+          cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+          
+          var a := new T[lst.Count];
+          for var i := 0 to lst.Count-1 do a[i] := lst[i].res;
+          self.res := conv(a);
+          
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+      end else
+      begin
+        
+        var a := new T[lst.Count];
+        for var i := 0 to lst.Count-1 do a[i] := lst[i].res;
+        self.res := conv(a);
+        
+        self.ev := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
+    end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  
 static function CommandQueue<T>.operator+<T2>(q1: CommandQueue<T>; q2: CommandQueue<T2>): CommandQueue<T2>;
 begin
   var ql1 := q1 as CommandQueueSyncList<T>;
   var ql2 := q2 as CommandQueueSyncList<T2>;
-  var res: CommandQueueSyncList<T2>;
+  var qtl1 := q1 as CommandQueueTSyncList<T>;
+  var qtl2 := q2 as CommandQueueTSyncList<T2>;
   
-  if typeof(T)=typeof(T2) then
+  if (typeof(T)=typeof(T2)) and (ql1=nil) and (ql2=nil) then
   begin
+    var res := new CommandQueueTSyncList<T2>;
     
-    if ql1<>nil then res := ql1 as object as CommandQueueSyncList<T2>;
-    if ql2<>nil then
-      if res=nil then
-        res := ql2 else
-        res.lst.AddRange(ql2.lst.Cast&<CommandQueueBase>);
-    if res=nil then res := new CommandQueueSyncList<T2>;
+    if qtl1<>nil then
+      res.lst.AddRange(qtl1.lst.Cast&<CommandQueue<T2>>) else
+      res.lst += q1 as object as CommandQueue<T2>;
     
-    if ql1=nil then res.lst.Insert(0, q1 as object as CommandQueue<T2>);
-    if ql2=nil then res.lst += q2 as CommandQueueBase;
+    if qtl2<>nil then
+      res.lst.AddRange(qtl2.lst) else
+      res.lst += q2;
     
+    Result := res;
   end else
   begin
+    var res: CommandQueueSyncList<T2>;
     
-    if ql2<>nil then
-      res := ql2 else
-    begin
-      res := new CommandQueueSyncList<T2>;
+    if ql1<>nil then res.lst.AddRange(ql1.lst) else
+    if qtl1<>nil then res.lst.AddRange(qtl1.lst.Cast&<CommandQueueBase>) else
+      res.lst += q1 as CommandQueueBase;
+    
+    if ql2<>nil then res.lst.AddRange(ql2.lst) else
+    if qtl2<>nil then res.lst.AddRange(qtl2.lst.Cast&<CommandQueueBase>) else
       res.lst += q2 as CommandQueueBase;
-    end;
     
-    if ql1<>nil then
-      res.lst.InsertRange(0, ql1.lst) else
-      res.lst.Insert(0, q1);
-    
+    Result := res;
   end;
   
-  Result := res;
 end;
 
 {$endregion SyncList}
@@ -1965,37 +2184,36 @@ type
     public constructor(qs: List<CommandQueueBase>) :=
     lst := qs;
     
-    public constructor(qs: List<CommandQueue<T>>) :=
-    lst := qs.ConvertAll(q->q as CommandQueueBase);
-    
     public constructor(qs: array of CommandQueueBase) :=
     lst := qs.ToList;
-    
-    public constructor(qs: array of CommandQueue<T>);
-    begin
-      lst := new List<CommandQueueBase>(qs.Length);
-      foreach var q in qs do
-        lst += q as CommandQueueBase;
-    end;
     
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      ClearEvent;
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
       foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
       
-      yield Task.Run(()->
+      if evs.Count<>0 then
       begin
-        var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToArray;
-        if evs.Length<>0 then cl.WaitForEvents(evs.Length,evs).RaiseIfError;
+        
+        ClearEvent;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        yield Task.Run(()->
+        begin
+          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          self.res := T(lst[lst.Count-1].GetRes);
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+        
+      end else
+      begin
         self.res := T(lst[lst.Count-1].GetRes);
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
+        self.ev := cl_event.Zero;
+      end;
       
     end;
     
@@ -2009,43 +2227,228 @@ type
     ClearEvent;
     
   end;
-
+  CommandQueueTAsyncList<T> = sealed class(CommandQueue<T>)
+    public lst: List<CommandQueue<T>>;
+    
+    public constructor :=
+    lst := new List<CommandQueue<T>>;
+    
+    public constructor(qs: List<CommandQueue<T>>) :=
+    lst := qs;
+    
+    public constructor(qs: array of CommandQueue<T>) :=
+    lst := qs.ToList;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
+      
+      if evs.Count<>0 then
+      begin
+        
+        ClearEvent;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        yield Task.Run(()->
+        begin
+          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          self.res := lst[lst.Count-1].res;
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+        
+      end else
+      begin
+        self.res := lst[lst.Count-1].res;
+        self.ev := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
+    end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  CommandQueueCAsyncList<TRes> = sealed class(CommandQueue<TRes>)
+    public lst: List<CommandQueueBase>;
+    public conv: Func<array of object,TRes>;
+    
+    public constructor :=
+    lst := new List<CommandQueueBase>;
+    
+    public constructor(qs: List<CommandQueueBase>; conv: Func<array of object,TRes>);
+    begin
+      self.lst := qs;
+      self.conv := conv;
+    end;
+    
+    public constructor(qs: array of CommandQueueBase; conv: Func<array of object,TRes>);
+    begin
+      self.lst := qs.ToList;
+      self.conv := conv;
+    end;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
+      
+      if evs.Count<>0 then
+      begin
+        
+        ClearEvent;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        yield Task.Run(()->
+        begin
+          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          
+          var a := new object[lst.Count];
+          for var i := 0 to lst.Count-1 do a[i] := lst[i].GetRes;
+          self.res := conv(a);
+          
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+        
+      end else
+      begin
+        
+        var a := new object[lst.Count];
+        for var i := 0 to lst.Count-1 do a[i] := lst[i].GetRes;
+        self.res := conv(a);
+        
+        self.ev := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
+    end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  CommandQueueCTAsyncList<T,TRes> = sealed class(CommandQueue<TRes>)
+    public lst: List<CommandQueue<T>>;
+    public conv: Func<array of T,TRes>;
+    
+    public constructor :=
+    lst := new List<CommandQueue<T>>;
+    
+    public constructor(qs: List<CommandQueue<T>>; conv: Func<array of T,TRes>);
+    begin
+      self.lst := qs;
+      self.conv := conv;
+    end;
+    
+    public constructor(qs: array of CommandQueue<T>; conv: Func<array of T,TRes>);
+    begin
+      self.lst := qs.ToList;
+      self.conv := conv;
+    end;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
+      
+      if evs.Count<>0 then
+      begin
+        
+        ClearEvent;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        yield Task.Run(()->
+        begin
+          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          
+          var a := new T[lst.Count];
+          for var i := 0 to lst.Count-1 do a[i] := lst[i].res;
+          self.res := conv(a);
+          
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+        
+      end else
+      begin
+        
+        var a := new T[lst.Count];
+        for var i := 0 to lst.Count-1 do a[i] := lst[i].res;
+        self.res := conv(a);
+        
+        self.ev := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
+    end;
+    
+    public procedure Finalize; override :=
+    ClearEvent;
+    
+  end;
+  
 static function CommandQueue<T>.operator*<T2>(q1: CommandQueue<T>; q2: CommandQueue<T2>): CommandQueue<T2>;
 begin
   var ql1 := q1 as CommandQueueAsyncList<T>;
   var ql2 := q2 as CommandQueueAsyncList<T2>;
-  var res: CommandQueueAsyncList<T2>;
+  var qtl1 := q1 as CommandQueueTAsyncList<T>;
+  var qtl2 := q2 as CommandQueueTAsyncList<T2>;
   
-  if typeof(T)=typeof(T2) then
+  if (typeof(T)=typeof(T2)) and (ql1=nil) and (ql2=nil) then
   begin
+    var res := new CommandQueueTAsyncList<T2>;
     
-    if ql1<>nil then res := ql1 as object as CommandQueueAsyncList<T2>;
-    if ql2<>nil then
-      if res=nil then
-        res := ql2 else
-        res.lst.AddRange(ql2.lst.Cast&<CommandQueueBase>);
-    if res=nil then res := new CommandQueueAsyncList<T2>;
+    if qtl1<>nil then
+      res.lst.AddRange(qtl1.lst.Cast&<CommandQueue<T2>>) else
+      res.lst += q1 as object as CommandQueue<T2>;
     
-    if ql1=nil then res.lst.Insert(0, q1 as object as CommandQueue<T2>);
-    if ql2=nil then res.lst += q2 as CommandQueueBase;
+    if qtl2<>nil then
+      res.lst.AddRange(qtl2.lst) else
+      res.lst += q2;
     
+    Result := res;
   end else
   begin
+    var res: CommandQueueAsyncList<T2>;
     
-    if ql2<>nil then
-      res := ql2 else
-    begin
-      res := new CommandQueueAsyncList<T2>;
+    if ql1<>nil then res.lst.AddRange(ql1.lst) else
+    if qtl1<>nil then res.lst.AddRange(qtl1.lst.Cast&<CommandQueueBase>) else
+      res.lst += q1 as CommandQueueBase;
+    
+    if ql2<>nil then res.lst.AddRange(ql2.lst) else
+    if qtl2<>nil then res.lst.AddRange(qtl2.lst.Cast&<CommandQueueBase>) else
       res.lst += q2 as CommandQueueBase;
-    end;
     
-    if ql1<>nil then
-      res.lst.InsertRange(0, ql1.lst) else
-      res.lst.Insert(0, q1);
-    
+    Result := res;
   end;
   
-  Result := res;
 end;
 
 {$endregion AsyncList}
@@ -3017,6 +3420,9 @@ begin
   Result := TArray(res);
 end;
 
+function Buffer.GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of CommandQueue<integer>) :=
+GetArrayAt&<TArray>(offset, CombineAsyncQueue(a->a, szs));
+
 function Buffer.GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord;
 begin
   Context.Default.SyncInvoke(
@@ -3076,20 +3482,38 @@ HFQ&<object>(
 function CombineSyncQueue<T>(qs: List<CommandQueueBase>) :=
 new CommandQueueSyncList<T>(qs);
 function CombineSyncQueue<T>(qs: List<CommandQueue<T>>) :=
-new CommandQueueSyncList<T>(qs);
+new CommandQueueTSyncList<T>(qs);
 function CombineSyncQueue<T>(params qs: array of CommandQueueBase) :=
 new CommandQueueSyncList<T>(qs);
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) :=
-new CommandQueueSyncList<T>(qs);
+new CommandQueueTSyncList<T>(qs);
+
+function CombineSyncQueue<T, TRes>(conv: Func<array of object, TRes>; qs: List<CommandQueueBase>) :=
+new CommandQueueCSyncList<TRes>(qs, conv);
+function CombineSyncQueue<T, TRes>(conv: Func<array of T, TRes>; qs: List<CommandQueue<T>>) :=
+new CommandQueueCTSyncList<T, TRes>(qs, conv);
+function CombineSyncQueue<T, TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase) :=
+new CommandQueueCSyncList<TRes>(qs, conv);
+function CombineSyncQueue<T, TRes>(conv: Func<array of T, TRes>; params qs: array of CommandQueue<T>) :=
+new CommandQueueCTSyncList<T, TRes>(qs, conv);
 
 function CombineAsyncQueue<T>(qs: List<CommandQueueBase>): CommandQueue<T> :=
 new CommandQueueSyncList<T>(qs);
 function CombineAsyncQueue<T>(qs: List<CommandQueue<T>>): CommandQueue<T> :=
-new CommandQueueSyncList<T>(qs);
+new CommandQueueTSyncList<T>(qs);
 function CombineAsyncQueue<T>(params qs: array of CommandQueueBase): CommandQueue<T> :=
 new CommandQueueSyncList<T>(qs);
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) :=
-new CommandQueueAsyncList<T>(qs);
+new CommandQueueTAsyncList<T>(qs);
+
+function CombineAsyncQueue<T, TRes>(conv: Func<array of object, TRes>; qs: List<CommandQueueBase>) :=
+new CommandQueueCAsyncList<TRes>(qs, conv);
+function CombineAsyncQueue<T, TRes>(conv: Func<array of T, TRes>; qs: List<CommandQueue<T>>) :=
+new CommandQueueCTAsyncList<T, TRes>(qs, conv);
+function CombineAsyncQueue<T, TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase) :=
+new CommandQueueCAsyncList<TRes>(qs, conv);
+function CombineAsyncQueue<T, TRes>(conv: Func<array of T, TRes>; params qs: array of CommandQueue<T>) :=
+new CommandQueueCTAsyncList<T, TRes>(qs, conv);
 
 {$endregion Сахарные подпрограммы}
 
