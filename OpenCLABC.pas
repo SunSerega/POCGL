@@ -499,9 +499,6 @@ uses System.Runtime.CompilerServices;
 
 //ToDo написать в справке про Combine*** принимающем функцию
 
-//ToDo параметры не нужны для решения szs: array of CommandQueue<integer>
-// - всё равно отдельный тип для этого есть, надо всего лишь хранить очередь в нём вместо функции и индекса параметра
-
 //===================================
 // Запланированное:
 
@@ -1208,7 +1205,7 @@ type
     protected procedure ClearEvent :=
     if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
-    protected function Invoke(kq: KernelCommandQueue; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
+    protected function Invoke(kq: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
     
     protected procedure UnInvoke; abstract;
     
@@ -1216,7 +1213,6 @@ type
   
   ///--
   KernelCommandQueue = class(CommandQueue<Kernel>)
-    protected parameters := new List<CommandQueueBase>;
     protected commands := new List<KernelCommand>;
     
     {$region constructor's}
@@ -1228,12 +1224,6 @@ type
     begin
       self.commands += comm;
       Result := self;
-    end;
-    
-    protected function AddParameter(q: CommandQueueBase): integer;
-    begin
-      Result := self.parameters.Count;
-      self.parameters += q;
     end;
     
     {$endregion constructor's}
@@ -1295,12 +1285,9 @@ type
     begin
       MakeBusy;
       
-      foreach var par in parameters do
-        yield sequence par.Invoke(c, cq, cl_event.Zero);
-      
       foreach var comm in commands do
       begin
-        yield sequence comm.Invoke(self, c, cq, prev_ev);
+        yield sequence comm.Invoke(res, c, cq, prev_ev);
         prev_ev := comm.ev;
       end;
       
@@ -1310,7 +1297,6 @@ type
     protected procedure UnInvoke; override;
     begin
       inherited;
-      foreach var par in parameters do par.UnInvoke;
       foreach var comm in commands do comm.UnInvoke;
     end;
     
@@ -3103,7 +3089,7 @@ type
     public constructor(q: CommandQueue<T>) :=
     self.q := q;
     
-    protected function Invoke(kq: KernelCommandQueue; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected function Invoke(k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       yield sequence q.Invoke(c,cq,prev_ev);
       self.ev := q.ev;
@@ -3134,7 +3120,7 @@ type
       self.args_q := args;
     end;
     
-    protected function Invoke(kq: KernelCommandQueue; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected function Invoke(k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
@@ -3153,7 +3139,6 @@ type
       yield Task.Run(()->
       begin
         if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
-        var k := kq.res;
         
         for var i := 0 to args_q.Length-1 do
         begin
@@ -3180,21 +3165,21 @@ type
     
   end;
   KernelQCommandExec = sealed class(KernelCommand)
-    public par_ind: integer;
-    public work_szs_f: ()->array of UIntPtr;
+    public work_szs_q: CommandQueue<array of UIntPtr>;
     public args_q: array of CommandQueue<Buffer>;
     
-    public constructor(par_ind: integer; work_szs_f: ()->array of UIntPtr; args: array of CommandQueue<Buffer>);
+    public constructor(work_szs_q: CommandQueue<array of UIntPtr>; args: array of CommandQueue<Buffer>);
     begin
-      self.par_ind := par_ind;
-      self.work_szs_f := work_szs_f;
+      self.work_szs_q := work_szs_q;
       self.args_q := args;
     end;
     
-    protected function Invoke(kq: KernelCommandQueue; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected function Invoke(k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
+      
+      yield sequence work_szs_q.Invoke(c,cq,cl_event.Zero);
       
       foreach var arg_q in args_q do
       begin
@@ -3209,10 +3194,8 @@ type
       
       yield Task.Run(()->
       begin
-        var par_ev := kq.parameters[par_ind].ev;
-        if par_ev<>cl_event.Zero then cl.WaitForEvents(1,@par_ev);
-        var work_szs := work_szs_f();
-        var k := kq.res;
+        if work_szs_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@work_szs_q.ev);
+        var work_szs := work_szs_q.res;
         
         if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
         
@@ -3246,22 +3229,19 @@ AddCommand(new KernelCommandExec(work_szs, args));
 
 function KernelCommandQueue.AddExec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) :=
 AddCommand(new KernelQCommandExec(
-  AddParameter(CombineAsyncQueue(work_szs)),
-  ()->work_szs.ConvertAll(sz_q->sz_q.res),
+  CombineAsyncQueue(a->a,work_szs),
   args
 ));
 
 function KernelCommandQueue.AddExec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>) :=
 AddCommand(new KernelQCommandExec(
-  AddParameter(work_szs),
-  ()->work_szs.res,
+  work_szs,
   args
 ));
 
 function KernelCommandQueue.AddExec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>) :=
 AddCommand(new KernelQCommandExec(
-  AddParameter(work_szs),
-  ()->work_szs.res.ConvertAll(sz->new UIntPtr(sz)),
+  work_szs.ThenConvert(a->a.ConvertAll(sz->new UIntPtr(sz))),
   args
 ));
 
