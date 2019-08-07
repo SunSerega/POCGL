@@ -407,10 +407,6 @@ uses System.Threading.Tasks;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
-//ToDo CommandQueueBase.is_busy
-// - ":= false" обязательно должно быть только когда вся очередь закончила выполняться
-// - не забыть добавить MakeBusy всюду
-
 //ToDo Buffer.GetArray(params szs: array of CommandQueue<integer>)
 // - и тогда можно будет разрешить очередь в .GetArray[1,2,3]
 
