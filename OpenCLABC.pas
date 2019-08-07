@@ -499,8 +499,6 @@ uses System.Runtime.CompilerServices;
 
 //ToDo написать в справке про CommandQueue.Multiusable
 
-//ToDo UnInvoke надо тоже override для всех под-очередей, сейчас он не до конца работает
-
 //===================================
 
 //ToDo посмотреть на lock, может некоторые - лишние
@@ -628,6 +626,8 @@ type
     if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
     
     protected function Invoke(b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
+    
+    protected procedure UnInvoke; abstract;
     
   end;
   
@@ -851,6 +851,12 @@ type
       end;
       
       self.ev := prev_ev;
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var comm in commands do comm.UnInvoke;
     end;
     
   end;
@@ -1198,6 +1204,8 @@ type
     
     protected function Invoke(kq: KernelCommandQueue; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
     
+    protected procedure UnInvoke; abstract;
+    
   end;
   
   ///--
@@ -1291,6 +1299,13 @@ type
       end;
       
       self.ev := prev_ev;
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var par in parameters do par.UnInvoke;
+      foreach var comm in commands do comm.UnInvoke;
     end;
     
   end;
@@ -1768,6 +1783,7 @@ begin
   begin
     invoke_status := 0;
     q_task := nil;
+    q.UnInvoke;
   end;
   
 end;
@@ -1812,6 +1828,12 @@ type
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
       
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      q.UnInvoke;
     end;
     
     public procedure Finalize; override :=
@@ -1878,6 +1900,12 @@ type
         self.res := T(lst[lst.Count-1].GetRes);
       end;
       
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
     end;
     
     public procedure Finalize; override :=
@@ -1971,6 +1999,12 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      inherited;
+      foreach var q in lst do q.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2033,6 +2067,11 @@ type
       self.ev := q.ev;
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      q.UnInvoke;
+    end;
+    
   end;
   
 function BufferCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
@@ -2084,6 +2123,13 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      ptr.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2133,6 +2179,13 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      a.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2177,6 +2230,13 @@ type
         Marshal.FreeHGlobal(ptr.res);
       end);
       
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      ptr.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
     end;
     
     public procedure Finalize; override :=
@@ -2263,6 +2323,13 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      ptr.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2310,6 +2377,13 @@ type
         gchnd.Free;
       end);
       
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      a.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
     end;
     
     public procedure Finalize; override :=
@@ -2374,6 +2448,14 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      ptr.UnInvoke;
+      pattern_len.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2424,6 +2506,13 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      a.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2470,6 +2559,14 @@ type
         Marshal.FreeHGlobal(ptr.res);
       end);
       
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      ptr.UnInvoke;
+      pattern_len.UnInvoke;
+      offset.UnInvoke;
+      len.UnInvoke;
     end;
     
     public procedure Finalize; override :=
@@ -2572,6 +2669,13 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      f_buf.UnInvoke; t_buf.UnInvoke;
+      f_pos.UnInvoke; t_pos.UnInvoke;
+      len.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2604,6 +2708,11 @@ type
     begin
       yield sequence q.Invoke(c,cq,prev_ev);
       self.ev := q.ev;
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      q.UnInvoke;
     end;
     
   end;
@@ -2662,6 +2771,11 @@ type
       
     end;
     
+    protected procedure UnInvoke; override;
+    begin
+      foreach var q in args_q do q.UnInvoke;
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2716,6 +2830,11 @@ type
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
       
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+      foreach var q in args_q do q.UnInvoke;
     end;
     
     public procedure Finalize; override :=
