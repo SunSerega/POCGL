@@ -418,6 +418,8 @@ uses System.Runtime.CompilerServices;
 
 //===================================
 
+//ToDo посмотреть на lock, может некоторые - лишние
+
 //ToDo Клонирование очередей
 // - для паралельного выполнения из разных потоков
 // - #2070 мешает
@@ -748,6 +750,7 @@ type
     
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
+      MakeBusy;
       
       foreach var comm in commands do
       begin
@@ -1184,6 +1187,7 @@ type
     
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
+      MakeBusy;
       
       foreach var par in parameters do
         yield sequence par.Invoke(c, cq, cl_event.Zero);
@@ -1341,7 +1345,7 @@ type
       var tasks := q.Invoke(self, cq, cl_event.Zero).ToList;
       
       var костыль_для_Result: ()->T := ()-> //ToDo #1952
-      begin
+      try
         while true do
         begin
           for var i := tasks.Count-1 downto 0 do
@@ -1357,6 +1361,8 @@ type
         
         cl.ReleaseCommandQueue(cq).RaiseIfError;
         Result := q.res;
+      finally
+        q.UnInvoke;
       end;
       
       Result := Task.Run(костыль_для_Result);
@@ -1545,6 +1551,7 @@ type
 function CommandQueueHostFunc<T>.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task;
 begin
   var ec: ErrorCode;
+  MakeBusy;
   
   if (prev_ev<>cl_event.Zero) or (self.f <> nil) then
   begin
@@ -1697,6 +1704,7 @@ type
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       var ec: ErrorCode;
+      MakeBusy;
       
       yield sequence q.Invoke(c, cq, prev_ev);
       
@@ -1752,6 +1760,7 @@ type
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       var ec: ErrorCode;
+      MakeBusy;
       
       foreach var sq in lst do
       begin
@@ -1852,6 +1861,7 @@ type
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       var ec: ErrorCode;
+      MakeBusy;
       
       ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
