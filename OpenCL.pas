@@ -25,7 +25,7 @@ unit OpenCL;
 
 //ToDo ^T -> pointer
 
-//ToDo расширения с котороми я не знаю что делать:
+//ToDo расширения с котороми непонятно, что делать:
 //
 // - cl_ext.h
 // -- cl_qcom_ext_host_ptr

@@ -1,2 +1,2 @@
 # POCGL
-pascal wrapers of OpenCL and OpenGL
+pascal wrappers of OpenCL and OpenGL
