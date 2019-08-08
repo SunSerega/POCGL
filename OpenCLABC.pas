@@ -39,7 +39,7 @@ unit OpenCLABC;
 
 // 1.0.2
 // 
-// В это справке будут упоминания примеров
+// В этой справке будут упоминания примеров
 // Их можно найти в папке "C:\PABCWork.NET\Samples\OpenCL\OpenCLABC\Из справки"
 // А также в соответствующей папке репозитория на гитхабе: "https://github.com/SunSerega/POCGL/tree/master/Samples/OpenCL/OpenCLABC/Из справки"
 // 
