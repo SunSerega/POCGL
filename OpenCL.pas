@@ -15,7 +15,7 @@
 /// Код переведён отсюда:
 /// https://github.com/KhronosGroup/OpenCL-Headers/tree/master/CL
 ///
-/// Спецификация:
+/// Спецификация (справка):
 /// www.khronos.org/registry/OpenCL/specs/2.2/html/OpenCL_API.html
 ///
 /// Если чего то не хватает - писать сюда:
@@ -64,7 +64,7 @@ type
   cl_event                      = IntPtr;
   cl_sampler                    = IntPtr;
   
-  ///0=false, остальное=true
+  ///0 = false, остальное = true
   cl_bool                       = UInt32;
   cl_bitfield                   = UInt64;
   
