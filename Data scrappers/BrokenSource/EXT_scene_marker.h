@@ -1,3 +1,3 @@
 
-void BeginSceneEXT(void);
-void EndSceneEXT(void);
+void glBeginSceneEXT(void);
+void glEndSceneEXT(void);

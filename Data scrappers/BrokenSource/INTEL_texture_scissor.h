@@ -1,3 +1,3 @@
 
-void    TexScissorINTEL(GLenum    target, GLclampf   tlow, GLclampf   thigh);
-void    TexScissorFuncINTEL(GLenum    target, Glenum lfunc, Glenum hfunc)
+void    glTexScissorINTEL(GLenum    target, GLclampf   tlow, GLclampf   thigh);
+void    glTexScissorFuncINTEL(GLenum    target, Glenum lfunc, Glenum hfunc)

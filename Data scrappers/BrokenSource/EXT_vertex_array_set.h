@@ -1,5 +1,5 @@
 
-void GenArraySetsEXT(sizei n, uint* arrayset);
-void BindArraySetEXT(uint arrayset);
-void DeleteArraySetsEXT(sizei n, const uint* arrayset);
-boolean IsArraySetEXT(uint arrayset);
+void glGenArraySetsEXT(sizei n, uint* arrayset);
+void glBindArraySetEXT(uint arrayset);
+void glDeleteArraySetsEXT(sizei n, const uint* arrayset);
+boolean glIsArraySetEXT(uint arrayset);

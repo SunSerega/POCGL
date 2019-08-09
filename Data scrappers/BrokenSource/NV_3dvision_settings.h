@@ -1,3 +1,3 @@
 
-void StereoParameterfNV(enum pname, float param);
-void StereoParameteriNV(enum pname, int param);
+void glStereoParameterfNV(enum pname, float param);
+void glStereoParameteriNV(enum pname, int param);

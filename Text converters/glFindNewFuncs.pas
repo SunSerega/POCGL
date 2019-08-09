@@ -293,8 +293,14 @@ begin
       begin
         
         var t_name: string;
+        if fs.Any(f->f[0].Contains('gdi')) then
+          t_name := 'gl_gdi' else
         if fs.Any(f->f[0].Contains('wgl')) then
           t_name := 'wgl' else
+        if fs.Any(f->f[0].Contains('egl')) then
+          t_name := 'egl' else
+        if fs.Any(f->f[0].Contains('glu')) then
+          t_name := 'glu' else
         if fs.Any(f->f[0].Contains('glX')) then
           t_name := 'glX' else
         begin
@@ -337,11 +343,14 @@ begin
     begin
       case kvp.Key of
         'gl_Deprecated':  Result := 1;
-        'wgl':            Result := 2;
-        'glX':            Result := 3;
-        'gl_ARB':         Result := 4;
-        'gl_EXT':         Result := 5;
-        else              Result := 6;
+        'gl_gdi':         Result := 2;
+        'wgl':            Result := 3;
+        'egl':            Result := 4;
+        'glu':            Result := 5;
+        'glX':            Result := 6;
+        'gl_ARB':         Result := 7;
+        'gl_EXT':         Result := 8;
+        else              Result := 9;
       end;
     end).ThenBy(kvp->kvp.Key) do
     begin

@@ -330,7 +330,7 @@ type
         name := nts.Substring(ind+1).Trim(' ');
         
         name_header := nil;
-        foreach var pnh in Arr('wgl', 'glX', 'gl') do
+        foreach var pnh in Arr('wgl', 'egl', 'glX', 'glu', 'gl') do
           if name.StartsWith(pnh) then
           begin
             name_header := pnh;

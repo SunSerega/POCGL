@@ -7,7 +7,7 @@
 //*****************************************************************************************************\\
 // Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // Этот код распространяется под Unlicense
-// Для деталей смотрите в файл LICENSE или это:
+// Подробнее в файле LICENSE или тут:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
 //*****************************************************************************************************\\
 
@@ -16729,7 +16729,7 @@ type
     
     {$region Unsorted}
     
-    static procedure &Begin(mode: DummyEnum);
+    static procedure &Begin(mode: PrimitiveType);
     external 'opengl32.dll' name 'glBegin';
     
     static procedure &End;
@@ -16836,13 +16836,6 @@ type
     static procedure DepthRange(n: double; f: double);
     external 'opengl32.dll' name 'glDepthRange';
     
-    static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; [MarshalAs(UnmanagedType.LPArray)] ppfd: array of GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'DescribePixelFormat';
-    static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; var ppfd: GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'DescribePixelFormat';
-    static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; ppfd: pointer): Int32;
-    external 'gdi32.dll' name 'DescribePixelFormat';
-    
     static procedure DetachShader(&program: UInt32; shader: UInt32);
     external 'opengl32.dll' name 'glDetachShader';
     
@@ -16944,13 +16937,6 @@ type
     external 'opengl32.dll' name 'glGetDoublev';
     static procedure GetDoublev(pname: DummyEnum; data: pointer);
     external 'opengl32.dll' name 'glGetDoublev';
-    
-    static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; [MarshalAs(UnmanagedType.LPArray)] ppfd: array of GDI_PixelFormatDescriptor): UInt32;
-    external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
-    static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; var ppfd: GDI_PixelFormatDescriptor): UInt32;
-    external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
-    static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; ppfd: pointer): UInt32;
-    external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
     
     static function GetError: DummyEnum;
     external 'opengl32.dll' name 'glGetError';
@@ -17080,9 +17066,6 @@ type
     external 'opengl32.dll' name 'glGetnUniformdv';
     static procedure GetnUniformdv(&program: UInt32; location: Int32; bufSize: Int32; &params: pointer);
     external 'opengl32.dll' name 'glGetnUniformdv';
-    
-    static function GetPixelFormat(hdc: GDI_DC): Int32;
-    external 'gdi32.dll' name 'GetPixelFormat';
     
     static procedure GetPixelMapxv(map: DummyEnum; size: Int32; [MarshalAs(UnmanagedType.LPArray)] values: array of fixed);
     external 'opengl32.dll' name 'glGetPixelMapxv';
@@ -17316,13 +17299,6 @@ type
     static procedure Scissor(x: Int32; y: Int32; width: Int32; height: Int32);
     external 'opengl32.dll' name 'glScissor';
     
-    static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; [MarshalAs(UnmanagedType.LPArray)] ppfd: array of GDI_PixelFormatDescriptor): UInt32;
-    external 'gdi32.dll' name 'SetPixelFormat';
-    static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; var ppfd: GDI_PixelFormatDescriptor): UInt32;
-    external 'gdi32.dll' name 'SetPixelFormat';
-    static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; ppfd: pointer): UInt32;
-    external 'gdi32.dll' name 'SetPixelFormat';
-    
     static procedure ShadeModel(mode: DummyEnum);
     external 'opengl32.dll' name 'glShadeModel';
     
@@ -17337,9 +17313,6 @@ type
     
     static procedure StencilOp(fail: DummyEnum; zfail: DummyEnum; zpass: DummyEnum);
     external 'opengl32.dll' name 'glStencilOp';
-    
-    static function SwapBuffers(hdc: GDI_DC): UInt32;
-    external 'gdi32.dll' name 'SwapBuffers';
     
     static procedure TexEnvf(target: DummyEnum; pname: DummyEnum; param: single);
     external 'opengl32.dll' name 'glTexEnvf';
@@ -22658,6 +22631,129 @@ type
     
   end;
   
+  gl_gdi = static class
+    
+    {$region Unsorted}
+    
+    static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; [MarshalAs(UnmanagedType.LPArray)] ppfd: array of GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'DescribePixelFormat';
+    static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; var ppfd: GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'DescribePixelFormat';
+    static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; ppfd: pointer): Int32;
+    external 'gdi32.dll' name 'DescribePixelFormat';
+    
+    static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; [MarshalAs(UnmanagedType.LPArray)] ppfd: array of GDI_PixelFormatDescriptor): UInt32;
+    external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
+    static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; var ppfd: GDI_PixelFormatDescriptor): UInt32;
+    external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
+    static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; ppfd: pointer): UInt32;
+    external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
+    
+    static function GetPixelFormat(hdc: GDI_DC): Int32;
+    external 'gdi32.dll' name 'GetPixelFormat';
+    
+    static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; [MarshalAs(UnmanagedType.LPArray)] ppfd: array of GDI_PixelFormatDescriptor): UInt32;
+    external 'gdi32.dll' name 'SetPixelFormat';
+    static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; var ppfd: GDI_PixelFormatDescriptor): UInt32;
+    external 'gdi32.dll' name 'SetPixelFormat';
+    static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; ppfd: pointer): UInt32;
+    external 'gdi32.dll' name 'SetPixelFormat';
+    
+    static function SwapBuffers(hdc: GDI_DC): UInt32;
+    external 'gdi32.dll' name 'SwapBuffers';
+    
+    {$endregion Unsorted}
+    
+    {$region KHR_fence_sync}
+    
+    static function eglCreateSyncKHR(dpy: EGLDisplay; &type: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): EGLsync;
+    external 'gdi32.dll' name 'eglCreateSyncKHR';
+    static function eglCreateSyncKHR(dpy: EGLDisplay; &type: DummyEnum; var attrib_list: Int32): EGLsync;
+    external 'gdi32.dll' name 'eglCreateSyncKHR';
+    static function eglCreateSyncKHR(dpy: EGLDisplay; &type: DummyEnum; attrib_list: pointer): EGLsync;
+    external 'gdi32.dll' name 'eglCreateSyncKHR';
+    
+    static function eglDestroySyncKHR(dpy: EGLDisplay; _sync: EGLsync): UInt32;
+    external 'gdi32.dll' name 'eglDestroySyncKHR';
+    
+    static function eglClientWaitSyncKHR(dpy: EGLDisplay; _sync: EGLsync; flags: Int32; timeout: TimeSpan): Int32;
+    external 'gdi32.dll' name 'eglClientWaitSyncKHR';
+    
+    static function eglGetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32): UInt32;
+    external 'gdi32.dll' name 'eglGetSyncAttribKHR';
+    static function eglGetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; var value: Int32): UInt32;
+    external 'gdi32.dll' name 'eglGetSyncAttribKHR';
+    static function eglGetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; value: pointer): UInt32;
+    external 'gdi32.dll' name 'eglGetSyncAttribKHR';
+    
+    {$endregion KHR_fence_sync}
+    
+    {$region WGL_ARB_pixel_format, EXT_pixel_format}
+    
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var piValues: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; piValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var piValues: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; piValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var pfValues: single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; pfValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var pfValues: single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; pfValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    
+    static function ChoosePixelFormat(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] pPfd: array of GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    static function ChoosePixelFormat(hDc: GDI_DC; var pPfd: GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    static function ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    
+    {$endregion WGL_ARB_pixel_format, EXT_pixel_format}
+    
+  end;
+  
+  glu = static class
+    
+    {$region Unsorted}
+    
+    static procedure NurbsCallbackDataEXT([MarshalAs(UnmanagedType.LPArray)] theNurb: array of GLUnurbs; userData: pointer);
+    external 'opengl32.dll' name 'gluNurbsCallbackDataEXT';
+    static procedure NurbsCallbackDataEXT(var theNurb: GLUnurbs; userData: pointer);
+    external 'opengl32.dll' name 'gluNurbsCallbackDataEXT';
+    static procedure NurbsCallbackDataEXT(theNurb: pointer; userData: pointer);
+    external 'opengl32.dll' name 'gluNurbsCallbackDataEXT';
+    
+    {$endregion Unsorted}
+    
+  end;
+  
   wgl = static class
     
     {$region Unsorted}
@@ -23337,55 +23433,6 @@ type
     external 'opengl32.dll' name 'wglQueryPbufferARB';
     
     {$endregion WGL_ARB_pbuffer, EXT_pbuffer}
-    
-    {$region WGL_ARB_pixel_format, EXT_pixel_format}
-    
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var piValues: Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; piValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var piValues: Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; piValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var pfValues: single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; pfValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var pfValues: single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; pfValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    
-    static function ChoosePixelFormat(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] pPfd: array of GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    static function ChoosePixelFormat(hDc: GDI_DC; var pPfd: GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    static function ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    
-    {$endregion WGL_ARB_pixel_format, EXT_pixel_format}
     
   end;
   
@@ -26686,24 +26733,13 @@ type
     
     {$endregion EXT_multiview_draw_buffers}
     
-    {$region EXT_nurbs_tessellator}
-    
-    static procedure uNurbsCallbackDataEXT([MarshalAs(UnmanagedType.LPArray)] theNurb: array of GLUnurbs; userData: pointer);
-    external 'opengl32.dll' name 'gluNurbsCallbackDataEXT';
-    static procedure uNurbsCallbackDataEXT(var theNurb: GLUnurbs; userData: pointer);
-    external 'opengl32.dll' name 'gluNurbsCallbackDataEXT';
-    static procedure uNurbsCallbackDataEXT(theNurb: pointer; userData: pointer);
-    external 'opengl32.dll' name 'gluNurbsCallbackDataEXT';
-    
-    {$endregion EXT_nurbs_tessellator}
-    
     {$region EXT_scene_marker}
     
     static procedure BeginSceneEXT;
-    external 'gdi32.dll' name 'BeginSceneEXT';
+    external 'opengl32.dll' name 'glBeginSceneEXT';
     
     static procedure EndSceneEXT;
-    external 'gdi32.dll' name 'EndSceneEXT';
+    external 'opengl32.dll' name 'glEndSceneEXT';
     
     {$endregion EXT_scene_marker}
     
@@ -26877,24 +26913,24 @@ type
     {$region EXT_vertex_array_set / GenName version}
     
     static procedure GenArraySetsEXT(_n: Int32; [MarshalAs(UnmanagedType.LPArray)] arrayset: array of UInt32);
-    external 'gdi32.dll' name 'GenArraySetsEXT';
+    external 'opengl32.dll' name 'glGenArraySetsEXT';
     static procedure GenArraySetsEXT(_n: Int32; var arrayset: UInt32);
-    external 'gdi32.dll' name 'GenArraySetsEXT';
+    external 'opengl32.dll' name 'glGenArraySetsEXT';
     static procedure GenArraySetsEXT(_n: Int32; arrayset: pointer);
-    external 'gdi32.dll' name 'GenArraySetsEXT';
+    external 'opengl32.dll' name 'glGenArraySetsEXT';
     
     static procedure BindArraySetEXT(arrayset: UInt32);
-    external 'gdi32.dll' name 'BindArraySetEXT';
+    external 'opengl32.dll' name 'glBindArraySetEXT';
     
     static procedure DeleteArraySetsEXT(_n: Int32; [MarshalAs(UnmanagedType.LPArray)] arrayset: array of UInt32);
-    external 'gdi32.dll' name 'DeleteArraySetsEXT';
+    external 'opengl32.dll' name 'glDeleteArraySetsEXT';
     static procedure DeleteArraySetsEXT(_n: Int32; var arrayset: UInt32);
-    external 'gdi32.dll' name 'DeleteArraySetsEXT';
+    external 'opengl32.dll' name 'glDeleteArraySetsEXT';
     static procedure DeleteArraySetsEXT(_n: Int32; arrayset: pointer);
-    external 'gdi32.dll' name 'DeleteArraySetsEXT';
+    external 'opengl32.dll' name 'glDeleteArraySetsEXT';
     
     static function IsArraySetEXT(arrayset: UInt32): UInt32;
-    external 'gdi32.dll' name 'IsArraySetEXT';
+    external 'opengl32.dll' name 'glIsArraySetEXT';
     
     {$endregion EXT_vertex_array_set / GenName version}
     
@@ -30910,40 +30946,16 @@ type
     {$region INTEL_texture_scissor}
     
     static procedure TexScissorINTEL(target: DummyEnum; tlow: single; thigh: single);
-    external 'gdi32.dll' name 'TexScissorINTEL';
+    external 'opengl32.dll' name 'glTexScissorINTEL';
     
     static procedure TexScissorFuncINTEL(target: DummyEnum; lfunc: DummyEnum; hfunc: DummyEnum);
-    external 'gdi32.dll' name 'TexScissorFuncINTEL';
+    external 'opengl32.dll' name 'glTexScissorFuncINTEL';
     
     {$endregion INTEL_texture_scissor}
     
   end;
   
   gl_KHR = static class
-    
-    {$region KHR_fence_sync}
-    
-    static function eglCreateSyncKHR(dpy: EGLDisplay; &type: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): EGLsync;
-    external 'gdi32.dll' name 'eglCreateSyncKHR';
-    static function eglCreateSyncKHR(dpy: EGLDisplay; &type: DummyEnum; var attrib_list: Int32): EGLsync;
-    external 'gdi32.dll' name 'eglCreateSyncKHR';
-    static function eglCreateSyncKHR(dpy: EGLDisplay; &type: DummyEnum; attrib_list: pointer): EGLsync;
-    external 'gdi32.dll' name 'eglCreateSyncKHR';
-    
-    static function eglDestroySyncKHR(dpy: EGLDisplay; _sync: EGLsync): UInt32;
-    external 'gdi32.dll' name 'eglDestroySyncKHR';
-    
-    static function eglClientWaitSyncKHR(dpy: EGLDisplay; _sync: EGLsync; flags: Int32; timeout: TimeSpan): Int32;
-    external 'gdi32.dll' name 'eglClientWaitSyncKHR';
-    
-    static function eglGetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32): UInt32;
-    external 'gdi32.dll' name 'eglGetSyncAttribKHR';
-    static function eglGetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; var value: Int32): UInt32;
-    external 'gdi32.dll' name 'eglGetSyncAttribKHR';
-    static function eglGetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; value: pointer): UInt32;
-    external 'gdi32.dll' name 'eglGetSyncAttribKHR';
-    
-    {$endregion KHR_fence_sync}
     
     {$region KHR_blend_equation_advanced, NV_blend_equation_advanced}
     
@@ -31606,10 +31618,10 @@ type
     {$region NV_3dvision_settings}
     
     static procedure StereoParameterfNV(pname: DummyEnum; param: single);
-    external 'gdi32.dll' name 'StereoParameterfNV';
+    external 'opengl32.dll' name 'glStereoParameterfNV';
     
     static procedure StereoParameteriNV(pname: DummyEnum; param: Int32);
-    external 'gdi32.dll' name 'StereoParameteriNV';
+    external 'opengl32.dll' name 'glStereoParameteriNV';
     
     {$endregion NV_3dvision_settings}
     
@@ -33957,350 +33969,350 @@ type
     {$region NVX_gpu_multicast2}
     
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] waitValueArray: array of UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var waitValueArray: UInt64; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     static function AsyncCopyImageSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; waitValueArray: pointer; srcGpu: UInt32; dstGpuMask: DummyFlags; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): UInt32;
-    external 'gdi32.dll' name 'AsyncCopyImageSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyImageSubDataNVX';
     
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] waitSemaphoreArray: array of UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; var waitSemaphoreArray: UInt32; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; var fenceValueArray: UInt64; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; [MarshalAs(UnmanagedType.LPArray)] signalSemaphoreArray: array of UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; var signalSemaphoreArray: UInt32; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] signalValueArray: array of UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; var signalValueArray: UInt64): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     static function AsyncCopyBufferSubDataNVX(waitSemaphoreCount: Int32; waitSemaphoreArray: pointer; fenceValueArray: pointer; readGpu: UInt32; writeGpuMask: DummyFlags; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr; signalSemaphoreCount: Int32; signalSemaphoreArray: pointer; signalValueArray: pointer): GLsync;
-    external 'gdi32.dll' name 'AsyncCopyBufferSubDataNVX';
+    external 'opengl32.dll' name 'glAsyncCopyBufferSubDataNVX';
     
     static procedure UploadGpuMaskNVX(mask: DummyFlags);
-    external 'gdi32.dll' name 'UploadGpuMaskNVX';
+    external 'opengl32.dll' name 'glUploadGpuMaskNVX';
     
     static procedure MulticastViewportArrayvNVX(gpu: UInt32; first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of single);
-    external 'gdi32.dll' name 'MulticastViewportArrayvNVX';
+    external 'opengl32.dll' name 'glMulticastViewportArrayvNVX';
     static procedure MulticastViewportArrayvNVX(gpu: UInt32; first: UInt32; count: Int32; var v: single);
-    external 'gdi32.dll' name 'MulticastViewportArrayvNVX';
+    external 'opengl32.dll' name 'glMulticastViewportArrayvNVX';
     static procedure MulticastViewportArrayvNVX(gpu: UInt32; first: UInt32; count: Int32; v: pointer);
-    external 'gdi32.dll' name 'MulticastViewportArrayvNVX';
+    external 'opengl32.dll' name 'glMulticastViewportArrayvNVX';
     
     static procedure MulticastScissorArrayvNVX(gpu: UInt32; first: UInt32; count: Int32; [MarshalAs(UnmanagedType.LPArray)] v: array of Int32);
-    external 'gdi32.dll' name 'MulticastScissorArrayvNVX';
+    external 'opengl32.dll' name 'glMulticastScissorArrayvNVX';
     static procedure MulticastScissorArrayvNVX(gpu: UInt32; first: UInt32; count: Int32; var v: Int32);
-    external 'gdi32.dll' name 'MulticastScissorArrayvNVX';
+    external 'opengl32.dll' name 'glMulticastScissorArrayvNVX';
     static procedure MulticastScissorArrayvNVX(gpu: UInt32; first: UInt32; count: Int32; v: pointer);
-    external 'gdi32.dll' name 'MulticastScissorArrayvNVX';
+    external 'opengl32.dll' name 'glMulticastScissorArrayvNVX';
     
     static procedure MulticastViewportPositionWScaleNVX(gpu: UInt32; index: UInt32; xcoeff: single; ycoeff: single);
-    external 'gdi32.dll' name 'MulticastViewportPositionWScaleNVX';
+    external 'opengl32.dll' name 'glMulticastViewportPositionWScaleNVX';
     
     {$endregion NVX_gpu_multicast2}
     
@@ -34320,64 +34332,64 @@ type
     {$region NVX_progress_fence}
     
     static function CreateProgressFenceNVX: UInt32;
-    external 'gdi32.dll' name 'CreateProgressFenceNVX';
+    external 'opengl32.dll' name 'glCreateProgressFenceNVX';
     
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; var semaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; var semaphoreArray: UInt32; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; var semaphoreArray: UInt32; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; semaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; semaphoreArray: pointer; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     static procedure SignalSemaphoreui64NVX(signalGpu: UInt32; fenceObjectCount: Int32; semaphoreArray: pointer; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'SignalSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glSignalSemaphoreui64NVX';
     
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; var semaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; var semaphoreArray: UInt32; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; var semaphoreArray: UInt32; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; semaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; semaphoreArray: pointer; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     static procedure WaitSemaphoreui64NVX(waitGpu: UInt32; fenceObjectCount: Int32; semaphoreArray: pointer; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'WaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glWaitSemaphoreui64NVX';
     
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; [MarshalAs(UnmanagedType.LPArray)] semaphoreArray: array of UInt32; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; var semaphoreArray: UInt32; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; var semaphoreArray: UInt32; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; var semaphoreArray: UInt32; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; semaphoreArray: pointer; [MarshalAs(UnmanagedType.LPArray)] fenceValueArray: array of UInt64);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; semaphoreArray: pointer; var fenceValueArray: UInt64);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     static procedure ClientWaitSemaphoreui64NVX(fenceObjectCount: Int32; semaphoreArray: pointer; fenceValueArray: pointer);
-    external 'gdi32.dll' name 'ClientWaitSemaphoreui64NVX';
+    external 'opengl32.dll' name 'glClientWaitSemaphoreui64NVX';
     
     {$endregion NVX_progress_fence}
     
@@ -35233,7 +35245,7 @@ type
     external 'opengl32.dll' name 'glFramebufferTextureMultiviewOVR';
     
     static procedure NamedFramebufferTextureMultiviewOVR(framebuffer: UInt32; attachment: DummyEnum; texture: UInt32; level: Int32; baseViewIndex: Int32; numViews: Int32);
-    external 'gdi32.dll' name 'NamedFramebufferTextureMultiviewOVR';
+    external 'opengl32.dll' name 'glNamedFramebufferTextureMultiviewOVR';
     
     {$endregion OVR_multiview}
     
@@ -35486,7 +35498,7 @@ type
     {$region SGI_fft}
     
     static procedure PixelTransformSGI(target: DummyEnum);
-    external 'gdi32.dll' name 'PixelTransformSGI';
+    external 'opengl32.dll' name 'glPixelTransformSGI';
     
     {$endregion SGI_fft}
     
@@ -35713,16 +35725,16 @@ type
     external 'opengl32.dll' name 'glMultiTexCoord4dv';
     
     static procedure InterleavedTextureCoordSetsSGIS(factor: Int32);
-    external 'gdi32.dll' name 'InterleavedTextureCoordSetsSGIS';
+    external 'opengl32.dll' name 'glInterleavedTextureCoordSetsSGIS';
     
     static procedure SelectTextureSGIS(target: DummyEnum);
-    external 'gdi32.dll' name 'SelectTextureSGIS';
+    external 'opengl32.dll' name 'glSelectTextureSGIS';
     
     static procedure SelectTextureCoordSetSGIS(target: DummyEnum);
-    external 'gdi32.dll' name 'SelectTextureCoordSetSGIS';
+    external 'opengl32.dll' name 'glSelectTextureCoordSetSGIS';
     
     static procedure SelectTextureTransformSGIS(target: DummyEnum);
-    external 'gdi32.dll' name 'SelectTextureTransformSGIS';
+    external 'opengl32.dll' name 'glSelectTextureTransformSGIS';
     
     {$endregion SGIS_multitexture}
     
