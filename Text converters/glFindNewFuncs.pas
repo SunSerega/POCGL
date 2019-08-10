@@ -2,7 +2,7 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
-uses BinSpecData in 'Data scrappers\BinSpecData.pas';
+uses BinSpecData in '..\Data scrappers\BinSpecData.pas';
 
 function RemoveFuncNameExt(self: string): string; extensionmethod;
 begin
@@ -41,54 +41,6 @@ type
     
   end;
   
-function TakeCharsFromTo(self: sequence of char; fa,ta: array of string): sequence of array of char; extensionmethod;
-begin
-  var enm := self.GetEnumerator;
-  enm.MoveNext;
-  var q := new Queue<char>;
-  var res := new List<char>;
-  
-  while true do
-  begin
-    while q.Count<fa.Max(f->f.Length) do
-    begin
-      q += enm.Current;
-      if not enm.MoveNext then exit;
-    end;
-    
-    if fa.Any(f->q.Take(f.Length).SequenceEqual(f)) then
-    begin
-      q.Clear;
-      
-      while true do
-      begin
-        while q.Count<ta.Max(t->t.Length) do
-        begin
-          q += enm.Current;
-          if not enm.MoveNext then
-          begin
-            res.AddRange(q);
-            yield res.ToArray;
-            exit;
-          end;
-        end;
-        
-        if ta.Any(t->q.SequenceEqual(t)) then
-          break else
-          res += q.Dequeue;
-        
-      end;
-      
-      yield res.ToArray;
-      res.Clear;
-      q.Clear;
-    end else
-      q.Dequeue;
-    
-  end;
-  
-end;
-
 function DistinctBy<T1,T2>(self: sequence of T1; selector: T1->T2): sequence of T1; extensionmethod;
 begin
   var prev := new HashSet<T2>;
@@ -110,28 +62,35 @@ const
   
 begin
   try
+    System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
     
     {$region Read used funcs}
     writeln('Read used funcs');
     
-    var used_funcs := new HashSet<string>;
-    
-    var org_glpas_text := ReadAllText(GLpas);
-    foreach var chs in
-      org_glpas_text
+    var used_funcs: HashSet<string> :=
+      ReadAllText(GLpas)
       .Remove(#13)
-      .SkipCharsFromTo('//',#10)
-      .TakeCharsFromTo(
-        Arr('procedure', ' function'),
-        Arr&<string>('(', ':', ';')
-      )
-    do
-    begin
-      if chs.Length<5 then continue;
-      var res := string.Create(chs).TrimEnd;
-      if not res.EndsWith(';') then res += '(';
-      used_funcs += res;
-    end;
+      .Split(#10)
+      .SkipWhile(l->not l.Contains('gl = static class'))
+      .TakeWhile(l->not l.Contains('end;'))
+      .Select(l->l.Contains('//')?l.Remove(l.IndexOf('//')):l)
+      .Select(l->
+      begin
+        if l.Contains('procedure') then Result := l.Substring(l.IndexOf('procedure')+'procedure'.Length) else
+        if l.Contains('function' ) then Result := l.Substring(l.IndexOf('function' )+'function' .Length) else
+          Result := '';
+      end)
+      .Where(l->l<>'')
+      .Select(l->
+      begin
+        if l.Contains('(') then Result := l.Remove(l.IndexOf('(')) else
+        if l.Contains(':') then Result := l.Remove(l.IndexOf(':')) else
+        if l.Contains(';') then Result := l.Remove(l.IndexOf(';')) else
+          raise new System.InvalidOperationException($'"{l}"');
+      end)
+      .Select(l->l.Trim(' '))
+      .ToHashSet
+    ;
     
     {$endregion Read used funcs}
     
@@ -148,7 +107,7 @@ begin
     begin
       writeln(fname);
       System.Windows.Forms.Clipboard.SetText(ReadAllText(fname));
-      System.Diagnostics.Process.Start('gl format func.exe').WaitForExit;
+      System.Diagnostics.Process.Start('Text converters\gl format func.exe').WaitForExit;
       
       var text := System.Windows.Forms.Clipboard.GetText.Remove(#13).Trim(#10' '.ToArray);
       if text='' then continue;
@@ -254,11 +213,13 @@ begin
         foreach var fn in ext_name_func_name_table[ext_names] do
         begin
           var ind := funcs_data.FindIndex(f->f[1].RemoveFuncNameExt=fn.RemoveFuncNameExt);
-          if ind=-1 then writeln($'"{fn1}": can''t find func "{fn}" from "{ext_names.JoinIntoString}"') else
+          if ind <> -1 then
           begin
             fs += funcs_data[ind];
             funcs_data.RemoveAt(ind);
-          end;
+          end else
+          if not used_funcs.Contains(fn) then
+            writeln($'"{fn1}": can''t find func "{fn}" from "{ext_names.JoinIntoString}"');
         end;
         
 //        writeln(ext_names, fs.Select(f->f[1]));
@@ -275,7 +236,12 @@ begin
     end;
     
     foreach var ext in unused_exts do
-      writeln($'[{ext.JoinIntoString}]: funcs [{ext_name_func_name_table[ext].JoinIntoString}] wasn''t found');
+    begin
+      var fs := ext_name_func_name_table[ext].ToList;
+      fs.RemoveAll(f->used_funcs.Contains(f));
+      if fs.Count=0 then continue;
+      writeln($'[{ext.JoinIntoString}]: funcs [{fs.JoinIntoString}] wasn''t found');
+    end;
     
     {$endregion Sort by ext names}
     
@@ -294,7 +260,7 @@ begin
         
         var t_name: string;
         if fs.Any(f->f[0].Contains('gdi')) then
-          t_name := 'gl_gdi' else
+          t_name := 'gdi' else
         if fs.Any(f->f[0].Contains('wgl')) then
           t_name := 'wgl' else
         if fs.Any(f->f[0].Contains('egl')) then
@@ -339,22 +305,37 @@ begin
     
     var res := new StringBuilder;
     
+    res += #10;
+    res += '  {$region Auto translated}'#10;
+    res += '  ';
+    
     foreach var kvp1 in funcs_sorted.OrderBy(kvp->
     begin
       case kvp.Key of
-        'gl_Deprecated':  Result := 1;
-        'gl_gdi':         Result := 2;
-        'wgl':            Result := 3;
-        'egl':            Result := 4;
-        'glu':            Result := 5;
-        'glX':            Result := 6;
-        'gl_ARB':         Result := 7;
-        'gl_EXT':         Result := 8;
-        else              Result := 9;
+        'gl_Deprecated':  Result := 01;
+        'wgl':            Result := 02;
+        'egl':            Result := 03;
+        'glu':            Result := 04;
+        'glX':            Result := 05;
+        'gl_ARB':         Result := 06;
+        'gl_EXT':         Result := 07;
+        
+        'gdi':            Result := 21;
+        
+        else              Result := 10;
       end;
     end).ThenBy(kvp->kvp.Key) do
     begin
       res += #10;
+      
+      if kvp1.Key='gdi' then
+      begin
+        
+        res += 'implementation'#10;
+        res += #10;
+        res += 'type'#10;
+        
+      end;
       
       res += '  ';
       res += kvp1.Key;
@@ -387,6 +368,10 @@ begin
       
       res += '  ';
     end;
+    
+    res += #10;
+    res += '  {$endregion Auto translated}'#10;
+    res += '  ';
     
     {$endregion contruct new code}
     

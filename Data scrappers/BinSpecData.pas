@@ -416,7 +416,7 @@ type
       begin
         
         var func_name := Result.funcs[i][0];
-        foreach var pnh in Arr('wgl', 'glX', 'gl') do
+        foreach var pnh in Arr('wgl', 'egl', 'glX', 'glu', 'gl') do
           if func_name.StartsWith(pnh) then
           begin
             func_name := func_name.SubString(pnh.Length);

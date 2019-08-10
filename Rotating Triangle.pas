@@ -40,14 +40,14 @@ begin
   pfd.cColorBits := 24;
   pfd.cDepthBits := 16;
   
-  if 0=gl_gdi.SetPixelFormat(
+  if 1 <> gl_gdi.SetPixelFormat(
     Result,
     gl_gdi.ChoosePixelFormat(Result, pfd),
     pfd
   ) then raise new InvalidOperationException;
   
   var context := wgl.CreateContext(Result);
-  if 0=wgl.MakeCurrent(Result, context) then raise new InvalidOperationException;
+  if 1 <> wgl.MakeCurrent(Result, context) then raise new InvalidOperationException;
   
 end;
 

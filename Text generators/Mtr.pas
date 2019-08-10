@@ -1,42 +1,4 @@
-﻿program prog;
-{$apptype windows}
-{$reference System.Windows.Forms.dll}
-
-//ToDo issue компилятора:
-// - #2021
-
-{$region Misc helpers}
-
-function gl_to_pas_t(self: string): string; extensionmethod;
-begin
-  case self of
-    ''+'f':     Result := 'single';
-    ''+'d':     Result := 'double';
-  end;
-end;
-
-type t_descr = (
-  (integer,integer), // sz
-  string,            // gl_t
-  string             // pas_t
-);
-
-function GetName(self: t_descr); extensionmethod :=
-$'Mtr{self[0][0]}x{self[0][1]}{self[1]}';
-
-function GetRowTName(self: t_descr); extensionmethod :=
-$'Vec{self[0][1]}{self[1]}';
-
-function GetColTName(self: t_descr); extensionmethod :=
-$'Vec{self[0][0]}{self[1]}';
-
-function GetMltResT(self: (t_descr,t_descr)): t_descr; extensionmethod :=
-((self[0][0][0], self[1][0][1]), self[0][1], self[0][2]);
-
-function GetTransposedT(self: t_descr): t_descr; extensionmethod :=
-((self[0][1], self[0][0]), self[1], self[2]);
-
-{$endregion Misc helpers}
+﻿uses MtrBase;
 
 procedure AddMtrType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
 begin
@@ -555,54 +517,9 @@ begin
   
 end;
 
-{$region extensionmethod's}
-
-procedure AddMtrMlt(res: StringBuilder; t1,t2: t_descr);
-begin
-  
-  var rt := (t1,t2).GetMltResT;
-  res += $'    '+#10;
-  
-  res +=      $'    function operator*(m1: {t1.GetName}; m2: {t2.GetName}): {rt.GetName}; extensionmethod;'+#10;
-  res +=      $'    begin'+#10;
-  for var y := 0 to rt[0][0]-1 do
-    for var x := 0 to rt[0][1]-1 do
-    begin
-      res +=  $'      Result.val{y}{x} := ';
-      res +=
-        Range(0, t1[0][1]-1)
-        .Select(i-> $'m1.val{y}{i}*m2.val{i}{x}' )
-        .JoinIntoString(' + ');
-      res += ';'#10;
-    end;
-  res +=      $'    end;'+#10;
-  
-end;
-
-procedure AddTranspose(res: StringBuilder; t: t_descr);
-begin
-  
-  if t[0][0]<=t[0][1] then
-    res += '  '#10;
-  res += $'  function Transpose(self: {t.GetName}); extensionmethod :='+#10;
-  res += $'  new {t.GetTransposedT.GetName}(';
-  res +=
-    Range(0,t[0][1]-1)
-    .Cartesian(Range(0,t[0][0]-1))
-    .Select(pos-> $'self.val{pos[1]}{pos[0]}' )
-    .JoinIntoString(', ');
-  res += ');'#10;
-  
-end;
-
-{$endregion extensionmethod's}
-
 begin
   try
     var res := new StringBuilder;
-    
-    res += #10;
-    res += '  {$region Mtr}'#10;
     
     var t_table: sequence of t_descr :=
       Range(2,4)
@@ -615,29 +532,14 @@ begin
       .ToArray
     ;
     
+    res += #10;
+    res += '  {$region Mtr}'#10;
+    
     foreach var t in t_table.Numerate(0) do
       AddMtrType(res, t[1], t_table.Take(t[0]));
     
     res += '  '#10;
     res += '  {$endregion Mtr}'#10;
-    res += '  '#10;
-    res += '  {$region MtrMlt}'#10;
-    
-    foreach var t1 in t_table do
-      foreach var t2 in t_table do
-        if t1[0][1]=t2[0][0] then
-          AddMtrMlt(res, t1,t2);
-    
-    res += '  '#10;
-    res += '  {$endregion MtrMlt}'#10;
-    res += '  '#10;
-    res += '  {$region MtrTranspose}'#10;
-    
-    foreach var t in t_table do
-      AddTranspose(res, t);
-    
-    res += '  '#10;
-    res += '  {$endregion MtrTranspose}'#10;
     
     res += '  ';
     System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
