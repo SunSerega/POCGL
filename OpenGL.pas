@@ -31129,11 +31129,91 @@ type
   
   ///Методы для интеграции с gdi
   gl_gdi = static class
+    {$reference System.Windows.Forms.dll}
     
-    public static function GetDC(hwnd: IntPtr): IntPtr;
-    external 'user32.dll';
+    {$region Misc}
     
+    public static function GetControlDC(hwnd: IntPtr): GDI_DC;
+    external 'user32.dll' name 'GetDC';
     
+    {$endregion Misc}
+    
+    {$region InitControl}
+    
+    ///Получает и настраивает контекст GDI элемента управления WF
+    ///ptr - дескриптор элемента управления
+    public static function InitControl(ptr: IntPtr): GDI_DC;
+    begin
+      Result := gl_gdi.GetControlDC(ptr);
+      
+      var pfd: GDI_PixelFormatDescriptor;
+      pfd.nSize := sizeof( GDI_PixelFormatDescriptor );
+      pfd.nVersion := 1;
+      
+      pfd.dwFlags :=
+        GDI_PixelFormatFlags.DRAW_TO_WINDOW or
+        GDI_PixelFormatFlags.SUPPORT_OPENGL or
+        GDI_PixelFormatFlags.DOUBLEBUFFER
+      ;
+      pfd.cColorBits := 24;
+      pfd.cDepthBits := 16;
+      
+      if 1 <> gdi.SetPixelFormat(
+        Result,
+        wgl.ChoosePixelFormat(Result, pfd),
+        pfd
+      ) then raise new InvalidOperationException;
+      
+    end;
+    
+    ///Получает и настраивает контекст GDI элемента управления WF
+    public static function InitControl(c: System.Windows.Forms.Control) := InitControl(c.Handle);
+    
+    {$endregion InitControl}
+    
+    {$region SetupControlRedrawing}
+    
+    ///Добавляет в эвент Form.Load формы f создание контекста OpenGL на контексте GDI и запуск перерисовки
+    public static procedure SetupControlRedrawing(f: System.Windows.Forms.Form; hdc: GDI_DC; RedrawThreadProc: procedure(EndFrame: ()->()); vsync_fps: integer := 62);
+    begin
+      
+      f.Load += (o,e)->
+        System.Threading.Thread.Create(()->
+        begin
+          
+          var context := wgl.CreateContext(hdc);
+          if 1 <> wgl.MakeCurrent(hdc, context) then raise new InvalidOperationException;
+          
+          var EndFrame: ()->();
+          if vsync_fps<=0 then
+            EndFrame := ()->gdi.SwapBuffers(hdc) else
+          begin
+            var LastRedr := DateTime.Now;
+            var FrameDuration := new TimeSpan(Trunc(TimeSpan.TicksPerSecond/vsync_fps));
+            var MaxSlowDown := FrameDuration.Ticks*3;
+            
+            EndFrame := ()->
+            begin
+              gdi.SwapBuffers(hdc);
+              
+              LastRedr := LastRedr+FrameDuration;
+              var time_left := LastRedr-DateTime.Now;
+              
+              if time_left.Ticks>0 then
+                System.Threading.Thread.Sleep(time_left) else
+              if -time_left.Ticks > MaxSlowDown then
+                LastRedr := LastRedr.AddTicks(-time_left.Ticks - MaxSlowDown);
+              
+            end;
+            
+          end;
+          
+          RedrawThreadProc(EndFrame);
+        end).Start();
+      
+    end;
+    
+    {$endregion SetupControlRedrawing}
     
   end;
   
