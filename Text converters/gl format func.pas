@@ -395,7 +395,7 @@ type
         
         var f := res<>'void';
         var sb := new StringBuilder;
-        sb += '    static ';
+        sb += '    public static ';
         
         sb += f?'function':'procedure';
         sb += ' ';
