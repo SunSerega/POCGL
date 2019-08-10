@@ -259,12 +259,12 @@ begin
       begin
         
         var t_name: string;
-        if fs.Any(f->f[0].Contains('gdi')) then
-          t_name := 'gdi' else
         if fs.Any(f->f[0].Contains('wgl')) then
           t_name := 'wgl' else
         if fs.Any(f->f[0].Contains('egl')) then
           t_name := 'egl' else
+        if fs.Any(f->f[0].Contains('gdi')) then
+          t_name := 'gdi' else
         if fs.Any(f->f[0].Contains('glu')) then
           t_name := 'glu' else
         if fs.Any(f->f[0].Contains('glX')) then

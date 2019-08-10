@@ -19,12 +19,9 @@ type
     
   end;
 
-function GetDC(hwnd: IntPtr): IntPtr;
-external 'user32.dll';
-
 function InitOpenGL(hwnd: IntPtr): IntPtr;
 begin
-  Result := GetDC(hwnd);
+  Result := gl_gdi.GetDC(hwnd);
   
   
   
@@ -42,7 +39,7 @@ begin
   
   if 1 <> gdi.SetPixelFormat(
     Result,
-    gdi.ChoosePixelFormat(Result, pfd),
+    wgl.ChoosePixelFormat(Result, pfd),
     pfd
   ) then raise new InvalidOperationException;
   

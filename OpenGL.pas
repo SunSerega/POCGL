@@ -16853,6 +16853,55 @@ type
     
     {$endregion WGL_ARB_pbuffer, EXT_pbuffer}
     
+    {$region WGL_ARB_pixel_format, EXT_pixel_format}
+    
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var piValues: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; piValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var piValues: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; piValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
+    
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var pfValues: single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; pfValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var pfValues: single): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; pfValues: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
+    
+    static function ChoosePixelFormat(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] pPfd: array of GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    static function ChoosePixelFormat(hDc: GDI_DC; var pPfd: GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    static function ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    
+    {$endregion WGL_ARB_pixel_format, EXT_pixel_format}
+    
   end;
   
   egl = static class
@@ -31076,61 +31125,15 @@ type
     
     {$endregion Unsorted}
     
-    {$region WGL_ARB_pixel_format, EXT_pixel_format}
-    
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var piValues: Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; piValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] piValues: array of Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var piValues: Int32): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    static function GetPixelFormatAttribivARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; piValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribivARB';
-    
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; var pfValues: single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; [MarshalAs(UnmanagedType.LPArray)] piAttributes: array of Int32; pfValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; [MarshalAs(UnmanagedType.LPArray)] pfValues: array of single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; var pfValues: single): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; pfValues: pointer): UInt32;
-    external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
-    
-    static function ChoosePixelFormat(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] pPfd: array of GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    static function ChoosePixelFormat(hDc: GDI_DC; var pPfd: GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    static function ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    
-    {$endregion WGL_ARB_pixel_format, EXT_pixel_format}
-    
   end;
   
   {$endregion Auto translated}
   
   ///Методы для интеграции с gdi
   gl_gdi = static class
+    
+    static function GetDC(hwnd: IntPtr): IntPtr;
+    external 'user32.dll';
     
     
     
