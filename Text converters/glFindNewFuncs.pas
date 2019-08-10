@@ -89,7 +89,7 @@ begin
           raise new System.InvalidOperationException($'"{l}"');
       end)
       .Select(l->l.Trim(' '))
-      .ToHashSet
+      .ToHashSet&<string>(new FuncNameEqualityComparer) //ToDo 1. почему без &<> не пашет и 2. возможно - это плохая идея... К примеру, это исключает ARB варианты некоторых функций. Но, может, они нужны, для старых версий?
     ;
     
     {$endregion Read used funcs}
@@ -327,15 +327,6 @@ begin
     end).ThenBy(kvp->kvp.Key) do
     begin
       res += #10;
-      
-//      if kvp1.Key='gdi' then
-//      begin
-//        
-//        res += 'implementation'#10;
-//        res += #10;
-//        res += 'type'#10;
-//        
-//      end;
       
       res += '  ';
       res += kvp1.Key;
