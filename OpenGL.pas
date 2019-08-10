@@ -15265,12 +15265,6 @@ type
     
   end;
   
-  gl_gdi = static class
-    
-    
-    
-  end;
-  
   //ToDo подчистить всё, что в этом регионе:
   
   {$region Auto translated}
@@ -15279,7 +15273,7 @@ type
     
     {$region Unsorted}
     
-    static procedure &Begin(mode: PrimitiveType);
+    static procedure &Begin(mode: DummyEnum);
     external 'opengl32.dll' name 'glBegin';
     
     static procedure &End;
@@ -35163,9 +35157,6 @@ type
     
   end;
   
-implementation
-
-type
   gdi = static class
     
     {$region Unsorted}
@@ -35251,7 +35242,16 @@ type
   end;
   
   {$endregion Auto translated}
+  
+  ///Методы для интеграции с gdi
+  gl_gdi = static class
     
+    
+    
+  end;
+  
+implementation
+  
   {$region MtrMlt}
     
   function operator*(m1: Mtr2x2f; m2: Mtr2x2f): Mtr2x2f; extensionmethod;

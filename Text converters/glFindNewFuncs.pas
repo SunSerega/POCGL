@@ -328,14 +328,14 @@ begin
     begin
       res += #10;
       
-      if kvp1.Key='gdi' then
-      begin
-        
-        res += 'implementation'#10;
-        res += #10;
-        res += 'type'#10;
-        
-      end;
+//      if kvp1.Key='gdi' then
+//      begin
+//        
+//        res += 'implementation'#10;
+//        res += #10;
+//        res += 'type'#10;
+//        
+//      end;
       
       res += '  ';
       res += kvp1.Key;

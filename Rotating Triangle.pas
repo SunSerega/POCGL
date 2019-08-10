@@ -40,9 +40,9 @@ begin
   pfd.cColorBits := 24;
   pfd.cDepthBits := 16;
   
-  if 1 <> gl_gdi.SetPixelFormat(
+  if 1 <> gdi.SetPixelFormat(
     Result,
-    gl_gdi.ChoosePixelFormat(Result, pfd),
+    gdi.ChoosePixelFormat(Result, pfd),
     pfd
   ) then raise new InvalidOperationException;
   
@@ -78,7 +78,7 @@ begin
         gl.Clear(BufferTypeFlags.COLOR_BUFFER_BIT);
         var rot_k := Cos(frame_rot);
         
-        gl_Deprecated.Begin(PrimitiveType.TRIANGLES);
+        gl_Deprecated.Begin(PrimitiveType.TRIANGLES.val);
         gl_Deprecated.Color4f(1,0,0,1); gl_Deprecated.Vertex2f( pts[0][0]*rot_k, pts[0][1] );
         gl_Deprecated.Color4f(0,1,0,1); gl_Deprecated.Vertex2f( pts[1][0]*rot_k, pts[1][1] );
         gl_Deprecated.Color4f(0,0,1,1); gl_Deprecated.Vertex2f( pts[2][0]*rot_k, pts[2][1] );
@@ -86,7 +86,7 @@ begin
         
         frame_rot += 0.03;
         gl.Finish;
-        gl_gdi.SwapBuffers(hdc);
+        gdi.SwapBuffers(hdc);
       end);
       
       Sleep(16);
