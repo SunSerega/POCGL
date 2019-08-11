@@ -15203,7 +15203,7 @@ type
     
     public [Result: MarshalAs(UnmanagedType.LPStr)] static function GetStringi(name: GLGetStringQueries; index: UInt32): string;
     external 'opengl32.dll' name 'glGetStringi';
-    public static function GetStringPtri(name: GLGetStringQueries; index: UInt32): IntPtr;
+    public static function GetStringiPtr(name: GLGetStringQueries; index: UInt32): IntPtr;
     external 'opengl32.dll' name 'glGetStringi';
     
     {$endregion 22.2 - Pointer, String, and Related Context Queries}
@@ -15271,11 +15271,8 @@ type
     
     {$region Unsorted}
     
-    public static procedure &Begin(mode: DummyEnum);
+    public static procedure &Begin(mode: PrimitiveType);
     external 'opengl32.dll' name 'glBegin';
-    
-    public static procedure &End;
-    external 'opengl32.dll' name 'glEnd';
     
     public static procedure Bitmap(width: Int32; height: Int32; xorig: single; yorig: single; xmove: single; ymove: single; [MarshalAs(UnmanagedType.LPArray)] bitmap: array of Byte);
     external 'opengl32.dll' name 'glBitmap';
@@ -15314,6 +15311,9 @@ type
     
     public static procedure EnableClientState(&array: DummyEnum);
     external 'opengl32.dll' name 'glEnableClientState';
+    
+    public static procedure &End;
+    external 'opengl32.dll' name 'glEnd';
     
     public static procedure EndList;
     external 'opengl32.dll' name 'glEndList';
@@ -16184,6 +16184,9 @@ type
     public static function CopyContext(hglrcSrc: GLContext; hglrcDst: GLContext; mask: UInt32): UInt32;
     external 'opengl32.dll' name 'wglCopyContext';
     
+    public static function CopyImageSubDataNV(hSrcRC: GLContext; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: GLContext; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): UInt32;
+    external 'opengl32.dll' name 'wglCopyImageSubDataNV';
+    
     public static function CreateContext(hDc: GDI_DC): GLContext;
     external 'opengl32.dll' name 'wglCreateContext';
     
@@ -16221,6 +16224,11 @@ type
     external 'opengl32.dll' name 'wglGetLayerPaletteEntries';
     public static function GetLayerPaletteEntries(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: pointer): Int32;
     external 'opengl32.dll' name 'wglGetLayerPaletteEntries';
+    
+    public static function GetProcAddress([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;
+    external 'opengl32.dll' name 'wglGetProcAddress';
+    public static function GetProcAddress(lpszProc: IntPtr): IntPtr;
+    external 'opengl32.dll' name 'wglGetProcAddress';
     
     public static function LoadDisplayColorTableEXT([MarshalAs(UnmanagedType.LPArray)] table: array of UInt16; length: UInt32): Byte;
     external 'opengl32.dll' name 'wglLoadDisplayColorTableEXT';
@@ -16262,6 +16270,12 @@ type
     
     {$region ARB_render_texture}
     
+    public static function BindTexImageARB(hPbuffer: PBufferName; iBuffer: Int32): UInt32;
+    external 'opengl32.dll' name 'wglBindTexImageARB';
+    
+    public static function ReleaseTexImageARB(hPbuffer: PBufferName; iBuffer: Int32): UInt32;
+    external 'opengl32.dll' name 'wglReleaseTexImageARB';
+    
     public static function SetPbufferAttribARB(hPbuffer: PBufferName; [MarshalAs(UnmanagedType.LPArray)] piAttribList: array of Int32): UInt32;
     external 'opengl32.dll' name 'wglSetPbufferAttribARB';
     public static function SetPbufferAttribARB(hPbuffer: PBufferName; var piAttribList: Int32): UInt32;
@@ -16270,6 +16284,16 @@ type
     external 'opengl32.dll' name 'wglSetPbufferAttribARB';
     
     {$endregion ARB_render_texture}
+    
+    {$region EXT_swap_control}
+    
+    public static function SwapIntervalEXT(interval: Int32): UInt32;
+    external 'opengl32.dll' name 'wglSwapIntervalEXT';
+    
+    public static function GetSwapIntervalEXT: Int32;
+    external 'opengl32.dll' name 'wglGetSwapIntervalEXT';
+    
+    {$endregion EXT_swap_control}
     
     {$region NV_DX_interop}
     
@@ -16306,58 +16330,6 @@ type
     external 'opengl32.dll' name 'wglDXUnlockObjectsNV';
     
     {$endregion NV_DX_interop}
-    
-    {$region NV_present_video}
-    
-    public static procedure PresentFrameKeyedNV(video_slot: UInt32; minPresentTime: UInt64; beginPresentTimeId: UInt32; presentDurationId: UInt32; &type: DummyEnum; target0: DummyEnum; fill0: UInt32; key0: UInt32; target1: DummyEnum; fill1: UInt32; key1: UInt32);
-    external 'opengl32.dll' name 'glPresentFrameKeyedNV';
-    
-    public static procedure PresentFrameDualFillNV(video_slot: UInt32; minPresentTime: UInt64; beginPresentTimeId: UInt32; presentDurationId: UInt32; &type: DummyEnum; target0: DummyEnum; fill0: UInt32; target1: DummyEnum; fill1: UInt32; target2: DummyEnum; fill2: UInt32; target3: DummyEnum; fill3: UInt32);
-    external 'opengl32.dll' name 'glPresentFrameDualFillNV';
-    
-    public static procedure GetVideoivNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
-    external 'opengl32.dll' name 'glGetVideoivNV';
-    public static procedure GetVideoivNV(video_slot: UInt32; pname: DummyEnum; var &params: Int32);
-    external 'opengl32.dll' name 'glGetVideoivNV';
-    public static procedure GetVideoivNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideoivNV';
-    
-    public static procedure GetVideouivNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt32);
-    external 'opengl32.dll' name 'glGetVideouivNV';
-    public static procedure GetVideouivNV(video_slot: UInt32; pname: DummyEnum; var &params: UInt32);
-    external 'opengl32.dll' name 'glGetVideouivNV';
-    public static procedure GetVideouivNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideouivNV';
-    
-    public static procedure GetVideoi64vNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
-    external 'opengl32.dll' name 'glGetVideoi64vNV';
-    public static procedure GetVideoi64vNV(video_slot: UInt32; pname: DummyEnum; var &params: Int64);
-    external 'opengl32.dll' name 'glGetVideoi64vNV';
-    public static procedure GetVideoi64vNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideoi64vNV';
-    
-    public static procedure GetVideoui64vNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt64);
-    external 'opengl32.dll' name 'glGetVideoui64vNV';
-    public static procedure GetVideoui64vNV(video_slot: UInt32; pname: DummyEnum; var &params: UInt64);
-    external 'opengl32.dll' name 'glGetVideoui64vNV';
-    public static procedure GetVideoui64vNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideoui64vNV';
-    
-    public static function QueryCurrentContextNV(iAttribute: Int32; [MarshalAs(UnmanagedType.LPArray)] piValue: array of Int32): UInt32;
-    external 'opengl32.dll' name 'wglQueryCurrentContextNV';
-    public static function QueryCurrentContextNV(iAttribute: Int32; var piValue: Int32): UInt32;
-    external 'opengl32.dll' name 'wglQueryCurrentContextNV';
-    public static function QueryCurrentContextNV(iAttribute: Int32; piValue: pointer): UInt32;
-    external 'opengl32.dll' name 'wglQueryCurrentContextNV';
-    
-    {$endregion NV_present_video}
-    
-    {$region OML_sync_control}
-    
-    public static function SwapLayerBuffersMscOML(hdc: GDI_DC; fuPlanes: Int32; target_msc: Int64; divisor: Int64; remainder: Int64): Int64;
-    external 'opengl32.dll' name 'wglSwapLayerBuffersMscOML';
-    
-    {$endregion OML_sync_control}
     
     {$region WGL_3DL_stereo_control}
     
@@ -16807,6 +16779,17 @@ type
     
     {$endregion WGL_NV_gpu_affinity}
     
+    {$region WGL_ARB_create_context, WGL_ARB_create_context_profile}
+    
+    public static function CreateContextAttribsARB(hDC: GDI_DC; hShareContext: GLContext; [MarshalAs(UnmanagedType.LPArray)] attribList: array of Int32): GLContext;
+    external 'opengl32.dll' name 'wglCreateContextAttribsARB';
+    public static function CreateContextAttribsARB(hDC: GDI_DC; hShareContext: GLContext; var attribList: Int32): GLContext;
+    external 'opengl32.dll' name 'wglCreateContextAttribsARB';
+    public static function CreateContextAttribsARB(hDC: GDI_DC; hShareContext: GLContext; attribList: pointer): GLContext;
+    external 'opengl32.dll' name 'wglCreateContextAttribsARB';
+    
+    {$endregion WGL_ARB_create_context, WGL_ARB_create_context_profile}
+    
     {$region WGL_ARB_extensions_string, EXT_extensions_string}
     
     public static function GetExtensionsStringARB(hdc: GDI_DC): IntPtr;
@@ -16816,8 +16799,8 @@ type
     
     {$region WGL_ARB_make_current_read, EXT_make_current_read}
     
-    public static function MakeContextCurrent(dpy: PDisplay; _draw: GLXDrawable; read: GLXDrawable; ctx: GLXContext): UInt32;
-    external 'opengl32.dll' name 'glXMakeContextCurrent';
+    public static function MakeContextCurrentARB(hDrawDC: GDI_DC; hReadDC: GDI_DC; hglrc: GLContext): UInt32;
+    external 'opengl32.dll' name 'wglMakeContextCurrentARB';
     
     public static function GetCurrentReadDCARB: GDI_DC;
     external 'opengl32.dll' name 'wglGetCurrentReadDCARB';
@@ -16826,12 +16809,12 @@ type
     
     {$region WGL_ARB_pbuffer, EXT_pbuffer}
     
-    public static function CreatePbuffer(dpy: PDisplay; _config: GLXFBConfig; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): GLXPbuffer;
-    external 'opengl32.dll' name 'glXCreatePbuffer';
-    public static function CreatePbuffer(dpy: PDisplay; _config: GLXFBConfig; var attrib_list: Int32): GLXPbuffer;
-    external 'opengl32.dll' name 'glXCreatePbuffer';
-    public static function CreatePbuffer(dpy: PDisplay; _config: GLXFBConfig; attrib_list: pointer): GLXPbuffer;
-    external 'opengl32.dll' name 'glXCreatePbuffer';
+    public static function CreatePbufferARB(hDC: GDI_DC; iPixelFormat: Int32; iWidth: Int32; iHeight: Int32; [MarshalAs(UnmanagedType.LPArray)] piAttribList: array of Int32): PBufferName;
+    external 'opengl32.dll' name 'wglCreatePbufferARB';
+    public static function CreatePbufferARB(hDC: GDI_DC; iPixelFormat: Int32; iWidth: Int32; iHeight: Int32; var piAttribList: Int32): PBufferName;
+    external 'opengl32.dll' name 'wglCreatePbufferARB';
+    public static function CreatePbufferARB(hDC: GDI_DC; iPixelFormat: Int32; iWidth: Int32; iHeight: Int32; piAttribList: pointer): PBufferName;
+    external 'opengl32.dll' name 'wglCreatePbufferARB';
     
     public static function GetPbufferDCARB(hPbuffer: PBufferName): GDI_DC;
     external 'opengl32.dll' name 'wglGetPbufferDCARB';
@@ -16839,8 +16822,8 @@ type
     public static function ReleasePbufferDCARB(hPbuffer: PBufferName; hDC: GDI_DC): Int32;
     external 'opengl32.dll' name 'wglReleasePbufferDCARB';
     
-    public static procedure DestroyPbuffer(dpy: PDisplay; _pbuf: GLXPbuffer);
-    external 'opengl32.dll' name 'glXDestroyPbuffer';
+    public static function DestroyPbufferARB(hPbuffer: PBufferName): UInt32;
+    external 'opengl32.dll' name 'wglDestroyPbufferARB';
     
     public static function QueryPbufferARB(hPbuffer: PBufferName; iAttribute: Int32; [MarshalAs(UnmanagedType.LPArray)] piValue: array of Int32): UInt32;
     external 'opengl32.dll' name 'wglQueryPbufferARB';
@@ -16891,46 +16874,174 @@ type
     public static function GetPixelFormatAttribfvARB(hdc: GDI_DC; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: pointer; pfValues: pointer): UInt32;
     external 'opengl32.dll' name 'wglGetPixelFormatAttribfvARB';
     
-    public static function ChoosePixelFormat(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] pPfd: array of GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    public static function ChoosePixelFormat(hDc: GDI_DC; var pPfd: GDI_PixelFormatDescriptor): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
-    public static function ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32;
-    external 'gdi32.dll' name 'ChoosePixelFormat';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] piAttribIList: array of Int32; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; var piAttribIList: Int32; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; [MarshalAs(UnmanagedType.LPArray)] pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; [MarshalAs(UnmanagedType.LPArray)] piFormats: array of Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; [MarshalAs(UnmanagedType.LPArray)] nNumFormats: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; var nNumFormats: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
+    public static function ChoosePixelFormatARB(hdc: GDI_DC; piAttribIList: pointer; pfAttribFList: pointer; nMaxFormats: UInt32; piFormats: pointer; nNumFormats: pointer): UInt32;
+    external 'opengl32.dll' name 'wglChoosePixelFormatARB';
     
     {$endregion WGL_ARB_pixel_format, EXT_pixel_format}
     
   end;
   
   egl = static class
-    
-    {$region EXT_EGL_image_storage}
-    
-    public static procedure EGLImageTargetTexStorageEXT(target: DummyEnum; _image: GLeglImageOES; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32);
-    external 'opengl32.dll' name 'glEGLImageTargetTexStorageEXT';
-    public static procedure EGLImageTargetTexStorageEXT(target: DummyEnum; _image: GLeglImageOES; var attrib_list: Int32);
-    external 'opengl32.dll' name 'glEGLImageTargetTexStorageEXT';
-    public static procedure EGLImageTargetTexStorageEXT(target: DummyEnum; _image: GLeglImageOES; attrib_list: pointer);
-    external 'opengl32.dll' name 'glEGLImageTargetTexStorageEXT';
-    
-    public static procedure EGLImageTargetTextureStorageEXT(texture: UInt32; _image: GLeglImageOES; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32);
-    external 'opengl32.dll' name 'glEGLImageTargetTextureStorageEXT';
-    public static procedure EGLImageTargetTextureStorageEXT(texture: UInt32; _image: GLeglImageOES; var attrib_list: Int32);
-    external 'opengl32.dll' name 'glEGLImageTargetTextureStorageEXT';
-    public static procedure EGLImageTargetTextureStorageEXT(texture: UInt32; _image: GLeglImageOES; attrib_list: pointer);
-    external 'opengl32.dll' name 'glEGLImageTargetTextureStorageEXT';
-    
-    {$endregion EXT_EGL_image_storage}
-    
-    {$region EXT_external_buffer}
-    
-    public static procedure BufferStorageExternalEXT(target: DummyEnum; offset: IntPtr; size: UIntPtr; _clientBuffer: GLeglClientBufferEXT; _flags: DummyFlags);
-    external 'opengl32.dll' name 'glBufferStorageExternalEXT';
-    
-    public static procedure NamedBufferStorageExternalEXT(buffer: UInt32; offset: IntPtr; size: UIntPtr; _clientBuffer: GLeglClientBufferEXT; _flags: DummyFlags);
-    external 'opengl32.dll' name 'glNamedBufferStorageExternalEXT';
-    
-    {$endregion EXT_external_buffer}
     
     {$region KHR_fence_sync}
     
@@ -16944,6 +17055,9 @@ type
     public static function DestroySyncKHR(dpy: EGLDisplay; _sync: EGLsync): UInt32;
     external 'opengl32.dll' name 'eglDestroySyncKHR';
     
+    public static function ClientWaitSyncKHR(dpy: EGLDisplay; _sync: EGLsync; flags: Int32; timeout: TimeSpan): Int32;
+    external 'opengl32.dll' name 'eglClientWaitSyncKHR';
+    
     public static function GetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32): UInt32;
     external 'opengl32.dll' name 'eglGetSyncAttribKHR';
     public static function GetSyncAttribKHR(dpy: EGLDisplay; _sync: EGLsync; attribute: Int32; var value: Int32): UInt32;
@@ -16952,20 +17066,6 @@ type
     external 'opengl32.dll' name 'eglGetSyncAttribKHR';
     
     {$endregion KHR_fence_sync}
-    
-    {$region OES_EGL_image}
-    
-    public static procedure EGLImageTargetRenderbufferStorageOES(target: DummyEnum; _image: GLeglImageOES);
-    external 'opengl32.dll' name 'glEGLImageTargetRenderbufferStorageOES';
-    
-    {$endregion OES_EGL_image}
-    
-    {$region OES_EGL_image, OES_EGL_image_external}
-    
-    public static procedure EGLImageTargetTexture2DOES(target: DummyEnum; _image: GLeglImageOES);
-    external 'opengl32.dll' name 'glEGLImageTargetTexture2DOES';
-    
-    {$endregion OES_EGL_image, OES_EGL_image_external}
     
   end;
   
@@ -16995,11 +17095,21 @@ type
     public static function AssociateDMPbufferSGIX(dpy: PDisplay; _pbuffer: GLXPbuffer; &params: pointer; _dmbuffer: GLXDMbuffer): UInt32;
     external 'opengl32.dll' name 'glXAssociateDMPbufferSGIX';
     
+    public static procedure CopyImageSubDataNV(dpy: PDisplay; srcCtx: GLXContext; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstCtx: GLXContext; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32);
+    external 'opengl32.dll' name 'glXCopyImageSubDataNV';
+    
     public static function CreateGLXVideoSourceSGIX(_display: PDisplay; screen: Int32; _server: GLXVLServer; _path: GLXVLPath; nodeClass: Int32; drainNode: GLXVLNode): GLXVideoSourceSGIX;
     external 'opengl32.dll' name 'glXCreateGLXVideoSourceSGIX';
     
     public static function CreateNewContext(dpy: PDisplay; _config: GLXFBConfig; render_type: Int32; share_list: GLXContext; direct: UInt32): GLXContext;
     external 'opengl32.dll' name 'glXCreateNewContext';
+    
+    public static function CreatePbuffer(dpy: PDisplay; _config: GLXFBConfig; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): GLXPbuffer;
+    external 'opengl32.dll' name 'glXCreatePbuffer';
+    public static function CreatePbuffer(dpy: PDisplay; _config: GLXFBConfig; var attrib_list: Int32): GLXPbuffer;
+    external 'opengl32.dll' name 'glXCreatePbuffer';
+    public static function CreatePbuffer(dpy: PDisplay; _config: GLXFBConfig; attrib_list: pointer): GLXPbuffer;
+    external 'opengl32.dll' name 'glXCreatePbuffer';
     
     public static function CreatePixmap(dpy: PDisplay; _config: GLXFBConfig; _pixmap: GLXPixmap; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): GLXPixmap;
     external 'opengl32.dll' name 'glXCreatePixmap';
@@ -17021,6 +17131,9 @@ type
     public static procedure DestroyGLXVideoSourceSGIX(dpy: PDisplay; _glxvideosource: GLXVideoSourceSGIX);
     external 'opengl32.dll' name 'glXDestroyGLXVideoSourceSGIX';
     
+    public static procedure DestroyPbuffer(dpy: PDisplay; _pbuf: GLXPbuffer);
+    external 'opengl32.dll' name 'glXDestroyPbuffer';
+    
     public static procedure DestroyPixmap(dpy: PDisplay; _pixmap: GLXPixmap);
     external 'opengl32.dll' name 'glXDestroyPixmap';
     
@@ -17040,6 +17153,9 @@ type
     external 'opengl32.dll' name 'glXGetProcAddress';
     public static function GetProcAddress(procName: pointer): GLXFuncPtr;
     external 'opengl32.dll' name 'glXGetProcAddress';
+    
+    public static function MakeContextCurrent(dpy: PDisplay; _draw: GLXDrawable; read: GLXDrawable; ctx: GLXContext): UInt32;
+    external 'opengl32.dll' name 'glXMakeContextCurrent';
     
     public static function QueryContext(dpy: PDisplay; ctx: GLXContext; attribute: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32): Int32;
     external 'opengl32.dll' name 'glXQueryContext';
@@ -17076,6 +17192,30 @@ type
     external 'opengl32.dll' name 'glXFreeContextEXT';
     
     {$endregion EXT_import_context}
+    
+    {$region EXT_texture_from_pixmap}
+    
+    public static procedure BindTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32);
+    external 'opengl32.dll' name 'glXBindTexImageEXT';
+    public static procedure BindTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32; var attrib_list: Int32);
+    external 'opengl32.dll' name 'glXBindTexImageEXT';
+    public static procedure BindTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32; attrib_list: pointer);
+    external 'opengl32.dll' name 'glXBindTexImageEXT';
+    
+    public static procedure ReleaseTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32);
+    external 'opengl32.dll' name 'glXReleaseTexImageEXT';
+    
+    {$endregion EXT_texture_from_pixmap}
+    
+    {$region GLX_NV_copy_buffer}
+    
+    public static procedure CopyBufferSubDataNV(dpy: PDisplay; readCtx: GLXContext; writeCtx: GLXContext; readTarget: DummyEnum; writeTarget: DummyEnum; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr);
+    external 'opengl32.dll' name 'glXCopyBufferSubDataNV';
+    
+    public static procedure NamedCopyBufferSubDataNV(dpy: PDisplay; readCtx: GLXContext; writeCtx: GLXContext; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr);
+    external 'opengl32.dll' name 'glXNamedCopyBufferSubDataNV';
+    
+    {$endregion GLX_NV_copy_buffer}
     
     {$region MESA_agp_offset}
     
@@ -17135,6 +17275,13 @@ type
     external 'opengl32.dll' name 'glXSet3DfxModeMESA';
     
     {$endregion MESA_set_3dfx_mode}
+    
+    {$region MESA_swap_control}
+    
+    public static function GetSwapIntervalMESA: Int32;
+    external 'opengl32.dll' name 'glXGetSwapIntervalMESA';
+    
+    {$endregion MESA_swap_control}
     
     {$region SGI_make_current_read}
     
@@ -17650,426 +17797,14 @@ type
     
     {$endregion SUN_get_transparent_index}
     
-    {$region AMD_gpu_association, AMD_gpu_association}
-    
-    public static function GetGPUIDsAMD(maxCount: UInt32; [MarshalAs(UnmanagedType.LPArray)] ids: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXGetGPUIDsAMD';
-    public static function GetGPUIDsAMD(maxCount: UInt32; var ids: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXGetGPUIDsAMD';
-    public static function GetGPUIDsAMD(maxCount: UInt32; ids: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetGPUIDsAMD';
-    
-    public static function GetGPUInfoAMD(id: UInt32; &property: Int32; dataType: DummyEnum; size: UInt32; data: pointer): Int32;
-    external 'opengl32.dll' name 'glXGetGPUInfoAMD';
-    
-    public static function CreateAssociatedContextAMD(id: UInt32; share_list: GLXContext): GLXContext;
-    external 'opengl32.dll' name 'glXCreateAssociatedContextAMD';
-    
-    public static function CreateAssociatedContextAttribsAMD(id: UInt32; share_context: GLXContext; [MarshalAs(UnmanagedType.LPArray)] attribList: array of Int32): GLXContext;
-    external 'opengl32.dll' name 'glXCreateAssociatedContextAttribsAMD';
-    public static function CreateAssociatedContextAttribsAMD(id: UInt32; share_context: GLXContext; var attribList: Int32): GLXContext;
-    external 'opengl32.dll' name 'glXCreateAssociatedContextAttribsAMD';
-    public static function CreateAssociatedContextAttribsAMD(id: UInt32; share_context: GLXContext; attribList: pointer): GLXContext;
-    external 'opengl32.dll' name 'glXCreateAssociatedContextAttribsAMD';
-    
-    public static function DeleteAssociatedContextAMD(ctx: GLXContext): UInt32;
-    external 'opengl32.dll' name 'glXDeleteAssociatedContextAMD';
-    
-    public static function MakeAssociatedContextCurrentAMD(ctx: GLXContext): UInt32;
-    external 'opengl32.dll' name 'glXMakeAssociatedContextCurrentAMD';
-    
-    public static function GetCurrentAssociatedContextAMD: GLXContext;
-    external 'opengl32.dll' name 'glXGetCurrentAssociatedContextAMD';
-    
-    public static procedure BlitContextFramebufferAMD(dstCtx: GLXContext; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum);
-    external 'opengl32.dll' name 'glXBlitContextFramebufferAMD';
-    
-    {$endregion AMD_gpu_association, AMD_gpu_association}
-    
-    {$region ARB_render_texture, EXT_texture_from_pixmap}
-    
-    public static procedure BindTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32);
-    external 'opengl32.dll' name 'glXBindTexImageEXT';
-    public static procedure BindTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32; var attrib_list: Int32);
-    external 'opengl32.dll' name 'glXBindTexImageEXT';
-    public static procedure BindTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32; attrib_list: pointer);
-    external 'opengl32.dll' name 'glXBindTexImageEXT';
-    
-    public static procedure ReleaseTexImageEXT(dpy: PDisplay; _drawable: GLXDrawable; buffer: Int32);
-    external 'opengl32.dll' name 'glXReleaseTexImageEXT';
-    
-    {$endregion ARB_render_texture, EXT_texture_from_pixmap}
-    
-    {$region EXT_swap_control, MESA_swap_control}
-    
-    public static function GetSwapIntervalMESA: Int32;
-    external 'opengl32.dll' name 'glXGetSwapIntervalMESA';
-    
-    {$endregion EXT_swap_control, MESA_swap_control}
-    
-    {$region NV_delay_before_swap, NV_delay_before_swap}
-    
-    public static function DelayBeforeSwapNV(dpy: PDisplay; _drawable: GLXDrawable; seconds: single): UInt32;
-    external 'opengl32.dll' name 'glXDelayBeforeSwapNV';
-    
-    {$endregion NV_delay_before_swap, NV_delay_before_swap}
-    
-    {$region NV_present_video, NV_present_video}
-    
-    public static function EnumerateVideoDevicesNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] nelements: array of Int32): pointer;
-    external 'opengl32.dll' name 'glXEnumerateVideoDevicesNV';
-    public static function EnumerateVideoDevicesNV(dpy: PDisplay; screen: Int32; var nelements: Int32): pointer;
-    external 'opengl32.dll' name 'glXEnumerateVideoDevicesNV';
-    public static function EnumerateVideoDevicesNV(dpy: PDisplay; screen: Int32; nelements: pointer): pointer;
-    external 'opengl32.dll' name 'glXEnumerateVideoDevicesNV';
-    
-    public static function BindVideoDeviceNV(dpy: PDisplay; video_slot: UInt32; video_device: UInt32; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): Int32;
-    external 'opengl32.dll' name 'glXBindVideoDeviceNV';
-    public static function BindVideoDeviceNV(dpy: PDisplay; video_slot: UInt32; video_device: UInt32; var attrib_list: Int32): Int32;
-    external 'opengl32.dll' name 'glXBindVideoDeviceNV';
-    public static function BindVideoDeviceNV(dpy: PDisplay; video_slot: UInt32; video_device: UInt32; attrib_list: pointer): Int32;
-    external 'opengl32.dll' name 'glXBindVideoDeviceNV';
-    
-    {$endregion NV_present_video, NV_present_video}
-    
-    {$region NV_swap_group, NV_swap_group}
-    
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; var barrier: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; barrier: pointer): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; var group: UInt32; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; var group: UInt32; var barrier: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; var group: UInt32; barrier: pointer): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: pointer; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: pointer; var barrier: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    public static function QuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: pointer; barrier: pointer): UInt32;
-    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
-    
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; var maxBarriers: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; maxBarriers: pointer): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; var maxGroups: UInt32; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; var maxGroups: UInt32; var maxBarriers: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; var maxGroups: UInt32; maxBarriers: pointer): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; maxGroups: pointer; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; maxGroups: pointer; var maxBarriers: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    public static function QueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; maxGroups: pointer; maxBarriers: pointer): UInt32;
-    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
-    
-    public static function QueryFrameCountNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] count: array of UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryFrameCountNV';
-    public static function QueryFrameCountNV(dpy: PDisplay; screen: Int32; var count: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXQueryFrameCountNV';
-    public static function QueryFrameCountNV(dpy: PDisplay; screen: Int32; count: pointer): UInt32;
-    external 'opengl32.dll' name 'glXQueryFrameCountNV';
-    
-    public static function ResetFrameCountNV(dpy: PDisplay; screen: Int32): UInt32;
-    external 'opengl32.dll' name 'glXResetFrameCountNV';
-    
-    {$endregion NV_swap_group, NV_swap_group}
-    
-    {$region NV_video_capture, NV_video_capture}
-    
-    public static function BindVideoCaptureDeviceNV(dpy: PDisplay; video_capture_slot: UInt32; _device: GLXVideoCaptureDeviceNV): Int32;
-    external 'opengl32.dll' name 'glXBindVideoCaptureDeviceNV';
-    
-    public static function EnumerateVideoCaptureDevicesNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] nelements: array of Int32): pointer;
-    external 'opengl32.dll' name 'glXEnumerateVideoCaptureDevicesNV';
-    public static function EnumerateVideoCaptureDevicesNV(dpy: PDisplay; screen: Int32; var nelements: Int32): pointer;
-    external 'opengl32.dll' name 'glXEnumerateVideoCaptureDevicesNV';
-    public static function EnumerateVideoCaptureDevicesNV(dpy: PDisplay; screen: Int32; nelements: pointer): pointer;
-    external 'opengl32.dll' name 'glXEnumerateVideoCaptureDevicesNV';
-    
-    public static procedure LockVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV);
-    external 'opengl32.dll' name 'glXLockVideoCaptureDeviceNV';
-    
-    public static function QueryVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV; attribute: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32): Int32;
-    external 'opengl32.dll' name 'glXQueryVideoCaptureDeviceNV';
-    public static function QueryVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV; attribute: Int32; var value: Int32): Int32;
-    external 'opengl32.dll' name 'glXQueryVideoCaptureDeviceNV';
-    public static function QueryVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV; attribute: Int32; value: pointer): Int32;
-    external 'opengl32.dll' name 'glXQueryVideoCaptureDeviceNV';
-    
-    public static procedure ReleaseVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV);
-    external 'opengl32.dll' name 'glXReleaseVideoCaptureDeviceNV';
-    
-    {$endregion NV_video_capture, NV_video_capture}
-    
-    {$region NV_video_output, NV_video_output}
-    
-    public static function GetVideoDeviceNV(dpy: PDisplay; screen: Int32; numVideoDevices: Int32; [MarshalAs(UnmanagedType.LPArray)] pVideoDevice: array of GLXVideoDeviceNV): Int32;
-    external 'opengl32.dll' name 'glXGetVideoDeviceNV';
-    public static function GetVideoDeviceNV(dpy: PDisplay; screen: Int32; numVideoDevices: Int32; var pVideoDevice: GLXVideoDeviceNV): Int32;
-    external 'opengl32.dll' name 'glXGetVideoDeviceNV';
-    public static function GetVideoDeviceNV(dpy: PDisplay; screen: Int32; numVideoDevices: Int32; pVideoDevice: pointer): Int32;
-    external 'opengl32.dll' name 'glXGetVideoDeviceNV';
-    
-    public static function ReleaseVideoDeviceNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV): Int32;
-    external 'opengl32.dll' name 'glXReleaseVideoDeviceNV';
-    
-    public static function BindVideoImageNV(dpy: PDisplay; _VideoDevice: GLXVideoDeviceNV; _pbuf: GLXPbuffer; iVideoBuffer: Int32): Int32;
-    external 'opengl32.dll' name 'glXBindVideoImageNV';
-    
-    public static function ReleaseVideoImageNV(dpy: PDisplay; _pbuf: GLXPbuffer): Int32;
-    external 'opengl32.dll' name 'glXReleaseVideoImageNV';
-    
-    public static function SendPbufferToVideoNV(dpy: PDisplay; _pbuf: GLXPbuffer; iBufferType: Int32; [MarshalAs(UnmanagedType.LPArray)] pulCounterPbuffer: array of UInt64; bBlock: Byte): Int32;
-    external 'opengl32.dll' name 'glXSendPbufferToVideoNV';
-    public static function SendPbufferToVideoNV(dpy: PDisplay; _pbuf: GLXPbuffer; iBufferType: Int32; var pulCounterPbuffer: UInt64; bBlock: Byte): Int32;
-    external 'opengl32.dll' name 'glXSendPbufferToVideoNV';
-    public static function SendPbufferToVideoNV(dpy: PDisplay; _pbuf: GLXPbuffer; iBufferType: Int32; pulCounterPbuffer: pointer; bBlock: Byte): Int32;
-    external 'opengl32.dll' name 'glXSendPbufferToVideoNV';
-    
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; var pulCounterOutputVideo: UInt64): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; pulCounterOutputVideo: pointer): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; var pulCounterOutputPbuffer: UInt64; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; var pulCounterOutputPbuffer: UInt64; var pulCounterOutputVideo: UInt64): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; var pulCounterOutputPbuffer: UInt64; pulCounterOutputVideo: pointer): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; pulCounterOutputPbuffer: pointer; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; pulCounterOutputPbuffer: pointer; var pulCounterOutputVideo: UInt64): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    public static function GetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; pulCounterOutputPbuffer: pointer; pulCounterOutputVideo: pointer): Int32;
-    external 'opengl32.dll' name 'glXGetVideoInfoNV';
-    
-    {$endregion NV_video_output, NV_video_output}
-    
-    {$region OML_sync_control, OML_sync_control}
-    
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    public static function GetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetSyncValuesOML';
-    
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; var denominator: Int32): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; denominator: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; var numerator: Int32; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; var numerator: Int32; var denominator: Int32): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; var numerator: Int32; denominator: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; numerator: pointer; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; numerator: pointer; var denominator: Int32): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    public static function GetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; numerator: pointer; denominator: pointer): UInt32;
-    external 'opengl32.dll' name 'glXGetMscRateOML';
-    
-    public static function SwapBuffersMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64): Int64;
-    external 'opengl32.dll' name 'glXSwapBuffersMscOML';
-    
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    public static function WaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForMscOML';
-    
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    public static function WaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; msc: pointer; sbc: pointer): UInt32;
-    external 'opengl32.dll' name 'glXWaitForSbcOML';
-    
-    {$endregion OML_sync_control, OML_sync_control}
-    
-    {$region AMD_gpu_association, AMD_gpu_association, EXT_import_context}
+    {$region AMD_gpu_association, EXT_import_context}
     
     public static function GetContextGPUIDAMD(ctx: GLXContext): UInt32;
     external 'opengl32.dll' name 'glXGetContextGPUIDAMD';
     
-    {$endregion AMD_gpu_association, AMD_gpu_association, EXT_import_context}
+    {$endregion AMD_gpu_association, EXT_import_context}
     
-    {$region NV_swap_group, NV_swap_group, SGIX_swap_barrier}
-    
-    public static function BindSwapBarrierNV(dpy: PDisplay; group: UInt32; barrier: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXBindSwapBarrierNV';
-    
-    {$endregion NV_swap_group, NV_swap_group, SGIX_swap_barrier}
-    
-    {$region NV_swap_group, NV_swap_group, SGIX_swap_group}
-    
-    public static function JoinSwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: UInt32): UInt32;
-    external 'opengl32.dll' name 'glXJoinSwapGroupNV';
-    
-    {$endregion NV_swap_group, NV_swap_group, SGIX_swap_group}
-    
-    {$region ARB_create_context, ARB_create_context_profile, WGL_ARB_create_context, WGL_ARB_create_context_profile}
+    {$region ARB_create_context, ARB_create_context_profile}
     
     public static function CreateContextAttribsARB(dpy: PDisplay; _config: GLXFBConfig; share_context: GLXContext; direct: UInt32; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): GLXContext;
     external 'opengl32.dll' name 'glXCreateContextAttribsARB';
@@ -18078,14 +17813,28 @@ type
     public static function CreateContextAttribsARB(dpy: PDisplay; _config: GLXFBConfig; share_context: GLXContext; direct: UInt32; attrib_list: pointer): GLXContext;
     external 'opengl32.dll' name 'glXCreateContextAttribsARB';
     
-    {$endregion ARB_create_context, ARB_create_context_profile, WGL_ARB_create_context, WGL_ARB_create_context_profile}
+    {$endregion ARB_create_context, ARB_create_context_profile}
     
-    {$region EXT_swap_control, EXT_swap_control, MESA_swap_control, SGI_swap_control}
+    {$region NV_swap_group, SGIX_swap_barrier}
+    
+    public static function BindSwapBarrierNV(dpy: PDisplay; group: UInt32; barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXBindSwapBarrierNV';
+    
+    {$endregion NV_swap_group, SGIX_swap_barrier}
+    
+    {$region NV_swap_group, SGIX_swap_group}
+    
+    public static function JoinSwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXJoinSwapGroupNV';
+    
+    {$endregion NV_swap_group, SGIX_swap_group}
+    
+    {$region EXT_swap_control, MESA_swap_control, SGI_swap_control}
     
     public static procedure SwapIntervalEXT(dpy: PDisplay; _drawable: GLXDrawable; interval: Int32);
     external 'opengl32.dll' name 'glXSwapIntervalEXT';
     
-    {$endregion EXT_swap_control, EXT_swap_control, MESA_swap_control, SGI_swap_control}
+    {$endregion EXT_swap_control, MESA_swap_control, SGI_swap_control}
     
   end;
   
@@ -19323,6 +19072,9 @@ type
     public static procedure NamedBufferPageCommitmentEXT(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: Byte);
     external 'opengl32.dll' name 'glNamedBufferPageCommitmentEXT';
     
+    public static procedure NamedCopyBufferSubDataEXT(readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr);
+    external 'opengl32.dll' name 'glNamedCopyBufferSubDataEXT';
+    
     public static procedure NamedFramebufferTexture1DEXT(framebuffer: UInt32; attachment: DummyEnum; textarget: DummyEnum; texture: UInt32; level: Int32);
     external 'opengl32.dll' name 'glNamedFramebufferTexture1DEXT';
     
@@ -19654,6 +19406,34 @@ type
     external 'opengl32.dll' name 'glColorMaskIndexedEXT';
     
     {$endregion EXT_draw_buffers2}
+    
+    {$region EXT_EGL_image_storage}
+    
+    public static procedure EGLImageTargetTexStorageEXT(target: DummyEnum; _image: GLeglImageOES; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32);
+    external 'opengl32.dll' name 'glEGLImageTargetTexStorageEXT';
+    public static procedure EGLImageTargetTexStorageEXT(target: DummyEnum; _image: GLeglImageOES; var attrib_list: Int32);
+    external 'opengl32.dll' name 'glEGLImageTargetTexStorageEXT';
+    public static procedure EGLImageTargetTexStorageEXT(target: DummyEnum; _image: GLeglImageOES; attrib_list: pointer);
+    external 'opengl32.dll' name 'glEGLImageTargetTexStorageEXT';
+    
+    public static procedure EGLImageTargetTextureStorageEXT(texture: UInt32; _image: GLeglImageOES; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32);
+    external 'opengl32.dll' name 'glEGLImageTargetTextureStorageEXT';
+    public static procedure EGLImageTargetTextureStorageEXT(texture: UInt32; _image: GLeglImageOES; var attrib_list: Int32);
+    external 'opengl32.dll' name 'glEGLImageTargetTextureStorageEXT';
+    public static procedure EGLImageTargetTextureStorageEXT(texture: UInt32; _image: GLeglImageOES; attrib_list: pointer);
+    external 'opengl32.dll' name 'glEGLImageTargetTextureStorageEXT';
+    
+    {$endregion EXT_EGL_image_storage}
+    
+    {$region EXT_external_buffer}
+    
+    public static procedure BufferStorageExternalEXT(target: DummyEnum; offset: IntPtr; size: UIntPtr; _clientBuffer: GLeglClientBufferEXT; _flags: DummyFlags);
+    external 'opengl32.dll' name 'glBufferStorageExternalEXT';
+    
+    public static procedure NamedBufferStorageExternalEXT(buffer: UInt32; offset: IntPtr; size: UIntPtr; _clientBuffer: GLeglClientBufferEXT; _flags: DummyFlags);
+    external 'opengl32.dll' name 'glNamedBufferStorageExternalEXT';
+    
+    {$endregion EXT_external_buffer}
     
     {$region EXT_external_objects}
     
@@ -20389,13 +20169,6 @@ type
     
     {$endregion EXT_x11_sync_object}
     
-    {$region GLX_NV_copy_buffer}
-    
-    public static procedure NamedCopyBufferSubDataEXT(readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr);
-    external 'opengl32.dll' name 'glNamedCopyBufferSubDataEXT';
-    
-    {$endregion GLX_NV_copy_buffer}
-    
     {$region ARB_vertex_attrib_64bit, EXT_vertex_attrib_64bit}
     
     public static procedure VertexArrayVertexAttribLOffsetEXT(vaobj: UInt32; buffer: UInt32; index: UInt32; size: Int32; &type: DummyEnum; stride: Int32; offset: IntPtr);
@@ -20513,6 +20286,869 @@ type
     external 'opengl32.dll' name 'glGetIntegerIndexedvEXT';
     
     {$endregion ARB_viewport_array, EXT_draw_buffers2, EXT_transform_feedback, NV_explicit_multisample, NV_parameter_buffer_object, NV_transform_feedback}
+    
+  end;
+  
+  gl_Misc = static class
+    
+    {$region AMD_gpu_association}
+    
+    public static function glXGetGPUIDsAMD(maxCount: UInt32; [MarshalAs(UnmanagedType.LPArray)] ids: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXGetGPUIDsAMD';
+    public static function glXGetGPUIDsAMD(maxCount: UInt32; var ids: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXGetGPUIDsAMD';
+    public static function glXGetGPUIDsAMD(maxCount: UInt32; ids: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetGPUIDsAMD';
+    
+    public static function glXGetGPUInfoAMD(id: UInt32; &property: Int32; dataType: DummyEnum; size: UInt32; data: pointer): Int32;
+    external 'opengl32.dll' name 'glXGetGPUInfoAMD';
+    
+    public static function glXCreateAssociatedContextAMD(id: UInt32; share_list: GLXContext): GLXContext;
+    external 'opengl32.dll' name 'glXCreateAssociatedContextAMD';
+    
+    public static function glXCreateAssociatedContextAttribsAMD(id: UInt32; share_context: GLXContext; [MarshalAs(UnmanagedType.LPArray)] attribList: array of Int32): GLXContext;
+    external 'opengl32.dll' name 'glXCreateAssociatedContextAttribsAMD';
+    public static function glXCreateAssociatedContextAttribsAMD(id: UInt32; share_context: GLXContext; var attribList: Int32): GLXContext;
+    external 'opengl32.dll' name 'glXCreateAssociatedContextAttribsAMD';
+    public static function glXCreateAssociatedContextAttribsAMD(id: UInt32; share_context: GLXContext; attribList: pointer): GLXContext;
+    external 'opengl32.dll' name 'glXCreateAssociatedContextAttribsAMD';
+    
+    public static function glXDeleteAssociatedContextAMD(ctx: GLXContext): UInt32;
+    external 'opengl32.dll' name 'glXDeleteAssociatedContextAMD';
+    
+    public static function glXMakeAssociatedContextCurrentAMD(ctx: GLXContext): UInt32;
+    external 'opengl32.dll' name 'glXMakeAssociatedContextCurrentAMD';
+    
+    public static function glXGetCurrentAssociatedContextAMD: GLXContext;
+    external 'opengl32.dll' name 'glXGetCurrentAssociatedContextAMD';
+    
+    public static procedure glXBlitContextFramebufferAMD(dstCtx: GLXContext; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum);
+    external 'opengl32.dll' name 'glXBlitContextFramebufferAMD';
+    
+    public static function wglGetGPUIDsAMD(maxCount: UInt32; [MarshalAs(UnmanagedType.LPArray)] ids: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglGetGPUIDsAMD';
+    public static function wglGetGPUIDsAMD(maxCount: UInt32; var ids: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglGetGPUIDsAMD';
+    public static function wglGetGPUIDsAMD(maxCount: UInt32; ids: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetGPUIDsAMD';
+    
+    public static function wglGetGPUInfoAMD(id: UInt32; &property: Int32; dataType: DummyEnum; size: UInt32; data: pointer): Int32;
+    external 'opengl32.dll' name 'wglGetGPUInfoAMD';
+    
+    public static function wglGetContextGPUIDAMD(hglrc: GLContext): UInt32;
+    external 'opengl32.dll' name 'wglGetContextGPUIDAMD';
+    
+    public static function wglCreateAssociatedContextAMD(id: UInt32): GLContext;
+    external 'opengl32.dll' name 'wglCreateAssociatedContextAMD';
+    
+    public static function wglCreateAssociatedContextAttribsAMD(id: UInt32; hShareContext: GLContext; [MarshalAs(UnmanagedType.LPArray)] attribList: array of Int32): GLContext;
+    external 'opengl32.dll' name 'wglCreateAssociatedContextAttribsAMD';
+    public static function wglCreateAssociatedContextAttribsAMD(id: UInt32; hShareContext: GLContext; var attribList: Int32): GLContext;
+    external 'opengl32.dll' name 'wglCreateAssociatedContextAttribsAMD';
+    public static function wglCreateAssociatedContextAttribsAMD(id: UInt32; hShareContext: GLContext; attribList: pointer): GLContext;
+    external 'opengl32.dll' name 'wglCreateAssociatedContextAttribsAMD';
+    
+    public static function wglDeleteAssociatedContextAMD(hglrc: GLContext): UInt32;
+    external 'opengl32.dll' name 'wglDeleteAssociatedContextAMD';
+    
+    public static function wglMakeAssociatedContextCurrentAMD(hglrc: GLContext): UInt32;
+    external 'opengl32.dll' name 'wglMakeAssociatedContextCurrentAMD';
+    
+    public static function wglGetCurrentAssociatedContextAMD: GLContext;
+    external 'opengl32.dll' name 'wglGetCurrentAssociatedContextAMD';
+    
+    public static procedure wglBlitContextFramebufferAMD(dstCtx: GLContext; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum);
+    external 'opengl32.dll' name 'wglBlitContextFramebufferAMD';
+    
+    {$endregion AMD_gpu_association}
+    
+    {$region NV_delay_before_swap}
+    
+    public static function glXDelayBeforeSwapNV(dpy: PDisplay; _drawable: GLXDrawable; seconds: single): UInt32;
+    external 'opengl32.dll' name 'glXDelayBeforeSwapNV';
+    
+    public static function wglDelayBeforeSwapNV(hDC: GDI_DC; seconds: single): UInt32;
+    external 'opengl32.dll' name 'wglDelayBeforeSwapNV';
+    
+    {$endregion NV_delay_before_swap}
+    
+    {$region NV_present_video}
+    
+    public static procedure PresentFrameKeyedNV(video_slot: UInt32; minPresentTime: UInt64; beginPresentTimeId: UInt32; presentDurationId: UInt32; &type: DummyEnum; target0: DummyEnum; fill0: UInt32; key0: UInt32; target1: DummyEnum; fill1: UInt32; key1: UInt32);
+    external 'opengl32.dll' name 'glPresentFrameKeyedNV';
+    
+    public static procedure PresentFrameDualFillNV(video_slot: UInt32; minPresentTime: UInt64; beginPresentTimeId: UInt32; presentDurationId: UInt32; &type: DummyEnum; target0: DummyEnum; fill0: UInt32; target1: DummyEnum; fill1: UInt32; target2: DummyEnum; fill2: UInt32; target3: DummyEnum; fill3: UInt32);
+    external 'opengl32.dll' name 'glPresentFrameDualFillNV';
+    
+    public static procedure GetVideoivNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetVideoivNV';
+    public static procedure GetVideoivNV(video_slot: UInt32; pname: DummyEnum; var &params: Int32);
+    external 'opengl32.dll' name 'glGetVideoivNV';
+    public static procedure GetVideoivNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideoivNV';
+    
+    public static procedure GetVideouivNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt32);
+    external 'opengl32.dll' name 'glGetVideouivNV';
+    public static procedure GetVideouivNV(video_slot: UInt32; pname: DummyEnum; var &params: UInt32);
+    external 'opengl32.dll' name 'glGetVideouivNV';
+    public static procedure GetVideouivNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideouivNV';
+    
+    public static procedure GetVideoi64vNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int64);
+    external 'opengl32.dll' name 'glGetVideoi64vNV';
+    public static procedure GetVideoi64vNV(video_slot: UInt32; pname: DummyEnum; var &params: Int64);
+    external 'opengl32.dll' name 'glGetVideoi64vNV';
+    public static procedure GetVideoi64vNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideoi64vNV';
+    
+    public static procedure GetVideoui64vNV(video_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of UInt64);
+    external 'opengl32.dll' name 'glGetVideoui64vNV';
+    public static procedure GetVideoui64vNV(video_slot: UInt32; pname: DummyEnum; var &params: UInt64);
+    external 'opengl32.dll' name 'glGetVideoui64vNV';
+    public static procedure GetVideoui64vNV(video_slot: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideoui64vNV';
+    
+    public static function glXEnumerateVideoDevicesNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] nelements: array of Int32): pointer;
+    external 'opengl32.dll' name 'glXEnumerateVideoDevicesNV';
+    public static function glXEnumerateVideoDevicesNV(dpy: PDisplay; screen: Int32; var nelements: Int32): pointer;
+    external 'opengl32.dll' name 'glXEnumerateVideoDevicesNV';
+    public static function glXEnumerateVideoDevicesNV(dpy: PDisplay; screen: Int32; nelements: pointer): pointer;
+    external 'opengl32.dll' name 'glXEnumerateVideoDevicesNV';
+    
+    public static function glXBindVideoDeviceNV(dpy: PDisplay; video_slot: UInt32; video_device: UInt32; [MarshalAs(UnmanagedType.LPArray)] attrib_list: array of Int32): Int32;
+    external 'opengl32.dll' name 'glXBindVideoDeviceNV';
+    public static function glXBindVideoDeviceNV(dpy: PDisplay; video_slot: UInt32; video_device: UInt32; var attrib_list: Int32): Int32;
+    external 'opengl32.dll' name 'glXBindVideoDeviceNV';
+    public static function glXBindVideoDeviceNV(dpy: PDisplay; video_slot: UInt32; video_device: UInt32; attrib_list: pointer): Int32;
+    external 'opengl32.dll' name 'glXBindVideoDeviceNV';
+    
+    public static function wglEnumerateVideoDevicesNV(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] phDeviceList: array of VideoOutputDeviceHandleNV): Int32;
+    external 'opengl32.dll' name 'wglEnumerateVideoDevicesNV';
+    public static function wglEnumerateVideoDevicesNV(hDc: GDI_DC; var phDeviceList: VideoOutputDeviceHandleNV): Int32;
+    external 'opengl32.dll' name 'wglEnumerateVideoDevicesNV';
+    public static function wglEnumerateVideoDevicesNV(hDc: GDI_DC; phDeviceList: pointer): Int32;
+    external 'opengl32.dll' name 'wglEnumerateVideoDevicesNV';
+    
+    public static function wglBindVideoDeviceNV(hDc: GDI_DC; uVideoSlot: UInt32; hVideoDevice: VideoOutputDeviceHandleNV; [MarshalAs(UnmanagedType.LPArray)] piAttribList: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglBindVideoDeviceNV';
+    public static function wglBindVideoDeviceNV(hDc: GDI_DC; uVideoSlot: UInt32; hVideoDevice: VideoOutputDeviceHandleNV; var piAttribList: Int32): UInt32;
+    external 'opengl32.dll' name 'wglBindVideoDeviceNV';
+    public static function wglBindVideoDeviceNV(hDc: GDI_DC; uVideoSlot: UInt32; hVideoDevice: VideoOutputDeviceHandleNV; piAttribList: pointer): UInt32;
+    external 'opengl32.dll' name 'wglBindVideoDeviceNV';
+    
+    public static function wglQueryCurrentContextNV(iAttribute: Int32; [MarshalAs(UnmanagedType.LPArray)] piValue: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglQueryCurrentContextNV';
+    public static function wglQueryCurrentContextNV(iAttribute: Int32; var piValue: Int32): UInt32;
+    external 'opengl32.dll' name 'wglQueryCurrentContextNV';
+    public static function wglQueryCurrentContextNV(iAttribute: Int32; piValue: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQueryCurrentContextNV';
+    
+    {$endregion NV_present_video}
+    
+    {$region NV_swap_group}
+    
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; var barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; barrier: pointer): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; var group: UInt32; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; var group: UInt32; var barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; var group: UInt32; barrier: pointer): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: pointer; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: pointer; var barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    public static function glXQuerySwapGroupNV(dpy: PDisplay; _drawable: GLXDrawable; group: pointer; barrier: pointer): UInt32;
+    external 'opengl32.dll' name 'glXQuerySwapGroupNV';
+    
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; var maxBarriers: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; maxBarriers: pointer): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; var maxGroups: UInt32; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; var maxGroups: UInt32; var maxBarriers: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; var maxGroups: UInt32; maxBarriers: pointer): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; maxGroups: pointer; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; maxGroups: pointer; var maxBarriers: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    public static function glXQueryMaxSwapGroupsNV(dpy: PDisplay; screen: Int32; maxGroups: pointer; maxBarriers: pointer): UInt32;
+    external 'opengl32.dll' name 'glXQueryMaxSwapGroupsNV';
+    
+    public static function glXQueryFrameCountNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] count: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryFrameCountNV';
+    public static function glXQueryFrameCountNV(dpy: PDisplay; screen: Int32; var count: UInt32): UInt32;
+    external 'opengl32.dll' name 'glXQueryFrameCountNV';
+    public static function glXQueryFrameCountNV(dpy: PDisplay; screen: Int32; count: pointer): UInt32;
+    external 'opengl32.dll' name 'glXQueryFrameCountNV';
+    
+    public static function glXResetFrameCountNV(dpy: PDisplay; screen: Int32): UInt32;
+    external 'opengl32.dll' name 'glXResetFrameCountNV';
+    
+    public static function wglJoinSwapGroupNV(hDC: GDI_DC; group: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglJoinSwapGroupNV';
+    
+    public static function wglBindSwapBarrierNV(group: UInt32; barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglBindSwapBarrierNV';
+    
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; var barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] group: array of UInt32; barrier: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; var group: UInt32; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; var group: UInt32; var barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; var group: UInt32; barrier: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; group: pointer; [MarshalAs(UnmanagedType.LPArray)] barrier: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; group: pointer; var barrier: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    public static function wglQuerySwapGroupNV(hDC: GDI_DC; group: pointer; barrier: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQuerySwapGroupNV';
+    
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; var maxBarriers: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] maxGroups: array of UInt32; maxBarriers: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; var maxGroups: UInt32; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; var maxGroups: UInt32; var maxBarriers: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; var maxGroups: UInt32; maxBarriers: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; maxGroups: pointer; [MarshalAs(UnmanagedType.LPArray)] maxBarriers: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; maxGroups: pointer; var maxBarriers: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    public static function wglQueryMaxSwapGroupsNV(hDC: GDI_DC; maxGroups: pointer; maxBarriers: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQueryMaxSwapGroupsNV';
+    
+    public static function wglQueryFrameCountNV(hDC: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] count: array of UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryFrameCountNV';
+    public static function wglQueryFrameCountNV(hDC: GDI_DC; var count: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglQueryFrameCountNV';
+    public static function wglQueryFrameCountNV(hDC: GDI_DC; count: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQueryFrameCountNV';
+    
+    public static function wglResetFrameCountNV(hDC: GDI_DC): UInt32;
+    external 'opengl32.dll' name 'wglResetFrameCountNV';
+    
+    {$endregion NV_swap_group}
+    
+    {$region NV_video_capture}
+    
+    public static procedure BeginVideoCaptureNV(video_capture_slot: UInt32);
+    external 'opengl32.dll' name 'glBeginVideoCaptureNV';
+    
+    public static procedure BindVideoCaptureStreamBufferNV(video_capture_slot: UInt32; stream: UInt32; frame_region: DummyEnum; offset: IntPtr);
+    external 'opengl32.dll' name 'glBindVideoCaptureStreamBufferNV';
+    
+    public static procedure BindVideoCaptureStreamTextureNV(video_capture_slot: UInt32; stream: UInt32; frame_region: DummyEnum; target: DummyEnum; texture: UInt32);
+    external 'opengl32.dll' name 'glBindVideoCaptureStreamTextureNV';
+    
+    public static procedure EndVideoCaptureNV(video_capture_slot: UInt32);
+    external 'opengl32.dll' name 'glEndVideoCaptureNV';
+    
+    public static procedure GetVideoCaptureivNV(video_capture_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetVideoCaptureivNV';
+    public static procedure GetVideoCaptureivNV(video_capture_slot: UInt32; pname: DummyEnum; var &params: Int32);
+    external 'opengl32.dll' name 'glGetVideoCaptureivNV';
+    public static procedure GetVideoCaptureivNV(video_capture_slot: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideoCaptureivNV';
+    
+    public static procedure GetVideoCaptureStreamivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamivNV';
+    public static procedure GetVideoCaptureStreamivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: Int32);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamivNV';
+    public static procedure GetVideoCaptureStreamivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamivNV';
+    
+    public static procedure GetVideoCaptureStreamfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamfvNV';
+    public static procedure GetVideoCaptureStreamfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: single);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamfvNV';
+    public static procedure GetVideoCaptureStreamfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamfvNV';
+    
+    public static procedure GetVideoCaptureStreamdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of double);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamdvNV';
+    public static procedure GetVideoCaptureStreamdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: double);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamdvNV';
+    public static procedure GetVideoCaptureStreamdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glGetVideoCaptureStreamdvNV';
+    
+    public static function VideoCaptureNV(video_capture_slot: UInt32; [MarshalAs(UnmanagedType.LPArray)] sequence_num: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] capture_time: array of UInt64): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; [MarshalAs(UnmanagedType.LPArray)] sequence_num: array of UInt32; var capture_time: UInt64): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; [MarshalAs(UnmanagedType.LPArray)] sequence_num: array of UInt32; capture_time: pointer): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; var sequence_num: UInt32; [MarshalAs(UnmanagedType.LPArray)] capture_time: array of UInt64): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; var sequence_num: UInt32; var capture_time: UInt64): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; var sequence_num: UInt32; capture_time: pointer): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; sequence_num: pointer; [MarshalAs(UnmanagedType.LPArray)] capture_time: array of UInt64): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; sequence_num: pointer; var capture_time: UInt64): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    public static function VideoCaptureNV(video_capture_slot: UInt32; sequence_num: pointer; capture_time: pointer): DummyEnum;
+    external 'opengl32.dll' name 'glVideoCaptureNV';
+    
+    public static procedure VideoCaptureStreamParameterivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterivNV';
+    public static procedure VideoCaptureStreamParameterivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: Int32);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterivNV';
+    public static procedure VideoCaptureStreamParameterivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterivNV';
+    
+    public static procedure VideoCaptureStreamParameterfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterfvNV';
+    public static procedure VideoCaptureStreamParameterfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: single);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterfvNV';
+    public static procedure VideoCaptureStreamParameterfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterfvNV';
+    
+    public static procedure VideoCaptureStreamParameterdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of double);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterdvNV';
+    public static procedure VideoCaptureStreamParameterdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: double);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterdvNV';
+    public static procedure VideoCaptureStreamParameterdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
+    external 'opengl32.dll' name 'glVideoCaptureStreamParameterdvNV';
+    
+    public static function glXBindVideoCaptureDeviceNV(dpy: PDisplay; video_capture_slot: UInt32; _device: GLXVideoCaptureDeviceNV): Int32;
+    external 'opengl32.dll' name 'glXBindVideoCaptureDeviceNV';
+    
+    public static function glXEnumerateVideoCaptureDevicesNV(dpy: PDisplay; screen: Int32; [MarshalAs(UnmanagedType.LPArray)] nelements: array of Int32): pointer;
+    external 'opengl32.dll' name 'glXEnumerateVideoCaptureDevicesNV';
+    public static function glXEnumerateVideoCaptureDevicesNV(dpy: PDisplay; screen: Int32; var nelements: Int32): pointer;
+    external 'opengl32.dll' name 'glXEnumerateVideoCaptureDevicesNV';
+    public static function glXEnumerateVideoCaptureDevicesNV(dpy: PDisplay; screen: Int32; nelements: pointer): pointer;
+    external 'opengl32.dll' name 'glXEnumerateVideoCaptureDevicesNV';
+    
+    public static procedure glXLockVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV);
+    external 'opengl32.dll' name 'glXLockVideoCaptureDeviceNV';
+    
+    public static function glXQueryVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV; attribute: Int32; [MarshalAs(UnmanagedType.LPArray)] value: array of Int32): Int32;
+    external 'opengl32.dll' name 'glXQueryVideoCaptureDeviceNV';
+    public static function glXQueryVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV; attribute: Int32; var value: Int32): Int32;
+    external 'opengl32.dll' name 'glXQueryVideoCaptureDeviceNV';
+    public static function glXQueryVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV; attribute: Int32; value: pointer): Int32;
+    external 'opengl32.dll' name 'glXQueryVideoCaptureDeviceNV';
+    
+    public static procedure glXReleaseVideoCaptureDeviceNV(dpy: PDisplay; _device: GLXVideoCaptureDeviceNV);
+    external 'opengl32.dll' name 'glXReleaseVideoCaptureDeviceNV';
+    
+    public static function wglBindVideoCaptureDeviceNV(uVideoSlot: UInt32; hDevice: VideoInputDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglBindVideoCaptureDeviceNV';
+    
+    public static function wglEnumerateVideoCaptureDevicesNV(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] phDeviceList: array of VideoInputDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglEnumerateVideoCaptureDevicesNV';
+    public static function wglEnumerateVideoCaptureDevicesNV(hDc: GDI_DC; var phDeviceList: VideoInputDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglEnumerateVideoCaptureDevicesNV';
+    public static function wglEnumerateVideoCaptureDevicesNV(hDc: GDI_DC; phDeviceList: pointer): UInt32;
+    external 'opengl32.dll' name 'wglEnumerateVideoCaptureDevicesNV';
+    
+    public static function wglLockVideoCaptureDeviceNV(hDc: GDI_DC; hDevice: VideoInputDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglLockVideoCaptureDeviceNV';
+    
+    public static function wglQueryVideoCaptureDeviceNV(hDc: GDI_DC; hDevice: VideoInputDeviceHandleNV; iAttribute: Int32; [MarshalAs(UnmanagedType.LPArray)] piValue: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglQueryVideoCaptureDeviceNV';
+    public static function wglQueryVideoCaptureDeviceNV(hDc: GDI_DC; hDevice: VideoInputDeviceHandleNV; iAttribute: Int32; var piValue: Int32): UInt32;
+    external 'opengl32.dll' name 'wglQueryVideoCaptureDeviceNV';
+    public static function wglQueryVideoCaptureDeviceNV(hDc: GDI_DC; hDevice: VideoInputDeviceHandleNV; iAttribute: Int32; piValue: pointer): UInt32;
+    external 'opengl32.dll' name 'wglQueryVideoCaptureDeviceNV';
+    
+    public static function wglReleaseVideoCaptureDeviceNV(hDc: GDI_DC; hDevice: VideoInputDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglReleaseVideoCaptureDeviceNV';
+    
+    {$endregion NV_video_capture}
+    
+    {$region NV_video_output}
+    
+    public static function glXGetVideoDeviceNV(dpy: PDisplay; screen: Int32; numVideoDevices: Int32; [MarshalAs(UnmanagedType.LPArray)] pVideoDevice: array of GLXVideoDeviceNV): Int32;
+    external 'opengl32.dll' name 'glXGetVideoDeviceNV';
+    public static function glXGetVideoDeviceNV(dpy: PDisplay; screen: Int32; numVideoDevices: Int32; var pVideoDevice: GLXVideoDeviceNV): Int32;
+    external 'opengl32.dll' name 'glXGetVideoDeviceNV';
+    public static function glXGetVideoDeviceNV(dpy: PDisplay; screen: Int32; numVideoDevices: Int32; pVideoDevice: pointer): Int32;
+    external 'opengl32.dll' name 'glXGetVideoDeviceNV';
+    
+    public static function glXReleaseVideoDeviceNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV): Int32;
+    external 'opengl32.dll' name 'glXReleaseVideoDeviceNV';
+    
+    public static function glXBindVideoImageNV(dpy: PDisplay; _VideoDevice: GLXVideoDeviceNV; _pbuf: GLXPbuffer; iVideoBuffer: Int32): Int32;
+    external 'opengl32.dll' name 'glXBindVideoImageNV';
+    
+    public static function glXReleaseVideoImageNV(dpy: PDisplay; _pbuf: GLXPbuffer): Int32;
+    external 'opengl32.dll' name 'glXReleaseVideoImageNV';
+    
+    public static function glXSendPbufferToVideoNV(dpy: PDisplay; _pbuf: GLXPbuffer; iBufferType: Int32; [MarshalAs(UnmanagedType.LPArray)] pulCounterPbuffer: array of UInt64; bBlock: Byte): Int32;
+    external 'opengl32.dll' name 'glXSendPbufferToVideoNV';
+    public static function glXSendPbufferToVideoNV(dpy: PDisplay; _pbuf: GLXPbuffer; iBufferType: Int32; var pulCounterPbuffer: UInt64; bBlock: Byte): Int32;
+    external 'opengl32.dll' name 'glXSendPbufferToVideoNV';
+    public static function glXSendPbufferToVideoNV(dpy: PDisplay; _pbuf: GLXPbuffer; iBufferType: Int32; pulCounterPbuffer: pointer; bBlock: Byte): Int32;
+    external 'opengl32.dll' name 'glXSendPbufferToVideoNV';
+    
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; var pulCounterOutputVideo: UInt64): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; pulCounterOutputVideo: pointer): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; var pulCounterOutputPbuffer: UInt64; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; var pulCounterOutputPbuffer: UInt64; var pulCounterOutputVideo: UInt64): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; var pulCounterOutputPbuffer: UInt64; pulCounterOutputVideo: pointer): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; pulCounterOutputPbuffer: pointer; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; pulCounterOutputPbuffer: pointer; var pulCounterOutputVideo: UInt64): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    public static function glXGetVideoInfoNV(dpy: PDisplay; screen: Int32; _VideoDevice: GLXVideoDeviceNV; pulCounterOutputPbuffer: pointer; pulCounterOutputVideo: pointer): Int32;
+    external 'opengl32.dll' name 'glXGetVideoInfoNV';
+    
+    public static function wglGetVideoDeviceNV(hDC: GDI_DC; numDevices: Int32; [MarshalAs(UnmanagedType.LPArray)] hVideoDevice: array of VideoDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoDeviceNV';
+    public static function wglGetVideoDeviceNV(hDC: GDI_DC; numDevices: Int32; var hVideoDevice: VideoDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoDeviceNV';
+    public static function wglGetVideoDeviceNV(hDC: GDI_DC; numDevices: Int32; hVideoDevice: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoDeviceNV';
+    
+    public static function wglReleaseVideoDeviceNV(hVideoDevice: VideoDeviceHandleNV): UInt32;
+    external 'opengl32.dll' name 'wglReleaseVideoDeviceNV';
+    
+    public static function wglBindVideoImageNV(hVideoDevice: VideoDeviceHandleNV; hPbuffer: PBufferName; iVideoBuffer: Int32): UInt32;
+    external 'opengl32.dll' name 'wglBindVideoImageNV';
+    
+    public static function wglReleaseVideoImageNV(hPbuffer: PBufferName; iVideoBuffer: Int32): UInt32;
+    external 'opengl32.dll' name 'wglReleaseVideoImageNV';
+    
+    public static function wglSendPbufferToVideoNV(hPbuffer: PBufferName; iBufferType: Int32; [MarshalAs(UnmanagedType.LPArray)] pulCounterPbuffer: array of UInt64; bBlock: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglSendPbufferToVideoNV';
+    public static function wglSendPbufferToVideoNV(hPbuffer: PBufferName; iBufferType: Int32; var pulCounterPbuffer: UInt64; bBlock: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglSendPbufferToVideoNV';
+    public static function wglSendPbufferToVideoNV(hPbuffer: PBufferName; iBufferType: Int32; pulCounterPbuffer: pointer; bBlock: UInt32): UInt32;
+    external 'opengl32.dll' name 'wglSendPbufferToVideoNV';
+    
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; var pulCounterOutputVideo: UInt64): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputPbuffer: array of UInt64; pulCounterOutputVideo: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; var pulCounterOutputPbuffer: UInt64; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; var pulCounterOutputPbuffer: UInt64; var pulCounterOutputVideo: UInt64): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; var pulCounterOutputPbuffer: UInt64; pulCounterOutputVideo: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; pulCounterOutputPbuffer: pointer; [MarshalAs(UnmanagedType.LPArray)] pulCounterOutputVideo: array of UInt64): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; pulCounterOutputPbuffer: pointer; var pulCounterOutputVideo: UInt64): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    public static function wglGetVideoInfoNV(hpVideoDevice: VideoDeviceHandleNV; pulCounterOutputPbuffer: pointer; pulCounterOutputVideo: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetVideoInfoNV';
+    
+    {$endregion NV_video_output}
+    
+    {$region OML_sync_control}
+    
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    public static function glXGetSyncValuesOML(dpy: PDisplay; _drawable: GLXDrawable; ust: pointer; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetSyncValuesOML';
+    
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; var denominator: Int32): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; denominator: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; var numerator: Int32; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; var numerator: Int32; var denominator: Int32): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; var numerator: Int32; denominator: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; numerator: pointer; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; numerator: pointer; var denominator: Int32): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    public static function glXGetMscRateOML(dpy: PDisplay; _drawable: GLXDrawable; numerator: pointer; denominator: pointer): UInt32;
+    external 'opengl32.dll' name 'glXGetMscRateOML';
+    
+    public static function glXSwapBuffersMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64): Int64;
+    external 'opengl32.dll' name 'glXSwapBuffersMscOML';
+    
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    public static function glXWaitForMscOML(dpy: PDisplay; _drawable: GLXDrawable; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForMscOML';
+    
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    public static function glXWaitForSbcOML(dpy: PDisplay; _drawable: GLXDrawable; target_sbc: Int64; ust: pointer; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'glXWaitForSbcOML';
+    
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    public static function wglGetSyncValuesOML(hdc: GDI_DC; ust: pointer; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetSyncValuesOML';
+    
+    public static function wglGetMscRateOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; var denominator: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] numerator: array of Int32; denominator: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; var numerator: Int32; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; var numerator: Int32; var denominator: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; var numerator: Int32; denominator: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; numerator: pointer; [MarshalAs(UnmanagedType.LPArray)] denominator: array of Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; numerator: pointer; var denominator: Int32): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    public static function wglGetMscRateOML(hdc: GDI_DC; numerator: pointer; denominator: pointer): UInt32;
+    external 'opengl32.dll' name 'wglGetMscRateOML';
+    
+    public static function wglSwapBuffersMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64): Int64;
+    external 'opengl32.dll' name 'wglSwapBuffersMscOML';
+    
+    public static function wglSwapLayerBuffersMscOML(hdc: GDI_DC; fuPlanes: Int32; target_msc: Int64; divisor: Int64; remainder: Int64): Int64;
+    external 'opengl32.dll' name 'wglSwapLayerBuffersMscOML';
+    
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    public static function wglWaitForMscOML(hdc: GDI_DC; target_msc: Int64; divisor: Int64; remainder: Int64; ust: pointer; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForMscOML';
+    
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; [MarshalAs(UnmanagedType.LPArray)] ust: array of Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; var ust: Int64; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; [MarshalAs(UnmanagedType.LPArray)] msc: array of Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; var msc: Int64; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; var msc: Int64; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; var msc: Int64; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; msc: pointer; [MarshalAs(UnmanagedType.LPArray)] sbc: array of Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; msc: pointer; var sbc: Int64): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    public static function wglWaitForSbcOML(hdc: GDI_DC; target_sbc: Int64; ust: pointer; msc: pointer; sbc: pointer): UInt32;
+    external 'opengl32.dll' name 'wglWaitForSbcOML';
+    
+    {$endregion OML_sync_control}
     
   end;
   
@@ -27019,90 +27655,6 @@ type
     
     {$endregion NV_vertex_program}
     
-    {$region NV_video_capture}
-    
-    public static procedure BeginVideoCaptureNV(video_capture_slot: UInt32);
-    external 'opengl32.dll' name 'glBeginVideoCaptureNV';
-    
-    public static procedure BindVideoCaptureStreamBufferNV(video_capture_slot: UInt32; stream: UInt32; frame_region: DummyEnum; offset: IntPtr);
-    external 'opengl32.dll' name 'glBindVideoCaptureStreamBufferNV';
-    
-    public static procedure BindVideoCaptureStreamTextureNV(video_capture_slot: UInt32; stream: UInt32; frame_region: DummyEnum; target: DummyEnum; texture: UInt32);
-    external 'opengl32.dll' name 'glBindVideoCaptureStreamTextureNV';
-    
-    public static procedure EndVideoCaptureNV(video_capture_slot: UInt32);
-    external 'opengl32.dll' name 'glEndVideoCaptureNV';
-    
-    public static procedure GetVideoCaptureivNV(video_capture_slot: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
-    external 'opengl32.dll' name 'glGetVideoCaptureivNV';
-    public static procedure GetVideoCaptureivNV(video_capture_slot: UInt32; pname: DummyEnum; var &params: Int32);
-    external 'opengl32.dll' name 'glGetVideoCaptureivNV';
-    public static procedure GetVideoCaptureivNV(video_capture_slot: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideoCaptureivNV';
-    
-    public static procedure GetVideoCaptureStreamivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamivNV';
-    public static procedure GetVideoCaptureStreamivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: Int32);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamivNV';
-    public static procedure GetVideoCaptureStreamivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamivNV';
-    
-    public static procedure GetVideoCaptureStreamfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamfvNV';
-    public static procedure GetVideoCaptureStreamfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: single);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamfvNV';
-    public static procedure GetVideoCaptureStreamfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamfvNV';
-    
-    public static procedure GetVideoCaptureStreamdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of double);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamdvNV';
-    public static procedure GetVideoCaptureStreamdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: double);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamdvNV';
-    public static procedure GetVideoCaptureStreamdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glGetVideoCaptureStreamdvNV';
-    
-    public static function VideoCaptureNV(video_capture_slot: UInt32; [MarshalAs(UnmanagedType.LPArray)] sequence_num: array of UInt32; [MarshalAs(UnmanagedType.LPArray)] capture_time: array of UInt64): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; [MarshalAs(UnmanagedType.LPArray)] sequence_num: array of UInt32; var capture_time: UInt64): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; [MarshalAs(UnmanagedType.LPArray)] sequence_num: array of UInt32; capture_time: pointer): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; var sequence_num: UInt32; [MarshalAs(UnmanagedType.LPArray)] capture_time: array of UInt64): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; var sequence_num: UInt32; var capture_time: UInt64): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; var sequence_num: UInt32; capture_time: pointer): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; sequence_num: pointer; [MarshalAs(UnmanagedType.LPArray)] capture_time: array of UInt64): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; sequence_num: pointer; var capture_time: UInt64): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    public static function VideoCaptureNV(video_capture_slot: UInt32; sequence_num: pointer; capture_time: pointer): DummyEnum;
-    external 'opengl32.dll' name 'glVideoCaptureNV';
-    
-    public static procedure VideoCaptureStreamParameterivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of Int32);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterivNV';
-    public static procedure VideoCaptureStreamParameterivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: Int32);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterivNV';
-    public static procedure VideoCaptureStreamParameterivNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterivNV';
-    
-    public static procedure VideoCaptureStreamParameterfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of single);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterfvNV';
-    public static procedure VideoCaptureStreamParameterfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: single);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterfvNV';
-    public static procedure VideoCaptureStreamParameterfvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterfvNV';
-    
-    public static procedure VideoCaptureStreamParameterdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; [MarshalAs(UnmanagedType.LPArray)] &params: array of double);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterdvNV';
-    public static procedure VideoCaptureStreamParameterdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; var &params: double);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterdvNV';
-    public static procedure VideoCaptureStreamParameterdvNV(video_capture_slot: UInt32; stream: UInt32; pname: DummyEnum; &params: pointer);
-    external 'opengl32.dll' name 'glVideoCaptureStreamParameterdvNV';
-    
-    {$endregion NV_video_capture}
-    
     {$region NV_viewport_swizzle}
     
     public static procedure ViewportSwizzleNV(index: UInt32; swizzlex: DummyEnum; swizzley: DummyEnum; swizzlez: DummyEnum; swizzlew: DummyEnum);
@@ -27709,6 +28261,13 @@ type
     external 'opengl32.dll' name 'glDrawTexxvOES';
     
     {$endregion OES_draw_texture}
+    
+    {$region OES_EGL_image}
+    
+    public static procedure EGLImageTargetRenderbufferStorageOES(target: DummyEnum; _image: GLeglImageOES);
+    external 'opengl32.dll' name 'glEGLImageTargetRenderbufferStorageOES';
+    
+    {$endregion OES_EGL_image}
     
     {$region OES_fixed_point}
     
@@ -28340,6 +28899,13 @@ type
     external 'opengl32.dll' name 'glTexParameterxvOES';
     
     {$endregion OES_draw_texture, OES_fixed_point}
+    
+    {$region OES_EGL_image, OES_EGL_image_external}
+    
+    public static procedure EGLImageTargetTexture2DOES(target: DummyEnum; _image: GLeglImageOES);
+    external 'opengl32.dll' name 'glEGLImageTargetTexture2DOES';
+    
+    {$endregion OES_EGL_image, OES_EGL_image_external}
     
     {$region OES_fixed_point, OES_texture_cube_map}
     
@@ -31094,6 +31660,13 @@ type
     
     {$region Unsorted}
     
+    public static function ChoosePixelFormat(hDc: GDI_DC; [MarshalAs(UnmanagedType.LPArray)] pPfd: array of GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    public static function ChoosePixelFormat(hDc: GDI_DC; var pPfd: GDI_PixelFormatDescriptor): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    public static function ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32;
+    external 'gdi32.dll' name 'ChoosePixelFormat';
+    
     public static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; [MarshalAs(UnmanagedType.LPArray)] ppfd: array of GDI_PixelFormatDescriptor): Int32;
     external 'gdi32.dll' name 'DescribePixelFormat';
     public static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; var ppfd: GDI_PixelFormatDescriptor): Int32;
@@ -31160,7 +31733,7 @@ type
       
       if 1 <> gdi.SetPixelFormat(
         Result,
-        wgl.ChoosePixelFormat(Result, pfd),
+        gdi.ChoosePixelFormat(Result, pfd),
         pfd
       ) then raise new InvalidOperationException;
       
@@ -31174,7 +31747,7 @@ type
     {$region SetupControlRedrawing}
     
     ///Добавляет в эвент Form.Load формы f создание контекста OpenGL на контексте GDI и запуск перерисовки
-    public static procedure SetupControlRedrawing(f: System.Windows.Forms.Form; hdc: GDI_DC; RedrawThreadProc: procedure(EndFrame: ()->()); vsync_fps: integer := 62);
+    public static procedure SetupControlRedrawing(f: System.Windows.Forms.Form; hdc: GDI_DC; RedrawThreadProc: procedure(EndFrame: ()->()); vsync_fps: integer := 65);
     begin
       
       f.Load += (o,e)->

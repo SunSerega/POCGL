@@ -307,6 +307,8 @@ type
   NewFuncsChapter = class(ExtSpecChapter)
     funcs := new List<(string,string)>; // (name, text)
     
+    static func_pnh_exceptions: Dictionary<string, string>;
+    
     procedure DeTemplateFuncs(templ, TName: string; params repls: array of (string, string));
     begin
       for var i := funcs.Count-1 downto 0 do
@@ -349,8 +351,19 @@ type
       Result := -1;
     end;
     
-    static function TryCreate(s: string): NewFuncsChapter;
+    static function TryCreate(s, fname: string): NewFuncsChapter;
     begin
+      if func_pnh_exceptions=nil then
+      begin
+        func_pnh_exceptions := new Dictionary<string, string>;
+        
+        ReadLines('func pnh exceptions.dat')
+        .Where(l->l.Contains('='))
+        .Select(l->l.ToWords('='))
+        .ForEach(l->func_pnh_exceptions.Add(l[0].TrimEnd(#9), l[1]));
+        
+      end;
+      
       Result := new NewFuncsChapter(s);
       if Result.header_end<>'' then raise new System.ArgumentException($'NewFuncsChapter had header_end of "{Result.header_end}"');
       
@@ -416,12 +429,17 @@ type
       begin
         
         var func_name := Result.funcs[i][0];
-        foreach var pnh in Arr('wgl', 'egl', 'glX', 'glu', 'gl') do
-          if func_name.StartsWith(pnh) then
-          begin
-            func_name := func_name.SubString(pnh.Length);
-            break;
-          end;
+        if func_pnh_exceptions.ContainsKey(func_name) then
+          func_name := func_pnh_exceptions[func_name] else
+        if not Arr('wgl', 'egl', {'glX', 'glu',} 'gl').Any(pnh->func_name.StartsWith(pnh)) then
+        begin
+          foreach var pnh in Arr('wgl', 'egl', 'glX', 'glu', 'gl') do
+            if fname.Contains(pnh.ToUpper) or (pnh='gl') then
+            begin
+              func_name := pnh+func_name;
+              break;
+            end;
+        end;
         func_name := func_name.Replace('Tangent3{bdfis}EXTv', 'Tangent3{bdfis}vEXT');
         
         var func_text := Result.funcs[i][1];
@@ -805,20 +823,20 @@ type
         
         case p[0][0] of
           
-          'Name':               if (Result.ExtNames         =nil) then Result.ExtNames           := ExtNamesChapter          .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ExtNames chapters in {fname}');
-          'SpecModifications':                                         Result.SpecModifications  += SpecModificationsChapter .Create   (chapt_contents);
-          'ExtStrings':         if (Result.ExtStrings       =nil) then Result.ExtStrings         := ExtStringsChapter        .TryCreate(chapt_contents) else raise new System.InvalidOperationException($'multiple ExtStrings chapters in {fname}');
-          'NewFuncs':           if (Result.NewFuncs         =nil) then Result.NewFuncs           := NewFuncsChapter          .TryCreate(chapt_contents) else raise new System.InvalidOperationException($'multiple NewFuncs chapters in {fname}');
-          'AuthorContacts':     if (Result.AuthorContacts   =nil) then Result.AuthorContacts     := AuthorContactsChapter    .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple AuthorContacts chapters in {fname}');
-          'ContributorsList':   if (Result.ContributorsList =nil) then Result.ContributorsList   := ContributorsListChapter  .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple ContributorsList chapters in {fname}');
-          'Errors':             if (Result.Errors           =nil) then Result.Errors             := ErrorsChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Errors chapters in {fname}');
-          'Issues':                                                    Result.Issues             += IssuesChapter            .Create   (chapt_contents);
-          'NewKeywords':        if (Result.NewKeywords      =nil) then Result.NewKeywords        := NewKeywordsChapter       .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewKeywords chapters in {fname}');
-          'NewState':           if (Result.NewState         =nil) then Result.NewState           := NewStateChapter          .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple NewState chapters in {fname}');
-          'NewTokens':                                                 Result.NewTokens          += NewTokensChapter         .Create   (chapt_contents);
-          'Notice':             if (Result.Notice           =nil) then Result.Notice             := NoticeChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Notice chapters in {fname}');
-          'Status':             if (Result.Status=nil)     or sf1 then Result.Status             := StatusChapter            .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Status chapters in {fname}');
-          'Version':            if (Result.Version          =nil) then Result.Version            := VersionChapter           .Create   (chapt_contents) else raise new System.InvalidOperationException($'multiple Version chapters in {fname}');
+          'Name':               if (Result.ExtNames         =nil) then Result.ExtNames           := ExtNamesChapter          .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple ExtNames chapters in {fname}');
+          'SpecModifications':                                         Result.SpecModifications  += SpecModificationsChapter .Create   (chapt_contents        );
+          'ExtStrings':         if (Result.ExtStrings       =nil) then Result.ExtStrings         := ExtStringsChapter        .TryCreate(chapt_contents        ) else raise new System.InvalidOperationException($'multiple ExtStrings chapters in {fname}');
+          'NewFuncs':           if (Result.NewFuncs         =nil) then Result.NewFuncs           := NewFuncsChapter          .TryCreate(chapt_contents, fname ) else raise new System.InvalidOperationException($'multiple NewFuncs chapters in {fname}');
+          'AuthorContacts':     if (Result.AuthorContacts   =nil) then Result.AuthorContacts     := AuthorContactsChapter    .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple AuthorContacts chapters in {fname}');
+          'ContributorsList':   if (Result.ContributorsList =nil) then Result.ContributorsList   := ContributorsListChapter  .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple ContributorsList chapters in {fname}');
+          'Errors':             if (Result.Errors           =nil) then Result.Errors             := ErrorsChapter            .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple Errors chapters in {fname}');
+          'Issues':                                                    Result.Issues             += IssuesChapter            .Create   (chapt_contents        );
+          'NewKeywords':        if (Result.NewKeywords      =nil) then Result.NewKeywords        := NewKeywordsChapter       .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple NewKeywords chapters in {fname}');
+          'NewState':           if (Result.NewState         =nil) then Result.NewState           := NewStateChapter          .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple NewState chapters in {fname}');
+          'NewTokens':                                                 Result.NewTokens          += NewTokensChapter         .Create   (chapt_contents        );
+          'Notice':             if (Result.Notice           =nil) then Result.Notice             := NoticeChapter            .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple Notice chapters in {fname}');
+          'Status':             if (Result.Status=nil)     or sf1 then Result.Status             := StatusChapter            .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple Status chapters in {fname}');
+          'Version':            if (Result.Version          =nil) then Result.Version            := VersionChapter           .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple Version chapters in {fname}');
           
         end;
         

@@ -456,7 +456,7 @@ begin
     text += '    ';
     
     System.Windows.Forms.Clipboard.SetText(#10+text);
-    System.Console.Beep;
+    if not CommandLineArgs.Contains('NoBeep') then System.Console.Beep;
   except
     on e: Exception do
     begin

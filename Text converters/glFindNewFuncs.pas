@@ -88,7 +88,7 @@ begin
         if l.Contains(';') then Result := l.Remove(l.IndexOf(';')) else
           raise new System.InvalidOperationException($'"{l}"');
       end)
-      .Select(l->l.Trim(' '))
+      .Select(l->'gl'+l.Trim(' '))
       .ToHashSet&<string>(new FuncNameEqualityComparer) //ToDo 1. почему без &<> не пашет и 2. возможно - это плохая идея... К примеру, это исключает ARB варианты некоторых функций. Но, может, они нужны, для старых версий?
     ;
     
@@ -107,7 +107,7 @@ begin
     begin
       writeln(fname);
       System.Windows.Forms.Clipboard.SetText(ReadAllText(fname));
-      System.Diagnostics.Process.Start('Text converters\gl format func.exe').WaitForExit;
+      System.Diagnostics.Process.Start('Text converters\gl format func.exe', 'NoBeep').WaitForExit;
       
       var text := System.Windows.Forms.Clipboard.GetText.Remove(#13).Trim(#10' '.ToArray);
       if text='' then continue;
@@ -124,23 +124,18 @@ begin
     {$region Tabulate all funcs with name (and delete used)}
     writeln('Tabulate all funcs with name (and delete used)');
     
-    // (text, name)
+    // (text, name, prep)
     var funcs_data: List<(string,string)> :=
-      all_funcs.Tabulate(f->
+      all_funcs
+      .Tabulate(f->
       begin
+        var ind1 := f.IndexOf('name ''') + 'name '''.Length;
+        var ind2 := f.IndexOf('''', ind1);
         
-        var ind := f.IndexOf('procedure');
-        if ind=-1 then ind := f.IndexOf('function');
-        ind := f.IndexOf(' ', ind)+1;
-        
-        var ind2 := f.IndexOf('(');
-        if ind2=-1 then ind2 := f.IndexOf(':');
-        if ind2=-1 then ind2 := f.IndexOf(';');
-        
-        Result := f.Substring(ind, ind2-ind);
+        Result := f.Substring(ind1, ind2-ind1);
       end)
       .Where(f->not used_funcs.Contains(f[1]))
-      .DistinctBy(f->f[1].RemoveFuncNameExt)
+      .DistinctBy(f->f[1].RemoveFuncNameExt) //ToDo это вообще нормально, что .RemoveFuncNameExt?
       .OrderBy(f->f[1])
       .ToList
     ;
@@ -258,17 +253,33 @@ begin
       foreach var fs in ext_names.Count=0 ? ofs.Select(f->Lst&<(string,string)>(f)) : Seq&<List<(string,string)>>(ofs) do
       begin
         
-        var t_name: string;
-        if fs.Any(f->f[0].Contains('wgl')) then
-          t_name := 'wgl' else
-        if fs.Any(f->f[0].Contains('egl')) then
-          t_name := 'egl' else
-        if fs.Any(f->f[0].Contains('gdi')) then
-          t_name := 'gdi' else
-        if fs.Any(f->f[0].Contains('glu')) then
-          t_name := 'glu' else
-        if fs.Any(f->f[0].Contains('glX')) then
-          t_name := 'glX' else
+        var t_name := '';
+        
+        var fs_pnh :=
+          fs.Select(f->
+          begin
+            if f[1].StartsWith('wgl') then
+              Result := 'wgl' else
+            if f[1].StartsWith('egl') then
+              Result := 'egl' else
+            if f[1].StartsWith('glu') then
+              Result := 'glu' else
+            if f[1].StartsWith('glX') then
+              Result := 'glX' else
+            if f[0].Contains  ('gdi') then
+              Result := 'gdi' else
+              Result := '';
+//            if fs.Any(f->f[0].Contains('GetGPUIDsAMD')) then writeln((f[1], Result));
+          end)
+          .Where(pnh->pnh<>'')
+          .Distinct
+          .ToList
+        ;
+        
+        if fs_pnh.Count=1 then
+          t_name := fs_pnh[0] else
+        if fs_pnh.Count>1 then
+          t_name := 'gl_Misc' else
         begin
           var ext_ts := fs.Select(f->
           begin
@@ -319,6 +330,7 @@ begin
         'glX':            Result := 05;
         'gl_ARB':         Result := 06;
         'gl_EXT':         Result := 07;
+        'gl_Misc':        Result := 08;
         
         'gdi':            Result := 21;
         
@@ -343,7 +355,23 @@ begin
         
         res += '    '#10;
         
-        res += kvp2.Value.Select(f->f[0]).JoinIntoString(#10'    '#10);
+        if kvp1.Key='gl_Misc' then
+          res += kvp2.Value.Select(f->
+          begin
+            var pnh := '';
+            
+            if f[1].StartsWith('wgl') then
+              pnh := 'wgl' else
+            if f[1].StartsWith('egl') then
+              pnh := 'egl' else
+            if f[1].StartsWith('glu') then
+              pnh := 'glu' else
+            if f[1].StartsWith('glX') then
+              pnh := 'glX';
+            
+            Result := f[0].Replace(f[1].SubString(pnh.Length),f[1]).Replace(pnh+f[1], f[1]);
+          end).JoinIntoString(#10'    '#10) else
+          res += kvp2.Value.Select(f->f[0]).JoinIntoString(#10'    '#10);
         
         res += #10;
         res += '    '#10;

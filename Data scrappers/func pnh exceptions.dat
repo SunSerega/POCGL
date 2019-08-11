@@ -1,0 +1,18 @@
+
+
+
+EGLImageTargetTexStorageEXT				=glEGLImageTargetTexStorageEXT
+EGLImageTargetTextureStorageEXT			=glEGLImageTargetTextureStorageEXT
+
+
+EGLImageTargetTexture2DOES				=glEGLImageTargetTexture2DOES
+EGLImageTargetRenderbufferStorageOES	=glEGLImageTargetRenderbufferStorageOES
+
+SampleMaskEXT							=glSampleMaskEXT
+SamplePatternEXT						=glSamplePatternEXT
+
+
+CoverageMaskNV							=glCoverageMaskNV
+CoverageOperationNV						=glCoverageOperationNV
+
+
