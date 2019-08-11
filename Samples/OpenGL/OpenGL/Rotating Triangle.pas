@@ -1,142 +1,74 @@
 ﻿{$reference System.Windows.Forms.dll}
 {$reference System.Drawing.dll}
+
+// Данный пример демонстрирует запуск простейшей программы с модулем OpenGL
+// Примите во внимание, что методы из gl_gdi. - могут служить только временной заменой в серьёзной программе
+// (По крайней мере в данной версии. В будущем, возможно, gl_gdi будет улучшено)
+// Они использованы тут, чтоб пример был проще
+
 uses System.Windows.Forms;
+uses System.Drawing;
 uses OpenGL;
-uses System;
 
-{ $apptype windows} //ToDo убрать когда протестирую всё что надо
-
-type
-  PIXELFORMATDESCRIPTOR = record
-    nSize: Word;
-    nVersion: Word;
-    dwFlags: longword;
-    iPixelType: Byte;
-    cColorBits: Byte;
-    cRedBits: Byte;
-    cRedShift: Byte;
-    cGreenBits: Byte;
-    cGreenShift: Byte;
-    cBlueBits: Byte;
-    cBlueShift: Byte;
-    cAlphaBits: Byte;
-    cAlphaShift: Byte;
-    cAccumBits: Byte;
-    cAccumRedBits: Byte;
-    cAccumGreenBits: Byte;
-    cAccumBlueBits: Byte;
-    cAccumAlphaBits: Byte;
-    cDepthBits: Byte;
-    cStencilBits: Byte;
-    cAuxBuffers: Byte;
-    iLayerType: Byte;
-    bReserved: Byte;
-    dwLayerMask: longword;
-    dwVisibleMask: longword;
-    dwDamageMask: longword;
-  end;
-  
-  HGLRC = IntPtr;
-
-function GetDC(hwnd: IntPtr): IntPtr;
-external 'user32.dll';
-
-function SetPixelFormat(hdc: IntPtr; iPixelFormat: integer; ppfd: ^PIXELFORMATDESCRIPTOR): boolean;
-external 'gdi32.dll';
-
-function ChoosePixelFormat(_hdc: IntPtr; ppfd: ^PIXELFORMATDESCRIPTOR): integer;
-external 'gdi32.dll';
-
-function wglCreateContext(_hdc: IntPtr): HGLRC;
-external 'opengl32.dll';
-
-function wglMakeCurrent(_hdc: IntPtr; _hglrc: HGLRC): boolean;
-external 'opengl32.dll';
-
-function SwapBuffers(_hdc: IntPtr): boolean;
-external 'gdi32.dll';
-
-function InitOpenGL(hwnd: IntPtr): IntPtr;
-begin
-  Result := GetDC(hwnd);
-  
-  
-  
-  var pfd: PIXELFORMATDESCRIPTOR;
-  pfd.nSize := sizeof( PIXELFORMATDESCRIPTOR );
-  pfd.nVersion := 1;
-  
-  pfd.dwFlags := $1 or $4 or $20;
-  pfd.cColorBits := 24;
-  pfd.cDepthBits := 16;
-  
-  writeln(1); //ToDo протестировать и таки убрать
-  
-  if not SetPixelFormat(
-    Result,
-    ChoosePixelFormat(Result, @pfd),
-    @pfd
-  ) then raise new InvalidOperationException;
-  
-  writeln(2);
-  
-  var context := wglCreateContext(Result);
-  writeln(3);
-  if not wglMakeCurrent(Result, context) then raise new InvalidOperationException;
-  
-  writeln(4);
-  
-  
-  
-  gl_Deprecated.LoadIdentity;
-  gl.ClearColor(0.0, 0.0, 0.0, 1.0);
-  
-  
-  
-end;
+{$apptype windows} // убираем консоль
 
 begin
+  
+  // Создаёт и настраиваем окно
   var f := new Form;
-  
   f.StartPosition := FormStartPosition.CenterScreen;
-  f.ClientSize := new System.Drawing.Size(500,500);
+  f.ClientSize := new Size(500, 500);
   f.FormBorderStyle := FormBorderStyle.Fixed3D;
+  // Если окно закрылось - надо сразу завершить программу
+  f.Closed += (o,e)->Halt();
   
-  f.Closing += (o,e)->Halt();
+  // Настраиваем поверхность рисования
+  var hdc := gl_gdi.InitControl(f);
   
-  f.Shown += (o,e)->
+  // Настраиваем перерисовку
+  gl_gdi.SetupControlRedrawing(f, hdc, EndFrame ->
   begin
-    var hdc := InitOpenGL(f.Handle);
     
-    var dy := -Sin(Pi/6) / 2;
+    {$region Настройка глобальных параметров OpenGL}
+    
+    // Выключаем встроенный vsync (ибо у SetupControlRedrawing свой есть)
+    // Если на этой строчке "не удаётся найти точку входа" - значит у вас нету встроенного vsync-а
+    // В таком случае можно просто убрать эту строчку
+    wgl.SwapIntervalEXT(0);
+    
+    {$endregion Настройка глобальных параметров OpenGL}
+    
+    {$region Инициализация переменных}
+    
+    var dy := -Sin(Pi / 6) / 2;
 //    var pts := real(0.0).Step(Pi*2/3).Take(3).Select(rot->(Sin(rot), Cos(rot)+dy)).ToArray; //ToDo #2042
-    var pts := Range(0,2).Select(i->i* Pi*2/3 ).Select(rot->(Sin(rot), Cos(rot)+dy)).ToArray;
+    var pts := Range(0, 2).Select(i -> i * Pi * 2 / 3).Select(rot -> (Sin(rot), Cos(rot) + dy)).ToArray;
     var frame_rot := 0.0;
     
-    System.Threading.Thread.Create(()->
+    {$endregion Инициализация переменных}
+    
     while true do
     begin
       
-      f.Invoke(()->
-      begin
-        gl.Clear(BufferTypeFlags.COLOR_BUFFER_BIT);
-        var rot_k := Cos(frame_rot);
-        
-        gl_Deprecated.Begin(PrimitiveType.TRIANGLES);
-        gl_Deprecated.Color4f(1,0,0,1); gl_Deprecated.Vertex2f( pts[0][0]*rot_k, pts[0][1] );
-        gl_Deprecated.Color4f(0,1,0,1); gl_Deprecated.Vertex2f( pts[1][0]*rot_k, pts[1][1] );
-        gl_Deprecated.Color4f(0,0,1,1); gl_Deprecated.Vertex2f( pts[2][0]*rot_k, pts[2][1] );
-        gl_Deprecated._End;
-        
-        frame_rot += 0.03;
-        gl.Finish;
-        SwapBuffers(hdc);
-      end);
+      gl.Clear(BufferTypeFlags.COLOR_BUFFER_BIT);
+      var rot_k := Cos(frame_rot);
       
-      Sleep(16);
-    end).Start;
+      // Методы из gl_Deprecated это всё что устарело
+      // Они используются тут - только чтоб пример был проще
+      gl_Deprecated.Begin(PrimitiveType.TRIANGLES);
+      gl_Deprecated.Color4f( 1,0,0, 1); gl_Deprecated.Vertex2f( pts[0][0] * rot_k, pts[0][1] );
+      gl_Deprecated.Color4f( 0,1,0, 1); gl_Deprecated.Vertex2f( pts[1][0] * rot_k, pts[1][1] );
+      gl_Deprecated.Color4f( 0,0,1, 1); gl_Deprecated.Vertex2f( pts[2][0] * rot_k, pts[2][1] );
+      gl_Deprecated.&End;
+      
+      frame_rot += 0.03;
+      
+      gl.Finish;
+      // EndFrame меняет местами буферы и ждёт vsync
+      EndFrame;
+    end;
     
-  end;
+  end);
   
   Application.Run(f);
 end.
