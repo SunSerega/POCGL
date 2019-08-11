@@ -10919,14 +10919,14 @@ type
     
     {$region 6.2 - Creating and Modifying Buffer Object Data Stores}
     
-    public static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: IntPtr; flags: BufferStorageFlags);
+    public static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: IntPtr; flags: BufferDataUsage);
     external 'opengl32.dll' name 'glBufferStorage';
-    public static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: pointer; flags: BufferStorageFlags);
+    public static procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: pointer; flags: BufferDataUsage);
     external 'opengl32.dll' name 'glBufferStorage';
     
-    public static procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: IntPtr; flags: BufferStorageFlags);
+    public static procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: IntPtr; flags: BufferDataUsage);
     external 'opengl32.dll' name 'glNamedBufferStorage';
-    public static procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferStorageFlags);
+    public static procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferDataUsage);
     external 'opengl32.dll' name 'glNamedBufferStorage';
     
     public static procedure BufferData(target: BufferBindType; size: UIntPtr; data: IntPtr; usage: BufferDataUsage);
