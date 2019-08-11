@@ -31706,6 +31706,7 @@ type
     
     {$region Misc}
     
+    ///Создаёт новую поверхность рисования GDI для дескриптора элемента управления
     public static function GetControlDC(hwnd: IntPtr): GDI_DC;
     external 'user32.dll' name 'GetDC';
     
@@ -31713,11 +31714,11 @@ type
     
     {$region InitControl}
     
-    ///Получает и настраивает контекст GDI элемента управления WF
-    ///ptr - дескриптор элемента управления
-    public static function InitControl(ptr: IntPtr): GDI_DC;
+    ///Создаёт и настраивает поверхность рисования GDI элемента управления WF
+    ///hwnd - дескриптор элемента управления
+    public static function InitControl(hwnd: IntPtr): GDI_DC;
     begin
-      Result := gl_gdi.GetControlDC(ptr);
+      Result := gl_gdi.GetControlDC(hwnd);
       
       var pfd: GDI_PixelFormatDescriptor;
       pfd.nSize := sizeof( GDI_PixelFormatDescriptor );
@@ -31739,14 +31740,16 @@ type
       
     end;
     
-    ///Получает и настраивает контекст GDI элемента управления WF
+    ///Создаёт и настраивает поверхность рисования GDI элемента управления WF
     public static function InitControl(c: System.Windows.Forms.Control) := InitControl(c.Handle);
     
     {$endregion InitControl}
     
     {$region SetupControlRedrawing}
     
-    ///Добавляет в эвент Form.Load формы f создание контекста OpenGL на контексте GDI и запуск перерисовки
+    ///Добавляет в эвент Form.Load формы (f) обработчик, который:
+    ///1. Создаёт контекст OpenGL на поверхности рисования GDI (hdc)
+    ///2. Запускает перерисовку (RedrawThreadProc)
     public static procedure SetupControlRedrawing(f: System.Windows.Forms.Form; hdc: GDI_DC; RedrawThreadProc: procedure(EndFrame: ()->()); vsync_fps: integer := 65);
     begin
       
