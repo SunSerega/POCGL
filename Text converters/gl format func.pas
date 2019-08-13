@@ -469,7 +469,7 @@ except
   on e: Exception do
   begin
     writeln(e);
-    readln;
+    if not CommandLineArgs.Any(arg->arg.StartsWith('fname=')) then readln;
   end;
 end;
 

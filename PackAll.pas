@@ -6,8 +6,8 @@ uses Pack_Utils in 'Packing\Pack_Utils.pas';
 begin
   try
     
-    System.IO.Directory.EnumerateFiles(GetCurrentDir, '.pcu').ForEach(System.IO.File.Delete);
-    System.IO.Directory.EnumerateFiles(GetCurrentDir, '.pdb').ForEach(System.IO.File.Delete);
+    System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pcu', System.IO.SearchOption.AllDirectories).ForEach(System.IO.File.Delete);
+    System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pdb', System.IO.SearchOption.AllDirectories).Where(fname->not fname.EndsWith('PackAll.pdb')).ForEach(System.IO.File.Delete);
     
     // ====================================================
     
@@ -17,7 +17,7 @@ begin
         ExecTask('Pack Template.pas', 'fname=0OpenGL.template', 'GenPas') +
         new Task(()->System.IO.File.Delete('OpenGL.pas')) +
         new Task(()->System.IO.File.Move('Packing\0OpenGL.pas', 'OpenGL.pas')) +
-//        new Task(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '.templateres').ForEach(System.IO.File.Delete)) +
+//        new Task(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.templateres').ForEach(System.IO.File.Delete)) +
         CompTask('..\OpenGLABC.pas')
       ) *
       CompTask('..\Tests\Tester.pas')

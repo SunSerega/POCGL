@@ -117,14 +117,16 @@ try
     var p := System.Diagnostics.Process.Start(psi);
     p.WaitForExit;
     
-    var text := ReadAllText(resf).Remove(#13).Trim(#10' '.ToArray);
+    var text := '    ' + ReadAllText(resf).Remove(#13).Trim(#10' '.ToArray);
     System.IO.File.Delete(resf);
     
     if text='' then continue;
     
     all_funcs +=
-      ('    ' + text)
-      .Split(Arr(#10'    '#10), System.StringSplitOptions.RemoveEmptyEntries)
+      text.Split(
+        Arr(#10'    '#10),
+        System.StringSplitOptions.RemoveEmptyEntries
+      )
     ;
     
   end;
@@ -427,7 +429,7 @@ except
   on e: Exception do
   begin
     writeln(e);
-    readln;
+    if not CommandLineArgs.Any(arg->arg.StartsWith('fname=')) then readln;
   end;
 end;
 
