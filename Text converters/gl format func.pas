@@ -1,5 +1,5 @@
 ﻿program prog;
-{$apptype windows}
+{ $apptype windows}
 {$reference System.Windows.Forms.dll}
 
 var
@@ -429,39 +429,52 @@ type
     end;
     
     public function ToString: string; override :=
+    #10+
     GetAllStrings
-    .JoinIntoString('');
+    .JoinIntoString('')+
+    '    ';
     
   end;
 
-begin
-  try
-    var text := System.Windows.Forms.Clipboard.GetText;
-    
-    text := text
-      .Remove(#13)
-      .SkipCharsFromTo('/*', '*/')
-      .JoinIntoString('')
-      .ToWords(#10)
-      .Where(l->l.Contains('('))
-      .Where(l-> not(
-        l.Contains('typedef') or
-        l.Contains('#') or
-        l.Contains('DECLARE_HANDLE')
-      ))
-      .Select(l->FuncDef.Create(l).ToString)
-      .JoinIntoString('    '#10)
-    ;
-    
-    text += '    ';
-    
-    System.Windows.Forms.Clipboard.SetText(#10+text);
-    if not CommandLineArgs.Contains('NoBeep') then System.Console.Beep;
-  except
-    on e: Exception do
-    begin
-      writeln(e);
-      readln;
-    end;
+procedure STAProc :=
+try
+  var farg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
+  if farg<>nil then farg := farg.SubString('fname='.Length);
+  
+  var text := farg=nil ? System.Windows.Forms.Clipboard.GetText : ReadAllText(farg, System.Text.Encoding.UTF7);
+  
+  text := text
+    .Remove(#13)
+    .SkipCharsFromTo('/*', '*/')
+    .JoinIntoString('')
+    .ToWords(#10)
+    .Where(l->l.Contains('('))
+    .Where(l-> not(
+      l.Contains('typedef') or
+      l.Contains('#') or
+      l.Contains('DECLARE_HANDLE')
+    ))
+    .Select(l->FuncDef.Create(l).ToString)
+    .JoinIntoString('')
+  ;
+  
+  if farg<>nil then
+    WriteAllText(farg, text, System.Text.Encoding.Unicode) else
+  begin
+    System.Windows.Forms.Clipboard.SetText(text);
+    System.Console.Beep;
   end;
+  
+except
+  on e: Exception do
+  begin
+    writeln(e);
+    readln;
+  end;
+end;
+
+begin
+  var thr := new System.Threading.Thread(STAProc);
+  thr.ApartmentState := System.Threading.ApartmentState.STA;
+  thr.Start;
 end.
