@@ -1,0 +1,250 @@
+﻿  
+  
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  IntFloatUnion = record
+    public [FieldOffset(0)] i: integer;
+    public [FieldOffset(0)] f: single;
+    
+    public constructor(i: integer) := self.i := i;
+    public constructor(f: single) := self.f := f;
+    
+  end;
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  GDI_COLORREF = record
+    public [FieldOffset(1)] b: byte;
+    public [FieldOffset(2)] g: byte;
+    public [FieldOffset(3)] r: byte;
+  end;
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  GPU_Device_Affinity_Info = record
+    
+    public [FieldOffset(0)] cb: UInt32;
+    
+    public [FieldOffset(4)] DeviceName: byte;
+    // ANSI строка на 32 символа (но конец сроки обозначается сиволом #0, поэтому помещается 31)
+    
+    public [FieldOffset(36)] DeviceString: byte;
+    // ANSI строка на 128 символов (но конец сроки обозначается сиволом #0, поэтому помещается 127)
+    
+    public [FieldOffset(164)] Flags: UInt32;
+    
+    public [FieldOffset(168)] rcVirtualScreen_x1: Int32;
+    public [FieldOffset(172)] rcVirtualScreen_y1: Int32;
+    public [FieldOffset(176)] rcVirtualScreen_x2: Int32;
+    public [FieldOffset(180)] rcVirtualScreen_y2: Int32;
+    
+    public property SDeviceName: string
+    read Marshal.PtrToStringAnsi(IntPtr(pointer(@self.DeviceName)))
+    write
+    begin
+      if value.Length > 31 then raise new ArgumentException('Строка не может иметь больше 31 символа');
+      var HStr := Marshal.StringToHGlobalAnsi(value);
+      var l: UInt32 := value.Length+1;
+      Buffer.MemoryCopy(pointer(HStr), @self.DeviceName, l,l);
+      Marshal.FreeHGlobal(HStr);
+    end;
+    
+    public property SDeviceString: string
+    read Marshal.PtrToStringAnsi(IntPtr(pointer(@self.DeviceString)))
+    write
+    begin
+      if value.Length > 127 then raise new ArgumentException('Строка не может иметь больше 127 символов');
+      var HStr := Marshal.StringToHGlobalAnsi(value);
+      var l: UInt32 := value.Length+1;
+      Buffer.MemoryCopy(pointer(HStr), @self.DeviceString, l,l);
+      Marshal.FreeHGlobal(HStr);
+    end;
+    
+  end;
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  GLXHyperpipeNetworkSGIX = record
+    
+    public [FieldOffset(0)] pipeName: byte;
+    // ANSI строка на 80 символа (но конец сроки обозначается сиволом #0, поэтому помещается 79)
+    
+    public [FieldOffset(80)] networkId: Int32;
+    
+    public property SPipeName: string
+    read Marshal.PtrToStringAnsi(IntPtr(pointer(@self.pipeName)))
+    write
+    begin
+      if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
+      var HStr := Marshal.StringToHGlobalAnsi(value);
+      var l: UInt32 := value.Length+1;
+      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      Marshal.FreeHGlobal(HStr);
+    end;
+    
+  end;
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  GLXHyperpipeConfigSGIX = record
+    
+    public [FieldOffset(0)] pipeName: byte;
+    // ANSI строка на 80 символа (но конец сроки обозначается сиволом #0, поэтому помещается 79)
+    
+    public [FieldOffset(80)] channel: Int32;
+    public [FieldOffset(84)] participationType: UInt32;
+    public [FieldOffset(88)] timeSlice: Int32;
+    
+    public property SPipeName: string
+    read Marshal.PtrToStringAnsi(IntPtr(pointer(@self.pipeName)))
+    write
+    begin
+      if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
+      var HStr := Marshal.StringToHGlobalAnsi(value);
+      var l: UInt32 := value.Length+1;
+      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      Marshal.FreeHGlobal(HStr);
+    end;
+    
+  end;
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  GLXPipeRect = record
+    
+    public [FieldOffset(0)] pipeName: byte;
+    // ANSI строка на 80 символа (но конец сроки обозначается сиволом #0, поэтому помещается 79)
+    
+    public [FieldOffset(80)] srcXOrigin: Int32;
+    public [FieldOffset(84)] srcYOrigin: Int32;
+    public [FieldOffset(88)] srcWidth: Int32;
+    public [FieldOffset(92)] srcHeight: Int32;
+    
+    public [FieldOffset(96)] destXOrigin: Int32;
+    public [FieldOffset(100)] destYOrigin: Int32;
+    public [FieldOffset(104)] destWidth: Int32;
+    public [FieldOffset(108)] destHeight: Int32;
+    
+    public property SPipeName: string
+    read Marshal.PtrToStringAnsi(IntPtr(pointer(@self.pipeName)))
+    write
+    begin
+      if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
+      var HStr := Marshal.StringToHGlobalAnsi(value);
+      var l: UInt32 := value.Length+1;
+      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      Marshal.FreeHGlobal(HStr);
+    end;
+    
+  end;
+  
+  [StructLayout(LayoutKind.&Explicit)]
+  GLXPipeRectLimits = record
+    
+    public [FieldOffset(0)] pipeName: byte;
+    // ANSI строка на 80 символа (но конец сроки обозначается сиволом #0, поэтому помещается 79)
+    
+    public [FieldOffset(80)] XOrigin: Int32;
+    public [FieldOffset(84)] YOrigin: Int32;
+    public [FieldOffset(88)] maxHeight: Int32;
+    public [FieldOffset(92)] maxWidth: Int32;
+    
+    public property SPipeName: string
+    read Marshal.PtrToStringAnsi(IntPtr(pointer(@self.pipeName)))
+    write
+    begin
+      if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
+      var HStr := Marshal.StringToHGlobalAnsi(value);
+      var l: UInt32 := value.Length+1;
+      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      Marshal.FreeHGlobal(HStr);
+    end;
+    
+  end;
+  
+  DrawArraysIndirectCommand = record
+    public count:         UInt32;
+    public instanceCount: UInt32;
+    public first:         UInt32;
+    public baseInstance:  UInt32;
+    
+    public constructor(count, instanceCount, first, baseInstance: UInt32);
+    begin
+      self.count := count;
+      self.instanceCount := instanceCount;
+      self.first := first;
+      self.baseInstance := baseInstance;
+    end;
+    
+  end;
+  
+  GDI_GlyphmetricsFloat = record
+    public gmfBlackBoxX: single;
+    public gmfBlackBoxY: single;
+    public gmfptGlyphOriginX: single;
+    public gmfptGlyphOriginY: single;
+    public gmfCellIncX: single;
+    public gmfCellIncY: single;
+    
+    public constructor(gmfBlackBoxX, gmfBlackBoxY, gmfptGlyphOriginX, gmfptGlyphOriginY, gmfCellIncX, gmfCellIncY: single);
+    begin
+      self.gmfBlackBoxX := gmfBlackBoxX;
+      self.gmfBlackBoxY := gmfBlackBoxY;
+      self.gmfptGlyphOriginX := gmfptGlyphOriginX;
+      self.gmfptGlyphOriginY := gmfptGlyphOriginY;
+      self.gmfCellIncX := gmfCellIncX;
+      self.gmfCellIncY := gmfCellIncY;
+    end;
+    
+  end;
+  
+  //ToDo функции принемающие single - бывает, принимают и fixed
+  fixed = record
+    {private} val: UInt32;
+    
+    //ToDo реализовать простейшие операции, с инкапсуляцией но разрешить обращатся к val через свойство
+    
+  end;
+  
+  half = record
+    {private} val: UInt16;
+    
+    //ToDo реализовать простейшие операции, с инкапсуляцией но разрешить обращатся к val через свойство
+    
+  end;
+  
+  GDI_PixelFormatDescriptor = record
+    nSize:            UInt16 := sizeof(GDI_PixelFormatDescriptor);
+    nVersion:         UInt16 := 1;
+    
+    dwFlags:          GDI_PixelFormatFlags;
+    iPixelType:       GDI_PixelDataType;
+    
+    cColorBits:       Byte; // кол-во битов для R+G+B
+    
+    cRedBits:         Byte; // похоже, если оставить нулями - их автоматом заполнит
+    cRedShift:        Byte;
+    cGreenBits:       Byte;
+    cGreenShift:      Byte;
+    cBlueBits:        Byte;
+    cBlueShift:       Byte;
+    cAlphaBits:       Byte; // последние 2 не работают на Windows
+    cAlphaShift:      Byte;
+    
+    cAccumBits:       Byte;
+    cAccumRedBits:    Byte;
+    cAccumGreenBits:  Byte;
+    cAccumBlueBits:   Byte;
+    cAccumAlphaBits:  Byte;
+    
+    cDepthBits:       Byte;
+    cStencilBits:     Byte;
+    cAuxBuffers:      Byte; // устарело
+    
+    iLayerType:       GDI_LayerType; // устарело
+    bLayersSize:      Byte; // разделено на 2 числа по 4 бита, и бесполезно без iLayerType, то есть оно тоже устарело
+    
+    // не смог найти нормального описания последних 3, но все присваивают им нолики
+    dwLayerMask:      UInt32;
+    dwVisibleMask:    UInt32;
+    dwDamageMask:     UInt32;
+    
+  end;
+  
+  
+  

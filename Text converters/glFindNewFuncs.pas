@@ -49,6 +49,8 @@ begin
       yield a;
 end;
 
+procedure writeln(s: string) := Write(s+#10);
+
 const
   
 //  GLpas = 'Temp.pas';
@@ -62,7 +64,8 @@ const
   
 begin
   try
-    System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
+    if System.Environment.CurrentDirectory.EndsWith('Text converters') then
+      System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
     
     {$region Read used funcs}
     writeln('Read used funcs');
@@ -395,17 +398,24 @@ begin
     {$endregion contruct new code}
     
     writeln('done');
+    
+    var farg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
+    
+    if farg<>nil then
+      WriteAllText(farg.SubString('fname='.Length), res.ToString, System.Text.Encoding.UTF7) else
+    
     if res.Length<>0 then
     begin
       System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
       System.Console.Beep(5000,1000);
+      readln;
     end else
     begin
       System.Windows.Forms.Clipboard.Clear;
       System.Console.Beep(3000,1000);
+      readln;
     end;
     
-    readln;
   except
     on e: Exception do
     begin

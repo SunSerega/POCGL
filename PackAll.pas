@@ -1,22 +1,7 @@
 ﻿program prog;
 
-procedure ExecNoShell(fname: string; args: string := ''; is_async: boolean := true);
-begin
-  var p := new System.Diagnostics.Process;
-  p.StartInfo.FileName := fname;
-  p.StartInfo.Arguments := args;
-  p.StartInfo.UseShellExecute := false;
-  if is_async then p.StartInfo.RedirectStandardOutput := true;
-  p.StartInfo.RedirectStandardInput := true;
-  p.Start;
-  p.WaitForExit;
-  if is_async then write($'{System.IO.Path.GetFileName(fname)}[{args}] : {p.StandardOutput.ReadToEnd}');
-end;
-
-procedure Compile(fname: string) := ExecNoShell(
-  'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe',
-  $'"{System.IO.Path.GetFullPath(fname)}"'
-);
+uses System.Threading.Tasks;
+uses Pack_Utils in 'Packing\Pack_Utils.pas';
 
 begin
   try
@@ -26,20 +11,19 @@ begin
     
     // ====================================================
     
-    System.Threading.Tasks.Parallel.Invoke(
-      ()->Compile('OpenCLABC.pas'),
-      ()->Compile('OpenGLABC.pas'),
-      ()->Compile('Tests\Tester.pas')
-    );
-    
-    // ====================================================
-    
-    var wd := System.Environment.CurrentDirectory;
-    System.Environment.CurrentDirectory += '\Tests';
-    
-    ExecNoShell('Tests\Tester.exe', '', false);
-    
-    System.Environment.CurrentDirectory := wd;
+    (
+      CompTask('..\OpenCLABC.pas') *
+      (
+        ExecTask('Pack Template.pas', 'fname=0OpenGL.template', 'GenPas') +
+        new Task(()->System.IO.File.Delete('OpenGL.pas')) +
+        new Task(()->System.IO.File.Move('Packing\0OpenGL.pas', 'OpenGL.pas')) +
+//        new Task(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '.templateres').ForEach(System.IO.File.Delete)) +
+        CompTask('..\OpenGLABC.pas')
+      ) *
+      CompTask('..\Tests\Tester.pas')
+      
+      + ExecTask('..\Tests\Tester.exe')
+    ).RunSynchronously;
     
     // ====================================================
     
@@ -71,10 +55,6 @@ begin
     readln;
     
   except
-    on e: Exception do
-    begin
-      writeln(e);
-      readln;
-    end;
+    on e: Exception do ErrOtp(e);
   end;
 end.

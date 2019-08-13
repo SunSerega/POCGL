@@ -1,0 +1,81 @@
+﻿
+
+
+%%
+//*****************************************************************************************************\\
+// Copyright (©) Cergey Latchenko ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// This code is distributed under the Unlicense
+// For details see LICENSE file or this:
+// https://github.com/SunSerega/POCGL/blob/master/LICENSE
+//*****************************************************************************************************\\
+// Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// Этот код распространяется под Unlicense
+// Подробнее в файле LICENSE или тут:
+// https://github.com/SunSerega/POCGL/blob/master/LICENSE
+//*****************************************************************************************************\\
+
+///
+///Код переведён отсюда:
+/// https://github.com/KhronosGroup/OpenGL-Registry
+/// (Основная часть не_расширений - \api\GL\ )
+///
+///Спецификация (что то типа справки):
+/// https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf
+///
+///Если чего то не хватает - писать сюда:
+/// https://github.com/SunSerega/POCGL/issues
+///
+unit OpenGL;
+
+interface
+
+uses System;
+uses System.Runtime.InteropServices;
+
+{$region Основные типы} type
+  
+  %CoreTypes%
+  
+{$endregion Основные типы}
+
+{$region Энумы} type
+  
+  %enums%
+  
+{$endregion Энумы}
+
+{$region Делегаты} type
+  
+  %delegates%
+  
+{$endregion Делегаты}
+
+{$region Записи} type
+  
+  %VecTypes!PackVecTypes.pas%
+  
+  %MtrTypes!PackMtrTypes.pas%
+  
+  {$region Misc}
+  
+  %records%
+  
+  {$endregion Misc}
+  
+{$endregion Записи}
+
+type
+  
+  %gl_core%
+  
+  %gl_ext!PackExtFuncs.pas%
+  
+  %gl_gdi%
+  
+implementation
+
+%MtrExt!PackMtrExt.pas%
+
+end.
+
+

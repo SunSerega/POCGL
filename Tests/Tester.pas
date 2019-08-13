@@ -7,13 +7,10 @@ type MessageBoxDefaultButton = System.Windows.Forms.MessageBoxDefaultButton;
 type DialogResult = System.Windows.Forms.DialogResult;
 
 { $define SingleThread}
-{ $define WriteDone}
+{$define WriteDone}
 
 const
   PasCompiler = 'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe';
-  
-var
-  MainFolder := System.IO.Path.GetDirectoryName(GetCurrentDir);
   
 ///Result=True когда времени не хватило
 function TimedExecute(p: procedure; t: integer): boolean;
@@ -214,12 +211,12 @@ type
     static procedure TestAll(path: string; get_tester: ()->CompTester);
     begin
       
-      foreach var fname in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
+      foreach var dir in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
       begin
-        System.IO.File.Copy( MainFolder+'\OpenCL.pcu',    fname+'\OpenCL.pcu',    true );
-        System.IO.File.Copy( MainFolder+'\OpenCLABC.pcu', fname+'\OpenCLABC.pcu', true );
-        System.IO.File.Copy( MainFolder+'\OpenGL.pcu',    fname+'\OpenGL.pcu',    true );
-        System.IO.File.Copy( MainFolder+'\OpenGLABC.pcu', fname+'\OpenGLABC.pcu', true );
+        System.IO.File.Copy( 'OpenCL.pcu',    dir+'\OpenCL.pcu',    true );
+        System.IO.File.Copy( 'OpenCLABC.pcu', dir+'\OpenCLABC.pcu', true );
+        System.IO.File.Copy( 'OpenGL.pcu',    dir+'\OpenGL.pcu',    true );
+        System.IO.File.Copy( 'OpenGLABC.pcu', dir+'\OpenGLABC.pcu', true );
       end;
       
       var procs :=
@@ -232,9 +229,9 @@ type
           if pas_fname.EndsWith('OpenGL.pas') then exit;
           if pas_fname.EndsWith('OpenGLABC.pas') then exit;
           
-          {$ifdef WriteDone}
-          lock write_lock do Writeln($'STARTED: "{pas_fname}"');
-          {$endif WriteDone}
+//          {$ifdef WriteDone}
+//          lock write_lock do Writeln($'STARTED: "{pas_fname}"');
+//          {$endif WriteDone}
           
           var tester: CompTester := get_tester();
           var td_fname := pas_fname.Remove(pas_fname.LastIndexOf('.')) + '.td';
@@ -277,10 +274,10 @@ type
     end;
     
     static procedure TestAll :=
-    TestAll('Comp', ()->new CompTester);
+    TestAll('Tests\Comp', ()->new CompTester);
     
     static procedure TestExamples :=
-    TestAll(MainFolder + '\Samples', ()->new CompTester);
+    TestAll('Samples', ()->new CompTester);
     
   end;
   
@@ -348,13 +345,15 @@ type
     
     
     static procedure TestAll :=
-    TestAll('Exec', ()->new ExecTester);
+    TestAll('Tests\Exec', ()->new ExecTester);
     
   end;
 
 begin
   
   try
+    if System.Environment.CurrentDirectory.EndsWith('Tests') then
+      System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
     
     {$ifdef SingleThread}
     CompTester.TestExamples;
@@ -378,5 +377,5 @@ begin
     end;
   end;
   
-  if not (System.Console.IsOutputRedirected or System.Console.IsInputRedirected or System.Console.IsErrorRedirected) then ReadlnString('Press Enter to exit');
+  if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('Press Enter to exit');
 end.
