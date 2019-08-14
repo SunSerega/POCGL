@@ -49,8 +49,6 @@ begin
       yield a;
 end;
 
-procedure writeln(s: string) := Write(s+#10);
-
 const
   
 //  GLpas = 'Temp.pas';
@@ -112,15 +110,16 @@ try
     var resf := fname+'.tempres';
     
     System.IO.File.Copy(fname, resf, true);
-    var psi := new System.Diagnostics.ProcessStartInfo('Text converters\gl format func.exe', $'"fname={resf}"');
+    var psi := new System.Diagnostics.ProcessStartInfo('Text converters\gl format func.exe', $'"fname={resf}" "SecondaryProc"');
     psi.UseShellExecute := false;
     var p := System.Diagnostics.Process.Start(psi);
     p.WaitForExit;
     
-    var text := '    ' + ReadAllText(resf).Remove(#13).Trim(#10' '.ToArray);
+    var text := ReadAllText(resf, System.Text.Encoding.UTF7).Remove(#13).Trim(#10' '.ToArray);
     System.IO.File.Delete(resf);
     
     if text='' then continue;
+    text := '    '+text;
     
     all_funcs +=
       text.Split(
@@ -141,10 +140,14 @@ try
     all_funcs
     .Tabulate(f->
     begin
+//    try
       var ind1 := f.IndexOf('name ''') + 'name '''.Length;
       var ind2 := f.IndexOf('''', ind1);
       
       Result := f.Substring(ind1, ind2-ind1);
+//    except
+//      System.Windows.Forms.MessageBox.Show($'"{f}"');
+//    end;
     end)
     .Where(f->not used_funcs.Contains(f[1]))
     .DistinctBy(f->f[1].RemoveFuncNameExt) //ToDo это вообще нормально, что .RemoveFuncNameExt?
@@ -417,19 +420,19 @@ try
   begin
     System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
     System.Console.Beep(5000,1000);
-    readln;
+    if not CommandLineArgs.Contains('SecondaryProc') then Readln;
   end else
   begin
     System.Windows.Forms.Clipboard.Clear;
     System.Console.Beep(3000,1000);
-    readln;
+    if not CommandLineArgs.Contains('SecondaryProc') then Readln;
   end;
   
 except
   on e: Exception do
   begin
     writeln(e);
-    if not CommandLineArgs.Any(arg->arg.StartsWith('fname=')) then readln;
+    if not CommandLineArgs.Contains('SecondaryProc') then Readln;
   end;
 end;
 

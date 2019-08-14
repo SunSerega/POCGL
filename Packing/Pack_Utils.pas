@@ -21,7 +21,7 @@ begin
     writeln(e.Message) else
     writeln(e);
   
-  if not CommandLineArgs.Contains('SecondaryProc') then readln;
+  if not CommandLineArgs.Contains('SecondaryProc') then Readln;
   
   Halt(e.HResult);
 end;
@@ -52,9 +52,10 @@ begin
   Result := $'{path}\{fname}';
 end;
 
-procedure RunFile(fname: string; params pars: array of string);
+procedure RunFile(fname, nick: string; params pars: array of string);
 begin
   fname := GetFullPath(fname);
+  Otp($'Runing {nick}');
   
   var psi := new ProcessStartInfo(fname, pars.Append('"SecondaryProc"').JoinIntoString);
   fname := fname.Substring(fname.LastIndexOf('\')+1);
@@ -65,21 +66,24 @@ begin
   var p := new Process;
   sec_procs += p;
   p.StartInfo := psi;
-  p.OutputDataReceived += (o,e)->Otp($'{fname}: {e.Data}');
+  p.OutputDataReceived += (o,e) -> if not string.IsNullOrWhiteSpace(e.Data) then Otp($'{nick}: {e.Data}');
   p.Start;
+  p.BeginOutputReadLine;
   
   p.WaitForExit;
   if p.ExitCode<>0 then
   begin
-    Otp($'Error runing {fname}{#10}{#10}{p.StandardOutput.ReadToEnd}');
-    ErrOtp(System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode));
+    var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
+    ErrOtp(new Exception($'Error in {nick}:', ex));
   end;
   
+  Otp($'Finished runing {nick}');
 end;
 
 procedure CompilePasFile(fname: string);
 begin
   fname := GetFullPath(fname);
+  Otp($'Compiling "{fname}"');
   
   var psi := new ProcessStartInfo('C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe', $'"{fname}"');
   fname := fname.Substring(fname.LastIndexOf('\')+1);
@@ -92,14 +96,14 @@ begin
   p.Start;
   p.WaitForExit;
   
-  var res := p.StandardOutput.ReadToEnd;
+  var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
     ErrOtp(new PackException(res)) else
-    Otp($'Compiling "{fname}": {res}');
+    Otp($'Finished compiling "{fname}": {res}');
   
 end;
 
-procedure ExecuteFile(fname: string; params pars: array of string);
+procedure ExecuteFile(fname, nick: string; params pars: array of string);
 begin
   fname := GetFullPath(fname);
   
@@ -122,7 +126,7 @@ begin
     end else
       raise new PackException($'file without extention: "{fname}"');
   
-  RunFile(fname, pars);
+  RunFile(fname, nick, pars);
 end;
 
 
@@ -151,10 +155,10 @@ except
   on e: Exception do ErrOtp(e);
 end);
 
-function ExecTask(fname: string; params pars: array of string) :=
+function ExecTask(fname, nick: string; params pars: array of string) :=
 new Task(()->
 try
-  ExecuteFile(fname, pars);
+  ExecuteFile(fname, nick, pars);
 except
   on e: Exception do ErrOtp(e);
 end);

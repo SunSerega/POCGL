@@ -67,7 +67,7 @@ type
       
       if not System.IO.File.Exists(td_fname) then
       begin
-        if ReadLines(pas_fname).First.StartsWith('unit') then
+        if ReadLines(pas_fname).Take(1).SingleOrDefault(l->l.StartsWith('unit'))<>nil then
         begin
           WriteAllText(td_fname, '#SkipTest', System.Text.Encoding.UTF8);
           raise new TestCanceledException;
@@ -373,7 +373,6 @@ begin
     on e: Exception do
     begin
       Writeln(e);
-      readln;
     end;
   end;
   

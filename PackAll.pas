@@ -14,7 +14,7 @@ begin
     (
       CompTask('..\OpenCLABC.pas') *
       (
-        ExecTask('Pack Template.pas', 'fname=0OpenGL.template', 'GenPas') +
+        ExecTask('Pack Template.pas', 'Template[0OpenGL]', 'fname=0OpenGL.template', 'GenPas') +
         new Task(()->System.IO.File.Delete('OpenGL.pas')) +
         new Task(()->System.IO.File.Move('Packing\0OpenGL.pas', 'OpenGL.pas')) +
 //        new Task(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.templateres').ForEach(System.IO.File.Delete)) +
@@ -22,7 +22,7 @@ begin
       ) *
       CompTask('..\Tests\Tester.pas')
       
-      + ExecTask('..\Tests\Tester.exe')
+      + ExecTask('..\Tests\Tester.exe', 'Tester')
     ).RunSynchronously;
     
     // ====================================================
@@ -47,12 +47,22 @@ begin
       fname.EndsWith('.pas') or
       fname.EndsWith('.cl') or
       fname.EndsWith('.txt')
-    ).ForEach(fname->System.IO.File.Copy(fname, 'Release\Installer'+fname));
+    ).Where(fname->not (
+      fname.EndsWith('OpenCL.pas') or
+      fname.EndsWith('OpenCLABC.pas') or
+      fname.EndsWith('OpenGL.pas') or
+      fname.EndsWith('OpenGLABC.pas')
+    ))
+    .ForEach(fname->
+    begin
+      writeln($'Packing sample "Release\Installer{fname}"');
+      System.IO.File.Copy(fname, 'Release\Installer'+fname);
+    end);
     
     // ====================================================
     
     writeln('done packing');
-    readln;
+    if not CommandLineArgs.Contains('SecondaryProc') then Readln;
     
   except
     on e: Exception do ErrOtp(e);

@@ -45,12 +45,12 @@ begin
   var sind := comm.IndexOf('!');
   if sind<>-1 then
   begin
-    ExecuteFile(comm.Substring(sind+1));
+    ExecuteFile(comm.Substring(sind+1),$'TemplateCommand[{comm.Substring(sind+1)}]');
     comm := comm.Remove(sind);
   end;
   
   comm := GetFullPath(comm+'.template');
-  RunFile(GetEXEFileName, $'"fname={comm}"');
+  RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={comm}"');
   
   comm += 'res';
   Result := ReadAllText(comm, System.Text.Encoding.UTF7);

@@ -469,7 +469,7 @@ except
   on e: Exception do
   begin
     writeln(e);
-    if not CommandLineArgs.Any(arg->arg.StartsWith('fname=')) then readln;
+    if not CommandLineArgs.Contains('SecondaryProc') then Readln;
   end;
 end;
 

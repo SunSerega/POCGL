@@ -308,7 +308,7 @@ begin
     on e: Exception do
     begin
       writeln(e);
-      readln;
+      if not CommandLineArgs.Contains('SecondaryProc') then Readln;
     end;
   end;
 end.

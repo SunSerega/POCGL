@@ -20,7 +20,7 @@ begin
     on e: Exception do
     begin
       writeln(e);
-      readln;
+      if not CommandLineArgs.Contains('SecondaryProc') then Readln;
       halt;
     end;
   end;
@@ -71,7 +71,9 @@ begin
     
     System.Console.Beep;
     if err then
-      readln else
+    begin
+	  if not CommandLineArgs.Contains('SecondaryProc') then Readln;
+	end else
 //      Exec('gl format enum.exe')
     ;
     
@@ -79,7 +81,7 @@ begin
     on e: Exception do
     begin
       writeln(e);
-      readln;
+      if not CommandLineArgs.Contains('SecondaryProc') then Readln;
     end;
   end;
 end.

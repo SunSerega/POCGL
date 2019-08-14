@@ -2,7 +2,7 @@
 
 begin
   try
-    ExecuteFile('..\Text generators\MtrExt.pas', '"fname=Packing\MtrExt.template"');
+    ExecuteFile('..\Text generators\MtrExt.pas', 'MtrExtCodeGenerator', '"fname=Packing\MtrExt.template"');
   except
     on e: Exception do ErrOtp(e);
   end;

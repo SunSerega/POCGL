@@ -47,5 +47,5 @@ begin
   
   writeln;
   writeln('done');
-  readln;
+  if not CommandLineArgs.Contains('SecondaryProc') then Readln;
 end.
