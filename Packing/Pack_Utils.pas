@@ -12,10 +12,11 @@ type
   
 procedure ErrOtp(e: Exception);
 begin
-  foreach var p in sec_procs do
-    try
-      p.Kill;
-    except end;
+  lock sec_procs do
+    foreach var p in sec_procs do
+      try
+        p.Kill;
+      except end;
   
   if e is PackException then
     writeln(e.Message) else

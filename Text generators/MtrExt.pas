@@ -76,7 +76,7 @@ begin
     var farg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
     
     if farg<>nil then
-      WriteAllText(farg.SubString('fname='.Length), res.ToString, System.Text.Encoding.UTF7) else
+      WriteAllText(farg.SubString('fname='.Length), res.ToString, new System.Text.UTF8Encoding(true)) else
     begin
       System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
       System.Console.Beep;

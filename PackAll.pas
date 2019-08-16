@@ -17,6 +17,7 @@ begin
         ExecTask('Pack Template.pas', 'Template[0OpenGL]', 'fname=0OpenGL.template', 'GenPas') +
         new Task(()->System.IO.File.Delete('OpenGL.pas')) +
         new Task(()->System.IO.File.Move('Packing\0OpenGL.pas', 'OpenGL.pas')) +
+        new Task(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', new System.Text.UTF8Encoding(true)).Replace(#10,#13#10), new System.Text.UTF8Encoding(true))) +
 //        new Task(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.templateres').ForEach(System.IO.File.Delete)) +
         CompTask('..\OpenGLABC.pas')
       ) *

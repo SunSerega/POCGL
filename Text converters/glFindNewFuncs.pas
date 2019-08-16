@@ -1,8 +1,10 @@
 ﻿program prog;
 { $apptype windows}
-{$reference System.Windows.Forms.dll}
 
+uses FuncFormatData;
 uses BinSpecData in '..\Data scrappers\BinSpecData.pas';
+
+{$region Misc}
 
 function RemoveFuncNameExt(self: string): string; extensionmethod;
 begin
@@ -49,15 +51,18 @@ begin
       yield a;
 end;
 
+{$endregion Misc}
+
 const
   
 //  GLpas = 'Temp.pas';
   GLpas = 'OpenGL.pas';
   
 //  HeadersFolder = 'D:\0\Temp';
-//  HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\GL .h';
+//  HeadersFolder = 'D:\1Cергей\Мои программы\проекты\POCGL\Temp';
   HeadersFolder = 'C:\Users\Master in EngLiSH\Desktop\OpenGL-Registry';
   
+//  BrokenHeadersFolder = 'D:\1Cергей\Мои программы\проекты\POCGL\Temp';
   BrokenHeadersFolder = 'Data scrappers\BrokenSource';
   
 procedure STAProc :=
@@ -92,78 +97,40 @@ try
     .Select(l->'gl'+l.Trim(' '))
     .ToHashSet&<string>(new FuncNameEqualityComparer) //ToDo 1. почему без &<> не пашет и 2. возможно - это плохая идея... К примеру, это исключает ARB варианты некоторых функций. Но, может, они нужны, для старых версий?
   ;
+  used_funcs += 'wglCreateContext';
+  used_funcs += 'wglMakeCurrent';
   
   {$endregion Read used funcs}
   
   {$region Read funcs from .h's}
   writeln('Read funcs from .h''s');
   
-  // including used
-  var all_funcs := new HashSet<string>;
-  
-  foreach var fname in
+  var all_header_files :=
     System.IO.Directory.EnumerateFiles(HeadersFolder, '*.h', System.IO.SearchOption.AllDirectories) +
     System.IO.Directory.EnumerateFiles(BrokenHeadersFolder, '*.h', System.IO.SearchOption.AllDirectories)
-  do
-  begin
-    writeln(fname);
-    var resf := fname+'.tempres';
-    
-    System.IO.File.Copy(fname, resf, true);
-    var psi := new System.Diagnostics.ProcessStartInfo('Text converters\gl format func.exe', $'"fname={resf}" "SecondaryProc"');
-    psi.UseShellExecute := false;
-    var p := System.Diagnostics.Process.Start(psi);
-    p.WaitForExit;
-    
-    var text := ReadAllText(resf, System.Text.Encoding.UTF7).Remove(#13).Trim(#10' '.ToArray);
-    System.IO.File.Delete(resf);
-    
-    if text='' then continue;
-    text := '    '+text;
-    
-    all_funcs +=
-      text.Split(
-        Arr(#10'    '#10),
-        System.StringSplitOptions.RemoveEmptyEntries
-      )
-    ;
-    
-  end;
+  ;
   
-  {$endregion Read funcs from .h's}
-  
-  {$region Tabulate all funcs with name (and delete used)}
-  writeln('Tabulate all funcs with name (and delete used)');
-  
-  // (text, name, prep)
-  var funcs_data: List<(string,string)> :=
-    all_funcs
-    .Tabulate(f->
+  var funcs_data: List<FuncDef> :=
+    all_header_files
+    .SelectMany(fname->
     begin
-//    try
-      var ind1 := f.IndexOf('name ''') + 'name '''.Length;
-      var ind2 := f.IndexOf('''', ind1);
-      
-      Result := f.Substring(ind1, ind2-ind1);
-//    except
-//      System.Windows.Forms.MessageBox.Show($'"{f}"');
-//    end;
+      writeln(fname);
+      Result := ReadGLFuncs(ReadAllText(fname, new System.Text.UTF8Encoding(true)));
     end)
-    .Where(f->not used_funcs.Contains(f[1]))
-    .DistinctBy(f->f[1].RemoveFuncNameExt) //ToDo это вообще нормально, что .RemoveFuncNameExt?
-    .OrderBy(f->f[1])
+    .Where(fd->not used_funcs.Contains(fd.full_name))
+    .DistinctBy(fd->fd.full_name.RemoveFuncNameExt) //ToDo это вообще нормально, что .RemoveFuncNameExt?
+    .OrderBy(fd->fd.name.TrimStart('&'))
     .ToList
   ;
   
-  {$endregion Tabulate all funcs with name (and delete used)}
+  {$endregion Read funcs from .h's}
   
   {$region Find ext types}
   writeln('Find ext types');
   
   var ext_types: List<string> :=
     funcs_data
-    .Select(t->t[1])
-    .Select(s->s.TakeFuncNameExt)
+    .Select(fd->fd.name.TakeFuncNameExt)
     .Where(s->not (s in ['', 'D', 'A', 'W', 'CMAAINTEL', 'IDEXT', 'DEXT', 'DARB', 'DOES', 'GPUIDAMD', 'DC', 'DCARB', 'DCEXT', 'DCNV', 'DFX', 'DINTEL', 'DL', 'DSGIS']))
     .Distinct
     .ToList
@@ -205,9 +172,9 @@ try
   {$region Sort by ext names}
   writeln('Sort by ext name');
   
-  // ext_name (or string[0]) => (func_text, func_name)
-  var funcs_by_ext_name := new Dictionary<List<string>, List<(string,string)>>(new ListSeqEqualityComparer);
-  funcs_by_ext_name[new List<string>] := new List<(string,string)>;
+  // ext_name (or string[0]) => FuncDef
+  var funcs_by_ext_name := new Dictionary<List<string>, List<FuncDef>>(new ListSeqEqualityComparer);
+  funcs_by_ext_name[new List<string>] := new List<FuncDef>;
   
   var unused_exts := new HashSet<List<string>>(func_name_ext_name_table.Values, new ListSeqEqualityComparer);
   
@@ -215,14 +182,14 @@ try
   begin
     
     var ext_names: List<string>;
-    var fn1 := funcs_data[0][1];
+    var fn1 := funcs_data[0].full_name;
     if func_name_ext_name_table.TryGetValue(fn1, ext_names) then
     begin
-      var fs := new List<(string,string)>;
+      var fs := new List<FuncDef>;
       
       foreach var fn in ext_name_func_name_table[ext_names] do
       begin
-        var ind := funcs_data.FindIndex(f->f[1].RemoveFuncNameExt=fn.RemoveFuncNameExt);
+        var ind := funcs_data.FindIndex(f->f.full_name.RemoveFuncNameExt=fn.RemoveFuncNameExt);
         if ind <> -1 then
         begin
           fs += funcs_data[ind];
@@ -232,9 +199,8 @@ try
           writeln($'"{fn1}": can''t find func "{fn}" from "{ext_names.JoinIntoString}"');
       end;
       
-//        writeln(ext_names, fs.Select(f->f[1]));
       if funcs_by_ext_name.ContainsKey(ext_names) then
-        raise new System.InvalidOperationException($'key = [{ext_names.JoinIntoString}], val1 = [{funcs_by_ext_name[ext_names].Select(f->f[1]).JoinIntoString}], val2 = [{fs.Select(f->f[1]).JoinIntoString}]') else
+        raise new System.InvalidOperationException($'key = [{ext_names.JoinIntoString}], val1 = [{funcs_by_ext_name[ext_names].Select(fd->fd.name).JoinIntoString}], val2 = [{fs.Select(fd->fd.name).JoinIntoString}]') else
         funcs_by_ext_name.Add(ext_names, fs);
       unused_exts.Remove(ext_names);
     end else
@@ -258,33 +224,29 @@ try
   {$region Then sort by ext type}
   writeln('Then sort by ext type');
   
-  // class name => ext names (or string[0]) => (func_text, func_name)
-  var funcs_sorted := new Dictionary<string, Dictionary<List<string>, List<(string,string)>>>;
+  // class name => ext names (or string[0]) => FuncDef
+  var funcs_sorted := new Dictionary<string, Dictionary<List<string>, List<FuncDef>>>;
   
   foreach var ext_names in funcs_by_ext_name.Keys do
   begin
     var ofs := funcs_by_ext_name[ext_names];
     
-    foreach var fs in ext_names.Count=0 ? ofs.Select(f->Lst&<(string,string)>(f)) : Seq&<List<(string,string)>>(ofs) do
+    foreach var fs in ext_names.Count=0 ? ofs.Select(fd->Lst(fd)) : Seq&<List<FuncDef>>(ofs) do
     begin
       
       var t_name := '';
       
       var fs_pnh :=
-        fs.Select(f->
+        fs.Select(fd->
         begin
-          if f[1].StartsWith('wgl') then
-            Result := 'wgl' else
-          if f[1].StartsWith('egl') then
-            Result := 'egl' else
-          if f[1].StartsWith('glu') then
-            Result := 'glu' else
-          if f[1].StartsWith('glX') then
-            Result := 'glX' else
-          if f[0].Contains  ('gdi') then
-            Result := 'gdi' else
-            Result := '';
-//            if fs.Any(f->f[0].Contains('GetGPUIDsAMD')) then writeln((f[1], Result));
+          case fd.name_header of
+            'wgl':  Result := 'wgl';
+            'egl':  Result := 'egl';
+            'glu':  Result := 'glu';
+            'glX':  Result := 'glX';
+            '':     Result := 'gdi';
+            else    Result := '';
+          end;
         end)
         .Where(pnh->pnh<>'')
         .Distinct
@@ -296,10 +258,10 @@ try
       if fs_pnh.Count>1 then
         t_name := 'gl_Misc' else
       begin
-        var ext_ts := fs.Select(f->
+        var ext_ts := fs.Select(fd->
         begin
-          var ext_ts := ext_types.Where(ext_t->f[1].EndsWith(ext_t)).ToList;
-          if ext_ts.Count>1 then raise new System.ArgumentException($'func {f[1]} had multiple ext types: {ext_ts.JoinIntoString}');
+          var ext_ts := ext_types.Where(ext_t->fd.name.EndsWith(ext_t)).ToList;
+          if ext_ts.Count>1 then raise new System.ArgumentException($'func {fd.full_name} had multiple ext types: {ext_ts.JoinIntoString}');
           Result := ext_ts.Count=0?'':ext_ts[0];
         end).Where(ext_t->ext_t<>'').Distinct.ToList;
         
@@ -313,7 +275,7 @@ try
         
       end;
       
-      if not funcs_sorted.ContainsKey(t_name) then funcs_sorted[t_name] := new Dictionary<List<string>, List<(string,string)>>(new ListSeqEqualityComparer);
+      if not funcs_sorted.ContainsKey(t_name) then funcs_sorted[t_name] := new Dictionary<List<string>, List<FuncDef>>(new ListSeqEqualityComparer);
       
       if not funcs_sorted[t_name].ContainsKey(ext_names) then
         funcs_sorted[t_name][ext_names] := fs else
@@ -357,7 +319,12 @@ try
     
     res += '  ';
     res += kvp1.Key;
-    res += ' = static class'#10;
+    res += ' = sealed class'#10;
+    res += '    private static function FuncPtrOrNil<T>(ptr: IntPtr) := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);'#10;
+    
+    if kvp1.Value.Values.SelectMany(l->l).Any(fd->fd.name_header<>'') then res += '    public static function GetGLProcAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10'    external ''opengl32.dll'' name ''wglGetProcAddress'';'#10;
+    if kvp1.Key='wgl' then res += '    public static function CreateContext(hDc: GDI_DC): GLContext;'#10'    external ''opengl32.dll'' name ''wglCreateContext'';'#10;
+    if kvp1.Key='wgl' then res += '    public static function MakeCurrent(hDc: GDI_DC; newContext: GLContext): UInt32;'#10'    external ''opengl32.dll'' name ''wglMakeCurrent'';'#10;
     
     res += '    ';
     
@@ -368,28 +335,13 @@ try
       var reg_name := kvp2.Key.Count=0 ? 'Unsorted' : kvp2.Key.JoinIntoString(', ');
       res += $'    {{$region {reg_name}}}' + #10;
       
-      res += '    '#10;
+      res += '    ';
       
-      if kvp1.Key='gl_Misc' then
-        res += kvp2.Value.Select(f->
-        begin
-          var pnh := '';
-          
-          if f[1].StartsWith('wgl') then
-            pnh := 'wgl' else
-          if f[1].StartsWith('egl') then
-            pnh := 'egl' else
-          if f[1].StartsWith('glu') then
-            pnh := 'glu' else
-          if f[1].StartsWith('glX') then
-            pnh := 'glX';
-          
-          Result := f[0].Replace(f[1].SubString(pnh.Length),f[1]).Replace(pnh+f[1], f[1]);
-        end).JoinIntoString(#10'    '#10) else
-        res += kvp2.Value.Select(f->f[0]).JoinIntoString(#10'    '#10);
+      var need_full_name := kvp1.Key='gl_Misc';
+      foreach var fd in kvp2.Value do
+        res += fd.ToString(need_full_name);
       
       res += #10;
-      res += '    '#10;
       
       res += $'    {{$endregion {reg_name}}}' + #10;
       
@@ -414,7 +366,7 @@ try
   var farg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
   
   if farg<>nil then
-    WriteAllText(farg.SubString('fname='.Length), res.ToString, System.Text.Encoding.UTF7) else
+    WriteAllText(farg.SubString('fname='.Length), res.ToString, new System.Text.UTF8Encoding(true)) else
   
   if res.Length<>0 then
   begin

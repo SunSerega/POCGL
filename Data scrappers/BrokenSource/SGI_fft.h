@@ -1,4 +1,4 @@
-
+﻿
 void glPixelTransformSGI(enum target);
 void glPixelTransformParameterfSGI(enum target, enum pname, float param);
 void glPixelTransformParameterfvSGI(enum target, enum pname, const float* params);

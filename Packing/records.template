@@ -82,7 +82,7 @@
   end;
   
   [StructLayout(LayoutKind.&Explicit)]
-  GLXHyperpipeConfigSGIX = record
+  GLXHyperpipeConfigDataSGIX = record
     
     public [FieldOffset(0)] pipeName: byte;
     // ANSI строка на 80 символа (но конец сроки обозначается сиволом #0, поэтому помещается 79)

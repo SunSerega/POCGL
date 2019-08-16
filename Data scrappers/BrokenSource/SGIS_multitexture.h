@@ -1,4 +1,4 @@
-
+﻿
 
 void glInterleavedTextureCoordSetsSGIS(int factor);
 void glSelectTextureSGIS(enum target);

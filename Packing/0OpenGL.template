@@ -31,6 +31,7 @@ interface
 
 uses System;
 uses System.Runtime.InteropServices;
+uses System.Runtime.CompilerServices;
 
 {$region Основные типы} type
   

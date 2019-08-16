@@ -69,7 +69,7 @@ type
       begin
         if ReadLines(pas_fname).Take(1).SingleOrDefault(l->l.StartsWith('unit'))<>nil then
         begin
-          WriteAllText(td_fname, '#SkipTest', System.Text.Encoding.UTF8);
+          WriteAllText(td_fname, '#SkipTest', new System.Text.UTF8Encoding(true));
           raise new TestCanceledException;
         end;
         
@@ -77,11 +77,11 @@ type
           
           DialogResult.Yes:
           begin
-            WriteAllText(td_fname, '#SkipTest', System.Text.Encoding.UTF8);
+            WriteAllText(td_fname, '#SkipTest', new System.Text.UTF8Encoding(true));
             raise new TestCanceledException;
           end;
           
-          DialogResult.No: WriteAllText(td_fname, '', System.Text.Encoding.UTF8);
+          DialogResult.No: WriteAllText(td_fname, '', new System.Text.UTF8Encoding(true));
           
           DialogResult.Cancel: Halt;
         end;
@@ -199,9 +199,9 @@ type
           lock write_lock do Writeln($'WARNING: setting {kvp.Key} was deleted from "{fname}"');
       
       var st := res.ToString;
-      if ReadAllText(fname, System.Text.Encoding.UTF8) <> st then
+      if ReadAllText(fname, new System.Text.UTF8Encoding(true)) <> st then
       begin
-        WriteAllText(fname, st, System.Text.Encoding.UTF8);
+        WriteAllText(fname, st, new System.Text.UTF8Encoding(true));
         lock write_lock do Writeln($'WARNING: settings were resaved in "{fname}"');
       end;
     end;

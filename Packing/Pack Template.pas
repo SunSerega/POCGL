@@ -53,7 +53,7 @@ begin
   RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={comm}"');
   
   comm += 'res';
-  Result := ReadAllText(comm, System.Text.Encoding.UTF7);
+  Result := ReadAllText(comm, new System.Text.UTF8Encoding(true));
   System.IO.File.Delete(comm);
   
 end;
@@ -72,7 +72,7 @@ begin
     try
       var res := new StringBuilder;
       
-      foreach var l in ReadAllText(arg, System.Text.Encoding.UTF7).Remove(#13).Trim(#10' '.ToArray).Split(#10) do
+      foreach var l in ReadAllText(arg, new System.Text.UTF8Encoding(true)).Remove(#13).Trim(#10' '.ToArray).Split(#10) do
       begin
         var ind1 := l.IndexOf('%');
         
@@ -108,7 +108,7 @@ begin
       if CommandLineArgs.Contains('GenPas') then
         fname += '.pas' else
         fname += '.templateres';
-      var sw := new System.IO.StreamWriter(System.IO.File.Create(fname), System.Text.Encoding.Unicode);
+      var sw := new System.IO.StreamWriter(System.IO.File.Create(fname), new System.Text.UTF8Encoding(true));
       
       while true do
       begin

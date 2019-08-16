@@ -28,6 +28,9 @@ begin
   // Настраиваем перерисовку
   gl_gdi.SetupControlRedrawing(f, hdc, EndFrame ->
   begin
+//    var gl := new OpenGL.gl;
+    var wgl := new OpenGL.wgl;
+    var gl_Deprecated := new OpenGL.gl_Deprecated;
     
     {$region Настройка глобальных параметров OpenGL}
     
@@ -55,7 +58,7 @@ begin
       
       // Методы из gl_Deprecated это всё что устарело
       // Они используются тут - только чтоб пример был проще
-      gl_Deprecated.Begin(PrimitiveType.TRIANGLES);
+      gl_Deprecated.Begin(PrimitiveType.TRIANGLES.val);
       gl_Deprecated.Color4f( 1,0,0, 1); gl_Deprecated.Vertex2f( pts[0][0] * rot_k, pts[0][1] );
       gl_Deprecated.Color4f( 0,1,0, 1); gl_Deprecated.Vertex2f( pts[1][0] * rot_k, pts[1][1] );
       gl_Deprecated.Color4f( 0,0,1, 1); gl_Deprecated.Vertex2f( pts[2][0] * rot_k, pts[2][1] );
