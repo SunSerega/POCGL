@@ -72,10 +72,12 @@ lock otp_lock do writeln(line);
 
 {$region Process execution}
 
-procedure RunFile(fname, nick: string; params pars: array of string);
+procedure RunFile(fname, nick: string; otp: string->(); params pars: array of string);
 begin
   fname := GetFullPath(fname);
-  Otp($'Runing {nick}');
+  if otp=nil then otp := MiscUtils.Otp;
+  
+  otp($'Runing {nick}');
   
   var psi := new ProcessStartInfo(fname, pars.Append('"SecondaryProc"').JoinIntoString);
   fname := fname.Substring(fname.LastIndexOf('\')+1);
@@ -86,24 +88,35 @@ begin
   var p := new Process;
   sec_procs += p;
   p.StartInfo := psi;
-  p.OutputDataReceived += (o,e) -> if not string.IsNullOrWhiteSpace(e.Data) then Otp($'{nick}: {e.Data}');
+  p.OutputDataReceived += (o,e) -> if not string.IsNullOrWhiteSpace(e.Data) then otp($'{nick}: {e.Data}');
   p.Start;
-  p.BeginOutputReadLine;
   
-  p.WaitForExit;
-  if p.ExitCode<>0 then
-  begin
-    var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
-    ErrOtp(new Exception($'Error in {nick}:', ex));
+  try
+    p.BeginOutputReadLine;
+    
+    p.WaitForExit;
+    if p.ExitCode<>0 then
+    begin
+      var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
+      ErrOtp(new Exception($'Error in {nick}:', ex));
+    end;
+    
+    otp($'Finished runing {nick}');
+  except
+    on ThreadAbortException do
+    try
+      p.Kill;
+    except end;
   end;
-  
-  Otp($'Finished runing {nick}');
 end;
 
-procedure CompilePasFile(fname: string);
+procedure CompilePasFile(fname: string; otp, err: string->());
 begin
   fname := GetFullPath(fname);
-  Otp($'Compiling "{fname}"');
+  if otp=nil then otp := MiscUtils.Otp;
+  if err=nil then err := s->ErrOtp(new MessageException($'Error compiling "{fname}": {s}'));
+  
+  otp($'Compiling "{fname}"');
   
   var psi := new ProcessStartInfo('C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe', $'"{fname}"');
   fname := fname.Substring(fname.LastIndexOf('\')+1);
@@ -118,12 +131,12 @@ begin
   
   var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
-    ErrOtp(new MessageException($'Error compiling "{fname}": {res}')) else
-    Otp($'Finished compiling "{fname}": {res}');
+    err(res) else
+    otp($'Finished compiling "{fname}": {res}');
   
 end;
 
-procedure ExecuteFile(fname, nick: string; params pars: array of string);
+procedure ExecuteFile(fname, nick: string; otp, err: string->(); params pars: array of string);
 begin
   fname := GetFullPath(fname);
   
@@ -134,7 +147,7 @@ begin
       '.pas':
       begin
         
-        CompilePasFile(fname);
+        CompilePasFile(fname, otp, err);
         
         fname := fname.Remove(fname.Length-4)+'.exe';
         ffname := ffname.Remove(ffname.Length-4)+'.exe';
@@ -146,12 +159,29 @@ begin
     end else
       raise new MessageException($'file without extention: "{fname}"');
   
-  RunFile(fname, nick, pars);
+  RunFile(fname, nick, otp, pars);
 end;
+
+
+
+procedure RunFile(fname, nick: string; params pars: array of string) :=
+RunFile(fname, nick, nil, pars);
+
+procedure CompilePasFile(fname: string) :=
+CompilePasFile(fname, nil, nil);
+
+procedure ExecuteFile(fname, nick: string; params pars: array of string) :=
+ExecuteFile(fname, nick, nil, nil, pars);
 
 {$endregion Process execution}
 
 {$region Task operations}
+
+procedure RegisterThr;
+begin
+  sec_thrs += Thread.CurrentThread;
+  if in_err_state then exit;
+end;
 
 type
   SecThrProc = abstract class
@@ -166,8 +196,7 @@ type
     
     function StartExec: Thread; override := new Thread(()->
     try
-      sec_thrs += Thread.CurrentThread;
-      if in_err_state then exit;
+      RegisterThr;
       p;
     except
       on e: Exception do ErrOtp(e);
@@ -186,7 +215,7 @@ type
     
     function StartExec: Thread; override := new Thread(()->
     try
-      sec_thrs += Thread.CurrentThread;
+      RegisterThr;
       p1.SyncExec;
       p2.SyncExec;
     except
@@ -206,7 +235,7 @@ type
     
     function StartExec: Thread; override := new Thread(()->
     try
-      sec_thrs += Thread.CurrentThread;
+      RegisterThr;
       var t1 := p1.StartExec;
       var t2 := p2.StartExec;
       t1.Join;
@@ -235,5 +264,7 @@ new SecThrProcCustom(()->ExecuteFile(fname, nick, pars));
 {$endregion Task operations}
 
 begin
-  sec_thrs += Thread.CurrentThread;
+  RegisterThr;
+  while not System.Environment.CurrentDirectory.EndsWith('POCGL') do
+    System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
 end.

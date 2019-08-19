@@ -1,4 +1,5 @@
-﻿
+﻿uses MiscUtils in '..\Utils\MiscUtils.pas';
+
 {$reference System.Windows.Forms.dll}
 type MessageBox = System.Windows.Forms.MessageBox;
 type MessageBoxButtons = System.Windows.Forms.MessageBoxButtons;
@@ -9,36 +10,23 @@ type DialogResult = System.Windows.Forms.DialogResult;
 { $define SingleThread}
 {$define WriteDone}
 
-const
-  PasCompiler = 'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe';
-  
 ///Result=True когда времени не хватило
 function TimedExecute(p: procedure; t: integer): boolean;
 begin
   {$ifndef SingleThread}
   var res := false;
-  var err: Exception;
   
-  var exec_thr := new System.Threading.Thread(()->
-    try
-      p;
-    except
-      on e: System.Threading.ThreadAbortException do ;
-      on e2: Exception do err := e2; // ToDo #1900
-    end);
-  var stop_thr := new System.Threading.Thread(()->
-    begin
-      Sleep(t);
-      exec_thr.Abort;
-      res := true;
-    end);
+  var exec_thr := ProcTask(p).StartExec;
+  var stop_thr := ProcTask(()->
+  begin
+    Sleep(t);
+    exec_thr.Abort;
+    res := true;
+  end).StartExec;
   
-  exec_thr.Start;
-  stop_thr.Start;
   exec_thr.Join;
   stop_thr.Abort;
   
-  if err<>nil then raise new Exception('',err);
   Result := res;
   {$else}
   p;
@@ -54,7 +42,6 @@ type
     
     settings := new Dictionary<string, string>;
     used_settings := new HashSet<string>;
-    static write_lock := new object;
     
     constructor;
     begin
@@ -130,52 +117,43 @@ type
     begin
 //      $'"{System.IO.Path.GetFullPath(pas_fname)}" cd="{MainFolder}" OutDir="{System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(pas_fname))}"'.Println;
       
-      var psi := new System.Diagnostics.ProcessStartInfo(PasCompiler, $'"{System.IO.Path.GetFullPath(pas_fname)}"');
-      psi.UseShellExecute := false;
-      psi.RedirectStandardInput := true;
-      psi.RedirectStandardOutput := true;
-      psi.RedirectStandardError := true;
-      
-      var comp := System.Diagnostics.Process.Start(psi);
-      comp.StandardInput.WriteLine;
-      comp.WaitForExit;
-      
-      var otp := comp.StandardOutput.ReadToEnd.Remove(#13).Trim(#10);
-//      otp.Println;
-      if otp.ToLower.Contains('error') then
+      var err_found := false;
+      CompilePasFile(pas_fname, Otp, res->
       begin
+        err_found := true;
         
         if expected_comp_err=nil then
-          case MessageBox.Show($'In "{pas_fname}":{#10*2}{otp}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
+          case MessageBox.Show($'In "{pas_fname}":{#10*2}{res}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
-              settings['#ExpErr'] := otp;
-              lock write_lock do Writeln($'%WARNING: settings updated for "{pas_fname}"');
+              settings['#ExpErr'] := res;
+              Otp($'%WARNING: settings updated for "{pas_fname}"');
             end;
             
             DialogResult.Cancel: Halt;
           end else
-          if expected_comp_err<>otp then
-          case MessageBox.Show($'In "{pas_fname}"{#10}Expected:{#10*2}{expected_comp_err}{#10*2}Current error:{#10*2}{otp}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
+          if expected_comp_err<>res then
+          case MessageBox.Show($'In "{pas_fname}"{#10}Expected:{#10*2}{expected_comp_err}{#10*2}Current error:{#10*2}{res}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
-              settings['#ExpErr'] := otp;
-              lock write_lock do Writeln($'%WARNING: settings updated for "{pas_fname}"');
+              settings['#ExpErr'] := res;
+              Otp($'%WARNING: settings updated for "{pas_fname}"');
             end;
             
             DialogResult.Cancel: Halt;
           end;
         
-      end else
-      if expected_comp_err<>nil then
+      end);
+      
+      if (expected_comp_err<>nil) and not err_found then
         case MessageBox.Show($'In "{pas_fname}"{#10}Expected:{#10*2}{expected_comp_err}{#10*2}Remove error from expected?', 'Error expected', MessageBoxButtons.YesNoCancel) of
           
           DialogResult.Yes:
           begin
             settings.Remove('#ExpErr');
-            lock write_lock do Writeln($'%WARNING: settings updated for "{pas_fname}"');
+            Otp($'%WARNING: settings updated for "{pas_fname}"');
           end;
           
           DialogResult.Cancel: Halt;
@@ -196,13 +174,13 @@ type
           res += kvp.Value.Replace('#','\#');
           res += #10;
         end else
-          lock write_lock do Writeln($'WARNING: setting {kvp.Key} was deleted from "{fname}"');
+          Otp($'WARNING: setting {kvp.Key} was deleted from "{fname}"');
       
       var st := res.ToString;
       if ReadAllText(fname, new System.Text.UTF8Encoding(true)) <> st then
       begin
         WriteAllText(fname, st, new System.Text.UTF8Encoding(true));
-        lock write_lock do Writeln($'WARNING: settings were resaved in "{fname}"');
+        Otp($'WARNING: settings were resaved in "{fname}"');
       end;
     end;
     
@@ -210,6 +188,9 @@ type
     
     static procedure TestAll(path: string; get_tester: ()->CompTester);
     begin
+      {$ifndef SingleThread}
+      RegisterThr;
+      {$endif SingleThread}
       
       foreach var dir in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
       begin
@@ -224,13 +205,16 @@ type
           path, '*.pas', System.IO.SearchOption.AllDirectories
         ).Select&<string,()->()>(pas_fname->()->
         try
+          {$ifndef SingleThread}
+          RegisterThr;
+          {$endif SingleThread}
           if pas_fname.EndsWith('OpenCL.pas') then exit;
           if pas_fname.EndsWith('OpenCLABC.pas') then exit;
           if pas_fname.EndsWith('OpenGL.pas') then exit;
           if pas_fname.EndsWith('OpenGLABC.pas') then exit;
           
 //          {$ifdef WriteDone}
-//          lock write_lock do Writeln($'STARTED: "{pas_fname}"');
+//          Otp($'STARTED: "{pas_fname}"');
 //          {$endif WriteDone}
           
           var tester: CompTester := get_tester();
@@ -242,17 +226,13 @@ type
           tester.SaveSettings(td_fname);
           
           {$ifdef WriteDone}
-          lock write_lock do Writeln($'DONE: "{pas_fname}"');
+          Otp($'DONE: "{pas_fname}"');
 //          Readln;
           {$endif WriteDone}
           
         except
           on e: TestCanceledException do;
-          on e: Exception do lock write_lock do
-          begin
-            Writeln($'ERROR: "{pas_fname}"');
-            Writeln(e);
-          end;
+          on e: Exception do ErrOtp(e);
         end)
         .ToArray
       ;
@@ -293,7 +273,7 @@ type
     begin
       inherited LoadSettings(pas_fname, td_fname);
       
-      if expected_comp_err<>nil then lock write_lock do Writeln($'WARNING: compile error is expected in Exec test "{pas_fname}"');
+      if expected_comp_err<>nil then Otp($'WARNING: compile error is expected in Exec test "{pas_fname}"');
       
       if not settings.TryGetValue('#ExpOtp', expected_otp) then expected_otp := nil;
       
@@ -302,38 +282,35 @@ type
     procedure Test(pas_fname, td_fname: string); override;
     begin
       inherited Test(pas_fname, td_fname);
+      var fwoe := pas_fname.Remove(pas_fname.LastIndexOf('.'));
       
-      var psi := new System.Diagnostics.ProcessStartInfo(pas_fname.Remove(pas_fname.LastIndexOf('.')) + '.exe');
-      psi.UseShellExecute := false;
-      psi.RedirectStandardOutput := true;
-      
-      var p := System.Diagnostics.Process.Start(psi);
-      if TimedExecute(p.WaitForExit, 5000) then
+      var res_sb := new StringBuilder;
+      if TimedExecute(()->RunFile(fwoe+'.exe', $'Testable[{fwoe}]', s->res_sb.Append(s)), 5000) then
       begin
-        p.Kill;
-        lock write_lock do Writeln($'ERROR: execution took too long for "{pas_fname}"');
+        Otp($'ERROR: execution took too long for "{pas_fname}"');
+        raise new TestCanceledException;
       end;
       
-      var otp := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10);
+      var res := res_sb.ToString.Remove(#13).Trim(#10);
       if expected_otp=nil then
       begin
-        settings['#ExpOtp'] := otp;
-        lock write_lock do Writeln($'WARNING: settings updated for "{pas_fname}"');
+        settings['#ExpOtp'] := res;
+        Otp($'WARNING: settings updated for "{pas_fname}"');
       end else
-      if expected_otp<>otp then
+      if expected_otp<>res then
       begin
-//        writeln($'{expected_otp.Length} : {otp.Length}');
+//        Otp($'{expected_otp.Length} : {otp.Length}');
 //        expected_otp.ZipTuple(otp)
 //        .Select(t->(word(t[0]), word(t[1])))
 //        .PrintLines;
 //        halt;
         
-        case MessageBox.Show($'In "{pas_fname}"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{otp}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
+        case MessageBox.Show($'In "{pas_fname}"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
           
           DialogResult.Yes:
           begin
-            settings['#ExpOtp'] := otp;
-            lock write_lock do Writeln($'%WARNING: settings updated for "{pas_fname}"');
+            settings['#ExpOtp'] := res;
+            Otp($'%WARNING: settings updated for "{pas_fname}"');
           end;
           
           DialogResult.Cancel: Halt;
@@ -367,13 +344,10 @@ begin
     );
     {$endif SingleThread}
     
-    Writeln('Done testing');
+    Otp('Done testing');
     
   except
-    on e: Exception do
-    begin
-      Writeln(e);
-    end;
+    on e: Exception do ErrOtp(e);
   end;
   
   if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('Press Enter to exit');
