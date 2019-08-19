@@ -12,13 +12,13 @@
 //*****************************************************************************************************\\
 
 ///
-/// Код переведён отсюда:
+///Код переведён отсюда:
 /// https://github.com/KhronosGroup/OpenCL-Headers/tree/master/CL
 ///
-/// Спецификация (справка):
-/// www.khronos.org/registry/OpenCL/specs/2.2/html/OpenCL_API.html
+///Спецификации всех версий:
+/// https://www.khronos.org/registry/OpenCL/
 ///
-/// Если чего то не хватает - писать сюда:
+///Если чего то не хватает - писать сюда:
 /// https://github.com/SunSerega/POCGL/issues
 ///
 unit OpenCL;

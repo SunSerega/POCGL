@@ -19,8 +19,8 @@
 /// https://github.com/KhronosGroup/OpenGL-Registry
 /// (Основная часть не_расширений - \api\GL\ )
 ///
-///Спецификация (что то типа справки):
-/// https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf
+///Спецификации всех версий:
+/// https://www.khronos.org/registry/OpenGL/specs/gl/
 ///
 ///Если чего то не хватает - писать сюда:
 /// https://github.com/SunSerega/POCGL/issues
