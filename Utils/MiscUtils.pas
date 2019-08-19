@@ -1,24 +1,61 @@
-﻿unit Pack_Utils;
+﻿unit MiscUtils;
 uses System.Diagnostics;
+uses System.Threading;
 uses System.Threading.Tasks;
 
+{$region Misc}
+
 var sec_procs := new List<Process>;
+var sec_thrs := new List<Thread>;
+var in_err_state := false;
 
 type
-  PackException = class(Exception)
+  MessageException = class(Exception)
     constructor(text: string) :=
     inherited Create(text);
   end;
   
+function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
+begin
+  if fname.Substring(1).StartsWith(':\') then
+  begin
+    Result := fname;
+    exit;
+  end;
+  
+  var path := base_folder;
+  if path.EndsWith('\') then path := path.Remove(path.Length-1);
+  
+  while fname.StartsWith('..\') do
+  begin
+    fname := fname.Substring(3);
+    path := System.IO.Path.GetDirectoryName(path);
+  end;
+  if fname.StartsWith('\') then fname := fname.Substring(1);
+  
+  Result := $'{path}\{fname}';
+end;
+
+{$endregion Misc}
+
+{$region Otp}
+
 procedure ErrOtp(e: Exception);
 begin
+  in_err_state := true;
+  
+  lock sec_thrs do
+    foreach var thr in sec_thrs do
+      if thr<>Thread.CurrentThread then
+        thr.Abort;
+  
   lock sec_procs do
     foreach var p in sec_procs do
       try
         p.Kill;
       except end;
   
-  if e is PackException then
+  if e is MessageException then
     writeln(e.Message) else
     writeln(e);
   
@@ -31,27 +68,9 @@ var otp_lock := new object;
 procedure Otp(line: string) :=
 lock otp_lock do writeln(line);
 
-function GetFullPath(fname: string): string;
-begin
-  if fname.Substring(1).StartsWith(':\') then
-  begin
-    Result := fname;
-    exit;
-  end;
-  
-  var path := System.Environment.CurrentDirectory;
-  if path.EndsWith('\') then path := path.Remove(path.Length-1);
-  path += '\Packing';
-  
-  while fname.StartsWith('..\') do
-  begin
-    fname := fname.Substring(3);
-    path := System.IO.Path.GetDirectoryName(path);
-  end;
-  if fname.StartsWith('\') then fname := fname.Substring(1);
-  
-  Result := $'{path}\{fname}';
-end;
+{$endregion Otp}
+
+{$region Process execution}
 
 procedure RunFile(fname, nick: string; params pars: array of string);
 begin
@@ -99,7 +118,7 @@ begin
   
   var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
-    ErrOtp(new PackException(res)) else
+    ErrOtp(new MessageException($'Error compiling "{fname}": {res}')) else
     Otp($'Finished compiling "{fname}": {res}');
   
 end;
@@ -123,45 +142,98 @@ begin
       
       '.exe': ;
       
-      else raise new PackException($'Unknown file extention: "{fname}"');
+      else raise new MessageException($'Unknown file extention: "{fname}"');
     end else
-      raise new PackException($'file without extention: "{fname}"');
+      raise new MessageException($'file without extention: "{fname}"');
   
   RunFile(fname, nick, pars);
 end;
 
+{$endregion Process execution}
 
+{$region Task operations}
 
-function operator+(t1,t2: Task): Task; extensionmethod :=
-new Task(()->
-begin
-  t1.RunSynchronously;
-  t2.RunSynchronously;
-end);
+type
+  SecThrProc = abstract class
+    function StartExec: Thread; abstract;
+    procedure SyncExec :=
+    StartExec.Join;
+  end;
+  
+  SecThrProcCustom = sealed class(SecThrProc)
+    p: Action0;
+    constructor(p: Action0) := self.p := p;
+    
+    function StartExec: Thread; override := new Thread(()->
+    try
+      sec_thrs += Thread.CurrentThread;
+      if in_err_state then exit;
+      p;
+    except
+      on e: Exception do ErrOtp(e);
+    end);
+    
+  end;
+  
+  SecThrProcSum = sealed class(SecThrProc)
+    p1,p2: SecThrProc;
+    
+    constructor(p1,p2: SecThrProc);
+    begin
+      self.p1 := p1;
+      self.p2 := p2;
+    end;
+    
+    function StartExec: Thread; override := new Thread(()->
+    try
+      sec_thrs += Thread.CurrentThread;
+      p1.SyncExec;
+      p2.SyncExec;
+    except
+      on e: Exception do ErrOtp(e);
+    end);
+    
+  end;
+  
+  SecThrProcMlt = sealed class(SecThrProc)
+    p1,p2: SecThrProc;
+    
+    constructor(p1,p2: SecThrProc);
+    begin
+      self.p1 := p1;
+      self.p2 := p2;
+    end;
+    
+    function StartExec: Thread; override := new Thread(()->
+    try
+      sec_thrs += Thread.CurrentThread;
+      var t1 := p1.StartExec;
+      var t2 := p2.StartExec;
+      t1.Join;
+      t2.Join;
+    except
+      on e: Exception do ErrOtp(e);
+    end);
+    
+  end;
+  
+function operator+(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
+new SecThrProcSum(p1,p2);
 
-function operator*(t1,t2: Task): Task; extensionmethod :=
-new Task(()->
-begin
-  t1.Start;
-  t2.Start;
-  t1.Wait;
-  t2.Wait;
-end);
+function operator*(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
+new SecThrProcMlt(p1,p2);
+
+function ProcTask(p: Action0) :=
+new SecThrProcCustom(p);
 
 function CompTask(fname: string) :=
-new Task(()->
-try
-  CompilePasFile(fname);
-except
-  on e: Exception do ErrOtp(e);
-end);
+new SecThrProcCustom(()->CompilePasFile(fname));
 
 function ExecTask(fname, nick: string; params pars: array of string) :=
-new Task(()->
-try
-  ExecuteFile(fname, nick, pars);
-except
-  on e: Exception do ErrOtp(e);
-end);
+new SecThrProcCustom(()->ExecuteFile(fname, nick, pars));
 
+{$endregion Task operations}
+
+begin
+  sec_thrs += Thread.CurrentThread;
 end.
