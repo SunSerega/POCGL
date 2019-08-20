@@ -492,9 +492,6 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo Клонирование очередей
-// - для паралельного выполнения из разных потоков
-
 //ToDo CommandQueue.Cycle(integer)
 //ToDo CommandQueue.Cycle // бесконечность циклов
 //ToDo CommandQueue.CycleWhile(***->boolean)
