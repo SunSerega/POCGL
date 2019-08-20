@@ -503,6 +503,9 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Запланированное:
 
+//ToDo Создание [Buffer,Kernel]CommandQueue из CommandQueue<Buffer>
+// - иначе, получается, буфферы могут быть только глобальные
+
 //ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
 
 //ToDo Может лучше передавать List<Task> в Invoke, чем использовать yield?
@@ -570,6 +573,8 @@ type
     
     protected function GetRes: object; abstract;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; abstract;
+    
   end;
   /// Базовый тип всех очередей команд в OpenCLABC
   CommandQueue<T> = abstract class(CommandQueueBase)
@@ -578,12 +583,14 @@ type
     protected function GetRes: object; override := self.res;
     
     
-//    ///Создаёт полную копию данной очереди,
-//    ///Всех очередей из которых она состоит,
-//    ///А так же всех очередей-параметров, использованных в данной очереди
-//    public function Clone: CommandQueue<T>; abstract;
+    ///Создаёт полную копию данной очереди,
+    ///Всех очередей из которых она состоит,
+    ///А так же всех очередей-параметров, использованных в данной очереди
+    public function Clone: CommandQueue<T> :=
+    CommandQueue&<T>(self.InternalClone(new Dictionary<object,object>));
     
     
+    ///ToDo описание
     public function Multiusable(n: integer): array of CommandQueue<T>;
     
     
@@ -618,9 +625,11 @@ type
     
     protected procedure UnInvoke; abstract;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; abstract;
+    
   end;
   
-  ///--
+  ///ToDo описание
   BufferCommandQueue = sealed class(CommandQueue<Buffer>)
     protected commands := new List<BufferCommand>;
     
@@ -821,13 +830,15 @@ type
     
     {$endregion reintroduce методы}
     
-//    ///Создаёт полную копию данной очереди,
-//    ///Всех команд из которых она состоит,
-//    ///А так же всех очередей-параметров, использованных в данной очереди
-//    public function Clone: CommandQueue<T>; override;
-//    begin
-//      
-//    end;
+    {$region override методы}
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    begin
+      var res := new BufferCommandQueue(self.res);
+      res.commands.Capacity := self.commands.Capacity;
+      foreach var comm in self.commands do res.commands += comm.Clone(muhs);
+      Result := res;
+    end;
     
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
@@ -847,6 +858,8 @@ type
       inherited;
       foreach var comm in commands do comm.UnInvoke;
     end;
+    
+    {$endregion override методы}
     
   end;
   
@@ -1200,9 +1213,11 @@ type
     
     protected procedure UnInvoke; abstract;
     
+    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; abstract;
+    
   end;
   
-  ///--
+  ///ToDo описание
   KernelCommandQueue = class(CommandQueue<Kernel>)
     protected commands := new List<KernelCommand>;
     
@@ -1272,6 +1287,16 @@ type
     
     {$endregion reintroduce методы}
     
+    {$region override методы}
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    begin
+      var res := new KernelCommandQueue(self.res);
+      res.commands.Capacity := self.commands.Capacity;
+      foreach var comm in self.commands do res.commands += comm.Clone(muhs);
+      Result := res;
+    end;
+    
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
       MakeBusy;
@@ -1290,6 +1315,8 @@ type
       inherited;
       foreach var comm in commands do comm.UnInvoke;
     end;
+    
+    {$endregion override методы}
     
   end;
   
@@ -1666,6 +1693,12 @@ type
     
     protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    self.f=nil?
+      new CommandQueueHostFunc<T>(self.res) :
+      new CommandQueueHostFunc<T>(self.f)
+    ;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -1759,6 +1792,21 @@ type
       hub.OnNodeUnInvoked;
     end;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    begin
+      var res_hub_o: object;
+      var res_hub: MutiusableCommandQueueHub<T>;
+      
+      if muhs.TryGetValue(self.hub, res_hub_o) then
+        res_hub := MutiusableCommandQueueHub&<T>(res_hub_o) else
+      begin
+        res_hub := new MutiusableCommandQueueHub<T>(self.hub.q.InternalClone(muhs));
+        muhs.Add(self.hub, res_hub);
+      end;
+      
+      Result := new MutiusableCommandQueueNode<T>(res_hub);
+    end;
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -1848,6 +1896,9 @@ type
       q.UnInvoke;
     end;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueResConvertor<T1,T2>(self.q.InternalClone(muhs), self.f);
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -1912,6 +1963,9 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueSyncList<T>(self.lst.ConvertAll(q->q.InternalClone(muhs)));
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -1964,6 +2018,9 @@ type
       inherited;
       foreach var q in lst do q.UnInvoke;
     end;
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueTSyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))));
     
     public procedure Finalize; override :=
     ClearEvent;
@@ -2033,6 +2090,9 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueCSyncList<TRes>(self.lst.ConvertAll(q->q.InternalClone(muhs)), conv);
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2100,6 +2160,9 @@ type
       inherited;
       foreach var q in lst do q.UnInvoke;
     end;
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueCTSyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))), conv);
     
     public procedure Finalize; override :=
     ClearEvent;
@@ -2196,6 +2259,9 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueAsyncList<T>(self.lst.ConvertAll(q->q.InternalClone(muhs)));
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2247,6 +2313,9 @@ type
       inherited;
       foreach var q in lst do q.UnInvoke;
     end;
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueTAsyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))));
     
     public procedure Finalize; override :=
     ClearEvent;
@@ -2315,6 +2384,9 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueCAsyncList<TRes>(self.lst.ConvertAll(q->q.InternalClone(muhs)), conv);
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2382,6 +2454,9 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new CommandQueueCTAsyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))), conv);
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2448,6 +2523,9 @@ type
       q.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
+    
   end;
   
 function BufferCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
@@ -2506,6 +2584,13 @@ type
       len.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandWriteData(
+      CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
+      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+    );
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2562,6 +2647,13 @@ type
       len.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandWriteArray(
+      CommandQueue&<&Array> (self.a     .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
+      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+    );
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2614,6 +2706,13 @@ type
       offset.UnInvoke;
       len.UnInvoke;
     end;
+    
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandWriteValue(
+      CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
+      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+    );
     
     public procedure Finalize; override :=
     ClearEvent;
@@ -2706,6 +2805,13 @@ type
       len.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandReadData(
+      CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
+      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+    );
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2761,6 +2867,13 @@ type
       offset.UnInvoke;
       len.UnInvoke;
     end;
+    
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandReadArray(
+      CommandQueue&<&Array> (self.a     .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
+      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+    );
     
     public procedure Finalize; override :=
     ClearEvent;
@@ -2832,6 +2945,14 @@ type
       len.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandDataFill(
+      CommandQueue&<IntPtr> (self.ptr         .InternalClone(muhs)),
+      CommandQueue&<integer>(self.pattern_len .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
+      CommandQueue&<integer>(self.len         .InternalClone(muhs))
+    );
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2889,6 +3010,13 @@ type
       len.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandArrayFill(
+      CommandQueue&<&Array> (self.a           .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
+      CommandQueue&<integer>(self.len         .InternalClone(muhs))
+    );
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -2944,6 +3072,14 @@ type
       offset.UnInvoke;
       len.UnInvoke;
     end;
+    
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandValueFill(
+      CommandQueue&<IntPtr> (self.ptr         .InternalClone(muhs)),
+      CommandQueue&<integer>(self.pattern_len .InternalClone(muhs)),
+      CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
+      CommandQueue&<integer>(self.len         .InternalClone(muhs))
+    );
     
     public procedure Finalize; override :=
     ClearEvent;
@@ -3052,6 +3188,15 @@ type
       len.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    new BufferCommandCopy(
+      CommandQueue&<Buffer> (self.f_buf .InternalClone(muhs)),
+      CommandQueue&<Buffer> (self.t_buf .InternalClone(muhs)),
+      CommandQueue&<integer>(self.f_pos .InternalClone(muhs)),
+      CommandQueue&<integer>(self.t_pos .InternalClone(muhs)),
+      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+    );
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -3090,6 +3235,9 @@ type
     begin
       q.UnInvoke;
     end;
+    
+    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; override :=
+    new KernelQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
     
   end;
   
@@ -3151,6 +3299,12 @@ type
       foreach var q in args_q do q.UnInvoke;
     end;
     
+    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; override :=
+    new KernelCommandExec(
+      self.work_szs,
+      self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalClone(muhs)))
+    );
+    
     public procedure Finalize; override :=
     ClearEvent;
     
@@ -3209,6 +3363,12 @@ type
     begin
       foreach var q in args_q do q.UnInvoke;
     end;
+    
+    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; override :=
+    new KernelQCommandExec(
+      CommandQueue&<array of UIntPtr>(self.work_szs_q.InternalClone(muhs)),
+      self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalClone(muhs)))
+    );
     
     public procedure Finalize; override :=
     ClearEvent;
