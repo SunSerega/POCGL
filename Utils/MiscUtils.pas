@@ -23,7 +23,7 @@ begin
     exit;
   end;
   
-  var path := base_folder;
+  var path := GetFullPath(base_folder);
   if path.EndsWith('\') then path := path.Remove(path.Length-1);
   
   while fname.StartsWith('..\') do
@@ -42,7 +42,13 @@ end;
 
 procedure ErrOtp(e: Exception);
 begin
-  in_err_state := true;
+  if e is ThreadAbortException then exit;
+  
+  lock sec_procs do
+  begin
+    if in_err_state then Thread.CurrentThread.Abort;
+    in_err_state := true;
+  end;
   
   lock sec_thrs do
     foreach var thr in sec_thrs do
@@ -104,9 +110,14 @@ begin
     otp($'Finished runing {nick}');
   except
     on ThreadAbortException do
-    try
-      p.Kill;
-    except end;
+    begin
+      
+      try
+        p.Kill;
+      except end;
+      
+      raise;
+    end;
   end;
 end;
 
@@ -180,7 +191,7 @@ ExecuteFile(fname, nick, nil, nil, pars);
 procedure RegisterThr;
 begin
   sec_thrs += Thread.CurrentThread;
-  if in_err_state then exit;
+  if in_err_state then Thread.CurrentThread.Abort;
 end;
 
 type
