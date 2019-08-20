@@ -7,8 +7,8 @@ begin
   try
     
     if System.IO.Directory.Exists('Reps\OpenGL-Registry') then
-      raise new System.NotImplementedException else
-      CloneRep(RepKey, 'OpenGL-Registry', 'GLRep');
+      PullRep (         'OpenGL-Registry',  'GLRep') else
+      CloneRep(RepKey,  'OpenGL-Registry',  'GLRep');
     
   except
     on e: Exception do ErrOtp(e);
