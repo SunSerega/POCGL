@@ -590,8 +590,13 @@ type
     CommandQueue&<T>(self.InternalClone(new Dictionary<object,object>));
     
     
-    ///ToDo описание
+    ///Создаёт массив из n очередей, каждая из которых возвращает результат данной очереди
+    ///Каждую полученную очередь можно использовать одновременно с другими, но только в общей очереди
     public function Multiusable(n: integer): array of CommandQueue<T>;
+    
+    ///Создаёт функцию, создающую очередь, которая возвращает результат данной очереди
+    ///Каждую очередь, созданную полученной функцией, можно использовать одновременно с другими, но только в общей очереди
+    public function Multiusable: ()->CommandQueue<T>;
     
     
     ///Создаёт очередь, которая выполнит данную
@@ -1851,7 +1856,13 @@ end;
 function CommandQueue<T>.Multiusable(n: integer): array of CommandQueue<T>;
 begin
   var hub := new MutiusableCommandQueueHub<T>(self);
-  Result := ArrGen(n, i->new MutiusableCommandQueueNode<T>(hub) as CommandQueue<T>);
+  Result := ArrGen(n, i->CommandQueue&<T>(new MutiusableCommandQueueNode<T>(hub)));
+end;
+
+function CommandQueue<T>.Multiusable: ()->CommandQueue<T>;
+begin
+  var hub := new MutiusableCommandQueueHub<T>(self);
+  Result := ()->CommandQueue&<T>(new MutiusableCommandQueueNode<T>(hub));
 end;
 
 {$endregion Multiusable}
