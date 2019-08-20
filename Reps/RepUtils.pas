@@ -29,14 +29,19 @@ begin
   psi.RedirectStandardOutput := true;
   
   var p := Process.Start(psi);
-  p. ErrorDataReceived += (o,e)->Otp($'ErrThr[{nick}]: {e.Data}');
-  p.OutputDataReceived += (o,e)->Otp($'OtpThr[{nick}]: {e.Data}');
+  p. ErrorDataReceived += (o,e)->Otp($'{nick}#ErrThr : {e.Data}');
+  p.OutputDataReceived += (o,e)->Otp($'{nick}#OtpThr : {e.Data}');
   p. BeginErrorReadLine;
   p.BeginOutputReadLine;
   
   p.WaitForExit;
   Otp($'Done cloning {nick}');
   
+end;
+
+procedure PullRep(key, folder, nick: string);
+begin
+  var ToDo := 0;
 end;
 
 {$endregion Rep operations}

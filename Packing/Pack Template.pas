@@ -1,5 +1,6 @@
 ﻿uses System.Threading;
-uses Pack_Utils;
+uses PackingUtils;
+uses MiscUtils in '..\Utils\MiscUtils.pas';
 
 type
   TextBlock = abstract class
@@ -49,7 +50,7 @@ begin
     comm := comm.Remove(sind);
   end;
   
-  comm := GetFullPath(comm+'.template');
+  comm := GetFullPath(comm+'.template', 'Packing');
   RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={comm}"');
   
   comm += 'res';
@@ -85,7 +86,6 @@ begin
           ind1 += 1;
           var ind2 := l.IndexOf('%', ind1);
           var comm := l.Substring(ind1,ind2-ind1);
-//          writeln(comm);
           lock blocks do blocks.Enqueue(new FuncBlock( ()->ProcessCommand(comm) ));
           
           res += l.Remove(0,ind2+1);
@@ -95,7 +95,7 @@ begin
         res += #10;
       end;
       
-      res.Length -= 1;
+      res.Length -= 1; // -= #10
       lock blocks do blocks.Enqueue(new StrBlock(res.ToString));
       read_done := true;
     except
