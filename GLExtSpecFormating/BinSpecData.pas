@@ -357,7 +357,7 @@ type
       begin
         func_pnh_exceptions := new Dictionary<string, string>;
         
-        ReadLines('func pnh exceptions.dat')
+        ReadLines('GLExtSpecFormating\func pnh exceptions.dat')
         .Where(l->l.Contains('='))
         .Select(l->l.ToWords('='))
         .ForEach(l->func_pnh_exceptions.Add(l[0].TrimEnd(#9), l[1]));
