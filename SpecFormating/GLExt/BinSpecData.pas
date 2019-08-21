@@ -357,7 +357,7 @@ type
       begin
         func_pnh_exceptions := new Dictionary<string, string>;
         
-        ReadLines('GLExtSpecFormating\func pnh exceptions.dat')
+        ReadLines('SpecFormating\GLExt\func pnh exceptions.dat')
         .Where(l->l.Contains('='))
         .Select(l->l.ToWords('='))
         .ForEach(l->func_pnh_exceptions.Add(l[0].TrimEnd(#9), l[1]));
@@ -726,6 +726,14 @@ type
     
     
     
+    static function RemoveGenFolderName(fname: string): string;
+    begin
+      var gen_folder_name := 'SpecFormating\GLExt\ext spec texts';
+      if fname.StartsWith(gen_folder_name) then
+        Result := fname.Substring(gen_folder_name.Length) else
+        Result := fname;
+    end;
+    
     static function InitFromFile(fname: string): ExtSpec;
     begin
       var spec_text := ReadAllText(fname);
@@ -739,7 +747,7 @@ type
       if not spec_text.Contains('Name String') then exit;
       
       Result := new ExtSpec;
-      Result.fname := fname;
+      Result.fname := RemoveGenFolderName(fname);
 //      writeln(fname);
       
       
