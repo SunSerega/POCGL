@@ -170,14 +170,16 @@ begin
       .Where(n->not (n in ['p', 'p0', 'dcli', 'scli']))
       .SelectMany(n->MultiplyFunc(n))
       .Distinct
+      .Sorted
       .ToList
     ;
     
     var bw := new System.IO.BinaryWriter(System.IO.File.Create('SpecFormating\GL\1.1 funcs.bin'));
     bw.Write(funcs.Count);
-    foreach var f in funcs do bw.Write(f);
+    foreach var f in funcs do bw.Write('gl'+f);
     bw.Close;
     
+    if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
   except
     on e: Exception do ErrOtp(e);
   end;
