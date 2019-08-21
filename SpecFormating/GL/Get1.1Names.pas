@@ -150,8 +150,8 @@ begin
     yield sequence MultiplyFunc(s.Replace('{sifd}', 'f'));
     yield sequence MultiplyFunc(s.Replace('{sifd}', 'd'));
   end else
-  
-    yield s;
+    
+    raise new System.NotImplementedException;
   
 end;
 
