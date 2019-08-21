@@ -1,5 +1,5 @@
 ﻿uses System.Threading;
-uses PackingUtils;
+//uses PackingUtils;
 uses MiscUtils in '..\Utils\MiscUtils.pas';
 
 type
@@ -63,7 +63,7 @@ begin
   try
     
     var arg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
-    if arg=nil then raise new PackException('Invalid args: ' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString );
+    if arg=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
     arg := GetFullPath(arg.SubString('fname='.Length));
     
     var blocks := new Queue<TextBlock>;

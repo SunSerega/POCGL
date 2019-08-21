@@ -3,16 +3,13 @@
 {$apptype windows}
 {$reference System.Windows.Forms.dll}
 
-//ToDo issue компилятора:
-// - #2021
-
 {$region Misc helpers}
 
 function gl_to_pas_t(self: string): string; extensionmethod;
 begin
   case self of
-    ''+'f':     Result := 'single';
-    ''+'d':     Result := 'double';
+    ''+'f': Result := 'single';
+    ''+'d': Result := 'double';
   end;
 end;
 
