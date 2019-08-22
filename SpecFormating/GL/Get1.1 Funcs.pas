@@ -174,6 +174,8 @@ begin
       .ToList
     ;
     
+//    funcs.PrintLines;
+    
     var bw := new System.IO.BinaryWriter(System.IO.File.Create('SpecFormating\GL\1.1 funcs.bin'));
     bw.Write(funcs.Count);
     foreach var f in funcs do bw.Write('gl'+f);

@@ -12,7 +12,8 @@ begin
   
   for var page := 1 to r.NumberOfPages do
   begin
-    var strategy := new SimpleTextExtractionStrategy;
+//    var strategy := new SimpleTextExtractionStrategy;
+    var strategy := new LocationTextExtractionStrategy;
     var currentText := PdfTextExtractor.GetTextFromPage(r, page, strategy);
     
     currentText := Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
@@ -28,9 +29,10 @@ var find_next_cache: Dictionary<string, integer>;
 
 function FindNext(self: string; from: integer; params keys: array of string); extensionmethod :=
   keys.Select(key->
-    if not find_next_cache.ContainsKey(key) or ( (find_next_cache[key]<from) and (find_next_cache[key]<>-1) ) then
+    if not find_next_cache.ContainsKey(key) or ( (find_next_cache[key]<=from) and (find_next_cache[key]<>-1) ) then
     begin
       Result := self.IndexOf(key,from);
+      if Result<>-1 then Result += key.Length;
       find_next_cache[key] := Result;
     end else
     begin
@@ -44,12 +46,15 @@ function FindNext(self: string; from: integer; params keys: array of string); ex
 
 function MultiplyFunc(f, templ, repl: string): sequence of string;
 begin
+  if not f.Contains('{') then templ := templ.Replace('{','f').Replace('}','g');
+  
   if f.Contains(templ) then
   begin
     foreach var r in repl.ToWords do
       yield f.Replace(templ, r);
   end else
     yield f;
+  
 end;
 
 function GetAllFuncs(s: string): sequence of string;
@@ -69,48 +74,75 @@ begin
       #10'int ',
       #10'ubyte ',
       #10'boolean '
-    )+1;
-    if ind1=0 then break;
+    );
+    if ind1=-1 then break;
     
-    var ind2 := s.FindNext(ind1, '(', #10);
+    var ind2 := s.FindNext(ind1, '(', #10)-1;
     if s[ind2+1]=#10 then continue;
     
     var f := s.Substring(ind1,ind2-ind1).Trim;
-    if f='OpenGL 4.6' then
-    begin
-      ind1 := s.IndexOf(#10,ind1)+1;
-      ind2 := s.IndexOf('(', ind1);
-      f := s.Substring(ind1,ind2-ind1).Trim;
-    end;
     ind1 := s.IndexOf(')', ind2);
     
-    if f='void callback' then continue;
+    if f='' then continue;
     
     yield sequence Arr(f)
       
-      .SelectMany(fs-> MultiplyFunc(fs, 'f123g',                      '1 2 3') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'f234g',                      '2 3 4') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'f1234g',                     '1 2 3 4') )
+      .SelectMany(fs-> MultiplyFunc(fs, '{12}',                       '1 2')                      )
+      .SelectMany(fs-> MultiplyFunc(fs, '{23}',                       '2 3')                      )
+      .SelectMany(fs-> MultiplyFunc(fs, '{34}',                       '3 4')                      )
+      .SelectMany(fs-> MultiplyFunc(fs, '{123}',                      '1 2 3')                    )
+      .SelectMany(fs-> MultiplyFunc(fs, '{234}',                      '2 3 4')                    )
+      .SelectMany(fs-> MultiplyFunc(fs, '{1234}',                     '1 2 3 4')                  )
+      .SelectMany(fs-> MultiplyFunc(fs, '{1,2,3,4}',                  '1 2 3 4')                  )
       
-      .SelectMany(fs-> MultiplyFunc(fs, 'fifg',                       'i f') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'ffdg',                       'f d') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fsfdg',                      's f d') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fifdg',                      'i f d') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fi uig',                     'i ui') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fif uig',                    'i f ui') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fifd uig',                   'i f d ui') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fb s ub usg',                'b s ub us') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fbsi ub us uig',             'b s i ub us ui') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'fbsifd ub us uig',           'b s i f d ub us ui') )
+      .SelectMany(fs-> MultiplyFunc(fs, '{f}',                        'f')                        )
+      .SelectMany(fs-> MultiplyFunc(fs, '{if}',                       'i f')                      )
+      .SelectMany(fs-> MultiplyFunc(fs, '{fd}',                       'f d')                      )
+      .SelectMany(fs-> MultiplyFunc(fs, '{sfd}',                      's f d')                    )
+      .SelectMany(fs-> MultiplyFunc(fs, '{ifd}',                      'i f d')                    )
+      .SelectMany(fs-> MultiplyFunc(fs, '{i ui}',                     'i ui')                     )
+      .SelectMany(fs-> MultiplyFunc(fs, '{u ui}',                     'i ui')                     )
+      .SelectMany(fs-> MultiplyFunc(fs, '{sifd}',                     's i f d')                  )
+      .SelectMany(fs-> MultiplyFunc(fs, '{ifds}',                     'i f d s')                  )
+      .SelectMany(fs-> MultiplyFunc(fs, '{if ui}',                    'i f ui')                   )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bsifd}',                    'b s i f d')                )
+      .SelectMany(fs-> MultiplyFunc(fs, '{uiusf}',                    'ui us f')                  )
+      .SelectMany(fs-> MultiplyFunc(fs, '{ifd ui}',                   'i f d ui')                 )
+      .SelectMany(fs-> MultiplyFunc(fs, '{sifdub}',                   's i f d ub')               )
+      .SelectMany(fs-> MultiplyFunc(fs, '{ui us f}',                  'ui us f')                  )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bs ubus}',                  'b s ub us')                )
+      .SelectMany(fs-> MultiplyFunc(fs, '{sifd ub}',                  's i f d ub')               )
+      .SelectMany(fs-> MultiplyFunc(fs, '{b s ub us}',                'b s ub us')                )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bsiubusui}',                'b s i ub us ui')           )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bsi ubusui}',               'b s i ub us ui')           )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bsifdubusui}',              'b s i f d ub us ui')       )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bsi ub us ui}',             'b s i ub us ui')           )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bsifd ubusui}',             'b s i f d ub us ui')       )
+      .SelectMany(fs-> MultiplyFunc(fs, '{bsifd ub us ui}',           'b s i f d ub us ui')       )
       
-      .SelectMany(fs-> MultiplyFunc(fs, 'f2x3,3x2,2x4,4x2,3x4,4x3g',  '2x3 3x2 2x4 4x2 3x4 4x3') )
+      .SelectMany(fs-> MultiplyFunc(fs, '1,2,3,4',                    '1 2 3 4')                  )
       
-      .SelectMany(fs-> MultiplyFunc(fs, 'ClearBuffer?',               'ClearBufferfi') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'ClearNamedFramebuffer?',     'ClearNamedFramebufferfi') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'i v',                        'i_v') )
-      .SelectMany(fs-> MultiplyFunc(fs, 'i64 v',                      'i64_v') )
+      .SelectMany(fs-> MultiplyFunc(fs, '{2x3,3x2,2x4,4x2,3x4,4x3}',  '2x3 3x2 2x4 4x2 3x4 4x3')  )
       
-      .Select(fs-> fs.Substring(fs.LastIndexOf(' ')+1).TrimStart('*') )
+      .SelectMany(fs-> MultiplyFunc(fs, 'ClearBuffer?',               'ClearBufferfi')            )
+      .SelectMany(fs-> MultiplyFunc(fs, 'ClearNamedFramebuffer?',     'ClearNamedFramebufferfi')  )
+      
+      
+      .SelectMany(fs-> MultiplyFunc(fs, 'i v',                        'i_v')                      )
+      .SelectMany(fs-> MultiplyFunc(fs, 'i64 v',                      'i64_v')                    )
+      
+      .SelectMany(fs-> MultiplyFunc(fs, 'Mo de',                      'Mode')                     )
+      .SelectMany(fs-> MultiplyFunc(fs, 'Zo om',                      'Zoom')                     )
+      .SelectMany(fs-> MultiplyFunc(fs, 'Co ord',                     'Coord')                    )
+      .SelectMany(fs-> MultiplyFunc(fs, 'Bo olean',                   'Boolean')                  )
+      .SelectMany(fs-> MultiplyFunc(fs, 'TexCo ord',                  'TexCoord')                 )
+      .SelectMany(fs-> MultiplyFunc(fs, 'Viewp ort',                  'Viewport')                 )
+      
+      .SelectMany(fs-> MultiplyFunc(fs, 'Bu'#0'er',                   'Buffer')                   )
+      .SelectMany(fs-> MultiplyFunc(fs, 'O'#0'set',                   'Offset')                   )
+      
+      .Select(fs->fs.TrimStart('*'))
+      .Select(fs-> fs.StartsWith('gl')?fs.SubString(2):fs )
     ;
   end;
   
@@ -119,36 +151,43 @@ end;
 procedure ProcessPfd(fname, v: string);
 begin
   
-  Otp($'Getting string for version {v}');
+  Otp($'Formating version {v}');
   var s := ReadPdfFile(fname).Remove(#13);
-//  WriteAllText('test.txt', s, Encoding.UTF8);
   
-  Otp($'Getting funcs for version {v}');
+//  WriteAllText($'test {v}.txt', s, Encoding.UTF8);
+//  Halt;
+  
   var funcs :=
     GetAllFuncs(s)
-    .Where(f->not (f in ['DrawArraysOneInstance', 'DrawElementsOneInstance', 'handle']) )
+    .Where(f->not (f in ['DrawArraysOneInstance', 'DrawElementsOneInstance', 'handle' , 'c=', 'c/']) )
     .Distinct
-//    .Sorted
+    .Sorted
     .ToList
   ;
   
 //  funcs.PrintLines;
   
-  Otp($'Saving funcs for version {v}');
   var bw := new System.IO.BinaryWriter(System.IO.File.Create($'SpecFormating\GL\{v} funcs.bin'));
   bw.Write(funcs.Count);
   foreach var f in funcs do bw.Write('gl'+f);
   bw.Close;
   
+//  Halt;
 end;
 
 begin
   try
     
-    ProcessPfd('Reps\OpenGL-Registry\specs\gl\glspec46.core.pdf', '4.6');
+    ReadLines('SpecFormating\GL\versions order.dat')
+    .Where(l->l.Contains('='))
+    .Select(l->l.Split('='))
+    .Where(l->l[1]<>'') // только в этой программе важно, для 1.1 файл не .pdf
+    .Select(l->(l[0].TrimEnd(#9),l[1]))
+//    .Skip(3)
+    .ForEach(l-> ProcessPfd($'Reps\OpenGL-Registry\specs\gl\glspec{l[1]}.pdf', l[0]) );
     
     if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
   except
-    on e: Exception do writeln(e);
+    on e: Exception do ErrOtp(e);
   end;
 end.
