@@ -51,6 +51,7 @@ begin
   
   vrs
   .Tabulate(v->ReadAllFuncs($'{v} funcs.bin'))
+  .Prepend(('-.-', new string[0]))
   .Pairwise((t1,t2)->( (t1[0],t2[0]), (t1[1],t2[1]) ))
   
 //  .Take(1)
