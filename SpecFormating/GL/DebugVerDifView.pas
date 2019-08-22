@@ -25,12 +25,14 @@ begin
       .DefaultIfEmpty('')
       .MinBy(f2->f2.Length)
     ;
+    
 //    f2.Println;
 //    writeln('-'*50);
+    
     if not hs1.Remove(f2) then
       sw.WriteLine($'New func: "{f}"') else
-//    if f2.Length<>f.Length then
       sw.WriteLine($'Upd func: "{f}" (removed trailing "{f2.SubString(f.Length)}")');
+    
   end;
   
   foreach var f in hs1.Sorted do
