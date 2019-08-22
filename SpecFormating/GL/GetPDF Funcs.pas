@@ -159,7 +159,15 @@ begin
   
   var funcs :=
     GetAllFuncs(s)
-    .Where(f->not (f in ['DrawArraysOneInstance', 'DrawElementsOneInstance', 'handle' , 'c=', 'c/']) )
+    .Where(f->not(f in [
+      'DrawArraysOneInstance',
+      'DrawElementsOneInstance',
+      'handle' ,
+      'c=',
+      'c/',
+      'callback',
+      'ptrbits Sync object handle'
+    ]))
     .Distinct
     .Sorted
     .ToList
