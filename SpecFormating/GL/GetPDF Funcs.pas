@@ -83,7 +83,16 @@ begin
     var f := s.Substring(ind1,ind2-ind1).Trim;
     ind1 := s.IndexOf(')', ind2);
     
-    if f='' then continue;
+    if f in [
+      '',
+      'DrawArraysOneInstance',
+      'DrawElementsOneInstance',
+      'handle' ,
+      'c=',
+      'c/',
+      'callback',
+      'ptrbits Sync object handle'
+    ] then continue;
     
     yield sequence Arr(f)
       
@@ -159,15 +168,6 @@ begin
   
   var funcs :=
     GetAllFuncs(s)
-    .Where(f->not(f in [
-      'DrawArraysOneInstance',
-      'DrawElementsOneInstance',
-      'handle' ,
-      'c=',
-      'c/',
-      'callback',
-      'ptrbits Sync object handle'
-    ]))
     .Distinct
     .Sorted
     .ToList
