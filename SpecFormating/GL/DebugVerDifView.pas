@@ -1,11 +1,13 @@
-﻿var sw: System.IO.StreamWriter;
+﻿uses CoreFuncData;
+
+var sw: System.IO.StreamWriter;
 
 function ReadAllFuncs(fname: string): array of string;
 begin
   var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
   Result := new string[br.ReadInt32];
   for var i := 0 to Result.Length-1 do
-    Result[i] := br.ReadString;
+    Result[i] := CoreFuncDef.Load(br).name;
 end;
 
 procedure Compare(older, newer: array of string);
@@ -41,35 +43,43 @@ begin
 end;
 
 begin
-  WriteAllText('VerDif.log', '', new System.Text.UTF8Encoding(true));
-  sw := new System.IO.StreamWriter('VerDif.log', true, new System.Text.UTF8Encoding(true));
-  
-  var vrs := 
-    ReadLines('versions order.dat')
-    .Where(l->l.Contains('='))
-    .Select(l->l.Split('=')[0].TrimEnd(#9))
-    .ToList
-  ;
-  
-  vrs
-  .Tabulate(v->ReadAllFuncs($'{v} funcs.bin'))
-  .Prepend(('-.-', new string[0]))
-  .Pairwise((t1,t2)->( (t1[0],t2[0]), (t1[1],t2[1]) ))
-  
-//  .Take(1)
-//  .PrintLines;
-  
-  .ForEach(t->
-  begin
-    sw.WriteLine($'Сравниваю версии {t[0][0]} и {t[0][1]}:');
-    Compare(t[1][0],t[1][1]);
-    if t[0][1]<>vrs.Last then
+  try
+    WriteAllText('VerDif.log', '', new System.Text.UTF8Encoding(true));
+    sw := new System.IO.StreamWriter('VerDif.log', true, new System.Text.UTF8Encoding(true));
+    
+    var vrs := 
+      ReadLines('versions order.dat')
+      .Where(l->l.Contains('='))
+      .Select(l->l.Split('=')[0].TrimEnd(#9))
+      .ToList
+    ;
+    
+    vrs
+    .Tabulate(v->ReadAllFuncs($'{v} funcs.bin'))
+    .Prepend(('-.-', new string[0]))
+    .Pairwise((t1,t2)->( (t1[0],t2[0]), (t1[1],t2[1]) ))
+    
+  //  .Take(1)
+  //  .PrintLines;
+    
+    .ForEach(t->
     begin
-      sw.WriteLine;
-      sw.WriteLine('='*50);
-      sw.WriteLine;
+      sw.WriteLine($'Сравниваю версии {t[0][0]} и {t[0][1]}:');
+      Compare(t[1][0],t[1][1]);
+      if t[0][1]<>vrs.Last then
+      begin
+        sw.WriteLine;
+        sw.WriteLine('='*50);
+        sw.WriteLine;
+      end;
+    end);
+    
+    sw.Close;
+  except
+    on e: Exception do
+    begin
+      writeln(e);
+      readln;
     end;
-  end);
-  
-  sw.Close;
+  end;
 end.

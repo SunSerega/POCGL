@@ -1,4 +1,5 @@
 ﻿uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses CoreFuncData;
 
 const lf = 'Fz';
 const lt = 'FC';
@@ -178,7 +179,7 @@ begin
     
     var bw := new System.IO.BinaryWriter(System.IO.File.Create('SpecFormating\GL\1.1 funcs.bin'));
     bw.Write(funcs.Count);
-    foreach var f in funcs do bw.Write('gl'+f);
+    foreach var f in funcs do CoreFuncDef.Create('gl'+f).Save(bw);
     bw.Close;
     
     if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
