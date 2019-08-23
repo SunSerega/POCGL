@@ -508,12 +508,12 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Запланированное:
 
-//ToDo эвенты можно отчищать в UnInvoke
+//ToDo эвенты можно очищать в UnInvoke
 
 //ToDo CommandQueue.Cycle(integer)
 //ToDo CommandQueue.Cycle // бесконечность циклов
 //ToDo CommandQueue.CycleWhile(***->boolean)
-// - возможность передать свой обработчик ошибок как procedure->()
+// - возможность передать свой обработчик ошибок как Exception->Exception
 //
 //Update:
 // - бесконечный цикл будет больно делать
