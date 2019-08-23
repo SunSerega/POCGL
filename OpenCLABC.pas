@@ -76,7 +76,7 @@ unit OpenCLABC;
 // OpenCLABC — высокоуровневая оболочка модуля OpenCL
 // Это значит, что с OpenCLABC можно писать гораздо меньше кода в больших и сложных программах
 // Однако, такой же уровень микроконтроля как с модулем OpenCL недоступен
-// Например, напрямую управлять эвентами (cl_event из OpenCL) в OpenCLABC невозможно
+// Например, напрямую управлять cl_event'ами в OpenCLABC невозможно
 // Вместо этого надо использовать операции с очередями (как сложение и умножение очередей)
 // 
 
@@ -173,8 +173,8 @@ unit OpenCLABC;
 // var Q1: CommandQueue<integer>;
 // 
 // Очереди, созданные из буфера или кёрнела возващают свой буфер/кёрнел соответственно, из которого были созданы
-// Очереди, созданные с HFQ возващают то значение, которое возвращала оригинальная функция
-// Очереди, созданные с HPQ возващают значение типа object (и всегда nil)
+// Очереди, созданные с HFQ - значение, которое возвращала оригинальная функция
+// Очереди, созданные с HPQ - значение типа object (и всегда nil)
 // 
 // После выполнения очереди метод Context.SyncInvoke возвращает то, что вернула очередь
 // Если использовать метод Context.BeginInvoke, то возвращаемое значение можно получить через свойство Task.Result
@@ -192,7 +192,7 @@ unit OpenCLABC;
 // Подробнее в примере "3 - Очередь\Создание очереди из буфера.pas"
 // 
 // Полученная очередь будет иметь особый тип: KernelCommandQueue/BufferCommandQueue для кёрнела/буфера соответственно
-// К такой очереди можно добавлять команды, вызывая её методы, имена которых начинаются с ".Add***"
+// К такой очереди можно добавлять команды, вызывая её методы, имена которых начинаются с ".Add..."
 // 
 
 // 3.1.2 —— Создание очередей из подпрограммы, написанной для CPU
@@ -268,7 +268,7 @@ unit OpenCLABC;
 // Подробнее в примере "3 - Очередь\Код с очередью и без.pas"
 // 
 // Кроме того, у типа Buffer есть дополнительные методы "Buffer.Get..."
-// Соответствующих методов у очередей — нету //ToDo возможно, в будущем появятся
+// Соответствующих методов у очередей — нет //ToDo возможно, в будущем появятся
 // Методы ".Get..." создают новый объект типа записи, массива или выделяют область неуправляемой памяти,
 // читают в полученный объект содержимое буфера и возвращают этот объект
 // Они также используют неявную очередь (для чтения буфера)
@@ -320,7 +320,7 @@ unit OpenCLABC;
 // end;
 // <------------------------->
 // Для данного кода есть стандартный снипет
-// Чтоб активировать его - напишите "tryo" и нажмите Shift+Space
+// Чтобы активировать его - напишите "tryo" и нажмите Shift+Space
 // 
 
 {$endregion 3.2 —— Выполнение очередей}
@@ -367,13 +367,13 @@ unit OpenCLABC;
 // Context.Default.SyncInvoke( Q1 * Q1 );
 // <------------------------->
 // Приведёт к неопределённом поведению
-// То есть, результат выполнения может быть не правильный, но не при каждом запуске
+// То есть, результат выполнения может быть неправильный, но не при каждом запуске
 // 
 // Также, в некоторых случаях может быть вызвано исключение QueueDoubleInvokeException, помогающее узнать, где именно возник параллельный вызов
 // Но не стоит полагаться на вызов этого исключения
 // 
 // Такую ошибку в коде может быть черезвычайно сложно распознать
-// Поэтому необходимо внимательно проверять, чтоб одна очередь не выполнялась нескольких местах одновременно
+// Поэтому необходимо внимательно проверять, чтобы одна очередь не выполнялась нескольких местах одновременно
 // 
 // Однако, если вам всё же надо использовать одну очередь в нескольких местах одновременно - есть 2 способа:
 
@@ -423,7 +423,7 @@ unit OpenCLABC;
 // <------------------------->
 // Из-за чего такой код тоже приведёт к неопределённом поведению
 // Но вероятность получить QueueDoubleInvokeException в данном случае - ещё меньше
-// Чтоб исправить такой код - надо объеденить вызовы метода Context.BeginInvoke
+// Чтобы исправить такой код - надо объеденить вызовы метода Context.BeginInvoke
 // 
 
 {$endregion 3.4. —— Множественное использование очереди}
@@ -468,7 +468,7 @@ unit OpenCLABC;
 // 5.1.2 — Создание из бинарных файлов
 // 
 // После создания объекта типа ProgramCode из исходников
-// Можно вызвать метод ProgramCode.SerializeTo, чтоб сохранить код в бинарном и прекомпилированном виде
+// Можно вызвать метод ProgramCode.SerializeTo, чтобы сохранить код в бинарном и прекомпилированном виде
 // Это обычно делается отдельной программой (не той же самой, которая будет использовать этот бинарный код)
 // 
 // После этого основная программа может создать объект ProgramCode
@@ -517,8 +517,8 @@ uses System.Runtime.CompilerServices;
 //
 //Update:
 // - бесконечный цикл будет больно делать
-// - чтоб не накапливались Task-и - надо полностью перезапускать очередь
-// - а значит надо что то вроде пре-запуска, чтоб не терять время между итерациями
+// - чтобы не накапливались Task-и - надо полностью перезапускать очередь
+// - а значит надо что то вроде пре-запуска, чтобы не терять время между итерациями
 
 //ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
 
@@ -535,7 +535,7 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Сделать когда-нибуть:
 
-//ToDo У всего, у чего есть Finalize - проверить чтоб было и .Dispose, если надо
+//ToDo У всего, у чего есть Finalize - проверить чтобы было и .Dispose, если надо
 // - и добавить в справку, про то что этот объект можно удалять
 
 //ToDo Больше примеров... Желательно хотя бы по примеру на под-раздел справки
@@ -689,7 +689,7 @@ type
     
     ///- function WriteData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
     ///- function WriteData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
@@ -698,7 +698,7 @@ type
     
     ///- function WriteData(ptr: pointer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function AddWriteData(ptr: pointer) := AddWriteData(IntPtr(ptr));
     ///- function WriteData(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
@@ -708,7 +708,7 @@ type
     
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function AddWriteArray(a: CommandQueue<&Array>): BufferCommandQueue;
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
@@ -717,7 +717,7 @@ type
     
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function AddWriteArray(a: &Array) := AddWriteArray(CommandQueue&<&Array>(a));
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
@@ -944,7 +944,7 @@ type
     
     ///- function WriteData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function WriteData(ptr: CommandQueue<IntPtr>): Buffer;
     ///- function WriteData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
@@ -953,7 +953,7 @@ type
     
     ///- function WriteData(ptr: pointer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function WriteData(ptr: pointer) := WriteData(IntPtr(ptr));
     ///- function WriteData(ptr: pointer; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
@@ -963,7 +963,7 @@ type
     
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function WriteArray(a: CommandQueue<&Array>): Buffer;
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
@@ -972,7 +972,7 @@ type
     
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
-    ///Копируется нужное кол-во байт чтоб заполнить весь буфер
+    ///Копируется нужное кол-во байт чтобы заполнить весь буфер
     public function WriteArray(a: &Array) := WriteArray(CommandQueue&<&Array>(a));
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
@@ -1124,63 +1124,63 @@ type
     
     ///- function GetArrayAt<TArray>(offset: integer; params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
-    ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
+    ///И копирует в него, начиная с байта offset, достаточно байт чтобы заполнить весь массив
     public function GetArrayAt<TArray>(offset: CommandQueue<integer>; szs: CommandQueue<array of integer>): TArray; where TArray: &Array;
     ///- function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
-    ///И копирует в него достаточно байт чтоб заполнить весь массив
+    ///И копирует в него достаточно байт чтобы заполнить весь массив
     public function GetArray<TArray>(szs: CommandQueue<array of integer>): TArray; where TArray: &Array;
     begin Result := GetArrayAt&<TArray>(0, szs); end;
     
     ///- function GetArrayAt<TArray>(offset: integer; params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
-    ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
+    ///И копирует в него, начиная с байта offset, достаточно байт чтобы заполнить весь массив
     public function GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of CommandQueue<integer>): TArray; where TArray: &Array;
     ///- function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
     ///Создаёт новый массив с размерностями szs
-    ///И копирует в него достаточно байт чтоб заполнить весь массив
+    ///И копирует в него достаточно байт чтобы заполнить весь массив
     public function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
     begin Result := GetArrayAt&<TArray>(0, CommandQueue&<array of integer>(szs)); end;
     
     
     ///- function GetArray1At<TRecord>(offset: integer; length: integer): array of TRecord; where TRecord: record;
     ///Создаёт новый 1-мерный массив, с length элементами типа TRecord
-    ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
+    ///И копирует в него, начиная с байта offset, достаточно байт чтобы заполнить весь массив
     public function GetArray1At<TRecord>(offset, length: CommandQueue<integer>): array of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array of TRecord>(offset, length); end;
     ///- function GetArray1<TRecord>(length: integer): array of TRecord; where TRecord: record;
     ///Создаёт новый 1-мерный массив, с length элементами типа TRecord
-    ///И копирует в него достаточно байт чтоб заполнить весь массив
+    ///И копирует в него достаточно байт чтобы заполнить весь массив
     public function GetArray1<TRecord>(length: CommandQueue<integer>): array of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array of TRecord>(0,length); end;
     
     ///- function GetArray1<TRecord>: array of TRecord; where TRecord: record;
     ///Создаёт новый 1-мерный массив, с максимальным кол-вом элементов типа TRecord
-    ///И копирует в него достаточно байт чтоб заполнить весь массив
+    ///И копирует в него достаточно байт чтобы заполнить весь массив
     public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array of TRecord>(0, integer(sz.ToUInt32) div Marshal.SizeOf&<TRecord>); end;
     
     
     ///- function GetArray2At<TRecord>(offset: integer; length: integer): array[,] of TRecord; where TRecord: record;
     ///Создаёт новый 2-мерный массив, с length элементами типа TRecord
-    ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
+    ///И копирует в него, начиная с байта offset, достаточно байт чтобы заполнить весь массив
     public function GetArray2At<TRecord>(offset, length1, length2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array[,] of TRecord>(offset, length1, length2); end;
     ///- function GetArray2<TRecord>(length: integer): array of TRecord; where TRecord: record;
     ///Создаёт новый 2-мерный массив, с length элементами типа TRecord
-    ///И копирует в него достаточно байт чтоб заполнить весь массив
+    ///И копирует в него достаточно байт чтобы заполнить весь массив
     public function GetArray2<TRecord>(length1, length2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array[,] of TRecord>(0, length1, length2); end;
     
     
     ///- function GetArray3At<TRecord>(offset: integer; length: integer): array[,,] of TRecord; where TRecord: record;
     ///Создаёт новый 3-мерный массив, с length элементами типа TRecord
-    ///И копирует в него, начиная с байта offset, достаточно байт чтоб заполнить весь массив
+    ///И копирует в него, начиная с байта offset, достаточно байт чтобы заполнить весь массив
     public function GetArray3At<TRecord>(offset, length1, length2, length3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array[,,] of TRecord>(offset, length1, length2, length3); end;
     ///- function GetArray3<TRecord>(length: integer): array[,,] of TRecord; where TRecord: record;
     ///Создаёт новый 3-мерный массив, с length элементами типа TRecord
-    ///И копирует в него достаточно байт чтоб заполнить весь массив
+    ///И копирует в него достаточно байт чтобы заполнить весь массив
     public function GetArray3<TRecord>(length1, length2, length3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
     begin Result := GetArrayAt&<array[,,] of TRecord>(0, length1, length2, length3); end;
     
@@ -1633,19 +1633,19 @@ function CombineSyncQueue<T>(params qs: array of CommandQueueBase): CommandQueue
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 ///Складывает все очереди qs
 ///Возвращает очередь, по очереди выполняющую все очереди из qs
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineSyncQueue<T,TRes>(conv: Func<array of object, TRes>; qs: List<CommandQueueBase>): CommandQueue<TRes>;
 ///Складывает все очереди qs
 ///Возвращает очередь, по очереди выполняющую все очереди из qs
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineSyncQueue<T,TRes>(conv: Func<array of T, TRes>; qs: List<CommandQueue<T>>): CommandQueue<TRes>;
 ///Складывает все очереди qs
 ///Возвращает очередь, по очереди выполняющую все очереди из qs
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineSyncQueue<T,TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
 ///Складывает все очереди qs
 ///Возвращает очередь, по очереди выполняющую все очереди из qs
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineSyncQueue<T,TRes>(conv: Func<array of T, TRes>; params qs: array of CommandQueue<T>): CommandQueue<TRes>;
 
 ///Умножает все очереди qs
@@ -1662,20 +1662,20 @@ function CombineAsyncQueue<T>(params qs: array of CommandQueueBase): CommandQueu
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 ///Умножает все очереди qs
 ///Возвращает очередь, параллельно выполняющую все очереди из qs
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineAsyncQueue<T,TRes>(conv: Func<array of object, TRes>; qs: List<CommandQueueBase>): CommandQueue<TRes>;
 ///Умножает все очереди qs
 ///Возвращает очередь, параллельно выполняющую все очереди из qs
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineAsyncQueue<T,TRes>(conv: Func<array of T, TRes>; qs: List<CommandQueue<T>>): CommandQueue<TRes>;
 ///Умножает все очереди qs
 ///Возвращает очередь, параллельно выполняющую все очереди из qs
-///И затем применяет conv чтоб получить из результатов очередей qs - свой результат
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет conv чтобы получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineAsyncQueue<T,TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
 ///Умножает все очереди qs
 ///Возвращает очередь, параллельно выполняющую все очереди из qs
-///И затем применяет преобразование conv чтоб получить из результатов очередей qs - свой результат
+///И затем применяет преобразование conv чтобы получить из результатов очередей qs - свой результат
 function CombineAsyncQueue<T,TRes>(conv: Func<array of T, TRes>; params qs: array of CommandQueue<T>): CommandQueue<TRes>;
 
 {$endregion Сахарные подпрограммы}
