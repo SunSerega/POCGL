@@ -75,6 +75,8 @@ end;
 
 
 
+var chapters_def: integer;
+
 function FindChapterIndex(text: string; chapter: List<(integer,string)>): integer;
 begin
   if chapter.Count=0 then exit;
@@ -85,7 +87,7 @@ begin
     chap_name := $'{chap_name} {chapter.Last[1]}';
   
   Result := text.LastIndexOf(chap_name);
-  if Result=-1 then raise new System.InvalidOperationException($'chapter "{chap_name.Trim}" not found');
+  if Result<chapters_def then raise new System.InvalidOperationException($'chapter "{chap_name.Trim}" not found');
 end;
 
 function FindAllChapters(text: string): sequence of List<(integer,string)>;
@@ -94,6 +96,7 @@ begin
   
   var ind1 := text.IndexOf('Contents'#10)+'Contents'#10.Length;
   var ind2 := text.IndexOf('A Invariance');
+  chapters_def := ind2;
   foreach var l in text.Substring(ind1,ind2-ind1).ToWords(#10) do
   begin
     if not l[1].IsDigit then continue;
@@ -295,6 +298,10 @@ begin
     ReadPdfFile(fname).Remove(#13)
     .Replace('Chapter', 'Chapter ').Replace('  ', ' ')
     
+    .Replace('9.3 Feedback Loops Between Textures and the Frame-'#10'buffer',   '9.3 Feedback Loops Between Textures and the Framebuffer')
+    .Replace('9.5 Mapping between Pixel and Element in Attached Im-'#10'age',   '9.5 Mapping between Pixel and Element in Attached Image')
+    .Replace('9.6 Conversion to Framebuffer-Attachable Image Com-'#10'ponents', '9.6 Conversion to Framebuffer-Attachable Image Components')
+    
     .Replace('10.10Conditional Rendering',  '10.10 Conditional Rendering')
     .Replace('10.10Submission Queries',     '10.10 Submission Queries')
     .Replace('SegmentFeatures',             'Segment Features')
@@ -330,7 +337,8 @@ begin
     
   ;
   
-  WriteAllText($'test {v}.txt', s, Encoding.UTF8);
+  System.IO.Directory.CreateDirectory(GetFullPath($'..\formated pdfs', GetEXEFileName));
+  WriteAllText(GetFullPath($'..\formated pdfs\test {v}.txt', GetEXEFileName), s, Encoding.UTF8);
 //  Halt;
   
   var funcs :=

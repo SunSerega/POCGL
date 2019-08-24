@@ -10371,8 +10371,7 @@ texture image is ?rst detached from all attachment points in that framebuffer ob
 ject. Note that the texture image is speci?cally not detached from any non-bound.
 framebuffer objects. Detaching the texture image from any non-bound. frame-
 buffer objects is the responsibility of the application.
-9.3 Feedback Loops Between Textures and the Frame-
-buffer
+9.3 Feedback Loops Between Textures and the Framebuffer
 A feedback loop may exist when a texture object is used as both the source and
 destination of a GL operation. When a feedback loop exists, unde?ned behavior
 results. This section describes rendering feedback loops (see section 8.14.2.1) and
@@ -10637,8 +10636,7 @@ ing GetRenderbufferParameteriv as described in section 6.1.3. If the value of
 FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE at a particular attachment point is
 TEXTURE, the sizes may be determined by calling GetTexParameter, as described
 in section 8.11.
-9.5 Mapping between Pixel and Element in Attached Im-
-age
+9.5 Mapping between Pixel and Element in Attached Image
 WhenDRAW_FRAMEBUFFER_BINDING is non-zero, an operation that writes to the
 framebuffer modi?es the image attached to the selected logical buffer, and an oper-
 ation that reads from the framebuffer reads from the image attached to the selected
@@ -10665,8 +10663,7 @@ w w w w
 width, or ifx ,y , orlayer is greater than or equal to the border width plus the
 w w
 width, height, or depth, respectively, of the texture image.
-9.6 Conversion to Framebuffer-Attachable Image Com-
-ponents
+9.6 Conversion to Framebuffer-Attachable Image Components
 When an enabled color value is written to the framebuffer while the draw frame-
 buffer binding is non-zero, for each draw buffer the R, G, B, and A values are
 converted to internal components as described in table 8.11, according to the ta-
