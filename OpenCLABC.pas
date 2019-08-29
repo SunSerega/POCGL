@@ -543,8 +543,8 @@ uses System.Runtime.CompilerServices;
 //ToDo Тесты всех фич модуля
 
 //ToDo issue компилятора:
-// - #1952
 // - #1981
+// - #2048
 // - #2067, #2068
 
 type
@@ -1469,7 +1469,7 @@ type
       
       var tasks := q.Invoke(self, cq, cl_event.Zero).ToList;
       
-      var костыль_для_Result: ()->T := ()-> //ToDo #1952
+      Result := new Task<T>(()-> //ToDo #2048
       try
         while true do
         begin
@@ -1488,9 +1488,9 @@ type
         Result := q.res;
       finally
         q.UnInvoke;
-      end;
+      end);
       
-      Result := Task.Run(костыль_для_Result);
+      Result.Start;
     end;
     
     /// Выполняет BeginInvoke и ожидает окончания выполнения возвращённой задачи
