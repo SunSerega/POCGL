@@ -46,7 +46,8 @@ begin
   var sind := comm.IndexOf('!');
   if sind<>-1 then
   begin
-    ExecuteFile(comm.Substring(sind+1),$'TemplateCommand[{comm.Substring(sind+1)}]');
+    var fname := comm.Substring(sind+1);
+    ExecuteFile(GetFullPath(fname, 'Packing'),$'TemplateCommand[{fname}]');
     comm := comm.Remove(sind);
   end;
   

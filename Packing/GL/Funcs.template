@@ -8,6 +8,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region 2 - OpenGL Fundamentals}
@@ -386,9 +387,9 @@
     {$region 7.1 - Shader Objects}
     
     public z_ShaderSource: procedure(shader: UInt32; count: Int32; string: pointer; length: pointer) := GetGLFuncOrNil&<procedure(shader: UInt32; count: Int32; string: pointer; length: pointer)>('glShaderSource');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; string: array of string; length: array of Int32) := ShaderSource(shader, count, string[0], length[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; string: array of string; var length: Int32) := ShaderSource(shader, count, string[0], @length);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; string: array of string; length: pointer) := ShaderSource(shader, count, string[0], length);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; _string: array of string; length: array of Int32) := ShaderSource(shader, count, _string[0], length[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; _string: array of string; var length: Int32) := ShaderSource(shader, count, _string[0], @length);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; _string: array of string; length: pointer) := ShaderSource(shader, count, _string[0], length);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; var _string: string; length: array of Int32) := ShaderSource(shader, count, @_string, length[0]);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; var _string: string; var length: Int32) := ShaderSource(shader, count, @_string, @length);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderSource(shader: UInt32; count: Int32; var _string: string; length: pointer) := ShaderSource(shader, count, @_string, length);
@@ -4115,6 +4116,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     public z_MultiTexCoord4svARB: procedure(target: DummyEnum; v: pointer) := GetGLFuncOrNil&<procedure(target: DummyEnum; v: pointer)>('glMultiTexCoord4svARB');
@@ -5264,6 +5266,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region NV_vertex_array_range}
@@ -6311,6 +6314,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region KHR_fence_sync}
@@ -6344,6 +6348,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region EXT_nurbs_tessellator}
@@ -6366,6 +6371,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region NV_video_capture}
@@ -7182,6 +7188,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region ARB_shader_objects}
@@ -9224,6 +9231,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region EXT_win32_keyed_mutex}
@@ -11543,6 +11551,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region 3DFX_tbuffer}
@@ -11563,6 +11572,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region AMD_performance_monitor}
@@ -11968,6 +11978,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region ANGLE_framebuffer_blit}
@@ -12020,6 +12031,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region APPLE_vertex_array_object}
@@ -12255,6 +12267,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region ATI_fragment_shader}
@@ -12461,6 +12474,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region GREMEDY_frame_terminator}
@@ -12488,6 +12502,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region HP_image_transform}
@@ -12531,6 +12546,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region IBM_vertex_array_lists}
@@ -12655,6 +12671,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region IMG_user_clip_plane}
@@ -12728,6 +12745,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region INTEL_framebuffer_CMAA}
@@ -13982,6 +14000,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region KHR_blend_equation_advanced}
@@ -14009,6 +14028,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region MESA_resize_buffers}
@@ -14129,6 +14149,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region NV_transform_feedback}
@@ -16436,6 +16457,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region NVX_gpu_multicast2}
@@ -16698,6 +16720,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region OES_fixed_point}
@@ -17586,6 +17609,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region OVR_multiview_multisampled_render_to_texture}
@@ -17616,6 +17640,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region QCOM_alpha_test}
@@ -17802,6 +17827,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region SGI_color_table}
@@ -17881,6 +17907,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region SGIS_detail_texture}
@@ -17996,6 +18023,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region SGIX_polynomial_ffd}
@@ -18086,6 +18114,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region SUN_vertex}
@@ -19117,6 +19146,7 @@
       var str_ptr := Marshal.StringToHGlobalAnsi(fn);
       var ptr := GetGLFuncAdr(str_ptr);
       Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
     {$region SUNX_constant_data}

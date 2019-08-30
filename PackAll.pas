@@ -1,10 +1,12 @@
 ﻿program prog;
 
 uses System.Threading.Tasks;
-uses Pack_Utils in 'Packing\Pack_Utils.pas';
+uses MiscUtils in 'Utils\MiscUtils.pas';
 
 begin
   try
+    log_file := 'LastPack.log';
+    System.IO.File.Delete(log_file);
     
     System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pcu', System.IO.SearchOption.AllDirectories).ForEach(System.IO.File.Delete);
     System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pdb', System.IO.SearchOption.AllDirectories).Where(fname->not fname.EndsWith('PackAll.pdb')).ForEach(System.IO.File.Delete);
@@ -12,19 +14,19 @@ begin
     // ====================================================
     
     (
-      CompTask('..\OpenCLABC.pas') *
       (
-        ExecTask('Pack Template.pas', 'Template[0OpenGL]', 'fname=0OpenGL.template', 'GenPas') +
-        new Task(()->System.IO.File.Delete('OpenGL.pas')) +
-        new Task(()->System.IO.File.Move('Packing\0OpenGL.pas', 'OpenGL.pas')) +
-        new Task(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', new System.Text.UTF8Encoding(true)).Replace(#10,#13#10), new System.Text.UTF8Encoding(true))) +
-//        new Task(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.templateres').ForEach(System.IO.File.Delete)) +
-        CompTask('..\OpenGLABC.pas')
+        ExecTask('Packing\Pack Template.pas', 'Template[OpenGL]', 'fname=Packing\0OpenGL.template', 'GenPas') +
+        ProcTask(()->System.IO.File.Delete('OpenGL.pas')) +
+        ProcTask(()->System.IO.File.Move('Packing\0OpenGL.pas', 'OpenGL.pas')) +
+        ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', new System.Text.UTF8Encoding(true)).Replace(#10,#13#10), new System.Text.UTF8Encoding(true))) +
+//        ProcTask(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.templateres').ForEach(System.IO.File.Delete)) +
+        CompTask('OpenGLABC.pas')
       ) *
-      CompTask('..\Tests\Tester.pas')
+      CompTask('OpenCLABC.pas') *
+      CompTask('Tests\Tester.pas')
       
-      + ExecTask('..\Tests\Tester.exe', 'Tester')
-    ).RunSynchronously;
+      + ExecTask('Tests\Tester.exe', 'Tester')
+    ).SyncExec;
     
     // ====================================================
     

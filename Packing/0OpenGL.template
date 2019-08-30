@@ -19,7 +19,7 @@
 /// https://github.com/KhronosGroup/OpenGL-Registry
 /// (Основная часть не_расширений - \api\GL\ )
 ///
-///Спецификации всех версий:
+///Спецификации всех версий OpenGL:
 /// https://www.khronos.org/registry/OpenGL/specs/gl/
 ///
 ///Если чего то не хватает - писать сюда:

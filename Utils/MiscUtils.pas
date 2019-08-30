@@ -40,6 +40,27 @@ end;
 
 {$region Otp}
 
+var otp_lock := new object;
+var log_file: string := nil;
+procedure Otp(line: string) :=
+lock otp_lock do
+begin
+  
+  if log_file<>nil then
+  begin
+    if System.IO.File.Exists(log_file) then
+      System.IO.File.Copy(log_file, log_file+'.savepoint');
+    System.IO.File.AppendAllLines(log_file, Arr(line));
+    System.IO.File.Delete(log_file+'.savepoint');
+  end;
+  
+  if line.ToLower.Contains('error') then   System.Console.ForegroundColor := System.ConsoleColor.Red else
+  if line.ToLower.Contains('warning') then System.Console.ForegroundColor := System.ConsoleColor.Yellow else
+    System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
+  
+  System.Console.WriteLine(line);
+end;
+
 procedure ErrOtp(e: Exception);
 begin
   if e is ThreadAbortException then exit;
@@ -62,17 +83,17 @@ begin
       except end;
   
   if e is MessageException then
-    writeln(e.Message) else
-    writeln(e);
+    Otp(e.Message) else
+    Otp(e.ToString);
   
-  if not CommandLineArgs.Contains('SecondaryProc') then Readln;
+  if not CommandLineArgs.Contains('SecondaryProc') then
+  begin
+    Readln;
+    Halt;
+  end else
+    Halt(e.HResult);
   
-  Halt(e.HResult);
 end;
-
-var otp_lock := new object;
-procedure Otp(line: string) :=
-lock otp_lock do writeln(line);
 
 {$endregion Otp}
 
@@ -81,9 +102,9 @@ lock otp_lock do writeln(line);
 procedure RunFile(fname, nick: string; otp: string->(); params pars: array of string);
 begin
   fname := GetFullPath(fname);
-  if otp=nil then otp := MiscUtils.Otp;
+  if otp=nil then otp := l->MiscUtils.Otp($'{nick}: {l}');
   
-  otp($'Runing {nick}');
+  MiscUtils.Otp($'Runing {nick}');
   
   var psi := new ProcessStartInfo(fname, pars.Append('"SecondaryProc"').JoinIntoString);
   fname := fname.Substring(fname.LastIndexOf('\')+1);
@@ -94,7 +115,7 @@ begin
   var p := new Process;
   sec_procs += p;
   p.StartInfo := psi;
-  p.OutputDataReceived += (o,e) -> if not string.IsNullOrWhiteSpace(e.Data) then otp($'{nick}: {e.Data}');
+  p.OutputDataReceived += (o,e) -> if not string.IsNullOrWhiteSpace(e.Data) then otp(e.Data);
   p.Start;
   
   try
@@ -107,7 +128,7 @@ begin
       ErrOtp(new Exception($'Error in {nick}:', ex));
     end;
     
-    otp($'Finished runing {nick}');
+    MiscUtils.Otp($'Finished runing {nick}');
   except
     on ThreadAbortException do
     begin
@@ -196,16 +217,24 @@ end;
 
 type
   SecThrProc = abstract class
-    function StartExec: Thread; abstract;
+    function CreateThread: Thread; abstract;
+    
+    function StartExec: Thread;
+    begin
+      Result := CreateThread;
+      Result.Start;
+    end;
+    
     procedure SyncExec :=
     StartExec.Join;
+    
   end;
   
   SecThrProcCustom = sealed class(SecThrProc)
     p: Action0;
     constructor(p: Action0) := self.p := p;
     
-    function StartExec: Thread; override := new Thread(()->
+    function CreateThread: Thread; override := new Thread(()->
     try
       RegisterThr;
       p;
@@ -224,7 +253,7 @@ type
       self.p2 := p2;
     end;
     
-    function StartExec: Thread; override := new Thread(()->
+    function CreateThread: Thread; override := new Thread(()->
     try
       RegisterThr;
       p1.SyncExec;
@@ -244,7 +273,7 @@ type
       self.p2 := p2;
     end;
     
-    function StartExec: Thread; override := new Thread(()->
+    function CreateThread: Thread; override := new Thread(()->
     try
       RegisterThr;
       var t1 := p1.StartExec;

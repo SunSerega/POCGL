@@ -390,7 +390,9 @@ type
           cpar[1].ConvertAll(d->
           begin
             var lpname := pname;
-            if d.par_def_mask.ToLower.EndsWith($': {lpname.ToLower}') then lpname := '_'+lpname;
+            
+            if d.par_def_mask.ToLower.EndsWith(' '+lpname.ToLower) then lpname := '_'+lpname else
+            if d.par_def_mask.ToLower.Contains($' {lpname.ToLower} ') then lpname := '_'+lpname;
             
             Result := new par_data(
               nil,

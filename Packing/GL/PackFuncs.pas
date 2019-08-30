@@ -211,7 +211,7 @@ begin
     begin
       if not (h_funcs[0].full_name in [
         'glAlphaFuncx'
-      ]) then Otp($'func "{h_funcs[0].full_name}" not found in core nor in exts');
+      ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
       h_funcs.RemoveAt(0);
       continue;
     end;
@@ -227,7 +227,7 @@ begin
         fs += h_funcs[ind];
         h_funcs.RemoveAt(ind);
       end else
-        Otp($'[{ext_names.JoinIntoString}]: can''t find func "{fn}"');
+        Otp($'WARNING: [{ext_names.JoinIntoString}]: can''t find func "{fn}"');
     end;
     
     var fs_cnames :=
@@ -280,20 +280,20 @@ begin
     
   end;
   
-  foreach var f in unused_core_funcs do Otp( $'core func "{f.name}" not found' );
+  foreach var f in unused_core_funcs do Otp( $'WARNING: core func "{f.name}" not found' );
   
   foreach var ext in unused_exts do
   begin
     var fs := ext_name_func_name_table[ext].ToList;
     if fs.Count=0 then continue;
-    writeln($'[{ext.JoinIntoString}]: funcs [{fs.JoinIntoString}] wasn''t found');
+    Otp($'WARNING: [{ext.JoinIntoString}]: funcs [{fs.JoinIntoString}] wasn''t found');
   end;
   
 end;
 
 procedure ConstructFuncsCode;
 begin
-  Otp($'Construct core funcs code');
+  Otp($'Construct funcs code');
   var sw := new System.IO.StreamWriter(
     System.IO.File.Create(GetFullPath('..\Funcs.template',GetEXEFileName)),
     new System.Text.UTF8Encoding(true)
@@ -330,6 +330,7 @@ begin
     sw.WriteLine('      var str_ptr := Marshal.StringToHGlobalAnsi(fn);');
     sw.WriteLine('      var ptr := GetGLFuncAdr(str_ptr);');
     sw.WriteLine('      Marshal.FreeHGlobal(str_ptr);');
+    sw.WriteLine('      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);');
     sw.WriteLine('    end;');
     sw.Write('    ');
     
