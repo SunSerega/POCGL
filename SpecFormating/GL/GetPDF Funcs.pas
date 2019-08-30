@@ -105,7 +105,7 @@ begin
     ind2 := l.lastIndexOf(' ');
     if ind1=ind2 then continue;
     
-//    writeln(l);
+//    Otp(l);
     
     var ch_val := l.Remove(ind1).ToWords('.').ConvertAll(s->s.ToInteger);
     var ch_name :=
@@ -114,7 +114,7 @@ begin
     ;
     if ch_name='' then continue;
     
-//    writeln($'{ch_val.JoinIntoString(''.'')} : {ch_name}');
+//    Otp($'{ch_val.JoinIntoString(''.'')} : {ch_name}');
     
     var req_l := ch_val.Length-1;
     if names.Count<req_l then raise new System.InvalidOperationException('chapters out of order');
@@ -159,9 +159,9 @@ begin
   var next_chapter := chap_enum.Current;
   var next_chapter_ind := FindChapterIndex(s, next_chapter);
   
-//  writeln( next_chapter );
-//  writeln( next_chapter_ind );
-//  writeln( '='*50 );
+//  Otp( next_chapter );
+//  Otp( next_chapter_ind );
+//  Otp( '='*50 );
   while true do
   begin
     
@@ -175,7 +175,7 @@ begin
       #10'boolean '
     );
     if ind1=-1 then break;
-//    writeln(ind1);
+//    Otp(ind1);
     
     var ind2 := s.FindNext(ind1, '(', #10)-1;
     if s[ind2+1]=#10 then continue;
@@ -193,16 +193,16 @@ begin
         if not chap_enum.MoveNext then
         begin
           next_chapter_ind := -1;
-//          writeln('done with chapters');
+//          Otp('done with chapters');
           break;
         end;
         
         next_chapter := chap_enum.Current;
         next_chapter_ind := FindChapterIndex(s, next_chapter);
         
-//        writeln( next_chapter );
-//        writeln(( next_chapter_ind, ind1, s.Substring(ind1-30,ind2-ind1+60) ));
-//        writeln( '='*50 );
+//        Otp( next_chapter );
+//        Otp(( next_chapter_ind, ind1, s.Substring(ind1-30,ind2-ind1+60) ));
+//        Otp( '='*50 );
       end;
     
     var f := s.Substring(ind1,ind2-ind1).Trim;

@@ -355,7 +355,6 @@ type
         end;
         if name.ToLower() in keywords then name := '&'+name;
         
-//        writeln((nts.Remove(ind+1),name));
         var t := GetTypeDefString(true, 0, nts.Remove(ind+1), 0);
         res_t := t[0];
         res_masks := t[1];

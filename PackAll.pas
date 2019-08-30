@@ -58,13 +58,13 @@ begin
     ))
     .ForEach(fname->
     begin
-      writeln($'Packing sample "Release\Installer{fname}"');
+      Otp($'Packing sample "Release\Installer{fname}"');
       System.IO.File.Copy(fname, 'Release\Installer'+fname);
     end);
     
     // ====================================================
     
-    writeln('done packing');
+    Otp('done packing');
     if not CommandLineArgs.Contains('SecondaryProc') then Readln;
     
   except

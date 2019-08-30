@@ -194,8 +194,7 @@ begin
         '0.0';
         
       except
-        on e: Exception do
-        writeln(0);
+        on e: Exception do ErrOtp(e);
       end;
       
     end
