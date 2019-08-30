@@ -114,13 +114,17 @@ type
   
   {$region Curr list}
   
+  // New Procedures and Functions[:] (there is more of this type)
+  // Additions to the WGL interface:
+  // Advertising WGL Extensions
+  //=== NewFuncs
+  // 
   // Addition to ***
   // Additions to ***
   // Modifications to ***
   //=== SpecModifications
   // 
   // Name String/Name Strings         === ExtStrings
-  // New Procedures and Functions[:]  === NewFuncs
   // Contacts/Contact                 === AuthorContacts
   // Contributors                     === ContributorsList
   // Errors                           === Errors
@@ -378,6 +382,14 @@ type
         if t=nil then break;
         last_ind := t[1]+1;
         case s.Substring(t[0],last_ind-t[0]) of
+          '(for example)',
+          '(for example, so that more efficient memory is available for other purposes such as texture memory)',
+          '(and the implementation is free to ignore any or all of the above parameters)',
+          '(and no OpenGL error is generated)',
+          '(always return NULL)',
+          '(without being reallocated)',
+          '(the memory is not private to a single thread)',
+          '(not simply the thread that allocated the memory)',
           '(GLenum)',
           '(1<<i)',
           '(if any)',
@@ -759,19 +771,21 @@ type
       if spec_text.StartsWith('Name'#10) then inds += ('Name',4);
       inds.AddRange(spec_text.FindAllIndexes(#10'Name'#10                                     ).Select(ind->('Name', ind)));
       
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Functions and Procedures'#10             ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedure and Functions'#10              ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions'#10             ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures And Functions'#10             ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions:'#10            ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures, Functions and Structures:'#10).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Additions to the WGL interface:'#10          ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Advertising WGL Extensions'#10               ).Select(ind->('NewFuncs', ind)));
+      
       inds.AddRange(spec_text.FindAllIndexes(#10'Addition to '                                ).Select(ind->('SpecModifications', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Additions to '                               ).Select(ind->('SpecModifications', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Modifications to '                           ).Select(ind->('SpecModifications', ind)));
       
       inds.AddRange(spec_text.FindAllIndexes(#10'Name String'#10                              ).Select(ind->('ExtStrings', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Name Strings'#10                             ).Select(ind->('ExtStrings', ind)));
-      
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Functions and Procedures'#10              ).Select(ind->('NewFuncs', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedure and Functions'#10              ).Select(ind->('NewFuncs', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions'#10             ).Select(ind->('NewFuncs', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures And Functions'#10             ).Select(ind->('NewFuncs', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions:'#10            ).Select(ind->('NewFuncs', ind)));
-      inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures, Functions and Structures:'#10).Select(ind->('NewFuncs', ind)));
       
       inds.AddRange(spec_text.FindAllIndexes(#10'Contact'#10                                  ).Select(ind->('AuthorContacts', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Contacts'#10                                 ).Select(ind->('AuthorContacts', ind)));
@@ -804,12 +818,12 @@ type
       var sf1 := fname.EndsWith('EXT_pixel_buffer_object.txt'); // в этом файле 2 статуса, примерно одинаковых
       
       foreach var p in
-        inds.OrderBy(t->t[1])
+        inds.OrderBy(t->spec_text.IndexOf(#10,t[1]-1))
         .WherePrev(t->
         begin
           case t[0] of
             
-            'SpecModifications': spec_text.IndexOf(' or',t[1],spec_text.IndexOf(#10,t[1])-t[1]);
+            'SpecModifications': Result := -1 = spec_text.IndexOf(' or',t[1],spec_text.IndexOf(#10,t[1])-t[1]);
             
             else Result := true;
           end;
@@ -830,11 +844,11 @@ type
 //        writeln(p[0][0]);
         
         case p[0][0] of
+          'NewFuncs':           if NewFuncsChapter.TryCreate(chapt_contents, fname) is NewFuncsChapter(var chap) then if Result.NewFuncs=nil then Result.NewFuncs := chap else Result.NewFuncs.funcs.AddRange(chap.funcs);
           
           'Name':               if (Result.ExtNames         =nil) then Result.ExtNames           := ExtNamesChapter          .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple ExtNames chapters in {fname}');
           'SpecModifications':                                         Result.SpecModifications  += SpecModificationsChapter .Create   (chapt_contents        );
           'ExtStrings':         if (Result.ExtStrings       =nil) then Result.ExtStrings         := ExtStringsChapter        .TryCreate(chapt_contents        ) else raise new System.InvalidOperationException($'multiple ExtStrings chapters in {fname}');
-          'NewFuncs':           if (Result.NewFuncs         =nil) then Result.NewFuncs           := NewFuncsChapter          .TryCreate(chapt_contents, fname ) else raise new System.InvalidOperationException($'multiple NewFuncs chapters in {fname}');
           'AuthorContacts':     if (Result.AuthorContacts   =nil) then Result.AuthorContacts     := AuthorContactsChapter    .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple AuthorContacts chapters in {fname}');
           'ContributorsList':   if (Result.ContributorsList =nil) then Result.ContributorsList   := ContributorsListChapter  .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple ContributorsList chapters in {fname}');
           'Errors':             if (Result.Errors           =nil) then Result.Errors             := ErrorsChapter            .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple Errors chapters in {fname}');

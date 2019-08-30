@@ -5,7 +5,7 @@ uses System.Threading;
 uses System.Threading.Tasks;
 uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
-{$region Otp}
+{$region MiscUtils calls}
 
 procedure Otp(line: string) :=
 MiscUtils.Otp(line);
@@ -13,7 +13,10 @@ MiscUtils.Otp(line);
 procedure ErrOtp(e: Exception) :=
 MiscUtils.ErrOtp(e);
 
-{$endregion Otp}
+function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string :=
+MiscUtils.GetFullPath(fname, base_folder);
+
+{$endregion MiscUtils calls}
 
 procedure RunInSTA(a: Action0);
 begin

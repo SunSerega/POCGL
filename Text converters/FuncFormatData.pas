@@ -291,7 +291,7 @@ begin
       par_v += new par_data('{0}',      'IntPtr',  nil,  nil);
     end else
     begin
-      par_v += new par_data(nil,  '{0}: string',  $'ptr{par_n}',  $'var ptr{par_n} := Marshal.StringToHGlobalAnsi({{1}}); {{0}} {{1}} := Marshal.PtrToStringAnsi(ptr{par_n}); Marshal.FreeHGlobal(ptr{par_n});');
+      par_v += new par_data(nil,  '{0}: string',  $'ptr{par_n}',  $'var ptr{par_n} := Marshal.StringToHGlobalAnsi({{1}}); {{0}} Marshal.FreeHGlobal(ptr{par_n});');
       par_v += new par_data(nil,  '{0}: IntPtr',  '{0}',          nil);
     end;
     
@@ -407,52 +407,116 @@ type
       
     end;
     
-    public function ToString_GL(need_full_name: boolean): string;
+    public function ContructCode(use_external: boolean; params comments: array of string): string;
     begin
+      if
+        (lib_name='gdi32.dll') or
+        (name in ['CreateContext', 'MakeCurrent'])
+      then use_external := true;
+      
       var sb := new StringBuilder;
       var f := res_t<>'void';
-      var f_name := need_full_name ? full_name : name;
       
       sb += #10;
       
       
       
-      sb += '    public z_';
-      sb += f_name.TrimStart('&');
-      
-      //ToDo ide#144
-      sb += ': ';
-      sb += f?'function':'procedure';
-      if par.Count<>0 then
+      if use_external then
       begin
-        sb += '(';
-        sb += par.Select(p->p[0]).JoinIntoString('; ');
-        sb += ')';
-      end;
-      if f then
-      begin
+        
+        sb += '    private static ';
+        sb += f?'function':'procedure';
+        sb += ' _';
+        sb += name.TrimStart('&');
+        
+        if par.Count<>0 then
+        begin
+          sb += '(';
+          sb += par.Select(p->p[0]).JoinIntoString('; ');
+          sb += ')';
+        end;
+        if f then
+        begin
+          sb += ': ';
+          sb += res_t;
+        end;
+        
+        sb += $'; external ''{lib_name}'' name ''{full_name}'';';
+        sb += #10;
+        
+        foreach var comm in comments do
+          if comm<>nil then
+          begin
+            sb += '    ///';
+            sb += comm;
+            sb += #10;
+          end;
+        
+        sb += '    public static z_';
+        sb += name.TrimStart('&');
         sb += ': ';
-        sb += res_t;
-      end;
-      
-      sb += ' := FuncPtrOrNil&<';
-      sb += f?'function':'procedure';
-      if par.Count<>0 then
+        sb += f?'function':'procedure';
+        if par.Count<>0 then
+        begin
+          sb += '(';
+          sb += par.Select(p->p[0]).JoinIntoString('; ');
+          sb += ')';
+        end;
+        if f then
+        begin
+          sb += ': ';
+          sb += res_t;
+        end;
+        sb += ' := _';
+        sb += name.TrimStart('&');
+        sb += ';'#10;
+        
+      end else
       begin
-        sb += '(';
-        sb += par.Select(p->p[0]).JoinIntoString('; ');
-        sb += ')';
-      end;
-      if f then
-      begin
+        
+        foreach var comm in comments do
+          if comm<>nil then
+          begin
+            sb += $'    ///{comm}';
+            sb += #10;
+          end;
+        
+        sb += '    public z_';
+        sb += name.TrimStart('&');
+        
+        //ToDo ide#144
         sb += ': ';
-        sb += res_t;
+        sb += f?'function':'procedure';
+        if par.Count<>0 then
+        begin
+          sb += '(';
+          sb += par.Select(p->p[0]).JoinIntoString('; ');
+          sb += ')';
+        end;
+        if f then
+        begin
+          sb += ': ';
+          sb += res_t;
+        end;
+        
+        sb += ' := GetGLFuncOrNil&<';
+        sb += f?'function':'procedure';
+        if par.Count<>0 then
+        begin
+          sb += '(';
+          sb += par.Select(p->p[0]).JoinIntoString('; ');
+          sb += ')';
+        end;
+        if f then
+        begin
+          sb += ': ';
+          sb += res_t;
+        end;
+        sb += '>(''';
+        sb += full_name;
+        sb += ''');'#10;
+        
       end;
-      sb += '>(GetGLProcAdr(''';
-      sb += full_name;
-      sb += '''));';
-      
-      sb += #10;
       
       
       
@@ -465,7 +529,7 @@ type
           sb += f?'function':'procedure';
           sb += ' ';
           
-          var cfname := Format(res_mask.fn_mask, f_name.TrimStart('&'));
+          var cfname := Format(res_mask.fn_mask, name.TrimStart('&'));
           if cfname.ToLower in keywords then cfname := '&'+cfname;
           sb += cfname;
           
@@ -490,12 +554,15 @@ type
           if pct[1]=nil then
           begin
             call_sb += 'z_';
-            call_sb += f_name.TrimStart('&');
+            call_sb += name.TrimStart('&');
           end else
-            call_sb += f_name;
-          call_sb += '(';
-          call_sb += par_combo.Select(pd->pd.par_call_mask).JoinIntoString(', ');
-          call_sb += ')';
+            call_sb += name;
+          if par.Count<>0 then
+          begin
+            call_sb += '(';
+            call_sb += par_combo.Select(pd->pd.par_call_mask).JoinIntoString(', ');
+            call_sb += ')';
+          end;
           var call_str := call_sb.ToString;
           
           if f then
@@ -520,59 +587,10 @@ type
       Result := sb.ToString;
     end;
     
-    public function ToString_GDI(need_full_name: boolean): string;
-    begin
-      var sb := new StringBuilder;
-      var f := res_t<>'void';
-      var f_name := need_full_name ? full_name : name;
-      
-      sb += #10;
-      
-      
-      
-      foreach var par_combo in GetAllCombos(par.Select(p->p[1])) do
-      begin
-        
-        sb += '    public static ';
-        sb += f?'function':'procedure';
-        sb += ' ';
-        sb += f_name;
-        
-        if par.Count<>0 then
-        begin
-          sb += '(';
-          sb += par_combo.Select(pd-> pd.par_def_mask.Contains('array') ? '[MarshalAs(UnmanagedType.LPArray)] '+pd.par_def_mask : pd.par_def_mask ).JoinIntoString('; ');
-          sb += ')';
-        end;
-        
-        if f then
-        begin
-          sb += ': ';
-          sb += res_t;
-        end;
-        
-        sb += ';'#10'    external ''gdi32.dll'' name ''';
-        sb += full_name;
-        sb += ''';'#10;
-        
-      end;
-      
-      sb += '    ';
-      Result := sb.ToString;
-    end;
-    
-    public function ToString(need_full_name: boolean): string;
-    begin
-      case lib_name of
-        'opengl32.dll': Result := ToString_GL(need_full_name);
-        'gdi32.dll':    Result := ToString_GDI(need_full_name);
-        else raise new System.InvalidOperationException($'unknown lib "{lib_name}"');
-      end;
-    end;
     
     
     public function ToString: string; override :=
-    self.ToString(false);
+    $'FuncDef[{full_name}]';
     
   end;
 

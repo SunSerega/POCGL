@@ -1,7 +1,7 @@
 ﻿unit CoreFuncData;
 
 type
-  CoreFuncDef = class
+  CoreFuncDef = sealed class
     name: string := nil;
     chapter := new List<(integer,string)>;
     
@@ -38,5 +38,18 @@ type
     $'{name} : [{chapter.JoinIntoString}]';
     
   end;
-
+  
+  CoreFuncEqComp = sealed class(System.Collections.Generic.IEqualityComparer<CoreFuncDef>)
+    
+    constructor :=
+    inherited Create;
+    
+    public function Equals(x, y: CoreFuncDef): boolean :=
+    x.name=y.name;
+    
+    public function GetHashCode(obj: CoreFuncDef): integer :=
+    obj.name.GetHashCode;
+    
+  end;
+  
 end.
