@@ -39,6 +39,8 @@ begin
     OverloadController.LoadAllFromFile(fname);
 end;
 
+function GetUnusedOverloadControllers := OverloadController.GetUnused;
+
 function SkipCharsFromTo2(self: sequence of char; f,t: string): sequence of char; extensionmethod;
 begin
   var enm := self.GetEnumerator;

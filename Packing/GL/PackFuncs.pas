@@ -174,6 +174,9 @@ begin
   
 //  h_funcs.PrintLines(fd->fd.full_name);
 //  halt;
+  
+  foreach var cn in GetUnusedOverloadControllers do
+    Otp($'WARNING: OverloadController for func {cn} wasn''t used');
 end;
 
 procedure SortFuncs;

@@ -21,6 +21,7 @@ type
     private static property Item[fn: string]: OverloadController read AllLoaded.ContainsKey(fn)?AllLoaded[fn]:nil; default;
     
     public static function ContructNewEmpty(func_name, file_name: string): OverloadController;
+    public static function GetUnused := AllLoaded.Where(kvp->not kvp.Value.been_used).Select(kvp->kvp.Key);
     
     public function GetChange: IOverloadChange;
     begin
@@ -74,7 +75,7 @@ type
   end;
   
   LVL1Controller = sealed class(OverloadController)
-    d: Dictionary<string, sequence of string>;
+    d := new Dictionary<string, sequence of string>;
     
     function GetChangeInternal: IOverloadChange; override := new LVL1Change(self.d.ToDictionary(kvp->kvp.Key,kvp->kvp.Value.GetEnumerator as IEnumerator<string>));
     
@@ -131,7 +132,7 @@ type
           var ind := 1;
           var rem_f := new HashSet<string>;
           var new_f := new HashSet<string>;
-          var curr_hs: HashSet<string>;
+          var curr_hs: HashSet<string> := nil;
           var sb := new StringBuilder;
           
           while true do
@@ -146,7 +147,7 @@ type
             
             ind+=1;
             
-            if i>vals[i].Length then
+            if ind>vals[i].Length then
             begin
               curr_hs += sb.ToString.Trim;
               break;
