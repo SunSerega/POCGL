@@ -97,6 +97,8 @@ begin
   foreach var dir in System.IO.Directory.EnumerateDirectories('Reps\OpenGL-Registry\extensions') do
     ext_types += dir.Substring(dir.LastIndexOf('\')+1);
   
+  LoadOverloadControlFolder('Text converters\FuncOverloadControl\GL');
+  
 end;
 
 procedure LoadCoreFuncs;
