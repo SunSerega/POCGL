@@ -443,6 +443,7 @@ begin
     
     Otp('done');
   except
+    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
 end.

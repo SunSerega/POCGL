@@ -25,11 +25,13 @@ begin
     try
       a;
     except
+      on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
       on e: Exception do ErrOtp(e);
     end);
     thr.ApartmentState := ApartmentState.STA;
     thr.Start;
   except
+    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
 end;

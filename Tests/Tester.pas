@@ -231,6 +231,9 @@ type
           {$endif WriteDone}
           
         except
+          {$ifndef SingleThread}
+          on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
+          {$endif SingleThread}
           on e: TestCanceledException do;
           on e: Exception do ErrOtp(e);
         end)
@@ -347,6 +350,7 @@ begin
     Otp('Done testing');
     
   except
+    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
   

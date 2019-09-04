@@ -27,6 +27,7 @@ type
         self.str := f();
         self.done := true;
       except
+        on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
         on e: Exception do ErrOtp(e);
       end).Start;
     end;
@@ -100,6 +101,7 @@ begin
       lock blocks do blocks.Enqueue(new StrBlock(res.ToString));
       read_done := true;
     except
+      on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
       on e: Exception do ErrOtp(e);
     end).Start;
     
@@ -131,10 +133,12 @@ begin
       end;
       
     except
+      on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
       on e: Exception do ErrOtp(e);
     end).Start;
     
   except
+    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
 end.

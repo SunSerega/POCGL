@@ -184,20 +184,11 @@ begin
     Range(0,t[0][0]-1)
     .Cartesian(Range(0,t[0][1]-1))
     .Select(pos->
-    begin
-      try
-      Result :=
-        pos[0]=pos[1] ?
-        '1.0' :
-        (pos[1]=t[0][1]-1) and (pos[0]<MinSize) ?
-        ANT[pos[0]] :
-        '0.0';
-        
-      except
-        on e: Exception do ErrOtp(e);
-      end;
-      
-    end
+      pos[0]=pos[1] ?
+      '1.0' :
+      (pos[1]=t[0][1]-1) and (pos[0]<MinSize) ?
+      ANT[pos[0]] :
+      '0.0'
     )
     .JoinIntoString(', ');
   res += ');'+#10;

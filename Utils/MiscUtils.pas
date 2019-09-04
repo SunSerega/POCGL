@@ -137,7 +137,6 @@ begin
         p.Kill;
       except end;
       
-      raise;
     end;
   end;
 end;
@@ -217,7 +216,16 @@ end;
 
 type
   SecThrProc = abstract class
-    function CreateThread: Thread; abstract;
+    procedure SyncExec; abstract;
+    
+    function CreateThread := new Thread(()->
+    try
+      RegisterThr;
+      SyncExec;
+    except
+      on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
+      on e: Exception do ErrOtp(e);
+    end);
     
     function StartExec: Thread;
     begin
@@ -225,22 +233,13 @@ type
       Result.Start;
     end;
     
-    procedure SyncExec :=
-    StartExec.Join;
-    
   end;
   
   SecThrProcCustom = sealed class(SecThrProc)
     p: Action0;
     constructor(p: Action0) := self.p := p;
     
-    function CreateThread: Thread; override := new Thread(()->
-    try
-      RegisterThr;
-      p;
-    except
-      on e: Exception do ErrOtp(e);
-    end);
+    procedure SyncExec; override := p;
     
   end;
   
@@ -253,14 +252,11 @@ type
       self.p2 := p2;
     end;
     
-    function CreateThread: Thread; override := new Thread(()->
-    try
-      RegisterThr;
+    procedure SyncExec; override;
+    begin
       p1.SyncExec;
       p2.SyncExec;
-    except
-      on e: Exception do ErrOtp(e);
-    end);
+    end;
     
   end;
   
@@ -273,16 +269,13 @@ type
       self.p2 := p2;
     end;
     
-    function CreateThread: Thread; override := new Thread(()->
-    try
-      RegisterThr;
+    procedure SyncExec; override;
+    begin
       var t1 := p1.StartExec;
       var t2 := p2.StartExec;
       t1.Join;
       t2.Join;
-    except
-      on e: Exception do ErrOtp(e);
-    end);
+    end;
     
   end;
   
