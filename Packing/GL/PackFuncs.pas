@@ -191,6 +191,12 @@ begin
   funcs_sorted['glD'] := new Dictionary<List<string>, List<FuncDef>>(ListSeqEqualityComparer&<string>.val);
   funcs_sorted['glD'][EmptyList&<string>.val] := new List<FuncDef>;
   
+  funcs_sorted['wgl'] := new Dictionary<List<string>, List<FuncDef>>(ListSeqEqualityComparer&<string>.val);
+  funcs_sorted['wgl'][EmptyList&<string>.val] := new List<FuncDef>;
+  
+  funcs_sorted['gdi'] := new Dictionary<List<string>, List<FuncDef>>(ListSeqEqualityComparer&<string>.val);
+  funcs_sorted['gdi'][EmptyList&<string>.val] := new List<FuncDef>;
+  
   for var i := h_funcs.Count-1 downto 0 do
   begin
     var fd: CoreFuncDef;
@@ -213,13 +219,27 @@ begin
   begin
     var ext_names: List<string>;
     if not func_name_ext_name_table.TryGetValue(h_funcs[0].full_name, ext_names) then
-    begin
-      if not (h_funcs[0].full_name in [
-        'glAlphaFuncx'
-      ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
-      h_funcs.RemoveAt(0);
-      continue;
-    end;
+      if h_funcs[0].full_name.StartsWith('wgl') then
+      begin
+        funcs_sorted['wgl'][EmptyList&<string>.val].Add( h_funcs[0] );
+        h_funcs.RemoveAt(0);
+        continue;
+      end else
+      if h_funcs[0].lib_name='gdi32.dll' then
+      begin
+        funcs_sorted['gdi'][EmptyList&<string>.val].Add( h_funcs[0] );
+        h_funcs.RemoveAt(0);
+        continue;
+      end else
+      begin
+        
+        if not (h_funcs[0].full_name in [
+          'glAlphaFuncx'
+        ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
+        
+        h_funcs.RemoveAt(0);
+        continue;
+      end;
       
     unused_exts.Remove(ext_names);
     var fs := new List<FuncDef>;

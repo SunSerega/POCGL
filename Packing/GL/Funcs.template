@@ -4868,6 +4868,98 @@
       Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
+    public z_BindDisplayColorTableEXT: function(id: UInt16): Byte := GetGLFuncOrNil&<function(id: UInt16): Byte>('wglBindDisplayColorTableEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function BindDisplayColorTableEXT(id: UInt16): Byte := z_BindDisplayColorTableEXT(id);
+    
+    public z_CopyContext: function(hglrcSrc: GLContext; hglrcDst: GLContext; mask: UInt32): UInt32 := GetGLFuncOrNil&<function(hglrcSrc: GLContext; hglrcDst: GLContext; mask: UInt32): UInt32>('wglCopyContext');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CopyContext(hglrcSrc: GLContext; hglrcDst: GLContext; mask: UInt32): UInt32 := z_CopyContext(hglrcSrc, hglrcDst, mask);
+    
+    public z_CopyImageSubDataNV: function(hSrcRC: GLContext; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: GLContext; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): UInt32 := GetGLFuncOrNil&<function(hSrcRC: GLContext; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: GLContext; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): UInt32>('wglCopyImageSubDataNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CopyImageSubDataNV(hSrcRC: GLContext; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: GLContext; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): UInt32 := z_CopyImageSubDataNV(hSrcRC, srcName, srcTarget, srcLevel, srcX, srcY, srcZ, hDstRC, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, width, height, depth);
+    
+    private static function _CreateContext(hDc: GDI_DC): GLContext; external 'opengl32.dll' name 'wglCreateContext';
+    public static z_CreateContext: function(hDc: GDI_DC): GLContext := _CreateContext;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContext(hDc: GDI_DC): GLContext := z_CreateContext(hDc);
+    
+    public z_CreateDisplayColorTableEXT: function(id: UInt16): Byte := GetGLFuncOrNil&<function(id: UInt16): Byte>('wglCreateDisplayColorTableEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateDisplayColorTableEXT(id: UInt16): Byte := z_CreateDisplayColorTableEXT(id);
+    
+    public z_CreateLayerContext: function(hDc: GDI_DC; level: Int32): GLContext := GetGLFuncOrNil&<function(hDc: GDI_DC; level: Int32): GLContext>('wglCreateLayerContext');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateLayerContext(hDc: GDI_DC; level: Int32): GLContext := z_CreateLayerContext(hDc, level);
+    
+    public z_DeleteContext: function(oldContext: GLContext): UInt32 := GetGLFuncOrNil&<function(oldContext: GLContext): UInt32>('wglDeleteContext');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DeleteContext(oldContext: GLContext): UInt32 := z_DeleteContext(oldContext);
+    
+    public z_DescribeLayerPlane: function(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; plpd: pointer): UInt32 := GetGLFuncOrNil&<function(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; plpd: pointer): UInt32>('wglDescribeLayerPlane');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DescribeLayerPlane(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; plpd: array of GDI_LayerPlaneDescriptor): UInt32 := DescribeLayerPlane(hDc, pixelFormat, layerPlane, nBytes, plpd[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DescribeLayerPlane(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; var plpd: GDI_LayerPlaneDescriptor): UInt32 := DescribeLayerPlane(hDc, pixelFormat, layerPlane, nBytes, @plpd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DescribeLayerPlane(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; plpd: pointer): UInt32 := z_DescribeLayerPlane(hDc, pixelFormat, layerPlane, nBytes, plpd);
+    
+    public z_DestroyDisplayColorTableEXT: procedure(id: UInt16) := GetGLFuncOrNil&<procedure(id: UInt16)>('wglDestroyDisplayColorTableEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DestroyDisplayColorTableEXT(id: UInt16) := z_DestroyDisplayColorTableEXT(id);
+    
+    public z_GetCurrentContext: function: GLContext := GetGLFuncOrNil&<function: GLContext>('wglGetCurrentContext');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentContext: GLContext := z_GetCurrentContext;
+    
+    public z_GetCurrentDC: function: GDI_DC := GetGLFuncOrNil&<function: GDI_DC>('wglGetCurrentDC');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentDC: GDI_DC := z_GetCurrentDC;
+    
+    public z_GetLayerPaletteEntries: function(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: pointer): Int32 := GetGLFuncOrNil&<function(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: pointer): Int32>('wglGetLayerPaletteEntries');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetLayerPaletteEntries(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: array of GDI_COLORREF): Int32 := GetLayerPaletteEntries(hdc, iLayerPlane, iStart, cEntries, pcr[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetLayerPaletteEntries(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; var pcr: GDI_COLORREF): Int32 := GetLayerPaletteEntries(hdc, iLayerPlane, iStart, cEntries, @pcr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetLayerPaletteEntries(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: pointer): Int32 := z_GetLayerPaletteEntries(hdc, iLayerPlane, iStart, cEntries, pcr);
+    
+    public z_GetProcAddress: function(lpszProc: IntPtr): IntPtr := GetGLFuncOrNil&<function(lpszProc: IntPtr): IntPtr>('wglGetProcAddress');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProcAddress(lpszProc: string): IntPtr; begin var ptr_1 := Marshal.StringToHGlobalAnsi(lpszProc); Result := GetProcAddress(ptr_1); Marshal.FreeHGlobal(ptr_1); end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProcAddress(lpszProc: IntPtr): IntPtr := z_GetProcAddress(lpszProc);
+    
+    public z_LoadDisplayColorTableEXT: function(table: pointer; length: UInt32): Byte := GetGLFuncOrNil&<function(table: pointer; length: UInt32): Byte>('wglLoadDisplayColorTableEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function LoadDisplayColorTableEXT(table: array of UInt16; length: UInt32): Byte := LoadDisplayColorTableEXT(table[0], length);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function LoadDisplayColorTableEXT(var table: UInt16; length: UInt32): Byte := LoadDisplayColorTableEXT(@table, length);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function LoadDisplayColorTableEXT(table: pointer; length: UInt32): Byte := z_LoadDisplayColorTableEXT(table, length);
+    
+    private static function _MakeCurrent(hDc: GDI_DC; newContext: GLContext): UInt32; external 'opengl32.dll' name 'wglMakeCurrent';
+    public static z_MakeCurrent: function(hDc: GDI_DC; newContext: GLContext): UInt32 := _MakeCurrent;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function MakeCurrent(hDc: GDI_DC; newContext: GLContext): UInt32 := z_MakeCurrent(hDc, newContext);
+    
+    public z_RealizeLayerPalette: function(hdc: GDI_DC; iLayerPlane: Int32; bRealize: UInt32): UInt32 := GetGLFuncOrNil&<function(hdc: GDI_DC; iLayerPlane: Int32; bRealize: UInt32): UInt32>('wglRealizeLayerPalette');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function RealizeLayerPalette(hdc: GDI_DC; iLayerPlane: Int32; bRealize: UInt32): UInt32 := z_RealizeLayerPalette(hdc, iLayerPlane, bRealize);
+    
+    public z_SetLayerPaletteEntries: function(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: pointer): Int32 := GetGLFuncOrNil&<function(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: pointer): Int32>('wglSetLayerPaletteEntries');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SetLayerPaletteEntries(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: array of GDI_COLORREF): Int32 := SetLayerPaletteEntries(hdc, iLayerPlane, iStart, cEntries, pcr[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SetLayerPaletteEntries(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; var pcr: GDI_COLORREF): Int32 := SetLayerPaletteEntries(hdc, iLayerPlane, iStart, cEntries, @pcr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SetLayerPaletteEntries(hdc: GDI_DC; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: pointer): Int32 := z_SetLayerPaletteEntries(hdc, iLayerPlane, iStart, cEntries, pcr);
+    
+    public z_ShareLists: function(hrcSrvShare: GLContext; hrcSrvSource: GLContext): UInt32 := GetGLFuncOrNil&<function(hrcSrvShare: GLContext; hrcSrvSource: GLContext): UInt32>('wglShareLists');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ShareLists(hrcSrvShare: GLContext; hrcSrvSource: GLContext): UInt32 := z_ShareLists(hrcSrvShare, hrcSrvSource);
+    
+    public z_SwapLayerBuffers: function(hdc: GDI_DC; fuFlags: UInt32): UInt32 := GetGLFuncOrNil&<function(hdc: GDI_DC; fuFlags: UInt32): UInt32>('wglSwapLayerBuffers');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SwapLayerBuffers(hdc: GDI_DC; fuFlags: UInt32): UInt32 := z_SwapLayerBuffers(hdc, fuFlags);
+    
+    public z_UseFontBitmaps: function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32 := GetGLFuncOrNil&<function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32>('wglUseFontBitmaps');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontBitmaps(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32 := z_UseFontBitmaps(hDC, first, count, listBase);
+    
+    public z_UseFontBitmapsA: function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32 := GetGLFuncOrNil&<function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32>('wglUseFontBitmapsA');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontBitmapsA(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32 := z_UseFontBitmapsA(hDC, first, count, listBase);
+    
+    public z_UseFontBitmapsW: function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32 := GetGLFuncOrNil&<function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32>('wglUseFontBitmapsW');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontBitmapsW(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32): UInt32 := z_UseFontBitmapsW(hDC, first, count, listBase);
+    
+    public z_UseFontOutlines: function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32 := GetGLFuncOrNil&<function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32>('wglUseFontOutlines');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlines(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: array of GDI_GlyphmetricsFloat): UInt32 := UseFontOutlines(hDC, first, count, listBase, deviation, extrusion, format, lpgmf[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlines(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; var lpgmf: GDI_GlyphmetricsFloat): UInt32 := UseFontOutlines(hDC, first, count, listBase, deviation, extrusion, format, @lpgmf);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlines(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32 := z_UseFontOutlines(hDC, first, count, listBase, deviation, extrusion, format, lpgmf);
+    
+    public z_UseFontOutlinesA: function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32 := GetGLFuncOrNil&<function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32>('wglUseFontOutlinesA');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlinesA(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: array of GDI_GlyphmetricsFloat): UInt32 := UseFontOutlinesA(hDC, first, count, listBase, deviation, extrusion, format, lpgmf[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlinesA(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; var lpgmf: GDI_GlyphmetricsFloat): UInt32 := UseFontOutlinesA(hDC, first, count, listBase, deviation, extrusion, format, @lpgmf);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlinesA(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32 := z_UseFontOutlinesA(hDC, first, count, listBase, deviation, extrusion, format, lpgmf);
+    
+    public z_UseFontOutlinesW: function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32 := GetGLFuncOrNil&<function(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32>('wglUseFontOutlinesW');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlinesW(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: array of GDI_GlyphmetricsFloat): UInt32 := UseFontOutlinesW(hDC, first, count, listBase, deviation, extrusion, format, lpgmf[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlinesW(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; var lpgmf: GDI_GlyphmetricsFloat): UInt32 := UseFontOutlinesW(hDC, first, count, listBase, deviation, extrusion, format, @lpgmf);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UseFontOutlinesW(hDC: GDI_DC; first: UInt32; count: UInt32; listBase: UInt32; deviation: single; extrusion: single; format: Int32; lpgmf: pointer): UInt32 := z_UseFontOutlinesW(hDC, first, count, listBase, deviation, extrusion, format, lpgmf);
+    
     {$region NV_vertex_array_range}
     
     public z_VertexArrayRangeNV: procedure(length: Int32; _pointer: pointer) := GetGLFuncOrNil&<procedure(length: Int32; _pointer: pointer)>('glVertexArrayRangeNV');
@@ -18699,6 +18791,52 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FinishTextureSUNX := z_FinishTextureSUNX;
     
     {$endregion SUNX_constant_data}
+    
+  end;
+  
+  gdi = sealed class
+    private static function _GetGLFuncAdr(lpszProc: IntPtr): IntPtr;
+    external 'opengl32.dll' name 'wglGetProcAddress';
+    public static GetGLFuncAdr := _GetGLFuncAdr;
+    public static function GetGLFuncOrNil<T>(fn: string): T;
+    begin
+      var str_ptr := Marshal.StringToHGlobalAnsi(fn);
+      var ptr := GetGLFuncAdr(str_ptr);
+      Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
+    end;
+    
+    private static function _ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32; external 'gdi32.dll' name 'ChoosePixelFormat';
+    public static z_ChoosePixelFormat: function(hDc: GDI_DC; pPfd: pointer): Int32 := _ChoosePixelFormat;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ChoosePixelFormat(hDc: GDI_DC; pPfd: array of GDI_PixelFormatDescriptor): Int32 := ChoosePixelFormat(hDc, pPfd[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ChoosePixelFormat(hDc: GDI_DC; var pPfd: GDI_PixelFormatDescriptor): Int32 := ChoosePixelFormat(hDc, @pPfd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ChoosePixelFormat(hDc: GDI_DC; pPfd: pointer): Int32 := z_ChoosePixelFormat(hDc, pPfd);
+    
+    private static function _DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; ppfd: pointer): Int32; external 'gdi32.dll' name 'DescribePixelFormat';
+    public static z_DescribePixelFormat: function(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; ppfd: pointer): Int32 := _DescribePixelFormat;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; ppfd: array of GDI_PixelFormatDescriptor): Int32 := DescribePixelFormat(hdc, ipfd, cjpfd, ppfd[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; var ppfd: GDI_PixelFormatDescriptor): Int32 := DescribePixelFormat(hdc, ipfd, cjpfd, @ppfd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DescribePixelFormat(hdc: GDI_DC; ipfd: Int32; cjpfd: UInt32; ppfd: pointer): Int32 := z_DescribePixelFormat(hdc, ipfd, cjpfd, ppfd);
+    
+    private static function _GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; ppfd: pointer): UInt32; external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
+    public static z_GetEnhMetaFilePixelFormat: function(hemf: GDI_HENHMetafile; ppfd: pointer): UInt32 := _GetEnhMetaFilePixelFormat;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; ppfd: array of GDI_PixelFormatDescriptor): UInt32 := GetEnhMetaFilePixelFormat(hemf, ppfd[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; var ppfd: GDI_PixelFormatDescriptor): UInt32 := GetEnhMetaFilePixelFormat(hemf, @ppfd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: GDI_HENHMetafile; ppfd: pointer): UInt32 := z_GetEnhMetaFilePixelFormat(hemf, ppfd);
+    
+    private static function _GetPixelFormat(hdc: GDI_DC): Int32; external 'gdi32.dll' name 'GetPixelFormat';
+    public static z_GetPixelFormat: function(hdc: GDI_DC): Int32 := _GetPixelFormat;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPixelFormat(hdc: GDI_DC): Int32 := z_GetPixelFormat(hdc);
+    
+    private static function _SetPixelFormat(hdc: GDI_DC; ipfd: Int32; ppfd: pointer): UInt32; external 'gdi32.dll' name 'SetPixelFormat';
+    public static z_SetPixelFormat: function(hdc: GDI_DC; ipfd: Int32; ppfd: pointer): UInt32 := _SetPixelFormat;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; ppfd: array of GDI_PixelFormatDescriptor): UInt32 := SetPixelFormat(hdc, ipfd, ppfd[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; var ppfd: GDI_PixelFormatDescriptor): UInt32 := SetPixelFormat(hdc, ipfd, @ppfd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetPixelFormat(hdc: GDI_DC; ipfd: Int32; ppfd: pointer): UInt32 := z_SetPixelFormat(hdc, ipfd, ppfd);
+    
+    private static function _SwapBuffers(hdc: GDI_DC): UInt32; external 'gdi32.dll' name 'SwapBuffers';
+    public static z_SwapBuffers: function(hdc: GDI_DC): UInt32 := _SwapBuffers;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SwapBuffers(hdc: GDI_DC): UInt32 := z_SwapBuffers(hdc);
     
   end;
   

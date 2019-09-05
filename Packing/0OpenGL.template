@@ -69,6 +69,8 @@ type
   
   %GL\Funcs!GL\PackFuncs.pas%
   
+  %GL\Static\GDIIntegration%
+  
 implementation
 
 %GL\MtrExt!GL\PackMtrExt.pas%

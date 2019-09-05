@@ -526,7 +526,7 @@ type
     begin
       if
         (lib_name='gdi32.dll') or
-        (name in ['CreateContext', 'MakeCurrent'])
+        (full_name in ['wglCreateContext', 'wglMakeCurrent'])
       then use_external := true;
       
       var sb := new StringBuilder;
@@ -644,6 +644,7 @@ type
         var only_par := f?par_combo.SkipLast:par_combo;
         
         sb += '    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
+        if lib_name='gdi32.dll' then sb += 'static ';
         sb += f?'function':'procedure';
         sb += ' ';
         
