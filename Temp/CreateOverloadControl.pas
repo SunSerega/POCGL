@@ -1,5 +1,27 @@
 ﻿program prog;
 
+var HardcodedTypes := Dict(
+  ('ShaderBinary', Arr(
+    ( new string[]('Int32','array of ShaderName', 'ShaderBinaryFormat','array of byte', 'Int32'), string(nil) ),
+    ( new string[]('Int32','array of ShaderName', 'ShaderBinaryFormat','byte',          'Int32'), string(nil) ),
+    ( new string[]('Int32','array of ShaderName', 'ShaderBinaryFormat','pointer',       'Int32'), string(nil) ),
+    ( new string[]('Int32','ShaderName',          'ShaderBinaryFormat','array of byte', 'Int32'), string(nil) ),
+    ( new string[]('Int32','ShaderName',          'ShaderBinaryFormat','byte',          'Int32'), string(nil) ),
+    ( new string[]('Int32','ShaderName',          'ShaderBinaryFormat','pointer',       'Int32'), string(nil) ),
+    ( new string[]('Int32','pointer',             'ShaderBinaryFormat','array of byte', 'Int32'), string(nil) ),
+    ( new string[]('Int32','pointer',             'ShaderBinaryFormat','byte',          'Int32'), string(nil) ),
+    ( new string[]('Int32','pointer',             'ShaderBinaryFormat','pointer',       'Int32'), string(nil) )
+  )),
+  ('GetShaderPrecisionFormat',Arr(
+    ( new string[]('ShaderType','ShaderPrecisionFormatType','Vec2i',  'Int32'   ), string(nil) ),
+    ( new string[]('ShaderType','ShaderPrecisionFormatType','Vec2i',  'pointer' ), string(nil) ),
+    ( new string[]('ShaderType','ShaderPrecisionFormatType','Int32',  'Int32'   ), string(nil) ),
+    ( new string[]('ShaderType','ShaderPrecisionFormatType','Int32',  'pointer' ), string(nil) ),
+    ( new string[]('ShaderType','ShaderPrecisionFormatType','pointer','Int32'   ), string(nil) ),
+    ( new string[]('ShaderType','ShaderPrecisionFormatType','pointer','pointer' ), string(nil) )
+  ))
+);
+
 type
   
   BasicFuncDef = auto class
@@ -56,13 +78,13 @@ type
     end;
     
     public function ToString: string; override :=
-    $'BasicFuncDef( name="{name}"; pars=[{pars.JoinIntoString}]; ret="{ret}")';
+    $'BasicFuncDef( name="{name}"; pars=[{pars.JoinIntoString}]; ret="{ret}" )';
     
   end;
   
   AdvFuncDef = auto class
     name: string := nil;
-    full_par_defs := new List<array of string>;
+    full_par_defs := new List<List<string>>;
     all_par_types: array of HashSet<string>;
   end;
   
@@ -88,7 +110,22 @@ ReadLines('OpenGL old.dat')
 .Where(t->t[1].Contains('external'))
 .Select(t->t[0])
 .RemoveAttrs
-.Select(BasicFuncDef.FromStr);
+.Select(BasicFuncDef.FromStr)
+.Where(fd->not HardcodedTypes.ContainsKey(fd.name))
+.Select(fd->
+begin
+  
+  if fd.name='GetStringPtr' then fd.name := 'GetString' else
+  if fd.name='GetStringiPtr' then fd.name := 'GetStringi' else
+    ;
+  
+  Result := fd;
+end) +
+HardcodedTypes.SelectMany(kvp->
+  kvp.Value.Select(
+    t->new BasicFuncDef( kvp.Key, t[0], t[1] )
+  )
+);
 
 function LoadNewFuncs :=
 ReadLines('OpenGL new.dat')
@@ -96,7 +133,15 @@ ReadLines('OpenGL new.dat')
 .TakeWhile(l->not l.Contains('wgl = sealed class'))
 .Where(l->l.Contains('[MethodImpl(MethodImplOptions.AggressiveInlining)]'))
 .RemoveAttrs
-.Select(BasicFuncDef.FromStr);
+.Select(BasicFuncDef.FromStr)
+.Select(fd->
+begin
+  
+  if fd.name.EndsWith('_Str') then
+    fd.name := fd.name.Remove(fd.name.Length-4);
+  
+  Result := fd;
+end);
 
 function BatchFuncs(self: sequence of BasicFuncDef): sequence of AdvFuncDef; extensionmethod :=
 self.GroupBy(fd->fd.name)
@@ -107,13 +152,16 @@ begin
   res.name := g.Key;
   
   foreach var fd in g do
-    if fd.ret=nil then
-      res.full_par_defs.Add(fd.pars) else
-      res.full_par_defs.Add(fd.pars.Append(fd.ret).ToArray);
+  begin
+    var l := fd.pars.ToList;
+    if fd.ret<>nil then l += fd.ret;
+    if l.Contains('array of string') then continue;
+    res.full_par_defs += l;
+  end;
   
   var par_c: integer;
   try
-    par_c := res.full_par_defs.Select(ovr->ovr.Length).Distinct.Single;
+    par_c := res.full_par_defs.Select(ovr->ovr.Count).Distinct.Single;
   except
     raise new Exception($'func {res.name}: [{res.full_par_defs.Select(t->_ObjectToString(t)).JoinIntoString}]');
   end;
@@ -122,6 +170,10 @@ begin
   foreach var a in res.full_par_defs do
     for var i := 0 to par_c-1 do
       res.all_par_types[i] += a[i];
+  
+  for var i := 0 to par_c-1 do
+    if res.all_par_types[i].Contains('pointer') and res.all_par_types[i].Remove('string') then
+      res.full_par_defs.RemoveAll(l->l[i]='string');
   
   Result := res;
 end);
@@ -139,7 +191,7 @@ begin
       var ind := new_f.FindIndex(nf->nf.name=f.name);
       if ind=-1 then
       begin
-//        writeln($'функция "{f.name}" исчезла');
+        writeln($'функция "{f.name}" исчезла');
         continue;
       end;
       
@@ -156,7 +208,11 @@ begin
       sw.Write('F%gl');
       sw.WriteLine(f.name);
       
-      if f.all_par_types.Select(hs->hs.Count).Aggregate(1,(i1,i2)->i1*i2) <> f.full_par_defs.Count then
+      var skip_T1 := f.name in ['GetProgramResourceiv', 'ProgramBinary', 'GetProgramBinary','MultiDrawElementsBaseVertex','MultiDrawElements'];
+      var skip_T2 := skip_T1;
+      var skip_T3 := skip_T2;
+      
+      if not skip_T3 and (f.all_par_types.Select(hs->hs.Count).Aggregate(1,(i1,i2)->i1*i2) <> f.full_par_defs.Count) then
       begin
         sw.WriteLine('T%3');
         
@@ -164,7 +220,7 @@ begin
           sw.WriteLine(ovr.JoinIntoString(' | '));
         
       end else
-      if f.all_par_types.Zip(nf.all_par_types,
+      if not skip_T2 and f.all_par_types.Zip(nf.all_par_types,
           (hs1,hs2)->
           ((hs1.Count<>1) or (hs2.Count<>1))
           and not hs1.SequenceEqual(hs2)
@@ -179,8 +235,11 @@ begin
             sw.Write(' * ') else
           begin
             sw.Write(' ');
+            var move_ptr := f.all_par_types[i].Contains('pointer');
             foreach var p in nf.all_par_types[i].Except(f.all_par_types[i]) do sw.Write($'-{p} ');
+            if move_ptr then sw.Write('-pointer ');
             foreach var p in f.all_par_types[i].Except(nf.all_par_types[i]) do sw.Write($'+{p} ');
+            if move_ptr then sw.Write('+pointer ');
           end;
           
           if i<>f.all_par_types.Length-1 then sw.Write('|');
@@ -188,7 +247,7 @@ begin
         
         sw.WriteLine;
       end else
-      if not nf.all_par_types.Zip(f.all_par_types,(hs1,hs2)->hs1.SequenceEqual(hs2)).All(b->b) then
+      if not skip_T1 and not nf.all_par_types.Zip(f.all_par_types,(hs1,hs2)->hs1.SequenceEqual(hs2)).All(b->b) then
       begin
         sw.WriteLine('T%1');
         

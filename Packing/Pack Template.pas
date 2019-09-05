@@ -64,6 +64,8 @@ end;
 begin
   try
     
+//    CommandLineArgs := Arr('fname=D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Funcs.template');
+    
     var arg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
     if arg=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
     arg := GetFullPath(arg.SubString('fname='.Length));

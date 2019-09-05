@@ -14975,7 +14975,7 @@ type
     external 'opengl32.dll' name 'glDebugMessageControl';
     public static procedure DebugMessageControl(source: DebugSourceType; &type: DebugMessageType; severity: DebugSeverityLevel; count: Int32; var ids: UInt32; enabled: boolean);
     external 'opengl32.dll' name 'glDebugMessageControl';
-    public static procedure DebugMessageControl(source: DebugSourceType; &type: DebugMessageType; severity: DebugSeverityLevel; count: Int32; ids: IntPtr; enabled: boolean);
+    public static procedure DebugMessageControl(source: DebugSourceType; &type: DebugMessageType; severity: DebugSeverityLevel; count: Int32; ids: pointer; enabled: boolean);
     external 'opengl32.dll' name 'glDebugMessageControl';
     
     {$endregion 20.4 - Controlling Debug Messages}
@@ -15030,9 +15030,9 @@ type
     external 'opengl32.dll' name 'glGetDebugMessageLog';
     public static function GetDebugMessageLog(count: UInt32; bufSize: Int32; var sources: DebugSourceType; var types: DebugMessageType; var ids: UInt32; var severities: DebugSeverityLevel; var lengths: Int32; messageLog: IntPtr): UInt32;
     external 'opengl32.dll' name 'glGetDebugMessageLog';
-    public static function GetDebugMessageLog(count: UInt32; bufSize: Int32; sources: IntPtr; types: IntPtr; ids: IntPtr; severities: IntPtr; lengths: IntPtr; [MarshalAs(UnmanagedType.HString)] &messageLog: string): UInt32;
+    public static function GetDebugMessageLog(count: UInt32; bufSize: Int32; sources: pointer; types: pointer; ids: pointer; severities: pointer; lengths: pointer; [MarshalAs(UnmanagedType.HString)] &messageLog: string): UInt32;
     external 'opengl32.dll' name 'glGetDebugMessageLog';
-    public static function GetDebugMessageLog(count: UInt32; bufSize: Int32; sources: IntPtr; types: IntPtr; ids: IntPtr; severities: IntPtr; lengths: IntPtr; messageLog: IntPtr): UInt32;
+    public static function GetDebugMessageLog(count: UInt32; bufSize: Int32; sources: pointer; types: pointer; ids: pointer; severities: pointer; lengths: pointer; messageLog: IntPtr): UInt32;
     external 'opengl32.dll' name 'glGetDebugMessageLog';
     
     public static procedure GetObjectLabel(identifier: ObjectType; name: UInt32; bufSize: Int32; var length: Int32; [MarshalAs(UnmanagedType.LPStr)] &label: string);

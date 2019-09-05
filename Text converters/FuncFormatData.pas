@@ -273,13 +273,14 @@ begin
   end;
   
   var native_t :=
-    tname='string'? 'IntPtr':
     tname[1]='^'?   'pointer':
+    tname='string'? 'IntPtr':
   tname;
   
-  if tname.Contains('^') then tname := tname.Replace('pointer','IntPtr').Replace('string','IntPtr');
+  // array of string => array of IntPtr
+  if tname[1]='^' then tname := tname.Replace('pointer','IntPtr').Replace('string','IntPtr');
   
-  Result := new native_par_data(pname,  native_t, tname);
+  Result := new native_par_data(pname, native_t, tname);
 end;
 
 function GetAllOverloads(tname: string): sequence of string;
@@ -287,9 +288,8 @@ begin
   if tname='string' then Result := Seq('string','IntPtr') else
   if tname[1]='^' then
   begin
-    if tname.Count(ch->ch='^')=1 then
-      Result := Seq('array of '+tname.SubString(1), tname.SubString(1), 'pointer') else
-      Result := Seq(tname,'pointer');
+    tname := tname.Count(ch->ch='^')=1 ? tname.Substring(1) : 'IntPtr';
+    Result := Seq('array of '+tname, tname, 'pointer');
   end else
     Result := Seq(tname);
 end;
@@ -297,17 +297,17 @@ end;
 function GetTypeMasks(ptype, pname, pnt: string; is_ret: boolean; par_n: integer): par_data;
 begin
   
-  if ptype.StartsWith('array of ') then           Result := is_ret ?  nil : new par_data( $'{pname}: {ptype}',      pname+'[0]',  nil,  nil ) else
-  if (ptype<>'pointer') and (pnt='pointer') then  Result := is_ret ?  nil : new par_data( $'var {pname}: {ptype}',  '@'+pname,    nil,  nil ) else
+  if ptype.StartsWith('array of ') then       Result := is_ret ?  nil : new par_data( $'{pname}: {ptype}',      pname+'[0]',  nil,  nil ) else
+  if (pnt[1]='^') and (ptype<>'pointer') then Result := is_ret ?  nil : new par_data( $'var {pname}: {ptype}',  '@'+pname,    nil,  nil ) else
   
   if ptype = 'string' then Result := new par_data(
     is_ret ? 'string'                       : $'{pname}: {ptype}',
     is_ret ? nil                            : $'ptr_{par_n}',
-    is_ret ? 'Marshal.PtrToStringAnsi({0})' : $'var ptr_{par_n} := Marshal.StringToHGlobalAnsi({pname}); {{0}} Marshal.FreeHGlobal(ptr{par_n});',
+    is_ret ? 'Marshal.PtrToStringAnsi({0})' : $'var ptr_{par_n} := Marshal.StringToHGlobalAnsi({pname}); {{0}} Marshal.FreeHGlobal(ptr_{par_n});',
     is_ret ? '{0}_Str'                      : nil
   ) else
-  
-  Result := new par_data(is_ret?ptype:$'{pname}: {ptype}',  pname, nil, '{0}');
+    
+    Result := new par_data(is_ret?ptype:$'{pname}: {ptype}',  pname, nil, '{0}');
 end;
 
 type
@@ -403,6 +403,23 @@ type
         if pname.ToLower=name.ToLower then  pname := '_'+pname else
         ;
         cpar.pname := pname;
+        
+        {$region special rules}
+        
+        if full_name in [
+          'glDrawRangeElementsBaseVertex',
+          'glDrawRangeElements',
+          'glDrawElementsInstancedBaseVertexBaseInstance',
+          'glDrawElementsInstancedBaseVertex',
+          'glDrawElementsInstancedBaseInstance',
+          'glDrawElementsInstanced',
+          'glDrawElementsBaseVertex',
+          'glDrawElements'
+        ] then if pname='indices' then
+          cpar.pspec_t := '^Void';
+        
+        {$endregion special rules}
+        
         nativ_par_ts += cpar;
         
         par_n += 1;
@@ -453,28 +470,52 @@ type
       
       {$region Stage 3 (GetTypeMasks)}
       
-      for var i := 0 to nativ_par_ts.Count-1 do
-      begin
-        var pname := nativ_par_ts[i].pname;
-        var ptype := nativ_par_ts[i].ptype;
-        if ptype=pname then pname := '_'+ptype;
-        self.nativ_par += f and (i=nativ_par_ts.Count-1) ? ptype : $'{pname}: {ptype}';
-      end;
-      
+      var n_nativ_par_ts := new string[all_ovr_types[0].Count];
       foreach var n_ovr in all_ovr_types do
       begin
         var ovr := new List<par_data>;
         
         for var i := 0 to n_ovr.Count-1 do
         begin
+          var is_ret := f and (i=n_ovr.Count-1);
           var pname := nativ_par_ts[i].pname;
-          if n_ovr[i].EndsWith(' '+pname) or (n_ovr[i]=pname) then pname := '_'+pname;
-          var pdata := GetTypeMasks(n_ovr[i], pname, nativ_par_ts[i].ptype, f and (i=n_ovr.Count-1),i+1);
+          if pname<>nil then if n_ovr[i].ToLower.EndsWith(' '+pname.ToLower) or (n_ovr[i].ToLower=pname.ToLower) then pname := '_'+pname;
+          
+          var pdata := GetTypeMasks(n_ovr[i], pname, nativ_par_ts[i].pspec_t, is_ret,i+1);
           ovr += pdata;
           if pdata=nil then break;
+          
+          n_nativ_par_ts[i] := n_ovr[i];
+          
+          if    not is_ret
+            and not (nativ_par_ts[i].pspec_t[1]='^')
+            and not n_ovr[i].StartsWith('array of ')
+            and not n_ovr[i].EndsWith('Name')
+            and not (n_ovr[i] in ['pointer','IntPtr', 'Int32','UInt32','boolean'])
+            and all_ovr_types.Any(l->l[i]='UInt32')
+          then
+          begin
+            pdata.par_call += '.val';
+            n_nativ_par_ts[i] := 'UInt32';
+          end else
+          
+          if Arr('glGetInteger','glGetFloat','glGetDouble','glGetBoolean','glGetPointer').Any&<string>(full_name.StartsWith) and (i=0) and (n_ovr[i]<>'GLGetQueries') then
+          begin
+            pdata.par_call := $'new GLGetQueries({pdata.par_call}.val)';
+            n_nativ_par_ts[i] := 'GLGetQueries';
+          end;
+          
         end;
         
         if not ovr.Contains(nil) then par_masks += ovr;
+      end;
+      
+      for var i := 0 to nativ_par_ts.Count-1 do
+      begin
+        var pname := nativ_par_ts[i].pname;
+        var ptype := n_nativ_par_ts[i];
+        if ptype=pname then pname := '_'+ptype;
+        self.nativ_par += f and (i=nativ_par_ts.Count-1) ? ptype : $'{pname}: {ptype}';
       end;
       
       {$endregion Stage 3 (GetTypeMasks)}

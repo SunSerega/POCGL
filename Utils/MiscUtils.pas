@@ -54,8 +54,9 @@ begin
     System.IO.File.Delete(log_file+'.savepoint');
   end;
   
-  if line.ToLower.Contains('error') then   System.Console.ForegroundColor := System.ConsoleColor.Red else
-  if line.ToLower.Contains('warning') then System.Console.ForegroundColor := System.ConsoleColor.Yellow else
+  if line.ToLower.Contains('error') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
+  if line.ToLower.Contains('exception') then  System.Console.ForegroundColor := System.ConsoleColor.Red else
+  if line.ToLower.Contains('warning') then    System.Console.ForegroundColor := System.ConsoleColor.Yellow else
     System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
   
   System.Console.WriteLine(line);
