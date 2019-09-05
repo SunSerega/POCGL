@@ -306,8 +306,14 @@ begin
     is_ret ? 'Marshal.PtrToStringAnsi({0})' : $'var ptr_{par_n} := Marshal.StringToHGlobalAnsi({pname}); {{0}} Marshal.FreeHGlobal(ptr_{par_n});',
     is_ret ? '{0}_Str'                      : nil
   ) else
+  begin
     
-    Result := new par_data(is_ret?ptype:$'{pname}: {ptype}',  pname, nil, '{0}');
+    var par_call :=
+      (ptype='IntPtr')and(pnt='pointer') ? $'pointer({pname})' :
+    pname;
+    
+    Result := new par_data(is_ret?ptype:$'{pname}: {ptype}', par_call, nil, '{0}');
+  end;
 end;
 
 type
@@ -401,6 +407,7 @@ type
         
         if pname in keywords then           pname := '&'+pname else
         if pname.ToLower=name.ToLower then  pname := '_'+pname else
+        if pname='pointer' then             pname := '_'+pname else
         ;
         cpar.pname := pname;
         
@@ -514,7 +521,9 @@ type
       begin
         var pname := nativ_par_ts[i].pname;
         var ptype := n_nativ_par_ts[i];
-        if ptype=pname then pname := '_'+ptype;
+        
+        if pname=ptype then pname := '_'+pname;
+        
         self.nativ_par += f and (i=nativ_par_ts.Count-1) ? ptype : $'{pname}: {ptype}';
       end;
       

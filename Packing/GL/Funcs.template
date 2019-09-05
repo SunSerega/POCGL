@@ -231,45 +231,45 @@
     {$region 6.2 - Creating and Modifying Buffer Object Data Stores}
     
     public z_NamedBufferSubData: procedure(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer) := GetGLFuncOrNil&<procedure(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer)>('glNamedBufferSubData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: IntPtr) := NamedBufferSubData(buffer, offset, size, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: IntPtr) := NamedBufferSubData(buffer, offset, size, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer) := z_NamedBufferSubData(buffer, offset, size, data);
     
     public z_NamedBufferStorage: procedure(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferDataUsage) := GetGLFuncOrNil&<procedure(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferDataUsage)>('glNamedBufferStorage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: IntPtr; flags: BufferDataUsage) := NamedBufferStorage(buffer, size, data, flags);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: IntPtr; flags: BufferDataUsage) := NamedBufferStorage(buffer, size, pointer(data), flags);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferDataUsage) := z_NamedBufferStorage(buffer, size, data, flags);
     
     public z_NamedBufferData: procedure(buffer: BufferName; size: UIntPtr; data: pointer; usage: BufferDataUsage) := GetGLFuncOrNil&<procedure(buffer: BufferName; size: UIntPtr; data: pointer; usage: BufferDataUsage)>('glNamedBufferData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: IntPtr; usage: BufferDataUsage) := NamedBufferData(buffer, size, data, usage);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: IntPtr; usage: BufferDataUsage) := NamedBufferData(buffer, size, pointer(data), usage);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: pointer; usage: BufferDataUsage) := z_NamedBufferData(buffer, size, data, usage);
     
     public z_BufferSubData: procedure(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer) := GetGLFuncOrNil&<procedure(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer)>('glBufferSubData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: IntPtr) := BufferSubData(target, offset, size, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: IntPtr) := BufferSubData(target, offset, size, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer) := z_BufferSubData(target, offset, size, data);
     
     public z_BufferStorage: procedure(target: BufferBindType; size: UIntPtr; data: pointer; flags: BufferDataUsage) := GetGLFuncOrNil&<procedure(target: BufferBindType; size: UIntPtr; data: pointer; flags: BufferDataUsage)>('glBufferStorage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: IntPtr; flags: BufferDataUsage) := BufferStorage(target, size, data, flags);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: IntPtr; flags: BufferDataUsage) := BufferStorage(target, size, pointer(data), flags);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferStorage(target: BufferBindType; size: UIntPtr; data: pointer; flags: BufferDataUsage) := z_BufferStorage(target, size, data, flags);
     
     public z_BufferData: procedure(target: BufferBindType; size: UIntPtr; data: pointer; usage: BufferDataUsage) := GetGLFuncOrNil&<procedure(target: BufferBindType; size: UIntPtr; data: pointer; usage: BufferDataUsage)>('glBufferData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferData(target: BufferBindType; size: UIntPtr; data: IntPtr; usage: BufferDataUsage) := BufferData(target, size, data, usage);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferData(target: BufferBindType; size: UIntPtr; data: IntPtr; usage: BufferDataUsage) := BufferData(target, size, pointer(data), usage);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferData(target: BufferBindType; size: UIntPtr; data: pointer; usage: BufferDataUsage) := z_BufferData(target, size, data, usage);
     
     {$region 6.2.1 - Clearing Buffer Object Data Stores}
     
     public z_ClearNamedBufferSubData: procedure(buffer: BufferName; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer) := GetGLFuncOrNil&<procedure(buffer: BufferName; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer)>('glClearNamedBufferSubData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearNamedBufferSubData(buffer: BufferName; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: IntPtr) := ClearNamedBufferSubData(buffer, internalformat, offset, size, format, &type, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearNamedBufferSubData(buffer: BufferName; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: IntPtr) := ClearNamedBufferSubData(buffer, internalformat, offset, size, format, &type, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearNamedBufferSubData(buffer: BufferName; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer) := z_ClearNamedBufferSubData(buffer, internalformat, offset, size, format, &type, data);
     
     public z_ClearNamedBufferData: procedure(buffer: BufferName; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer) := GetGLFuncOrNil&<procedure(buffer: BufferName; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer)>('glClearNamedBufferData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearNamedBufferData(buffer: BufferName; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: IntPtr) := ClearNamedBufferData(buffer, internalformat, format, &type, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearNamedBufferData(buffer: BufferName; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: IntPtr) := ClearNamedBufferData(buffer, internalformat, format, &type, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearNamedBufferData(buffer: BufferName; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer) := z_ClearNamedBufferData(buffer, internalformat, format, &type, data);
     
     public z_ClearBufferSubData: procedure(target: BufferBindType; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer) := GetGLFuncOrNil&<procedure(target: BufferBindType; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer)>('glClearBufferSubData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearBufferSubData(target: BufferBindType; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: IntPtr) := ClearBufferSubData(target, internalformat, offset, size, format, &type, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearBufferSubData(target: BufferBindType; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: IntPtr) := ClearBufferSubData(target, internalformat, offset, size, format, &type, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearBufferSubData(target: BufferBindType; internalformat: InternalDataFormat; offset: IntPtr; size: UIntPtr; format: DataFormat; &type: DataType; data: pointer) := z_ClearBufferSubData(target, internalformat, offset, size, format, &type, data);
     
     public z_ClearBufferData: procedure(target: BufferBindType; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer) := GetGLFuncOrNil&<procedure(target: BufferBindType; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer)>('glClearBufferData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearBufferData(target: BufferBindType; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: IntPtr) := ClearBufferData(target, internalformat, format, &type, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearBufferData(target: BufferBindType; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: IntPtr) := ClearBufferData(target, internalformat, format, &type, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearBufferData(target: BufferBindType; internalformat: InternalDataFormat; format: DataFormat; &type: DataType; data: pointer) := z_ClearBufferData(target, internalformat, format, &type, data);
     
     {$endregion 6.2.1 - Clearing Buffer Object Data Stores}
@@ -331,7 +331,7 @@
     {$region 6.7 - Buffer Object Queries}
     
     public z_GetNamedBufferSubData: procedure(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer) := GetGLFuncOrNil&<procedure(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer)>('glGetNamedBufferSubData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: IntPtr) := GetNamedBufferSubData(buffer, offset, size, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: IntPtr) := GetNamedBufferSubData(buffer, offset, size, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer) := z_GetNamedBufferSubData(buffer, offset, size, data);
     
     public z_GetNamedBufferPointerv: procedure(buffer: BufferName; pname: BufferInfoType; &params: pointer) := GetGLFuncOrNil&<procedure(buffer: BufferName; pname: BufferInfoType; &params: pointer)>('glGetNamedBufferPointerv');
@@ -351,7 +351,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferParameteri64v(buffer: BufferName; pname: BufferInfoType; &params: pointer) := z_GetNamedBufferParameteri64v(buffer, pname, &params);
     
     public z_GetBufferSubData: procedure(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer) := GetGLFuncOrNil&<procedure(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer)>('glGetBufferSubData');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetBufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: IntPtr) := GetBufferSubData(target, offset, size, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetBufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: IntPtr) := GetBufferSubData(target, offset, size, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetBufferSubData(target: BufferBindType; offset: IntPtr; size: UIntPtr; data: pointer) := z_GetBufferSubData(target, offset, size, data);
     
     public z_GetBufferPointerv: procedure(target: BufferBindType; pname: BufferInfoType; &params: pointer) := GetGLFuncOrNil&<procedure(target: BufferBindType; pname: BufferInfoType; &params: pointer)>('glGetBufferPointerv');
@@ -1464,19 +1464,19 @@
     {$region 8.5 - Texture Image Specification}
     
     public z_TexImage3D: procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer)>('glTexImage3D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexImage3D(target, level, internalformat, width, height, depth, border, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexImage3D(target, level, internalformat, width, height, depth, border, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TexImage3D(target, level, internalformat, width, height, depth, border, format, &type, pixels);
     
     {$region 8.5.3 - Texture Image Structure}
     
     private static procedure _TexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer); external 'opengl32.dll' name 'glTexImage2D';
     public static z_TexImage2D: procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer) := _TexImage2D;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexImage2D(target, level, internalformat, width, height, border, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexImage2D(target, level, internalformat, width, height, border, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TexImage2D(target, level, internalformat, width, height, border, format, &type, pixels);
     
     private static procedure _TexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer); external 'opengl32.dll' name 'glTexImage1D';
     public static z_TexImage1D: procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer) := _TexImage1D;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexImage1D(target, level, internalformat, width, border, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexImage1D(target, level, internalformat, width, border, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TexImage1D(target, level, internalformat, width, border, format, &type, pixels);
     
     {$endregion 8.5.3 - Texture Image Structure}
@@ -1486,29 +1486,29 @@
     {$region 8.6 - Alternate Texture Image Specification Commands}
     
     public z_TextureSubImage3D: procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer)>('glTextureSubImage3D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage3D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage3D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage3D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, pixels);
     
     public z_TextureSubImage2D: procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer)>('glTextureSubImage2D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage2D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage2D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage2D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, &type, pixels);
     
     public z_TextureSubImage1D: procedure(texture: TextureName; level: Int32; xoffset: Int32; width: Int32; format: UInt32; &type: DataType; pixels: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; width: Int32; format: UInt32; &type: DataType; pixels: pointer)>('glTextureSubImage1D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage1D(texture: TextureName; level: Int32; xoffset: Int32; width: Int32; format: UInt32; &type: DataType; pixels: IntPtr) := TextureSubImage1D(texture, level, xoffset, width, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage1D(texture: TextureName; level: Int32; xoffset: Int32; width: Int32; format: UInt32; &type: DataType; pixels: IntPtr) := TextureSubImage1D(texture, level, xoffset, width, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureSubImage1D(texture: TextureName; level: Int32; xoffset: Int32; width: Int32; format: UInt32; &type: DataType; pixels: pointer) := z_TextureSubImage1D(texture, level, xoffset, width, format, &type, pixels);
     
     public z_TexSubImage3D: procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer)>('glTexSubImage3D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, pixels);
     
     private static procedure _TexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer); external 'opengl32.dll' name 'glTexSubImage2D';
     public static z_TexSubImage2D: procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer) := _TexSubImage2D;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexSubImage2D(target, level, xoffset, yoffset, width, height, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexSubImage2D(target, level, xoffset, yoffset, width, height, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TexSubImage2D(target, level, xoffset, yoffset, width, height, format, &type, pixels);
     
     private static procedure _TexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; &type: DataType; pixels: pointer); external 'opengl32.dll' name 'glTexSubImage1D';
     public static z_TexSubImage1D: procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; &type: DataType; pixels: pointer) := _TexSubImage1D;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexSubImage1D(target, level, xoffset, width, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := TexSubImage1D(target, level, xoffset, width, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_TexSubImage1D(target, level, xoffset, width, format, &type, pixels);
     
     public z_CopyTextureSubImage3D: procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32)>('glCopyTextureSubImage3D');
@@ -1544,39 +1544,39 @@
     {$region 8.7 - Compressed Texture Images}
     
     public z_CompressedTextureSubImage3D: procedure(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer)>('glCompressedTextureSubImage3D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage3D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage3D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage3D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer) := z_CompressedTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
     
     public z_CompressedTextureSubImage2D: procedure(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer)>('glCompressedTextureSubImage2D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage2D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage2D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage2D(texture: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer) := z_CompressedTextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, imageSize, data);
     
     public z_CompressedTextureSubImage1D: procedure(texture: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(texture: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer)>('glCompressedTextureSubImage1D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage1D(texture: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTextureSubImage1D(texture, level, xoffset, width, format, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage1D(texture: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTextureSubImage1D(texture, level, xoffset, width, format, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTextureSubImage1D(texture: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer) := z_CompressedTextureSubImage1D(texture, level, xoffset, width, format, imageSize, data);
     
     public z_CompressedTexSubImage3D: procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer)>('glCompressedTexSubImage3D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage3D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; imageSize: Int32; data: pointer) := z_CompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
     
     public z_CompressedTexSubImage2D: procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer)>('glCompressedTexSubImage2D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage2D(target: TextureBindTarget; level: Int32; xoffset: Int32; yoffset: Int32; width: Int32; height: Int32; format: DataFormat; imageSize: Int32; data: pointer) := z_CompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
     
     public z_CompressedTexSubImage1D: procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer)>('glCompressedTexSubImage1D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTexSubImage1D(target, level, xoffset, width, format, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: IntPtr) := CompressedTexSubImage1D(target, level, xoffset, width, format, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexSubImage1D(target: TextureBindTarget; level: Int32; xoffset: Int32; width: Int32; format: DataFormat; imageSize: Int32; data: pointer) := z_CompressedTexSubImage1D(target, level, xoffset, width, format, imageSize, data);
     
     public z_CompressedTexImage3D: procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: pointer)>('glCompressedTexImage3D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: IntPtr) := CompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: IntPtr) := CompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage3D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: pointer) := z_CompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
     
     public z_CompressedTexImage2D: procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: pointer)>('glCompressedTexImage2D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: IntPtr) := CompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: IntPtr) := CompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage2D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; height: Int32; border: Int32; imageSize: Int32; data: pointer) := z_CompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
     
     public z_CompressedTexImage1D: procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; imageSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; imageSize: Int32; data: pointer)>('glCompressedTexImage1D');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; imageSize: Int32; data: IntPtr) := CompressedTexImage1D(target, level, internalformat, width, border, imageSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; imageSize: Int32; data: IntPtr) := CompressedTexImage1D(target, level, internalformat, width, border, imageSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompressedTexImage1D(target: TextureBindTarget; level: Int32; internalformat: InternalDataFormat; width: Int32; border: Int32; imageSize: Int32; data: pointer) := z_CompressedTexImage1D(target, level, internalformat, width, border, imageSize, data);
     
     {$endregion 8.7 - Compressed Texture Images}
@@ -1807,36 +1807,36 @@
     {$region 8.11.4 - Texture Image Queries}
     
     public z_GetTextureSubImage: procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer)>('glGetTextureSubImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr) := GetTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, bufSize, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr) := GetTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, bufSize, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer) := z_GetTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, bufSize, pixels);
     
     public z_GetTextureImage: procedure(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer)>('glGetTextureImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr) := GetTextureImage(texture, level, format, &type, bufSize, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr) := GetTextureImage(texture, level, format, &type, bufSize, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer) := z_GetTextureImage(texture, level, format, &type, bufSize, pixels);
     
     private static procedure _GetTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; pixels: pointer); external 'opengl32.dll' name 'glGetTexImage';
     public static z_GetTexImage: procedure(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; pixels: pointer) := _GetTexImage;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := GetTexImage(target, level, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := GetTexImage(target, level, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_GetTexImage(target, level, format, &type, pixels);
     
     public z_GetnTexImage: procedure(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer)>('glGetnTexImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr) := GetnTexImage(target, level, format, &type, bufSize, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: IntPtr) := GetnTexImage(target, level, format, &type, bufSize, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnTexImage(target: TextureBindTarget; level: Int32; format: DataFormat; &type: DataType; bufSize: Int32; pixels: pointer) := z_GetnTexImage(target, level, format, &type, bufSize, pixels);
     
     public z_GetnCompressedTexImage: procedure(target: TextureBindTarget; lod: Int32; bufSize: Int32; pixels: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; lod: Int32; bufSize: Int32; pixels: pointer)>('glGetnCompressedTexImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnCompressedTexImage(target: TextureBindTarget; lod: Int32; bufSize: Int32; pixels: IntPtr) := GetnCompressedTexImage(target, lod, bufSize, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnCompressedTexImage(target: TextureBindTarget; lod: Int32; bufSize: Int32; pixels: IntPtr) := GetnCompressedTexImage(target, lod, bufSize, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnCompressedTexImage(target: TextureBindTarget; lod: Int32; bufSize: Int32; pixels: pointer) := z_GetnCompressedTexImage(target, lod, bufSize, pixels);
     
     public z_GetCompressedTextureSubImage: procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: pointer)>('glGetCompressedTextureSubImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: IntPtr) := GetCompressedTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, bufSize, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: IntPtr) := GetCompressedTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, bufSize, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTextureSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; bufSize: Int32; pixels: pointer) := z_GetCompressedTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, bufSize, pixels);
     
     public z_GetCompressedTextureImage: procedure(texture: TextureName; level: Int32; bufSize: Int32; pixels: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; bufSize: Int32; pixels: pointer)>('glGetCompressedTextureImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTextureImage(texture: TextureName; level: Int32; bufSize: Int32; pixels: IntPtr) := GetCompressedTextureImage(texture, level, bufSize, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTextureImage(texture: TextureName; level: Int32; bufSize: Int32; pixels: IntPtr) := GetCompressedTextureImage(texture, level, bufSize, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTextureImage(texture: TextureName; level: Int32; bufSize: Int32; pixels: pointer) := z_GetCompressedTextureImage(texture, level, bufSize, pixels);
     
     public z_GetCompressedTexImage: procedure(target: TextureBindTarget; level: Int32; img: pointer) := GetGLFuncOrNil&<procedure(target: TextureBindTarget; level: Int32; img: pointer)>('glGetCompressedTexImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTexImage(target: TextureBindTarget; level: Int32; img: IntPtr) := GetCompressedTexImage(target, level, img);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTexImage(target: TextureBindTarget; level: Int32; img: IntPtr) := GetCompressedTexImage(target, level, pointer(img));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetCompressedTexImage(target: TextureBindTarget; level: Int32; img: pointer) := z_GetCompressedTexImage(target, level, img);
     
     {$endregion 8.11.4 - Texture Image Queries}
@@ -1911,11 +1911,11 @@
     {$region 8.21 - Clearing Texture Image Data}
     
     public z_ClearTexSubImage: procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; data: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; data: pointer)>('glClearTexSubImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearTexSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; data: IntPtr) := ClearTexSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearTexSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; data: IntPtr) := ClearTexSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearTexSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: DataFormat; &type: DataType; data: pointer) := z_ClearTexSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, &type, data);
     
     public z_ClearTexImage: procedure(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; data: pointer) := GetGLFuncOrNil&<procedure(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; data: pointer)>('glClearTexImage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearTexImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; data: IntPtr) := ClearTexImage(texture, level, format, &type, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearTexImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; data: IntPtr) := ClearTexImage(texture, level, format, &type, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClearTexImage(texture: TextureName; level: Int32; format: DataFormat; &type: DataType; data: pointer) := z_ClearTexImage(texture, level, format, &type, data);
     
     {$endregion 8.21 - Clearing Texture Image Data}
@@ -2508,18 +2508,18 @@
     {$region 10.3.2 - Specifying Arrays for Generic Vertex Attributes}
     
     public z_VertexAttribPointer: procedure(index: UInt32; size: Int32; &type: DataType; normalized: boolean; stride: Int32; _pointer: pointer) := GetGLFuncOrNil&<procedure(index: UInt32; size: Int32; &type: DataType; normalized: boolean; stride: Int32; _pointer: pointer)>('glVertexAttribPointer');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribPointer(index: UInt32; size: Int32; &type: DataType; normalized: boolean; stride: Int32; pointer: IntPtr) := VertexAttribPointer(index, size, &type, normalized, stride, pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribPointer(index: UInt32; size: Int32; &type: DataType; normalized: boolean; stride: Int32; _pointer: IntPtr) := VertexAttribPointer(index, size, &type, normalized, stride, pointer(_pointer));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribPointer(index: UInt32; size: Int32; &type: DataType; normalized: boolean; stride: Int32; _pointer: pointer) := z_VertexAttribPointer(index, size, &type, normalized, stride, _pointer);
     
     public z_VertexAttribLPointer: procedure(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer) := GetGLFuncOrNil&<procedure(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer)>('glVertexAttribLPointer');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribLPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; pointer: IntPtr) := VertexAttribLPointer(index, size, &type, stride, pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribLPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: IntPtr) := VertexAttribLPointer(index, size, &type, stride, pointer(_pointer));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribLPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer) := z_VertexAttribLPointer(index, size, &type, stride, _pointer);
     
     public z_VertexAttribLFormat: procedure(attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32) := GetGLFuncOrNil&<procedure(attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32)>('glVertexAttribLFormat');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribLFormat(attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32) := z_VertexAttribLFormat(attribindex, size, &type, relativeoffset);
     
     public z_VertexAttribIPointer: procedure(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer) := GetGLFuncOrNil&<procedure(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer)>('glVertexAttribIPointer');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribIPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; pointer: IntPtr) := VertexAttribIPointer(index, size, &type, stride, pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribIPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: IntPtr) := VertexAttribIPointer(index, size, &type, stride, pointer(_pointer));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribIPointer(index: UInt32; size: Int32; &type: DataType; stride: Int32; _pointer: pointer) := z_VertexAttribIPointer(index, size, &type, stride, _pointer);
     
     public z_VertexAttribIFormat: procedure(attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32) := GetGLFuncOrNil&<procedure(attribindex: UInt32; size: Int32; &type: DataType; relativeoffset: UInt32)>('glVertexAttribIFormat');
@@ -2764,9 +2764,9 @@
     {$region 10.5 - Vertex Array and Vertex Array Object Queries}
     
     public z_GetVertexAttribPointerv: procedure(index: UInt32; pname: UInt32; _pointer: pointer) := GetGLFuncOrNil&<procedure(index: UInt32; pname: UInt32; _pointer: pointer)>('glGetVertexAttribPointerv');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; pointer: array of IntPtr) := GetVertexAttribPointerv(index, pname, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; var pointer: IntPtr) := GetVertexAttribPointerv(index, pname, @pointer);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; var pointer: ^IntPtr) := GetVertexAttribPointerv(index, pname, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; _pointer: array of IntPtr) := GetVertexAttribPointerv(index, pname, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; var _pointer: IntPtr) := GetVertexAttribPointerv(index, pname, @_pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; var _pointer: ^IntPtr) := GetVertexAttribPointerv(index, pname, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointerv(index: UInt32; pname: UInt32; _pointer: pointer) := z_GetVertexAttribPointerv(index, pname, _pointer);
     
     public z_GetVertexAttribLdv: procedure(index: UInt32; pname: VertexAttribInfoType; &params: pointer) := GetGLFuncOrNil&<procedure(index: UInt32; pname: VertexAttribInfoType; &params: pointer)>('glGetVertexAttribLdv');
@@ -3435,11 +3435,11 @@
     
     private static procedure _ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer); external 'opengl32.dll' name 'glReadPixels';
     public static z_ReadPixels: procedure(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer) := _ReadPixels;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := ReadPixels(x, y, width, height, format, &type, pixels);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: IntPtr) := ReadPixels(x, y, width, height, format, &type, pointer(pixels));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReadPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; pixels: pointer) := z_ReadPixels(x, y, width, height, format, &type, pixels);
     
     public z_ReadnPixels: procedure(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; bufSize: Int32; data: pointer) := GetGLFuncOrNil&<procedure(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; bufSize: Int32; data: pointer)>('glReadnPixels');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; bufSize: Int32; data: IntPtr) := ReadnPixels(x, y, width, height, format, &type, bufSize, data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; bufSize: Int32; data: IntPtr) := ReadnPixels(x, y, width, height, format, &type, bufSize, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReadnPixels(x: Int32; y: Int32; width: Int32; height: Int32; format: DataFormat; &type: DataType; bufSize: Int32; data: pointer) := z_ReadnPixels(x, y, width, height, format, &type, bufSize, data);
     
     {$endregion 18.2.2 - ReadPixels}
@@ -3491,7 +3491,7 @@
     {$region 20.2 - Debug Message Callback}
     
     public z_DebugMessageCallback: procedure(callback: GLDEBUGPROC; userParam: pointer) := GetGLFuncOrNil&<procedure(callback: GLDEBUGPROC; userParam: pointer)>('glDebugMessageCallback');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DebugMessageCallback(callback: GLDEBUGPROC; userParam: IntPtr) := DebugMessageCallback(callback, userParam);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DebugMessageCallback(callback: GLDEBUGPROC; userParam: IntPtr) := DebugMessageCallback(callback, pointer(userParam));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DebugMessageCallback(callback: GLDEBUGPROC; userParam: pointer) := z_DebugMessageCallback(callback, userParam);
     
     {$endregion 20.2 - Debug Message Callback}
@@ -3527,8 +3527,8 @@
     {$region 20.7 - Debug Labels}
     
     public z_ObjectPtrLabel: procedure(ptr: pointer; length: Int32; &label: IntPtr) := GetGLFuncOrNil&<procedure(ptr: pointer; length: Int32; &label: IntPtr)>('glObjectPtrLabel');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ObjectPtrLabel(ptr: IntPtr; length: Int32; &label: string); begin var ptr_3 := Marshal.StringToHGlobalAnsi(&label); ObjectPtrLabel(ptr, length, ptr_3); Marshal.FreeHGlobal(ptr_3); end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ObjectPtrLabel(ptr: IntPtr; length: Int32; &label: IntPtr) := ObjectPtrLabel(ptr, length, &label);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ObjectPtrLabel(ptr: IntPtr; length: Int32; &label: string); begin var ptr_3 := Marshal.StringToHGlobalAnsi(&label); ObjectPtrLabel(pointer(ptr), length, ptr_3); Marshal.FreeHGlobal(ptr_3); end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ObjectPtrLabel(ptr: IntPtr; length: Int32; &label: IntPtr) := ObjectPtrLabel(pointer(ptr), length, &label);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ObjectPtrLabel(ptr: pointer; length: Int32; &label: string); begin var ptr_3 := Marshal.StringToHGlobalAnsi(&label); ObjectPtrLabel(ptr, length, ptr_3); Marshal.FreeHGlobal(ptr_3); end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ObjectPtrLabel(ptr: pointer; length: Int32; &label: IntPtr) := z_ObjectPtrLabel(ptr, length, &label);
     
@@ -8276,8 +8276,8 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribivARB(index: UInt32; pname: DummyEnum; &params: pointer) := z_GetVertexAttribivARB(index, pname, &params);
     
     public z_GetVertexAttribPointervARB: procedure(index: UInt32; pname: DummyEnum; _pointer: pointer) := GetGLFuncOrNil&<procedure(index: UInt32; pname: DummyEnum; _pointer: pointer)>('glGetVertexAttribPointervARB');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervARB(index: UInt32; pname: DummyEnum; pointer: array of IntPtr) := GetVertexAttribPointervARB(index, pname, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervARB(index: UInt32; pname: DummyEnum; var pointer: IntPtr) := GetVertexAttribPointervARB(index, pname, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervARB(index: UInt32; pname: DummyEnum; _pointer: array of IntPtr) := GetVertexAttribPointervARB(index, pname, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervARB(index: UInt32; pname: DummyEnum; var _pointer: IntPtr) := GetVertexAttribPointervARB(index, pname, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervARB(index: UInt32; pname: DummyEnum; _pointer: pointer) := z_GetVertexAttribPointervARB(index, pname, _pointer);
     
     {$endregion ARB_vertex_program ARB_vertex_shader}
@@ -9162,8 +9162,8 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointerEXT(size: Int32; &type: DummyEnum; stride: Int32; count: Int32; _pointer: pointer) := z_TexCoordPointerEXT(size, &type, stride, count, _pointer);
     
     public z_EdgeFlagPointerEXT: procedure(stride: Int32; count: Int32; _pointer: pointer) := GetGLFuncOrNil&<procedure(stride: Int32; count: Int32; _pointer: pointer)>('glEdgeFlagPointerEXT');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerEXT(stride: Int32; count: Int32; pointer: array of Byte) := EdgeFlagPointerEXT(stride, count, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerEXT(stride: Int32; count: Int32; var pointer: Byte) := EdgeFlagPointerEXT(stride, count, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerEXT(stride: Int32; count: Int32; _pointer: array of Byte) := EdgeFlagPointerEXT(stride, count, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerEXT(stride: Int32; count: Int32; var _pointer: Byte) := EdgeFlagPointerEXT(stride, count, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerEXT(stride: Int32; count: Int32; _pointer: pointer) := z_EdgeFlagPointerEXT(stride, count, _pointer);
     
     public z_GetPointervEXT: procedure(pname: GLGetQueries; &params: pointer) := GetGLFuncOrNil&<procedure(pname: GLGetQueries; &params: pointer)>('glGetPointervEXT');
@@ -12186,43 +12186,43 @@
     {$region IBM_vertex_array_lists}
     
     public z_ColorPointerListIBM: procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32)>('glColorPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := ColorPointerListIBM(size, &type, stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var pointer: IntPtr; ptrstride: Int32) := ColorPointerListIBM(size, &type, stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := ColorPointerListIBM(size, &type, stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := ColorPointerListIBM(size, &type, stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := z_ColorPointerListIBM(size, &type, stride, _pointer, ptrstride);
     
     public z_SecondaryColorPointerListIBM: procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32)>('glSecondaryColorPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := SecondaryColorPointerListIBM(size, &type, stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var pointer: IntPtr; ptrstride: Int32) := SecondaryColorPointerListIBM(size, &type, stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := SecondaryColorPointerListIBM(size, &type, stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := SecondaryColorPointerListIBM(size, &type, stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := z_SecondaryColorPointerListIBM(size, &type, stride, _pointer, ptrstride);
     
     public z_EdgeFlagPointerListIBM: procedure(stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(stride: Int32; _pointer: pointer; ptrstride: Int32)>('glEdgeFlagPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerListIBM(stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := EdgeFlagPointerListIBM(stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerListIBM(stride: Int32; var pointer: IntPtr; ptrstride: Int32) := EdgeFlagPointerListIBM(stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerListIBM(stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := EdgeFlagPointerListIBM(stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerListIBM(stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := EdgeFlagPointerListIBM(stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointerListIBM(stride: Int32; _pointer: pointer; ptrstride: Int32) := z_EdgeFlagPointerListIBM(stride, _pointer, ptrstride);
     
     public z_FogCoordPointerListIBM: procedure(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32)>('glFogCoordPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordPointerListIBM(&type: DummyEnum; stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := FogCoordPointerListIBM(&type, stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordPointerListIBM(&type: DummyEnum; stride: Int32; var pointer: IntPtr; ptrstride: Int32) := FogCoordPointerListIBM(&type, stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordPointerListIBM(&type: DummyEnum; stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := FogCoordPointerListIBM(&type, stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordPointerListIBM(&type: DummyEnum; stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := FogCoordPointerListIBM(&type, stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordPointerListIBM(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := z_FogCoordPointerListIBM(&type, stride, _pointer, ptrstride);
     
     public z_IndexPointerListIBM: procedure(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32)>('glIndexPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexPointerListIBM(&type: DummyEnum; stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := IndexPointerListIBM(&type, stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexPointerListIBM(&type: DummyEnum; stride: Int32; var pointer: IntPtr; ptrstride: Int32) := IndexPointerListIBM(&type, stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexPointerListIBM(&type: DummyEnum; stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := IndexPointerListIBM(&type, stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexPointerListIBM(&type: DummyEnum; stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := IndexPointerListIBM(&type, stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexPointerListIBM(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := z_IndexPointerListIBM(&type, stride, _pointer, ptrstride);
     
     public z_NormalPointerListIBM: procedure(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32)>('glNormalPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointerListIBM(&type: DummyEnum; stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := NormalPointerListIBM(&type, stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointerListIBM(&type: DummyEnum; stride: Int32; var pointer: IntPtr; ptrstride: Int32) := NormalPointerListIBM(&type, stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointerListIBM(&type: DummyEnum; stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := NormalPointerListIBM(&type, stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointerListIBM(&type: DummyEnum; stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := NormalPointerListIBM(&type, stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointerListIBM(&type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := z_NormalPointerListIBM(&type, stride, _pointer, ptrstride);
     
     public z_TexCoordPointerListIBM: procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32)>('glTexCoordPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := TexCoordPointerListIBM(size, &type, stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var pointer: IntPtr; ptrstride: Int32) := TexCoordPointerListIBM(size, &type, stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := TexCoordPointerListIBM(size, &type, stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := TexCoordPointerListIBM(size, &type, stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := z_TexCoordPointerListIBM(size, &type, stride, _pointer, ptrstride);
     
     public z_VertexPointerListIBM: procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := GetGLFuncOrNil&<procedure(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32)>('glVertexPointerListIBM');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; pointer: array of IntPtr; ptrstride: Int32) := VertexPointerListIBM(size, &type, stride, pointer[0], ptrstride);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var pointer: IntPtr; ptrstride: Int32) := VertexPointerListIBM(size, &type, stride, @pointer, ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: array of IntPtr; ptrstride: Int32) := VertexPointerListIBM(size, &type, stride, _pointer[0], ptrstride);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; var _pointer: IntPtr; ptrstride: Int32) := VertexPointerListIBM(size, &type, stride, @_pointer, ptrstride);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointerListIBM(size: Int32; &type: DummyEnum; stride: Int32; _pointer: pointer; ptrstride: Int32) := z_VertexPointerListIBM(size, &type, stride, _pointer, ptrstride);
     
     {$endregion IBM_vertex_array_lists}
@@ -13573,23 +13573,23 @@
     {$region INTEL_parallel_arrays}
     
     public z_VertexPointervINTEL: procedure(size: Int32; &type: DummyEnum; _pointer: pointer) := GetGLFuncOrNil&<procedure(size: Int32; &type: DummyEnum; _pointer: pointer)>('glVertexPointervINTEL');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointervINTEL(size: Int32; &type: DummyEnum; pointer: array of IntPtr) := VertexPointervINTEL(size, &type, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointervINTEL(size: Int32; &type: DummyEnum; var pointer: IntPtr) := VertexPointervINTEL(size, &type, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointervINTEL(size: Int32; &type: DummyEnum; _pointer: array of IntPtr) := VertexPointervINTEL(size, &type, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointervINTEL(size: Int32; &type: DummyEnum; var _pointer: IntPtr) := VertexPointervINTEL(size, &type, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexPointervINTEL(size: Int32; &type: DummyEnum; _pointer: pointer) := z_VertexPointervINTEL(size, &type, _pointer);
     
     public z_NormalPointervINTEL: procedure(&type: DummyEnum; _pointer: pointer) := GetGLFuncOrNil&<procedure(&type: DummyEnum; _pointer: pointer)>('glNormalPointervINTEL');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointervINTEL(&type: DummyEnum; pointer: array of IntPtr) := NormalPointervINTEL(&type, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointervINTEL(&type: DummyEnum; var pointer: IntPtr) := NormalPointervINTEL(&type, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointervINTEL(&type: DummyEnum; _pointer: array of IntPtr) := NormalPointervINTEL(&type, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointervINTEL(&type: DummyEnum; var _pointer: IntPtr) := NormalPointervINTEL(&type, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointervINTEL(&type: DummyEnum; _pointer: pointer) := z_NormalPointervINTEL(&type, _pointer);
     
     public z_ColorPointervINTEL: procedure(size: Int32; &type: DummyEnum; _pointer: pointer) := GetGLFuncOrNil&<procedure(size: Int32; &type: DummyEnum; _pointer: pointer)>('glColorPointervINTEL');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointervINTEL(size: Int32; &type: DummyEnum; pointer: array of IntPtr) := ColorPointervINTEL(size, &type, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointervINTEL(size: Int32; &type: DummyEnum; var pointer: IntPtr) := ColorPointervINTEL(size, &type, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointervINTEL(size: Int32; &type: DummyEnum; _pointer: array of IntPtr) := ColorPointervINTEL(size, &type, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointervINTEL(size: Int32; &type: DummyEnum; var _pointer: IntPtr) := ColorPointervINTEL(size, &type, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorPointervINTEL(size: Int32; &type: DummyEnum; _pointer: pointer) := z_ColorPointervINTEL(size, &type, _pointer);
     
     public z_TexCoordPointervINTEL: procedure(size: Int32; &type: DummyEnum; _pointer: pointer) := GetGLFuncOrNil&<procedure(size: Int32; &type: DummyEnum; _pointer: pointer)>('glTexCoordPointervINTEL');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointervINTEL(size: Int32; &type: DummyEnum; pointer: array of IntPtr) := TexCoordPointervINTEL(size, &type, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointervINTEL(size: Int32; &type: DummyEnum; var pointer: IntPtr) := TexCoordPointervINTEL(size, &type, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointervINTEL(size: Int32; &type: DummyEnum; _pointer: array of IntPtr) := TexCoordPointervINTEL(size, &type, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointervINTEL(size: Int32; &type: DummyEnum; var _pointer: IntPtr) := TexCoordPointervINTEL(size, &type, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexCoordPointervINTEL(size: Int32; &type: DummyEnum; _pointer: pointer) := z_TexCoordPointervINTEL(size, &type, _pointer);
     
     {$endregion INTEL_parallel_arrays}
@@ -13961,8 +13961,8 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribivNV(index: UInt32; pname: DummyEnum; &params: pointer) := z_GetVertexAttribivNV(index, pname, &params);
     
     public z_GetVertexAttribPointervNV: procedure(index: UInt32; pname: DummyEnum; _pointer: pointer) := GetGLFuncOrNil&<procedure(index: UInt32; pname: DummyEnum; _pointer: pointer)>('glGetVertexAttribPointervNV');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervNV(index: UInt32; pname: DummyEnum; pointer: array of IntPtr) := GetVertexAttribPointervNV(index, pname, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervNV(index: UInt32; pname: DummyEnum; var pointer: IntPtr) := GetVertexAttribPointervNV(index, pname, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervNV(index: UInt32; pname: DummyEnum; _pointer: array of IntPtr) := GetVertexAttribPointervNV(index, pname, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervNV(index: UInt32; pname: DummyEnum; var _pointer: IntPtr) := GetVertexAttribPointervNV(index, pname, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetVertexAttribPointervNV(index: UInt32; pname: DummyEnum; _pointer: pointer) := z_GetVertexAttribPointervNV(index, pname, _pointer);
     
     public z_IsProgramNV: function(id: UInt32): Byte := GetGLFuncOrNil&<function(id: UInt32): Byte>('glIsProgramNV');
@@ -18765,8 +18765,8 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReplacementCodeubvSUN(code: pointer) := z_ReplacementCodeubvSUN(code);
     
     public z_ReplacementCodePointerSUN: procedure(&type: DummyEnum; stride: Int32; _pointer: pointer) := GetGLFuncOrNil&<procedure(&type: DummyEnum; stride: Int32; _pointer: pointer)>('glReplacementCodePointerSUN');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReplacementCodePointerSUN(&type: DummyEnum; stride: Int32; pointer: array of IntPtr) := ReplacementCodePointerSUN(&type, stride, pointer[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReplacementCodePointerSUN(&type: DummyEnum; stride: Int32; var pointer: IntPtr) := ReplacementCodePointerSUN(&type, stride, @pointer);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReplacementCodePointerSUN(&type: DummyEnum; stride: Int32; _pointer: array of IntPtr) := ReplacementCodePointerSUN(&type, stride, _pointer[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReplacementCodePointerSUN(&type: DummyEnum; stride: Int32; var _pointer: IntPtr) := ReplacementCodePointerSUN(&type, stride, @_pointer);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReplacementCodePointerSUN(&type: DummyEnum; stride: Int32; _pointer: pointer) := z_ReplacementCodePointerSUN(&type, stride, _pointer);
     
     {$endregion SUN_triangle_list}
