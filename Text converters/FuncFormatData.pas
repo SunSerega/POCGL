@@ -499,7 +499,7 @@ type
             and not n_ovr[i].StartsWith('array of ')
             and not n_ovr[i].EndsWith('Name')
             and not (n_ovr[i] in ['pointer','IntPtr', 'Int32','UInt32','boolean'])
-            and all_ovr_types.Any(l->l[i]='UInt32')
+            and all_ovr_types.Any(l->l[i] in ['Int32', 'UInt32'])
           then
           begin
             pdata.par_call += '.val';
