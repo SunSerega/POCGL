@@ -499,26 +499,16 @@
   end;
   
   //S
-  PixelMagFilterMode = record
+  PixelFilterMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property NEAREST: PixelMagFilterMode read new PixelMagFilterMode($2600);
-    public static property LINEAR:  PixelMagFilterMode read new PixelMagFilterMode($2601);
-    
-  end;
-  
-  //S
-  PixelMinFilterMode = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property NEAREST:                 PixelMinFilterMode read new PixelMinFilterMode($2600);
-    public static property LINEAR:                  PixelMinFilterMode read new PixelMinFilterMode($2601);
-    public static property NEAREST_MIPMAP_NEAREST:  PixelMinFilterMode read new PixelMinFilterMode($2700);
-    public static property NEAREST_MIPMAP_LINEAR:   PixelMinFilterMode read new PixelMinFilterMode($2702);
-    public static property LINEAR_MIPMAP_NEAREST:   PixelMinFilterMode read new PixelMinFilterMode($2701);
-    public static property LINEAR_MIPMAP_LINEAR:    PixelMinFilterMode read new PixelMinFilterMode($2703);
+    public static property NEAREST:                 PixelFilterMode read new PixelFilterMode($2600);
+    public static property LINEAR:                  PixelFilterMode read new PixelFilterMode($2601);
+    public static property NEAREST_MIPMAP_NEAREST:  PixelFilterMode read new PixelFilterMode($2700);
+    public static property NEAREST_MIPMAP_LINEAR:   PixelFilterMode read new PixelFilterMode($2702);
+    public static property LINEAR_MIPMAP_NEAREST:   PixelFilterMode read new PixelFilterMode($2701);
+    public static property LINEAR_MIPMAP_LINEAR:    PixelFilterMode read new PixelFilterMode($2703);
     
   end;
   

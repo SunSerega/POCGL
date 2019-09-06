@@ -234,9 +234,9 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: IntPtr) := NamedBufferSubData(buffer, offset, size, pointer(data));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferSubData(buffer: BufferName; offset: IntPtr; size: UIntPtr; data: pointer) := z_NamedBufferSubData(buffer, offset, size, data);
     
-    public z_NamedBufferStorage: procedure(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferDataUsage) := GetGLFuncOrNil&<procedure(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferDataUsage)>('glNamedBufferStorage');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: IntPtr; flags: BufferDataUsage) := NamedBufferStorage(buffer, size, pointer(data), flags);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferDataUsage) := z_NamedBufferStorage(buffer, size, data, flags);
+    public z_NamedBufferStorage: procedure(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferStorageFlags) := GetGLFuncOrNil&<procedure(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferStorageFlags)>('glNamedBufferStorage');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: IntPtr; flags: BufferStorageFlags) := NamedBufferStorage(buffer, size, pointer(data), flags);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferStorage(buffer: BufferName; size: UIntPtr; data: pointer; flags: BufferStorageFlags) := z_NamedBufferStorage(buffer, size, data, flags);
     
     public z_NamedBufferData: procedure(buffer: BufferName; size: UIntPtr; data: pointer; usage: BufferDataUsage) := GetGLFuncOrNil&<procedure(buffer: BufferName; size: UIntPtr; data: pointer; usage: BufferDataUsage)>('glNamedBufferData');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferData(buffer: BufferName; size: UIntPtr; data: IntPtr; usage: BufferDataUsage) := NamedBufferData(buffer, size, pointer(data), usage);
@@ -1363,8 +1363,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: UInt32) := SamplerParameterIuiv(sampler, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: TextureCompareMode) := SamplerParameterIuiv(sampler, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: ActivationFunc) := SamplerParameterIuiv(sampler, pname, @param);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: PixelMagFilterMode) := SamplerParameterIuiv(sampler, pname, @param);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: PixelMinFilterMode) := SamplerParameterIuiv(sampler, pname, @param);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: PixelFilterMode) := SamplerParameterIuiv(sampler, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var param: PixelWrapMode) := SamplerParameterIuiv(sampler, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; param: pointer) := z_SamplerParameterIuiv(sampler, pname, param);
     
@@ -1375,8 +1374,7 @@
     public z_SamplerParameteri: procedure(sampler: SamplerName; pname: TextureInfoType; param: Int32) := GetGLFuncOrNil&<procedure(sampler: SamplerName; pname: TextureInfoType; param: Int32)>('glSamplerParameteri');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: TextureCompareMode) := SamplerParameteri(sampler, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: ActivationFunc) := SamplerParameteri(sampler, pname, param.val);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: PixelMagFilterMode) := SamplerParameteri(sampler, pname, param.val);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: PixelMinFilterMode) := SamplerParameteri(sampler, pname, param.val);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: PixelFilterMode) := SamplerParameteri(sampler, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: PixelWrapMode) := SamplerParameteri(sampler, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameteri(sampler: SamplerName; pname: TextureInfoType; param: Int32) := z_SamplerParameteri(sampler, pname, param);
     
@@ -1421,8 +1419,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: Int32) := GetSamplerParameteriv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: TextureCompareMode) := GetSamplerParameteriv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: ActivationFunc) := GetSamplerParameteriv(sampler, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMagFilterMode) := GetSamplerParameteriv(sampler, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMinFilterMode) := GetSamplerParameteriv(sampler, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelFilterMode) := GetSamplerParameteriv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelWrapMode) := GetSamplerParameteriv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameteriv(sampler: SamplerName; pname: TextureInfoType; &params: pointer) := z_GetSamplerParameteriv(sampler, pname, &params);
     
@@ -1430,8 +1427,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: UInt32) := GetSamplerParameterIuiv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: TextureCompareMode) := GetSamplerParameterIuiv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: ActivationFunc) := GetSamplerParameterIuiv(sampler, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMagFilterMode) := GetSamplerParameterIuiv(sampler, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelMinFilterMode) := GetSamplerParameterIuiv(sampler, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelFilterMode) := GetSamplerParameterIuiv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; var &params: PixelWrapMode) := GetSamplerParameterIuiv(sampler, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSamplerParameterIuiv(sampler: SamplerName; pname: TextureInfoType; &params: pointer) := z_GetSamplerParameterIuiv(sampler, pname, &params);
     
@@ -1614,8 +1610,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: DepthStencilMode) := TextureParameteriv(texture, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: TextureCompareMode) := TextureParameteriv(texture, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: ActivationFunc) := TextureParameteriv(texture, pname, @param);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: PixelMagFilterMode) := TextureParameteriv(texture, pname, @param);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: PixelMinFilterMode) := TextureParameteriv(texture, pname, @param);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: PixelFilterMode) := TextureParameteriv(texture, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: SwizzleMode) := TextureParameteriv(texture, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; var param: PixelWrapMode) := TextureParameteriv(texture, pname, @param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteriv(texture: TextureName; pname: TextureInfoType; param: pointer) := z_TextureParameteriv(texture, pname, param);
@@ -1625,8 +1620,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: DepthStencilMode) := TextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: TextureCompareMode) := TextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: ActivationFunc) := TextureParameterIuiv(texture, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelMagFilterMode) := TextureParameterIuiv(texture, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelMinFilterMode) := TextureParameterIuiv(texture, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelFilterMode) := TextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: SwizzleMode) := TextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelWrapMode) := TextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterIuiv(texture: TextureName; pname: TextureInfoType; &params: pointer) := z_TextureParameterIuiv(texture, pname, &params);
@@ -1639,8 +1633,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: DepthStencilMode) := TextureParameteri(texture, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: TextureCompareMode) := TextureParameteri(texture, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: ActivationFunc) := TextureParameteri(texture, pname, param.val);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: PixelMagFilterMode) := TextureParameteri(texture, pname, param.val);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: PixelMinFilterMode) := TextureParameteri(texture, pname, param.val);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: PixelFilterMode) := TextureParameteri(texture, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: SwizzleMode) := TextureParameteri(texture, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: PixelWrapMode) := TextureParameteri(texture, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameteri(texture: TextureName; pname: TextureInfoType; param: Int32) := z_TextureParameteri(texture, pname, param);
@@ -1658,8 +1651,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: DepthStencilMode) := TexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: TextureCompareMode) := TexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: ActivationFunc) := TexParameteriv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMagFilterMode) := TexParameteriv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMinFilterMode) := TexParameteriv(target, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelFilterMode) := TexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: SwizzleMode) := TexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelWrapMode) := TexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteriv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer) := z_TexParameteriv(target, pname, &params);
@@ -1669,8 +1661,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: DepthStencilMode) := TexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: TextureCompareMode) := TexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: ActivationFunc) := TexParameterIuiv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMagFilterMode) := TexParameterIuiv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMinFilterMode) := TexParameterIuiv(target, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelFilterMode) := TexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: SwizzleMode) := TexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelWrapMode) := TexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer) := z_TexParameterIuiv(target, pname, &params);
@@ -1684,8 +1675,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: DepthStencilMode) := TexParameteri(target, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: TextureCompareMode) := TexParameteri(target, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: ActivationFunc) := TexParameteri(target, pname, param.val);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: PixelMagFilterMode) := TexParameteri(target, pname, param.val);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: PixelMinFilterMode) := TexParameteri(target, pname, param.val);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: PixelFilterMode) := TexParameteri(target, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: SwizzleMode) := TexParameteri(target, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: PixelWrapMode) := TexParameteri(target, pname, param.val);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexParameteri(target: TextureBindTarget; pname: TextureInfoType; param: Int32) := z_TexParameteri(target, pname, param);
@@ -1710,8 +1700,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: DepthStencilMode) := GetTextureParameteriv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: TextureCompareMode) := GetTextureParameteriv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: ActivationFunc) := GetTextureParameteriv(texture, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: PixelMagFilterMode) := GetTextureParameteriv(texture, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: PixelMinFilterMode) := GetTextureParameteriv(texture, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: PixelFilterMode) := GetTextureParameteriv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: SwizzleMode) := GetTextureParameteriv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; var &params: PixelWrapMode) := GetTextureParameteriv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameteriv(texture: TextureName; pname: TextureInfoType; &params: pointer) := z_GetTextureParameteriv(texture, pname, &params);
@@ -1721,8 +1710,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: DepthStencilMode) := GetTextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: TextureCompareMode) := GetTextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: ActivationFunc) := GetTextureParameterIuiv(texture, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelMagFilterMode) := GetTextureParameterIuiv(texture, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelMinFilterMode) := GetTextureParameterIuiv(texture, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelFilterMode) := GetTextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: SwizzleMode) := GetTextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; var &params: PixelWrapMode) := GetTextureParameterIuiv(texture, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTextureParameterIuiv(texture: TextureName; pname: TextureInfoType; &params: pointer) := z_GetTextureParameterIuiv(texture, pname, &params);
@@ -1741,8 +1729,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: DepthStencilMode) := GetTexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: TextureCompareMode) := GetTexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: ActivationFunc) := GetTexParameteriv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMagFilterMode) := GetTexParameteriv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMinFilterMode) := GetTexParameteriv(target, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelFilterMode) := GetTexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: SwizzleMode) := GetTexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelWrapMode) := GetTexParameteriv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameteriv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer) := z_GetTexParameteriv(target, pname, &params);
@@ -1752,8 +1739,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: DepthStencilMode) := GetTexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: TextureCompareMode) := GetTexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: ActivationFunc) := GetTexParameterIuiv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMagFilterMode) := GetTexParameterIuiv(target, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelMinFilterMode) := GetTexParameterIuiv(target, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelFilterMode) := GetTexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: SwizzleMode) := GetTexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; var &params: PixelWrapMode) := GetTexParameterIuiv(target, pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTexParameterIuiv(target: TextureBindTarget; pname: TextureInfoType; &params: pointer) := z_GetTexParameterIuiv(target, pname, &params);
@@ -3457,11 +3443,11 @@
     
     {$region 18.3.1 - Blitting Pixel Rectangles}
     
-    public z_BlitNamedFramebuffer: procedure(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode) := GetGLFuncOrNil&<procedure(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode)>('glBlitNamedFramebuffer');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitNamedFramebuffer(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode) := z_BlitNamedFramebuffer(readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+    public z_BlitNamedFramebuffer: procedure(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode) := GetGLFuncOrNil&<procedure(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode)>('glBlitNamedFramebuffer');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitNamedFramebuffer(readFramebuffer: FramebufferName; drawFramebuffer: FramebufferName; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode) := z_BlitNamedFramebuffer(readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
     
-    public z_BlitFramebuffer: procedure(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode) := GetGLFuncOrNil&<procedure(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode)>('glBlitFramebuffer');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelMagFilterMode) := z_BlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+    public z_BlitFramebuffer: procedure(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode) := GetGLFuncOrNil&<procedure(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode)>('glBlitFramebuffer');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitFramebuffer(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: BufferTypeFlags; filter: PixelFilterMode) := z_BlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
     
     {$endregion 18.3.1 - Blitting Pixel Rectangles}
     
