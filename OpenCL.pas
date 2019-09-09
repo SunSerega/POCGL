@@ -6,8 +6,8 @@
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
 //*****************************************************************************************************\\
 // Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
-// Этот код распространяется под Unlicense
-// Для деталей смотрите в файл LICENSE или это:
+// Этот код распространяется с лицензией Unlicense
+// Подробнее в файле LICENSE или тут:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
 //*****************************************************************************************************\\
 
@@ -18,34 +18,10 @@
 ///Спецификации всех версий:
 /// https://www.khronos.org/registry/OpenCL/
 ///
-///Если чего то не хватает - писать сюда:
+///Если не хватает функции, перечисления, или найдена ошибка - писать сюда:
 /// https://github.com/SunSerega/POCGL/issues
 ///
 unit OpenCL;
-
-//ToDo ^T -> pointer
-
-//ToDo расширения с котороми непонятно, что делать:
-//
-// - cl_ext.h
-// -- cl_qcom_ext_host_ptr
-// -- cl_qcom_ext_host_ptr_iocoherent
-// -- cl_qcom_ion_host_ptr
-// -- cl_qcom_android_native_buffer_host_ptr
-// -- cl_img_yuv_image
-//
-// - cl_d3d11.h
-// -- там нет функций, есть только перечисления и коды ошибок. Но в чём смысл если возвращать и принимать их нечему?
-//
-// - cl_platform.h
-// -- есть только описание типов и констант, которые нигде не используются. Где они нужны?
-//
-// кто что то знает - напишите в issue, пожалуйста
-
-//ToDo .h файлы которые осталось перевести:
-// - cl_ext_intel
-// - cl_va_api_media_sharing_intel
-// - cl_dx9_media_sharing_intel
 
 uses System;
 uses System.Runtime.InteropServices;

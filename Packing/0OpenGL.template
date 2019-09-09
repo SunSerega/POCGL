@@ -9,7 +9,7 @@
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
 //*****************************************************************************************************\\
 // Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
-// Этот код распространяется под Unlicense
+// Этот код распространяется с лицензией Unlicense
 // Подробнее в файле LICENSE или тут:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
 //*****************************************************************************************************\\
@@ -22,7 +22,7 @@
 ///Спецификации всех версий OpenGL:
 /// https://www.khronos.org/registry/OpenGL/specs/gl/
 ///
-///Если чего то не хватает - писать сюда:
+///Если не хватает функции, перечисления, или найдена ошибка - писать сюда:
 /// https://github.com/SunSerega/POCGL/issues
 ///
 unit OpenGL;
@@ -39,11 +39,11 @@ uses System.Runtime.CompilerServices;
   
 {$endregion Основные типы}
 
-{$region Энумы} type
+{$region Перечисления} type
   
   %GL\Static\Enums%
   
-{$endregion Энумы}
+{$endregion Перечисления}
 
 {$region Делегаты} type
   
