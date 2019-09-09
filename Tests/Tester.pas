@@ -288,7 +288,7 @@ type
       var fwoe := pas_fname.Remove(pas_fname.LastIndexOf('.'));
       
       var res_sb := new StringBuilder;
-      if TimedExecute(()->RunFile(fwoe+'.exe', $'Testable[{fwoe}]', s->res_sb.AppendLine(s)), 5000) then
+      if TimedExecute(()->RunFile(fwoe+'.exe', $'Testable[{fwoe}]', s->res_sb.AppendLine(s)), 10000) then
       begin
         Otp($'ERROR: execution took too long for "{pas_fname}"');
         raise new TestCanceledException;

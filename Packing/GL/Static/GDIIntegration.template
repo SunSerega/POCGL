@@ -64,7 +64,7 @@
           if vsync_fps<=0 then
             EndFrame := ()->gdi.SwapBuffers(hdc) else
           begin
-            var LastRedr := DateTime.Now;
+            var LastRedr := DateTime.UtcNow;
             var FrameDuration := new TimeSpan(Trunc(TimeSpan.TicksPerSecond/vsync_fps));
             var MaxSlowDown := FrameDuration.Ticks*3;
             
@@ -73,7 +73,7 @@
               gdi.SwapBuffers(hdc);
               
               LastRedr := LastRedr+FrameDuration;
-              var time_left := LastRedr-DateTime.Now;
+              var time_left := LastRedr-DateTime.UtcNow;
               
               if time_left.Ticks>0 then
                 System.Threading.Thread.Sleep(time_left) else
