@@ -47,12 +47,14 @@ lock otp_lock do
 begin
   
   if log_file<>nil then
-  begin
-    if System.IO.File.Exists(log_file) then
-      System.IO.File.Copy(log_file, log_file+'.savepoint');
-    System.IO.File.AppendAllLines(log_file, Arr(line));
-    System.IO.File.Delete(log_file+'.savepoint');
-  end;
+    while true do
+    try
+      if System.IO.File.Exists(log_file) then
+        System.IO.File.Copy(log_file, log_file+'.savepoint');
+      System.IO.File.AppendAllLines(log_file, Arr(Format('{0:HH:mm:ss}', DateTime.Now)+$': {line}'));
+      System.IO.File.Delete(log_file+'.savepoint');
+      break;
+    except end;
   
   if line.ToLower.Contains('error') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
   if line.ToLower.Contains('exception') then  System.Console.ForegroundColor := System.ConsoleColor.Red else

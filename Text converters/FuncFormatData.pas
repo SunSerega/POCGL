@@ -609,21 +609,6 @@ type
         sb += '    public z_';
         sb += name.TrimStart('&');
         
-        //ToDo ide#144
-        sb += ': ';
-        sb += f?'function':'procedure';
-        if has_par then
-        begin
-          sb += '(';
-          sb += only_nativ_par.JoinIntoString('; ');
-          sb += ')';
-        end;
-        if f then
-        begin
-          sb += ': ';
-          sb += nativ_par[nativ_par.Count-1];
-        end;
-        
         sb += ' := GetGLFuncOrNil&<';
         sb += f?'function':'procedure';
         if has_par then
