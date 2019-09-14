@@ -12344,6 +12344,27 @@
     
   end;
   
+  gl_INGR = sealed class
+    private static function _GetGLFuncAdr(lpszProc: IntPtr): IntPtr;
+    external 'opengl32.dll' name 'wglGetProcAddress';
+    public static GetGLFuncAdr := _GetGLFuncAdr;
+    public static function GetGLFuncOrNil<T>(fn: string): T;
+    begin
+      var str_ptr := Marshal.StringToHGlobalAnsi(fn);
+      var ptr := GetGLFuncAdr(str_ptr);
+      Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
+    end;
+    
+    {$region GL_INGR_blend_func_separate}
+    
+    public z_BlendFuncSeparateINGR := GetGLFuncOrNil&<procedure(sfactorRGB: DummyEnum; dfactorRGB: DummyEnum; sfactorAlpha: DummyEnum; dfactorAlpha: DummyEnum)>('glBlendFuncSeparateINGR');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlendFuncSeparateINGR(sfactorRGB: DummyEnum; dfactorRGB: DummyEnum; sfactorAlpha: DummyEnum; dfactorAlpha: DummyEnum) := z_BlendFuncSeparateINGR(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
+    
+    {$endregion GL_INGR_blend_func_separate}
+    
+  end;
+  
   gl_INTEL = sealed class
     private static function _GetGLFuncAdr(lpszProc: IntPtr): IntPtr;
     external 'opengl32.dll' name 'wglGetProcAddress';

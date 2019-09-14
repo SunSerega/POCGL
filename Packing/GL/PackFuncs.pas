@@ -119,6 +119,9 @@ begin
       end;
   end;
   
+//  func_name_core_func_table.Keys.Sorted.PrintLines;
+//  halt;
+  
 //  unused_core_funcs.PrintLines(fd->fd.name);
 //  halt;
 end;
@@ -128,6 +131,9 @@ begin
   Otp('Loading ext funcs');
   
   var ext_spec_db := BinSpecDB.LoadFromFile('SpecFormating\GLExt\ext spec.bin');
+  
+  // функции из расширений которые покалечены
+  func_name_ext_name_table['glBlendFuncSeparateINGR'] := Lst('GL_INGR_blend_func_separate');
   
   foreach var ext in ext_spec_db.exts do
     if ext.NewFuncs<>nil then
@@ -141,6 +147,9 @@ begin
         end else
         if not func_name_ext_name_table.ContainsKey(func) and not func_name_core_func_table.ContainsKey(func) then
           incomplete_funcs += func;
+  
+//  func_name_ext_name_table.Keys.Sorted.PrintLines;
+//  halt;
   
 //  incomplete_funcs.PrintLines;
 //  halt;
@@ -222,6 +231,9 @@ begin
     
   end;
   
+//  func_name_ext_name_table.Keys.Sorted.PrintLines;
+//  halt;
+  
   while h_funcs.Count <> 0 do
   begin
     var ext_names: List<string>;
@@ -241,7 +253,11 @@ begin
       begin
         
         if not (h_funcs[0].full_name in [
-          'glAlphaFuncx'
+          'glAlphaFuncx',
+          'glClearColorx',
+          'glClearDepthx',
+          'glBlendBarrier',
+          'glXChooseFBConfig'
         ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
         
         h_funcs.RemoveAt(0);
@@ -259,6 +275,7 @@ begin
         fs += h_funcs[ind];
         h_funcs.RemoveAt(ind);
       end else
+      if not func_name_core_func_table.ContainsKey(fn) then
         Otp($'WARNING: [{ext_names.JoinIntoString}]: can''t find func "{fn}"');
     end;
     
