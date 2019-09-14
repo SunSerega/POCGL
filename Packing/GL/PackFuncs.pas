@@ -78,6 +78,7 @@ var core_funcs := new List<(GLCoreVersion,List<CoreFuncDef>)>;
 var core_func_version_table := new Dictionary<CoreFuncDef,GLCoreVersion>(new CoreFuncEqComp);
 var func_name_core_func_table := new Dictionary<string,CoreFuncDef>;
 
+var incomplete_funcs := new HashSet<string>;
 var func_name_ext_name_table := new Dictionary<string, List<string>>;
 var ext_name_func_name_table := new Dictionary<List<string>, HashSet<string>>(ListSeqEqualityComparer&<string>.val);
 
@@ -118,9 +119,6 @@ begin
       end;
   end;
   
-  foreach var t in core_funcs do
-    foreach var f in t[1] do
-  
 //  unused_core_funcs.PrintLines(fd->fd.name);
 //  halt;
 end;
@@ -133,12 +131,19 @@ begin
   
   foreach var ext in ext_spec_db.exts do
     if ext.NewFuncs<>nil then
-      foreach var func in ext.NewFuncs.funcs do
-      begin
-        if not func_name_ext_name_table.ContainsKey(func[0]) then
-          func_name_ext_name_table[func[0]] := new List<string>;
-        func_name_ext_name_table[func[0]].AddRange(ext.ExtNames.names);
-      end;
+      foreach var func in ext.NewFuncs.funcs.Select(t->t[0]) do
+        if ext.is_complete then
+        begin
+          incomplete_funcs.Remove(func);
+          if not func_name_ext_name_table.ContainsKey(func) then
+            func_name_ext_name_table[func] := new List<string>;
+          func_name_ext_name_table[func].AddRange(ext.ExtNames.names);
+        end else
+        if not func_name_ext_name_table.ContainsKey(func) and not func_name_core_func_table.ContainsKey(func) then
+          incomplete_funcs += func;
+  
+//  incomplete_funcs.PrintLines;
+//  halt;
   
   foreach var key in func_name_ext_name_table.Keys do
   begin
@@ -160,12 +165,14 @@ begin
     System.IO.Directory.EnumerateFiles('Reps\GLBrokenSource',   '*.h', System.IO.SearchOption.AllDirectories)
   ;
   
+  var prev := new HashSet<string>;
   foreach var fname in all_header_files do
   begin
     
     foreach var fd in ReadGLFuncs(ReadAllText(fname, new System.Text.UTF8Encoding(true))) do
-      if not h_funcs.Any(pfd->pfd.full_name=fd.full_name) then
-        h_funcs += fd;
+      if not incomplete_funcs.Contains(fd.full_name) then
+        if prev.Add(fd.full_name) then
+          h_funcs += fd;
     
 //    Otp($'done reading funcs from "{fname}"');
   end;

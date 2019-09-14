@@ -719,6 +719,7 @@ type
   
   ExtSpec = class
     fname: string;
+    is_complete: boolean;
     
     ExtNames:         ExtNamesChapter := nil;
     SpecModifications := new List<SpecModificationsChapter>;
@@ -748,10 +749,11 @@ type
     
     static function InitFromFile(fname: string): ExtSpec;
     begin
-      var spec_text := ReadAllText(fname);
+      if fname.Substring(fname.LastIndexOf('\')+1) in [
+        'GLU_SGIX_icc_compress.txt'
+      ] then exit;
       
-      // у незаконченных расширений - криво прописана спецификация (не приведена в общий вид с остальными расширениями)
-      if spec_text.Split(#10).Any(l->l.StartsWith('XXX') or l.EndsWith('XXX')) then exit;
+      var spec_text := ReadAllText(fname);
       
       // OES\OES_stencil_wrap.txt
       // SGI\akeley_future_extensions.txt
@@ -760,6 +762,7 @@ type
       
       Result := new ExtSpec;
       Result.fname := RemoveGenFolderName(fname);
+      Result.is_complete := not spec_text.Split(#10).Any(l->l.StartsWith('XXX') or l.EndsWith('XXX'));
 //      writeln(fname);
       
       
@@ -874,6 +877,7 @@ type
     procedure Save(bw: System.IO.BinaryWriter);
     begin
       bw.Write(self.fname);
+      bw.Write(self.is_complete);
       
       self.ExtNames.Save(bw);
       
@@ -889,6 +893,7 @@ type
     begin
       Result := new ExtSpec;
       Result.fname := br.ReadString;
+      Result.is_complete := br.ReadBoolean;
       
       Result.ExtNames := ExtNamesChapter.Load(br);
       

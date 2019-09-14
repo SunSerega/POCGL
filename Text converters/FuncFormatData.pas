@@ -708,7 +708,20 @@ type
     $'FuncDef[{full_name}]';
     
   end;
-
+  
+  FuncDefEqComp = sealed class(System.Collections.Generic.IEqualityComparer<FuncDef>)
+    
+    constructor :=
+    inherited Create;
+    
+    public function Equals(x, y: FuncDef): boolean :=
+    x.full_name=y.full_name;
+    
+    public function GetHashCode(obj: FuncDef): integer :=
+    obj.full_name.GetHashCode;
+    
+  end;
+  
 function ReadGLFuncs(text: string): sequence of FuncDef :=
   text.Remove(#13)
   .SkipCharsFromTo2('/*', '*/')

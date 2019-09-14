@@ -4854,9 +4854,6 @@
       Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
-    public z_BindDisplayColorTableEXT := GetGLFuncOrNil&<function(id: UInt16): Byte>('wglBindDisplayColorTableEXT');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function BindDisplayColorTableEXT(id: UInt16): Byte := z_BindDisplayColorTableEXT(id);
-    
     public z_CopyContext := GetGLFuncOrNil&<function(hglrcSrc: GLContext; hglrcDst: GLContext; mask: UInt32): UInt32>('wglCopyContext');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CopyContext(hglrcSrc: GLContext; hglrcDst: GLContext; mask: UInt32): UInt32 := z_CopyContext(hglrcSrc, hglrcDst, mask);
     
@@ -4866,9 +4863,6 @@
     private static function _CreateContext(hDc: GDI_DC): GLContext; external 'opengl32.dll' name 'wglCreateContext';
     public static z_CreateContext: function(hDc: GDI_DC): GLContext := _CreateContext;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContext(hDc: GDI_DC): GLContext := z_CreateContext(hDc);
-    
-    public z_CreateDisplayColorTableEXT := GetGLFuncOrNil&<function(id: UInt16): Byte>('wglCreateDisplayColorTableEXT');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateDisplayColorTableEXT(id: UInt16): Byte := z_CreateDisplayColorTableEXT(id);
     
     public z_CreateLayerContext := GetGLFuncOrNil&<function(hDc: GDI_DC; level: Int32): GLContext>('wglCreateLayerContext');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateLayerContext(hDc: GDI_DC; level: Int32): GLContext := z_CreateLayerContext(hDc, level);
@@ -4880,9 +4874,6 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DescribeLayerPlane(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; plpd: array of GDI_LayerPlaneDescriptor): UInt32 := DescribeLayerPlane(hDc, pixelFormat, layerPlane, nBytes, plpd[0]);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DescribeLayerPlane(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; var plpd: GDI_LayerPlaneDescriptor): UInt32 := DescribeLayerPlane(hDc, pixelFormat, layerPlane, nBytes, @plpd);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DescribeLayerPlane(hDc: GDI_DC; pixelFormat: Int32; layerPlane: Int32; nBytes: UInt32; plpd: pointer): UInt32 := z_DescribeLayerPlane(hDc, pixelFormat, layerPlane, nBytes, plpd);
-    
-    public z_DestroyDisplayColorTableEXT := GetGLFuncOrNil&<procedure(id: UInt16)>('wglDestroyDisplayColorTableEXT');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DestroyDisplayColorTableEXT(id: UInt16) := z_DestroyDisplayColorTableEXT(id);
     
     public z_GetCurrentContext := GetGLFuncOrNil&<function: GLContext>('wglGetCurrentContext');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentContext: GLContext := z_GetCurrentContext;
@@ -4898,11 +4889,6 @@
     public z_GetProcAddress := GetGLFuncOrNil&<function(lpszProc: IntPtr): IntPtr>('wglGetProcAddress');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProcAddress(lpszProc: string): IntPtr; begin var ptr_1 := Marshal.StringToHGlobalAnsi(lpszProc); Result := GetProcAddress(ptr_1); Marshal.FreeHGlobal(ptr_1); end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProcAddress(lpszProc: IntPtr): IntPtr := z_GetProcAddress(lpszProc);
-    
-    public z_LoadDisplayColorTableEXT := GetGLFuncOrNil&<function(table: pointer; length: UInt32): Byte>('wglLoadDisplayColorTableEXT');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function LoadDisplayColorTableEXT(table: array of UInt16; length: UInt32): Byte := LoadDisplayColorTableEXT(table[0], length);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function LoadDisplayColorTableEXT(var table: UInt16; length: UInt32): Byte := LoadDisplayColorTableEXT(@table, length);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function LoadDisplayColorTableEXT(table: pointer; length: UInt32): Byte := z_LoadDisplayColorTableEXT(table, length);
     
     private static function _MakeCurrent(hDc: GDI_DC; newContext: GLContext): UInt32; external 'opengl32.dll' name 'wglMakeCurrent';
     public static z_MakeCurrent: function(hDc: GDI_DC; newContext: GLContext): UInt32 := _MakeCurrent;
