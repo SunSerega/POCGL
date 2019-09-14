@@ -452,6 +452,13 @@ type
               break;
             end;
         end;
+        var ffname := fname.Substring(fname.LastIndexOf('\')+1);
+        foreach var ext_t in Arr('ATI', 'KHR') do
+          if ffname.StartsWith(ext_t) and not func_name.EndsWith(ext_t) then
+          begin
+            func_name += ext_t;
+            break;
+          end;
         func_name := func_name.Replace('Tangent3{bdfis}EXTv', 'Tangent3{bdfis}vEXT');
         
         var func_text := Result.funcs[i][1];
