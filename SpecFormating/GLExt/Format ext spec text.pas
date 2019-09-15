@@ -28,7 +28,12 @@ begin
       var text := ReadAllText(fname);
       text := text.Remove(#13).Replace(#9,' '*4);
       while text.Contains(' '#10) do text := text.Replace(' '#10, #10);
-      text := text.Replace('New Procedures and'#10'Functions', 'New Procedures and Functions');
+      text := text
+        .Replace('New Procedures and'#10'Functions', 'New Procedures and Functions')
+        .Replace('enum outZ'#10, 'enum outZ,'#10)
+        .Replace('uint memoryObject'#10, 'uint memoryObject,'#10)
+        .Replace('(double x, double y, double z, double )', '(double x, double y, double z, double w)')
+      ;
       
       var fname2 := fname.Replace('Reps\OpenGL-Registry\extensions', 'SpecFormating\GLExt\ext spec texts');
       System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fname2));

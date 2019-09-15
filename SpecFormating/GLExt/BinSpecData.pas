@@ -19,12 +19,14 @@ begin
   
 end;
 
-function Distinct<T1,T2>(self: sequence of T1; selector: T1->T2): sequence of T1; extensionmethod;
+function DistinctBy<T1,T2>(self: sequence of T1; selector: T1->T2): sequence of T1; extensionmethod;
 begin
   var prev := new HashSet<T2>;
+  
   foreach var a in self do
     if prev.Add(selector(a)) then
       yield a;
+  
 end;
 
 function WherePrev<T>(self: sequence of T; predicate: T->boolean): sequence of T; extensionmethod;
@@ -381,30 +383,15 @@ type
         var t := s.FindBrackets(last_ind);
         if t=nil then break;
         last_ind := t[1]+1;
+        
+//        s.Substring(t[0]+1,last_ind-t[0]-2).ToWords(',').Select(s->s.Trim).PrintLines;
+//        writeln('-'*10);
+        
+        if not s.Substring(t[0]+1,last_ind-t[0]-2).ToWords(',').Select(s->s.Trim).All(s->(s.ToLower='void') or (s.Remove('unsigned ', 'const ').Replace(' * ', ' ').ToWords.Length=2)) then continue;
         case s.Substring(t[0],last_ind-t[0]) of
           '(for example)',
-          '(for example, so that more efficient memory is available for other purposes such as texture memory)',
-          '(and the implementation is free to ignore any or all of the above parameters)',
-          '(and no OpenGL error is generated)',
-          '(always return NULL)',
-          '(without being reallocated)',
-          '(the memory is not private to a single thread)',
-          '(not simply the thread that allocated the memory)',
-          '(GLenum)',
-          '(1<<i)',
           '(if any)',
-          '(*glXGetProcAddressARB(const GLubyte *procName))', //ToDo это, вроде, нужная функция, возвращающая адрес функции... но это не точно
-          '(to identify the texture unit)',
-          '(to identify the texture unit index)',
-          '(for most systems this is bytes)',
-          '(added for indexed texture state)',
-          '(added if EXT_fog_coord is supported)',
-          '(added if EXT_secondary_color is supported)',
-          '(added if EXT_vertex_weighting is supported)',
-          '(the following two functions are provided if and only if EXT_direct_state_access is supported)',
-          '(the following two commands are supported only if EXT_direct_state_access is supported)',
-          '(seperate primitive mode for each primitive)',
-          '(single primitive mode for all primitives)':
+          '(X assigned)':
             continue;
         end;
         
@@ -426,7 +413,10 @@ type
         
         var f_ind := s.LastIndexOf(' ',name_ind-1)+1; // даже если вернёт -1, это вполне устраивает как ответ
         
-        Result.funcs += ( func_name, s.Substring(f_ind, t[1]+1-f_ind) );
+        var fbody := s.Substring(f_ind, t[1]+1-f_ind);
+        if Arr('calling','by').Any(rt-> fbody.StartsWith(rt) ) then continue;
+        
+        Result.funcs += ( func_name, fbody );
       end;
       
       Result.funcs.RemoveAll(t->t[0]='DECLARE_HANDLE');
@@ -789,6 +779,7 @@ type
       inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures, Functions and Structures:'#10).Select(ind->('NewFuncs', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Additions to the WGL interface:'#10          ).Select(ind->('NewFuncs', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Advertising WGL Extensions'#10               ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes(#10'Additions to the GLX'                        ).Select(ind->('NewFuncs', ind)));
       
       inds.AddRange(spec_text.FindAllIndexes(#10'Addition to '                                ).Select(ind->('SpecModifications', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'Additions to '                               ).Select(ind->('SpecModifications', ind)));
@@ -838,7 +829,7 @@ type
             else Result := true;
           end;
         end)
-        .Distinct(t->spec_text.IndexOf(#10,t[1]))
+        .DistinctBy(t->spec_text.IndexOf(#10,t[1]))
         .Append(nil).Pairwise do
       begin
         var ind1 := p[0][1];
@@ -854,7 +845,7 @@ type
 //        writeln(p[0][0]);
         
         case p[0][0] of
-          'NewFuncs':           if NewFuncsChapter.TryCreate(chapt_contents, fname) is NewFuncsChapter(var chap) then if Result.NewFuncs=nil then Result.NewFuncs := chap else Result.NewFuncs.funcs.AddRange(chap.funcs);
+          'NewFuncs':           if NewFuncsChapter.TryCreate(chapt_contents, fname) is NewFuncsChapter(var chap) then if Result.NewFuncs=nil then Result.NewFuncs := chap else Result.NewFuncs.funcs := Result.NewFuncs.funcs.Concat(chap.funcs).DistinctBy(t->t[0]).ToList;
           
           'Name':               if (Result.ExtNames         =nil) then Result.ExtNames           := ExtNamesChapter          .Create   (chapt_contents        ) else raise new System.InvalidOperationException($'multiple ExtNames chapters in {fname}');
           'SpecModifications':                                         Result.SpecModifications  += SpecModificationsChapter .Create   (chapt_contents        );

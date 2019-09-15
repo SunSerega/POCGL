@@ -5753,13 +5753,13 @@
     
     {$endregion WGL_I3D_digital_video_control}
     
-    {$region WGL_ARB_extensions_string WGL_ARB_extensions_string}
+    {$region WGL_ARB_extensions_string}
     
     public z_GetExtensionsStringARB := GetGLFuncOrNil&<function(hdc: GDI_DC): IntPtr>('wglGetExtensionsStringARB');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetExtensionsStringARB_Str(hdc: GDI_DC): string := Marshal.PtrToStringAnsi(GetExtensionsStringARB(hdc));
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetExtensionsStringARB(hdc: GDI_DC): IntPtr := z_GetExtensionsStringARB(hdc);
     
-    {$endregion WGL_ARB_extensions_string WGL_ARB_extensions_string}
+    {$endregion WGL_ARB_extensions_string}
     
     {$region EXT_extensions_string}
     
@@ -6551,6 +6551,13 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedCopyBufferSubDataNV(dpy: PDisplay; readCtx: GLXContext; writeCtx: GLXContext; readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr) := z_NamedCopyBufferSubDataNV(dpy, readCtx, writeCtx, readBuffer, writeBuffer, readOffset, writeOffset, size);
     
     {$endregion GLX_NV_copy_buffer}
+    
+    {$region NV_copy_image}
+    
+    public z_CopyImageSubDataNV := GetGLFuncOrNil&<procedure(dpy: PDisplay; srcCtx: GLXContext; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstCtx: GLXContext; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32)>('glXCopyImageSubDataNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyImageSubDataNV(dpy: PDisplay; srcCtx: GLXContext; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstCtx: GLXContext; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32) := z_CopyImageSubDataNV(dpy, srcCtx, srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstCtx, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, width, height, depth);
+    
+    {$endregion NV_copy_image}
     
     {$region MESA_copy_sub_buffer}
     

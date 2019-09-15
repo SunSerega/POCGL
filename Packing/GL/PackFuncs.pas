@@ -252,10 +252,8 @@ begin
       end else
       begin
         
-        if not (h_funcs[0].full_name in [
-          'glAlphaFuncx',
-          'glClearColorx',
-          'glClearDepthx',
+        if not h_funcs[0].full_name.EndsWith('x') and not (h_funcs[0].full_name in [
+          'glClipPlanef',
           'glBlendBarrier',
           'glXChooseFBConfig'
         ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
@@ -282,6 +280,8 @@ begin
     var fs_cnames :=
       fs.ConvertAll(fd->
       begin
+        if fd.full_name='glCopyImageSubDataNV' then
+          Result := 'gl_NV' else
         case fd.name_header of
           'wgl':  Result := 'wgl';
           'egl':  Result := 'egl';
