@@ -391,7 +391,11 @@ type
         case s.Substring(t[0],last_ind-t[0]) of
           '(for example)',
           '(if any)',
-          '(X assigned)':
+          '(X assigned)',
+          '(the default)',
+          '(see below)',
+          '(major version, minor version, [profile mask])',
+          '(Display *)':
             continue;
         end;
         

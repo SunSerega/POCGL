@@ -133,7 +133,10 @@ begin
   var ext_spec_db := BinSpecDB.LoadFromFile('SpecFormating\GLExt\ext spec.bin');
   
   // функции из расширений которые покалечены
-  func_name_ext_name_table['glBlendFuncSeparateINGR'] := Lst('GL_INGR_blend_func_separate');
+  func_name_ext_name_table['glBlendFuncSeparateINGR'] := Lst('INGR_blend_func_separate');
+  func_name_ext_name_table['glDrawRangeElementsEXT']  := Lst('EXT_draw_range_elements');
+  func_name_ext_name_table['glGetLightxvOES']         := new List<string>;
+  func_name_ext_name_table['glGetMaterialxvOES']      := new List<string>;
   
   foreach var ext in ext_spec_db.exts do
     if ext.NewFuncs<>nil then
@@ -161,7 +164,7 @@ begin
       ext_name_func_name_table[val] := new HashSet<string>;
     ext_name_func_name_table[val].Add(key);
   end;
-  ext_name_func_name_table.Add(new List<string>, new HashSet<string>);
+//  ext_name_func_name_table.Add(new List<string>, new HashSet<string>);
   
 end;
 
@@ -255,7 +258,16 @@ begin
         if not h_funcs[0].full_name.EndsWith('x') and not (h_funcs[0].full_name in [
           'glClipPlanef',
           'glBlendBarrier',
-          'glXChooseFBConfig'
+          'glXChooseFBConfig',
+          'glFogxv',
+          'glFrustumf',
+          'glGetClipPlanef',
+          'glGetFixedv',
+          'glGetLightxv',
+          'glGetMaterialxv',
+          'glGetnColorTable',
+          'glGetnConvolutionFilter',
+          'glGetnHistogram'
         ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
         
         h_funcs.RemoveAt(0);

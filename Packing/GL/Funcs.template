@@ -10098,6 +10098,13 @@
     
     {$endregion EXT_draw_elements_base_vertex}
     
+    {$region EXT_draw_range_elements}
+    
+    public z_DrawRangeElementsEXT := GetGLFuncOrNil&<procedure(mode: DummyEnum; start: UInt32; &end: UInt32; count: Int32; &type: DummyEnum; indices: pointer)>('glDrawRangeElementsEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawRangeElementsEXT(mode: DummyEnum; start: UInt32; &end: UInt32; count: Int32; &type: DummyEnum; indices: pointer) := z_DrawRangeElementsEXT(mode, start, &end, count, &type, indices);
+    
+    {$endregion EXT_draw_range_elements}
+    
     {$region EXT_draw_transform_feedback EXT_transform_feedback2}
     
     public z_DrawTransformFeedbackEXT := GetGLFuncOrNil&<procedure(mode: DummyEnum; id: UInt32)>('glDrawTransformFeedbackEXT');
@@ -12556,12 +12563,12 @@
       Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
     
-    {$region GL_INGR_blend_func_separate}
+    {$region INGR_blend_func_separate}
     
     public z_BlendFuncSeparateINGR := GetGLFuncOrNil&<procedure(sfactorRGB: DummyEnum; dfactorRGB: DummyEnum; sfactorAlpha: DummyEnum; dfactorAlpha: DummyEnum)>('glBlendFuncSeparateINGR');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlendFuncSeparateINGR(sfactorRGB: DummyEnum; dfactorRGB: DummyEnum; sfactorAlpha: DummyEnum; dfactorAlpha: DummyEnum) := z_BlendFuncSeparateINGR(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
     
-    {$endregion GL_INGR_blend_func_separate}
+    {$endregion INGR_blend_func_separate}
     
   end;
   
@@ -17815,6 +17822,16 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UnmapBufferOES(target: DummyEnum): Byte := z_UnmapBufferOES(target);
     
     {$endregion OES_mapbuffer}
+    
+    public z_GetLightxvOES := GetGLFuncOrNil&<procedure(light: DummyEnum; pname: DummyEnum; &params: pointer)>('glGetLightxvOES');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetLightxvOES(light: DummyEnum; pname: DummyEnum; &params: array of fixed) := GetLightxvOES(light, pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetLightxvOES(light: DummyEnum; pname: DummyEnum; var &params: fixed) := GetLightxvOES(light, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetLightxvOES(light: DummyEnum; pname: DummyEnum; &params: pointer) := z_GetLightxvOES(light, pname, &params);
+    
+    public z_GetMaterialxvOES := GetGLFuncOrNil&<procedure(face: DummyEnum; pname: DummyEnum; &params: pointer)>('glGetMaterialxvOES');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialxvOES(face: DummyEnum; pname: DummyEnum; &params: array of fixed) := GetMaterialxvOES(face, pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialxvOES(face: DummyEnum; pname: DummyEnum; var &params: fixed) := GetMaterialxvOES(face, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialxvOES(face: DummyEnum; pname: DummyEnum; &params: pointer) := z_GetMaterialxvOES(face, pname, &params);
     
     {$region OES_get_program_binary}
     
