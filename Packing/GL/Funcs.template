@@ -6573,6 +6573,9 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContextAttribsARB(dpy: PDisplay; config: GLXFBConfig; share_context: GLXContext; direct: UInt32; var attrib_list: Int32): GLXContext := CreateContextAttribsARB(dpy, config, share_context, direct, @attrib_list);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContextAttribsARB(dpy: PDisplay; config: GLXFBConfig; share_context: GLXContext; direct: UInt32; attrib_list: pointer): GLXContext := z_CreateContextAttribsARB(dpy, config, share_context, direct, attrib_list);
     
+    public z_CreateNewContext := GetGLFuncOrNil&<function(dpy: PDisplay; config: GLXFBConfig; render_type: Int32; share_list: GLXContext; direct: UInt32): GLXContext>('glXCreateNewContext');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateNewContext(dpy: PDisplay; config: GLXFBConfig; render_type: Int32; share_list: GLXContext; direct: UInt32): GLXContext := z_CreateNewContext(dpy, config, render_type, share_list, direct);
+    
     {$endregion ARB_create_context ARB_create_context_profile}
     
     {$region SGIX_pbuffer}
@@ -6756,6 +6759,15 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function WaitForSbcOML(dpy: PDisplay; drawable: GLXDrawable; target_sbc: Int64; ust: pointer; msc: pointer; sbc: pointer): UInt32 := z_WaitForSbcOML(dpy, drawable, target_sbc, ust, msc, sbc);
     
     {$endregion OML_sync_control}
+    
+    {$region EXT_stereo_tree}
+    
+    public z_GetSelectedEvent := GetGLFuncOrNil&<procedure(dpy: PDisplay; draw: GLXDrawable; event_mask: pointer)>('glXGetSelectedEvent');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSelectedEvent(dpy: PDisplay; draw: GLXDrawable; event_mask: array of UInt64) := GetSelectedEvent(dpy, draw, event_mask[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSelectedEvent(dpy: PDisplay; draw: GLXDrawable; var event_mask: UInt64) := GetSelectedEvent(dpy, draw, @event_mask);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSelectedEvent(dpy: PDisplay; draw: GLXDrawable; event_mask: pointer) := z_GetSelectedEvent(dpy, draw, event_mask);
+    
+    {$endregion EXT_stereo_tree}
     
     {$region EXT_swap_control}
     

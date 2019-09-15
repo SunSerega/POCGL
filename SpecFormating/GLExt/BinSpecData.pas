@@ -371,7 +371,7 @@ type
       end;
       
       Result := new NewFuncsChapter(s);
-      if Result.header_end<>'' then raise new System.ArgumentException($'NewFuncsChapter had header_end of "{Result.header_end}"');
+//      if Result.header_end<>'' then raise new System.ArgumentException($'NewFuncsChapter had header_end of "{Result.header_end}"');
       
       Result.contents := Result.contents.Replace(#10,' ').SkipCharsFromTo('/*','*/').JoinIntoString;
       while Result.contents.Contains('  ') do Result.contents := Result.contents.Replace('  ',' ');
