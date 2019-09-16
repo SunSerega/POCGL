@@ -108,7 +108,7 @@ function TraslateType(pname, tname: string; vec_l: integer): native_par_data;
 begin
   
   var rc := tname.Count(ch->ch='*');
-  tname := tname.Remove('const*', 'const ', ' ', '*', #13, #10);
+  tname := tname.Remove('const*', 'const ', ' ', '*', #13, #10, #9);
   
   case tname.ToLower of
     
@@ -117,7 +117,7 @@ begin
     'eglboolean':               tname := 'UInt32';
     
     'glbyte':                   tname := 'SByte';
-    'glboolean':                tname := 'Byte';
+    'glboolean':                tname := 'boolean';
     'glubyte':                  tname := 'Byte';
     
     'glshort':                  tname := 'Int16';
@@ -435,6 +435,11 @@ type
       
       {$endregion Stage 1 (native_par_data)}
       
+//      if full_name='glGetBooleanv' then
+//      begin
+//        full_name := full_name;
+//      end;
+      
       var all_ovr_types: List<List<string>>;
       
       {$region Stage 2 (OverloadControl + all overloads)}
@@ -543,6 +548,11 @@ type
       var only_nativ_par := f?nativ_par.SkipLast:nativ_par;
       
       sb += #10;
+      
+//      if full_name='glGetBooleanv' then
+//      begin
+//        full_name := full_name;
+//      end;
       
       
       
