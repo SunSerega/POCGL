@@ -43,6 +43,8 @@ begin
     'glNormal':     Result := Range(3,3);
     'glColor':      Result := Range(3,4);
     'glRasterPos':  Result := Range(2,4);
+    'glIndex':      Result := Seq(0);
+    'glRect':      Result := Seq(0);
     else raise new System.InvalidOperationException(fn);
   end;
 end;
@@ -60,11 +62,13 @@ var AllTypes := Arr(
 function GetTRange(fn: string): sequence of (string, string);
 begin
   case fn of
-    'glVertex':     Result := Arr(1,2,6,7).Select(i->AllTypes[i]);
-    'glTexCoord':   Result := Arr(1,2,6,7).Select(i->AllTypes[i]);
-    'glNormal':     Result := Arr(1,2,6,7).Select(i->AllTypes[i]);
-    'glColor':      Result := Range(0,7)  .Select(i->AllTypes[i]);
-    'glRasterPos':  Result := Arr(1,2,6,7).Select(i->AllTypes[i]);
+    'glVertex':     Result := Arr(1,2,6,7)  .Select(i->AllTypes[i]);
+    'glTexCoord':   Result := Arr(1,2,6,7)  .Select(i->AllTypes[i]);
+    'glNormal':     Result := Arr(0,1,2,6,7).Select(i->AllTypes[i]);
+    'glColor':      Result := AllTypes;
+    'glRasterPos':  Result := Arr(1,2,6,7)  .Select(i->AllTypes[i]);
+    'glIndex':      Result := Arr(1,2,3,6,7).Select(i->AllTypes[i]);
+    'glRect':       Result := Arr(1,2,6,7)  .Select(i->AllTypes[i]);
     else raise new System.InvalidOperationException(fn);
   end;
 end;
@@ -74,7 +78,7 @@ begin
   
   loop 3 do sw.WriteLine;
   
-  foreach var fn in Arr('glVertex','glTexCoord','glNormal','glColor','glRasterPos') do
+  foreach var fn in Arr('glVertex','glTexCoord','glNormal','glColor','glRasterPos','glIndex','glRect') do
   begin
     
     foreach var pc in GetNRange(fn) do
@@ -83,7 +87,7 @@ begin
         begin
           sw.Write('void ');
           sw.Write(fn);
-          sw.Write(pc);
+          if pc<>0 then sw.Write(pc);
           sw.Write(pt[0]);
           if v then sw.Write('v');
           sw.Write('(');
@@ -94,13 +98,13 @@ begin
             sw.Write(' * ');
             sw.Write('v');
           end else
-          for var i := 1 to pc do
+          for var i := 1 to Max(1,pc) do
           begin
             sw.Write(pt[1]);
             sw.Write(' ');
             sw.Write('v');
             sw.Write(i);
-            if i<>pc then sw.Write(', ');
+            if i<pc then sw.Write(', ');
           end;
           
           sw.Write(');');

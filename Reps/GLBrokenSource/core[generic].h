@@ -59,6 +59,8 @@ void glTexCoord4fv(glfloat * v);
 void glTexCoord4d(gldouble v1, gldouble v2, gldouble v3, gldouble v4);
 void glTexCoord4dv(gldouble * v);
 
+void glNormal3b(glbyte v1, glbyte v2, glbyte v3);
+void glNormal3bv(glbyte * v);
 void glNormal3s(glshort v1, glshort v2, glshort v3);
 void glNormal3sv(glshort * v);
 void glNormal3i(glint v1, glint v2, glint v3);
@@ -125,5 +127,25 @@ void glRasterPos4f(glfloat v1, glfloat v2, glfloat v3, glfloat v4);
 void glRasterPos4fv(glfloat * v);
 void glRasterPos4d(gldouble v1, gldouble v2, gldouble v3, gldouble v4);
 void glRasterPos4dv(gldouble * v);
+
+void glIndexs(glshort v1);
+void glIndexsv(glshort * v);
+void glIndexi(glint v1);
+void glIndexiv(glint * v);
+void glIndexub(glubyte v1);
+void glIndexubv(glubyte * v);
+void glIndexf(glfloat v1);
+void glIndexfv(glfloat * v);
+void glIndexd(gldouble v1);
+void glIndexdv(gldouble * v);
+
+void glRects(glshort v1);
+void glRectsv(glshort * v);
+void glRecti(glint v1);
+void glRectiv(glint * v);
+void glRectf(glfloat v1);
+void glRectfv(glfloat * v);
+void glRectd(gldouble v1);
+void glRectdv(gldouble * v);
 
 

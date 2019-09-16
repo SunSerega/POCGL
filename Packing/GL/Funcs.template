@@ -4340,6 +4340,18 @@
     public static z_Normal3d: procedure(v1: double; v2: double; v3: double) := _Normal3d;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Normal3d(v1: double; v2: double; v3: double) := z_Normal3d(v1, v2, v3);
     
+    private static procedure _Normal3bv(v: pointer); external 'opengl32.dll' name 'glNormal3bv';
+    ///OpenGL 3.0
+    public static z_Normal3bv: procedure(v: pointer) := _Normal3bv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Normal3bv(v: array of SByte) := Normal3bv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Normal3bv(var v: SByte) := Normal3bv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Normal3bv(v: pointer) := z_Normal3bv(v);
+    
+    private static procedure _Normal3b(v1: SByte; v2: SByte; v3: SByte); external 'opengl32.dll' name 'glNormal3b';
+    ///OpenGL 3.0
+    public static z_Normal3b: procedure(v1: SByte; v2: SByte; v3: SByte) := _Normal3b;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Normal3b(v1: SByte; v2: SByte; v3: SByte) := z_Normal3b(v1, v2, v3);
+    
     ///OpenGL 3.0
     public z_MultiTexCoord4sv := GetGLFuncOrNil&<procedure(target: DummyEnum; v: pointer)>('glMultiTexCoord4sv');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexCoord4sv(target: DummyEnum; v: array of Int16) := MultiTexCoord4sv(target, v[0]);
@@ -4499,6 +4511,66 @@
     ///OpenGL 3.0
     public z_MultiTexCoord1d := GetGLFuncOrNil&<procedure(target: DummyEnum; s: double)>('glMultiTexCoord1d');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexCoord1d(target: DummyEnum; s: double) := z_MultiTexCoord1d(target, s);
+    
+    private static procedure _Indexubv(v: pointer); external 'opengl32.dll' name 'glIndexubv';
+    ///OpenGL 3.0
+    public static z_Indexubv: procedure(v: pointer) := _Indexubv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexubv(v: array of Byte) := Indexubv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexubv(var v: Byte) := Indexubv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexubv(v: pointer) := z_Indexubv(v);
+    
+    private static procedure _Indexub(v1: Byte); external 'opengl32.dll' name 'glIndexub';
+    ///OpenGL 3.0
+    public static z_Indexub: procedure(v1: Byte) := _Indexub;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexub(v1: Byte) := z_Indexub(v1);
+    
+    private static procedure _Indexsv(v: pointer); external 'opengl32.dll' name 'glIndexsv';
+    ///OpenGL 3.0
+    public static z_Indexsv: procedure(v: pointer) := _Indexsv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexsv(v: array of Int16) := Indexsv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexsv(var v: Int16) := Indexsv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexsv(v: pointer) := z_Indexsv(v);
+    
+    private static procedure _Indexs(v1: Int16); external 'opengl32.dll' name 'glIndexs';
+    ///OpenGL 3.0
+    public static z_Indexs: procedure(v1: Int16) := _Indexs;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexs(v1: Int16) := z_Indexs(v1);
+    
+    private static procedure _Indexiv(v: pointer); external 'opengl32.dll' name 'glIndexiv';
+    ///OpenGL 3.0
+    public static z_Indexiv: procedure(v: pointer) := _Indexiv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexiv(v: array of Int32) := Indexiv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexiv(var v: Int32) := Indexiv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexiv(v: pointer) := z_Indexiv(v);
+    
+    private static procedure _Indexi(v1: Int32); external 'opengl32.dll' name 'glIndexi';
+    ///OpenGL 3.0
+    public static z_Indexi: procedure(v1: Int32) := _Indexi;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexi(v1: Int32) := z_Indexi(v1);
+    
+    private static procedure _Indexfv(v: pointer); external 'opengl32.dll' name 'glIndexfv';
+    ///OpenGL 3.0
+    public static z_Indexfv: procedure(v: pointer) := _Indexfv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexfv(v: array of single) := Indexfv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexfv(var v: single) := Indexfv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexfv(v: pointer) := z_Indexfv(v);
+    
+    private static procedure _Indexf(v1: single); external 'opengl32.dll' name 'glIndexf';
+    ///OpenGL 3.0
+    public static z_Indexf: procedure(v1: single) := _Indexf;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexf(v1: single) := z_Indexf(v1);
+    
+    private static procedure _Indexdv(v: pointer); external 'opengl32.dll' name 'glIndexdv';
+    ///OpenGL 3.0
+    public static z_Indexdv: procedure(v: pointer) := _Indexdv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexdv(v: array of double) := Indexdv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexdv(var v: double) := Indexdv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexdv(v: pointer) := z_Indexdv(v);
+    
+    private static procedure _Indexd(v1: double); external 'opengl32.dll' name 'glIndexd';
+    ///OpenGL 3.0
+    public static z_Indexd: procedure(v1: double) := _Indexd;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Indexd(v1: double) := z_Indexd(v1);
     
     ///OpenGL 3.0
     public z_FogCoordfv := GetGLFuncOrNil&<procedure(coord: pointer)>('glFogCoordfv');
@@ -4735,6 +4807,16 @@
     public static z_NormalPointer: procedure(&type: DummyEnum; stride: Int32; _pointer: pointer) := _NormalPointer;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NormalPointer(&type: DummyEnum; stride: Int32; _pointer: pointer) := z_NormalPointer(&type, stride, _pointer);
     
+    private static procedure _InterleavedArrays(format: DummyEnum; stride: Int32; _pointer: pointer); external 'opengl32.dll' name 'glInterleavedArrays';
+    ///OpenGL 3.0
+    public static z_InterleavedArrays: procedure(format: DummyEnum; stride: Int32; _pointer: pointer) := _InterleavedArrays;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InterleavedArrays(format: DummyEnum; stride: Int32; _pointer: pointer) := z_InterleavedArrays(format, stride, _pointer);
+    
+    private static procedure _IndexPointer(&type: DummyEnum; stride: Int32; _pointer: pointer); external 'opengl32.dll' name 'glIndexPointer';
+    ///OpenGL 3.0
+    public static z_IndexPointer: procedure(&type: DummyEnum; stride: Int32; _pointer: pointer) := _IndexPointer;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexPointer(&type: DummyEnum; stride: Int32; _pointer: pointer) := z_IndexPointer(&type, stride, _pointer);
+    
     ///OpenGL 3.0
     public z_FogCoordPointer := GetGLFuncOrNil&<procedure(&type: DummyEnum; stride: Int32; _pointer: pointer)>('glFogCoordPointer');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordPointer(&type: DummyEnum; stride: Int32; _pointer: pointer) := z_FogCoordPointer(&type, stride, _pointer);
@@ -4743,6 +4825,11 @@
     ///OpenGL 3.0
     public static z_EnableClientState: procedure(&array: DummyEnum) := _EnableClientState;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EnableClientState(&array: DummyEnum) := z_EnableClientState(&array);
+    
+    private static procedure _EdgeFlagPointer(stride: Int32; _pointer: pointer); external 'opengl32.dll' name 'glEdgeFlagPointer';
+    ///OpenGL 3.0
+    public static z_EdgeFlagPointer: procedure(stride: Int32; _pointer: pointer) := _EdgeFlagPointer;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EdgeFlagPointer(stride: Int32; _pointer: pointer) := z_EdgeFlagPointer(stride, _pointer);
     
     private static procedure _DisableClientState(&array: DummyEnum); external 'opengl32.dll' name 'glDisableClientState';
     ///OpenGL 3.0
@@ -4758,7 +4845,64 @@
     public z_ClientActiveTexture := GetGLFuncOrNil&<procedure(texture: DummyEnum)>('glClientActiveTexture');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClientActiveTexture(texture: DummyEnum) := z_ClientActiveTexture(texture);
     
+    private static procedure _ArrayElement(i: Int32); external 'opengl32.dll' name 'glArrayElement';
+    ///OpenGL 3.0
+    public static z_ArrayElement: procedure(i: Int32) := _ArrayElement;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ArrayElement(i: Int32) := z_ArrayElement(i);
+    
     {$endregion 2.8 - Vertex Arrays}
+    
+    {$region 2.11 - Rectangles}
+    
+    private static procedure _Rectsv(v: pointer); external 'opengl32.dll' name 'glRectsv';
+    ///OpenGL 3.0
+    public static z_Rectsv: procedure(v: pointer) := _Rectsv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectsv(v: array of Int16) := Rectsv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectsv(var v: Int16) := Rectsv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectsv(v: pointer) := z_Rectsv(v);
+    
+    private static procedure _Rects(v1: Int16); external 'opengl32.dll' name 'glRects';
+    ///OpenGL 3.0
+    public static z_Rects: procedure(v1: Int16) := _Rects;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rects(v1: Int16) := z_Rects(v1);
+    
+    private static procedure _Rectiv(v: pointer); external 'opengl32.dll' name 'glRectiv';
+    ///OpenGL 3.0
+    public static z_Rectiv: procedure(v: pointer) := _Rectiv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectiv(v: array of Int32) := Rectiv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectiv(var v: Int32) := Rectiv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectiv(v: pointer) := z_Rectiv(v);
+    
+    private static procedure _Recti(v1: Int32); external 'opengl32.dll' name 'glRecti';
+    ///OpenGL 3.0
+    public static z_Recti: procedure(v1: Int32) := _Recti;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Recti(v1: Int32) := z_Recti(v1);
+    
+    private static procedure _Rectfv(v: pointer); external 'opengl32.dll' name 'glRectfv';
+    ///OpenGL 3.0
+    public static z_Rectfv: procedure(v: pointer) := _Rectfv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectfv(v: array of single) := Rectfv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectfv(var v: single) := Rectfv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectfv(v: pointer) := z_Rectfv(v);
+    
+    private static procedure _Rectf(v1: single); external 'opengl32.dll' name 'glRectf';
+    ///OpenGL 3.0
+    public static z_Rectf: procedure(v1: single) := _Rectf;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectf(v1: single) := z_Rectf(v1);
+    
+    private static procedure _Rectdv(v: pointer); external 'opengl32.dll' name 'glRectdv';
+    ///OpenGL 3.0
+    public static z_Rectdv: procedure(v: pointer) := _Rectdv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectdv(v: array of double) := Rectdv(v[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectdv(var v: double) := Rectdv(@v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectdv(v: pointer) := z_Rectdv(v);
+    
+    private static procedure _Rectd(v1: double); external 'opengl32.dll' name 'glRectd';
+    ///OpenGL 3.0
+    public static z_Rectd: procedure(v1: double) := _Rectd;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rectd(v1: double) := z_Rectd(v1);
+    
+    {$endregion 2.11 - Rectangles}
     
     {$region 2.12 - Coordinate Transformations}
     
@@ -4769,15 +4913,30 @@
     public static z_Translatef: procedure(x: single; y: single; z: single) := _Translatef;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Translatef(x: single; y: single; z: single) := z_Translatef(x, y, z);
     
+    private static procedure _Translated(x: double; y: double; z: double); external 'opengl32.dll' name 'glTranslated';
+    ///OpenGL 3.0
+    public static z_Translated: procedure(x: double; y: double; z: double) := _Translated;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Translated(x: double; y: double; z: double) := z_Translated(x, y, z);
+    
     private static procedure _Scalef(x: single; y: single; z: single); external 'opengl32.dll' name 'glScalef';
     ///OpenGL 3.0
     public static z_Scalef: procedure(x: single; y: single; z: single) := _Scalef;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Scalef(x: single; y: single; z: single) := z_Scalef(x, y, z);
     
+    private static procedure _Scaled(x: double; y: double; z: double); external 'opengl32.dll' name 'glScaled';
+    ///OpenGL 3.0
+    public static z_Scaled: procedure(x: double; y: double; z: double) := _Scaled;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Scaled(x: double; y: double; z: double) := z_Scaled(x, y, z);
+    
     private static procedure _Rotatef(angle: single; x: single; y: single; z: single); external 'opengl32.dll' name 'glRotatef';
     ///OpenGL 3.0
     public static z_Rotatef: procedure(angle: single; x: single; y: single; z: single) := _Rotatef;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rotatef(angle: single; x: single; y: single; z: single) := z_Rotatef(angle, x, y, z);
+    
+    private static procedure _Rotated(angle: double; x: double; y: double; z: double); external 'opengl32.dll' name 'glRotated';
+    ///OpenGL 3.0
+    public static z_Rotated: procedure(angle: double; x: double; y: double; z: double) := _Rotated;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Rotated(angle: double; x: double; y: double; z: double) := z_Rotated(angle, x, y, z);
     
     private static procedure _PushMatrix; external 'opengl32.dll' name 'glPushMatrix';
     ///OpenGL 3.0
@@ -4788,6 +4947,11 @@
     ///OpenGL 3.0
     public static z_PopMatrix: procedure := _PopMatrix;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PopMatrix := z_PopMatrix;
+    
+    private static procedure _Ortho(left: double; right: double; bottom: double; top: double; nearVal: double; farVal: double); external 'opengl32.dll' name 'glOrtho';
+    ///OpenGL 3.0
+    public static z_Ortho: procedure(left: double; right: double; bottom: double; top: double; nearVal: double; farVal: double) := _Ortho;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Ortho(left: double; right: double; bottom: double; top: double; nearVal: double; farVal: double) := z_Ortho(left, right, bottom, top, nearVal, farVal);
     
     ///OpenGL 3.0
     public z_MultTransposeMatrixf := GetGLFuncOrNil&<procedure(m: pointer)>('glMultTransposeMatrixf');
@@ -4807,6 +4971,13 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultMatrixf(m: array of single) := MultMatrixf(m[0]);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultMatrixf(var m: single) := MultMatrixf(@m);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultMatrixf(m: pointer) := z_MultMatrixf(m);
+    
+    private static procedure _MultMatrixd(m: pointer); external 'opengl32.dll' name 'glMultMatrixd';
+    ///OpenGL 3.0
+    public static z_MultMatrixd: procedure(m: pointer) := _MultMatrixd;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultMatrixd(m: array of double) := MultMatrixd(m[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultMatrixd(var m: double) := MultMatrixd(@m);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultMatrixd(m: pointer) := z_MultMatrixd(m);
     
     private static procedure _MatrixMode(mode: DummyEnum); external 'opengl32.dll' name 'glMatrixMode';
     ///OpenGL 3.0
@@ -4832,14 +5003,77 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LoadMatrixf(var m: single) := LoadMatrixf(@m);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LoadMatrixf(m: pointer) := z_LoadMatrixf(m);
     
+    private static procedure _LoadMatrixd(m: pointer); external 'opengl32.dll' name 'glLoadMatrixd';
+    ///OpenGL 3.0
+    public static z_LoadMatrixd: procedure(m: pointer) := _LoadMatrixd;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LoadMatrixd(m: array of double) := LoadMatrixd(m[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LoadMatrixd(var m: double) := LoadMatrixd(@m);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LoadMatrixd(m: pointer) := z_LoadMatrixd(m);
+    
     private static procedure _LoadIdentity; external 'opengl32.dll' name 'glLoadIdentity';
     ///OpenGL 3.0
     public static z_LoadIdentity: procedure := _LoadIdentity;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LoadIdentity := z_LoadIdentity;
     
+    private static procedure _Frustum(left: double; right: double; bottom: double; top: double; nearVal: double; farVal: double); external 'opengl32.dll' name 'glFrustum';
+    ///OpenGL 3.0
+    public static z_Frustum: procedure(left: double; right: double; bottom: double; top: double; nearVal: double; farVal: double) := _Frustum;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Frustum(left: double; right: double; bottom: double; top: double; nearVal: double; farVal: double) := z_Frustum(left, right, bottom, top, nearVal, farVal);
+    
     {$endregion 2.12.2 - Matrices}
     
+    {$region 2.12.4 - Generating Texture Coordinates}
+    
+    private static procedure _TexGeniv(coord: DummyEnum; pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glTexGeniv';
+    ///OpenGL 3.0
+    public static z_TexGeniv: procedure(coord: DummyEnum; pname: DummyEnum; &params: pointer) := _TexGeniv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGeniv(coord: DummyEnum; pname: DummyEnum; &params: array of Int32) := TexGeniv(coord, pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGeniv(coord: DummyEnum; pname: DummyEnum; var &params: Int32) := TexGeniv(coord, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGeniv(coord: DummyEnum; pname: DummyEnum; &params: pointer) := z_TexGeniv(coord, pname, &params);
+    
+    private static procedure _TexGeni(coord: DummyEnum; pname: DummyEnum; param: Int32); external 'opengl32.dll' name 'glTexGeni';
+    ///OpenGL 3.0
+    public static z_TexGeni: procedure(coord: DummyEnum; pname: DummyEnum; param: Int32) := _TexGeni;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGeni(coord: DummyEnum; pname: DummyEnum; param: Int32) := z_TexGeni(coord, pname, param);
+    
+    private static procedure _TexGenfv(coord: DummyEnum; pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glTexGenfv';
+    ///OpenGL 3.0
+    public static z_TexGenfv: procedure(coord: DummyEnum; pname: DummyEnum; &params: pointer) := _TexGenfv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGenfv(coord: DummyEnum; pname: DummyEnum; &params: array of single) := TexGenfv(coord, pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGenfv(coord: DummyEnum; pname: DummyEnum; var &params: single) := TexGenfv(coord, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGenfv(coord: DummyEnum; pname: DummyEnum; &params: pointer) := z_TexGenfv(coord, pname, &params);
+    
+    private static procedure _TexGenf(coord: DummyEnum; pname: DummyEnum; param: single); external 'opengl32.dll' name 'glTexGenf';
+    ///OpenGL 3.0
+    public static z_TexGenf: procedure(coord: DummyEnum; pname: DummyEnum; param: single) := _TexGenf;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGenf(coord: DummyEnum; pname: DummyEnum; param: single) := z_TexGenf(coord, pname, param);
+    
+    private static procedure _TexGendv(coord: DummyEnum; pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glTexGendv';
+    ///OpenGL 3.0
+    public static z_TexGendv: procedure(coord: DummyEnum; pname: DummyEnum; &params: pointer) := _TexGendv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGendv(coord: DummyEnum; pname: DummyEnum; &params: array of double) := TexGendv(coord, pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGendv(coord: DummyEnum; pname: DummyEnum; var &params: double) := TexGendv(coord, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGendv(coord: DummyEnum; pname: DummyEnum; &params: pointer) := z_TexGendv(coord, pname, &params);
+    
+    private static procedure _TexGend(coord: DummyEnum; pname: DummyEnum; param: double); external 'opengl32.dll' name 'glTexGend';
+    ///OpenGL 3.0
+    public static z_TexGend: procedure(coord: DummyEnum; pname: DummyEnum; param: double) := _TexGend;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexGend(coord: DummyEnum; pname: DummyEnum; param: double) := z_TexGend(coord, pname, param);
+    
+    {$endregion 2.12.4 - Generating Texture Coordinates}
+    
     {$endregion 2.12 - Coordinate Transformations}
+    
+    {$region 2.17 - Clipping}
+    
+    private static procedure _ClipPlane(plane: DummyEnum; equation: pointer); external 'opengl32.dll' name 'glClipPlane';
+    ///OpenGL 3.0
+    public static z_ClipPlane: procedure(plane: DummyEnum; equation: pointer) := _ClipPlane;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClipPlane(plane: DummyEnum; equation: array of double) := ClipPlane(plane, equation[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClipPlane(plane: DummyEnum; var equation: double) := ClipPlane(plane, @equation);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ClipPlane(plane: DummyEnum; equation: pointer) := z_ClipPlane(plane, equation);
+    
+    {$endregion 2.17 - Clipping}
     
     {$region 2.18 - Current Raster Position}
     
@@ -5073,6 +5307,18 @@
     
     {$region 2.19.2 - Lighting Parameter Specification}
     
+    private static procedure _Materialiv(face: DummyEnum; pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glMaterialiv';
+    ///OpenGL 3.0
+    public static z_Materialiv: procedure(face: DummyEnum; pname: DummyEnum; &params: pointer) := _Materialiv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: DummyEnum; pname: DummyEnum; &params: array of Int32) := Materialiv(face, pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: DummyEnum; pname: DummyEnum; var &params: Int32) := Materialiv(face, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: DummyEnum; pname: DummyEnum; &params: pointer) := z_Materialiv(face, pname, &params);
+    
+    private static procedure _Materiali(face: DummyEnum; pname: DummyEnum; param: Int32); external 'opengl32.dll' name 'glMateriali';
+    ///OpenGL 3.0
+    public static z_Materiali: procedure(face: DummyEnum; pname: DummyEnum; param: Int32) := _Materiali;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materiali(face: DummyEnum; pname: DummyEnum; param: Int32) := z_Materiali(face, pname, param);
+    
     private static procedure _Materialfv(face: DummyEnum; pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glMaterialfv';
     ///OpenGL 3.0
     public static z_Materialfv: procedure(face: DummyEnum; pname: DummyEnum; &params: pointer) := _Materialfv;
@@ -5085,6 +5331,18 @@
     public static z_Materialf: procedure(face: DummyEnum; pname: DummyEnum; param: single) := _Materialf;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialf(face: DummyEnum; pname: DummyEnum; param: single) := z_Materialf(face, pname, param);
     
+    private static procedure _LightModeliv(pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glLightModeliv';
+    ///OpenGL 3.0
+    public static z_LightModeliv: procedure(pname: DummyEnum; &params: pointer) := _LightModeliv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LightModeliv(pname: DummyEnum; &params: array of Int32) := LightModeliv(pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LightModeliv(pname: DummyEnum; var &params: Int32) := LightModeliv(pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LightModeliv(pname: DummyEnum; &params: pointer) := z_LightModeliv(pname, &params);
+    
+    private static procedure _LightModeli(pname: DummyEnum; param: Int32); external 'opengl32.dll' name 'glLightModeli';
+    ///OpenGL 3.0
+    public static z_LightModeli: procedure(pname: DummyEnum; param: Int32) := _LightModeli;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LightModeli(pname: DummyEnum; param: Int32) := z_LightModeli(pname, param);
+    
     private static procedure _LightModelfv(pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glLightModelfv';
     ///OpenGL 3.0
     public static z_LightModelfv: procedure(pname: DummyEnum; &params: pointer) := _LightModelfv;
@@ -5096,6 +5354,18 @@
     ///OpenGL 3.0
     public static z_LightModelf: procedure(pname: DummyEnum; param: single) := _LightModelf;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LightModelf(pname: DummyEnum; param: single) := z_LightModelf(pname, param);
+    
+    private static procedure _Lightiv(light: DummyEnum; pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glLightiv';
+    ///OpenGL 3.0
+    public static z_Lightiv: procedure(light: DummyEnum; pname: DummyEnum; &params: pointer) := _Lightiv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Lightiv(light: DummyEnum; pname: DummyEnum; &params: array of Int32) := Lightiv(light, pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Lightiv(light: DummyEnum; pname: DummyEnum; var &params: Int32) := Lightiv(light, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Lightiv(light: DummyEnum; pname: DummyEnum; &params: pointer) := z_Lightiv(light, pname, &params);
+    
+    private static procedure _Lighti(light: DummyEnum; pname: DummyEnum; param: Int32); external 'opengl32.dll' name 'glLighti';
+    ///OpenGL 3.0
+    public static z_Lighti: procedure(light: DummyEnum; pname: DummyEnum; param: Int32) := _Lighti;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Lighti(light: DummyEnum; pname: DummyEnum; param: Int32) := z_Lighti(light, pname, param);
     
     private static procedure _Lightfv(light: DummyEnum; pname: DummyEnum; &params: pointer); external 'opengl32.dll' name 'glLightfv';
     ///OpenGL 3.0
@@ -5110,6 +5380,15 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Lightf(light: DummyEnum; pname: DummyEnum; param: single) := z_Lightf(light, pname, param);
     
     {$endregion 2.19.2 - Lighting Parameter Specification}
+    
+    {$region 2.19.3 - ColorMaterial}
+    
+    private static procedure _ColorMaterial(face: DummyEnum; mode: DummyEnum); external 'opengl32.dll' name 'glColorMaterial';
+    ///OpenGL 3.0
+    public static z_ColorMaterial: procedure(face: DummyEnum; mode: DummyEnum) := _ColorMaterial;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorMaterial(face: DummyEnum; mode: DummyEnum) := z_ColorMaterial(face, mode);
+    
+    {$endregion 2.19.3 - ColorMaterial}
     
     {$region 2.19.7 - Flatshading}
     
@@ -5161,6 +5440,37 @@
     ///OpenGL 3.0
     public z_SeparableFilter2D := GetGLFuncOrNil&<procedure(target: DummyEnum; internalformat: DummyEnum; width: Int32; height: Int32; format: DummyEnum; &type: DummyEnum; row: pointer; column: pointer)>('glSeparableFilter2D');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SeparableFilter2D(target: DummyEnum; internalformat: DummyEnum; width: Int32; height: Int32; format: DummyEnum; &type: DummyEnum; row: pointer; column: pointer) := z_SeparableFilter2D(target, internalformat, width, height, format, &type, row, column);
+    
+    private static procedure _PixelTransferi(pname: DummyEnum; param: Int32); external 'opengl32.dll' name 'glPixelTransferi';
+    ///OpenGL 3.0
+    public static z_PixelTransferi: procedure(pname: DummyEnum; param: Int32) := _PixelTransferi;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTransferi(pname: DummyEnum; param: Int32) := z_PixelTransferi(pname, param);
+    
+    private static procedure _PixelTransferf(pname: DummyEnum; param: single); external 'opengl32.dll' name 'glPixelTransferf';
+    ///OpenGL 3.0
+    public static z_PixelTransferf: procedure(pname: DummyEnum; param: single) := _PixelTransferf;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTransferf(pname: DummyEnum; param: single) := z_PixelTransferf(pname, param);
+    
+    private static procedure _PixelMapusv(map: DummyEnum; mapsize: Int32; values: pointer); external 'opengl32.dll' name 'glPixelMapusv';
+    ///OpenGL 3.0
+    public static z_PixelMapusv: procedure(map: DummyEnum; mapsize: Int32; values: pointer) := _PixelMapusv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapusv(map: DummyEnum; mapsize: Int32; values: array of UInt16) := PixelMapusv(map, mapsize, values[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapusv(map: DummyEnum; mapsize: Int32; var values: UInt16) := PixelMapusv(map, mapsize, @values);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapusv(map: DummyEnum; mapsize: Int32; values: pointer) := z_PixelMapusv(map, mapsize, values);
+    
+    private static procedure _PixelMapuiv(map: DummyEnum; mapsize: Int32; values: pointer); external 'opengl32.dll' name 'glPixelMapuiv';
+    ///OpenGL 3.0
+    public static z_PixelMapuiv: procedure(map: DummyEnum; mapsize: Int32; values: pointer) := _PixelMapuiv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapuiv(map: DummyEnum; mapsize: Int32; values: array of UInt32) := PixelMapuiv(map, mapsize, values[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapuiv(map: DummyEnum; mapsize: Int32; var values: UInt32) := PixelMapuiv(map, mapsize, @values);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapuiv(map: DummyEnum; mapsize: Int32; values: pointer) := z_PixelMapuiv(map, mapsize, values);
+    
+    private static procedure _PixelMapfv(map: DummyEnum; mapsize: Int32; values: pointer); external 'opengl32.dll' name 'glPixelMapfv';
+    ///OpenGL 3.0
+    public static z_PixelMapfv: procedure(map: DummyEnum; mapsize: Int32; values: pointer) := _PixelMapfv;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapfv(map: DummyEnum; mapsize: Int32; values: array of single) := PixelMapfv(map, mapsize, values[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapfv(map: DummyEnum; mapsize: Int32; var values: single) := PixelMapfv(map, mapsize, @values);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelMapfv(map: DummyEnum; mapsize: Int32; values: pointer) := z_PixelMapfv(map, mapsize, values);
     
     ///OpenGL 3.0
     public z_Minmax := GetGLFuncOrNil&<procedure(target: DummyEnum; internalformat: DummyEnum; sink: boolean)>('glMinmax');
