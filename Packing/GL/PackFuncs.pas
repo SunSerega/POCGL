@@ -234,8 +234,7 @@ begin
     
   end;
   
-//  func_name_ext_name_table.Keys.Sorted.PrintLines;
-//  halt;
+  foreach var f in unused_core_funcs do Otp( $'WARNING: core func "{f.name}" not found' );
   
   while h_funcs.Count <> 0 do
   begin
@@ -259,23 +258,17 @@ begin
            not func_name_ext_name_table.ContainsKey(h_funcs[0].full_name+'ARB') and
            not incomplete_funcs.Contains(h_funcs[0].full_name+'ARB') and
            not (h_funcs[0].full_name in [
-//          'glClipPlanef',
-//          'glBlendBarrier',
-//          'glXChooseFBConfig',
-//          'glFogxv'
-//          'glFrustumf',
-//          'glGetClipPlanef',
-//          'glGetFixedv',
-//          'glGetLightxv',
-//          'glGetMaterialxv',
-//          'glGetnColorTable',
-//          'glGetnConvolutionFilter',
-//          'glGetnHistogram',
-//          'glGetnMapdv',
-//          'glGetnMapfv',
-//          'glGetnMapiv'
-          ''
-        ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
+            'glClipPlanef',
+            'glBlendBarrier',
+            'glXChooseFBConfig',
+            'glFogxv',
+            'glFrustumf',
+            'glGetClipPlanef',
+            'glGetFixedv',
+            'glGetLightxv',
+            'glGetMaterialxv'
+          ])
+        then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
         
         h_funcs.RemoveAt(0);
         continue;
@@ -347,8 +340,6 @@ begin
     end;
     
   end;
-  
-  foreach var f in unused_core_funcs do Otp( $'WARNING: core func "{f.name}" not found' );
   
   foreach var ext in unused_exts do
   begin
