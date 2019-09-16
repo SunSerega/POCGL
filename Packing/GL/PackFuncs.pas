@@ -255,19 +255,26 @@ begin
       end else
       begin
         
-        if not h_funcs[0].full_name.EndsWith('x') and not (h_funcs[0].full_name in [
-          'glClipPlanef',
-          'glBlendBarrier',
-          'glXChooseFBConfig',
-          'glFogxv',
-          'glFrustumf',
-          'glGetClipPlanef',
-          'glGetFixedv',
-          'glGetLightxv',
-          'glGetMaterialxv',
-          'glGetnColorTable',
-          'glGetnConvolutionFilter',
-          'glGetnHistogram'
+        if not h_funcs[0].full_name.EndsWith('x') and
+           not func_name_ext_name_table.ContainsKey(h_funcs[0].full_name+'ARB') and
+           not incomplete_funcs.Contains(h_funcs[0].full_name+'ARB') and
+           not (h_funcs[0].full_name in [
+//          'glClipPlanef',
+//          'glBlendBarrier',
+//          'glXChooseFBConfig',
+//          'glFogxv'
+//          'glFrustumf',
+//          'glGetClipPlanef',
+//          'glGetFixedv',
+//          'glGetLightxv',
+//          'glGetMaterialxv',
+//          'glGetnColorTable',
+//          'glGetnConvolutionFilter',
+//          'glGetnHistogram',
+//          'glGetnMapdv',
+//          'glGetnMapfv',
+//          'glGetnMapiv'
+          ''
         ]) then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
         
         h_funcs.RemoveAt(0);

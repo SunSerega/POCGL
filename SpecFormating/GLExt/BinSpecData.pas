@@ -763,7 +763,7 @@ type
       
       Result := new ExtSpec;
       Result.fname := RemoveGenFolderName(fname);
-      Result.is_complete := not spec_text.Split(#10).Any(l->l.StartsWith('XXX') or l.EndsWith('XXX'));
+      Result.is_complete := not spec_text.Split(#10).Take(10).Any(l->l.StartsWith('XXX') or l.EndsWith('XXX'));
 //      writeln(fname);
       
       
