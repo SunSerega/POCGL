@@ -1,399 +1,399 @@
-20:48:12: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
-20:48:12: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
-20:48:12: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Pack Template.pas"
-20:48:18: Finished compiling "Pack Template.pas": OK
-20:48:18: Runing Template[OpenGL]
-20:48:18: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\CoreTypes.template]
-20:48:18: Finished compiling "Tester.pas": OK
-20:48:18: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
-20:48:19: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
-20:48:19: Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackVecTypes.pas"
-20:48:19: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
-20:48:19: Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackMtrTypes.pas"
-20:48:19: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\CoreTypes.template]
-20:48:19: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Records.template]
-20:48:19: Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackFuncs.pas"
-20:48:19: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
-20:48:19: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\GDIIntegration.template]
-20:48:19: Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackMtrExt.pas"
-20:48:19: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Records.template]
-20:48:19: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\GDIIntegration.template]
-20:48:26: Template[OpenGL]: Finished compiling "PackVecTypes.pas": OK
-20:48:26: Template[OpenGL]: Runing TemplateCommand[GL\PackVecTypes.pas]
-20:48:26: Template[OpenGL]: Finished runing TemplateCommand[GL\PackVecTypes.pas]
-20:48:26: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\VecTypes.template]
-20:48:26: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\VecTypes.template]
-20:48:27: Finished compiling "OpenCLABC.pas": OK
-20:48:28: Template[OpenGL]: Finished compiling "PackFuncs.pas": OK
-20:48:28: Template[OpenGL]: Runing TemplateCommand[GL\PackFuncs.pas]
-20:48:29: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Misc loading
-20:48:29: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Loading core funcs
-20:48:29: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Loading ext funcs
-20:48:29: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Read funcs from .h's
-20:48:29: Template[OpenGL]: Finished compiling "PackMtrExt.pas": OK
-20:48:29: Template[OpenGL]: Runing TemplateCommand[GL\PackMtrExt.pas]
-20:48:29: Template[OpenGL]: Finished runing TemplateCommand[GL\PackMtrExt.pas]
-20:48:29: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
-20:48:29: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
-20:48:30: Template[OpenGL]: Finished compiling "PackMtrTypes.pas": OK
-20:48:30: Template[OpenGL]: Runing TemplateCommand[GL\PackMtrTypes.pas]
-20:48:30: Template[OpenGL]: Finished runing TemplateCommand[GL\PackMtrTypes.pas]
-20:48:30: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrTypes.template]
-20:48:30: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrTypes.template]
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Sort funcs
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glNormal3b" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glNormal3bv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexs" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexi" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexf" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexd" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexub" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexsv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexfv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexdv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexubv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexPointer" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEdgeFlagPointer" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glArrayElement" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glInterleavedArrays" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRects" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRecti" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectf" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectd" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectsv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectfv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectdv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLoadMatrixd" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMultMatrixd" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRotated" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTranslated" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glScaled" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFrustum" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glOrtho" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGeni" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGenf" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGend" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGeniv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGenfv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGendv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glClipPlane" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMateriali" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMaterialiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLighti" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLightiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLightModeli" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLightModeliv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glColorMaterial" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelTransferi" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelTransferf" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelMapuiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelMapusv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelMapfv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelZoom" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glAreTexturesResident" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPrioritizeTextures" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFogi" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFogiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexMask" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glClearIndex" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glClearAccum" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glAccum" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap1f" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap1d" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap2f" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap2d" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1f" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1d" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2f" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2d" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1fv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1dv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2fv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2dv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid1f" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid1d" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid2f" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid2d" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalMesh1" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalMesh2" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalPoint1" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalPoint2" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glInitNames" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPopName" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPushName" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLoadName" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRenderMode" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glSelectBuffer" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFeedbackBuffer" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPassThrough" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glCallList" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIsList" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glDeleteLists" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetClipPlane" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetLightiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMaterialiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetTexGeniv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetTexGenfv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetTexGendv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetPixelMapuiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetPixelMapusv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetPixelMapfv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMapiv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMapfv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMapdv" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPushAttrib" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPushClientAttrib" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPopAttrib" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPopClientAttrib" not found
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXCreatePbuffer" not found in core nor in exts
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXCreatePixmap" not found in core nor in exts
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXCreateWindow" not found in core nor in exts
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXDestroyPbuffer" not found in core nor in exts
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXDestroyPixmap" not found in core nor in exts
-20:48:35: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXDestroyWindow" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetCurrentReadDrawable" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetFBConfigAttrib" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetFBConfigs" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetPixelMapxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetProcAddress" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetProcAddressARB" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetProgramSubroutineParameteruivNV" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_swap_control]: can't find func "glspecification"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetTexEnvxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetTexParameterxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetVisualFromFBConfig" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glHintPGI" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1sSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1iSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1fSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1dSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2sSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2iSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2fSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2dSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3sSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3iSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3fSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3dSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4sSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4iSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4fSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4dSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1svSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1ivSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1fvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1dvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2svSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2ivSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2fvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2dvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3svSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3ivSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3fvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3dvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4svSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4ivSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4fvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4dvSGIS"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glLightEnviSGIX" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glLightModelxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glLightxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glListParameterfSGIX" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glListParameterfvSGIX" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glListParameteriSGIX" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXMakeContextCurrent" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMaterialxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord1bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord1bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord2bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord2bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord3bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord3bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord4bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord4bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glNamedBufferPageCommitmentARB" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glNamedBufferPageCommitmentEXT" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glOrthof" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPixelTexGenParameterfvSGIS" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPixelTexGenParameterivSGIS" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterfSGIS" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterfvSGIS" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterxOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glProgramSubroutineParametersuivNV" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXQueryContext" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXQueryDrawable" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "gla"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "glb"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "glc"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "gld"
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXSelectEvent" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glShadingRateSampleOrderNV" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord1bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord1bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord2bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord2bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord3bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord3bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord4bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord4bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexEnvxv" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTransformFeedbackStreamAttribsNV" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex2bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex2bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex3bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex3bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex4bOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex4bvOES" not found in core nor in exts
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [APPLE_rgb_422]: funcs [gl3.6 gl3.7] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_base_instance]: funcs [glDrawArraysInstancedBaseInstance glDrawElementsInstancedBaseInstance glDrawElementsInstancedBaseVertexBaseInstance] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_blend_func_extended]: funcs [glBindFragDataLocationIndexed glGetFragDataIndex] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_buffer_storage]: funcs [glBufferStorage] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_clear_texture]: funcs [glClearTexImage glClearTexSubImage] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_clip_control]: funcs [glClipControl] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_compute_shader]: funcs [glDispatchCompute glDispatchComputeIndirect] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_copy_buffer]: funcs [glCopyBufferSubData] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_copy_image]: funcs [glCopyImageSubData] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_direct_state_access]: funcs [glCreateTransformFeedbacks glTransformFeedbackBufferBase glTransformFeedbackBufferRange glGetTransformFeedbackiv glGetTransformFeedbacki_v glGetTransformFeedbacki64_v glCreateBuffers glNamedBufferStorage glNamedBufferData glNamedBufferSubData glCopyNamedBufferSubData glClearNamedBufferData glClearNamedBufferSubData glMapNamedBuffer glMapNamedBufferRange glUnmapNamedBuffer glFlushMappedNamedBufferRange glGetNamedBufferParameteriv glGetNamedBufferParameteri64v glGetNamedBufferPointerv glGetNamedBufferSubData glCreateFramebuffers glNamedFramebufferRenderbuffer glNamedFramebufferParameteri glNamedFramebufferTexture glNamedFramebufferTextureLayer glNamedFramebufferDrawBuffer glNamedFramebufferDrawBuffers glNamedFramebufferReadBuffer glInvalidateNamedFramebufferData glInvalidateNamedFramebufferSubData glClearNamedFramebufferiv glClearNamedFramebufferuiv glClearNamedFramebufferfv glClearNamedFramebufferfi glBlitNamedFramebuffer glCheckNamedFramebufferStatus glGetNamedFramebufferParameteriv glGetNamedFramebufferAttachmentParameteriv glCreateRenderbuffers glNamedRenderbufferStorage glNamedRenderbufferStorageMultisample glGetNamedRenderbufferParameteriv glCreateTextures glTextureBuffer glTextureBufferRange glTextureStorage1D glTextureStorage2D glTextureStorage3D glTextureStorage2DMultisample glTextureStorage3DMultisample glTextureSubImage1D glTextureSubImage2D glTextureSubImage3D glCompressedTextureSubImage1D glCompressedTextureSubImage2D glCompressedTextureSubImage3D glCopyTextureSubImage1D glCopyTextureSubImage2D glCopyTextureSubImage3D glTextureParameterf glTextureParameterfv glTextureParameteri glTextureParameterIiv glTextureParameterIuiv glTextureParameteriv glGenerateTextureMipmap glBindTextureUnit glGetTextureImage glGetCompressedTextureImage glGetTextureLevelParameterfv glGetTextureLevelParameteriv glGetTextureParameterfv glGetTextureParameterIiv glGetTextureParameterIuiv glGetTextureParameteriv glCreateVertexArrays glDisableVertexArrayAttrib glEnableVertexArrayAttrib glVertexArrayElementBuffer glVertexArrayVertexBuffer glVertexArrayVertexBuffers glVertexArrayAttribFormat glVertexArrayAttribIFormat glVertexArrayAttribLFormat glVertexArrayAttribBinding glVertexArrayBindingDivisor glGetVertexArrayiv glGetVertexArrayIndexediv glGetVertexArrayIndexed64iv glCreateSamplers glCreateProgramPipelines glCreateQueries glGetQueryBufferObjectiv glGetQueryBufferObjectuiv glGetQueryBufferObjecti64v glGetQueryBufferObjectui64v] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_draw_elements_base_vertex]: funcs [glDrawElementsBaseVertex glDrawRangeElementsBaseVertex glDrawElementsInstancedBaseVertex glMultiDrawElementsBaseVertex] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_draw_indirect]: funcs [glDrawArraysIndirect glDrawElementsIndirect] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_ES2_compatibility]: funcs [glReleaseShaderCompiler glShaderBinary glGetShaderPrecisionFormat glDepthRangef glClearDepthf] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_ES3_1_compatibility]: funcs [glMemoryBarrierByRegion] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_framebuffer_object]: funcs [glIsRenderbuffer glBindRenderbuffer glDeleteRenderbuffers glGenRenderbuffers glRenderbufferStorage glRenderbufferStorageMultisample glGetRenderbufferParameteriv glIsFramebuffer glBindFramebuffer glDeleteFramebuffers glGenFramebuffers glCheckFramebufferStatus glFramebufferTexture1D glFramebufferTexture2D glFramebufferTexture3D glFramebufferTextureLayer glFramebufferRenderbuffer glGetFramebufferAttachmentParameteriv glBlitFramebuffer glGenerateMipmap] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_program_binary]: funcs [glGetProgramBinary glProgramBinary] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_program_binary ARB_separate_shader_objects]: funcs [glProgramParameteri] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_texture_sub_image]: funcs [glGetTextureSubImage glGetCompressedTextureSubImage] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_internalformat_query]: funcs [glGetInternalformativ] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_internalformat_query2]: funcs [glGetInternalformati64v] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_invalidate_subdata]: funcs [glInvalidateTexSubImage glInvalidateTexImage glInvalidateBufferSubData glInvalidateBufferData glInvalidateFramebuffer glInvalidateSubFramebuffer] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_map_buffer_range]: funcs [glMapBufferRange glFlushMappedBufferRange] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_multi_bind]: funcs [glBindBuffersBase glBindBuffersRange glBindTextures glBindSamplers glBindImageTextures glBindVertexBuffers] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_multi_draw_indirect]: funcs [glMultiDrawArraysIndirect glMultiDrawElementsIndirect] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_polygon_offset_clamp]: funcs [glPolygonOffsetClamp] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_program_interface_query]: funcs [glGetProgramInterfaceiv glGetProgramResourceIndex glGetProgramResourceName glGetProgramResourceiv glGetProgramResourceLocation glGetProgramResourceLocationIndex] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_provoking_vertex]: funcs [glProvokingVertex] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_sampler_objects]: funcs [glGenSamplers glDeleteSamplers glIsSampler glBindSampler glSamplerParameteri glSamplerParameterf glSamplerParameteriv glSamplerParameterfv glSamplerParameterIiv glSamplerParameterIuiv glGetSamplerParameteriv glGetSamplerParameterfv glGetSamplerParameterIiv glGetSamplerParameterIuiv] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_separate_shader_objects]: funcs [glUseProgramStages glActiveShaderProgram glCreateShaderProgramv glBindProgramPipeline glDeleteProgramPipelines glGenProgramPipelines glIsProgramPipeline glGetProgramPipelineiv glProgramUniform1i glProgramUniform2i glProgramUniform3i glProgramUniform4i glProgramUniform1ui glProgramUniform2ui glProgramUniform3ui glProgramUniform4ui glProgramUniform1f glProgramUniform2f glProgramUniform3f glProgramUniform4f glProgramUniform1d glProgramUniform2d glProgramUniform3d glProgramUniform4d glProgramUniform1iv glProgramUniform2iv glProgramUniform3iv glProgramUniform4iv glProgramUniform1uiv glProgramUniform2uiv glProgramUniform3uiv glProgramUniform4uiv glProgramUniform1fv glProgramUniform2fv glProgramUniform3fv glProgramUniform4fv glProgramUniform1dv glProgramUniform2dv glProgramUniform3dv glProgramUniform4dv glProgramUniformMatrix2fv glProgramUniformMatrix3fv glProgramUniformMatrix4fv glProgramUniformMatrix2dv glProgramUniformMatrix3dv glProgramUniformMatrix4dv glProgramUniformMatrix2x3fv glProgramUniformMatrix3x2fv glProgramUniformMatrix2x4fv glProgramUniformMatrix4x2fv glProgramUniformMatrix3x4fv glProgramUniformMatrix4x3fv glProgramUniformMatrix2x3dv glProgramUniformMatrix3x2dv glProgramUniformMatrix2x4dv glProgramUniformMatrix4x2dv glProgramUniformMatrix3x4dv glProgramUniformMatrix4x3dv glValidateProgramPipeline glGetProgramPipelineInfoLog] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_atomic_counters]: funcs [glGetActiveAtomicCounterBufferiv] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_image_load_store]: funcs [glBindImageTexture glMemoryBarrier] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_storage_buffer_object]: funcs [glShaderStorageBlockBinding] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_subroutine]: funcs [glGetSubroutineUniformLocation glGetSubroutineIndex glGetActiveSubroutineUniformiv glGetActiveSubroutineUniformName glGetActiveSubroutineName glUniformSubroutinesuiv glGetUniformSubroutineuiv glGetProgramStageiv] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_sync]: funcs [glFenceSync glIsSync glDeleteSync glClientWaitSync glWaitSync glGetInteger64v glGetSynciv] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_tessellation_shader]: funcs [glPatchParameteri glPatchParameterfv] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_barrier]: funcs [glTextureBarrier] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_multisample]: funcs [glTexImage2DMultisample glTexImage3DMultisample glGetMultisamplefv glSampleMaski] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_rectangle]: funcs [gl1.4 glMIRRORED_REPEAT] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_storage]: funcs [glTexStorage1D glTexStorage2D glTexStorage3D] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_view]: funcs [glTextureView] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_timer_query]: funcs [glQueryCounter glGetQueryObjecti64v glGetQueryObjectui64v] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_transform_feedback2]: funcs [glBindTransformFeedback glDeleteTransformFeedbacks glGenTransformFeedbacks glIsTransformFeedback glPauseTransformFeedback glResumeTransformFeedback glDrawTransformFeedback] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_transform_feedback3]: funcs [glDrawTransformFeedbackStream glBeginQueryIndexed glEndQueryIndexed glGetQueryIndexediv] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_transform_feedback_instanced]: funcs [glDrawTransformFeedbackInstanced glDrawTransformFeedbackStreamInstanced] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_uniform_buffer_object]: funcs [glGetUniformIndices glGetActiveUniformsiv glGetActiveUniformName glGetUniformBlockIndex glGetActiveUniformBlockiv glGetActiveUniformBlockName glBindBufferRange glBindBufferBase glGetIntegeri_v glUniformBlockBinding] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_vertex_array_object]: funcs [glBindVertexArray glDeleteVertexArrays glGenVertexArrays glIsVertexArray] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_vertex_attrib_64bit]: funcs [glVertexAttribL1d glVertexAttribL2d glVertexAttribL3d glVertexAttribL4d glVertexAttribL1dv glVertexAttribL2dv glVertexAttribL3dv glVertexAttribL4dv glVertexAttribLPointer glGetVertexAttribLdv] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_viewport_array]: funcs [glViewportArrayv glViewportIndexedf glViewportIndexedfv glScissorArrayv glScissorIndexed glScissorIndexedv glDepthRangeArrayv glDepthRangeIndexed glGetFloati_v glGetDoublei_v] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_proc_address]: funcs [glXvoid] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_fragment_lighting]: funcs [glFragmentLightModeliEXT glFragmentLightModelfEXT glFragmentLightModelivEXT glFragmentLightModelfvEXT glFragmentLightiEXT glFragmentLightfEXT glFragmentLightivEXT glFragmentLightfvEXT glGetFragmentLightivEXT glGetFragmentLightfvEXT glFragmentMaterialfEXT glFragmentMaterialiEXT glFragmentMaterialfvEXT glFragmentMaterialivEXT glFragmentColorMaterialEXT glGetFragmentMaterialfvEXT glGetFragmentMaterialivEXT glLightEnviEXT] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_texenv_op]: funcs [glTexEnvOperandiEXT glGetTexEnvOperandivEXT] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_transform_feedback2]: funcs [glBindTransformFeedbackEXT glDeleteTransformFeedbacksEXT glGenTransformFeedbacksEXT glIsTransformFeedbackEXT glPauseTransformFeedbackEXT glResumeTransformFeedbackEXT] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_import_context MESA_swap_control SGI_swap_control SGI_video_sync]: funcs [glXSpecification] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_swap_control_tear EXT_swap_control_tear NV_delay_before_swap]: funcs [glXspecification] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_visual_info]: funcs [glXGetConfig glXChooseVisual glXXFree] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_float_buffer]: funcs [glboolean] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_float_buffer NV_float_buffer]: funcs [glNV3X] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_pixel_data_range NV_vertex_array_range]: funcs [glmemory] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_texture_array]: funcs [glTexImage3DNV glTexSubImage3DNV glCopyTexSubImage3DNV glCompressedTexImage3DNV glCompressedTexSubImage3DNV glFramebufferTextureLayerNV] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_fog_texture]: funcs [glTextureFogSGIX] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_subdiv_patch]: funcs [glSubdivPatchSGIX glSubdivPatchParameterfSGIX glSubdivPatchParameteriSGIX] wasn't found
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Construct funcs code
-20:48:36: Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: done
-20:48:36: Template[OpenGL]: Finished runing TemplateCommand[GL\PackFuncs.pas]
-20:48:36: Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Funcs.template]
-20:48:36: Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Funcs.template]
-20:48:36: Finished runing Template[OpenGL]
-20:48:36: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenGLABC.pas"
-20:53:55: Finished compiling "OpenGLABC.pas": OK
-20:53:55: Runing Tester
-20:53:55: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Rotate3D.pas"
-20:53:55: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
-20:53:57: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCL\MatrMlt.pas"
-20:53:57: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCL\SimpleAddition.pas"
-20:54:00: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-20:54:01: Tester: Finished compiling "Mtr.Rotate3D.pas": OK
-20:54:01: Tester: Finished compiling "Mtr.Translate.pas": OK
-20:54:01: Tester: Runing Testable[Tests\Exec\Mtr.Rotate3D]
-20:54:01: Tester: Runing Testable[Tests\Exec\Mtr.Translate]
-20:54:03: Tester: Finished compiling "SimpleAddition.pas": OK
-20:54:03: Tester: DONE: "Samples\OpenCL\OpenCL\SimpleAddition.pas"
-20:54:03: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-20:54:03: Tester: Finished compiling "MatrMlt.pas": OK
-20:54:03: Tester: DONE: "Samples\OpenCL\OpenCL\MatrMlt.pas"
-20:54:03: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
-20:54:04: Tester: Finished runing Testable[Tests\Exec\Mtr.Rotate3D]
-20:54:05: Tester: Finished runing Testable[Tests\Exec\Mtr.Translate]
-20:54:05: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Использование результатов всех очередей.pas"
-20:54:05: Tester: DONE: "Tests\Exec\Mtr.Rotate3D.pas"
-20:54:05: Tester: DONE: "Tests\Exec\Mtr.Translate.pas"
-20:54:05: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Код с очередью и без.pas"
-20:54:05: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Преобразование результата очереди.pas"
-20:54:10: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Сложение vs умножение очередей.pas"
-20:54:11: Tester: Finished compiling "Примеры возвращаемого значения.pas": OK
-20:54:11: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
-20:54:11: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Создание очереди из буфера.pas"
-20:54:11: Tester: Finished compiling "MatrMlt.pas": OK
-20:54:11: Tester: DONE: "Samples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-20:54:11: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.3\Использование очереди как парамметра.pas"
-20:54:12: Tester: Finished compiling "SimpleAddition.pas": OK
-20:54:12: Tester: DONE: "Samples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-20:54:12: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
-20:54:13: Tester: Finished compiling "Преобразование результата очереди.pas": OK
-20:54:13: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Преобразование результата очереди.pas"
-20:54:13: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
-20:54:14: Tester: Finished compiling "Использование результатов всех очередей.pas": OK
-20:54:14: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Использование результатов всех очередей.pas"
-20:54:14: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\6 - Кёрнел\Вызов кёрнела.pas"
-20:54:16: Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-20:54:20: Tester: Finished compiling "Код с очередью и без.pas": OK
-20:54:20: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Код с очередью и без.pas"
-20:54:20: Tester: Finished compiling "Сложение vs умножение очередей.pas": OK
-20:54:20: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Сложение vs умножение очередей.pas"
-20:54:22: Tester: Finished compiling "Использование очереди как парамметра.pas": OK
-20:54:22: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.3\Использование очереди как парамметра.pas"
-20:54:23: Tester: Finished compiling "Вызов прекомпилированного кёрнела.pas": OK
-20:54:23: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
-20:54:23: Tester: Finished compiling "Вызов кёрнела.pas": OK
-20:54:23: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\6 - Кёрнел\Вызов кёрнела.pas"
-20:54:23: Tester: Finished compiling "Создание очереди из буфера.pas": OK
-20:54:23: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Создание очереди из буфера.pas"
-20:54:24: Tester: Finished compiling "Компилятор исходников.pas": OK
-20:54:24: Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
-20:54:27: Tester: Finished compiling "Крутящийся треугольник 1 (простейший пример).pas": OK
-20:54:27: Tester: DONE: "Samples\OpenGL\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-20:54:27: Tester: Done testing
-20:54:27: Finished runing Tester
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCL\MatrMlt.cl"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCL\MatrMlt.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCL\SimpleAddition.cl"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCL\SimpleAddition.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.cl"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.cl"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\Readme.txt"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.0\Примеры возвращаемого значения.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Использование результатов всех очередей.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Код с очередью и без.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Преобразование результата очереди.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Сложение vs умножение очередей.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Создание очереди из буфера.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.3\Использование очереди как парамметра.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\5 – ProgramCode\Прекомпиляция исходников OpenCL-C\0.cl"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\5 – ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\5 – ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\6 – Кёрнел\0.cl"
-20:54:27: Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\6 – Кёрнел\Вызов кёрнела.pas"
-20:54:27: Packing sample "Release\InstallerSamples\OpenGL\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-20:54:27: done packing
+Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
+Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
+Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Pack Template.pas"
+Finished compiling "Pack Template.pas": OK
+Runing Template[OpenGL]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\CoreTypes.template]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
+Finished compiling "Tester.pas": OK
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
+Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackVecTypes.pas"
+Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackMtrTypes.pas"
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\CoreTypes.template]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Records.template]
+Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackFuncs.pas"
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\GDIIntegration.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Records.template]
+Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackMtrExt.pas"
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\GDIIntegration.template]
+Template[OpenGL]: Finished compiling "PackMtrTypes.pas": OK
+Template[OpenGL]: Runing TemplateCommand[GL\PackMtrTypes.pas]
+Template[OpenGL]: Finished compiling "PackMtrExt.pas": OK
+Template[OpenGL]: Runing TemplateCommand[GL\PackMtrExt.pas]
+Template[OpenGL]: Finished runing TemplateCommand[GL\PackMtrTypes.pas]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrTypes.template]
+Template[OpenGL]: Finished runing TemplateCommand[GL\PackMtrExt.pas]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrTypes.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
+Finished compiling "OpenCLABC.pas": OK
+Template[OpenGL]: Finished compiling "PackVecTypes.pas": OK
+Template[OpenGL]: Runing TemplateCommand[GL\PackVecTypes.pas]
+Template[OpenGL]: Finished runing TemplateCommand[GL\PackVecTypes.pas]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\VecTypes.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\VecTypes.template]
+Template[OpenGL]: Finished compiling "PackFuncs.pas": OK
+Template[OpenGL]: Runing TemplateCommand[GL\PackFuncs.pas]
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Misc loading
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Loading core funcs
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Loading ext funcs
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Read funcs from .h's
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Sort funcs
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glNormal3b" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glNormal3bv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexs" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexi" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexf" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexd" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexub" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexsv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexfv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexdv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexubv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexPointer" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEdgeFlagPointer" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glArrayElement" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glInterleavedArrays" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRects" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRecti" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectf" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectd" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectsv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectfv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRectdv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLoadMatrixd" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMultMatrixd" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRotated" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTranslated" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glScaled" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFrustum" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glOrtho" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGeni" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGenf" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGend" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGeniv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGenfv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glTexGendv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glClipPlane" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMateriali" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMaterialiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLighti" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLightiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLightModeli" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLightModeliv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glColorMaterial" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelTransferi" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelTransferf" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelMapuiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelMapusv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelMapfv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPixelZoom" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glAreTexturesResident" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPrioritizeTextures" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFogi" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFogiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIndexMask" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glClearIndex" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glClearAccum" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glAccum" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap1f" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap1d" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap2f" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMap2d" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1f" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1d" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2f" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2d" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1fv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord1dv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2fv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalCoord2dv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid1f" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid1d" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid2f" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glMapGrid2d" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalMesh1" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalMesh2" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalPoint1" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glEvalPoint2" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glInitNames" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPopName" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPushName" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glLoadName" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glRenderMode" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glSelectBuffer" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glFeedbackBuffer" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPassThrough" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glCallList" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glIsList" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glDeleteLists" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetClipPlane" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetLightiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMaterialiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetTexGeniv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetTexGenfv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetTexGendv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetPixelMapuiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetPixelMapusv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetPixelMapfv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMapiv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMapfv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glGetMapdv" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPushAttrib" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPushClientAttrib" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPopAttrib" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: core func "glPopClientAttrib" not found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXCreatePbuffer" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXCreatePixmap" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXCreateWindow" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXDestroyPbuffer" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXDestroyPixmap" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXDestroyWindow" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetCurrentReadDrawable" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetFBConfigAttrib" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetFBConfigs" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetPixelMapxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetProcAddress" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetProcAddressARB" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetProgramSubroutineParameteruivNV" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_swap_control]: can't find func "glspecification"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetTexEnvxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glGetTexParameterxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXGetVisualFromFBConfig" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glHintPGI" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1sSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1iSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1fSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1dSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2sSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2iSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2fSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2dSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3sSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3iSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3fSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3dSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4sSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4iSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4fSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4dSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1svSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1ivSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1fvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord1dvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2svSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2ivSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2fvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord2dvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3svSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3ivSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3fvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord3dvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4svSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4ivSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4fvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIS_multitexture]: can't find func "glMultiTexCoord4dvSGIS"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glLightEnviSGIX" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glLightModelxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glLightxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glListParameterfSGIX" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glListParameterfvSGIX" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glListParameteriSGIX" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXMakeContextCurrent" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMaterialxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord1bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord1bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord2bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord2bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord3bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord3bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord4bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glMultiTexCoord4bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glNamedBufferPageCommitmentARB" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glNamedBufferPageCommitmentEXT" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glOrthof" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPixelTexGenParameterfvSGIS" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPixelTexGenParameterivSGIS" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterfSGIS" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterfvSGIS" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterxOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glPointParameterxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glProgramSubroutineParametersuivNV" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXQueryContext" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXQueryDrawable" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "gla"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "glb"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "glc"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_reference_plane]: can't find func "gld"
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glXSelectEvent" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glShadingRateSampleOrderNV" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord1bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord1bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord2bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord2bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord3bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord3bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord4bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexCoord4bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTexEnvxv" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glTransformFeedbackStreamAttribsNV" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex2bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex2bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex3bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex3bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex4bOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: func "glVertex4bvOES" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [APPLE_rgb_422]: funcs [gl3.6 gl3.7] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_base_instance]: funcs [glDrawArraysInstancedBaseInstance glDrawElementsInstancedBaseInstance glDrawElementsInstancedBaseVertexBaseInstance] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_blend_func_extended]: funcs [glBindFragDataLocationIndexed glGetFragDataIndex] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_buffer_storage]: funcs [glBufferStorage] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_clear_texture]: funcs [glClearTexImage glClearTexSubImage] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_clip_control]: funcs [glClipControl] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_compute_shader]: funcs [glDispatchCompute glDispatchComputeIndirect] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_copy_buffer]: funcs [glCopyBufferSubData] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_copy_image]: funcs [glCopyImageSubData] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_direct_state_access]: funcs [glCreateTransformFeedbacks glTransformFeedbackBufferBase glTransformFeedbackBufferRange glGetTransformFeedbackiv glGetTransformFeedbacki_v glGetTransformFeedbacki64_v glCreateBuffers glNamedBufferStorage glNamedBufferData glNamedBufferSubData glCopyNamedBufferSubData glClearNamedBufferData glClearNamedBufferSubData glMapNamedBuffer glMapNamedBufferRange glUnmapNamedBuffer glFlushMappedNamedBufferRange glGetNamedBufferParameteriv glGetNamedBufferParameteri64v glGetNamedBufferPointerv glGetNamedBufferSubData glCreateFramebuffers glNamedFramebufferRenderbuffer glNamedFramebufferParameteri glNamedFramebufferTexture glNamedFramebufferTextureLayer glNamedFramebufferDrawBuffer glNamedFramebufferDrawBuffers glNamedFramebufferReadBuffer glInvalidateNamedFramebufferData glInvalidateNamedFramebufferSubData glClearNamedFramebufferiv glClearNamedFramebufferuiv glClearNamedFramebufferfv glClearNamedFramebufferfi glBlitNamedFramebuffer glCheckNamedFramebufferStatus glGetNamedFramebufferParameteriv glGetNamedFramebufferAttachmentParameteriv glCreateRenderbuffers glNamedRenderbufferStorage glNamedRenderbufferStorageMultisample glGetNamedRenderbufferParameteriv glCreateTextures glTextureBuffer glTextureBufferRange glTextureStorage1D glTextureStorage2D glTextureStorage3D glTextureStorage2DMultisample glTextureStorage3DMultisample glTextureSubImage1D glTextureSubImage2D glTextureSubImage3D glCompressedTextureSubImage1D glCompressedTextureSubImage2D glCompressedTextureSubImage3D glCopyTextureSubImage1D glCopyTextureSubImage2D glCopyTextureSubImage3D glTextureParameterf glTextureParameterfv glTextureParameteri glTextureParameterIiv glTextureParameterIuiv glTextureParameteriv glGenerateTextureMipmap glBindTextureUnit glGetTextureImage glGetCompressedTextureImage glGetTextureLevelParameterfv glGetTextureLevelParameteriv glGetTextureParameterfv glGetTextureParameterIiv glGetTextureParameterIuiv glGetTextureParameteriv glCreateVertexArrays glDisableVertexArrayAttrib glEnableVertexArrayAttrib glVertexArrayElementBuffer glVertexArrayVertexBuffer glVertexArrayVertexBuffers glVertexArrayAttribFormat glVertexArrayAttribIFormat glVertexArrayAttribLFormat glVertexArrayAttribBinding glVertexArrayBindingDivisor glGetVertexArrayiv glGetVertexArrayIndexediv glGetVertexArrayIndexed64iv glCreateSamplers glCreateProgramPipelines glCreateQueries glGetQueryBufferObjectiv glGetQueryBufferObjectuiv glGetQueryBufferObjecti64v glGetQueryBufferObjectui64v] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_draw_elements_base_vertex]: funcs [glDrawElementsBaseVertex glDrawRangeElementsBaseVertex glDrawElementsInstancedBaseVertex glMultiDrawElementsBaseVertex] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_draw_indirect]: funcs [glDrawArraysIndirect glDrawElementsIndirect] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_ES2_compatibility]: funcs [glReleaseShaderCompiler glShaderBinary glGetShaderPrecisionFormat glDepthRangef glClearDepthf] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_ES3_1_compatibility]: funcs [glMemoryBarrierByRegion] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_framebuffer_object]: funcs [glIsRenderbuffer glBindRenderbuffer glDeleteRenderbuffers glGenRenderbuffers glRenderbufferStorage glRenderbufferStorageMultisample glGetRenderbufferParameteriv glIsFramebuffer glBindFramebuffer glDeleteFramebuffers glGenFramebuffers glCheckFramebufferStatus glFramebufferTexture1D glFramebufferTexture2D glFramebufferTexture3D glFramebufferTextureLayer glFramebufferRenderbuffer glGetFramebufferAttachmentParameteriv glBlitFramebuffer glGenerateMipmap] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_program_binary]: funcs [glGetProgramBinary glProgramBinary] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_program_binary ARB_separate_shader_objects]: funcs [glProgramParameteri] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_texture_sub_image]: funcs [glGetTextureSubImage glGetCompressedTextureSubImage] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_internalformat_query]: funcs [glGetInternalformativ] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_internalformat_query2]: funcs [glGetInternalformati64v] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_invalidate_subdata]: funcs [glInvalidateTexSubImage glInvalidateTexImage glInvalidateBufferSubData glInvalidateBufferData glInvalidateFramebuffer glInvalidateSubFramebuffer] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_map_buffer_range]: funcs [glMapBufferRange glFlushMappedBufferRange] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_multi_bind]: funcs [glBindBuffersBase glBindBuffersRange glBindTextures glBindSamplers glBindImageTextures glBindVertexBuffers] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_multi_draw_indirect]: funcs [glMultiDrawArraysIndirect glMultiDrawElementsIndirect] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_polygon_offset_clamp]: funcs [glPolygonOffsetClamp] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_program_interface_query]: funcs [glGetProgramInterfaceiv glGetProgramResourceIndex glGetProgramResourceName glGetProgramResourceiv glGetProgramResourceLocation glGetProgramResourceLocationIndex] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_provoking_vertex]: funcs [glProvokingVertex] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_sampler_objects]: funcs [glGenSamplers glDeleteSamplers glIsSampler glBindSampler glSamplerParameteri glSamplerParameterf glSamplerParameteriv glSamplerParameterfv glSamplerParameterIiv glSamplerParameterIuiv glGetSamplerParameteriv glGetSamplerParameterfv glGetSamplerParameterIiv glGetSamplerParameterIuiv] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_separate_shader_objects]: funcs [glUseProgramStages glActiveShaderProgram glCreateShaderProgramv glBindProgramPipeline glDeleteProgramPipelines glGenProgramPipelines glIsProgramPipeline glGetProgramPipelineiv glProgramUniform1i glProgramUniform2i glProgramUniform3i glProgramUniform4i glProgramUniform1ui glProgramUniform2ui glProgramUniform3ui glProgramUniform4ui glProgramUniform1f glProgramUniform2f glProgramUniform3f glProgramUniform4f glProgramUniform1d glProgramUniform2d glProgramUniform3d glProgramUniform4d glProgramUniform1iv glProgramUniform2iv glProgramUniform3iv glProgramUniform4iv glProgramUniform1uiv glProgramUniform2uiv glProgramUniform3uiv glProgramUniform4uiv glProgramUniform1fv glProgramUniform2fv glProgramUniform3fv glProgramUniform4fv glProgramUniform1dv glProgramUniform2dv glProgramUniform3dv glProgramUniform4dv glProgramUniformMatrix2fv glProgramUniformMatrix3fv glProgramUniformMatrix4fv glProgramUniformMatrix2dv glProgramUniformMatrix3dv glProgramUniformMatrix4dv glProgramUniformMatrix2x3fv glProgramUniformMatrix3x2fv glProgramUniformMatrix2x4fv glProgramUniformMatrix4x2fv glProgramUniformMatrix3x4fv glProgramUniformMatrix4x3fv glProgramUniformMatrix2x3dv glProgramUniformMatrix3x2dv glProgramUniformMatrix2x4dv glProgramUniformMatrix4x2dv glProgramUniformMatrix3x4dv glProgramUniformMatrix4x3dv glValidateProgramPipeline glGetProgramPipelineInfoLog] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_atomic_counters]: funcs [glGetActiveAtomicCounterBufferiv] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_image_load_store]: funcs [glBindImageTexture glMemoryBarrier] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_storage_buffer_object]: funcs [glShaderStorageBlockBinding] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_shader_subroutine]: funcs [glGetSubroutineUniformLocation glGetSubroutineIndex glGetActiveSubroutineUniformiv glGetActiveSubroutineUniformName glGetActiveSubroutineName glUniformSubroutinesuiv glGetUniformSubroutineuiv glGetProgramStageiv] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_sync]: funcs [glFenceSync glIsSync glDeleteSync glClientWaitSync glWaitSync glGetInteger64v glGetSynciv] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_tessellation_shader]: funcs [glPatchParameteri glPatchParameterfv] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_barrier]: funcs [glTextureBarrier] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_multisample]: funcs [glTexImage2DMultisample glTexImage3DMultisample glGetMultisamplefv glSampleMaski] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_rectangle]: funcs [gl1.4 glMIRRORED_REPEAT] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_storage]: funcs [glTexStorage1D glTexStorage2D glTexStorage3D] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_texture_view]: funcs [glTextureView] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_timer_query]: funcs [glQueryCounter glGetQueryObjecti64v glGetQueryObjectui64v] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_transform_feedback2]: funcs [glBindTransformFeedback glDeleteTransformFeedbacks glGenTransformFeedbacks glIsTransformFeedback glPauseTransformFeedback glResumeTransformFeedback glDrawTransformFeedback] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_transform_feedback3]: funcs [glDrawTransformFeedbackStream glBeginQueryIndexed glEndQueryIndexed glGetQueryIndexediv] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_transform_feedback_instanced]: funcs [glDrawTransformFeedbackInstanced glDrawTransformFeedbackStreamInstanced] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_uniform_buffer_object]: funcs [glGetUniformIndices glGetActiveUniformsiv glGetActiveUniformName glGetUniformBlockIndex glGetActiveUniformBlockiv glGetActiveUniformBlockName glBindBufferRange glBindBufferBase glGetIntegeri_v glUniformBlockBinding] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_vertex_array_object]: funcs [glBindVertexArray glDeleteVertexArrays glGenVertexArrays glIsVertexArray] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_vertex_attrib_64bit]: funcs [glVertexAttribL1d glVertexAttribL2d glVertexAttribL3d glVertexAttribL4d glVertexAttribL1dv glVertexAttribL2dv glVertexAttribL3dv glVertexAttribL4dv glVertexAttribLPointer glGetVertexAttribLdv] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_viewport_array]: funcs [glViewportArrayv glViewportIndexedf glViewportIndexedfv glScissorArrayv glScissorIndexed glScissorIndexedv glDepthRangeArrayv glDepthRangeIndexed glGetFloati_v glGetDoublei_v] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [ARB_get_proc_address]: funcs [glXvoid] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_fragment_lighting]: funcs [glFragmentLightModeliEXT glFragmentLightModelfEXT glFragmentLightModelivEXT glFragmentLightModelfvEXT glFragmentLightiEXT glFragmentLightfEXT glFragmentLightivEXT glFragmentLightfvEXT glGetFragmentLightivEXT glGetFragmentLightfvEXT glFragmentMaterialfEXT glFragmentMaterialiEXT glFragmentMaterialfvEXT glFragmentMaterialivEXT glFragmentColorMaterialEXT glGetFragmentMaterialfvEXT glGetFragmentMaterialivEXT glLightEnviEXT] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_texenv_op]: funcs [glTexEnvOperandiEXT glGetTexEnvOperandivEXT] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_transform_feedback2]: funcs [glBindTransformFeedbackEXT glDeleteTransformFeedbacksEXT glGenTransformFeedbacksEXT glIsTransformFeedbackEXT glPauseTransformFeedbackEXT glResumeTransformFeedbackEXT] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_import_context MESA_swap_control SGI_swap_control SGI_video_sync]: funcs [glXSpecification] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_swap_control_tear EXT_swap_control_tear NV_delay_before_swap]: funcs [glXspecification] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [EXT_visual_info]: funcs [glXGetConfig glXChooseVisual glXXFree] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_float_buffer]: funcs [glboolean] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_float_buffer NV_float_buffer]: funcs [glNV3X] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_pixel_data_range NV_vertex_array_range]: funcs [glmemory] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [NV_texture_array]: funcs [glTexImage3DNV glTexSubImage3DNV glCopyTexSubImage3DNV glCompressedTexImage3DNV glCompressedTexSubImage3DNV glFramebufferTextureLayerNV] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_fog_texture]: funcs [glTextureFogSGIX] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: [SGIX_subdiv_patch]: funcs [glSubdivPatchSGIX glSubdivPatchParameterfSGIX glSubdivPatchParameteriSGIX] wasn't found
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Construct funcs code
+Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: done
+Template[OpenGL]: Finished runing TemplateCommand[GL\PackFuncs.pas]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Funcs.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Funcs.template]
+Finished runing Template[OpenGL]
+Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenGLABC.pas"
+Finished compiling "OpenGLABC.pas": OK
+Runing Tester
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Rotate3D.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCL\MatrMlt.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCL\SimpleAddition.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Finished compiling "Mtr.Translate.pas": OK
+Tester: Runing Testable[Tests\Exec\Mtr.Translate]
+Tester: Finished compiling "SimpleAddition.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCL\SimpleAddition.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Finished runing Testable[Tests\Exec\Mtr.Translate]
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
+Tester: Finished compiling "Mtr.Rotate3D.pas": OK
+Tester: DONE: "Tests\Exec\Mtr.Translate.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Использование результатов всех очередей.pas"
+Tester: Runing Testable[Tests\Exec\Mtr.Rotate3D]
+Tester: Finished compiling "MatrMlt.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCL\MatrMlt.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Код с очередью и без.pas"
+Tester: Finished compiling "SimpleAddition.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Преобразование результата очереди.pas"
+Tester: Finished compiling "MatrMlt.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Сложение vs умножение очередей.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Создание очереди из буфера.pas"
+Tester: Finished runing Testable[Tests\Exec\Mtr.Rotate3D]
+Tester: DONE: "Tests\Exec\Mtr.Rotate3D.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.3\Использование очереди как парамметра.pas"
+Tester: Finished compiling "Примеры возвращаемого значения.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
+Tester: Finished compiling "Использование результатов всех очередей.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Использование результатов всех очередей.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
+Tester: Finished compiling "Сложение vs умножение очередей.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Сложение vs умножение очередей.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\6 - Кёрнел\Вызов кёрнела.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Finished compiling "Код с очередью и без.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Код с очередью и без.pas"
+Tester: Finished compiling "Вызов прекомпилированного кёрнела.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
+Tester: Finished compiling "Создание очереди из буфера.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Создание очереди из буфера.pas"
+Tester: Finished compiling "Использование очереди как парамметра.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.3\Использование очереди как парамметра.pas"
+Tester: Finished compiling "Преобразование результата очереди.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Преобразование результата очереди.pas"
+Tester: Finished compiling "Вызов кёрнела.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\6 - Кёрнел\Вызов кёрнела.pas"
+Tester: Finished compiling "Компилятор исходников.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
+Tester: Finished compiling "Крутящийся треугольник 1 (простейший пример).pas": OK
+Tester: DONE: "Samples\OpenGL\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Done testing
+Finished runing Tester
+Packing sample "Release\InstallerSamples\OpenCL\OpenCL\MatrMlt.cl"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCL\MatrMlt.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCL\SimpleAddition.cl"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCL\SimpleAddition.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.cl"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.cl"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\Readme.txt"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.0\Примеры возвращаемого значения.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Использование результатов всех очередей.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Код с очередью и без.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Преобразование результата очереди.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Сложение vs умножение очередей.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.1\Создание очереди из буфера.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\3 – Очередь\3.3\Использование очереди как парамметра.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\5 – ProgramCode\Прекомпиляция исходников OpenCL-C\0.cl"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\5 – ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\5 – ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\6 – Кёрнел\0.cl"
+Packing sample "Release\InstallerSamples\OpenCL\OpenCLABC\Из справки\6 – Кёрнел\Вызов кёрнела.pas"
+Packing sample "Release\InstallerSamples\OpenGL\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+done packing

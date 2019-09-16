@@ -6,7 +6,9 @@ uses MiscUtils in 'Utils\MiscUtils.pas';
 begin
   try
     log_file := 'LastPack.log';
+    timed_log_file := 'LastPack (timed).log';
     System.IO.File.Delete(log_file);
+    System.IO.File.Delete(timed_log_file);
     
     System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pcu', System.IO.SearchOption.AllDirectories).ForEach(System.IO.File.Delete);
     System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pdb', System.IO.SearchOption.AllDirectories).Where(fname->not fname.EndsWith('PackAll.pdb')).ForEach(System.IO.File.Delete);
