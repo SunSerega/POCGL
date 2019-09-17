@@ -33,6 +33,7 @@ begin
         .Replace('enum outZ'#10, 'enum outZ,'#10)
         .Replace('uint memoryObject'#10, 'uint memoryObject,'#10)
         .Replace('(double x, double y, double z, double )', '(double x, double y, double z, double w)')
+        .Replace('float params;'#10,'float params);'#10)
       ;
       
       var fname2 := fname.Replace('Reps\OpenGL-Registry\extensions', 'SpecFormating\GLExt\ext spec texts');

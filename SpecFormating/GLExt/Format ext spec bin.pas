@@ -6,6 +6,7 @@ begin
     
     Otp('Loading');
     var db := BinSpecDB.InitFromFolder('SpecFormating\GLExt\ext spec texts');
+    
     Otp('Saving');
     db.Save('SpecFormating\GLExt\ext spec.bin');
     

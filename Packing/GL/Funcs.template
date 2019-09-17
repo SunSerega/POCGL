@@ -8693,13 +8693,6 @@
     
     {$endregion ARB_draw_buffers_blend}
     
-    {$region ARB_sparse_buffer}
-    
-    public z_BufferPageCommitmentARB := GetGLFuncOrNil&<procedure(target: DummyEnum; offset: IntPtr; size: UIntPtr; commit: boolean)>('glBufferPageCommitmentARB');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferPageCommitmentARB(target: DummyEnum; offset: IntPtr; size: UIntPtr; commit: boolean) := z_BufferPageCommitmentARB(target, offset, size, commit);
-    
-    {$endregion ARB_sparse_buffer}
-    
     {$region ARB_color_buffer_float}
     
     public z_ClampColorARB := GetGLFuncOrNil&<procedure(target: DummyEnum; clamp: DummyEnum)>('glClampColorARB');
@@ -11712,6 +11705,19 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitFramebufferEXT(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum) := z_BlitFramebufferEXT(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
     
     {$endregion EXT_framebuffer_blit}
+    
+    {$region ARB_sparse_buffer}
+    
+    public z_BufferPageCommitmentARB := GetGLFuncOrNil&<procedure(target: DummyEnum; offset: IntPtr; size: UIntPtr; commit: boolean)>('glBufferPageCommitmentARB');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BufferPageCommitmentARB(target: DummyEnum; offset: IntPtr; size: UIntPtr; commit: boolean) := z_BufferPageCommitmentARB(target, offset, size, commit);
+    
+    public z_NamedBufferPageCommitmentEXT := GetGLFuncOrNil&<procedure(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean)>('glNamedBufferPageCommitmentEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferPageCommitmentEXT(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean) := z_NamedBufferPageCommitmentEXT(buffer, offset, size, commit);
+    
+    public z_NamedBufferPageCommitmentARB := GetGLFuncOrNil&<procedure(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean)>('glNamedBufferPageCommitmentARB');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedBufferPageCommitmentARB(buffer: UInt32; offset: IntPtr; size: UIntPtr; commit: boolean) := z_NamedBufferPageCommitmentARB(buffer, offset, size, commit);
+    
+    {$endregion ARB_sparse_buffer}
     
     {$region EXT_buffer_storage}
     
@@ -17223,6 +17229,9 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShadingRateSampleLocationivNV(rate: DummyEnum; samples: UInt32; index: UInt32; var location: Int32) := GetShadingRateSampleLocationivNV(rate, samples, index, @location);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShadingRateSampleLocationivNV(rate: DummyEnum; samples: UInt32; index: UInt32; location: pointer) := z_GetShadingRateSampleLocationivNV(rate, samples, index, location);
     
+    public z_ShadingRateSampleOrderNV := GetGLFuncOrNil&<procedure(order: DummyEnum)>('glShadingRateSampleOrderNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShadingRateSampleOrderNV(order: DummyEnum) := z_ShadingRateSampleOrderNV(order);
+    
     {$endregion NV_shading_rate_image}
     
     {$region NV_transform_feedback2}
@@ -21012,6 +21021,16 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPixelTexGenParameterfvSGIS(pname: DummyEnum; &params: array of single) := GetPixelTexGenParameterfvSGIS(pname, &params[0]);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPixelTexGenParameterfvSGIS(pname: DummyEnum; var &params: single) := GetPixelTexGenParameterfvSGIS(pname, @&params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPixelTexGenParameterfvSGIS(pname: DummyEnum; &params: pointer) := z_GetPixelTexGenParameterfvSGIS(pname, &params);
+    
+    public z_PixelTexGenParameterivSGIS := GetGLFuncOrNil&<procedure(pname: DummyEnum; &params: pointer)>('glPixelTexGenParameterivSGIS');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTexGenParameterivSGIS(pname: DummyEnum; &params: array of Int32) := PixelTexGenParameterivSGIS(pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTexGenParameterivSGIS(pname: DummyEnum; var &params: Int32) := PixelTexGenParameterivSGIS(pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTexGenParameterivSGIS(pname: DummyEnum; &params: pointer) := z_PixelTexGenParameterivSGIS(pname, &params);
+    
+    public z_PixelTexGenParameterfvSGIS := GetGLFuncOrNil&<procedure(pname: DummyEnum; &params: pointer)>('glPixelTexGenParameterfvSGIS');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTexGenParameterfvSGIS(pname: DummyEnum; &params: array of single) := PixelTexGenParameterfvSGIS(pname, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTexGenParameterfvSGIS(pname: DummyEnum; var &params: single) := PixelTexGenParameterfvSGIS(pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PixelTexGenParameterfvSGIS(pname: DummyEnum; &params: pointer) := z_PixelTexGenParameterfvSGIS(pname, &params);
     
     {$endregion SGIS_pixel_texture}
     

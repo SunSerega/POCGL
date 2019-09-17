@@ -898,9 +898,26 @@ type
       if fname.EndsWith('PGI_misc_hints.txt') then
       begin
         Result.NewFuncs := new NewFuncsChapter;
-        Result.NewFuncs.funcs := new List<(string, string)>;
-        Result.NewFuncs.funcs += ('glHintPGI','%Broken%');
+        Result.NewFuncs.funcs += ('glHintPGI', '%Broken%');
       end;
+      
+      if fname.EndsWith('SGIX_fragment_specular_lighting.txt') then
+        Result.NewFuncs.funcs += ('glLightEnviSGIX', '%Broken%');
+      
+      if fname.EndsWith('SGIS_pixel_texture.txt') then
+      begin
+        Result.NewFuncs.funcs += ('glPixelTexGenParameterivSGIS', '%Broken%');
+        Result.NewFuncs.funcs += ('glPixelTexGenParameterfvSGIS', '%Broken%');
+      end;
+      
+      if fname.EndsWith('ARB_sparse_buffer.txt') then
+      begin
+        Result.NewFuncs.funcs += ('glNamedBufferPageCommitmentEXT', '%Broken%');
+        Result.NewFuncs.funcs += ('glNamedBufferPageCommitmentARB', '%Broken%');
+      end;
+      
+      if fname.EndsWith('NV_shading_rate_image.txt') then
+        Result.NewFuncs.funcs += ('glShadingRateSampleOrderNV', '%Broken%');
       
     end;
     

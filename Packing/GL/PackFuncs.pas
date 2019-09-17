@@ -270,7 +270,16 @@ begin
             'glGetMaterialxv',
             'glGetPixelMapxv',
             'glGetTexEnvxv',
-            'glGetTexParameterxv'
+            'glGetTexParameterxv',
+            'glLightModelxv',
+            'glLightxv',
+            'glMaterialxv',
+            'glOrthof',
+            'glPointParameterfSGIS',
+            'glPointParameterfvSGIS',
+            'glPointParameterxOES',
+            'glPointParameterxv',
+            'glTexEnvxv'
           ])
         then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
         
