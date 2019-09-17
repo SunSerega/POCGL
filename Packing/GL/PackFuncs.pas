@@ -456,7 +456,7 @@ begin
       for var i := chap_st.Count-1 downto 0 do
       begin
         sw.WriteLine;
-        sw.WriteLine($'    {{$endregion {chap_st.Select(t->t[0]).JoinIntoString(''.'')} - {chap_st[i][1]}}}');
+        sw.WriteLine($'    {{$endregion {chap_st.Select(t->t[0]).Take(i+1).JoinIntoString(''.'')} - {chap_st[i][1]}}}');
         sw.Write('    ');
       end;
       

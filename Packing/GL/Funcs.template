@@ -3688,7 +3688,7 @@
     
     {$endregion 22.4 - Transform Feedback State Queries}
     
-    {$endregion 22.4 - Context State Queries}
+    {$endregion 22 - Context State Queries}
     
   end;
   
@@ -6201,9 +6201,9 @@
     
     {$endregion 6.1.18 - Saving and Restoring State}
     
-    {$endregion 6.1.18 - Querying GL State}
+    {$endregion 6.1 - Querying GL State}
     
-    {$endregion 6.1.18 - State and State Requests}
+    {$endregion 6 - State and State Requests}
     
   end;
   
