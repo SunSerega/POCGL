@@ -895,6 +895,12 @@ type
       
       if Result.ExtNames=nil then raise new System.InvalidOperationException($'no ExtNames chapter in file {fname}');
       
+      if fname.EndsWith('PGI_misc_hints.txt') then
+      begin
+        Result.NewFuncs := new NewFuncsChapter;
+        Result.NewFuncs.funcs := new List<(string, string)>;
+        Result.NewFuncs.funcs += ('glHintPGI','%Broken%');
+      end;
       
     end;
     

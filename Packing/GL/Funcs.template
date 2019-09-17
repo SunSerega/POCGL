@@ -20667,6 +20667,27 @@
     
   end;
   
+  gl_PGI = sealed class
+    private static function _GetGLFuncAdr(lpszProc: IntPtr): IntPtr;
+    external 'opengl32.dll' name 'wglGetProcAddress';
+    public static GetGLFuncAdr := _GetGLFuncAdr;
+    public static function GetGLFuncOrNil<T>(fn: string): T;
+    begin
+      var str_ptr := Marshal.StringToHGlobalAnsi(fn);
+      var ptr := GetGLFuncAdr(str_ptr);
+      Marshal.FreeHGlobal(str_ptr);
+      Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
+    end;
+    
+    {$region PGI_misc_hints}
+    
+    public z_HintPGI := GetGLFuncOrNil&<procedure(target: DummyEnum; mode: Int32)>('glHintPGI');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure HintPGI(target: DummyEnum; mode: Int32) := z_HintPGI(target, mode);
+    
+    {$endregion PGI_misc_hints}
+    
+  end;
+  
   gl_QCOM = sealed class
     private static function _GetGLFuncAdr(lpszProc: IntPtr): IntPtr;
     external 'opengl32.dll' name 'wglGetProcAddress';

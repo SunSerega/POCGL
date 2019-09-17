@@ -268,7 +268,9 @@ begin
             'glGetFixedv',
             'glGetLightxv',
             'glGetMaterialxv',
-            'glGetPixelMapxv'
+            'glGetPixelMapxv',
+            'glGetTexEnvxv',
+            'glGetTexParameterxv'
           ])
         then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
         
