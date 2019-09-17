@@ -387,11 +387,30 @@ type
 //        s.Substring(t[0]+1,last_ind-t[0]-2).ToWords(',').Select(s->s.Trim).PrintLines;
 //        writeln('-'*10);
         
-        if not s.Substring(t[0]+1,last_ind-t[0]-2).ToWords(',').Select(s->s.Trim).All(s->(s.ToLower='void') or (s.Remove('unsigned ', 'const ').Replace(' * ', ' ').ToWords.Length=2)) then continue;
+        if s.Substring(t[0]+1,last_ind-t[0]-2).Contains('(') then continue;
+        if not s.Substring(t[0]+1,last_ind-t[0]-2).ToWords(',').Select(s->s.Trim).All(s->(s.ToLower='void') or ( s.Remove('unsigned ', 'const ').Replace(' * ', ' ').ToWords.Length=2 )) then continue;
         case s.Substring(t[0],last_ind-t[0]) of
           '(for example)',
           '(if any)',
+          '(as before)',
+          '(GLint *)',
+          '(or GLX_DONT_CARE)',
+          '(GeForce FX, Quadro FX)',
+          '(returns NULL)',
+          '(Double Buffering)',
+          '(Synchronization Primititives)',
+          '(see GLX_DRAWABLE_TYPE_SGIX)',
+          '(Configuration Management)',
+          '(rational numbers)',
           '(X assigned)',
+          '(x coefficient)',
+          '(y coefficient)',
+          '(z coefficient)',
+          '(constant term)',
+          '(UNSIGNED_SHORT formats)',
+          '(or ARB_mirrored_repeat)',
+          '(or MIRRORED_REPEAT_ARB)',
+          '(Rendering Contexts)',
           '(the default)',
           '(see below)',
           '(major version, minor version, [profile mask])',
