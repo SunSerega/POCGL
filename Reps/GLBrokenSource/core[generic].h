@@ -148,4 +148,13 @@ void glRectfv(glfloat * v);
 void glRectd(gldouble v1);
 void glRectdv(gldouble * v);
 
+void glEvalCoord1f(glfloat v1);
+void glEvalCoord1fv(glfloat * v);
+void glEvalCoord1d(gldouble v1);
+void glEvalCoord1dv(gldouble * v);
+void glEvalCoord2f(glfloat v1, glfloat v2);
+void glEvalCoord2fv(glfloat * v);
+void glEvalCoord2d(gldouble v1, gldouble v2);
+void glEvalCoord2dv(gldouble * v);
+
 

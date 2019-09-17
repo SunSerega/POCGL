@@ -387,7 +387,7 @@ type
       self.f := nativ_ret_t.ptype<>'void';
       
       var par_n := 1;
-      foreach var p in s.Substring(ind1+1,ind2-ind1-1).Replace('*','* ').ToWords(',').Select(p->p.Trim(' ')) do
+      foreach var p in s.Substring(ind1+1,ind2-ind1-1).Replace('*','* ').ToWords(',').Select(p->p.Trim) do
       begin
         if p = 'void' then if par_n<>1 then raise new System.InvalidOperationException else break;
         var ind := p.LastIndexOf(' ');

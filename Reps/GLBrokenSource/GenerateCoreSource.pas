@@ -1,40 +1,5 @@
-﻿type
-  MultiStr = class
-    parts := new List<array of string>;
-    
-    function Add(params part: array of string): MultiStr;
-    begin
-      self.parts += part;
-      Result := self;
-    end;
-    
-    function GenerateAll: sequence of string;
-    begin
-      var inds := new integer[parts.Count];
-      var ind := parts.Count-1;
-      
-      while true do
-      begin
-        var res: string := nil;
-        for var i := inds.Length-1 downto 0 do
-          res := Format(parts[i][inds[i]], res);
-        yield res;
-        
-        for var i := inds.Length-1 downto -1 do
-        begin
-          if i=-1 then exit;
-          inds[i] += 1;
-          if inds[i]=parts[i].Length then
-            inds[i] := 0 else
-            break;
-        end;
-        
-      end;
-      
-    end;
-    
-  end;
-  
+﻿program prog;
+
 function GetNRange(fn: string): sequence of integer;
 begin
   case fn of
@@ -44,7 +9,8 @@ begin
     'glColor':      Result := Range(3,4);
     'glRasterPos':  Result := Range(2,4);
     'glIndex':      Result := Seq(0);
-    'glRect':      Result := Seq(0);
+    'glRect':       Result := Seq(0);
+    'glEvalCoord':  Result := Range(1,2);
     else raise new System.InvalidOperationException(fn);
   end;
 end;
@@ -69,6 +35,7 @@ begin
     'glRasterPos':  Result := Arr(1,2,6,7)  .Select(i->AllTypes[i]);
     'glIndex':      Result := Arr(1,2,3,6,7).Select(i->AllTypes[i]);
     'glRect':       Result := Arr(1,2,6,7)  .Select(i->AllTypes[i]);
+    'glEvalCoord':  Result := Arr(6,7)      .Select(i->AllTypes[i]);
     else raise new System.InvalidOperationException(fn);
   end;
 end;
@@ -78,7 +45,7 @@ begin
   
   loop 3 do sw.WriteLine;
   
-  foreach var fn in Arr('glVertex','glTexCoord','glNormal','glColor','glRasterPos','glIndex','glRect') do
+  foreach var fn in Arr('glVertex','glTexCoord','glNormal','glColor','glRasterPos','glIndex','glRect','glEvalCoord') do
   begin
     
     foreach var pc in GetNRange(fn) do
