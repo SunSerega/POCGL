@@ -254,10 +254,11 @@ begin
       end else
       begin
         
-        if not h_funcs[0].full_name.EndsWith('x') and
-           not func_name_ext_name_table.ContainsKey(h_funcs[0].full_name+'ARB') and
-           not incomplete_funcs.Contains(h_funcs[0].full_name+'ARB') and
-           not (h_funcs[0].full_name in [
+        if
+          not h_funcs[0].full_name.EndsWith('x') and
+          not func_name_ext_name_table.ContainsKey(h_funcs[0].full_name+'ARB') and
+          not incomplete_funcs.Contains(h_funcs[0].full_name+'ARB') and
+          not (h_funcs[0].full_name in [
             'glClipPlanef',
             'glBlendBarrier',
             'glXChooseFBConfig',
@@ -266,7 +267,8 @@ begin
             'glGetClipPlanef',
             'glGetFixedv',
             'glGetLightxv',
-            'glGetMaterialxv'
+            'glGetMaterialxv',
+            'glGetPixelMapxv'
           ])
         then Otp($'WARNING: func "{h_funcs[0].full_name}" not found in core nor in exts');
         

@@ -392,10 +392,13 @@ type
         case s.Substring(t[0],last_ind-t[0]) of
           '(for example)',
           '(if any)',
+          '(not 8)',
           '(as before)',
+          '(light maps)',
           '(GLint *)',
           '(or GLX_DONT_CARE)',
           '(GeForce FX, Quadro FX)',
+          '(GLhandleARB programObject)',
           '(returns NULL)',
           '(Double Buffering)',
           '(Synchronization Primititives)',
@@ -437,7 +440,7 @@ type
         var f_ind := s.LastIndexOf(' ',name_ind-1)+1; // даже если вернёт -1, это вполне устраивает как ответ
         
         var fbody := s.Substring(f_ind, t[1]+1-f_ind);
-        if Arr('calling','by').Any(rt-> fbody.StartsWith(rt) ) then continue;
+        if Arr('calling','using','with','use','by','if','does','RESOLUTION','shader,').Any(rt-> fbody.StartsWith(rt) ) then continue;
         
         Result.funcs += ( func_name, fbody );
       end;
@@ -797,6 +800,7 @@ type
       inds.AddRange(spec_text.FindAllIndexes(#10'New Functions and Procedures'#10             ).Select(ind->('NewFuncs', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'New Procedure and Functions'#10              ).Select(ind->('NewFuncs', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions'#10             ).Select(ind->('NewFuncs', ind)));
+      inds.AddRange(spec_text.FindAllIndexes( '  New Procedures and Functions'#10             ).Select(ind->('NewFuncs', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures And Functions'#10             ).Select(ind->('NewFuncs', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures and Functions:'#10            ).Select(ind->('NewFuncs', ind)));
       inds.AddRange(spec_text.FindAllIndexes(#10'New Procedures, Functions and Structures:'#10).Select(ind->('NewFuncs', ind)));
@@ -843,6 +847,7 @@ type
       
       foreach var p in
         inds.OrderBy(t->spec_text.IndexOf(#10,t[1]-1))
+//        .PrintLines
         .WherePrev(t->
         begin
           case t[0] of

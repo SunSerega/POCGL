@@ -16767,16 +16767,6 @@
     
     {$region NV_transform_feedback}
     
-    public z_TransformFeedbackAttribsNV := GetGLFuncOrNil&<procedure(count: Int32; attribs: pointer; bufferMode: DummyEnum)>('glTransformFeedbackAttribsNV');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackAttribsNV(count: Int32; attribs: array of Int32; bufferMode: DummyEnum) := TransformFeedbackAttribsNV(count, attribs[0], bufferMode);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackAttribsNV(count: Int32; var attribs: Int32; bufferMode: DummyEnum) := TransformFeedbackAttribsNV(count, @attribs, bufferMode);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackAttribsNV(count: Int32; attribs: pointer; bufferMode: DummyEnum) := z_TransformFeedbackAttribsNV(count, attribs, bufferMode);
-    
-    public z_TransformFeedbackVaryingsNV := GetGLFuncOrNil&<procedure(&program: UInt32; count: Int32; locations: pointer; bufferMode: DummyEnum)>('glTransformFeedbackVaryingsNV');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackVaryingsNV(&program: UInt32; count: Int32; locations: array of Int32; bufferMode: DummyEnum) := TransformFeedbackVaryingsNV(&program, count, locations[0], bufferMode);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackVaryingsNV(&program: UInt32; count: Int32; var locations: Int32; bufferMode: DummyEnum) := TransformFeedbackVaryingsNV(&program, count, @locations, bufferMode);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackVaryingsNV(&program: UInt32; count: Int32; locations: pointer; bufferMode: DummyEnum) := z_TransformFeedbackVaryingsNV(&program, count, locations, bufferMode);
-    
     public z_BeginTransformFeedbackNV := GetGLFuncOrNil&<procedure(primitiveMode: DummyEnum)>('glBeginTransformFeedbackNV');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BeginTransformFeedbackNV(primitiveMode: DummyEnum) := z_BeginTransformFeedbackNV(primitiveMode);
     
@@ -16846,11 +16836,6 @@
     public z_ActiveVaryingNV := GetGLFuncOrNil&<procedure(&program: UInt32; name: IntPtr)>('glActiveVaryingNV');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ActiveVaryingNV(&program: UInt32; name: string); begin var ptr_2 := Marshal.StringToHGlobalAnsi(name); ActiveVaryingNV(&program, ptr_2); Marshal.FreeHGlobal(ptr_2); end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ActiveVaryingNV(&program: UInt32; name: IntPtr) := z_ActiveVaryingNV(&program, name);
-    
-    public z_GetTransformFeedbackVaryingNV := GetGLFuncOrNil&<procedure(&program: UInt32; index: UInt32; location: pointer)>('glGetTransformFeedbackVaryingNV');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTransformFeedbackVaryingNV(&program: UInt32; index: UInt32; location: array of Int32) := GetTransformFeedbackVaryingNV(&program, index, location[0]);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTransformFeedbackVaryingNV(&program: UInt32; index: UInt32; var location: Int32) := GetTransformFeedbackVaryingNV(&program, index, @location);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTransformFeedbackVaryingNV(&program: UInt32; index: UInt32; location: pointer) := z_GetTransformFeedbackVaryingNV(&program, index, location);
     
     {$endregion NV_transform_feedback}
     
@@ -17201,13 +17186,17 @@
     public z_BindBufferRangeNV := GetGLFuncOrNil&<procedure(target: DummyEnum; index: UInt32; buffer: UInt32; offset: IntPtr; size: UIntPtr)>('glBindBufferRangeNV');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferRangeNV(target: DummyEnum; index: UInt32; buffer: UInt32; offset: IntPtr; size: UIntPtr) := z_BindBufferRangeNV(target, index, buffer, offset, size);
     
-    public z_BindBufferOffsetNV := GetGLFuncOrNil&<procedure(target: DummyEnum; index: UInt32; buffer: UInt32; offset: IntPtr)>('glBindBufferOffsetNV');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferOffsetNV(target: DummyEnum; index: UInt32; buffer: UInt32; offset: IntPtr) := z_BindBufferOffsetNV(target, index, buffer, offset);
-    
     public z_BindBufferBaseNV := GetGLFuncOrNil&<procedure(target: DummyEnum; index: UInt32; buffer: UInt32)>('glBindBufferBaseNV');
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferBaseNV(target: DummyEnum; index: UInt32; buffer: UInt32) := z_BindBufferBaseNV(target, index, buffer);
     
     {$endregion NV_parameter_buffer_object NV_transform_feedback}
+    
+    {$region ARB_transform_feedback3 NV_parameter_buffer_object NV_transform_feedback}
+    
+    public z_BindBufferOffsetNV := GetGLFuncOrNil&<procedure(target: DummyEnum; index: UInt32; buffer: UInt32; offset: IntPtr)>('glBindBufferOffsetNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferOffsetNV(target: DummyEnum; index: UInt32; buffer: UInt32; offset: IntPtr) := z_BindBufferOffsetNV(target, index, buffer, offset);
+    
+    {$endregion ARB_transform_feedback3 NV_parameter_buffer_object NV_transform_feedback}
     
     {$region NV_shading_rate_image}
     
@@ -18874,6 +18863,39 @@
     
     {$endregion NV_fragment_program}
     
+    {$region ARB_shader_subroutine}
+    
+    public z_ProgramSubroutineParametersuivNV := GetGLFuncOrNil&<procedure(target: DummyEnum; count: Int32; &params: pointer)>('glProgramSubroutineParametersuivNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramSubroutineParametersuivNV(target: DummyEnum; count: Int32; &params: array of UInt32) := ProgramSubroutineParametersuivNV(target, count, &params[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramSubroutineParametersuivNV(target: DummyEnum; count: Int32; var &params: UInt32) := ProgramSubroutineParametersuivNV(target, count, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramSubroutineParametersuivNV(target: DummyEnum; count: Int32; &params: pointer) := z_ProgramSubroutineParametersuivNV(target, count, &params);
+    
+    public z_GetProgramSubroutineParameteruivNV := GetGLFuncOrNil&<procedure(target: DummyEnum; index: UInt32; param: pointer)>('glGetProgramSubroutineParameteruivNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramSubroutineParameteruivNV(target: DummyEnum; index: UInt32; param: array of UInt32) := GetProgramSubroutineParameteruivNV(target, index, param[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramSubroutineParameteruivNV(target: DummyEnum; index: UInt32; var param: UInt32) := GetProgramSubroutineParameteruivNV(target, index, @param);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramSubroutineParameteruivNV(target: DummyEnum; index: UInt32; param: pointer) := z_GetProgramSubroutineParameteruivNV(target, index, param);
+    
+    {$endregion ARB_shader_subroutine}
+    
+    {$region ARB_transform_feedback3 NV_transform_feedback}
+    
+    public z_TransformFeedbackAttribsNV := GetGLFuncOrNil&<procedure(count: Int32; attribs: pointer; bufferMode: DummyEnum)>('glTransformFeedbackAttribsNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackAttribsNV(count: Int32; attribs: array of Int32; bufferMode: DummyEnum) := TransformFeedbackAttribsNV(count, attribs[0], bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackAttribsNV(count: Int32; var attribs: Int32; bufferMode: DummyEnum) := TransformFeedbackAttribsNV(count, @attribs, bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackAttribsNV(count: Int32; attribs: pointer; bufferMode: DummyEnum) := z_TransformFeedbackAttribsNV(count, attribs, bufferMode);
+    
+    public z_TransformFeedbackVaryingsNV := GetGLFuncOrNil&<procedure(&program: UInt32; count: Int32; locations: pointer; bufferMode: DummyEnum)>('glTransformFeedbackVaryingsNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackVaryingsNV(&program: UInt32; count: Int32; locations: array of Int32; bufferMode: DummyEnum) := TransformFeedbackVaryingsNV(&program, count, locations[0], bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackVaryingsNV(&program: UInt32; count: Int32; var locations: Int32; bufferMode: DummyEnum) := TransformFeedbackVaryingsNV(&program, count, @locations, bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackVaryingsNV(&program: UInt32; count: Int32; locations: pointer; bufferMode: DummyEnum) := z_TransformFeedbackVaryingsNV(&program, count, locations, bufferMode);
+    
+    public z_GetTransformFeedbackVaryingNV := GetGLFuncOrNil&<procedure(&program: UInt32; index: UInt32; location: pointer)>('glGetTransformFeedbackVaryingNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTransformFeedbackVaryingNV(&program: UInt32; index: UInt32; location: array of Int32) := GetTransformFeedbackVaryingNV(&program, index, location[0]);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTransformFeedbackVaryingNV(&program: UInt32; index: UInt32; var location: Int32) := GetTransformFeedbackVaryingNV(&program, index, @location);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetTransformFeedbackVaryingNV(&program: UInt32; index: UInt32; location: pointer) := z_GetTransformFeedbackVaryingNV(&program, index, location);
+    
+    {$endregion ARB_transform_feedback3 NV_transform_feedback}
+    
     {$region AMD_gpu_shader_int64 NV_gpu_shader5}
     
     public z_Uniform1i64NV := GetGLFuncOrNil&<procedure(location: Int32; x: Int64)>('glUniform1i64NV');
@@ -19320,6 +19342,21 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBarrierNV := z_TextureBarrierNV;
     
     {$endregion NV_texture_barrier}
+    
+    {$region ARB_transform_feedback3}
+    
+    public z_TransformFeedbackStreamAttribsNV := GetGLFuncOrNil&<procedure(count: Int32; attribs: pointer; nbuffers: Int32; bufstreams: pointer; bufferMode: DummyEnum)>('glTransformFeedbackStreamAttribsNV');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; attribs: array of Int32; nbuffers: Int32; bufstreams: array of Int32; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, attribs[0], nbuffers, bufstreams[0], bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; attribs: array of Int32; nbuffers: Int32; var bufstreams: Int32; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, attribs[0], nbuffers, @bufstreams, bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; attribs: array of Int32; nbuffers: Int32; bufstreams: pointer; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, attribs[0], nbuffers, bufstreams, bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; var attribs: Int32; nbuffers: Int32; bufstreams: array of Int32; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, @attribs, nbuffers, bufstreams[0], bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; var attribs: Int32; nbuffers: Int32; var bufstreams: Int32; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, @attribs, nbuffers, @bufstreams, bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; var attribs: Int32; nbuffers: Int32; bufstreams: pointer; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, @attribs, nbuffers, bufstreams, bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; attribs: pointer; nbuffers: Int32; bufstreams: array of Int32; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, attribs, nbuffers, bufstreams[0], bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; attribs: pointer; nbuffers: Int32; var bufstreams: Int32; bufferMode: DummyEnum) := TransformFeedbackStreamAttribsNV(count, attribs, nbuffers, @bufstreams, bufferMode);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackStreamAttribsNV(count: Int32; attribs: pointer; nbuffers: Int32; bufstreams: pointer; bufferMode: DummyEnum) := z_TransformFeedbackStreamAttribsNV(count, attribs, nbuffers, bufstreams, bufferMode);
+    
+    {$endregion ARB_transform_feedback3}
     
     {$region NV_non_square_matrices}
     
