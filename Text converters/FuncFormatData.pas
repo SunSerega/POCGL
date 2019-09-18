@@ -10,12 +10,13 @@ uses FuncOverloadControlData;
 // - 3. Преобразование в par_masks, с добавлением всех масок вызовов и т.п.
 // 
 // - Тип результата обрабатывается последним в T%1
-// - Если нативный тип это pointer - все не_массивы становятся var-параметрами
+// - Если нативный тип это указатель - все не_массивы становятся var-параметрами
 // - Массив превращаются в передачу [0] var-параметром
 // - Строки разворачиваются в извращения с Marshal (и потом IntPtr, конечно)
 
 var
   keywords := HSet('begin', 'end', 'params', 'type', 'end', 'program', 'array', 'unit', 'label', 'event', 'in', 'packed', 'property');
+  num_chrs := Range('0','9').ToArray;
 
 {$region Misc utils}
 
@@ -27,10 +28,11 @@ type
   end;
   
   par_data = auto class
-    par_def: string;        //param def
-    par_call: string;       //param call
-    func_call_mask: string; //function call: {0}=prev func call
-    fn_mask: string;        //function name: {0}=prev name
+    par_def: string;        // param def
+    par_call: string;       // param call
+    func_call_mask: string; // function call: {0}=prev func call
+    fn_mask: string;        // function name: {0}=prev name
+    gen_par: string;        // generic param name
   end;
   
 procedure LoadOverloadControlFolder(path: string);
@@ -294,26 +296,41 @@ begin
     Result := Seq(tname);
 end;
 
+// ptype = тип перегрузки: (array of A,A,pointer), (string,IntPtr), (A)
+// pname = имя параметра
+// pnt   = переведённый неуправляемый тип параметра, как "^A"
+// is_ret - true если Result а не параметр
+// par_n - номер параметра, нумеруется с 1
 function GetTypeMasks(ptype, pname, pnt: string; is_ret: boolean; par_n: integer): par_data;
 begin
+  var generic: string := nil;
+  if ptype.TrimEnd(num_chrs) in ['array of T', 'T'] then
+    generic := ptype.Substring(ptype.LastIndexOf(' ')+1);
   
-  if ptype.StartsWith('array of ') then       Result := is_ret ?  nil : new par_data( $'{pname}: {ptype}',      pname+'[0]',  nil,  nil ) else
-  if (pnt[1]='^') and (ptype<>'pointer') then Result := is_ret ?  nil : new par_data( $'var {pname}: {ptype}',  '@'+pname,    nil,  nil ) else
+  if ptype.StartsWith('array of ') then
+    Result := is_ret ?  nil : new par_data( $'{pname}: {ptype}',      pname+'[0]',  nil,  nil, generic ) else
+  
+  if ((pnt[1]='^') or ((pnt='pointer') and not (ptype='IntPtr'))) and (ptype<>'pointer') then
+    Result := is_ret ?  nil : new par_data( $'var {pname}: {ptype}',  '@'+pname,    nil,  nil, generic ) else
   
   if ptype = 'string' then Result := new par_data(
+    
     is_ret ? 'string'                       : $'{pname}: {ptype}',
     is_ret ? nil                            : $'ptr_{par_n}',
     is_ret ? 'Marshal.PtrToStringAnsi({0})' : $'var ptr_{par_n} := Marshal.StringToHGlobalAnsi({pname}); {{0}} Marshal.FreeHGlobal(ptr_{par_n});',
-    is_ret ? '{0}_Str'                      : nil
-  ) else
-  begin
+    is_ret ? '{0}_Str'                      : nil,
+    generic
     
-    var par_call :=
-      (ptype='IntPtr')and(pnt='pointer') ? $'pointer({pname})' :
-    pname;
+  ) else Result := new par_data(
     
-    Result := new par_data(is_ret?ptype:$'{pname}: {ptype}', par_call, nil, '{0}');
-  end;
+    is_ret?ptype:$'{pname}: {ptype}',
+    (ptype='IntPtr')and(pnt='pointer') ? $'pointer({pname})' : pname,
+    nil,
+    '{0}',
+    generic
+    
+  );
+  
 end;
 
 type
@@ -657,6 +674,15 @@ type
         if cfname.ToLower in keywords then cfname := '&'+cfname;
         sb += cfname;
         
+        var generic := par_combo.ConvertAll(pd->pd.gen_par);
+        generic.RemoveAll(s->s=nil);
+        if generic.Count<>0 then
+        begin
+          sb += '<';
+          sb += generic.JoinIntoString(', ');
+          sb += '>';
+        end;
+        
         if has_par then
         begin
           sb += '(';
@@ -669,9 +695,20 @@ type
           sb += par_combo[par_combo.Count-1].par_def;
         end;
         
-        var need_block := only_par.Any(pd->pd.func_call_mask<>nil);
+        var need_block := only_par.Any(pd->pd.func_call_mask<>nil) or (generic.Count<>0);
         
-        sb += need_block ? '; begin ' : ' := ';
+        if need_block then
+        begin
+          sb += '; ';
+          if generic.Count<>0 then
+          begin
+            sb += 'where ';
+            sb += generic.JoinIntoString(', ');
+            sb += ': record; ';
+          end;
+          sb += 'begin ';
+        end else
+          sb += ' := ';
         
         var call_sb := new StringBuilder;
         if i=par_masks.Count-1 then
