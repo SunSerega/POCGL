@@ -606,19 +606,24 @@ type
         
         sb += '    public static z_';
         sb += name.TrimStart('&');
-        sb += ': ';
-        sb += f?'function':'procedure';
-        if has_par then
-        begin
-          sb += '(';
-          sb += only_nativ_par.JoinIntoString('; ');
-          sb += ')';
-        end;
-        if f then
+        
+        if f and not has_par then
         begin
           sb += ': ';
-          sb += nativ_par[nativ_par.Count-1];
+          sb += f?'function':'procedure';
+          if has_par then
+          begin
+            sb += '(';
+            sb += only_nativ_par.JoinIntoString('; ');
+            sb += ')';
+          end;
+          if f then
+          begin
+            sb += ': ';
+            sb += nativ_par[nativ_par.Count-1];
+          end;
         end;
+        
         sb += ' := _';
         sb += name.TrimStart('&');
         sb += ';'#10;
