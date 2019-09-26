@@ -589,6 +589,8 @@ type
     if not self.is_busy then is_busy := true else
       raise new QueueDoubleInvokeException;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
     
     protected procedure UnInvoke; virtual;
@@ -656,6 +658,8 @@ type
   ///--
   BufferCommand = abstract class
     protected ev: cl_event;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
     
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
     
@@ -885,7 +889,7 @@ type
     
     {$region override методы}
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     
@@ -895,6 +899,8 @@ type
       self.ev := cl_event.Zero;
       foreach var comm in commands do comm.UnInvoke;
     end;
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
     
     {$endregion override методы}
     
@@ -1243,6 +1249,8 @@ type
   KernelCommand = class
     protected ev: cl_event;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
+    
     protected procedure Invoke(b_q: CommandQueue<Kernel>; b: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
     
     protected procedure UnInvoke; virtual;
@@ -1259,7 +1267,7 @@ type
   ///Особый тип очереди, всегда возвращающий Kernel
   ///Может быть создан из объекта Kernel или очереди, возвращающей Kernel
   ///Используется для хранения списка особых команд, применимых только к Kernel
-  KernelCommandQueue = class(CommandQueue<Kernel>)
+  KernelCommandQueue = sealed class(CommandQueue<Kernel>)
     protected res_q_hub: object;
     protected commands := new List<KernelCommand>;
     
@@ -1339,7 +1347,7 @@ type
     
     {$region override методы}
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     
@@ -1349,6 +1357,8 @@ type
       self.ev := cl_event.Zero;
       foreach var comm in commands do comm.UnInvoke;
     end;
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
     
     {$endregion override методы}
     
@@ -1493,7 +1503,7 @@ type
       var cq := cl.CreateCommandQueue(_context, _device, CommandQueuePropertyFlags.QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, ec);
       ec.RaiseIfError;
       
-      var tasks := new List<Task>;
+      var tasks := new List<Task>( q.GetEstimateTaskCount(new HashSet<object>) );
       q.Invoke(self, cq, cl_event.Zero, tasks);
       
       Result := new Task<T>(()-> //ToDo #2048
@@ -1721,6 +1731,8 @@ type
     public constructor(o: T) :=
     self.res := o;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 0;
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override :=
     MakeBusy;
     
@@ -1742,6 +1754,8 @@ type
     
     public constructor(f: ()->T) :=
     self.f := f;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1;
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -1800,6 +1814,8 @@ type
     public constructor(hub: MultiusableCommandQueueHub<T>) :=
     self.hub := hub;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + (prev_hubs.Add(hub) ? hub.q.GetEstimateTaskCount(prev_hubs) : 0);
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
@@ -1856,6 +1872,7 @@ begin
       q.ev=cl_event.Zero ? nil :
       Task.Run(()-> cl.WaitForEvents(1,@q.ev).RaiseIfError())
     ;
+//    if q_task<>nil then tasks += q_task; // хотя бы 1 нода вызовет Task.Wait, так что не надо
   end;
   
   invoked_count += 1;
@@ -1905,6 +1922,8 @@ type
       self.q := q;
       self.f := f;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + q.GetEstimateTaskCount(prev_hubs);
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -1959,6 +1978,8 @@ type
     public constructor(qs: array of CommandQueueBase) :=
     lst := qs.ToList;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
@@ -2011,6 +2032,8 @@ type
     
     public constructor(qs: array of CommandQueue<T>) :=
     lst := qs.ToList;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2070,6 +2093,8 @@ type
       self.lst := qs.ToList;
       self.conv := conv;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2137,6 +2162,8 @@ type
       self.lst := qs.ToList;
       self.conv := conv;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2241,6 +2268,8 @@ type
     public constructor(qs: array of CommandQueueBase) :=
     lst := qs.ToList;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
+    
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
@@ -2291,6 +2320,8 @@ type
     
     public constructor(qs: array of CommandQueue<T>) :=
     lst := qs.ToList;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2349,6 +2380,8 @@ type
       self.lst := qs.ToList;
       self.conv := conv;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2415,6 +2448,8 @@ type
       self.lst := qs.ToList;
       self.conv := conv;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
     protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2528,6 +2563,8 @@ type
     public constructor(q: CommandQueue<T>) :=
     self.q := q;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
+    
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       q.Invoke(c, cq, prev_ev, tasks);
@@ -2549,24 +2586,12 @@ type
 function BufferCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
 AddCommand(new BufferQueueCommand<T>(q));
 
-function BufferCommandQueue.InternalClone(muhs: Dictionary<object, object>): CommandQueueBase;
+function BufferCommandQueue.GetEstimateTaskCount(prev_hubs: HashSet<object>): integer;
 begin
-  var res := new BufferCommandQueue(self.res);
-  
-  if self.res_q_hub<>nil then
-  begin
-    
-    res.res_q_hub := new MultiusableCommandQueueHub<Buffer>(CommandQueue&<Buffer>(
-      MultiusableCommandQueueHub&<Buffer>(self.res_q_hub).q.InternalClone(muhs)
-    ));
-    
-    muhs.Add(self.res_q_hub, res.res_q_hub);
-  end;
-  
-  res.commands.Capacity := self.commands.Capacity;
-  foreach var comm in self.commands do res.commands += comm.Clone(muhs);
-  
-  Result := res;
+  Result := commands.Sum(comm->comm.GetEstimateTaskCount(prev_hubs));
+  if res_q_hub=nil then exit;
+  Result += commands.Count; // каждая команда вызывает выполнение 1 ноды
+  Result += MultiusableCommandQueueHub&<Buffer>(self.res_q_hub).q.GetEstimateTaskCount(prev_hubs);
 end;
 
 procedure BufferCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>);
@@ -2590,6 +2615,26 @@ begin
   self.ev := prev_ev;
 end;
 
+function BufferCommandQueue.InternalClone(muhs: Dictionary<object, object>): CommandQueueBase;
+begin
+  var res := new BufferCommandQueue(self.res);
+  
+  if self.res_q_hub<>nil then
+  begin
+    
+    res.res_q_hub := new MultiusableCommandQueueHub<Buffer>(CommandQueue&<Buffer>(
+      MultiusableCommandQueueHub&<Buffer>(self.res_q_hub).q.InternalClone(muhs)
+    ));
+    
+    muhs.Add(self.res_q_hub, res.res_q_hub);
+  end;
+  
+  res.commands.Capacity := self.commands.Capacity;
+  foreach var comm in self.commands do res.commands += comm.Clone(muhs);
+  
+  Result := res;
+end;
+
 {$endregion Misc}
 
 {$region Write}
@@ -2606,6 +2651,12 @@ type
       self.offset := offset;
       self.len := len;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      ptr   .GetEstimateTaskCount(prev_hubs) +
+      offset.GetEstimateTaskCount(prev_hubs) +
+      len   .GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2674,6 +2725,12 @@ type
       self.offset := offset;
       self.len := len;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      a     .GetEstimateTaskCount(prev_hubs) +
+      offset.GetEstimateTaskCount(prev_hubs) +
+      len   .GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2746,6 +2803,12 @@ type
       self.offset := offset;
       self.len := len;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      ptr   .GetEstimateTaskCount(prev_hubs) +
+      offset.GetEstimateTaskCount(prev_hubs) +
+      len   .GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -2856,6 +2919,12 @@ type
       self.len := len;
     end;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      ptr   .GetEstimateTaskCount(prev_hubs) +
+      offset.GetEstimateTaskCount(prev_hubs) +
+      len   .GetEstimateTaskCount(prev_hubs)
+    ;
+    
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
@@ -2923,6 +2992,12 @@ type
       self.offset := offset;
       self.len := len;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      a     .GetEstimateTaskCount(prev_hubs) +
+      offset.GetEstimateTaskCount(prev_hubs) +
+      len   .GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -3012,6 +3087,13 @@ type
       self.len := len;
     end;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      ptr         .GetEstimateTaskCount(prev_hubs) +
+      pattern_len .GetEstimateTaskCount(prev_hubs) +
+      offset      .GetEstimateTaskCount(prev_hubs) +
+      len         .GetEstimateTaskCount(prev_hubs)
+    ;
+    
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
@@ -3082,6 +3164,12 @@ type
       self.offset := offset;
       self.len := len;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      a     .GetEstimateTaskCount(prev_hubs) +
+      offset.GetEstimateTaskCount(prev_hubs) +
+      len   .GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -3156,6 +3244,13 @@ type
       self.offset := offset;
       self.len := len;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      ptr         .GetEstimateTaskCount(prev_hubs) +
+      pattern_len .GetEstimateTaskCount(prev_hubs) +
+      offset      .GetEstimateTaskCount(prev_hubs) +
+      len         .GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -3278,6 +3373,14 @@ type
       self.len := len;
     end;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      f_buf .GetEstimateTaskCount(prev_hubs) +
+      t_buf .GetEstimateTaskCount(prev_hubs) +
+      f_pos .GetEstimateTaskCount(prev_hubs) +
+      t_pos .GetEstimateTaskCount(prev_hubs) +
+      len   .GetEstimateTaskCount(prev_hubs)
+    ;
+    
     protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
@@ -3361,6 +3464,8 @@ type
     public constructor(q: CommandQueue<T>) :=
     self.q := q;
     
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
+    
     protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       q.Invoke(c, cq, prev_ev, tasks);
@@ -3382,24 +3487,12 @@ type
 function KernelCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
 AddCommand(new KernelQueueCommand<T>(q));
 
-function KernelCommandQueue.InternalClone(muhs: Dictionary<object, object>): CommandQueueBase;
+function KernelCommandQueue.GetEstimateTaskCount(prev_hubs: HashSet<object>): integer;
 begin
-  var res := new KernelCommandQueue(self.res);
-  
-  if self.res_q_hub<>nil then
-  begin
-    
-    res.res_q_hub := new MultiusableCommandQueueHub<Kernel>(CommandQueue&<Kernel>(
-      MultiusableCommandQueueHub&<Kernel>(self.res_q_hub).q.InternalClone(muhs)
-    ));
-    
-    muhs.Add(self.res_q_hub, res.res_q_hub);
-  end;
-  
-  res.commands.Capacity := self.commands.Capacity;
-  foreach var comm in self.commands do res.commands += comm.Clone(muhs);
-  
-  Result := res;
+  Result := commands.Sum(comm->comm.GetEstimateTaskCount(prev_hubs));
+  if res_q_hub=nil then exit;
+  Result += commands.Count; // каждая команда вызывает выполнение 1 ноды
+  Result += MultiusableCommandQueueHub&<Kernel>(self.res_q_hub).q.GetEstimateTaskCount(prev_hubs);
 end;
 
 procedure KernelCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>);
@@ -3420,6 +3513,26 @@ begin
   self.ev := prev_ev;
 end;
 
+function KernelCommandQueue.InternalClone(muhs: Dictionary<object, object>): CommandQueueBase;
+begin
+  var res := new KernelCommandQueue(self.res);
+  
+  if self.res_q_hub<>nil then
+  begin
+    
+    res.res_q_hub := new MultiusableCommandQueueHub<Kernel>(CommandQueue&<Kernel>(
+      MultiusableCommandQueueHub&<Kernel>(self.res_q_hub).q.InternalClone(muhs)
+    ));
+    
+    muhs.Add(self.res_q_hub, res.res_q_hub);
+  end;
+  
+  res.commands.Capacity := self.commands.Capacity;
+  foreach var comm in self.commands do res.commands += comm.Clone(muhs);
+  
+  Result := res;
+end;
+
 {$endregion Misc}
 
 {$region Exec}
@@ -3435,6 +3548,11 @@ type
       self.work_szs := work_szs;
       self.args_q := args;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      args_q.Sum(sq->sq.GetEstimateTaskCount(prev_hubs)) +
+      k_q.GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -3507,6 +3625,12 @@ type
       self.work_szs_q := work_szs_q;
       self.args_q := args;
     end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
+      work_szs_q.GetEstimateTaskCount(prev_hubs) +
+      args_q.Sum(sq->sq.GetEstimateTaskCount(prev_hubs)) +
+      k_q.GetEstimateTaskCount(prev_hubs)
+    ;
     
     protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
