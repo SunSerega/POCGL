@@ -502,6 +502,10 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
+//ToDo заменить GCHandle на махинации с var-параметрами
+
+//ToDo возможность указывать источник ожидания в .Multiusable
+
 //===================================
 // Запланированное:
 
@@ -533,7 +537,8 @@ uses System.Runtime.CompilerServices;
 // - и написать в справке что .Multiusable не обязательно работает как очередь-параметр
 // - а так же проверить все .Multiusable в этом модуле
 
-//ToDo заменить GCHandle на махинации с var-параметрами
+//ToDo Сделать CommandQueueBase не_скрытым
+// + возможность вызвать такую очередь в Cotext.*Invoke, без возвращаемого значения
 
 //===================================
 // Сделать когда-нибуть:
@@ -541,14 +546,17 @@ uses System.Runtime.CompilerServices;
 //ToDo У всего, у чего есть Finalize - проверить чтобы было и .Dispose, если надо
 // - и добавить в справку, про то что этот объект можно удалять
 
-//ToDo Пройтись по всем функциям OpenCL, посмотреть функционал каких стоит добавить
+//ToDo Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 
 //ToDo Тесты всех фич модуля
+
+//===================================
 
 //ToDo issue компилятора:
 // - #1981
 // - #2048
-// - #2067, #2068
+// - #2067
+// - #2068
 
 type
   
@@ -603,8 +611,7 @@ type
     ///Создаёт полную копию данной очереди,
     ///Всех очередей из которых она состоит,
     ///А так же всех очередей-параметров, использованных в данной очереди
-    public function Clone: CommandQueue<T> :=
-    CommandQueue&<T>(self.InternalClone(new Dictionary<object,object>));
+    public function Clone := self.InternalClone(new Dictionary<object,object>) as CommandQueue<T>;
     
     
     ///Создаёт массив из n очередей, каждая из которых возвращает результат данной очереди
@@ -1620,10 +1627,12 @@ type
 
 ///Host Funcion Queue
 ///Создаёт новую очередь, выполняющую функцию на CPU
+///И возвращающую результат этой функции
 function HFQ<T>(f: ()->T): CommandQueue<T>;
 
 ///Host Procecure Queue
 ///Создаёт новую очередь, выполняющую процедуру на CPU
+///И возвращающую object(nil)
 function HPQ(p: ()->()): CommandQueue<object>;
 
 ///Складывает все очереди qs
@@ -1691,6 +1700,30 @@ implementation
 
 {$region CommandQueue}
 
+{$region Dummy}
+
+type
+  DummyCommandQueue<T> = sealed class(CommandQueue<T>)
+    
+    public constructor(o: T) :=
+    self.res := o;
+    
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    begin
+      MakeBusy;
+      Result := System.Linq.Enumerable.Empty&<Task>;
+    end;
+    
+    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    new DummyCommandQueue<T>(self.res);
+    
+  end;
+  
+static function CommandQueue<T>.operator implicit(o: T): CommandQueue<T> :=
+new DummyCommandQueue<T>(o);
+
+{$endregion Dummy}
+
 {$region HostFunc}
 
 type
@@ -1700,53 +1733,33 @@ type
     public constructor(f: ()->T) :=
     self.f := f;
     
-    public constructor(o: T);
+    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
     begin
-      self.res := o;
-      self.f := nil;
+      var ec: ErrorCode;
+      MakeBusy;
+      
+      ClearEvent;
+      self.ev := cl.CreateUserEvent(c._context, ec);
+      ec.RaiseIfError;
+      
+      yield Task.Run(()->
+      begin
+        if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+        self.res := self.f();
+        
+        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+      end);
+      
     end;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
-    
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    self.f=nil?
-      new CommandQueueHostFunc<T>(self.res) :
-      new CommandQueueHostFunc<T>(self.f)
-    ;
+    new CommandQueueHostFunc<T>(self.f);
     
     public procedure Finalize; override :=
     ClearEvent;
     
   end;
   
-function CommandQueueHostFunc<T>.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task;
-begin
-  var ec: ErrorCode;
-  MakeBusy;
-  
-  if (prev_ev<>cl_event.Zero) or (self.f <> nil) then
-  begin
-    
-    ClearEvent;
-    self.ev := cl.CreateUserEvent(c._context, ec);
-    ec.RaiseIfError;
-    
-    yield Task.Run(()->
-    begin
-      if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
-      if self.f<>nil then self.res := self.f();
-      
-      cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-    end);
-    
-  end else
-    self.ev := cl_event.Zero;
-  
-end;
-
-static function CommandQueue<T>.operator implicit(o: T): CommandQueue<T> :=
-new CommandQueueHostFunc<T>(o);
-
 {$endregion HostFunc}
 
 {$region Multiusable}
@@ -2609,7 +2622,7 @@ end;
 
 {$endregion Misc}
 
-{$region WriteData}
+{$region Write}
 
 type
   BufferCommandWriteData = sealed class(BufferCommand)
@@ -2857,16 +2870,17 @@ AddCommand(new BufferCommandWriteValue(
     var sz := Marshal.SizeOf&<TRecord>;
     var ptr := Marshal.AllocHGlobal(sz);
     var typed_ptr: ^TRecord := pointer(ptr);
-    typed_ptr^ := TRecord(object(vval)); //ToDo #2068
+    var костыль_ptr: ^TRecord := pointer(@vval); //ToDo #2068
+    typed_ptr^ := костыль_ptr^;
     Result := ptr;
   end),
   offset,
   Marshal.SizeOf&<TRecord>
 ));
 
-{$endregion WriteData}
+{$endregion Write}
 
-{$region ReadData}
+{$region Read}
 
 type
   BufferCommandReadData = sealed class(BufferCommand)
@@ -3025,9 +3039,9 @@ function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>; offset, len: C
 AddCommand(new BufferCommandReadArray(a, offset, len));
 function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>) := AddReadArray(a, 0,GetSizeQ);
 
-{$endregion ReadData}
+{$endregion Read}
 
-{$region PatternFill}
+{$region Fill}
 
 type
   BufferCommandDataFill = sealed class(BufferCommand)
@@ -3286,7 +3300,8 @@ AddCommand(new BufferCommandValueFill(
     var sz := Marshal.SizeOf&<TRecord>;
     var ptr := Marshal.AllocHGlobal(sz);
     var typed_ptr: ^TRecord := pointer(ptr);
-    typed_ptr^ := TRecord(object(vval)); //ToDo #2068
+    var костыль_ptr: ^TRecord := pointer(@vval); //ToDo #2068
+    typed_ptr^ := костыль_ptr^;
     Result := ptr;
   end),
   Marshal.SizeOf&<TRecord>,
@@ -3299,7 +3314,7 @@ AddFillValue(val, 0,GetSizeQ);
 function BufferCommandQueue.AddFillValue<TRecord>(val: CommandQueue<TRecord>) :=
 AddFillValue(val, 0,GetSizeQ);
 
-{$endregion PatternFill}
+{$endregion Fill}
 
 {$region Copy}
 
@@ -3649,6 +3664,8 @@ AddCommand(new KernelQCommandExec(
 
 {$endregion CommandQueue}
 
+{$region Неявные CommandQueue}
+
 {$region Buffer}
 
 {$region constructor's}
@@ -3839,19 +3856,19 @@ Context.Default.SyncInvoke(NewQueue.AddExec(work_szs, args) as CommandQueue<Kern
 
 {$endregion Kernel}
 
+{$endregion Неявные CommandQueue}
+
 {$region Сахарные подпрограммы}
 
 function HFQ<T>(f: ()->T) :=
 new CommandQueueHostFunc<T>(f);
 
 function HPQ(p: ()->()) :=
-HFQ&<object>(
-  ()->
-  begin
-    p();
-    Result := nil;
-  end
-);
+HFQ&<object>(()->
+begin
+  p();
+  Result := nil;
+end);
 
 function CombineSyncQueue<T>(qs: List<CommandQueueBase>) :=
 new CommandQueueSyncList<T>(qs);
