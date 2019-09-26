@@ -13,14 +13,14 @@
 
 ///
 ///Высокоуровневая оболочка модуля OpenCL
-/// OpenCL и OpenCLABC можно использовать одновременно
-/// Но контактировать они практически не будут
+///   OpenCL и OpenCLABC можно использовать одновременно
+///   Но контактировать они практически не будут
 ///
 ///Если не хватает типа/метода или найдена ошибка - писать сюда:
-/// https://github.com/SunSerega/POCGL/issues
+///   https://github.com/SunSerega/POCGL/issues
 ///
 ///Справка данного модуля находится в начале его исходника
-/// Исходники можно открыть Ctrl-кликом на любом имени из модуля
+///   Исходники можно открыть Ctrl-кликом на любом имени из модуля
 ///
 unit OpenCLABC;
 
@@ -502,14 +502,16 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
+//ToDo заменить QUEUE_OUT_OF_ORDER на создание множества очередей, потому что QUEUE_OUT_OF_ORDER не работает
+
 //ToDo заменить GCHandle на махинации с var-параметрами
 
 //ToDo возможность указывать источник ожидания в .Multiusable
 
+//ToDo предугадывать размер List<Task> рекурсивной функцией
+
 //===================================
 // Запланированное:
-
-//ToDo эвенты можно очищать в UnInvoke
 
 //ToDo CommandQueue.Cycle(integer)
 //ToDo CommandQueue.Cycle // бесконечность циклов
@@ -522,9 +524,6 @@ uses System.Runtime.CompilerServices;
 // - а значит надо что то вроде пре-запуска, чтобы не терять время между итерациями
 
 //ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
-
-//ToDo Может лучше передавать List<Task> в Invoke, чем использовать yield?
-// - должно быть проще в реализации, быстрее и меньше ограничений...
 
 //ToDo Типы Device и Platform
 //ToDo А связь с OpenCL.pas сделать всему (и буферам и кёрнелам), но более человеческую
@@ -539,6 +538,8 @@ uses System.Runtime.CompilerServices;
 
 //ToDo Сделать CommandQueueBase не_скрытым
 // + возможность вызвать такую очередь в Cotext.*Invoke, без возвращаемого значения
+
+//ToDo Интегрировать профайлинг очередей
 
 //===================================
 // Сделать когда-нибуть:
@@ -584,17 +585,22 @@ type
     protected ev: cl_event;
     protected is_busy: boolean;
     
-    protected procedure ClearEvent :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
-    
     protected procedure MakeBusy :=
     if not self.is_busy then is_busy := true else
       raise new QueueDoubleInvokeException;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
-    protected procedure UnInvoke; virtual :=
-    if self.is_busy then is_busy := false else
-      raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
+    
+    protected procedure UnInvoke; virtual;
+    begin
+      if self.is_busy then
+        is_busy := false else
+        raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
+      
+      if self.ev=cl_event.Zero then exit;
+      cl.ReleaseEvent(self.ev).RaiseIfError;
+      self.ev := cl_event.Zero;
+    end;
     
     protected function GetRes: object; abstract;
     
@@ -651,12 +657,14 @@ type
   BufferCommand = abstract class
     protected ev: cl_event;
     
-    protected procedure ClearEvent :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
-    
-    protected procedure UnInvoke; abstract;
+    protected procedure UnInvoke; virtual;
+    begin
+      if self.ev=cl_event.Zero then exit;
+      cl.ReleaseEvent(self.ev).RaiseIfError;
+      self.ev := cl_event.Zero;
+    end;
     
     protected function Clone(muhs: Dictionary<object, object>): BufferCommand; abstract;
     
@@ -879,11 +887,12 @@ type
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     
     protected procedure UnInvoke; override;
     begin
-      inherited;
+//      inherited; // не надо, команды уже удалили свои эвенты
+      self.ev := cl_event.Zero;
       foreach var comm in commands do comm.UnInvoke;
     end;
     
@@ -1234,12 +1243,14 @@ type
   KernelCommand = class
     protected ev: cl_event;
     
-    protected procedure ClearEvent :=
-    if self.ev<>cl_event.Zero then cl.ReleaseEvent(self.ev).RaiseIfError;
+    protected procedure Invoke(b_q: CommandQueue<Kernel>; b: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
     
-    protected function Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; abstract;
-    
-    protected procedure UnInvoke; abstract;
+    protected procedure UnInvoke; virtual;
+    begin
+      if self.ev=cl_event.Zero then exit;
+      cl.ReleaseEvent(self.ev).RaiseIfError;
+      self.ev := cl_event.Zero;
+    end;
     
     protected function Clone(muhs: Dictionary<object, object>): KernelCommand; abstract;
     
@@ -1330,11 +1341,12 @@ type
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     
     protected procedure UnInvoke; override;
     begin
-      inherited;
+//      inherited; // не надо, команды уже удалили свои эвенты
+      self.ev := cl_event.Zero;
       foreach var comm in commands do comm.UnInvoke;
     end;
     
@@ -1481,7 +1493,8 @@ type
       var cq := cl.CreateCommandQueue(_context, _device, CommandQueuePropertyFlags.QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, ec);
       ec.RaiseIfError;
       
-      var tasks := q.Invoke(self, cq, cl_event.Zero).ToList;
+      var tasks := new List<Task>;
+      q.Invoke(self, cq, cl_event.Zero, tasks);
       
       Result := new Task<T>(()-> //ToDo #2048
       try
@@ -1708,11 +1721,8 @@ type
     public constructor(o: T) :=
     self.res := o;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
-    begin
-      MakeBusy;
-      Result := System.Linq.Enumerable.Empty&<Task>;
-    end;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override :=
+    MakeBusy;
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new DummyCommandQueue<T>(self.res);
@@ -1733,16 +1743,15 @@ type
     public constructor(f: ()->T) :=
     self.f := f;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
         self.res := self.f();
@@ -1754,9 +1763,6 @@ type
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueHostFunc<T>(self.f);
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -1783,7 +1789,7 @@ type
     public constructor(q: CommandQueue<T>) :=
     self.q := q;
     
-    public function OnNodeInvoked(c: Context; cq: cl_command_queue): sequence of Task;
+    public procedure OnNodeInvoked(c: Context; cq: cl_command_queue; tasks: List<Task>);
     public procedure OnNodeUnInvoked;
     
   end;
@@ -1794,18 +1800,17 @@ type
     public constructor(hub: MultiusableCommandQueueHub<T>) :=
     self.hub := hub;
     
-    public function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      yield sequence hub.OnNodeInvoked(c,cq);
+      hub.OnNodeInvoked(c, cq, tasks);
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         if hub.q_task<>nil then hub.q_task.Wait;
         self.res := hub.q.res;
@@ -1814,7 +1819,7 @@ type
       
     end;
     
-    public procedure UnInvoke; override;
+    protected procedure UnInvoke; override;
     begin
       inherited;
       hub.OnNodeUnInvoked;
@@ -1835,13 +1840,9 @@ type
       Result := new MultiusableCommandQueueNode<T>(res_hub);
     end;
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   
-//ToDo почему то нет точки сворачивания, разобраться
-function MultiusableCommandQueueHub<T>.OnNodeInvoked(c: Context; cq: cl_command_queue): sequence of Task;
+procedure MultiusableCommandQueueHub<T>.OnNodeInvoked(c: Context; cq: cl_command_queue; tasks: List<Task>);
 begin
   case invoke_status of
     0: invoke_status := 1;
@@ -1850,10 +1851,12 @@ begin
   
   if invoked_count=0 then
   begin
-    Result := q.Invoke(c,cq, cl_event.Zero);
-    q_task := q.ev=cl_event.Zero ? nil : Task.Run(()->cl.WaitForEvents(1,@q.ev).RaiseIfError());
-  end else
-    Result := System.Linq.Enumerable.Empty&<Task>;
+    q.Invoke(c,cq, cl_event.Zero, tasks);
+    q_task :=
+      q.ev=cl_event.Zero ? nil :
+      Task.Run(()-> cl.WaitForEvents(1,@q.ev).RaiseIfError())
+    ;
+  end;
   
   invoked_count += 1;
   
@@ -1903,18 +1906,17 @@ type
       self.f := f;
     end;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      yield sequence q.Invoke(c, cq, prev_ev);
+      q.Invoke(c, cq, prev_ev, tasks);
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         if q.ev<>cl_event.Zero then cl.WaitForEvents(1,@q.ev).RaiseIfError;
         self.res := self.f(q.res, c);
@@ -1932,9 +1934,6 @@ type
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueResConvertor<T1,T2>(self.q.InternalClone(muhs), self.f);
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -1960,29 +1959,29 @@ type
     public constructor(qs: array of CommandQueueBase) :=
     lst := qs.ToList;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
       foreach var sq in lst do
       begin
-        yield sequence sq.Invoke(c, cq, prev_ev);
+        sq.Invoke(c, cq, prev_ev, tasks);
         prev_ev := sq.ev;
       end;
       
       if prev_ev<>cl_event.Zero then
       begin
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(1,@prev_ev).RaiseIfError;
           self.res := T(lst[lst.Count-1].GetRes);
           cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
         end);
+        
       end else
       begin
         self.res := T(lst[lst.Count-1].GetRes);
@@ -2000,9 +1999,6 @@ type
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueSyncList<T>(self.lst.ConvertAll(q->q.InternalClone(muhs)));
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   CommandQueueTSyncList<T> = sealed class(CommandQueue<T>)
     public lst: List<CommandQueue<T>>;
@@ -2016,24 +2012,23 @@ type
     public constructor(qs: array of CommandQueue<T>) :=
     lst := qs.ToList;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
       foreach var sq in lst do
       begin
-        yield sequence sq.Invoke(c, cq, prev_ev);
+        sq.Invoke(c, cq, prev_ev, tasks);
         prev_ev := sq.ev;
       end;
       
       if prev_ev<>cl_event.Zero then
       begin
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(1,@prev_ev).RaiseIfError;
           self.res := lst[lst.Count-1].res;
@@ -2056,9 +2051,6 @@ type
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueTSyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))));
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   CommandQueueCSyncList<TRes> = sealed class(CommandQueue<TRes>)
     public lst: List<CommandQueueBase>;
@@ -2079,24 +2071,23 @@ type
       self.conv := conv;
     end;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
       foreach var sq in lst do
       begin
-        yield sequence sq.Invoke(c, cq, prev_ev);
+        sq.Invoke(c, cq, prev_ev, tasks);
         prev_ev := sq.ev;
       end;
       
       if prev_ev<>cl_event.Zero then
       begin
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(1,@prev_ev).RaiseIfError;
           
@@ -2127,9 +2118,6 @@ type
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueCSyncList<TRes>(self.lst.ConvertAll(q->q.InternalClone(muhs)), conv);
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   CommandQueueCTSyncList<T,TRes> = sealed class(CommandQueue<TRes>)
     public lst: List<CommandQueue<T>>;
@@ -2150,24 +2138,23 @@ type
       self.conv := conv;
     end;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
       foreach var sq in lst do
       begin
-        yield sequence sq.Invoke(c, cq, prev_ev);
+        sq.Invoke(c, cq, prev_ev, tasks);
         prev_ev := sq.ev;
       end;
       
       if prev_ev<>cl_event.Zero then
       begin
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(1,@prev_ev).RaiseIfError;
           
@@ -2197,9 +2184,6 @@ type
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueCTSyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))), conv);
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -2257,22 +2241,21 @@ type
     public constructor(qs: array of CommandQueueBase) :=
     lst := qs.ToList;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
       var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
       
       if evs.Count<>0 then
       begin
         
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
           self.res := T(lst[lst.Count-1].GetRes);
@@ -2296,9 +2279,6 @@ type
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueAsyncList<T>(self.lst.ConvertAll(q->q.InternalClone(muhs)));
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   CommandQueueTAsyncList<T> = sealed class(CommandQueue<T>)
     public lst: List<CommandQueue<T>>;
@@ -2312,22 +2292,21 @@ type
     public constructor(qs: array of CommandQueue<T>) :=
     lst := qs.ToList;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
       var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
       
       if evs.Count<>0 then
       begin
         
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
           self.res := lst[lst.Count-1].res;
@@ -2351,9 +2330,6 @@ type
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueTAsyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))));
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   CommandQueueCAsyncList<TRes> = sealed class(CommandQueue<TRes>)
     public lst: List<CommandQueueBase>;
@@ -2374,22 +2350,21 @@ type
       self.conv := conv;
     end;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
       var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
       
       if evs.Count<>0 then
       begin
         
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
           
@@ -2421,9 +2396,6 @@ type
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueCAsyncList<TRes>(self.lst.ConvertAll(q->q.InternalClone(muhs)), conv);
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   CommandQueueCTAsyncList<T,TRes> = sealed class(CommandQueue<TRes>)
     public lst: List<CommandQueue<T>>;
@@ -2444,22 +2416,21 @@ type
       self.conv := conv;
     end;
     
-    protected function Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do yield sequence sq.Invoke(c, cq, prev_ev);
+      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
       var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
       
       if evs.Count<>0 then
       begin
         
-        ClearEvent;
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
-        yield Task.Run(()->
+        tasks += Task.Run(()->
         begin
           cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
           
@@ -2490,9 +2461,6 @@ type
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
     new CommandQueueCTAsyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))), conv);
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -2560,14 +2528,16 @@ type
     public constructor(q: CommandQueue<T>) :=
     self.q := q;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
-      yield sequence q.Invoke(c,cq,prev_ev);
+      q.Invoke(c, cq, prev_ev, tasks);
       self.ev := q.ev;
     end;
     
     protected procedure UnInvoke; override;
     begin
+//      inherited; // не надо, q уже удалило свой эвент
+      self.ev := cl_event.Zero;
       q.UnInvoke;
     end;
     
@@ -2599,7 +2569,7 @@ begin
   Result := res;
 end;
 
-function BufferCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task;
+procedure BufferCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>);
 begin
   MakeBusy;
   
@@ -2613,7 +2583,7 @@ begin
   
   foreach var comm in commands do
   begin
-    yield sequence comm.Invoke(new_plug, res, c, cq, prev_ev);
+    comm.Invoke(new_plug, res, c, cq, prev_ev, tasks);
     prev_ev := comm.ev;
   end;
   
@@ -2637,23 +2607,22 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
       var ev_lst := new List<cl_event>;
-      yield sequence ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      ptr   .Invoke(c, cq, cl_event.Zero, tasks); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
+      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -2679,6 +2648,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       ptr.UnInvoke;
       offset.UnInvoke;
@@ -2691,9 +2661,6 @@ type
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
       CommandQueue&<integer>(self.len   .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   BufferCommandWriteArray = sealed class(BufferCommand)
@@ -2708,23 +2675,22 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
-      yield sequence a     .Invoke(c, cq, cl_event.Zero);
-      yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      a     .Invoke(c, cq, cl_event.Zero, tasks);
+      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -2754,6 +2720,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       a.UnInvoke;
       offset.UnInvoke;
@@ -2766,9 +2733,6 @@ type
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
       CommandQueue&<integer>(self.len   .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   BufferCommandWriteValue = sealed class(BufferCommand)
@@ -2783,23 +2747,22 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
       var ev_lst := new List<cl_event>;
-      yield sequence ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      ptr   .Invoke(c, cq, cl_event.Zero, tasks); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
+      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -2826,6 +2789,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       ptr.UnInvoke;
       offset.UnInvoke;
@@ -2838,9 +2802,6 @@ type
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
       CommandQueue&<integer>(self.len   .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -2895,23 +2856,22 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
       var ev_lst := new List<cl_event>;
-      yield sequence ptr   .Invoke(c, cq, cl_event.Zero); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      ptr   .Invoke(c, cq, cl_event.Zero, tasks); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
+      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -2937,6 +2897,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       ptr.UnInvoke;
       offset.UnInvoke;
@@ -2949,9 +2910,6 @@ type
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
       CommandQueue&<integer>(self.len   .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   BufferCommandReadArray = sealed class(BufferCommand)
@@ -2966,23 +2924,22 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
-      yield sequence a     .Invoke(c, cq, cl_event.Zero);
-      yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      a     .Invoke(c, cq, cl_event.Zero, tasks);
+      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -3012,6 +2969,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       a.UnInvoke;
       offset.UnInvoke;
@@ -3024,9 +2982,6 @@ type
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
       CommandQueue&<integer>(self.len   .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -3057,24 +3012,23 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
       var ev_lst := new List<cl_event>;
-      yield sequence ptr         .Invoke(c, cq, cl_event.Zero); if ptr         .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      yield sequence pattern_len .Invoke(c, cq, cl_event.Zero); if pattern_len .ev<>cl_event.Zero then ev_lst += pattern_len.ev;
-      yield sequence offset      .Invoke(c, cq, cl_event.Zero); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len         .Invoke(c, cq, cl_event.Zero); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
+      ptr         .Invoke(c, cq, cl_event.Zero, tasks); if ptr         .ev<>cl_event.Zero then ev_lst += ptr.ev;
+      pattern_len .Invoke(c, cq, cl_event.Zero, tasks); if pattern_len .ev<>cl_event.Zero then ev_lst += pattern_len.ev;
+      offset      .Invoke(c, cq, cl_event.Zero, tasks); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
+      len         .Invoke(c, cq, cl_event.Zero, tasks); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -3100,6 +3054,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       ptr.UnInvoke;
       pattern_len.UnInvoke;
@@ -3115,9 +3070,6 @@ type
       CommandQueue&<integer>(self.len         .InternalClone(muhs))
     );
     
-    public procedure Finalize; override :=
-    ClearEvent;
-    
   end;
   BufferCommandArrayFill = sealed class(BufferCommand)
     public a: CommandQueue<&Array>;
@@ -3131,23 +3083,22 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
-      yield sequence a     .Invoke(c, cq, cl_event.Zero);
-      yield sequence offset.Invoke(c, cq, cl_event.Zero); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len   .Invoke(c, cq, cl_event.Zero); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
+      a     .Invoke(c, cq, cl_event.Zero, tasks);
+      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
+      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -3178,6 +3129,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       a.UnInvoke;
       offset.UnInvoke;
@@ -3190,9 +3142,6 @@ type
       CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
       CommandQueue&<integer>(self.len         .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   BufferCommandValueFill = sealed class(BufferCommand)
@@ -3208,24 +3157,23 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       
-      if b_q<>nil then yield sequence b_q.Invoke(c, cq, prev_ev);
+      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
       self.b_q := b_q;
       
       var ev_lst := new List<cl_event>;
-      yield sequence ptr         .Invoke(c, cq, cl_event.Zero); if ptr         .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      yield sequence pattern_len .Invoke(c, cq, cl_event.Zero); if pattern_len .ev<>cl_event.Zero then ev_lst += pattern_len.ev;
-      yield sequence offset      .Invoke(c, cq, cl_event.Zero); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
-      yield sequence len         .Invoke(c, cq, cl_event.Zero); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
+      ptr         .Invoke(c, cq, cl_event.Zero, tasks); if ptr         .ev<>cl_event.Zero then ev_lst += ptr.ev;
+      pattern_len .Invoke(c, cq, cl_event.Zero, tasks); if pattern_len .ev<>cl_event.Zero then ev_lst += pattern_len.ev;
+      offset      .Invoke(c, cq, cl_event.Zero, tasks); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
+      len         .Invoke(c, cq, cl_event.Zero, tasks); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lb: Buffer;
         
@@ -3252,6 +3200,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if b_q<>nil then b_q.UnInvoke;
       ptr.UnInvoke;
       pattern_len.UnInvoke;
@@ -3266,9 +3215,6 @@ type
       CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
       CommandQueue&<integer>(self.len         .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
@@ -3332,24 +3278,23 @@ type
       self.len := len;
     end;
     
-    protected function Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       
       var buf_ev_lst := new List<cl_event>;
-      yield sequence f_buf.Invoke(c, cq, cl_event.Zero); if f_buf.ev<>cl_event.Zero then buf_ev_lst += f_buf.ev;
-      yield sequence t_buf.Invoke(c, cq, cl_event.Zero); if t_buf.ev<>cl_event.Zero then buf_ev_lst += t_buf.ev;
+      f_buf.Invoke(c, cq, cl_event.Zero, tasks); if f_buf.ev<>cl_event.Zero then buf_ev_lst += f_buf.ev;
+      t_buf.Invoke(c, cq, cl_event.Zero, tasks); if t_buf.ev<>cl_event.Zero then buf_ev_lst += t_buf.ev;
       
       var ev_lst := new List<cl_event>;
-      yield sequence f_pos.Invoke(c, cq, cl_event.Zero); if f_pos.ev<>cl_event.Zero then ev_lst += f_pos.ev;
-      yield sequence t_pos.Invoke(c, cq, cl_event.Zero); if t_pos.ev<>cl_event.Zero then ev_lst += t_pos.ev;
-      yield sequence len  .Invoke(c, cq, cl_event.Zero); if len  .ev<>cl_event.Zero then ev_lst += len.ev;
+      f_pos.Invoke(c, cq, cl_event.Zero, tasks); if f_pos.ev<>cl_event.Zero then ev_lst += f_pos.ev;
+      t_pos.Invoke(c, cq, cl_event.Zero, tasks); if t_pos.ev<>cl_event.Zero then ev_lst += t_pos.ev;
+      len  .Invoke(c, cq, cl_event.Zero, tasks); if len  .ev<>cl_event.Zero then ev_lst += len.ev;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         if buf_ev_lst.Count<>0 then cl.WaitForEvents(buf_ev_lst.Count, buf_ev_lst.ToArray).RaiseIfError;
         if f_buf.res.memobj=cl_mem.Zero then f_buf.res.Init(c);
@@ -3370,6 +3315,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       f_buf.UnInvoke; t_buf.UnInvoke;
       f_pos.UnInvoke; t_pos.UnInvoke;
       len.UnInvoke;
@@ -3383,9 +3329,6 @@ type
       CommandQueue&<integer>(self.t_pos .InternalClone(muhs)),
       CommandQueue&<integer>(self.len   .InternalClone(muhs))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
 
@@ -3418,14 +3361,16 @@ type
     public constructor(q: CommandQueue<T>) :=
     self.q := q;
     
-    protected function Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
-      yield sequence q.Invoke(c,cq,prev_ev);
+      q.Invoke(c, cq, prev_ev, tasks);
       self.ev := q.ev;
     end;
     
     protected procedure UnInvoke; override;
     begin
+//      inherited; // не надо, q уже удалило свой эвент
+      self.ev := cl_event.Zero;
       q.UnInvoke;
     end;
     
@@ -3457,7 +3402,7 @@ begin
   Result := res;
 end;
 
-function KernelCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task;
+procedure KernelCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>);
 begin
   MakeBusy;
   
@@ -3468,7 +3413,7 @@ begin
   
   foreach var comm in commands do
   begin
-    yield sequence comm.Invoke(new_plug, res, c, cq, prev_ev);
+    comm.Invoke(new_plug, res, c, cq, prev_ev, tasks);
     prev_ev := comm.ev;
   end;
   
@@ -3491,28 +3436,27 @@ type
       self.args_q := args;
     end;
     
-    protected function Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
       
       if k_q<>nil then
-        yield sequence k_q.Invoke(c,cq,prev_ev) else
+        k_q.Invoke(c, cq, prev_ev, tasks) else
         if prev_ev<>cl_event.Zero then ev_lst += prev_ev;
       self.k_q := k_q;
       
       foreach var arg_q in args_q do
       begin
-        yield sequence arg_q.Invoke(c, cq, cl_event.Zero);
+        arg_q.Invoke(c, cq, cl_event.Zero, tasks);
         if arg_q.ev<>cl_event.Zero then
           ev_lst += arg_q.ev;
       end;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lk: Kernel;
         
@@ -3541,6 +3485,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if k_q<>nil then k_q.UnInvoke;
       foreach var q in args_q do q.UnInvoke;
     end;
@@ -3550,9 +3495,6 @@ type
       self.work_szs,
       self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalClone(muhs)))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   KernelQCommandExec = sealed class(KernelCommand)
@@ -3566,30 +3508,29 @@ type
       self.args_q := args;
     end;
     
-    protected function Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event): sequence of Task; override;
+    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ev_lst := new List<cl_event>;
       var ec: ErrorCode;
       
       if k_q<>nil then
-        yield sequence k_q.Invoke(c,cq,prev_ev) else
+        k_q.Invoke(c, cq, prev_ev, tasks) else
         if prev_ev<>cl_event.Zero then ev_lst += prev_ev;
       self.k_q := k_q;
       
-      yield sequence work_szs_q.Invoke(c,cq,cl_event.Zero);
+      work_szs_q.Invoke(c, cq, cl_event.Zero, tasks);
       
       foreach var arg_q in args_q do
       begin
-        yield sequence arg_q.Invoke(c, cq, cl_event.Zero);
+        arg_q.Invoke(c, cq, cl_event.Zero, tasks);
         if arg_q.ev<>cl_event.Zero then
           ev_lst += arg_q.ev;
       end;
       
-      ClearEvent;
       self.ev := cl.CreateUserEvent(c._context, ec);
       ec.RaiseIfError;
       
-      yield Task.Run(()->
+      tasks += Task.Run(()->
       begin
         var lk: Kernel;
         
@@ -3621,6 +3562,7 @@ type
     
     protected procedure UnInvoke; override;
     begin
+      inherited;
       if k_q<>nil then k_q.UnInvoke;
       work_szs_q.UnInvoke;
       foreach var q in args_q do q.UnInvoke;
@@ -3631,9 +3573,6 @@ type
       CommandQueue&<array of UIntPtr>(self.work_szs_q.InternalClone(muhs)),
       self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalClone(muhs)))
     );
-    
-    public procedure Finalize; override :=
-    ClearEvent;
     
   end;
   
