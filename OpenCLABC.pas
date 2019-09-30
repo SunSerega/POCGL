@@ -506,11 +506,13 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo .Multiusable с параметром-очередью, из которой надо брать prev_ev
-// - и написать в справке что .Multiusable не обязательно работает как очередь-параметр
-// - а так же проверить все .Multiusable в этом модуле
+//ToDo SingnalMWEvent во всех ветках всех Invoke
+//ToDo CommandQueue.WaitFor + возможность указать - клонировать ли источник ожидания
+//ToDo [Buffer,Kernel]CommandQueue.AddWait
 
 //ToDo разбить BufferCommandCopy на 2 типа +1 базовый, чтоб не использовать лишнюю очередь
+
+//ToDo [Buffer,Kernel]CommandQueue.AddProc( (Buffer/Kernel)->() )
 
 //===================================
 // Запланированное:
@@ -535,7 +537,7 @@ uses System.Runtime.CompilerServices;
 // - полезно, потому что SyncInvoke такой очереди будет возвращать полученное значение
 
 //ToDo Сделать CommandQueueBase не_скрытым
-// + возможность вызвать такую очередь в Cotext.*Invoke, без возвращаемого значения
+// + возможность вызвать такую очередь в Cotext.*Invoke, возвращающие Object
 
 //ToDo Интегрировать профайлинг очередей
 
@@ -598,12 +600,39 @@ type
   
   ///--
   CommandQueueBase = abstract class
-    protected ev: cl_event;
+    protected ev, mw_ev: cl_event;
     protected is_busy: boolean;
     
-    protected procedure MakeBusy :=
+    protected procedure MakeBusy := lock self do
     if not self.is_busy then is_busy := true else
       raise new QueueDoubleInvokeException;
+    
+    protected function GetMWEvent(c: cl_context): cl_event;
+    begin
+      lock self do
+      begin
+        if is_busy then
+        begin
+          Result := self.ev;
+          exit;
+        end;
+        
+        if self.mw_ev=cl_event.Zero then
+        begin
+          var ec: ErrorCode;
+          self.mw_ev := cl.CreateUserEvent(c, ec);
+          ec.RaiseIfError;
+        end;
+        
+        Result := self.mw_ev;
+      end;
+    end;
+    
+    protected procedure SingnalMWEvent;
+    begin
+      if self.mw_ev=cl_event.Zero then exit;
+      cl.SetUserEventStatus(self.mw_ev, CommandExecutionStatus.COMPLETE);
+    end;
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
     
@@ -626,7 +655,14 @@ type
     
     protected function GetRes: object; abstract;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; abstract;
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; abstract;
+    
+    protected function InternalCloneCached(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase;
+    begin
+      if cache.TryGetValue(self, Result) then exit;
+      Result := InternalClone(muhs, cache);
+      cache.Add(self, Result);
+    end;
     
     protected static procedure WaitAndRelease(ev: cl_event);
     begin
@@ -653,7 +689,7 @@ type
     ///Создаёт полную копию данной очереди,
     ///Всех очередей из которых она состоит,
     ///А так же всех очередей-параметров, использованных в данной очереди
-    public function Clone := self.InternalClone(new Dictionary<object,object>) as CommandQueue<T>;
+    public function Clone := self.InternalClone(new Dictionary<object,object>, new Dictionary<CommandQueueBase,CommandQueueBase>) as CommandQueue<T>;
     
     
     ///Создаёт массив из n очередей, каждая из которых возвращает результат данной очереди
@@ -701,7 +737,7 @@ type
     
     protected procedure UnInvoke; abstract;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<T>; abstract;
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<T>; abstract;
     
     {$endregion Command def}
     
@@ -718,6 +754,59 @@ type
     
   end;
   
+  ///--
+  GPUCommandContainer<T> = abstract class(CommandQueue<T>)
+    protected res_q_hub: object;
+    protected commands := new List<GPUCommand<T>>;
+    
+    {$region def}
+    
+    protected procedure OnEarlyInit(c: Context); virtual := exit;
+    
+    {$endregion def}
+    
+    {$region Common}
+    
+    protected constructor(o: T) := self.res := o;
+    protected constructor(q: CommandQueue<T>);
+    
+    protected function GetNewResPlug: CommandQueue<T>;
+    
+    protected procedure InternalAddQueue(q: CommandQueueBase);
+    protected procedure InternalAddProc(p: T->());
+    protected procedure InternalAddWait(q: CommandQueueBase);
+    
+    {$endregion Common}
+    
+    {$region sub implementation}
+    
+    protected procedure UnInvoke; override;
+    begin
+//      inherited; // не надо, команды уже удалили свои эвенты
+      self.ev := cl_event.Zero;
+      foreach var comm in commands do comm.UnInvoke;
+    end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
+    
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
+    
+    {$endregion sub implementation}
+    
+    {$region reintroduce методы}
+    
+    private function Equals(obj: object): boolean; reintroduce := false;
+    
+    private function ToString: string; reintroduce := nil;
+    
+    private function GetType: System.Type; reintroduce := nil;
+    
+    private function GetHashCode: integer; reintroduce := 0;
+    
+    {$endregion reintroduce методы}
+    
+  end;
+  
   {$endregion GPUCommand}
   
   {$region Buffer}
@@ -725,18 +814,18 @@ type
   ///Особый тип очереди, всегда возвращающий Buffer
   ///Может быть создан из объекта Buffer или очереди, возвращающей Buffer
   ///Используется для хранения списка особых команд, применимых только к Buffer
-  BufferCommandQueue = sealed class(CommandQueue<Buffer>)
-    protected res_q_hub: object;
-    protected commands := new List<GPUCommand<Buffer>>;
+  BufferCommandQueue = sealed class(GPUCommandContainer<Buffer>)
     
     {$region constructor's}
     
     ///Создаёт объект BufferCommandQueue, команды которого будут применятся к буферу b
-    public constructor(b: Buffer) :=
-    self.res := b;
-    
+    public constructor(b: Buffer) := inherited Create(b);
     ///Создаёт объект BufferCommandQueue, команды которого будут применятся к буферу, который будет результатом q
-    public constructor(q: CommandQueue<Buffer>);
+    public constructor(q: CommandQueue<Buffer>) := inherited Create(q);
+    
+    {$endregion constructor's}
+    
+    {$region Utils}
     
     protected function AddCommand(comm: GPUCommand<Buffer>): BufferCommandQueue;
     begin
@@ -744,18 +833,11 @@ type
       Result := self;
     end;
     
-    public function Clone: BufferCommandQueue := inherited Clone as BufferCommandQueue;
-    
-    protected function GetNewResPlug: CommandQueue<Buffer>;
     protected function GetSizeQ: CommandQueue<integer>;
     
-    {$endregion constructor's}
+    public function Clone: BufferCommandQueue := inherited Clone as BufferCommandQueue;
     
-    {$region AddQueue}
-    
-    public function AddQueue<T>(q: CommandQueue<T>): BufferCommandQueue;
-    
-    {$endregion AddQueue}
+    {$endregion Utils}
     
     {$region Write}
     
@@ -925,32 +1007,33 @@ type
     
     {$endregion Copy}
     
-    {$region reintroduce методы}
+    {$region Non-command add's}
     
-    private function Equals(obj: object): boolean; reintroduce := false;
+    public function AddQueue(q: CommandQueueBase): BufferCommandQueue;
+    begin
+      InternalAddQueue(q);
+      Result := self;
+    end;
     
-    private function ToString: string; reintroduce := nil;
+    public function AddProc(p: Buffer->()): BufferCommandQueue;
+    begin
+      InternalAddProc(p);
+      Result := self;
+    end;
     
-    private function GetType: System.Type; reintroduce := nil;
+    public function AddWait(q: CommandQueueBase): BufferCommandQueue;
+    begin
+      InternalAddWait(q);
+      Result := self;
+    end;
     
-    private function GetHashCode: integer; reintroduce := 0;
-    
-    {$endregion reintroduce методы}
+    {$endregion Non-command add's}
     
     {$region override методы}
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
+    protected procedure OnEarlyInit(c: Context); override;
     
-    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
-    
-    protected procedure UnInvoke; override;
-    begin
-//      inherited; // не надо, команды уже удалили свои эвенты
-      self.ev := cl_event.Zero;
-      foreach var comm in commands do comm.UnInvoke;
-    end;
-    
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override;
     
     {$endregion override методы}
     
@@ -1306,18 +1389,18 @@ type
   ///Особый тип очереди, всегда возвращающий Kernel
   ///Может быть создан из объекта Kernel или очереди, возвращающей Kernel
   ///Используется для хранения списка особых команд, применимых только к Kernel
-  KernelCommandQueue = sealed class(CommandQueue<Kernel>)
-    protected res_q_hub: object;
-    protected commands := new List<GPUCommand<Kernel>>;
+  KernelCommandQueue = sealed class(GPUCommandContainer<Kernel>)
     
     {$region constructor's}
     
     ///Создаёт объект KernelCommandQueue, команды которого будут применятся к кёрнелу b
-    public constructor(b: Kernel) :=
-    self.res := b;
-    
+    public constructor(k: Kernel) := inherited Create(k);
     ///Создаёт объект KernelCommandQueue, команды которого будут применятся к кёрнелу, который будет результатом q
-    public constructor(q: CommandQueue<Kernel>);
+    public constructor(q: CommandQueue<Kernel>) := inherited Create(q);
+    
+    {$endregion constructor's}
+    
+    {$region Utils}
     
     protected function AddCommand(comm: GPUCommand<Kernel>): KernelCommandQueue;
     begin
@@ -1327,15 +1410,7 @@ type
     
     public function Clone: KernelCommandQueue := inherited Clone as KernelCommandQueue;
     
-    protected function GetNewResPlug: CommandQueue<Kernel>;
-    
-    {$endregion constructor's}
-    
-    {$region AddQueue}
-    
-    public function AddQueue<T>(q: CommandQueue<T>): KernelCommandQueue;
-    
-    {$endregion AddQueue}
+    {$endregion Utils}
     
     {$region Exec}
     
@@ -1372,32 +1447,31 @@ type
     
     {$endregion Exec}
     
-    {$region reintroduce методы}
+    {$region Non-command add's}
     
-    private function Equals(obj: object): boolean; reintroduce := false;
+    public function AddQueue(q: CommandQueueBase): KernelCommandQueue;
+    begin
+      InternalAddQueue(q);
+      Result := self;
+    end;
     
-    private function ToString: string; reintroduce := nil;
+    public function AddProc(p: Kernel->()): KernelCommandQueue;
+    begin
+      InternalAddProc(p);
+      Result := self;
+    end;
     
-    private function GetType: System.Type; reintroduce := nil;
+    public function AddWait(q: CommandQueueBase): KernelCommandQueue;
+    begin
+      InternalAddWait(q);
+      Result := self;
+    end;
     
-    private function GetHashCode: integer; reintroduce := 0;
-    
-    {$endregion reintroduce методы}
+    {$endregion Non-command add's}
     
     {$region override методы}
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
-    
-    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
-    
-    protected procedure UnInvoke; override;
-    begin
-//      inherited; // не надо, команды уже удалили свои эвенты
-      self.ev := cl_event.Zero;
-      foreach var comm in commands do comm.UnInvoke;
-    end;
-    
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override;
     
     {$endregion override методы}
     
@@ -1787,7 +1861,7 @@ type
     protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override :=
     MakeBusy;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
     new DummyCommandQueue<T>(self.res);
     
   end;
@@ -1826,7 +1900,7 @@ type
       
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
     new CommandQueueHostFunc<T>(self.f);
     
   end;
@@ -1844,9 +1918,7 @@ type
   // 3 - выполнение прекращается
   
   MultiusableCommandQueueHub<T> = class
-    
     public q: CommandQueue<T>;
-    public q_ev: cl_event;
     
     public invoke_status := 0;
     public invoked_count := 0;
@@ -1865,7 +1937,12 @@ type
     public constructor(hub: MultiusableCommandQueueHub<T>) :=
     self.hub := hub;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + (prev_hubs.Add(hub) ? hub.q.GetEstimateTaskCount(prev_hubs) : 0);
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
+    begin
+      Result := 1;
+      if prev_hubs.Add(hub) then
+        Result += hub.q.GetEstimateTaskCount(prev_hubs);
+    end;
     
     protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
@@ -1879,7 +1956,7 @@ type
       
       tasks += Task.Run(()->
       begin
-        WaitAndRelease(hub.q_ev);
+        WaitAndRelease(hub.q.ev);
         self.res := hub.q.res;
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
@@ -1892,7 +1969,7 @@ type
       hub.OnNodeUnInvoked;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override;
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override;
     begin
       var res_hub_o: object;
       var res_hub: MultiusableCommandQueueHub<T>;
@@ -1900,7 +1977,7 @@ type
       if muhs.TryGetValue(self.hub, res_hub_o) then
         res_hub := MultiusableCommandQueueHub&<T>(res_hub_o) else
       begin
-        res_hub := new MultiusableCommandQueueHub<T>(self.hub.q.InternalClone(muhs));
+        res_hub := new MultiusableCommandQueueHub<T>(self.hub.q.InternalCloneCached(muhs, cache));
         muhs.Add(self.hub, res_hub);
       end;
       
@@ -1916,13 +1993,9 @@ begin
     2: raise new QueueDoubleInvokeException;
   end;
   
-  if invoked_count=0 then
-  begin
-    q.Invoke(c,cq, cl_event.Zero, tasks);
-    q_ev := q.ev;
-  end;
+  if invoked_count=0 then q.Invoke(c,cq, cl_event.Zero, tasks);
   
-  cl.RetainEvent(q_ev).RaiseIfError;
+  cl.RetainEvent(q.ev).RaiseIfError;
   invoked_count += 1;
   
 end;
@@ -1938,7 +2011,7 @@ begin
   
   if invoked_count=0 then
   begin
-    if q_ev<>cl_event.Zero then cl.ReleaseEvent(q_ev).RaiseIfError;
+    if q.ev<>cl_event.Zero then cl.ReleaseEvent(q.ev).RaiseIfError;
     invoke_status := 0;
     q.UnInvoke;
   end;
@@ -1954,7 +2027,7 @@ end;
 function CommandQueue<T>.Multiusable: ()->CommandQueue<T>;
 begin
   var hub := new MultiusableCommandQueueHub<T>(self);
-  Result := ()-> new MultiusableCommandQueueNode<T>(hub) as CommandQueue<T> ;
+  Result := ()-> new MultiusableCommandQueueNode<T>(hub) as CommandQueue<T>;
 end;
 
 {$endregion Multiusable}
@@ -2000,8 +2073,8 @@ type
       q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueResConvertor<T1,T2>(self.q.InternalClone(muhs), self.f);
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueResConvertor<T1,T2>(self.q.InternalCloneCached(muhs, cache), self.f);
     
   end;
   
@@ -2066,8 +2139,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueSyncList<T>(self.lst.ConvertAll(q->q.InternalClone(muhs)));
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueSyncList<T>(self.lst.ConvertAll(q->q.InternalCloneCached(muhs, cache)));
     
   end;
   CommandQueueTSyncList<T> = sealed class(CommandQueue<T>)
@@ -2120,8 +2193,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueTSyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))));
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueTSyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalCloneCached(muhs, cache))));
     
   end;
   CommandQueueCSyncList<TRes> = sealed class(CommandQueue<TRes>)
@@ -2189,8 +2262,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueCSyncList<TRes>(self.lst.ConvertAll(q->q.InternalClone(muhs)), conv);
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueCSyncList<TRes>(self.lst.ConvertAll(q->q.InternalCloneCached(muhs, cache)), conv);
     
   end;
   CommandQueueCTSyncList<T,TRes> = sealed class(CommandQueue<TRes>)
@@ -2258,8 +2331,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueCTSyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))), conv);
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueCTSyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalCloneCached(muhs, cache))), conv);
     
   end;
   
@@ -2360,8 +2433,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueAsyncList<T>(self.lst.ConvertAll(q->q.InternalClone(muhs)));
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueAsyncList<T>(self.lst.ConvertAll(q->q.InternalCloneCached(muhs, cache)));
     
   end;
   CommandQueueTAsyncList<T> = sealed class(CommandQueue<T>)
@@ -2419,8 +2492,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueTAsyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))));
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueTAsyncList<T>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalCloneCached(muhs, cache))));
     
   end;
   CommandQueueCAsyncList<TRes> = sealed class(CommandQueue<TRes>)
@@ -2493,8 +2566,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueCAsyncList<TRes>(self.lst.ConvertAll(q->q.InternalClone(muhs)), conv);
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueCAsyncList<TRes>(self.lst.ConvertAll(q->q.InternalCloneCached(muhs, cache)), conv);
     
   end;
   CommandQueueCTAsyncList<T,TRes> = sealed class(CommandQueue<TRes>)
@@ -2567,8 +2640,8 @@ type
       foreach var q in lst do q.UnInvoke;
     end;
     
-    protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
-    new CommandQueueCTAsyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalClone(muhs))), conv);
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; override :=
+    new CommandQueueCTAsyncList<T,TRes>(self.lst.ConvertAll(q->CommandQueue&<T>(q.InternalCloneCached(muhs, cache))), conv);
     
   end;
   
@@ -2610,6 +2683,100 @@ begin
 end;
 
 {$endregion AsyncList}
+
+{$region GPUCommand}
+
+{$region GPUCommandContainer}
+
+constructor GPUCommandContainer<T>.Create(q: CommandQueue<T>) :=
+self.res_q_hub := new MultiusableCommandQueueHub<T>(q);
+
+function GPUCommandContainer<T>.GetNewResPlug: CommandQueue<T> :=
+new MultiusableCommandQueueNode<T>( MultiusableCommandQueueHub&<T>(res_q_hub) );
+
+function GPUCommandContainer<T>.GetEstimateTaskCount(prev_hubs: HashSet<object>): integer;
+begin
+  Result := commands.Sum(comm->comm.GetEstimateTaskCount(prev_hubs));
+  if res_q_hub=nil then exit;
+  Result += commands.Count; // каждая команда вызывает выполнение 1 ноды
+  if prev_hubs.Contains(self.res_q_hub) then exit; // если команда использовала GetSizeQ - хаб уже посчитало
+  Result += MultiusableCommandQueueHub&<Buffer>(self.res_q_hub).q.GetEstimateTaskCount(prev_hubs);
+end;
+
+procedure GPUCommandContainer<T>.Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>);
+begin
+  MakeBusy;
+  
+  var new_plug: ()->CommandQueue<T>;
+  if res_q_hub=nil then
+  begin
+    new_plug := ()->nil;
+    OnEarlyInit(c);
+  end else
+    new_plug := GetNewResPlug;
+  
+  foreach var comm in commands do
+  begin
+    comm.Invoke(new_plug, res, c, cq, prev_ev, tasks);
+    prev_ev := comm.ev;
+  end;
+  
+  self.ev := prev_ev;
+end;
+
+{$endregion GPUCommandContainer}
+
+{$region QueueCommand}
+
+type
+  QueueCommand<T> = sealed class(GPUCommand<T>)
+    public q: CommandQueueBase;
+    
+    public constructor(q: CommandQueueBase) :=
+    self.q := q;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
+    
+    protected procedure Invoke(b_q: CommandQueue<T>; b: T; c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
+    begin
+      q.Invoke(c, cq, prev_ev, tasks);
+      self.ev := q.ev;
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+//      inherited; // не надо, q уже удалило свой эвент
+      self.ev := cl_event.Zero;
+      q.UnInvoke;
+    end;
+    
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<T>; override :=
+    new QueueCommand<T>(self.q.InternalCloneCached(muhs, cache) as CommandQueue<T>);
+    
+  end;
+  
+procedure GPUCommandContainer<T>.InternalAddQueue(q: CommandQueueBase) :=
+commands += new QueueCommand<T>(q) as GPUCommand<T>;
+
+{$endregion QueueCommand}
+
+{$region ProcCommand}
+
+procedure GPUCommandContainer<T>.InternalAddProc(p: T->());
+begin
+  var ToDo := 0;
+end;
+
+{$endregion ProcCommand}
+
+{$region WaitCommand}
+
+procedure GPUCommandContainer<T>.InternalAddWait(q: CommandQueueBase);
+begin
+  var ToDo := 0;
+end;
+
+{$endregion WaitCommand}
 
 {$region Special GPUCommand's}
 
@@ -2711,108 +2878,41 @@ type
   
 {$endregion Special GPUCommand's}
 
+{$endregion GPUCommand}
+
 {$region Buffer}
 
 {$region BufferCommandQueue}
-
-constructor BufferCommandQueue.Create(q: CommandQueue<Buffer>) :=
-self.res_q_hub := new MultiusableCommandQueueHub<Buffer>(q.ThenConvert((b,c)->
-begin
-  if b.memobj=cl_mem.Zero then b.Init(c);
-  Result := b;
-end));
-
-function BufferCommandQueue.GetNewResPlug: CommandQueue<Buffer> :=
-new MultiusableCommandQueueNode<Buffer>( MultiusableCommandQueueHub&<Buffer>(res_q_hub) );
 
 function BufferCommandQueue.GetSizeQ: CommandQueue<integer> :=
 self.res_q_hub=nil?integer(res.sz.ToUInt32) :
 self.GetNewResPlug().ThenConvert(b->integer(b.sz.ToUInt32));
 
-function BufferCommandQueue.GetEstimateTaskCount(prev_hubs: HashSet<object>): integer;
-begin
-  Result := commands.Sum(comm->comm.GetEstimateTaskCount(prev_hubs));
-  if res_q_hub=nil then exit;
-  Result += commands.Count; // каждая команда вызывает выполнение 1 ноды
-  Result += MultiusableCommandQueueHub&<Buffer>(self.res_q_hub).q.GetEstimateTaskCount(prev_hubs);
-end;
+procedure BufferCommandQueue.OnEarlyInit(c: Context) :=
+if res.memobj=cl_mem.Zero then res.Init(c);
 
-procedure BufferCommandQueue.Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>);
-begin
-  MakeBusy;
-  
-  var new_plug: ()->CommandQueue<Buffer>;
-  if res_q_hub=nil then
-  begin
-    new_plug := ()->nil;
-    if res.memobj=cl_mem.Zero then res.Init(c);
-  end else
-    new_plug := GetNewResPlug;
-  
-  foreach var comm in commands do
-  begin
-    comm.Invoke(new_plug, res, c, cq, prev_ev, tasks);
-    prev_ev := comm.ev;
-  end;
-  
-  self.ev := prev_ev;
-end;
-
-function BufferCommandQueue.InternalClone(muhs: Dictionary<object, object>): CommandQueueBase;
+function BufferCommandQueue.InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase;
 begin
   var res := new BufferCommandQueue(self.res);
   
   if self.res_q_hub<>nil then
   begin
+    var hub := MultiusableCommandQueueHub&<Buffer>(self.res_q_hub);
     
     res.res_q_hub := new MultiusableCommandQueueHub<Buffer>(CommandQueue&<Buffer>(
-      MultiusableCommandQueueHub&<Buffer>(self.res_q_hub).q.InternalClone(muhs)
+      hub.q.InternalCloneCached(muhs, cache)
     ));
     
     muhs.Add(self.res_q_hub, res.res_q_hub);
   end;
   
   res.commands.Capacity := self.commands.Capacity;
-  foreach var comm in self.commands do res.commands += comm.Clone(muhs);
+  foreach var comm in self.commands do res.commands += comm.Clone(muhs, cache);
   
   Result := res;
 end;
 
 {$endregion BufferCommandQueue}
-
-{$region QueueCommand}
-
-type
-  BufferQueueCommand<T> = sealed class(GPUCommand<Buffer>)
-    public q: CommandQueue<T>;
-    
-    public constructor(q: CommandQueue<T>) :=
-    self.q := q;
-    
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
-    begin
-      q.Invoke(c, cq, prev_ev, tasks);
-      self.ev := q.ev;
-    end;
-    
-    protected procedure UnInvoke; override;
-    begin
-//      inherited; // не надо, q уже удалило свой эвент
-      self.ev := cl_event.Zero;
-      q.UnInvoke;
-    end;
-    
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
-    new BufferQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
-    
-  end;
-  
-function BufferCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
-AddCommand(new BufferQueueCommand<T>(q));
-
-{$endregion QueueCommand}
 
 {$region Misc}
 
@@ -2856,11 +2956,11 @@ type
     protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
     cl.EnqueueWriteBuffer(cq, mem, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, ev_c, prev_ev, res_ev).RaiseIfError;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandWriteData(
-      CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
-      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+      CommandQueue&<IntPtr> (self.ptr   .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset.InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len   .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -2890,11 +2990,11 @@ type
       cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, hnd.CLFree, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandWriteArray(
-      CommandQueue&<&Array> (self.a     .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
-      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+      CommandQueue&<&Array> (self.a     .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset.InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len   .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -2925,11 +3025,11 @@ type
       cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, CLFreeMem, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandWriteValue(
-      CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
-      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+      CommandQueue&<IntPtr> (self.ptr   .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset.InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len   .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -2993,11 +3093,11 @@ type
     protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
     cl.EnqueueReadBuffer(cq, mem, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, ev_c, prev_ev, res_ev).RaiseIfError;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandReadData(
-      CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
-      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+      CommandQueue&<IntPtr> (self.ptr   .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset.InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len   .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -3027,11 +3127,11 @@ type
       cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, hnd.CLFree, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandReadArray(
-      CommandQueue&<&Array> (self.a     .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset.InternalClone(muhs)),
-      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+      CommandQueue&<&Array> (self.a     .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset.InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len   .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -3073,12 +3173,12 @@ type
     protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
     cl.EnqueueFillBuffer(cq, mem, ptr.res, new UIntPtr(pattern_len.res), new UIntPtr(offset.res), new UIntPtr(len.res), ev_c, prev_ev, res_ev).RaiseIfError;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandDataFill(
-      CommandQueue&<IntPtr> (self.ptr         .InternalClone(muhs)),
-      CommandQueue&<integer>(self.pattern_len .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
-      CommandQueue&<integer>(self.len         .InternalClone(muhs))
+      CommandQueue&<IntPtr> (self.ptr         .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.pattern_len .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset      .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len         .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -3110,11 +3210,11 @@ type
       cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, hnd.CLFree, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandArrayFill(
-      CommandQueue&<&Array> (self.a           .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
-      CommandQueue&<integer>(self.len         .InternalClone(muhs))
+      CommandQueue&<&Array> (self.a           .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset      .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len         .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -3147,12 +3247,12 @@ type
       cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, CLFreeMem, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandValueFill(
-      CommandQueue&<IntPtr> (self.ptr         .InternalClone(muhs)),
-      CommandQueue&<integer>(self.pattern_len .InternalClone(muhs)),
-      CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
-      CommandQueue&<integer>(self.len         .InternalClone(muhs))
+      CommandQueue&<IntPtr> (self.ptr         .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.pattern_len .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.offset      .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len         .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -3224,13 +3324,13 @@ type
       cl.EnqueueCopyBuffer(cq, f_buf.res.memobj, t_buf.res.memobj, new UIntPtr(f_pos.res), new UIntPtr(t_pos.res), new UIntPtr(len.res), ev_c, prev_ev, res_ev).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Buffer>; override :=
     new BufferCommandCopy(
-      CommandQueue&<Buffer> (self.f_buf .InternalClone(muhs)),
-      CommandQueue&<Buffer> (self.t_buf .InternalClone(muhs)),
-      CommandQueue&<integer>(self.f_pos .InternalClone(muhs)),
-      CommandQueue&<integer>(self.t_pos .InternalClone(muhs)),
-      CommandQueue&<integer>(self.len   .InternalClone(muhs))
+      CommandQueue&<Buffer> (self.f_buf .InternalCloneCached(muhs, cache)),
+      CommandQueue&<Buffer> (self.t_buf .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.f_pos .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.t_pos .InternalCloneCached(muhs, cache)),
+      CommandQueue&<integer>(self.len   .InternalCloneCached(muhs, cache))
     );
     
   end;
@@ -3249,93 +3349,28 @@ AddCommand(new BufferCommandCopy(res_q_hub=nil?res:self.GetNewResPlug,b, &to,fro
 
 {$region KernelCommandQueue}
 
-constructor KernelCommandQueue.Create(q: CommandQueue<Kernel>) :=
-self.res_q_hub := new MultiusableCommandQueueHub<Kernel>(q);
-
-function KernelCommandQueue.GetNewResPlug: CommandQueue<Kernel> :=
-new MultiusableCommandQueueNode<Kernel>( MultiusableCommandQueueHub&<Kernel>(res_q_hub) );
-
-function KernelCommandQueue.GetEstimateTaskCount(prev_hubs: HashSet<object>): integer;
-begin
-  Result := commands.Sum(comm->comm.GetEstimateTaskCount(prev_hubs));
-  if res_q_hub=nil then exit;
-  Result += commands.Count; // каждая команда вызывает выполнение 1 ноды
-  Result += MultiusableCommandQueueHub&<Kernel>(self.res_q_hub).q.GetEstimateTaskCount(prev_hubs);
-end;
-
-procedure KernelCommandQueue.Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>);
-begin
-  MakeBusy;
-  
-  var new_plug: ()->CommandQueue<Kernel>;
-  if res_q_hub=nil then
-    new_plug := ()->nil else
-    new_plug := GetNewResPlug;
-  
-  foreach var comm in commands do
-  begin
-    comm.Invoke(new_plug, res, c, cq, prev_ev, tasks);
-    prev_ev := comm.ev;
-  end;
-  
-  self.ev := prev_ev;
-end;
-
-function KernelCommandQueue.InternalClone(muhs: Dictionary<object, object>): CommandQueueBase;
+function KernelCommandQueue.InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase;
 begin
   var res := new KernelCommandQueue(self.res);
   
   if self.res_q_hub<>nil then
   begin
+    var hub := MultiusableCommandQueueHub&<Kernel>(self.res_q_hub);
     
     res.res_q_hub := new MultiusableCommandQueueHub<Kernel>(CommandQueue&<Kernel>(
-      MultiusableCommandQueueHub&<Kernel>(self.res_q_hub).q.InternalClone(muhs)
+      hub.q.InternalCloneCached(muhs, cache)
     ));
     
     muhs.Add(self.res_q_hub, res.res_q_hub);
   end;
   
   res.commands.Capacity := self.commands.Capacity;
-  foreach var comm in self.commands do res.commands += comm.Clone(muhs);
+  foreach var comm in self.commands do res.commands += comm.Clone(muhs, cache);
   
   Result := res;
 end;
 
 {$endregion KernelCommandQueue}
-
-{$region QueueCommand}
-
-type
-  KernelQueueCommand<T> = sealed class(GPUCommand<Kernel>)
-    public q: CommandQueue<T>;
-    
-    public constructor(q: CommandQueue<T>) :=
-    self.q := q;
-    
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
-    
-    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
-    begin
-      q.Invoke(c, cq, prev_ev, tasks);
-      self.ev := q.ev;
-    end;
-    
-    protected procedure UnInvoke; override;
-    begin
-//      inherited; // не надо, q уже удалило свой эвент
-      self.ev := cl_event.Zero;
-      q.UnInvoke;
-    end;
-    
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Kernel>; override :=
-    new KernelQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
-    
-  end;
-  
-function KernelCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
-AddCommand(new KernelQueueCommand<T>(q));
-
-{$endregion QueueCommand}
 
 {$region Misc}
 
@@ -3383,10 +3418,10 @@ type
       cl.EnqueueNDRangeKernel(cq,k, work_szs_q.res.Length, nil,work_szs_q.res,nil, ev_c,prev_ev,res_ev).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Kernel>; override :=
+    protected function Clone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): GPUCommand<Kernel>; override :=
     new KernelCommandExec(
-      CommandQueue&<array of UIntPtr>(self.work_szs_q.InternalClone(muhs)),
-      self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalClone(muhs)))
+      CommandQueue&<array of UIntPtr>(self.work_szs_q.InternalCloneCached(muhs, cache)),
+      self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalCloneCached(muhs, cache)))
     );
     
   end;
