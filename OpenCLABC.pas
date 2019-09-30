@@ -504,13 +504,9 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo заменить QUEUE_OUT_OF_ORDER на создание множества очередей, потому что QUEUE_OUT_OF_ORDER не работает
-
 //ToDo .Multiusable с параметром-очередью, из которой надо брать prev_ev
 // - и написать в справке что .Multiusable не обязательно работает как очередь-параметр
 // - а так же проверить все .Multiusable в этом модуле
-
-//ToDo проверить все cl. на .RaiseIfError
 
 //ToDo конструктор Buffer с вызовом .Init сразу, чтоб можно было в 1 строчку
 
@@ -1283,7 +1279,7 @@ type
     public procedure Dispose :=
     if self.memobj<>cl_mem.Zero then
     begin
-      cl.ReleaseMemObject(memobj);
+      cl.ReleaseMemObject(memobj).RaiseIfError;
       memobj := cl_mem.Zero;
     end;
     
@@ -3436,7 +3432,7 @@ AddCommand(new KernelCommandExec(
 procedure Buffer.Init(c: Context);
 begin
   var ec: ErrorCode;
-  if self.memobj<>cl_mem.Zero then cl.ReleaseMemObject(self.memobj);
+  if self.memobj<>cl_mem.Zero then cl.ReleaseMemObject(self.memobj).RaiseIfError;
   self.memobj := cl.CreateBuffer(c._context, MemoryFlags.READ_WRITE, self.sz, IntPtr.Zero, ec);
   ec.RaiseIfError;
 end;
