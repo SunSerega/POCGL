@@ -499,16 +499,24 @@ uses System.Threading.Tasks;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
+{$region ToDo}
+
 //===================================
 // Обязательно сделать до следующего пула:
 
 //ToDo заменить QUEUE_OUT_OF_ORDER на создание множества очередей, потому что QUEUE_OUT_OF_ORDER не работает
 
-//ToDo заменить GCHandle на махинации с var-параметрами
+//ToDo .Multiusable с параметром-очередью, из которой надо брать prev_ev
+// - и написать в справке что .Multiusable не обязательно работает как очередь-параметр
+// - а так же проверить все .Multiusable в этом модуле
 
-//ToDo возможность указывать источник ожидания в .Multiusable
+//ToDo проверить все cl. на .RaiseIfError
 
-//ToDo предугадывать размер List<Task> рекурсивной функцией
+//ToDo конструктор Buffer с вызовом .Init сразу, чтоб можно было в 1 строчку
+
+//ToDo GetSizeQ можно вызывать в interface части модуля
+
+//ToDo разбить BufferCommandCopy на 2 типа +1 базовый, чтоб не использовать лишнюю очередь
 
 //===================================
 // Запланированное:
@@ -531,10 +539,6 @@ uses System.Runtime.CompilerServices;
 //ToDo Сделать методы BufferCommandQueue.AddGet
 // - они особенные, потому что возвращают не BufferCommandQueue, а каждый свою очередь
 // - полезно, потому что SyncInvoke такой очереди будет возвращать полученное значение
-
-//ToDo .Multiusable с параметром-очередью, из которой надо брать prev_ev
-// - и написать в справке что .Multiusable не обязательно работает как очередь-параметр
-// - а так же проверить все .Multiusable в этом модуле
 
 //ToDo Сделать CommandQueueBase не_скрытым
 // + возможность вызвать такую очередь в Cotext.*Invoke, без возвращаемого значения
@@ -559,6 +563,8 @@ uses System.Runtime.CompilerServices;
 // - #2067
 // - #2068
 
+{$endregion ToDo}
+
 type
   
   {$region misc class def}
@@ -573,6 +579,22 @@ type
     
     public constructor :=
     inherited Create('Нельзя выполнять одну и ту же очередь в 2 местах одновременно. Используйте .Clone или .Multiusable');
+    
+  end;
+  
+  ///--
+  __SafeNativQueue = sealed class
+    q: cl_command_queue;
+    
+    constructor(c: cl_context; dvc: cl_device_id);
+    begin
+      var ec: ErrorCode;
+      self.q := cl.CreateCommandQueue(c, dvc, CommandQueuePropertyFlags.NONE, ec);
+      ec.RaiseIfError;
+    end;
+    
+    protected procedure Finalize; override :=
+    cl.ReleaseCommandQueue(self.q).RaiseIfError;
     
   end;
   
@@ -591,22 +613,40 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); abstract;
+    
+    protected procedure InvokeNewQ(c: Context; tasks: List<Task>);
+    begin
+      var cq: __SafeNativQueue := nil;
+      Invoke(c, cq, cl_event.Zero, tasks);
+    end;
     
     protected procedure UnInvoke; virtual;
     begin
+      
       if self.is_busy then
         is_busy := false else
         raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
       
-      if self.ev=cl_event.Zero then exit;
-      cl.ReleaseEvent(self.ev).RaiseIfError;
-      self.ev := cl_event.Zero;
     end;
     
     protected function GetRes: object; abstract;
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; abstract;
+    
+    protected static procedure WaitAndRelease(ev: cl_event);
+    begin
+      if ev=cl_event.Zero then exit;
+      cl.WaitForEvents(1, @ev).RaiseIfError;
+      cl.ReleaseEvent(ev).RaiseIfError;
+    end;
+    
+    ///evs.Count<>0, не 1 из ивентов не должен быть Zero
+    protected static procedure WaitAndRelease(evs: List<cl_event>);
+    begin
+      cl.WaitForEvents(evs.Count, evs.ToArray).RaiseIfError;
+      foreach var ev in evs do cl.ReleaseEvent(ev).RaiseIfError;
+    end;
     
   end;
   /// Базовый тип всех очередей команд в OpenCLABC
@@ -653,33 +693,47 @@ type
   
   {$endregion CommandQueue}
   
-  {$region Buffer}
+  {$region GPUCommand}
   
   ///--
-  BufferCommand = abstract class
+  GPUCommand<T> = abstract class
     protected ev: cl_event;
+    
+    {$region Command def}
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
     
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
+    protected procedure Invoke(o_q: CommandQueue<T>; o: T; c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); abstract;
     
-    protected procedure UnInvoke; virtual;
-    begin
-      if self.ev=cl_event.Zero then exit;
-      cl.ReleaseEvent(self.ev).RaiseIfError;
-      self.ev := cl_event.Zero;
-    end;
+    protected procedure UnInvoke; abstract;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; abstract;
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<T>; abstract;
+    
+    {$endregion Command def}
+    
+    {$region Utils}
+    
+    protected static procedure WaitAndRelease(ev: cl_event) :=
+    CommandQueueBase.WaitAndRelease(ev);
+    
+    ///evs.Count<>0, не 1 из ивентов не должен быть Zero
+    protected static procedure WaitAndRelease(evs: List<cl_event>) :=
+    CommandQueueBase.WaitAndRelease(evs);
+    
+    {$endregion Utils}
     
   end;
+  
+  {$endregion GPUCommand}
+  
+  {$region Buffer}
   
   ///Особый тип очереди, всегда возвращающий Buffer
   ///Может быть создан из объекта Buffer или очереди, возвращающей Buffer
   ///Используется для хранения списка особых команд, применимых только к Buffer
   BufferCommandQueue = sealed class(CommandQueue<Buffer>)
     protected res_q_hub: object;
-    protected commands := new List<BufferCommand>;
+    protected commands := new List<GPUCommand<Buffer>>;
     
     {$region constructor's}
     
@@ -690,7 +744,7 @@ type
     ///Создаёт объект BufferCommandQueue, команды которого будут применятся к буферу, который будет результатом q
     public constructor(q: CommandQueue<Buffer>);
     
-    protected function AddCommand(comm: BufferCommand): BufferCommandQueue;
+    protected function AddCommand(comm: GPUCommand<Buffer>): BufferCommandQueue;
     begin
       self.commands += comm;
       Result := self;
@@ -891,7 +945,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     
     protected procedure UnInvoke; override;
     begin
@@ -1233,8 +1287,7 @@ type
       memobj := cl_mem.Zero;
     end;
     
-    ///--
-    public procedure Finalize; override :=
+    protected procedure Finalize; override :=
     self.Dispose;
     
   end;
@@ -1243,33 +1296,12 @@ type
   
   {$region Kernel}
   
-  KernelCommandQueue=class;
-  
-  ///--
-  KernelCommand = class
-    protected ev: cl_event;
-    
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
-    
-    protected procedure Invoke(b_q: CommandQueue<Kernel>; b: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); abstract;
-    
-    protected procedure UnInvoke; virtual;
-    begin
-      if self.ev=cl_event.Zero then exit;
-      cl.ReleaseEvent(self.ev).RaiseIfError;
-      self.ev := cl_event.Zero;
-    end;
-    
-    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; abstract;
-    
-  end;
-  
   ///Особый тип очереди, всегда возвращающий Kernel
   ///Может быть создан из объекта Kernel или очереди, возвращающей Kernel
   ///Используется для хранения списка особых команд, применимых только к Kernel
   KernelCommandQueue = sealed class(CommandQueue<Kernel>)
     protected res_q_hub: object;
-    protected commands := new List<KernelCommand>;
+    protected commands := new List<GPUCommand<Kernel>>;
     
     {$region constructor's}
     
@@ -1280,7 +1312,7 @@ type
     ///Создаёт объект KernelCommandQueue, команды которого будут применятся к кёрнелу, который будет результатом q
     public constructor(q: CommandQueue<Kernel>);
     
-    protected function AddCommand(comm: KernelCommand): KernelCommandQueue;
+    protected function AddCommand(comm: GPUCommand<Kernel>): KernelCommandQueue;
     begin
       self.commands += comm;
       Result := self;
@@ -1349,7 +1381,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override;
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     
     protected procedure UnInvoke; override;
     begin
@@ -1417,7 +1449,7 @@ type
     
     {$endregion Exec}
     
-    public procedure Finalize; override :=
+    protected procedure Finalize; override :=
     cl.ReleaseKernel(self._kernel).RaiseIfError;
     
   end;
@@ -1499,12 +1531,9 @@ type
     /// Возвращает объект задачи, по которому можно следить за состоянием выполнения очереди
     public function BeginInvoke<T>(q: CommandQueue<T>): Task<T>;
     begin
-      var ec: ErrorCode;
-      var cq := cl.CreateCommandQueue(_context, _device, CommandQueuePropertyFlags.QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, ec);
-      ec.RaiseIfError;
       
       var tasks := new List<Task>( q.GetEstimateTaskCount(new HashSet<object>) );
-      q.Invoke(self, cq, cl_event.Zero, tasks);
+      q.InvokeNewQ(self, tasks);
       
       Result := new Task<T>(()-> //ToDo #2048
       try
@@ -1519,9 +1548,8 @@ type
           if tasks.Count=0 then break;
           Sleep(10);
         end;
-        if q.ev<>cl_event.Zero then cl.WaitForEvents(1, @q.ev).RaiseIfError;
+        CommandQueueBase.WaitAndRelease(q.ev);
         
-        cl.ReleaseCommandQueue(cq).RaiseIfError;
         Result := q.res;
       finally
         q.UnInvoke;
@@ -1539,8 +1567,7 @@ type
       Result := tsk.Result;
     end;
     
-    ///--
-    public procedure Finalize; override :=
+    protected procedure Finalize; override :=
     if need_finnalize then // если было исключение при инициализации или инициализация произошла из дескриптора
       cl.ReleaseContext(_context).RaiseIfError;
     
@@ -1721,6 +1748,23 @@ function CombineAsyncQueue<T,TRes>(conv: Func<array of T, TRes>; params qs: arra
 
 implementation
 
+{$region Utils}
+
+type
+  CLGCHandle = sealed class
+    gchnd: GCHandle;
+    
+    constructor(o: object) :=
+    gchnd := GCHandle.Alloc(o, GCHandleType.Pinned);
+    
+    property Ptr: IntPtr read gchnd.AddrOfPinnedObject;
+    
+    procedure CLFree(ev: cl_event; status: CommandExecutionStatus; data: pointer) := gchnd.Free;
+    
+  end;
+
+{$endregion Utils}
+
 {$region CommandQueue}
 
 {$region Dummy}
@@ -1733,7 +1777,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 0;
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override :=
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override :=
     MakeBusy;
     
     protected function InternalClone(muhs: Dictionary<object, object>): CommandQueueBase; override :=
@@ -1757,7 +1801,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1;
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
@@ -1767,7 +1811,7 @@ type
       
       tasks += Task.Run(()->
       begin
-        if prev_ev<>cl_event.Zero then cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+        WaitAndRelease(prev_ev);
         self.res := self.f();
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
@@ -1795,7 +1839,7 @@ type
   MultiusableCommandQueueHub<T> = class
     
     public q: CommandQueue<T>;
-    public q_task: Task;
+    public q_ev: cl_event;
     
     public invoke_status := 0;
     public invoked_count := 0;
@@ -1803,7 +1847,7 @@ type
     public constructor(q: CommandQueue<T>) :=
     self.q := q;
     
-    public procedure OnNodeInvoked(c: Context; cq: cl_command_queue; tasks: List<Task>);
+    public procedure OnNodeInvoked(c: Context; cq: __SafeNativQueue; tasks: List<Task>);
     public procedure OnNodeUnInvoked;
     
   end;
@@ -1816,7 +1860,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + (prev_hubs.Add(hub) ? hub.q.GetEstimateTaskCount(prev_hubs) : 0);
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
@@ -1828,7 +1872,7 @@ type
       
       tasks += Task.Run(()->
       begin
-        if hub.q_task<>nil then hub.q_task.Wait;
+        WaitAndRelease(hub.q_ev);
         self.res := hub.q.res;
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
@@ -1858,7 +1902,7 @@ type
     
   end;
   
-procedure MultiusableCommandQueueHub<T>.OnNodeInvoked(c: Context; cq: cl_command_queue; tasks: List<Task>);
+procedure MultiusableCommandQueueHub<T>.OnNodeInvoked(c: Context; cq: __SafeNativQueue; tasks: List<Task>);
 begin
   case invoke_status of
     0: invoke_status := 1;
@@ -1868,13 +1912,10 @@ begin
   if invoked_count=0 then
   begin
     q.Invoke(c,cq, cl_event.Zero, tasks);
-    q_task :=
-      q.ev=cl_event.Zero ? nil :
-      Task.Run(()-> cl.WaitForEvents(1,@q.ev).RaiseIfError())
-    ;
-//    if q_task<>nil then tasks += q_task; // хотя бы 1 нода вызовет Task.Wait, так что не надо
+    q_ev := q.ev;
   end;
   
+  cl.RetainEvent(q_ev).RaiseIfError;
   invoked_count += 1;
   
 end;
@@ -1887,10 +1928,11 @@ begin
   end;
   
   invoked_count -= 1;
+  
   if invoked_count=0 then
   begin
+    if q_ev<>cl_event.Zero then cl.ReleaseEvent(q_ev).RaiseIfError;
     invoke_status := 0;
-    q_task := nil;
     q.UnInvoke;
   end;
   
@@ -1899,13 +1941,13 @@ end;
 function CommandQueue<T>.Multiusable(n: integer): array of CommandQueue<T>;
 begin
   var hub := new MultiusableCommandQueueHub<T>(self);
-  Result := ArrGen(n, i->CommandQueue&<T>(new MultiusableCommandQueueNode<T>(hub)));
+  Result := ArrGen(n, i-> new MultiusableCommandQueueNode<T>(hub) as CommandQueue<T> );
 end;
 
 function CommandQueue<T>.Multiusable: ()->CommandQueue<T>;
 begin
   var hub := new MultiusableCommandQueueHub<T>(self);
-  Result := ()->CommandQueue&<T>(new MultiusableCommandQueueNode<T>(hub));
+  Result := ()-> new MultiusableCommandQueueNode<T>(hub) as CommandQueue<T> ;
 end;
 
 {$endregion Multiusable}
@@ -1925,7 +1967,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + q.GetEstimateTaskCount(prev_hubs);
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
@@ -1937,7 +1979,7 @@ type
       
       tasks += Task.Run(()->
       begin
-        if q.ev<>cl_event.Zero then cl.WaitForEvents(1,@q.ev).RaiseIfError;
+        if q.ev<>cl_event.Zero then WaitAndRelease(q.ev);
         self.res := self.f(q.res, c);
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
@@ -1980,7 +2022,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
@@ -1998,7 +2040,7 @@ type
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+          WaitAndRelease(prev_ev);
           self.res := T(lst[lst.Count-1].GetRes);
           cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
         end);
@@ -2035,7 +2077,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
@@ -2053,7 +2095,7 @@ type
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+          WaitAndRelease(prev_ev);
           self.res := lst[lst.Count-1].res;
           cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
         end);
@@ -2096,7 +2138,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
@@ -2114,7 +2156,7 @@ type
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+          WaitAndRelease(prev_ev);
           
           var a := new object[lst.Count];
           for var i := 0 to lst.Count-1 do a[i] := lst[i].GetRes;
@@ -2165,7 +2207,7 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
@@ -2183,7 +2225,7 @@ type
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(1,@prev_ev).RaiseIfError;
+          WaitAndRelease(prev_ev);
           
           var a := new T[lst.Count];
           for var i := 0 to lst.Count-1 do a[i] := lst[i].res;
@@ -2270,23 +2312,29 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
-      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
+      var evs := new List<cl_event>(lst.Count);
+      foreach var sq in lst do
+      begin
+        var scq: __SafeNativQueue := nil;
+        sq.Invoke(c, scq, prev_ev, tasks);
+        if sq.ev<>cl_event.Zero then evs += sq.ev;
+      end;
       
       if evs.Count<>0 then
       begin
+        cq := nil;
         
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          WaitAndRelease(evs);
           self.res := T(lst[lst.Count-1].GetRes);
           cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
         end);
@@ -2323,23 +2371,29 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
-      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
+      var evs := new List<cl_event>(lst.Count);
+      foreach var sq in lst do
+      begin
+        var scq: __SafeNativQueue := nil;
+        sq.Invoke(c, scq, prev_ev, tasks);
+        if sq.ev<>cl_event.Zero then evs += sq.ev;
+      end;
       
       if evs.Count<>0 then
       begin
+        cq := nil;
         
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          WaitAndRelease(evs);
           self.res := lst[lst.Count-1].res;
           cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
         end);
@@ -2383,23 +2437,29 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
-      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
+      var evs := new List<cl_event>(lst.Count);
+      foreach var sq in lst do
+      begin
+        var scq: __SafeNativQueue := nil;
+        sq.Invoke(c, scq, prev_ev, tasks);
+        if sq.ev<>cl_event.Zero then evs += sq.ev;
+      end;
       
       if evs.Count<>0 then
       begin
+        cq := nil;
         
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          WaitAndRelease(evs);
           
           var a := new object[lst.Count];
           for var i := 0 to lst.Count-1 do a[i] := lst[i].GetRes;
@@ -2451,23 +2511,29 @@ type
     
     protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := 1 + lst.Sum(sq->sq.GetEstimateTaskCount(prev_hubs));
     
-    protected procedure Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
     begin
       var ec: ErrorCode;
       MakeBusy;
       
-      foreach var sq in lst do sq.Invoke(c, cq, prev_ev, tasks);
-      var evs := lst.Select(q->q.ev).Where(ev->ev<>cl_event.Zero).ToList;
+      var evs := new List<cl_event>(lst.Count);
+      foreach var sq in lst do
+      begin
+        var scq: __SafeNativQueue := nil;
+        sq.Invoke(c, scq, prev_ev, tasks);
+        if sq.ev<>cl_event.Zero then evs += sq.ev;
+      end;
       
       if evs.Count<>0 then
       begin
+        cq := nil;
         
         self.ev := cl.CreateUserEvent(c._context, ec);
         ec.RaiseIfError;
         
         tasks += Task.Run(()->
         begin
-          cl.WaitForEvents(evs.Count,evs.ToArray).RaiseIfError;
+          WaitAndRelease(evs);
           
           var a := new T[lst.Count];
           for var i := 0 to lst.Count-1 do a[i] := lst[i].res;
@@ -2538,9 +2604,109 @@ end;
 
 {$endregion AsyncList}
 
+{$region Special GPUCommand's}
+
+type
+  /// От этого наследуют все типы вызывающие cl.Enqueue* методы
+  DirectGPUCommandBase<T> = abstract class(GPUCommand<T>)
+    public last_o_q: CommandQueue<T>;
+    
+    {$region def}
+    
+    protected function GetSubQCount: integer; abstract;
+    protected function EnmrSubQ: sequence of CommandQueueBase; abstract;
+    
+    protected procedure OnOQFinished(c: Context; o: T); virtual := exit;
+    protected procedure LowerEnqueueSelf(c: Context; cq: cl_command_queue; o: T; ev_c: integer; prev_ev, res_ev: ^cl_event); abstract;
+    
+    {$endregion def}
+    
+    {$region sub implementation}
+    
+    protected procedure Invoke(o_q: CommandQueue<T>; o: T; c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
+    begin
+      self.last_o_q := o_q;
+      if o_q<>nil then
+      begin
+        o_q.Invoke(c, cq, prev_ev, tasks);
+        prev_ev := cl_event.Zero;
+      end;
+      
+      var ev_lst := new List<cl_event>(GetSubQCount);
+      foreach var sq in EnmrSubQ do
+      begin
+        sq.InvokeNewQ(c, tasks);
+        ev_lst += sq.ev;
+      end;
+      ev_lst.RemoveAll(ev->ev=cl_event.Zero);
+      
+      if cq=nil then cq := new __SafeNativQueue; // если предыдущий Invoke содержал асинхронный EnqueueSelf или вообще был в другой ветке умноженных очередей
+      
+      if (ev_lst.Count=0) and ((o_q=nil) or (o_q.ev=cl_event.Zero)) then
+      begin
+        var lo: T;
+        
+        if o_q=nil then lo := o else
+        begin
+          lo := o_q.res;
+          OnOQFinished(c, lo);
+        end;
+        
+        if prev_ev=cl_event.Zero then
+          LowerEnqueueSelf(c, cq.q, lo, 0,      nil, @self.ev) else
+          LowerEnqueueSelf(c, cq.q, lo, 1, @prev_ev, @self.ev);
+        
+      end else
+      begin
+        var ec: ErrorCode;
+        self.ev := cl.CreateUserEvent(c._context, ec);
+        ec.RaiseIfError;
+        
+        var ncq := cq.q;
+        tasks += Task.Run(()->
+        begin
+          var lo: T;
+          
+          if last_o_q=nil then lo := o else
+          begin
+            WaitAndRelease(last_o_q.ev);
+            lo := last_o_q.res;
+            OnOQFinished(c, lo);
+          end;
+          
+          if ev_lst.Count<>0 then WaitAndRelease(ev_lst);
+          
+          var buff_ev: cl_event;
+          if prev_ev=cl_event.Zero then
+            LowerEnqueueSelf(c, ncq, lo, 0,      nil, @buff_ev) else
+            LowerEnqueueSelf(c, ncq, lo, 1, @prev_ev, @buff_ev);
+          WaitAndRelease(buff_ev);
+          
+          cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+        end);
+        
+        cq := nil; // асинхронное EnqueueSelf, далее придётся создать новую очередь
+      end;
+      
+    end;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := EnmrSubQ.Sum(sq->sq.GetEstimateTaskCount(prev_hubs)) + 1;
+    
+    protected procedure UnInvoke; override;
+    begin
+      if last_o_q<>nil then last_o_q.UnInvoke;
+      foreach var sq in EnmrSubQ do sq.UnInvoke;
+    end;
+    
+    {$endregion sub implementation}
+    
+  end;
+  
+{$endregion Special GPUCommand's}
+
 {$region Buffer}
 
-{$region Misc}
+{$region BufferCommandQueue}
 
 constructor BufferCommandQueue.Create(q: CommandQueue<Buffer>) :=
 self.res_q_hub := new MultiusableCommandQueueHub<Buffer>(q.ThenConvert((b,c)->
@@ -2556,36 +2722,6 @@ function BufferCommandQueue.GetSizeQ: CommandQueue<integer> :=
 self.res_q_hub=nil?integer(res.sz.ToUInt32) :
 self.GetNewResPlug().ThenConvert(b->integer(b.sz.ToUInt32));
 
-type
-  BufferQueueCommand<T> = sealed class(BufferCommand)
-    public q: CommandQueue<T>;
-    
-    public constructor(q: CommandQueue<T>) :=
-    self.q := q;
-    
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
-    begin
-      q.Invoke(c, cq, prev_ev, tasks);
-      self.ev := q.ev;
-    end;
-    
-    protected procedure UnInvoke; override;
-    begin
-//      inherited; // не надо, q уже удалило свой эвент
-      self.ev := cl_event.Zero;
-      q.UnInvoke;
-    end;
-    
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
-    new BufferQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
-    
-  end;
-  
-function BufferCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
-AddCommand(new BufferQueueCommand<T>(q));
-
 function BufferCommandQueue.GetEstimateTaskCount(prev_hubs: HashSet<object>): integer;
 begin
   Result := commands.Sum(comm->comm.GetEstimateTaskCount(prev_hubs));
@@ -2594,7 +2730,7 @@ begin
   Result += MultiusableCommandQueueHub&<Buffer>(self.res_q_hub).q.GetEstimateTaskCount(prev_hubs);
 end;
 
-procedure BufferCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>);
+procedure BufferCommandQueue.Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>);
 begin
   MakeBusy;
   
@@ -2635,15 +2771,65 @@ begin
   Result := res;
 end;
 
+{$endregion BufferCommandQueue}
+
+{$region QueueCommand}
+
+type
+  BufferQueueCommand<T> = sealed class(GPUCommand<Buffer>)
+    public q: CommandQueue<T>;
+    
+    public constructor(q: CommandQueue<T>) :=
+    self.q := q;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
+    
+    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
+    begin
+      q.Invoke(c, cq, prev_ev, tasks);
+      self.ev := q.ev;
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+//      inherited; // не надо, q уже удалило свой эвент
+      self.ev := cl_event.Zero;
+      q.UnInvoke;
+    end;
+    
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
+    new BufferQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
+    
+  end;
+  
+function BufferCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
+AddCommand(new BufferQueueCommand<T>(q));
+
+{$endregion QueueCommand}
+
+{$region Misc}
+
+type
+  BufferCommandBase = abstract class(DirectGPUCommandBase<Buffer>)
+    
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); abstract;
+    
+    protected procedure LowerEnqueueSelf(c: Context; cq: cl_command_queue; b: Buffer; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
+    EnqueueSelf(c, cq, b.memobj, ev_c, prev_ev, res_ev);
+    
+    protected procedure OnOQFinished(c: Context; b: Buffer); override :=
+    if b.memobj=cl_mem.Zero then b.Init(c);
+    
+  end;
+  
 {$endregion Misc}
 
 {$region Write}
 
 type
-  BufferCommandWriteData = sealed class(BufferCommand)
+  BufferCommandWriteData = sealed class(BufferCommandBase)
     public ptr: CommandQueue<IntPtr>;
     public offset, len: CommandQueue<integer>;
-    public b_q: CommandQueue<Buffer>;
     
     public constructor(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
     begin
@@ -2652,61 +2838,18 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      ptr   .GetEstimateTaskCount(prev_hubs) +
-      offset.GetEstimateTaskCount(prev_hubs) +
-      len   .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 3;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      var ev_lst := new List<cl_event>;
-      ptr   .Invoke(c, cq, cl_event.Zero, tasks); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueWriteBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueWriteBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
-      
+      yield ptr;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
-    begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      ptr.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
-    end;
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
+    cl.EnqueueWriteBuffer(cq, mem, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, ev_c, prev_ev, res_ev).RaiseIfError;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandWriteData(
       CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
@@ -2714,10 +2857,9 @@ type
     );
     
   end;
-  BufferCommandWriteArray = sealed class(BufferCommand)
+  BufferCommandWriteArray = sealed class(BufferCommandBase)
     public a: CommandQueue<&Array>;
     public offset, len: CommandQueue<integer>;
-    public b_q: CommandQueue<Buffer>;
     
     public constructor(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>);
     begin
@@ -2726,65 +2868,22 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      a     .GetEstimateTaskCount(prev_hubs) +
-      offset.GetEstimateTaskCount(prev_hubs) +
-      len   .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 3;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ev_lst := new List<cl_event>;
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      a     .Invoke(c, cq, cl_event.Zero, tasks);
-      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
-        var gchnd := GCHandle.Alloc(a.res, GCHandleType.Pinned);
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueWriteBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueWriteBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1,@buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-        gchnd.Free;
-      end);
-      
+      yield a;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override;
     begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      a.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
+      var hnd := new CLGCHandle(a.res);
+      cl.EnqueueWriteBuffer(cq, mem, 0, new UIntPtr(offset.res), new UIntPtr(len.res), hnd.Ptr, ev_c, prev_ev, res_ev).RaiseIfError;
+      cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, hnd.CLFree, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandWriteArray(
       CommandQueue&<&Array> (self.a     .InternalClone(muhs)),
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
@@ -2792,10 +2891,9 @@ type
     );
     
   end;
-  BufferCommandWriteValue = sealed class(BufferCommand)
+  BufferCommandWriteValue = sealed class(BufferCommandBase)
     public ptr: CommandQueue<IntPtr>;
     public offset, len: CommandQueue<integer>;
-    public b_q: CommandQueue<Buffer>;
     
     public constructor(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
     begin
@@ -2804,62 +2902,23 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      ptr   .GetEstimateTaskCount(prev_hubs) +
-      offset.GetEstimateTaskCount(prev_hubs) +
-      len   .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 3;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      var ev_lst := new List<cl_event>;
-      ptr   .Invoke(c, cq, cl_event.Zero, tasks); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueWriteBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueWriteBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-        Marshal.FreeHGlobal(ptr.res);
-      end);
-      
+      yield ptr;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
+    protected procedure CLFreeMem(ev: cl_event; status: CommandExecutionStatus; data: pointer) := Marshal.FreeHGlobal(ptr.res);
+    
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override;
     begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      ptr.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
+      cl.EnqueueWriteBuffer(cq, mem, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, ev_c, prev_ev, res_ev).RaiseIfError;
+      cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, CLFreeMem, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandWriteValue(
       CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
@@ -2895,7 +2954,7 @@ AddCommand(new BufferCommandWriteValue(
     var ptr := Marshal.AllocHGlobal(sz);
     var typed_ptr: ^TRecord := pointer(ptr);
     var костыль_ptr: ^TRecord := pointer(@vval); //ToDo #2068
-    typed_ptr^ := костыль_ptr^;
+    typed_ptr^ := костыль_ptr^; // := vval
     Result := ptr;
   end),
   offset,
@@ -2907,10 +2966,9 @@ AddCommand(new BufferCommandWriteValue(
 {$region Read}
 
 type
-  BufferCommandReadData = sealed class(BufferCommand)
+  BufferCommandReadData = sealed class(BufferCommandBase)
     public ptr: CommandQueue<IntPtr>;
     public offset, len: CommandQueue<integer>;
-    public b_q: CommandQueue<Buffer>;
     
     public constructor(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
     begin
@@ -2919,61 +2977,18 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      ptr   .GetEstimateTaskCount(prev_hubs) +
-      offset.GetEstimateTaskCount(prev_hubs) +
-      len   .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 3;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      var ev_lst := new List<cl_event>;
-      ptr   .Invoke(c, cq, cl_event.Zero, tasks); if ptr   .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueReadBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueReadBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
-      
+      yield ptr;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
-    begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      ptr.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
-    end;
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
+    cl.EnqueueReadBuffer(cq, mem, 0, new UIntPtr(offset.res), new UIntPtr(len.res), ptr.res, ev_c, prev_ev, res_ev).RaiseIfError;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandReadData(
       CommandQueue&<IntPtr> (self.ptr   .InternalClone(muhs)),
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
@@ -2981,10 +2996,9 @@ type
     );
     
   end;
-  BufferCommandReadArray = sealed class(BufferCommand)
+  BufferCommandReadArray = sealed class(BufferCommandBase)
     public a: CommandQueue<&Array>;
     public offset, len: CommandQueue<integer>;
-    public b_q: CommandQueue<Buffer>;
     
     public constructor(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>);
     begin
@@ -2993,65 +3007,22 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      a     .GetEstimateTaskCount(prev_hubs) +
-      offset.GetEstimateTaskCount(prev_hubs) +
-      len   .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 3;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ev_lst := new List<cl_event>;
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      a     .Invoke(c, cq, cl_event.Zero, tasks);
-      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
-        var gchnd := GCHandle.Alloc(a.res, GCHandleType.Pinned);
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueReadBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueReadBuffer(cq, lb.memobj, 0, new UIntPtr(offset.res), new UIntPtr(len.res), gchnd.AddrOfPinnedObject, 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1,@buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-        gchnd.Free;
-      end);
-      
+      yield a;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override;
     begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      a.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
+      var hnd := new CLGCHandle(a.res);
+      cl.EnqueueReadBuffer(cq, mem, 0, new UIntPtr(offset.res), new UIntPtr(len.res), hnd.Ptr, ev_c, prev_ev, res_ev).RaiseIfError;
+      cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, hnd.CLFree, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandReadArray(
       CommandQueue&<&Array> (self.a     .InternalClone(muhs)),
       CommandQueue&<integer>(self.offset.InternalClone(muhs)),
@@ -3074,7 +3045,7 @@ function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>) := AddReadArra
 {$region Fill}
 
 type
-  BufferCommandDataFill = sealed class(BufferCommand)
+  BufferCommandDataFill = sealed class(BufferCommandBase)
     public ptr: CommandQueue<IntPtr>;
     public pattern_len, offset, len: CommandQueue<integer>;
     public b_q: CommandQueue<Buffer>;
@@ -3087,64 +3058,19 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      ptr         .GetEstimateTaskCount(prev_hubs) +
-      pattern_len .GetEstimateTaskCount(prev_hubs) +
-      offset      .GetEstimateTaskCount(prev_hubs) +
-      len         .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 4;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      var ev_lst := new List<cl_event>;
-      ptr         .Invoke(c, cq, cl_event.Zero, tasks); if ptr         .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      pattern_len .Invoke(c, cq, cl_event.Zero, tasks); if pattern_len .ev<>cl_event.Zero then ev_lst += pattern_len.ev;
-      offset      .Invoke(c, cq, cl_event.Zero, tasks); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
-      len         .Invoke(c, cq, cl_event.Zero, tasks); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueFillBuffer(cq, lb.memobj, ptr.res,new UIntPtr(pattern_len.res), new UIntPtr(offset.res),new UIntPtr(len.res), 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueFillBuffer(cq, lb.memobj, ptr.res,new UIntPtr(pattern_len.res), new UIntPtr(offset.res),new UIntPtr(len.res), 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
-      
+      yield ptr;
+      yield pattern_len;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
-    begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      ptr.UnInvoke;
-      pattern_len.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
-    end;
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
+    cl.EnqueueFillBuffer(cq, mem, ptr.res, new UIntPtr(pattern_len.res), new UIntPtr(offset.res), new UIntPtr(len.res), ev_c, prev_ev, res_ev).RaiseIfError;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandDataFill(
       CommandQueue&<IntPtr> (self.ptr         .InternalClone(muhs)),
       CommandQueue&<integer>(self.pattern_len .InternalClone(muhs)),
@@ -3153,7 +3079,7 @@ type
     );
     
   end;
-  BufferCommandArrayFill = sealed class(BufferCommand)
+  BufferCommandArrayFill = sealed class(BufferCommandBase)
     public a: CommandQueue<&Array>;
     public offset, len: CommandQueue<integer>;
     public b_q: CommandQueue<Buffer>;
@@ -3165,66 +3091,23 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      a     .GetEstimateTaskCount(prev_hubs) +
-      offset.GetEstimateTaskCount(prev_hubs) +
-      len   .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 3;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ev_lst := new List<cl_event>;
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      a     .Invoke(c, cq, cl_event.Zero, tasks);
-      offset.Invoke(c, cq, cl_event.Zero, tasks); if offset.ev<>cl_event.Zero then ev_lst += offset.ev;
-      len   .Invoke(c, cq, cl_event.Zero, tasks); if len   .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if a.ev<>cl_event.Zero then cl.WaitForEvents(1,@a.ev).RaiseIfError;
-        var gchnd := GCHandle.Alloc(a.res, GCHandleType.Pinned);
-        var pattern_sz := Marshal.SizeOf(a.res.GetType.GetElementType) * a.res.Length;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueFillBuffer(cq, lb.memobj, gchnd.AddrOfPinnedObject,new UIntPtr(pattern_sz), new UIntPtr(offset.res),new UIntPtr(len.res), 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueFillBuffer(cq, lb.memobj, gchnd.AddrOfPinnedObject,new UIntPtr(pattern_sz), new UIntPtr(offset.res),new UIntPtr(len.res), 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1,@buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-        gchnd.Free;
-      end);
-      
+      yield a;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override;
     begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      a.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
+      var hnd := new CLGCHandle(a.res);
+      var pattern_sz := Marshal.SizeOf(a.res.GetType.GetElementType) * a.res.Length;
+      cl.EnqueueFillBuffer(cq, mem, hnd.Ptr, new UIntPtr(pattern_sz), new UIntPtr(offset.res), new UIntPtr(len.res), ev_c, prev_ev, res_ev).RaiseIfError;
+      cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, hnd.CLFree, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandArrayFill(
       CommandQueue&<&Array> (self.a           .InternalClone(muhs)),
       CommandQueue&<integer>(self.offset      .InternalClone(muhs)),
@@ -3232,10 +3115,9 @@ type
     );
     
   end;
-  BufferCommandValueFill = sealed class(BufferCommand)
+  BufferCommandValueFill = sealed class(BufferCommandBase)
     public ptr: CommandQueue<IntPtr>;
     public pattern_len, offset, len: CommandQueue<integer>;
-    public b_q: CommandQueue<Buffer>;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>);
     begin
@@ -3245,65 +3127,24 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      ptr         .GetEstimateTaskCount(prev_hubs) +
-      pattern_len .GetEstimateTaskCount(prev_hubs) +
-      offset      .GetEstimateTaskCount(prev_hubs) +
-      len         .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 4;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ec: ErrorCode;
-      
-      if b_q<>nil then b_q.Invoke(c, cq, prev_ev, tasks);
-      self.b_q := b_q;
-      
-      var ev_lst := new List<cl_event>;
-      ptr         .Invoke(c, cq, cl_event.Zero, tasks); if ptr         .ev<>cl_event.Zero then ev_lst += ptr.ev;
-      pattern_len .Invoke(c, cq, cl_event.Zero, tasks); if pattern_len .ev<>cl_event.Zero then ev_lst += pattern_len.ev;
-      offset      .Invoke(c, cq, cl_event.Zero, tasks); if offset      .ev<>cl_event.Zero then ev_lst += offset.ev;
-      len         .Invoke(c, cq, cl_event.Zero, tasks); if len         .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lb: Buffer;
-        
-        if self.b_q=nil then lb := b else
-        begin
-          if self.b_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.b_q.ev);
-          lb := self.b_q.res;
-          if lb.memobj=cl_mem.Zero then lb.Init(c);
-        end;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueFillBuffer(cq, lb.memobj, ptr.res,new UIntPtr(pattern_len.res), new UIntPtr(offset.res),new UIntPtr(len.res), 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueFillBuffer(cq, lb.memobj, ptr.res,new UIntPtr(pattern_len.res), new UIntPtr(offset.res),new UIntPtr(len.res), 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-        Marshal.FreeHGlobal(ptr.res);
-      end);
-      
+      yield ptr;
+      yield pattern_len;
+      yield offset;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
+    protected procedure CLFreeMem(ev: cl_event; status: CommandExecutionStatus; data: pointer) := Marshal.FreeHGlobal(ptr.res);
+    
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override;
     begin
-      inherited;
-      if b_q<>nil then b_q.UnInvoke;
-      ptr.UnInvoke;
-      pattern_len.UnInvoke;
-      offset.UnInvoke;
-      len.UnInvoke;
+      cl.EnqueueFillBuffer(cq, mem, ptr.res, new UIntPtr(pattern_len.res), new UIntPtr(offset.res), new UIntPtr(len.res), ev_c, prev_ev, res_ev).RaiseIfError;
+      cl.SetEventCallback(res_ev^, CommandExecutionStatus.COMPLETE, CLFreeMem, nil).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandValueFill(
       CommandQueue&<IntPtr> (self.ptr         .InternalClone(muhs)),
       CommandQueue&<integer>(self.pattern_len .InternalClone(muhs)),
@@ -3360,7 +3201,7 @@ AddFillValue(val, 0,GetSizeQ);
 {$region Copy}
 
 type
-  BufferCommandCopy = sealed class(BufferCommand)
+  BufferCommandCopy = sealed class(BufferCommandBase)
     public f_buf, t_buf: CommandQueue<Buffer>;
     public f_pos, t_pos, len: CommandQueue<integer>;
     
@@ -3373,58 +3214,24 @@ type
       self.len := len;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      f_buf .GetEstimateTaskCount(prev_hubs) +
-      t_buf .GetEstimateTaskCount(prev_hubs) +
-      f_pos .GetEstimateTaskCount(prev_hubs) +
-      t_pos .GetEstimateTaskCount(prev_hubs) +
-      len   .GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(b_q: CommandQueue<Buffer>; b: Buffer; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 5;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ec: ErrorCode;
-      
-      var buf_ev_lst := new List<cl_event>;
-      f_buf.Invoke(c, cq, cl_event.Zero, tasks); if f_buf.ev<>cl_event.Zero then buf_ev_lst += f_buf.ev;
-      t_buf.Invoke(c, cq, cl_event.Zero, tasks); if t_buf.ev<>cl_event.Zero then buf_ev_lst += t_buf.ev;
-      
-      var ev_lst := new List<cl_event>;
-      f_pos.Invoke(c, cq, cl_event.Zero, tasks); if f_pos.ev<>cl_event.Zero then ev_lst += f_pos.ev;
-      t_pos.Invoke(c, cq, cl_event.Zero, tasks); if t_pos.ev<>cl_event.Zero then ev_lst += t_pos.ev;
-      len  .Invoke(c, cq, cl_event.Zero, tasks); if len  .ev<>cl_event.Zero then ev_lst += len.ev;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        if buf_ev_lst.Count<>0 then cl.WaitForEvents(buf_ev_lst.Count, buf_ev_lst.ToArray).RaiseIfError;
-        if f_buf.res.memobj=cl_mem.Zero then f_buf.res.Init(c);
-        if t_buf.res.memobj=cl_mem.Zero then t_buf.res.Init(c);
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count, ev_lst.ToArray).RaiseIfError;
-        
-        var buff_ev: cl_event;
-        if prev_ev=cl_event.Zero then
-          cl.EnqueueCopyBuffer(cq, f_buf.res.memobj,t_buf.res.memobj, new UIntPtr(f_pos.res),new UIntPtr(t_pos.res), new UIntPtr(len.res), 0,nil,@buff_ev).RaiseIfError else
-          cl.EnqueueCopyBuffer(cq, f_buf.res.memobj,t_buf.res.memobj, new UIntPtr(f_pos.res),new UIntPtr(t_pos.res), new UIntPtr(len.res), 1,@prev_ev,@buff_ev).RaiseIfError;
-        cl.WaitForEvents(1, @buff_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
-      
+      yield f_buf;
+      yield t_buf;
+      yield f_pos;
+      yield t_pos;
+      yield len;
     end;
     
-    protected procedure UnInvoke; override;
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; mem: cl_mem; ev_c: integer; prev_ev, res_ev: ^cl_event); override;
     begin
-      inherited;
-      f_buf.UnInvoke; t_buf.UnInvoke;
-      f_pos.UnInvoke; t_pos.UnInvoke;
-      len.UnInvoke;
+      if f_buf.res.memobj=cl_mem.Zero then f_buf.res.Init(c);
+      if t_buf.res.memobj=cl_mem.Zero then t_buf.res.Init(c);
+      cl.EnqueueCopyBuffer(cq, f_buf.res.memobj, t_buf.res.memobj, new UIntPtr(f_pos.res), new UIntPtr(t_pos.res), new UIntPtr(len.res), ev_c, prev_ev, res_ev).RaiseIfError;
     end;
     
-    protected function Clone(muhs: Dictionary<object, object>): BufferCommand; override :=
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Buffer>; override :=
     new BufferCommandCopy(
       CommandQueue&<Buffer> (self.f_buf .InternalClone(muhs)),
       CommandQueue&<Buffer> (self.t_buf .InternalClone(muhs)),
@@ -3449,43 +3256,13 @@ function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>) := AddCopyTo(b, 0
 
 {$region Kernel}
 
-{$region Misc}
+{$region KernelCommandQueue}
 
 constructor KernelCommandQueue.Create(q: CommandQueue<Kernel>) :=
 self.res_q_hub := new MultiusableCommandQueueHub<Kernel>(q);
 
 function KernelCommandQueue.GetNewResPlug: CommandQueue<Kernel> :=
 new MultiusableCommandQueueNode<Kernel>( MultiusableCommandQueueHub&<Kernel>(res_q_hub) );
-
-type
-  KernelQueueCommand<T> = sealed class(KernelCommand)
-    public q: CommandQueue<T>;
-    
-    public constructor(q: CommandQueue<T>) :=
-    self.q := q;
-    
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
-    
-    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
-    begin
-      q.Invoke(c, cq, prev_ev, tasks);
-      self.ev := q.ev;
-    end;
-    
-    protected procedure UnInvoke; override;
-    begin
-//      inherited; // не надо, q уже удалило свой эвент
-      self.ev := cl_event.Zero;
-      q.UnInvoke;
-    end;
-    
-    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; override :=
-    new KernelQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
-    
-  end;
-  
-function KernelCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
-AddCommand(new KernelQueueCommand<T>(q));
 
 function KernelCommandQueue.GetEstimateTaskCount(prev_hubs: HashSet<object>): integer;
 begin
@@ -3495,7 +3272,7 @@ begin
   Result += MultiusableCommandQueueHub&<Kernel>(self.res_q_hub).q.GetEstimateTaskCount(prev_hubs);
 end;
 
-procedure KernelCommandQueue.Invoke(c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>);
+procedure KernelCommandQueue.Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>);
 begin
   MakeBusy;
   
@@ -3533,92 +3310,62 @@ begin
   Result := res;
 end;
 
+{$endregion KernelCommandQueue}
+
+{$region QueueCommand}
+
+type
+  KernelQueueCommand<T> = sealed class(GPUCommand<Kernel>)
+    public q: CommandQueue<T>;
+    
+    public constructor(q: CommandQueue<T>) :=
+    self.q := q;
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override := q.GetEstimateTaskCount(prev_hubs);
+    
+    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); override;
+    begin
+      q.Invoke(c, cq, prev_ev, tasks);
+      self.ev := q.ev;
+    end;
+    
+    protected procedure UnInvoke; override;
+    begin
+//      inherited; // не надо, q уже удалило свой эвент
+      self.ev := cl_event.Zero;
+      q.UnInvoke;
+    end;
+    
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Kernel>; override :=
+    new KernelQueueCommand<T>(CommandQueue&<T>(self.q.InternalClone(muhs)));
+    
+  end;
+  
+function KernelCommandQueue.AddQueue<T>(q: CommandQueue<T>) :=
+AddCommand(new KernelQueueCommand<T>(q));
+
+{$endregion QueueCommand}
+
+{$region Misc}
+
+type
+  KernelCommandBase = abstract class(DirectGPUCommandBase<Kernel>)
+    
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; k: cl_kernel; ev_c: integer; prev_ev, res_ev: ^cl_event); abstract;
+    
+    protected procedure LowerEnqueueSelf(c: Context; cq: cl_command_queue; k: Kernel; ev_c: integer; prev_ev, res_ev: ^cl_event); override :=
+    EnqueueSelf(c, cq, k._kernel, ev_c, prev_ev, res_ev);
+    
+  end;
+  
 {$endregion Misc}
 
 {$region Exec}
 
 type
-  KernelCommandExec = sealed class(KernelCommand)
-    public work_szs: array of UIntPtr;
-    public args_q: array of CommandQueue<Buffer>;
-    public k_q: CommandQueue<Kernel>;
-    
-    public constructor(work_szs: array of UIntPtr; args: array of CommandQueue<Buffer>);
-    begin
-      self.work_szs := work_szs;
-      self.args_q := args;
-    end;
-    
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      args_q.Sum(sq->sq.GetEstimateTaskCount(prev_hubs)) +
-      k_q.GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
-    begin
-      var ev_lst := new List<cl_event>;
-      var ec: ErrorCode;
-      
-      if k_q<>nil then
-        k_q.Invoke(c, cq, prev_ev, tasks) else
-        if prev_ev<>cl_event.Zero then ev_lst += prev_ev;
-      self.k_q := k_q;
-      
-      foreach var arg_q in args_q do
-      begin
-        arg_q.Invoke(c, cq, cl_event.Zero, tasks);
-        if arg_q.ev<>cl_event.Zero then
-          ev_lst += arg_q.ev;
-      end;
-      
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lk: Kernel;
-        
-        if self.k_q=nil then lk := k else
-        begin
-          if self.k_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.k_q.ev);
-          lk := self.k_q.res;
-        end;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
-        
-        for var i := 0 to args_q.Length-1 do
-        begin
-          if args_q[i].res.memobj=cl_mem.Zero then args_q[i].res.Init(c);
-          cl.SetKernelArg(lk._kernel, i, new UIntPtr(UIntPtr.Size), args_q[i].res.memobj).RaiseIfError;
-        end;
-        
-        var kernel_ev: cl_event;
-        cl.EnqueueNDRangeKernel(cq, lk._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@kernel_ev).RaiseIfError; // prev.ev уже в ev_lst, тут проверять не надо
-        cl.WaitForEvents(1,@kernel_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
-      
-    end;
-    
-    protected procedure UnInvoke; override;
-    begin
-      inherited;
-      if k_q<>nil then k_q.UnInvoke;
-      foreach var q in args_q do q.UnInvoke;
-    end;
-    
-    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; override :=
-    new KernelCommandExec(
-      self.work_szs,
-      self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalClone(muhs)))
-    );
-    
-  end;
-  KernelQCommandExec = sealed class(KernelCommand)
+  KernelCommandExec = sealed class(KernelCommandBase)
     public work_szs_q: CommandQueue<array of UIntPtr>;
     public args_q: array of CommandQueue<Buffer>;
-    public k_q: CommandQueue<Kernel>;
     
     public constructor(work_szs_q: CommandQueue<array of UIntPtr>; args: array of CommandQueue<Buffer>);
     begin
@@ -3626,74 +3373,27 @@ type
       self.args_q := args;
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; override :=
-      work_szs_q.GetEstimateTaskCount(prev_hubs) +
-      args_q.Sum(sq->sq.GetEstimateTaskCount(prev_hubs)) +
-      k_q.GetEstimateTaskCount(prev_hubs)
-    ;
-    
-    protected procedure Invoke(k_q: CommandQueue<Kernel>; k: Kernel; c: Context; cq: cl_command_queue; prev_ev: cl_event; tasks: List<Task>); override;
+    protected function GetSubQCount: integer; override := 1 + args_q.Length;
+    protected function EnmrSubQ: sequence of CommandQueueBase; override;
     begin
-      var ev_lst := new List<cl_event>;
-      var ec: ErrorCode;
+      yield work_szs_q;
+      yield sequence args_q;
+    end;
+    
+    protected procedure EnqueueSelf(c: Context; cq: cl_command_queue; k: cl_kernel; ev_c: integer; prev_ev, res_ev: ^cl_event); override;
+    begin
       
-      if k_q<>nil then
-        k_q.Invoke(c, cq, prev_ev, tasks) else
-        if prev_ev<>cl_event.Zero then ev_lst += prev_ev;
-      self.k_q := k_q;
-      
-      work_szs_q.Invoke(c, cq, cl_event.Zero, tasks);
-      
-      foreach var arg_q in args_q do
+      for var i := 0 to args_q.Length-1 do
       begin
-        arg_q.Invoke(c, cq, cl_event.Zero, tasks);
-        if arg_q.ev<>cl_event.Zero then
-          ev_lst += arg_q.ev;
+        if args_q[i].res.memobj=cl_mem.Zero then args_q[i].res.Init(c);
+        cl.SetKernelArg(k, i, new UIntPtr(UIntPtr.Size), args_q[i].res.memobj).RaiseIfError;
       end;
       
-      self.ev := cl.CreateUserEvent(c._context, ec);
-      ec.RaiseIfError;
-      
-      tasks += Task.Run(()->
-      begin
-        var lk: Kernel;
-        
-        if self.k_q=nil then lk := k else
-        begin
-          if self.k_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@self.k_q.ev);
-          lk := self.k_q.res;
-        end;
-        
-        if work_szs_q.ev<>cl_event.Zero then cl.WaitForEvents(1,@work_szs_q.ev);
-        var work_szs := work_szs_q.res;
-        
-        if ev_lst.Count<>0 then cl.WaitForEvents(ev_lst.Count,ev_lst.ToArray);
-        
-        for var i := 0 to args_q.Length-1 do
-        begin
-          if args_q[i].res.memobj=cl_mem.Zero then args_q[i].res.Init(c);
-          cl.SetKernelArg(lk._kernel, i, new UIntPtr(UIntPtr.Size), args_q[i].res.memobj).RaiseIfError;
-        end;
-        
-        var kernel_ev: cl_event;
-        cl.EnqueueNDRangeKernel(cq, lk._kernel, work_szs.Length, nil,work_szs,nil, 0,nil,@kernel_ev).RaiseIfError; // prev.ev уже в ev_lst, тут проверять не надо
-        cl.WaitForEvents(1,@kernel_ev).RaiseIfError;
-        
-        cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      end);
-      
+      cl.EnqueueNDRangeKernel(cq,k, work_szs_q.res.Length, nil,work_szs_q.res,nil, ev_c,prev_ev,res_ev).RaiseIfError;
     end;
     
-    protected procedure UnInvoke; override;
-    begin
-      inherited;
-      if k_q<>nil then k_q.UnInvoke;
-      work_szs_q.UnInvoke;
-      foreach var q in args_q do q.UnInvoke;
-    end;
-    
-    protected function Clone(muhs: Dictionary<object, object>): KernelCommand; override :=
-    new KernelQCommandExec(
+    protected function Clone(muhs: Dictionary<object, object>): GPUCommand<Kernel>; override :=
+    new KernelCommandExec(
       CommandQueue&<array of UIntPtr>(self.work_szs_q.InternalClone(muhs)),
       self.args_q.ConvertAll(q->CommandQueue&<Buffer>(q.InternalClone(muhs)))
     );
@@ -3704,19 +3404,19 @@ function KernelCommandQueue.AddExec(work_szs: array of UIntPtr; params args: arr
 AddCommand(new KernelCommandExec(work_szs, args));
 
 function KernelCommandQueue.AddExec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) :=
-AddCommand(new KernelQCommandExec(
+AddCommand(new KernelCommandExec(
   CombineAsyncQueue(a->a,work_szs),
   args
 ));
 
 function KernelCommandQueue.AddExec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>) :=
-AddCommand(new KernelQCommandExec(
+AddCommand(new KernelCommandExec(
   work_szs,
   args
 ));
 
 function KernelCommandQueue.AddExec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>) :=
-AddCommand(new KernelQCommandExec(
+AddCommand(new KernelCommandExec(
   work_szs.ThenConvert(a->a.ConvertAll(sz->new UIntPtr(sz))),
   args
 ));
