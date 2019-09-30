@@ -510,8 +510,6 @@ uses System.Runtime.CompilerServices;
 
 //ToDo конструктор Buffer с вызовом .Init сразу, чтоб можно было в 1 строчку
 
-//ToDo GetSizeQ можно вызывать в interface части модуля
-
 //ToDo разбить BufferCommandCopy на 2 типа +1 базовый, чтоб не использовать лишнюю очередь
 
 //===================================
@@ -764,7 +762,7 @@ type
     ///- function WriteData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///Копируется нужное кол-во байт чтобы заполнить весь буфер
-    public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
+    public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue := AddWriteData(ptr, 0,GetSizeQ);
     ///- function WriteData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует область оперативной памяти, на которую ссылается ptr, в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
@@ -783,7 +781,7 @@ type
     ///- function WriteArray(a: Array): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///Копируется нужное кол-во байт чтобы заполнить весь буфер
-    public function AddWriteArray(a: CommandQueue<&Array>): BufferCommandQueue;
+    public function AddWriteArray(a: CommandQueue<&Array>): BufferCommandQueue := AddWriteArray(a, 0,GetSizeQ);
     ///- function WriteArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует содержимое массива в данный буфер
     ///offset это отступ в буфере, а len - кол-во копируемых байтов
@@ -815,7 +813,7 @@ type
     
     ///- function ReadData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует всё содержимое буффера в область оперативной памяти, на которую указывает ptr
-    public function AddReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
+    public function AddReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue := AddReadData(ptr, 0,GetSizeQ);
     ///- function ReadData(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в область оперативной памяти, на которую указывает ptr
     public function AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
@@ -829,7 +827,7 @@ type
     
     ///- function ReadArray(a: Array): BufferCommandQueue;
     ///Копирует всё содержимое буффера в содержимое массива
-    public function AddReadArray(a: CommandQueue<&Array>): BufferCommandQueue;
+    public function AddReadArray(a: CommandQueue<&Array>): BufferCommandQueue := AddReadArray(a, 0,GetSizeQ);
     ///- function ReadArray(a: Array; offset, len: integer): BufferCommandQueue;
     ///Копирует len байт, начиная с байта №offset в буфере, в содержимое массива
     public function AddReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
@@ -856,7 +854,7 @@ type
     ///- function PatternFill(ptr: IntPtr): BufferCommandQueue;
     ///Заполняет весь буфер копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue := AddFillData(ptr,pattern_len, 0,GetSizeQ);
     ///- function PatternFill(ptr: IntPtr; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями массива байт, длинной pattern_len,
     ///прочитанным из области оперативной памяти, на которую указывает ptr
@@ -873,7 +871,7 @@ type
     
     ///- function PatternFill(a: Array): BufferCommandQueue;
     ///Заполняет весь буфер копиями содержимого массива
-    public function AddFillArray(a: CommandQueue<&Array>): BufferCommandQueue;
+    public function AddFillArray(a: CommandQueue<&Array>): BufferCommandQueue := AddFillArray(a, 0,GetSizeQ);
     ///- function PatternFill(a: Array; offset, len: integer): BufferCommandQueue;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями содержимого массива
     public function AddFillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
@@ -888,6 +886,7 @@ type
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddFillValue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    begin Result := AddFillValue(val, 0,GetSizeQ); end;
     ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddFillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
@@ -895,6 +894,7 @@ type
     ///- function PatternFill<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     ///Заполняет весь буфер копиями значения любого размерного типа
     public function AddFillValue<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
+    begin Result := AddFillValue(val, 0,GetSizeQ); end;
     ///- function PatternFill<TRecord>(val: TRecord; offset, len: integer): BufferCommandQueue; where TRecord: record;
     ///Заполняет часть буфера (начиная с байта №offset и длинной len) копиями значения любого размерного типа
     public function AddFillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
@@ -918,10 +918,10 @@ type
     
     ///- function CopyFrom(b: Buffer): BufferCommandQueue;
     ///Копирует всё содержимое буфера b в данный буфер
-    public function AddCopyFrom(b: CommandQueue<Buffer>): BufferCommandQueue;
+    public function AddCopyFrom(b: CommandQueue<Buffer>) := AddCopyFrom(b, 0,0, GetSizeQ);
     ///- function CopyTo(b: Buffer): BufferCommandQueue;
     ///Копирует всё содержимое данного буфера в буфер b
-    public function AddCopyTo  (b: CommandQueue<Buffer>): BufferCommandQueue;
+    public function AddCopyTo  (b: CommandQueue<Buffer>) := AddCopyTo  (b, 0,0, GetSizeQ);
     
     {$endregion Copy}
     
@@ -2926,11 +2926,9 @@ type
   
 function BufferCommandQueue.AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandWriteData(ptr, offset, len));
-function BufferCommandQueue.AddWriteData(ptr: CommandQueue<IntPtr>) := AddWriteData(ptr, 0,GetSizeQ);
 
 function BufferCommandQueue.AddWriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandWriteArray(a, offset, len));
-function BufferCommandQueue.AddWriteArray(a: CommandQueue<&Array>) := AddWriteArray(a, 0,GetSizeQ);
 
 
 function BufferCommandQueue.AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): BufferCommandQueue;
@@ -3030,11 +3028,9 @@ type
   
 function BufferCommandQueue.AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandReadData(ptr, offset, len));
-function BufferCommandQueue.AddReadData(ptr: CommandQueue<IntPtr>) := AddReadData(ptr, 0,GetSizeQ);
 
 function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandReadArray(a, offset, len));
-function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>) := AddReadArray(a, 0,GetSizeQ);
 
 {$endregion Read}
 
@@ -3153,13 +3149,9 @@ type
   
 function BufferCommandQueue.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandDataFill(ptr,pattern_len, offset,len));
-function BufferCommandQueue.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>) :=
-AddFillData(ptr,pattern_len, 0,GetSizeQ);
 
 function BufferCommandQueue.AddFillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandArrayFill(a, offset,len));
-function BufferCommandQueue.AddFillArray(a: CommandQueue<&Array>) :=
-AddFillArray(a, 0,GetSizeQ);
 
 
 function BufferCommandQueue.AddFillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue;
@@ -3185,12 +3177,6 @@ AddCommand(new BufferCommandValueFill(
   Marshal.SizeOf&<TRecord>,
   offset, len
 ));
-
-function BufferCommandQueue.AddFillValue<TRecord>(val: TRecord) :=
-AddFillValue(val, 0,GetSizeQ);
-
-function BufferCommandQueue.AddFillValue<TRecord>(val: CommandQueue<TRecord>) :=
-AddFillValue(val, 0,GetSizeQ);
 
 {$endregion Fill}
 
@@ -3240,11 +3226,9 @@ type
 
 function BufferCommandQueue.AddCopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandCopy(b,res_q_hub=nil?res:self.GetNewResPlug, from,&to, len));
-function BufferCommandQueue.AddCopyFrom(b: CommandQueue<Buffer>) := AddCopyFrom(b, 0,0, GetSizeQ);
 
 function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
 AddCommand(new BufferCommandCopy(res_q_hub=nil?res:self.GetNewResPlug,b, &to,from, len));
-function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>) := AddCopyTo(b, 0,0, GetSizeQ);
 
 {$endregion Copy}
 
