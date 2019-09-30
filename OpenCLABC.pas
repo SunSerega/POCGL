@@ -508,8 +508,6 @@ uses System.Runtime.CompilerServices;
 // - и написать в справке что .Multiusable не обязательно работает как очередь-параметр
 // - а так же проверить все .Multiusable в этом модуле
 
-//ToDo конструктор Buffer с вызовом .Init сразу, чтоб можно было в 1 строчку
-
 //ToDo разбить BufferCommandCopy на 2 типа +1 базовый, чтоб не использовать лишнюю очередь
 
 //===================================
@@ -973,6 +971,17 @@ type
     public constructor(size: integer) := Create(new UIntPtr(size));
     ///Создаён не_инициализированный буфер с размером size байт
     public constructor(size: int64)   := Create(new UIntPtr(size));
+    
+    ///Создаён инициализированный в контексте "c" буфер с размером size байт
+    public constructor(size: UIntPtr; c: Context);
+    begin
+      Create(size);
+      Init(c);
+    end;
+    ///Создаён инициализированный в контексте "c" буфер с размером size байт
+    public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
+    ///Создаён инициализированный в контексте "c" буфер с размером size байт
+    public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
     
     ///Создаёт под-буфер размера size и с отступом в данном буфере offset
     ///Под буфер имеет общую память с оригинальным, но иммеет доступ только к её части
