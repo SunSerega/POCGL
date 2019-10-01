@@ -514,8 +514,16 @@ uses System.Runtime.CompilerServices;
 
 //ToDo [Buffer,Kernel]CommandQueue.AddProc( (Buffer/Kernel)->() )
 
+//ToDo Написать в справке про implicit, типа способ создать очередь
+//ToDo Написать в справке про CommandQueueBase
+//ToDo Написать в справке про AddWait,AddProc,AddQueue вместе
+
 //===================================
 // Запланированное:
+
+//ToDo DummyQueue.Multiusable может тупо возвращать себя несколько раз
+
+//ToDo система создания описаний через отдельные файлы
 
 //ToDo CommandQueue.Cycle(integer)
 //ToDo CommandQueue.Cycle // бесконечность циклов
@@ -536,9 +544,6 @@ uses System.Runtime.CompilerServices;
 // - они особенные, потому что возвращают не BufferCommandQueue, а каждый свою очередь
 // - полезно, потому что SyncInvoke такой очереди будет возвращать полученное значение
 
-//ToDo Сделать CommandQueueBase не_скрытым
-// + возможность вызвать такую очередь в Cotext.*Invoke, возвращающие Object
-
 //ToDo Интегрировать профайлинг очередей
 
 //===================================
@@ -558,6 +563,9 @@ uses System.Runtime.CompilerServices;
 // - #2048
 // - #2067
 // - #2068
+// - #2118
+// - #2119
+// - #2120
 
 {$endregion ToDo}
 
@@ -565,6 +573,7 @@ type
   
   {$region misc class def}
   
+  CommandQueue<T> = class;
   Context = class;
   Buffer = class;
   Kernel = class;
@@ -598,14 +607,104 @@ type
   
   {$region CommandQueue}
   
-  ///--
   CommandQueueBase = abstract class
     protected ev, mw_ev: cl_event;
     protected is_busy: boolean;
     
+    {$region Queue converters}
+    
+    {$region DummyQueue}
+    
+    public static function operator implicit(o: object): CommandQueueBase;
+    
+    {$endregion DummyQueue}
+    
+    {$region Mutiusable}
+    
+    //ToDo #2120
+//    ///Создаёт массив из n очередей, каждая из которых возвращает результат данной очереди
+//    ///Каждую полученную очередь можно использовать одновременно с другими, но только в общей очереди
+//    public function Multiusable(n: integer): array of CommandQueueBase;
+//    
+//    ///Создаёт функцию, создающую очередь, которая возвращает результат данной очереди
+//    ///Каждую очередь, созданную полученной функцией, можно использовать одновременно с другими, но только в общей очереди
+//    public function Multiusable: ()->CommandQueueBase;
+    
+    {$endregion Mutiusable}
+    
+    {$region ThenConvert}
+    
+    //ToDo #2118
+//    ///Создаёт очередь, которая выполнит данную
+//    ///А затем выполнит на CPU функцию f, используя результат данной очереди
+//    public function ThenConvert<T>(f: object->T): CommandQueue<T> :=
+//    self.ThenConvert((o,c)->f(o));
+//    ///Создаёт очередь, которая выполнит данную
+//    ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст на котором её выполнили
+//    public function ThenConvert<T>(f: (object,Context)->T): CommandQueue<T>;
+    
+    {$endregion ThenConvert}
+    
+    {$region [A]SyncQueue}
+    
+    public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase;
+    public static function operator+<T>(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
+    public static procedure operator+=(var q1: CommandQueueBase; q2: CommandQueueBase) := q1 := q1+q2;
+    
+    public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase;
+    public static function operator*<T>(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
+    public static procedure operator*=(var q1: CommandQueueBase; q2: CommandQueueBase) := q1 := q1*q2;
+    
+    {$endregion [A]SyncQueue}
+    
+    {$endregion Queue converters}
+    
+    {$region def}
+    
+    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
+    
+    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); abstract;
+    
+    protected procedure UnInvoke; virtual;
+    begin
+      
+      if self.is_busy then
+        is_busy := false else
+        raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
+      
+    end;
+    
+    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; abstract;
+    
+    {$endregion def}
+    
+    {$region Utils}
+    
+    {$region Misc}
+    
     protected procedure MakeBusy := lock self do
     if not self.is_busy then is_busy := true else
       raise new QueueDoubleInvokeException;
+    
+    protected function GetRes: object; abstract;
+    
+    {$endregion Misc}
+    
+    {$region Event's}
+    
+    protected static procedure WaitAndRelease(ev: cl_event);
+    begin
+      if ev=cl_event.Zero then exit;
+      cl.WaitForEvents(1, @ev).RaiseIfError;
+      cl.ReleaseEvent(ev).RaiseIfError;
+    end;
+    
+    ///evs.Count<>0, не 1 из ивентов не должен быть Zero
+    protected static procedure WaitAndRelease(evs: List<cl_event>);
+    begin
+      cl.WaitForEvents(evs.Count, evs.ToArray).RaiseIfError;
+      foreach var ev in evs do cl.ReleaseEvent(ev).RaiseIfError;
+    end;
     
     protected function GetMWEvent(c: cl_context): cl_event;
     begin
@@ -634,9 +733,9 @@ type
       cl.SetUserEventStatus(self.mw_ev, CommandExecutionStatus.COMPLETE);
     end;
     
-    protected function GetEstimateTaskCount(prev_hubs: HashSet<object>): integer; abstract;
+    {$endregion Event's}
     
-    protected procedure Invoke(c: Context; var cq: __SafeNativQueue; prev_ev: cl_event; tasks: List<Task>); abstract;
+    {$region Invoke}
     
     protected procedure InvokeNewQ(c: Context; tasks: List<Task>);
     begin
@@ -644,18 +743,9 @@ type
       Invoke(c, cq, cl_event.Zero, tasks);
     end;
     
-    protected procedure UnInvoke; virtual;
-    begin
-      
-      if self.is_busy then
-        is_busy := false else
-        raise new InvalidOperationException('Ошибка внутри модуля OpenCLABC: совершена попыта завершить не запущенную очередь. Сообщите, пожалуйста, разработчику OpenCLABC');
-      
-    end;
+    {$endregion Invoke}
     
-    protected function GetRes: object; abstract;
-    
-    protected function InternalClone(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase; abstract;
+    {$region Clone}
     
     protected function InternalCloneCached(muhs: Dictionary<object, object>; cache: Dictionary<CommandQueueBase, CommandQueueBase>): CommandQueueBase;
     begin
@@ -664,33 +754,35 @@ type
       cache.Add(self, Result);
     end;
     
-    protected static procedure WaitAndRelease(ev: cl_event);
-    begin
-      if ev=cl_event.Zero then exit;
-      cl.WaitForEvents(1, @ev).RaiseIfError;
-      cl.ReleaseEvent(ev).RaiseIfError;
-    end;
+    {$endregion Clone}
     
-    ///evs.Count<>0, не 1 из ивентов не должен быть Zero
-    protected static procedure WaitAndRelease(evs: List<cl_event>);
-    begin
-      cl.WaitForEvents(evs.Count, evs.ToArray).RaiseIfError;
-      foreach var ev in evs do cl.ReleaseEvent(ev).RaiseIfError;
-    end;
+    {$endregion Utils}
     
   end;
   /// Базовый тип всех очередей команд в OpenCLABC
   CommandQueue<T> = abstract class(CommandQueueBase)
     protected res: T;
     
-    protected function GetRes: object; override := self.res;
+    {$region Misc}
     
+    protected function GetRes: object; override := self.res;
     
     ///Создаёт полную копию данной очереди,
     ///Всех очередей из которых она состоит,
     ///А так же всех очередей-параметров, использованных в данной очереди
     public function Clone := self.InternalClone(new Dictionary<object,object>, new Dictionary<CommandQueueBase,CommandQueueBase>) as CommandQueue<T>;
     
+    {$endregion Misc}
+    
+    {$region Queue converters}
+    
+    {$region DummyQueue}
+    
+    public static function operator implicit(o: T): CommandQueue<T>;
+    
+    {$endregion DummyQueue}
+    
+    {$region Mutiusable}
     
     ///Создаёт массив из n очередей, каждая из которых возвращает результат данной очереди
     ///Каждую полученную очередь можно использовать одновременно с другими, но только в общей очереди
@@ -700,6 +792,9 @@ type
     ///Каждую очередь, созданную полученной функцией, можно использовать одновременно с другими, но только в общей очереди
     public function Multiusable: ()->CommandQueue<T>;
     
+    {$endregion Mutiusable}
+    
+    {$region ThenConvert}
     
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди
@@ -709,6 +804,9 @@ type
     ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст на котором её выполнили
     public function ThenConvert<T2>(f: (T,Context)->T2): CommandQueue<T2>;
     
+    {$endregion ThenConvert}
+    
+    {$region [A]SyncQueue}
     
     public static function operator+<T2>(q1: CommandQueue<T>; q2: CommandQueue<T2>): CommandQueue<T2>;
     public static procedure operator+=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1+q2;
@@ -716,8 +814,9 @@ type
     public static function operator*<T2>(q1: CommandQueue<T>; q2: CommandQueue<T2>): CommandQueue<T2>;
     public static procedure operator*=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1*q2;
     
+    {$endregion [A]SyncQueue}
     
-    public static function operator implicit(o: T): CommandQueue<T>;
+    {$endregion Queue converters}
     
   end;
   
@@ -773,8 +872,8 @@ type
     protected function GetNewResPlug: CommandQueue<T>;
     
     protected procedure InternalAddQueue(q: CommandQueueBase);
-    protected procedure InternalAddProc(p: T->());
-    protected procedure InternalAddWait(q: CommandQueueBase);
+    protected procedure InternalAddProc(p: (T,Context)->());
+    protected procedure InternalAddWait(q: CommandQueueBase; allow_q_cloning: boolean);
     
     {$endregion Common}
     
@@ -1015,15 +1114,16 @@ type
       Result := self;
     end;
     
-    public function AddProc(p: Buffer->()): BufferCommandQueue;
+    public function AddProc(p: (Buffer,Context)->()): BufferCommandQueue;
     begin
       InternalAddProc(p);
       Result := self;
     end;
+    public function AddProc(p: Buffer->()) := AddProc((b,c)->p(b));
     
-    public function AddWait(q: CommandQueueBase): BufferCommandQueue;
+    public function AddWait(q: CommandQueueBase; allow_q_cloning: boolean := true): BufferCommandQueue;
     begin
-      InternalAddWait(q);
+      InternalAddWait(q, allow_q_cloning);
       Result := self;
     end;
     
@@ -1455,15 +1555,16 @@ type
       Result := self;
     end;
     
-    public function AddProc(p: Kernel->()): KernelCommandQueue;
+    public function AddProc(p: (Kernel,Context)->()): KernelCommandQueue;
     begin
       InternalAddProc(p);
       Result := self;
     end;
+    public function AddProc(p: Kernel->()) := AddProc((k,c)->p(k));
     
-    public function AddWait(q: CommandQueueBase): KernelCommandQueue;
+    public function AddWait(q: CommandQueueBase; allow_q_cloning: boolean := true): KernelCommandQueue;
     begin
-      InternalAddWait(q);
+      InternalAddWait(q, allow_q_cloning);
       Result := self;
     end;
     
@@ -1610,6 +1711,36 @@ type
     
     /// Инициализирует все команды в очереди и запускает первые
     /// Возвращает объект задачи, по которому можно следить за состоянием выполнения очереди
+    public function BeginInvoke(q: CommandQueueBase): Task<object>;
+    begin
+      
+      var tasks := new List<Task>( q.GetEstimateTaskCount(new HashSet<object>) );
+      q.InvokeNewQ(self, tasks);
+      
+      Result := new Task<object>(()-> //ToDo #2048
+      try
+        while true do
+        begin
+          for var i := tasks.Count-1 downto 0 do
+            if tasks[i].Status <> TaskStatus.Running then
+            begin
+              if tasks[i].Exception<>nil then raise tasks[i].Exception;
+              tasks.RemoveAt(i);
+            end;
+          if tasks.Count=0 then break;
+          Sleep(10);
+        end;
+        CommandQueueBase.WaitAndRelease(q.ev);
+        
+        Result := q.GetRes;
+      finally
+        q.UnInvoke;
+      end);
+      
+      Result.Start;
+    end;
+    /// Инициализирует все команды в очереди и запускает первые
+    /// Возвращает объект задачи, по которому можно следить за состоянием выполнения очереди
     public function BeginInvoke<T>(q: CommandQueue<T>): Task<T>;
     begin
       
@@ -1640,7 +1771,15 @@ type
     end;
     
     /// Выполняет BeginInvoke и ожидает окончания выполнения возвращённой задачи
-    /// Возвращает результат задачи, который, обычно, ничего не означает
+    /// Возвращает результат очереди
+    public function SyncInvoke(q: CommandQueueBase): object;
+    begin
+      var tsk := BeginInvoke(q);
+      tsk.Wait;
+      Result := tsk.Result;
+    end;
+    /// Выполняет BeginInvoke и ожидает окончания выполнения возвращённой задачи
+    /// Возвращает результат очереди
     public function SyncInvoke<T>(q: CommandQueue<T>): T;
     begin
       var tsk := BeginInvoke(q);
@@ -1866,6 +2005,9 @@ type
     
   end;
   
+static function CommandQueueBase.operator implicit(o: object): CommandQueueBase :=
+new DummyCommandQueue<object>(o);
+
 static function CommandQueue<T>.operator implicit(o: T): CommandQueue<T> :=
 new DummyCommandQueue<T>(o);
 
@@ -1918,12 +2060,12 @@ type
   // 3 - выполнение прекращается
   
   MultiusableCommandQueueHub<T> = class
-    public q: CommandQueue<T>;
+    public q: CommandQueueBase;
     
     public invoke_status := 0;
     public invoked_count := 0;
     
-    public constructor(q: CommandQueue<T>) :=
+    public constructor(q: CommandQueueBase) :=
     self.q := q;
     
     public procedure OnNodeInvoked(c: Context; cq: __SafeNativQueue; tasks: List<Task>);
@@ -1957,7 +2099,7 @@ type
       tasks += Task.Run(()->
       begin
         WaitAndRelease(hub.q.ev);
-        self.res := hub.q.res;
+        self.res := T(hub.q.GetRes);
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
       
@@ -2018,6 +2160,18 @@ begin
   
 end;
 
+//function CommandQueueBase.Multiusable(n: integer): array of CommandQueueBase;
+//begin
+//  var hub := new MultiusableCommandQueueHub<object>(self);
+//  Result := ArrGen(n, i-> new MultiusableCommandQueueNode<object>(hub) as CommandQueueBase );
+//end;
+//
+//function CommandQueueBase.Multiusable: ()->CommandQueueBase;
+//begin
+//  var hub := new MultiusableCommandQueueHub<object>(self);
+//  Result := ()-> new MultiusableCommandQueueNode<object>(hub);
+//end;
+
 function CommandQueue<T>.Multiusable(n: integer): array of CommandQueue<T>;
 begin
   var hub := new MultiusableCommandQueueHub<T>(self);
@@ -2036,10 +2190,10 @@ end;
 
 type
   CommandQueueResConvertor<T1,T2> = sealed class(CommandQueue<T2>)
-    q: CommandQueue<T1>;
+    q: CommandQueueBase;
     f: (T1,Context)->T2;
     
-    constructor(q: CommandQueue<T1>; f: (T1,Context)->T2);
+    constructor(q: CommandQueueBase; f: (T1,Context)->T2);
     begin
       self.q := q;
       self.f := f;
@@ -2060,7 +2214,7 @@ type
       tasks += Task.Run(()->
       begin
         if q.ev<>cl_event.Zero then WaitAndRelease(q.ev);
-        self.res := self.f(q.res, c);
+        self.res := self.f(T1(q.GetRes), c);
         
         cl.SetUserEventStatus(self.ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       end);
@@ -2078,6 +2232,9 @@ type
     
   end;
   
+//function CommandQueueBase.ThenConvert<T>(f: (object,Context)->T) :=
+//new CommandQueueResConvertor<object,T>(self, f);
+
 function CommandQueue<T>.ThenConvert<T2>(f: (T,Context)->T2) :=
 new CommandQueueResConvertor<T,T2>(self, f);
 
@@ -2086,6 +2243,7 @@ new CommandQueueResConvertor<T,T2>(self, f);
 {$region SyncList}
 
 //ToDo лучше всё же хранить массив а не список... И для Async тоже
+//ToDo базовые не_шаблонные типы, чтоб можно было сделать красивее в CommandQueueBase.operator+
 
 type
   CommandQueueSyncList<T> = sealed class(CommandQueue<T>)
@@ -2372,6 +2530,12 @@ begin
   end;
   
 end;
+
+static function CommandQueueBase.operator+(q1, q2: CommandQueueBase): CommandQueueBase :=
+new CommandQueueSyncList<object>(new CommandQueueBase[](q1,q2));
+
+static function CommandQueueBase.operator+<T>(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T> :=
+new CommandQueueSyncList<T>(new CommandQueueBase[](q1, q2 as object as CommandQueueBase)); //ToDo #2119
 
 {$endregion SyncList}
 
@@ -2682,6 +2846,12 @@ begin
   
 end;
 
+static function CommandQueueBase.operator*(q1, q2: CommandQueueBase): CommandQueueBase :=
+new CommandQueueAsyncList<object>(new CommandQueueBase[](q1,q2));
+
+static function CommandQueueBase.operator*<T>(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T> :=
+new CommandQueueAsyncList<T>(new CommandQueueBase[](q1,q2 as object as CommandQueueBase)); //ToDo #2119
+
 {$endregion AsyncList}
 
 {$region GPUCommand}
@@ -2762,7 +2932,7 @@ commands += new QueueCommand<T>(q) as GPUCommand<T>;
 
 {$region ProcCommand}
 
-procedure GPUCommandContainer<T>.InternalAddProc(p: T->());
+procedure GPUCommandContainer<T>.InternalAddProc(p: (T,Context)->());
 begin
   var ToDo := 0;
 end;
@@ -2771,7 +2941,7 @@ end;
 
 {$region WaitCommand}
 
-procedure GPUCommandContainer<T>.InternalAddWait(q: CommandQueueBase);
+procedure GPUCommandContainer<T>.InternalAddWait(q: CommandQueueBase; allow_q_cloning: boolean);
 begin
   var ToDo := 0;
 end;
