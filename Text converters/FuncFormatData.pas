@@ -375,10 +375,10 @@ type
         
 //        full_name.Println;
         
-        if full_name='glGetString' then
-        begin
-          s := s;
-        end;
+//        if full_name='glGetString' then
+//        begin
+//          s := s;
+//        end;
         
         self.name_header := nil;
         foreach var pnh in Arr('wgl', 'egl', 'glX', 'glu', 'gl') do
@@ -460,7 +460,7 @@ type
       
       {$endregion Stage 1 (native_par_data)}
       
-//      if full_name='glGetPerfQueryInfoINTEL' then
+//      if full_name='glGetDebugMessageLogAMD' then
 //      begin
 //        full_name := full_name;
 //      end;

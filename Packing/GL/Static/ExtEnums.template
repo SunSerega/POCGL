@@ -82,6 +82,34 @@
   
   {$endregion INTEL_performance_query}
   
+  {$region AMD_debug_output}
+  
+  //R
+  DebugMessageCategoryAMD = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public property API_ERROR:          boolean read self.val = $9149;
+    public property WINDOW_SYSTEM:      boolean read self.val = $914A;
+    public property DEPRECATION:        boolean read self.val = $914B;
+    public property UNDEFINED_BEHAVIOR: boolean read self.val = $914C;
+    public property PERFORMANCE:        boolean read self.val = $914D;
+    public property SHADER_COMPILER:    boolean read self.val = $914E;
+    public property APPLICATION:        boolean read self.val = $914F;
+    public property OTHER:              boolean read self.val = $9150;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DebugMessageType).GetProperties.Where(prop->prop.PropertyType=typeof(boolean)).Select(prop->(prop.Name,boolean(prop.GetValue(self)))).FirstOrDefault(t->t[1]);
+      Result := res=nil?
+        $'DebugMessageType[{self.val}]':
+        res[0];
+    end;
+    
+  end;
+  
+  {$endregion AMD_debug_output}
+  
   {$endregion Ext}
   
   
