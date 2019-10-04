@@ -472,7 +472,7 @@ type
       var ovr_change: IOverloadChange;
       begin
         var ovr_controller := OverloadController[full_name];
-        if ovr_controller=nil then ovr_controller := OverloadController.ContructNewEmpty(full_name, 'Text converters\FuncOverloadControl\missing.cfg');
+        if ovr_controller=nil then ovr_controller := OverloadController.ContructNewEmpty(full_name, 'Text converters\FuncOverloadControl\0missing.cfg');
         ovr_change := ovr_controller.GetChange;
       end;
       
