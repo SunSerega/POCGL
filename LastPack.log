@@ -1,41 +1,41 @@
+Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Pack Template.pas"
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
-Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
+Finished compiling "Tester.pas": OK
 Finished compiling "Pack Template.pas": OK
 Runing Template[OpenGL]
-Finished compiling "Tester.pas": OK
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\CoreTypes.template]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\ExtEnums.template]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackVecTypes.pas"
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackMtrTypes.pas"
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Records.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackFuncs.pas"
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\GDIIntegration.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\CoreTypes.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Enums.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Records.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\ExtEnums.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\PackMtrExt.pas"
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\CoreTypes.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Records.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\GDIIntegration.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Static\Delegates.template]
-Template[OpenGL]: Finished compiling "PackMtrExt.pas": OK
-Template[OpenGL]: Runing TemplateCommand[GL\PackMtrExt.pas]
+Template[OpenGL]: Finished compiling "PackMtrTypes.pas": OK
+Template[OpenGL]: Runing TemplateCommand[GL\PackMtrTypes.pas]
 Template[OpenGL]: Finished compiling "PackVecTypes.pas": OK
 Template[OpenGL]: Runing TemplateCommand[GL\PackVecTypes.pas]
+Template[OpenGL]: Finished compiling "PackMtrExt.pas": OK
+Template[OpenGL]: Runing TemplateCommand[GL\PackMtrExt.pas]
 Template[OpenGL]: Finished runing TemplateCommand[GL\PackVecTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\VecTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\VecTypes.template]
-Template[OpenGL]: Finished runing TemplateCommand[GL\PackMtrExt.pas]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
-Finished compiling "OpenCLABC.pas": OK
-Template[OpenGL]: Finished compiling "PackMtrTypes.pas": OK
-Template[OpenGL]: Runing TemplateCommand[GL\PackMtrTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[GL\PackMtrTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrTypes.template]
+Template[OpenGL]: Finished runing TemplateCommand[GL\PackMtrExt.pas]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrTypes.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\MtrExt.template]
+Finished compiling "OpenCLABC.pas": OK
 Template[OpenGL]: Finished compiling "PackFuncs.pas": OK
 Template[OpenGL]: Runing TemplateCommand[GL\PackFuncs.pas]
 Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: Misc loading
@@ -62,19 +62,6 @@ Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) over
 Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (81) overloads of "glAsyncCopyBufferSubDataNVX" func
 Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (81) overloads of "glAsyncCopyImageSubDataNVX" func
 Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (54) overloads of "glGetActiveVaryingNV" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glColor4fNormal3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glTexCoord2fColor4ubVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glTexCoord2fColor3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glTexCoord2fNormal3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (81) overloads of "glTexCoord2fColor4fNormal3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (81) overloads of "glTexCoord4fColor4fNormal3fVertex4fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glReplacementCodeuiColor4ubVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glReplacementCodeuiColor3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glReplacementCodeuiNormal3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (81) overloads of "glReplacementCodeuiColor4fNormal3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glReplacementCodeuiTexCoord2fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (81) overloads of "glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN" func
-Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (243) overloads of "glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN" func
 Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glXChooseFBConfig" func
 Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glXGetSyncValuesOML" func
 Template[OpenGL]: TemplateCommand[GL\PackFuncs.pas]: WARNING: too many (27) overloads of "glXWaitForMscOML" func
@@ -228,21 +215,21 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCL\MatrMlt.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCL\SimpleAddition.pas"
-Tester: Finished compiling "Mtr.Rotate3D.pas": OK
-Tester: Runing Testable[Tests\Exec\Mtr.Rotate3D]
 Tester: Finished compiling "Mtr.Translate.pas": OK
 Tester: Runing Testable[Tests\Exec\Mtr.Translate]
+Tester: Finished compiling "Mtr.Rotate3D.pas": OK
+Tester: Runing Testable[Tests\Exec\Mtr.Rotate3D]
 Tester: Finished compiling "MatrMlt.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCL\MatrMlt.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling "SimpleAddition.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCL\SimpleAddition.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-Tester: Finished runing Testable[Tests\Exec\Mtr.Rotate3D]
 Tester: Finished runing Testable[Tests\Exec\Mtr.Translate]
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
 Tester: DONE: "Tests\Exec\Mtr.Translate.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Использование результатов всех очередей.pas"
+Tester: Finished runing Testable[Tests\Exec\Mtr.Rotate3D]
 Tester: DONE: "Tests\Exec\Mtr.Rotate3D.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Код с очередью и без.pas"
 Tester: Finished compiling "SimpleAddition.pas": OK
@@ -251,30 +238,30 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Finished compiling "MatrMlt.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Сложение vs умножение очередей.pas"
-Tester: Finished compiling "Примеры возвращаемого значения.pas": OK
-Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Создание очереди из буфера.pas"
 Tester: Finished compiling "Код с очередью и без.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Код с очередью и без.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Создание очереди из буфера.pas"
+Tester: Finished compiling "Примеры возвращаемого значения.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.0\Примеры возвращаемого значения.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.3\Использование очереди как парамметра.pas"
 Tester: Finished compiling "Использование результатов всех очередей.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Использование результатов всех очередей.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
 Tester: Finished compiling "Преобразование результата очереди.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Преобразование результата очереди.pas"
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\6 - Кёрнел\Вызов кёрнела.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
 Tester: Finished compiling "Создание очереди из буфера.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Создание очереди из буфера.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\OpenCLABC\Из справки\6 - Кёрнел\Вызов кёрнела.pas"
+Tester: Finished compiling "Использование очереди как парамметра.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.3\Использование очереди как парамметра.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Finished compiling "Компилятор исходников.pas": OK
+Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
 Tester: Finished compiling "Сложение vs умножение очередей.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.1\Сложение vs умножение очередей.pas"
 Tester: Finished compiling "Вызов прекомпилированного кёрнела.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Вызов прекомпилированного кёрнела.pas"
-Tester: Finished compiling "Компилятор исходников.pas": OK
-Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\5 - ProgramCode\Прекомпиляция исходников OpenCL-C\Компилятор исходников.pas"
-Tester: Finished compiling "Использование очереди как парамметра.pas": OK
-Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\3 - Очередь\3.3\Использование очереди как парамметра.pas"
 Tester: Finished compiling "Вызов кёрнела.pas": OK
 Tester: DONE: "Samples\OpenCL\OpenCLABC\Из справки\6 - Кёрнел\Вызов кёрнела.pas"
 Tester: Finished compiling "Крутящийся треугольник 1 (простейший пример).pas": OK
