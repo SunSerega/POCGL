@@ -32,6 +32,10 @@
   DummyFlags                    = UInt32;
   
   
+  // INTEL_performance_query
+  PerfQueryIdINTEL              = UInt32;
+  PerfQueryHandleINTEL          = UInt32;
+  
   
   //ToDo переименовать и проверить типы всего дальше:
   

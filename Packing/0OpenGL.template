@@ -43,6 +43,8 @@ uses System.Runtime.CompilerServices;
   
   %GL\Static\Enums%
   
+  %GL\Static\ExtEnums%
+  
 {$endregion Перечисления}
 
 {$region Делегаты} type

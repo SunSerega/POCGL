@@ -346,6 +346,8 @@ type
     
     
     
+    static PrevFuncs := new HashSet<string>;
+    
     constructor(s: string);
     begin
       
@@ -365,6 +367,12 @@ type
         if ind=-1 then ind := nts.LastIndexOf(' ');
         
         self.full_name := nts.Substring(ind+1).Trim(' ');
+        if not PrevFuncs.Add(full_name) then
+        begin
+          self.lib_name := nil;
+          exit;
+        end;
+        
 //        full_name.Println;
         
         if full_name='glGetString' then
@@ -452,7 +460,7 @@ type
       
       {$endregion Stage 1 (native_par_data)}
       
-//      if full_name='glGetBooleanv' then
+//      if full_name='glGetPerfQueryInfoINTEL' then
 //      begin
 //        full_name := full_name;
 //      end;
@@ -494,6 +502,8 @@ type
         end;
         
       end;
+      
+      if all_ovr_types.Count > 15 then Writeln($'WARNING: too many ({all_ovr_types.Count}) overloads of "{full_name}" func');
       
       {$endregion Stage 2 (OverloadControl + all overloads)}
       
@@ -786,6 +796,7 @@ function ReadGLFuncs(text: string): sequence of FuncDef :=
     l.Contains('DECLARE_HANDLE')
   ))
   .Select(l->FuncDef.Create(l))
+  .Where(fd->fd.lib_name<>nil)
 ;
 
 end.
