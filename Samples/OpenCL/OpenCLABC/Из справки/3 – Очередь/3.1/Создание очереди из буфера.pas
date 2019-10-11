@@ -1,7 +1,7 @@
 ﻿uses OpenCLABC;
 
 begin
-  var b := new Buffer( 3*sizeof(integer) ); //Буфер достаточного размера чтоб содержать 3 значения типа integer. 
+  var b := new Buffer( 3*sizeof(integer) ); // Буфер достаточного размера чтоб содержать 3 значения типа integer. 
   
   // Создаём очередь
   var q := b.NewQueue;
@@ -18,7 +18,7 @@ begin
   // В данной версии надо писать "as CommandQueue<...>" при использовании [Buffer/Kernel]CommandQueue вместо CommandQueue<...>, из за бага компилятора
   Context.Default.SyncInvoke(q as CommandQueue<Buffer>);
   
-  // Вообще чтение тоже надо делать через очереди, но для простого примера - неявные очереди подходят
+  // Вообще чтение тоже надо делать через очереди, но для простого примера - и неявные очереди подходят
   b.GetArray1&<integer>(3).Println;
   
 end.
