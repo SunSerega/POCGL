@@ -4006,7 +4006,7 @@ begin
       Context.Default.SyncInvoke(
         self.NewQueue
         .AddReadArray(Q_a, offset, Q_a_len) as CommandQueue<Buffer>
-      +
+      *
         Q_res
       )
     );
