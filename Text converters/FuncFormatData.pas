@@ -307,11 +307,11 @@ begin
   if ptype.TrimEnd(num_chrs) in ['array of T', 'T'] then
     generic := ptype.Substring(ptype.LastIndexOf(' ')+1);
   
-  if ptype.StartsWith('array of ') then
-    Result := is_ret ?  nil : new par_data( $'{pname}: {ptype}',      pname+'[0]',  nil,  nil, generic ) else
+  if ptype.StartsWith('array of ') or (ptype='&Array') then
+    Result := is_ret ?  nil : new par_data( $'{pname}: {ptype}', $'pointer(Marshal.UnsafeAddrOfPinnedArrayElement({pname},0))', nil, nil, generic ) else
   
   if ((pnt[1]='^') or ((pnt='pointer') and not (ptype='IntPtr'))) and (ptype<>'pointer') then
-    Result := is_ret ?  nil : new par_data( $'var {pname}: {ptype}',  '@'+pname,    nil,  nil, generic ) else
+    Result := is_ret ?  nil : new par_data( $'var {pname}: {ptype}', '@'+pname, nil, nil, generic ) else
   
   if ptype = 'string' then Result := new par_data(
     
@@ -529,6 +529,7 @@ type
           if    not is_ret
             and not (nativ_par_ts[i].pspec_t[1]='^')
             and not n_ovr[i].StartsWith('array of ')
+            and not (n_ovr[i]='&Array')
             and not n_ovr[i].EndsWith('Name')
             and not (n_ovr[i] in ['pointer','IntPtr', 'Int32','UInt32','boolean'])
             and all_ovr_types.Any(l->l[i] in ['Int32', 'UInt32'])

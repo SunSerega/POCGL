@@ -25,7 +25,7 @@ A | C | ['{0}: string', 'ptr{par_n}', 'var ptr{par_n} := Marshal.StringToHGlobal
 
 F%glBegin
 T%1
-DummyEnum=>PrimitiveType // хз вще правильно ли написал
+DummyEnum=>PrimitiveType // хз вще правильно ли написал типы
 
 F%glUniform[1,2,3,4][i,ui,f,d]
 T%2
