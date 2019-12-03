@@ -34,7 +34,6 @@ begin
     
     if System.IO.Directory.Exists('Release') then
       System.IO.Directory.Delete('Release', true);
-    System.IO.Directory.CreateDirectory('Release');
     
     System.IO.Directory.CreateDirectory('Release\bin\Lib');
     System.IO.File.Copy( 'OpenCL.pas',    'Release\bin\Lib\OpenCL.pas'    );
@@ -42,26 +41,21 @@ begin
     System.IO.File.Copy( 'OpenGL.pas',    'Release\bin\Lib\OpenGL.pas'    );
     System.IO.File.Copy( 'OpenGLABC.pas', 'Release\bin\Lib\OpenGLABC.pas' );
     
-    System.IO.Directory.CreateDirectory('Release\InstallerSamples');
-    
-    foreach var dir in System.IO.Directory.EnumerateDirectories('Samples', '*.*', System.IO.SearchOption.AllDirectories) do
-      System.IO.Directory.CreateDirectory('Release\Installer'+dir);
-    
     System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
     .Where(fname->
       fname.EndsWith('.pas') or
       fname.EndsWith('.cl') or
       fname.EndsWith('.txt')
-    ).Where(fname->not (
-      fname.EndsWith('OpenCL.pas') or
-      fname.EndsWith('OpenCLABC.pas') or
-      fname.EndsWith('OpenGL.pas') or
-      fname.EndsWith('OpenGLABC.pas')
-    ))
+    ).Where(fname->not (System.IO.Path.GetFileNameWithoutExtension(fname) in [
+      'OpenCL', 'OpenCLABC',
+      'OpenGL', 'OpenGLABC'
+    ]))
     .ForEach(fname->
     begin
-      Otp($'Packing sample "Release\Installer{fname}"');
-      System.IO.File.Copy(fname, 'Release\Installer'+fname);
+      Otp($'Packing sample "{fname}"');
+      var res_f_name := 'Release\InstallerSamples\OpenCL и OpenGL'+fname.Substring('Samples'.Length);
+      System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_f_name);
+      System.IO.File.Copy(fname, res_f_name);
     end);
     
     // ====================================================

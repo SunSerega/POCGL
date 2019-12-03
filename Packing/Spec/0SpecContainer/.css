@@ -1,0 +1,112 @@
+
+
+
+/* ============================== *\
+			 page base
+\* ============================== */
+
+body {
+    background-color: #F0F0F0;
+    margin: 0px;
+}
+
+.page-base {
+	position: absolute;
+}
+
+#splitter {
+	width: 5px;
+	cursor: col-resize;
+	box-shadow: 0 0 4px #B0B0B0;
+}
+
+.page-container {
+    margin: 7.5px;
+	background-color: white;
+	overflow: auto;
+}
+#page-select-container {
+    white-space: nowrap;
+}
+
+#page-display-container-body {
+    padding: 7px;
+    width: fit-content;
+}
+
+/* ============================== *\
+		    page select
+\* ============================== */
+
+.clickable-span {
+	cursor: pointer;
+}
+.dot-page-root {
+	cursor: default;
+	margin-left: 5px;
+	margin-right: 6px;
+}
+
+.ps-root-container {
+    margin: 7px;
+}
+
+.ps-folder {
+	
+}
+
+.ps-container {
+    margin-left: 7;
+    padding-left: 7;
+    border-left: thin solid;
+    border-color: #80808080;
+}
+
+.ps-page {
+	cursor: pointer;
+}
+
+/* ============================== *\
+	       page display
+\* ============================== */
+
+.smart-link {
+	color: blue;
+    cursor: pointer;
+}
+
+.spoiler {
+	margin-left: 8px;
+}
+.spoiler-wrap {
+	border-left: thin solid;
+	padding-left: 2px;
+}
+
+.code-block {
+	display: inline-block;
+	background: #F0F0F0;
+	border-radius: 3px;
+	
+	padding: 4px;
+    padding-right: 12px;
+	
+    margin: 0;
+	
+}
+.inline-code {
+	background: #F0F0F0;
+}
+
+.code-keyword {
+    font-weight: bold;
+}
+.code-build-in {
+	color: blue;
+}
+.code-red {
+	color: red;
+    font-weight: bold;
+}
+
+
