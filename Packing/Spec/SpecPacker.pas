@@ -102,7 +102,7 @@ type
   end;
   
 begin
-  
+  HTML.Pack('Nativ Interop','Гайд по использованию OpenCL и OpenGL.html');
   HTML.Pack('CL ABC','Справка OpenCLABC.html');
-  
+  HTML.Pack('GL ABC','Справка OpenGLABC.html');
 end.

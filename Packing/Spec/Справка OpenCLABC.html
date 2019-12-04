@@ -573,7 +573,7 @@ const fix_element = (page)=>{
 <li><a href="../%D0%93%D0%B0%D0%B9%D0%B4%20%D0%BF%D0%BE%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E%20OpenCL%20%D0%B8%20OpenGL.html">Общий гайд по использованию модулей <code>OpenCL</code> и <code>OpenGL</code></a></li>
 <li><a href="https://www.khronos.org/registry/OpenCL/">Контейнер справок библиотеки <code>OpenCL</code>, на которой основан модуль <code>OpenCL</code></a></li>
 </ul>
-<p>Если в справке или модуле найдена ошибка, или чего-либо не хватает (в справке или модуле) - пишите в <a href="https://github.com/SunSerega/POCGL/issues">issue</a>.</p>
+<p>Если в найдена ошибка, или чего-либо не хватает (в справке или модуле) - пишите в <a href="https://github.com/SunSerega/POCGL/issues">issue</a>.</p>
 </div>
 <script>on_page_added(document.getElementById("page-1"))</script>
 <div id="page-2" page_name="Термины, который часто путают новички" hidden=true>
@@ -651,9 +651,9 @@ const fix_element = (page)=>{
 К примеру, так объявляется переменная в которую можно будет сохранить очередь, возвращающую <code>integer</code>:</p>
 <pre><code class="language-pas">var Q1: CommandQueue&lt;integer&gt;;
 </code></pre>
-<p>Очереди, созданные из буфера или kernel-а возващают свой <code>Buffer</code>/<code>Kernel</code> соответственно, из которого были созданы<br />
-Очереди, созданные с <code>HFQ</code> - значение, которое вернёт переданная функция<br />
-Очереди, созданные с <code>HPQ</code> - значение типа <code>object</code> (и всегда <code>nil</code>)</p>
+<p>Очереди, созданные из буфера или kernel-а возващают свой <code>Buffer</code>/<code>Kernel</code> соответственно, из которого были созданы;<br />
+Очереди, созданные с <code>HFQ</code> - значение, которое вернёт переданная функция;<br />
+Очереди, созданные с <code>HPQ</code> - значение типа <code>object</code> (и всегда <code>nil</code>).</p>
 <p>К примеру:</p>
 <pre><code class="language-pas">uses OpenCLABC;
 
@@ -756,7 +756,7 @@ if cq=nil then
 <div class="spoiler" summary="3. Из обычной подпрограммы" hidden="true"><p>Иногда между командами для GPU надо вставить выполнение обычного кода на CPU.
 А разрывать для этого очередь на две части - плохо, потому что
 одна целая очередь всегда выполнится быстрее двух её частей.</p>
-<p>Для таких случае существуют глобальные подпрограммы HFQ и HPQ:\</p>
+<p>Для таких случае существуют глобальные подпрограммы HFQ и HPQ:</p>
 <p>HFQ — Host Function Queue<br />
 HPQ — Host Procedure Queue<br />
 (Хост в контексте OpenCL - это CPU, потому что с него посылаются команды для GPU)</p>
@@ -939,15 +939,15 @@ end.
 </div>
 <script>on_page_added(document.getElementById("page-6"))</script>
 <div id="page-7" page_name="Выполнение очередей" hidden=true>
-<p>Самый простой способ выполнить очередь - вызывы метод <code>Context.SyncInvoke</code>.<br />
+<p>Самый простой способ выполнить очередь - вызвать метод <code>Context.SyncInvoke</code>.<br />
 Он синхронно выполняет очередь и вызвращает её результат.</p>
 <p>Но если надо выполнить очередь асинхронно - лучше использовать метод <code>Context.BeginInvoke</code>.<br />
-Он завершает выполнятся как только очередь была полностью запущена и возвращает объект типа <code>CLTask&lt;&gt;</code>, через который можно:</p>
+Он запускает асинхронное выполнение очереди и как только очередь была полностью запущена - возвращает объект типа <code>CLTask&lt;&gt;</code>, через который можно:</p>
 <ul>
 <li>Ожидать пока выполнение не закончится методом <code>CLTask&lt;&gt;.Wait</code>.</li>
 <li>Ожидать пока выполнение не закончится и сразу получить возвращаемое значение, методом <code>CLTask&lt;&gt;.GetRes</code>.</li>
 </ul>
-<p>Метод <code>Context.SyncInvoke</code> реализован через <code>.BeginInvoke(...).GetRes</code>. Поэтому, если далее в справке сказано &quot;... происходит при вызове <code>.BeginInvoke</code>&quot; - это же относится и к <code>.SyncInvoke</code>.</p>
+<p>Метод <code>Context.SyncInvoke</code> реализован через <code>.BeginInvoke(...).GetRes</code>. Поэтому, далее всюду где сказано &quot;... происходит при вызове <code>.BeginInvoke</code>&quot; - это же относится и к <code>.SyncInvoke</code>.</p>
 <p>У <code>CLTask</code> как и у очереди - в <code>&lt;&gt;</code> указывается тип возвращаемого значения. То есть:</p>
 <pre><code class="language-pas">var t: CLTask&lt;integer&gt;;
 </code></pre>
@@ -966,7 +966,7 @@ end;
 </div>
 <script>on_page_added(document.getElementById("page-7"))</script>
 <div id="page-8" page_name="Вложенные очереди" hidden=true>
-<p>Все методы создающие очередь с 1 командой (<code>.Add*</code> методы + все методы неявных очередей)
+<p>Все методы создающие одну команду (<code>.Add*</code> методы + все методы неявных очередей)
 могут принемать очередь вместо значения в качестве любого параметра. Но в таком случае
 возвращаемый тип очереди должен совпадать с типом параметра. К примеру:</p>
 <pre><code class="language-pas">uses OpenCLABC;
@@ -1000,7 +1000,7 @@ end.
 </div>
 <script>on_page_added(document.getElementById("page-8"))</script>
 <div id="page-9" page_name="Множественное использование очереди" hidden=true>
-<h1 class="language-pas"><code>ToDo</code></h1>
+<h1><code>ToDo</code> эта страница будет переделана и перенесена на страницу создания очередей, потому что необходимость в .Clone скоро отпадёт и большинство текста тут станет устаревшим</h1>
 <pre><code>// 3.4.0
 // 
 // Одну и ту же очередь можно использовать несколько раз:
@@ -1109,7 +1109,7 @@ var q := b.NewQueue
 выделенной на GPU, а так же предоставляют методы для работы с этой памятью.</p>
 <hr />
 <p>Буфер создаётся конструктором (<code class="language-pas">new Buffer(...)</code>).</p>
-<p>Но не если передавать контекст в конструктор - память на GPU выделится только при вызове метода <code>Buffer.Init</code>.<br />
+<p>Но если не передавать контекст в конструктор - память на GPU выделится только при вызове метода <code>Buffer.Init</code>.<br />
 Если вызвать <code>Buffer.Init</code> 2 раза - память освободится и выделится заново.</p>
 <p>Когда на GPU выделяется память - она <strong>НЕ</strong> отчищается нулями, а значит содержит мусорные данные.</p>
 <p>Если метод <code>Buffer.Init</code> не был вызван до первой операции чтения/записи - он будет вызван автоматически.
