@@ -69,6 +69,10 @@ begin
       System.IO.File.Copy(fname, res_f_name);
     end);
     
+    System.IO.File.Copy( 'Packing\Spec\Справка OpenCLABC.html',                     'Release\InstallerSamples\OpenCL и OpenGL\Справка OpenCLABC.html' );
+    System.IO.File.Copy( 'Packing\Spec\Справка OpenGLABC.html',                     'Release\InstallerSamples\OpenCL и OpenGL\Справка OpenGLABC.html' );
+    System.IO.File.Copy( 'Packing\Spec\Гайд по использованию OpenCL и OpenGL.html', 'Release\InstallerSamples\OpenCL и OpenGL\Гайд по использованию OpenCL и OpenGL.html' );
+    
     // ====================================================
     
     Otp('done packing');
