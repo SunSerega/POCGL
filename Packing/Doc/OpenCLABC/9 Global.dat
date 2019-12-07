@@ -1,10 +1,11 @@
 
+
+
 # g.HFQ
 Создаёт очередь, выполняющую указанную функцию на CPU
 И возвращающую результат этой функци
 
-# .HPQ(()->())
-# .HPQ(Context->())
+# g.HPQ
 Создаёт очередь, выполняющую указанную процедуру на CPU
 И возвращающую object(nil)
 
@@ -14,47 +15,26 @@
 Создаёт очередь CommandQueueBase, выполняющую указанные очереди одну за другой
 И возвращающую результат последней очереди
 
-# .CombineSyncQueue<T>(sequence of CommandQueueBase)
-# .CombineSyncQueue<T>(array of CommandQueueBase)
-# .CombineSyncQueue<T>(sequence of CommandQueue<T>)
-# .CombineSyncQueue<T>(array of CommandQueue<T>)
+# g.CombineSyncQueue
 Создаёт очередь, выполняющую указанные очереди одну за другой
 И возвращающую результат последней очереди
 
-# .CombineSyncQueue<TRes>(Func<array of object, TRes>, sequence of CommandQueueBase)
-# .CombineSyncQueue<TRes>(Func<array of object, TRes>, array of CommandQueueBase)
-# .CombineSyncQueue<TInp,TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
-# .CombineSyncQueue<TInp,TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
-# .CombineSyncQueue<TRes>(Func<array of object, Context, TRes>, sequence of CommandQueueBase)
-# .CombineSyncQueue<TRes>(Func<array of object, Context, TRes>, array of CommandQueueBase)
-# .CombineSyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
-# .CombineSyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
+# g.CombineSyncQueueF
 Создаёт очередь, выполняющую указанные очереди одну за другой
 Затем выполняющую указанную функцию на CPU, передавая результаты всех очередей
 И возвращающую результат этой функции
 
 
 
-# .CombineAsyncQueueBase(sequence of CommandQueueBase)
-# .CombineAsyncQueueBase(array of CommandQueueBase)
+# g.CombineAsyncQueueBase
 Создаёт очередь CommandQueueBase, выполняющую указанные очереди одновременно
 И возвращающую результат последней очереди
 
-# .CombineAsyncQueue<T>(sequence of CommandQueueBase)
-# .CombineAsyncQueue<T>(array of CommandQueueBase)
-# .CombineAsyncQueue<T>(sequence of CommandQueue<T>)
-# .CombineAsyncQueue<T>(array of CommandQueue<T>)
+# g.CombineAsyncQueue
 Создаёт очередь, выполняющую указанные очереди одновременно
 И возвращающую результат последней очереди
 
-# .CombineAsyncQueue<TRes>(Func<array of object, TRes>, sequence of CommandQueueBase)
-# .CombineAsyncQueue<TRes>(Func<array of object, TRes>, array of CommandQueueBase)
-# .CombineAsyncQueue<TInp,TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
-# .CombineAsyncQueue<TInp,TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
-# .CombineAsyncQueue<TRes>(Func<array of object, Context, TRes>, sequence of CommandQueueBase)
-# .CombineAsyncQueue<TRes>(Func<array of object, Context, TRes>, array of CommandQueueBase)
-# .CombineAsyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
-# .CombineAsyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
+# g.CombineAsyncQueueF
 Создаёт очередь, выполняющую указанные очереди одновременно
 Затем выполняющую указанную функцию на CPU, передавая результаты всех очередей
 И возвращающую результат этой функции

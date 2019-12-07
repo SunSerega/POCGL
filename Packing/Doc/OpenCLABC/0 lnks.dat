@@ -30,6 +30,11 @@
 # Context
 %class-C%
 
+# ProgramCode
+%class-PC%
+
+# IConstQueue
+%interface-CCQ%
 # ConstQueue<T>
 %class-CCQ%
 
@@ -67,6 +72,17 @@
 # BufferCommandQueue.(CommandQueue<Buffer>)
 %bcq.ctorQ%
 
+# BufferCommandQueue.Clone()
+%cq.Clone%
+
+# BufferCommandQueue.AddQueue(CommandQueueBase)
+%gcc.AddQueue%
+# BufferCommandQueue.AddProc((Buffer,Context)->())
+# BufferCommandQueue.AddProc(Buffer->())
+%gcc.AddProc%
+# BufferCommandQueue.AddWait(CommandQueueBase, boolean)
+%gcc.AddWait%
+
 # BufferCommandQueue.AddWriteData(pointer)
 %b.WriteData%
 # BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>)
@@ -76,11 +92,11 @@
 # BufferCommandQueue.AddWriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 - function AddWriteData(ptr: pointer; offset: integer; len: integer): BufferCommandQueue;
 %b.WriteData%
-%bcq:pos_len_def%
+%b:pos_len_def%
 # BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddWriteData(ptr: IntPtr; offset: integer; len: integer): BufferCommandQueue;
 %b.WriteData%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # BufferCommandQueue.AddWriteArray(&Array)
 # BufferCommandQueue.AddWriteArray(CommandQueue<&Array>)
@@ -90,13 +106,13 @@
 # BufferCommandQueue.AddWriteArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddWriteArray(a: Array; offset: integer; len: integer): BufferCommandQueue;
 %b.WriteArray%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # BufferCommandQueue.AddWriteValue<TRecord>(TRecord, CommandQueue<integer>)
 # BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
 - function AddWriteValue(val: TRecord; offset: integer := 0): BufferCommandQueue;
 %b.WriteValue%
-%bcq:offset_def%
+%b:offset_def%
 
 # BufferCommandQueue.AddReadData(pointer)
 %b.ReadData%
@@ -107,11 +123,11 @@
 # BufferCommandQueue.AddReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 - function AddReadData(ptr: pointer; offset: integer; len: integer): BufferCommandQueue;
 %b.ReadData%
-%bcq:pos_len_def%
+%b:pos_len_def%
 # BufferCommandQueue.AddReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddReadData(ptr: IntPtr; offset: integer; len: integer): BufferCommandQueue;
 %b.ReadData%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # BufferCommandQueue.AddReadArray(&Array)
 # BufferCommandQueue.AddReadArray(CommandQueue<&Array>)
@@ -121,12 +137,12 @@
 # BufferCommandQueue.AddReadArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddReadArray(a: Array; offset: integer; len: integer): BufferCommandQueue;
 %b.ReadArray%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # BufferCommandQueue.AddReadValue<TRecord>(TRecord, CommandQueue<integer>)
 - function AddReadValue(val: TRecord; offset: integer := 0): BufferCommandQueue;
 %b.ReadValue%
-%bcq:offset_def%
+%b:offset_def%
 
 # BufferCommandQueue.AddFillData(pointer, CommandQueue<integer>)
 %b.FillData%
@@ -137,11 +153,11 @@
 # BufferCommandQueue.AddFillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddWriteData(ptr: pointer; offset: integer; len: integer): BufferCommandQueue;
 %b.FillData%
-%bcq:pos_len_def%
+%b:pos_len_def%
 # BufferCommandQueue.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddWriteData(ptr: IntPtr; offset: integer; len: integer): BufferCommandQueue;
 %b.FillData%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # BufferCommandQueue.AddFillArray(&Array)
 # BufferCommandQueue.AddFillArray(CommandQueue<&Array>)
@@ -151,7 +167,7 @@
 # BufferCommandQueue.AddFillArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddReadArray(a: Array; offset: integer; len: integer): BufferCommandQueue;
 %b.FillArray%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # BufferCommandQueue.AddFillValue<TRecord>(TRecord)
 # BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>)
@@ -161,7 +177,7 @@
 # BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
 - function AddFillValue(val: TRecord; offset: integer; len: integer): BufferCommandQueue;
 %b.FillValue%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # BufferCommandQueue.AddCopyFrom(CommandQueue<Buffer>)
 - function AddCopyFrom(b: Buffer): BufferCommandQueue;
@@ -183,6 +199,17 @@
 # KernelCommandQueue.(CommandQueue<Kernel>)
 %kcq.ctorQ%
 
+# KernelCommandQueue.Clone()
+%cq.Clone%
+
+# KernelCommandQueue.AddQueue(CommandQueueBase)
+%gcc.AddQueue%
+# KernelCommandQueue.AddProc((Kernel,Context)->())
+# KernelCommandQueue.AddProc(Kernel->())
+%gcc.AddProc%
+# KernelCommandQueue.AddWait(CommandQueueBase, boolean)
+%gcc.AddWait%
+
 # KernelCommandQueue.AddExec(array of integer, array of CommandQueue<Buffer>)
 # KernelCommandQueue.AddExec(array of CommandQueue<integer>, array of CommandQueue<Buffer>)
 # KernelCommandQueue.AddExec(CommandQueue<array of integer>, array of CommandQueue<Buffer>)
@@ -203,21 +230,21 @@
 - function AddExec1(work_sz1: UIntPtr; params args: array of Buffer): KernelCommandQueue;
 %k.Exec1%
 
-# KernelCommandQueue.AddExec2(CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
-# KernelCommandQueue.AddExec2(CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec2(integer, integer, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec2(CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)
 - function AddExec2(work_sz1: integer; work_sz2: integer; params args: array of Buffer): KernelCommandQueue;
 %k.Exec2%
-# KernelCommandQueue.AddExec2(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
-# KernelCommandQueue.AddExec2(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec2(UIntPtr, UIntPtr, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec2(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
 - function AddExec2(work_sz1: UIntPtr; work_sz2: UIntPtr; params args: array of Buffer): KernelCommandQueue;
 %k.Exec2%
 
-# KernelCommandQueue.AddExec3(CommandQueue<integer>,CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
-# KernelCommandQueue.AddExec3(CommandQueue<integer>,CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec3(integer, integer, integer, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)
 - function AddExec3(work_sz1: integer; work_sz2: integer; work_sz3: integer; params args: array of Buffer): KernelCommandQueue;
 %k.Exec3%
-# KernelCommandQueue.AddExec3(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
-# KernelCommandQueue.AddExec3(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec3(UIntPtr, UIntPtr, UIntPtr, array of CommandQueue<Buffer>)
+# KernelCommandQueue.AddExec3(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
 - function AddExec3(work_sz1: UIntPtr; work_sz2: UIntPtr; work_sz3: UIntPtr; params args: array of Buffer): KernelCommandQueue;
 %k.Exec3%
 
@@ -284,18 +311,18 @@
 %b:offset_def%
 
 # Buffer.ReadData(pointer)
-%b.Reata%
+%b.ReadData%
 # Buffer.ReadData(CommandQueue<IntPtr>)
 - function ReadData(ptr: IntPtr): Buffer;
-%b.Reata%
+%b.ReadData%
 
 # Buffer.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 - function ReadData(ptr: pointer; offset: integer; len: integer): Buffer;
-%b.Reata%
+%b.ReadData%
 %b:pos_len_def%
 # Buffer.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
 - function ReadData(ptr: IntPtr; offset: integer; len: integer): Buffer;
-%b.Reata%
+%b.ReadData%
 %b:pos_len_def%
 
 # Buffer.ReadArray(&Array)
@@ -316,7 +343,7 @@
 # Buffer.FillData(pointer, CommandQueue<integer>)
 %b.FillData%
 # Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>)
-- function Reata(ptr: IntPtr): Buffer;
+- function ReadData(ptr: IntPtr): Buffer;
 %b.FillData%
 
 # Buffer.FillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
@@ -366,16 +393,17 @@
 # Buffer.GetData(CommandQueue<integer>, CommandQueue<integer>)
 - function GetData(offset: integer; len: integer): IntPtr;
 %b.GetData%
-%bcq:pos_len_def%
+%b:pos_len_def%
 
 # Buffer.GetArray<TArray>(array of integer)
 # Buffer.GetArray<TArray>(CommandQueue<array of integer>)
 - function GetArray(szs: array of integer): TArray;
 %b.GetArray%
+# Buffer.GetArrayAt<TArray>(CommandQueue<integer>, array of CommandQueue<integer>)
 # Buffer.GetArrayAt<TArray>(CommandQueue<integer>, CommandQueue<array of integer>)
 - function GetArrayAt(offset: integer; szs: array of integer): TArray;
 %b.GetArray%
-%bcq:offset_def%
+%b:offset_def%
 
 # Buffer.GetArray1<TRecord>()
 %b.GetArray1A%
@@ -385,7 +413,7 @@
 # Buffer.GetArray1At<TRecord>(CommandQueue<integer>, CommandQueue<integer>)
 - function GetArray1At(offset: integer; length: integer): array of TRecord;
 %b.GetArray1%
-%bcq:offset_def%
+%b:offset_def%
 
 # Buffer.GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)
 - function GetArray2(length1: integer; length2: integer): array[,] of TRecord;
@@ -393,7 +421,7 @@
 # Buffer.GetArray2At<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 - function GetArray2At(offset: integer; length1: integer; length2: integer): array[,] of TRecord;
 %b.GetArray2%
-%bcq:offset_def%
+%b:offset_def%
 
 # Buffer.GetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 - function GetArray3(length1: integer; length2: integer; length3: integer): array[,,] of TRecord;
@@ -401,14 +429,14 @@
 # Buffer.GetArray3At<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 - function GetArray3At(offset: integer; length1: integer; length2: integer; length3: integer): array[,,] of TRecord;
 %b.GetArray3%
-%bcq:offset_def%
+%b:offset_def%
 
 # Buffer.GetValue<TRecord>()
 %b.GetValue%
 # Buffer.GetValueAt<TRecord>(CommandQueue<integer>)
 - function GetValueAt(offset: integer): TRecord;
 %b.GetValue%
-%bcq:offset_def%
+%b:offset_def%
 
 
 
@@ -438,21 +466,21 @@
 - function Exec1(work_sz1: UIntPtr; params args: array of Buffer): Kernel;
 %k.Exec1%
 
-# Kernel.Exec2(CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
-# Kernel.Exec2(CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
+# Kernel.Exec2(integer, integer, array of CommandQueue<Buffer>)
+# Kernel.Exec2(CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)
 - function Exec2(work_sz1: integer; work_sz2: integer; params args: array of Buffer): Kernel;
 %k.Exec2%
-# Kernel.Exec2(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
-# Kernel.Exec2(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
+# Kernel.Exec2(UIntPtr, UIntPtr, array of CommandQueue<Buffer>)
+# Kernel.Exec2(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
 - function Exec2(work_sz1: UIntPtr; work_sz2: UIntPtr; params args: array of Buffer): Kernel;
 %k.Exec2%
 
-# Kernel.Exec3(CommandQueue<integer>,CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
-# Kernel.Exec3(CommandQueue<integer>,CommandQueue<integer>,CommandQueue<integer>, array of CommandQueue<Buffer>)
+# Kernel.Exec3(integer, integer, integer, array of CommandQueue<Buffer>)
+# Kernel.Exec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)
 - function Exec3(work_sz1: integer; work_sz2: integer; work_sz3: integer; params args: array of Buffer): Kernel;
 %k.Exec3%
-# Kernel.Exec3(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
-# Kernel.Exec3(CommandQueue<UIntPtr>,CommandQueue<UIntPtr>,CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
+# Kernel.Exec3(UIntPtr, UIntPtr, UIntPtr, array of CommandQueue<Buffer>)
+# Kernel.Exec3(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)
 - function Exec3(work_sz1: UIntPtr; work_sz2: UIntPtr; work_sz3: UIntPtr; params args: array of Buffer): Kernel;
 %k.Exec3%
 
@@ -468,6 +496,9 @@
 # Context.(cl_context, cl_device_id)
 %c.ctorNtvD%
 
+# Context.&Default
+%c.Default%
+
 # Context.BeginInvoke(CommandQueueBase)
 # Context.BeginInvoke<T>(CommandQueue<T>)
 %c.BeginInvoke%
@@ -478,11 +509,43 @@
 
 
 
+# ProgramCode.(array of string)
+%pc.ctor%
+# ProgramCode.(Context, array of string)
+%pc.ctorC%
+
+
+
+# ProgramCode.KernelByName[string]
+%pc.KernelByName%
+
+# ProgramCode.GetAllKernels()
+%pc.GetAllKernels%
+
+
+
+# ProgramCode.Serialize()
+%pc.Serialize%
+# ProgramCode.Deserialize(Context, array of byte)
+%pc.Deserialize%
+
+# ProgramCode.SerializeTo(System.IO.BinaryWriter)
+# ProgramCode.SerializeTo(System.IO.Stream)
+%pc.SerializeTo%
+
+# ProgramCode.DeserializeFrom(Context, System.IO.BinaryReader)
+# ProgramCode.DeserializeFrom(Context, System.IO.Stream)
+%pc.DeserializeFrom%
+
+
+
 # ConstQueue<T>.(T)
 %ccq.ctor%
 
 # ConstQueue<T>.GetConstVal()
 %hidden%
+# IConstQueue.GetConstVal()
+%ccq.GetConstVal%
 
 # ConstQueue<T>.Val
 %ccq.Val%
@@ -495,7 +558,7 @@
 
 # .HPQ(()->())
 # .HPQ(Context->())
-%g.HPQ
+%g.HPQ%
 
 
 
