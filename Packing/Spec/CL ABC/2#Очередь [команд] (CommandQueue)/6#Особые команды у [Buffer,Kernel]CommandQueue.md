@@ -5,7 +5,7 @@
 бывает надо вставить выполнение другой очереди или кода для CPU.
 
 Это можно сделать, используя несколько `.NewQueue`:
-```pas
+```
 var b: Buffer;
 var q0: CommandQueueBase;
 ...
@@ -17,7 +17,7 @@ var q :=
 ;
 ```
 Однако можно сделать и красивее:
-```pas
+```
 var b: Buffer;
 var q0: CommandQueueBase;
 ...

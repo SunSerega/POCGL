@@ -526,6 +526,37 @@ const fix_element = (page)=>{
 	
 	for (let code of page.getElementsByTagName('code'))
 	{
+		let w_to_regex = (w)=>`(?<!\\w)${w}(?!\\w)`;
+		
+		if (!code.className)
+		{
+			let best = {lang: null, c: 0};
+			let multiple_best = true;
+			
+			for (let lang_name in code_words_color)
+			{
+				let c = 0;
+				for (let wordt in code_words_color[lang_name])
+					for (let w of code_words_color[lang_name][wordt])
+					{
+						var m = code.innerHTML.match(new RegExp( w_to_regex(w), "gi" ));
+						if (m) c += m.length;
+					}
+				
+				if (best.c == c)
+					multiple_best = true; else
+				if (best.c < c)
+				{
+					multiple_best = false;
+					best.lang = lang_name;
+					best.c = c;
+				}
+			}
+			
+			if (!multiple_best)
+				code.className = "language-" + best.lang;
+		}
+		
 		if (code.className)
 		{
 			let lang = code.className.substr("language-".length);
@@ -533,13 +564,8 @@ const fix_element = (page)=>{
 			if (!curr_cw) curr_cw = code_words_color["default"];
 			for (let wordt in curr_cw)
 				code.innerHTML = code.innerHTML.replace(
-					new RegExp(curr_cw[wordt].map(x=>`(^|[\\W])${x}([\\W]|$)`).join('|'),"gi"),	w=>{
-						
-						let w_s = w[0].match(/\W/) ? w[0] : "";
-						let w_e = w[w.length-1].match(/\W/) ? w[w.length-1] : "";
-						
-						return `${w_s}<span class="code-${wordt}">${w.substr(w_s.length,w.length-w_s.length-w_e.length)}</span>${w_e}`;
-					}
+					new RegExp(curr_cw[wordt].map(w_to_regex).join('|'),"gi"),
+					w=> `<span class="code-${wordt}">${w}</span>`
 				);
 		}
 		
@@ -576,7 +602,7 @@ const fix_element = (page)=>{
 <p>Если в найдена ошибка, или чего-либо не хватает (в справке или модуле) - пишите в <a href="https://github.com/SunSerega/POCGL/issues">issue</a>.</p>
 </div>
 <script>on_page_added(document.getElementById("page-1"))</script>
-<div id="page-2" page_name="Термины, который часто путают новички" hidden=true>
+<div id="page-2" page_name="Термины, которые часто путают новички" hidden=true>
 <ul>
 <li><p>CPU — Центральное Процессорное Устройство (процессор)</p>
 </li>
@@ -649,13 +675,13 @@ const fix_element = (page)=>{
 <div id="page-5" page_name="Возвращаемое значение очередей" hidden=true>
 <p>У каждого типа-очереди есть свой тип возвращаемого значение.<br />
 К примеру, так объявляется переменная в которую можно будет сохранить очередь, возвращающую <code>integer</code>:</p>
-<pre><code class="language-pas">var Q1: CommandQueue&lt;integer&gt;;
+<pre><code>var Q1: CommandQueue&lt;integer&gt;;
 </code></pre>
 <p>Очереди, созданные из буфера или kernel-а возващают свой <code>Buffer</code>/<code>Kernel</code> соответственно, из которого были созданы;<br />
 Очереди, созданные с <code>HFQ</code> - значение, которое вернёт переданная функция;<br />
 Очереди, созданные с <code>HPQ</code> - значение типа <code>object</code> (и всегда <code>nil</code>).</p>
 <p>К примеру:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 /// Вывод типа и значения объекта
 procedure OtpObject(o: object) :=
@@ -700,7 +726,7 @@ end.
 <p>Полученная очередь будет иметь особый тип: <code>BufferCommandQueue</code>/<code>KernelCommandQueue</code> для буфера/kernel'а соответственно.<br />
 К такой очереди можно добавлять команды, вызывая её методы, имена которых начинаются с <code>.Add...</code>.</p>
 <p>К примеру:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 begin
   // Буфер достаточного размера чтоб содержать 3 значения типа integer
@@ -728,26 +754,26 @@ begin
 end.
 </code></pre>
 <p>Так же, очереди <code>BufferCommandQueue</code>/<code>KernelCommandQueue</code> можно создавать из очередей, возвращающих <code>Buffer</code>/<code>Kernel</code> соответственно. Для этого используется конструктор:</p>
-<pre><code class="language-pas">var q0: CommandQueue&lt;Buffer&gt;;
+<pre><code>var q0: CommandQueue&lt;Buffer&gt;;
 ...
 var q := new BufferCommandQueue(q0);
 </code></pre>
 </div>
 <div class="spoiler" summary="2. Из возвращаемого значения" hidden="true"><p>Переменной очереди можно присвоить значение, тип которого совпадает с возвращаемым значением очереди:</p>
-<pre><code class="language-pas">var q: CommandQueue&lt;integer&gt; := 5;
+<pre><code>var q: CommandQueue&lt;integer&gt; := 5;
 </code></pre>
 <p>Этот код присваевает переменной <code>q</code> константную очередь, которая ничего не выполняет и возвращает <code>5</code>.</p>
 <p>Получить значение, из которого создали константную очередь, можно преобразовав её к <code>ConstQueue&lt;&gt;</code>:</p>
-<pre><code class="language-pas">var cq := q as ConstQueue&lt;integer&gt;;
+<pre><code>var cq := q as ConstQueue&lt;integer&gt;;
 if cq=nil then
   Writeln('Очередь не константная') else
   Writeln($'Очередь была создана из значения {cq.Val}');
 </code></pre>
 <p><code>CommandQueueBase</code> так же можно создать из значения, но для этого - тип значения должен быть <code>Object</code>:</p>
-<pre><code class="language-pas">var q: CommandQueueBase := 5 as object;
+<pre><code>var q: CommandQueueBase := 5 as object;
 </code></pre>
 <p>Чтоб получить значение, из которого создали константную очередь, когда не знаете его тип - используйте интерфейс <code>IConstQueue</code>:</p>
-<pre><code class="language-pas">var cq := q as IConstQueue;
+<pre><code>var cq := q as IConstQueue;
 if cq=nil then
   Writeln('Очередь не константная') else
   Writeln($'Очередь была создана из значения ({cq.GetConstVal})');
@@ -774,7 +800,7 @@ HPQ — Host Procedure Queue<br />
 <p>Как и в математике, умножение имеет бОльший приоритет чем сложение.</p>
 <p>В обоих случаях очередь C будет возвращать то, что вернула очередь B. То есть если складывать и умножать много очередей - результат будет всегда возвращать то, что вернула самая последняя очередь.</p>
 <p>Простейший пример:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 begin
   
@@ -808,7 +834,7 @@ end.
 Эти подпрограммы работают немного быстрее чем сложение и умножение, если объединять больше двух очередей.</p>
 <p>Кроме того они так же могут принимать ещё 1 параметр перед очередями:
 Этот параметр позволяет указать функцию преобразования, которая использует результаты всех входных очередей:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 begin
   
@@ -835,7 +861,7 @@ end.
 </div>
 <div class="spoiler" summary="5. Из очереди + преобразования результата" hidden="true"><p>Если надо с минимальными затратами изменить представление компилятора об очереди - лучше всего использовать <code>.Cast</code>.<br />
 Но он ограничен примерно так же, как метод последовательностей <code>.Cast</code>. То есть:</p>
-<pre><code class="language-pas">type t1 = class ... end;
+<pre><code>type t1 = class ... end;
 type t2 = class(t1) ... end;
 ...
 var Q1: CommandQueue&lt;integer&gt; := 5;
@@ -863,7 +889,7 @@ Context.Default.SyncInvoke( Q4.Cast&amp;&lt;t2&gt; );
 Context.Default.SyncInvoke( Q5.Cast&amp;&lt;t1&gt; );
 </code></pre>
 <p>Ну а если эти ограничения не подходят - остаётся только <code>.ThenConvert</code>. Он позволяет указать любой алгоритм преобразования, но и требует бОльшей производительности:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 begin
   var q := HFQ(()-&gt;123);
@@ -883,7 +909,7 @@ end.
 У каждого метода очереди, создаваемой с <code>.NewQueue</code> есть дублирующий метод в оригинальном объекте.<br />
 Такие методы сами создают новую очередь, добавляют в неё одну соответствующую команду и выполняют полученную очередь в <code>Context.Default.SyncInvoke(...)</code>.</p>
 <p>Следующий пример сравнивает явные и неявные очереди:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 begin
   
@@ -931,7 +957,7 @@ begin
 end.
 </code></pre>
 <p>Кроме того, у типа <code>Buffer</code> есть дополнительные методы <code>Buffer.Get...</code>.
-Соответствующих методов у очередей — нет (<code class="language-pas">ToDo</code> возможно, в будущем появятся).<br />
+Соответствующих методов у очередей — нет (<code>ToDo</code> возможно, в будущем появятся).<br />
 Методы <code>.Get...</code> создают новый объект типа записи, массива или выделяют область неуправляемой памяти,
 читают в полученный объект содержимое буфера и возвращают этот объект.
 Они также используют неявную очередь (для чтения буфера).</p>
@@ -949,11 +975,11 @@ end.
 </ul>
 <p>Метод <code>Context.SyncInvoke</code> реализован через <code>.BeginInvoke(...).GetRes</code>. Поэтому, далее всюду где сказано &quot;... происходит при вызове <code>.BeginInvoke</code>&quot; - это же относится и к <code>.SyncInvoke</code>.</p>
 <p>У <code>CLTask</code> как и у очереди - в <code>&lt;&gt;</code> указывается тип возвращаемого значения. То есть:</p>
-<pre><code class="language-pas">var t: CLTask&lt;integer&gt;;
+<pre><code>var t: CLTask&lt;integer&gt;;
 </code></pre>
 <p>В такую переменную можно сохранить только результат <code>Context.BeginInvoke</code> для очереди типа <code>CommandQueue&lt;integer&gt;</code>.</p>
-<p>Если при выполнении возникла ошибку, о ней выведет не полную информацию. Чтобы получить всю информацию - используется <code class="language-pas">try</code>:</p>
-<pre><code class="language-pas">try
+<p>Если при выполнении возникла ошибку, о ней выведет не полную информацию. Чтобы получить всю информацию - используется <code>try</code>:</p>
+<pre><code>try
   
   //ToDo ваш код, вызывающий ошибку
   
@@ -969,7 +995,7 @@ end;
 <p>Все методы создающие одну команду (<code>.Add*</code> методы + все методы неявных очередей)
 могут принемать очередь вместо значения в качестве любого параметра. Но в таком случае
 возвращаемый тип очереди должен совпадать с типом параметра. К примеру:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 begin
   var b := new Buffer(10*sizeof(integer));
@@ -1077,7 +1103,7 @@ end.
 <p>Между командами для GPU (хранимыми в очередях типов <code>BufferCommandQueue</code> и <code>KernelCommandQueue</code>)
 бывает надо вставить выполнение другой очереди или кода для CPU.</p>
 <p>Это можно сделать, используя несколько <code>.NewQueue</code>:</p>
-<pre><code class="language-pas">var b: Buffer;
+<pre><code>var b: Buffer;
 var q0: CommandQueueBase;
 ...
 var q :=
@@ -1088,7 +1114,7 @@ var q :=
 ;
 </code></pre>
 <p>Однако можно сделать и красивее:</p>
-<pre><code class="language-pas">var b: Buffer;
+<pre><code>var b: Buffer;
 var q0: CommandQueueBase;
 ...
 var q := b.NewQueue
@@ -1108,7 +1134,7 @@ var q := b.NewQueue
 <p>Объекты типа <code>Buffer</code> содержат информацию об области памяти,
 выделенной на GPU, а так же предоставляют методы для работы с этой памятью.</p>
 <hr />
-<p>Буфер создаётся конструктором (<code class="language-pas">new Buffer(...)</code>).</p>
+<p>Буфер создаётся конструктором (<code>new Buffer(...)</code>).</p>
 <p>Но если не передавать контекст в конструктор - память на GPU выделится только при вызове метода <code>Buffer.Init</code>.<br />
 Если вызвать <code>Buffer.Init</code> 2 раза - память освободится и выделится заново.</p>
 <p>Когда на GPU выделяется память - она <strong>НЕ</strong> отчищается нулями, а значит содержит мусорные данные.</p>
@@ -1147,7 +1173,7 @@ var q := b.NewQueue
 </div>
 <script>on_page_added(document.getElementById("page-13"))</script>
 <div id="page-14" page_name="Создание из бинарного файла" hidden=true>
-<h2><code class="language-pas">ToDo</code> в данный момент наблюдаются некоторые проблемы, возможно <code>ProgramCode.DeserializeFrom</code> реализован неправильно.</h2>
+<h2><code>ToDo</code> в данный момент наблюдаются некоторые проблемы, возможно <code>ProgramCode.DeserializeFrom</code> реализован неправильно.</h2>
 <p>После создания объекта типа <code>ProgramCode</code> из исходников можно вызвать
 метод <code>ProgramCode.SerializeTo</code>, чтобы сохранить код в бинарном и прекомпилированном виде.
 Обычно это делается отдельной программой (не той же самой, которая будет использовать этот бинарный код).</p>
@@ -1199,14 +1225,14 @@ end.
 <script>on_end_folder()</script>
 <div id="page-15" page_name="" hidden=true>
 <p>Объект типа <code>Kernel</code> представляет одну подпрограмму в OpenCL-C коде,
-объявленную с ключевым словом <code class="language-cl-c">__kernel</code>.</p>
+объявленную с ключевым словом <code>__kernel</code>.</p>
 <hr />
 <p><code>Kernel</code> создаётся через индексное свойтсво <code>ProgramCode</code>:</p>
-<pre><code class="language-pas">var k := code['KernelName'];
+<pre><code>var k := code['KernelName'];
 </code></pre>
 <p>Где <code>code</code> имеет тип <code>ProgramCode</code>, а <code>'KernelName'</code> — имя подпрограммы-kernel'а в исходном коде (регистр важен!).</p>
 <p>Пример выполнения kernel-а:</p>
-<pre><code class="language-pas">uses OpenCLABC;
+<pre><code>uses OpenCLABC;
 
 begin
   

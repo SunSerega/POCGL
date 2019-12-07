@@ -405,6 +405,37 @@ const fix_element = (page)=>{
 	
 	for (let code of page.getElementsByTagName('code'))
 	{
+		let w_to_regex = (w)=>`(?<!\\w)${w}(?!\\w)`;
+		
+		if (!code.className)
+		{
+			let best = {lang: null, c: 0};
+			let multiple_best = true;
+			
+			for (let lang_name in code_words_color)
+			{
+				let c = 0;
+				for (let wordt in code_words_color[lang_name])
+					for (let w of code_words_color[lang_name][wordt])
+					{
+						var m = code.innerHTML.match(new RegExp( w_to_regex(w), "gi" ));
+						if (m) c += m.length;
+					}
+				
+				if (best.c == c)
+					multiple_best = true; else
+				if (best.c < c)
+				{
+					multiple_best = false;
+					best.lang = lang_name;
+					best.c = c;
+				}
+			}
+			
+			if (!multiple_best)
+				code.className = "language-" + best.lang;
+		}
+		
 		if (code.className)
 		{
 			let lang = code.className.substr("language-".length);
@@ -412,13 +443,8 @@ const fix_element = (page)=>{
 			if (!curr_cw) curr_cw = code_words_color["default"];
 			for (let wordt in curr_cw)
 				code.innerHTML = code.innerHTML.replace(
-					new RegExp(curr_cw[wordt].map(x=>`(^|[\\W])${x}([\\W]|$)`).join('|'),"gi"),	w=>{
-						
-						let w_s = w[0].match(/\W/) ? w[0] : "";
-						let w_e = w[w.length-1].match(/\W/) ? w[w.length-1] : "";
-						
-						return `${w_s}<span class="code-${wordt}">${w.substr(w_s.length,w.length-w_s.length-w_e.length)}</span>${w_e}`;
-					}
+					new RegExp(curr_cw[wordt].map(w_to_regex).join('|'),"gi"),
+					w=> `<span class="code-${wordt}">${w}</span>`
 				);
 		}
 		
