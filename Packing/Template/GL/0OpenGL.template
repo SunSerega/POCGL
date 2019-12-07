@@ -35,33 +35,33 @@ uses System.Runtime.CompilerServices;
 
 {$region Основные типы} type
   
-  %GL\Static\CoreTypes%
+  %Static\CoreTypes%
   
 {$endregion Основные типы}
 
 {$region Перечисления} type
   
-  %GL\Static\Enums%
+  %Static\Enums%
   
-  %GL\Static\ExtEnums%
+  %Static\ExtEnums%
   
 {$endregion Перечисления}
 
 {$region Делегаты} type
   
-  %GL\Static\Delegates%
+  %Static\Delegates%
   
 {$endregion Делегаты}
 
 {$region Записи} type
   
-  %GL\VecTypes!GL\PackVecTypes.pas%
+  %VecTypes!PackVecTypes.pas%
   
-  %GL\MtrTypes!GL\PackMtrTypes.pas%
+  %MtrTypes!PackMtrTypes.pas%
   
   {$region Misc}
   
-  %GL\Static\Records%
+  %Static\Records%
   
   {$endregion Misc}
   
@@ -69,13 +69,13 @@ uses System.Runtime.CompilerServices;
 
 type
   
-  %GL\Funcs!GL\PackFuncs.pas%
+  %Funcs!PackFuncs.pas%
   
-  %GL\Static\GDIIntegration%
+  %Static\GDIIntegration%
   
 implementation
 
-%GL\MtrExt!GL\PackMtrExt.pas%
+%MtrExt!PackMtrExt.pas%
 
 end.
 

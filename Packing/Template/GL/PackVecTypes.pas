@@ -298,7 +298,7 @@ begin
     res += '  ';
     
     if CommandLineArgs.Contains('SecondaryProc') then
-      WriteAllText('Packing\GL\VecTypes.template', res.ToString, new System.Text.UTF8Encoding(true)) else
+      WriteAllText($'{System.IO.Path.GetDirectoryName(GetEXEFileName)}\VecTypes.template', res.ToString, new System.Text.UTF8Encoding(true)) else
     begin
       System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
       System.Console.Beep;

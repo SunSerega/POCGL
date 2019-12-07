@@ -1,6 +1,6 @@
 ﻿uses System.Threading;
 //uses PackingUtils;
-uses MiscUtils in '..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 type
   TextBlock = abstract class
@@ -40,7 +40,7 @@ type
     
   end;
   
-function ProcessCommand(comm: string): string;
+function ProcessCommand(comm: string; path: string): string;
 begin
   if comm='' then exit;
   
@@ -48,11 +48,11 @@ begin
   if sind<>-1 then
   begin
     var fname := comm.Substring(sind+1);
-    ExecuteFile(GetFullPath(fname, 'Packing'),$'TemplateCommand[{fname}]');
+    ExecuteFile(GetFullPath(fname, path),$'TemplateCommand[{fname}]');
     comm := comm.Remove(sind);
   end;
   
-  comm := GetFullPath(comm+'.template', 'Packing');
+  comm := GetFullPath(comm+'.template', path);
   RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={comm}"');
   
   comm += 'res';
@@ -63,12 +63,12 @@ end;
 
 begin
   try
-    
-//    CommandLineArgs := Arr('fname=D:\1Cергей\Мои программы\проекты\POCGL\Packing\GL\Funcs.template');
+    if not CommandLineArgs.Contains('SecondaryProc') then CommandLineArgs := Arr('fname=Packing\Template\GL\0OpenGL.template');
     
     var arg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
     if arg=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
     arg := GetFullPath(arg.SubString('fname='.Length));
+    var curr_dir := System.IO.Path.GetDirectoryName(arg);
     
     var blocks := new Queue<TextBlock>;
     var read_done := false;
@@ -90,7 +90,7 @@ begin
           ind1 += 1;
           var ind2 := l.IndexOf('%', ind1);
           var comm := l.Substring(ind1,ind2-ind1);
-          lock blocks do blocks.Enqueue(new FuncBlock( ()->ProcessCommand(comm) ));
+          lock blocks do blocks.Enqueue(new FuncBlock( ()->ProcessCommand(comm, curr_dir) ));
           
           res += l.Remove(0,ind2+1);
         end else

@@ -15,16 +15,27 @@ begin
     
     // ====================================================
     
+    var T_GL :=
+      ExecTask('Packing\Template\Pack Template.pas', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
+      ProcTask(()->System.IO.File.Delete('OpenGL.pas')) +
+      ProcTask(()->System.IO.File.Move('Packing\Template\GL\0OpenGL.pas', 'OpenGL.pas')) +
+      ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', new System.Text.UTF8Encoding(true)).Replace(#10,#13#10), new System.Text.UTF8Encoding(true)))
+    ;
+    
+    var T_GLABC := CompTask('OpenGLABC.pas');
+    
+//    var T_CL := //ToDo
+    
+    var T_CLABC :=
+      CompTask('OpenCLABC.pas') +
+      ExecTask('Packing\Doc\PackComments.pas', 'Comments[OpenCLABC]', 'fname=OpenCLABC')
+    ;
+    
     (
-      (
-        ExecTask('Packing\Pack Template.pas', 'Template[OpenGL]', 'fname=Packing\0OpenGL.template', 'GenPas') +
-        ProcTask(()->System.IO.File.Delete('OpenGL.pas')) +
-        ProcTask(()->System.IO.File.Move('Packing\0OpenGL.pas', 'OpenGL.pas')) +
-        ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', new System.Text.UTF8Encoding(true)).Replace(#10,#13#10), new System.Text.UTF8Encoding(true))) +
-//        ProcTask(()->System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.templateres').ForEach(System.IO.File.Delete)) +
-        CompTask('OpenGLABC.pas')
-      ) *
-      CompTask('OpenCLABC.pas') *
+      
+      ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker') *
+      (T_GL + T_GLABC) *
+      (       T_CLABC) *
       CompTask('Tests\Tester.pas')
       
       + ExecTask('Tests\Tester.exe', 'Tester')
@@ -36,10 +47,10 @@ begin
       System.IO.Directory.Delete('Release', true);
     
     System.IO.Directory.CreateDirectory('Release\bin\Lib');
-    System.IO.File.Copy( 'OpenCL.pas',    'Release\bin\Lib\OpenCL.pas'    );
-    System.IO.File.Copy( 'OpenCLABC.pas', 'Release\bin\Lib\OpenCLABC.pas' );
-    System.IO.File.Copy( 'OpenGL.pas',    'Release\bin\Lib\OpenGL.pas'    );
-    System.IO.File.Copy( 'OpenGLABC.pas', 'Release\bin\Lib\OpenGLABC.pas' );
+    System.IO.File.Copy(             'OpenCL.pas',        'Release\bin\Lib\OpenCL.pas'    );
+    System.IO.File.Copy( 'Packing\Doc\OpenCLABC.res.pas', 'Release\bin\Lib\OpenCLABC.pas' );
+    System.IO.File.Copy(             'OpenGL.pas',        'Release\bin\Lib\OpenGL.pas'    );
+    System.IO.File.Copy(             'OpenGLABC.pas',     'Release\bin\Lib\OpenGLABC.pas' );
     
     System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
     .Where(fname->
@@ -54,7 +65,7 @@ begin
     begin
       Otp($'Packing sample "{fname}"');
       var res_f_name := 'Release\InstallerSamples\OpenCL и OpenGL'+fname.Substring('Samples'.Length);
-      System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_f_name);
+      System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_f_name));
       System.IO.File.Copy(fname, res_f_name);
     end);
     

@@ -3,7 +3,7 @@
 uses System.Diagnostics;
 uses System.Threading;
 uses System.Threading.Tasks;
-uses MiscUtils in '..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 {$region MiscUtils calls}
 

@@ -1,7 +1,7 @@
 ﻿uses PackingUtils in '..\PackingUtils.pas';
-uses CoreFuncData in '..\..\SpecFormating\GL\CoreFuncData.pas';
-uses BinSpecData in '..\..\SpecFormating\GLExt\BinSpecData.pas';
-uses FuncFormatData in '..\..\Text converters\FuncFormatData.pas';
+uses CoreFuncData in '..\..\..\SpecFormating\GL\CoreFuncData.pas';
+uses BinSpecData in '..\..\..\SpecFormating\GLExt\BinSpecData.pas';
+uses FuncFormatData in '..\..\..\Text converters\FuncFormatData.pas';
 
 {$region Misc types}
 

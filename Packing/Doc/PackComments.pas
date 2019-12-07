@@ -135,7 +135,6 @@ begin
     
     res.Close;
     skiped.Close;
-    if not CommandLineArgs.Contains('SecondaryProc') then Readln;
   except
     on e: Exception do ErrOtp(e);
   end;

@@ -1,6 +1,8 @@
 ﻿{$reference '0MarkDig\Markdig.dll'}
 uses System.IO;
 
+uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+
 type
   HTML = static class
     // Справка расширений:
@@ -69,27 +71,31 @@ type
       sw.WriteLine($'<script>on_end_folder()</script>');
     end;
     
+    public static exe_dir := Path.GetDirectoryName(GetEXEFileName);
     public static procedure Pack(path, otp: string);
     begin
+      path := $'{exe_dir}\{path}';
+      otp  := $'{exe_dir}\{otp}';
+      
       var sw := new StreamWriter(&File.Create(otp));
       sw.WriteLine('<html>');
       sw.WriteLine('<head>');
       sw.WriteLine('<meta charset="utf-8">');
       
       sw.WriteLine('<style>');
-      sw.WriteLine(ReadAllText('0SpecContainer\.css').Trim);
+      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.css').Trim);
       sw.WriteLine('</style>');
       
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText('0SpecContainer\.md'),
+        ReadAllText($'{exe_dir}\0SpecContainer\.md'),
         md_pipeline
       ).Trim);
       
       sw.WriteLine('<script>');
-      sw.WriteLine(ReadAllText('0SpecContainer\.js').Trim);
+      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.js').Trim);
       sw.WriteLine('</script>');
       
       AddFolder(sw, path);
@@ -102,7 +108,13 @@ type
   end;
   
 begin
-  HTML.Pack('Nativ Interop','Гайд по использованию OpenCL и OpenGL.html');
-  HTML.Pack('CL ABC','Справка OpenCLABC.html');
-  HTML.Pack('GL ABC','Справка OpenGLABC.html');
+  try
+    
+    HTML.Pack('Nativ Interop','Гайд по использованию OpenCL и OpenGL.html');
+    HTML.Pack('CL ABC','Справка OpenCLABC.html');
+    HTML.Pack('GL ABC','Справка OpenGLABC.html');
+    
+  except
+    on e: Exception do ErrOtp(e);
+  end;
 end.

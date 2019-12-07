@@ -116,6 +116,7 @@ end;
 procedure RunFile(fname, nick: string; otp: string->(); params pars: array of string);
 begin
   fname := GetFullPath(fname);
+  if not System.IO.File.Exists(fname) then raise new System.IO.FileNotFoundException(nil,fname);
   if otp=nil then otp := l->MiscUtils.Otp($'{nick}: {l}');
   
   MiscUtils.Otp($'Runing {nick}');
@@ -127,7 +128,7 @@ begin
   psi.RedirectStandardOutput := true;
   
   var p := new Process;
-  sec_procs += p;
+  lock sec_procs do sec_procs += p;
   p.StartInfo := psi;
   p.OutputDataReceived += (o,e) -> if not string.IsNullOrWhiteSpace(e.Data) then otp(e.Data);
   p.Start;
@@ -224,7 +225,7 @@ ExecuteFile(fname, nick, nil, nil, pars);
 
 procedure RegisterThr;
 begin
-  sec_thrs += Thread.CurrentThread;
+  lock sec_thrs do sec_thrs += Thread.CurrentThread;
   if in_err_state then Thread.CurrentThread.Abort;
 end;
 
