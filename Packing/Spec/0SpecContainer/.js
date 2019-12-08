@@ -50,7 +50,21 @@
 	window.onresize = ()=>reset_spl();
 	
 	splitter.addEventListener("dblclick", ()=>{
-		spl_X = document.getElementsByClassName("page-container")[0].scrollWidth + 15 + 7;
+		let w = 0;
+		let psc = document.getElementsByClassName("page-container")[0];
+		let psc2 = psc.children[0];
+		for (let n of psc2.children)
+			if (n.clientWidth>w) w = n.clientWidth;
+		
+		let get_margin = (el)=>{
+			let style = el.currentStyle || window.getComputedStyle(el);
+			return parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+		}
+		
+		spl_X = w +
+			get_margin(psc) +
+			get_margin(psc2)
+		;
 		reset_spl();
 	});
 	

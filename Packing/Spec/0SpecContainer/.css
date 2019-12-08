@@ -52,7 +52,7 @@ body {
 }
 
 .ps-folder {
-	
+	display: table;
 }
 
 .ps-container {
