@@ -2,6 +2,7 @@ Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\Pack Template.pas"
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Spec\SpecPacker.pas"
+Finished compiling "Tester.pas": OK
 Finished compiling "Pack Template.pas": OK
 Runing Template[OpenGL]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
@@ -9,35 +10,34 @@ Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\пр
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\ExtEnums.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackVecTypes.pas"
+Finished compiling "SpecPacker.pas": OK
+Runing SpecPacker
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackMtrTypes.pas"
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Records.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackFuncs.pas"
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Enums.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackMtrExt.pas"
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\ExtEnums.template]
-Finished compiling "SpecPacker.pas": OK
-Runing SpecPacker
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Enums.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Records.template]
-Finished compiling "Tester.pas": OK
+Finished runing SpecPacker
 Template[OpenGL]: Finished compiling "PackMtrExt.pas": OK
 Template[OpenGL]: Runing TemplateCommand[PackMtrExt.pas]
-Finished runing SpecPacker
-Template[OpenGL]: Finished runing TemplateCommand[PackMtrExt.pas]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
 Template[OpenGL]: Finished compiling "PackVecTypes.pas": OK
 Template[OpenGL]: Runing TemplateCommand[PackVecTypes.pas]
+Template[OpenGL]: Finished compiling "PackMtrTypes.pas": OK
+Template[OpenGL]: Runing TemplateCommand[PackMtrTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[PackVecTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
-Template[OpenGL]: Finished compiling "PackMtrTypes.pas": OK
-Template[OpenGL]: Runing TemplateCommand[PackMtrTypes.pas]
+Template[OpenGL]: Finished runing TemplateCommand[PackMtrExt.pas]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
 Template[OpenGL]: Finished runing TemplateCommand[PackMtrTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
 Finished compiling "OpenCLABC.pas": OK
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Doc\PackComments.pas"
@@ -47,10 +47,6 @@ Template[OpenGL]: TemplateCommand[PackFuncs.pas]: Misc loading
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: Loading core funcs
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: Loading ext funcs
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: Read funcs from .h's
-Finished compiling "PackComments.pas": OK
-Runing Comments[OpenCLABC]
-Comments[OpenCLABC]: WARNING: key %CommandQueueBase.Clone()% wasn't used!
-Finished runing Comments[OpenCLABC]
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (27) overloads of "glMultiDrawElementsBaseVertex" func
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (27) overloads of "glGetProgramResourceiv" func
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (18) overloads of "glSpecializeShaderARB" func
@@ -60,6 +56,10 @@ Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (81) overloa
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (81) overloads of "glListDrawCommandsStatesClientNV" func
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (81) overloads of "glPointAlongPathNV" func
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (27) overloads of "glGetProgramResourcefvNV" func
+Finished compiling "PackComments.pas": OK
+Runing Comments[OpenCLABC]
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.Clone()% wasn't used!
+Finished runing Comments[OpenCLABC]
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (54) overloads of "glGetActiveUniformARB" func
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (54) overloads of "glGetActiveAttribARB" func
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: too many (27) overloads of "glWaitSemaphoreEXT" func
@@ -221,28 +221,28 @@ Finished compiling "OpenGLABC.pas": OK
 Runing Tester
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Rotate3D.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\SimpleAddition.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
+Tester: Finished compiling "Mtr.Translate.pas": OK
+Tester: Runing Testable[Tests\Exec\Mtr.Translate]
 Tester: Finished compiling "SimpleAddition.pas": OK
 Tester: DONE: "Samples\OpenCL\SimpleAddition.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling "MatrMlt.pas": OK
 Tester: DONE: "Samples\OpenCL\MatrMlt.pas"
-Tester: Finished compiling "Mtr.Translate.pas": OK
-Tester: Runing Testable[Tests\Exec\Mtr.Translate]
 Tester: Finished compiling "Mtr.Rotate3D.pas": OK
 Tester: Runing Testable[Tests\Exec\Mtr.Rotate3D]
 Tester: Finished compiling "MatrMlt.pas": OK
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Простейшие примеры\SimpleAddition.pas"
 Tester: DONE: "Samples\OpenCLABC\Простейшие примеры\MatrMlt.pas"
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Простейшие примеры\SimpleAddition.pas"
 Tester: Finished compiling "SimpleAddition.pas": OK
 Tester: DONE: "Samples\OpenCLABC\Простейшие примеры\SimpleAddition.pas"
-Tester: Finished runing Testable[Tests\Exec\Mtr.Rotate3D]
-Tester: Finished runing Testable[Tests\Exec\Mtr.Translate]
-Tester: DONE: "Tests\Exec\Mtr.Rotate3D.pas"
-Tester: DONE: "Tests\Exec\Mtr.Translate.pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: DONE: "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Finished runing Testable[Tests\Exec\Mtr.Translate]
+Tester: Finished runing Testable[Tests\Exec\Mtr.Rotate3D]
+Tester: DONE: "Tests\Exec\Mtr.Translate.pas"
+Tester: DONE: "Tests\Exec\Mtr.Rotate3D.pas"
 Tester: Done testing
 Finished runing Tester
 Packing sample "Samples\OpenCL\MatrMlt.cl"

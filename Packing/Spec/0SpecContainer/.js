@@ -407,6 +407,7 @@ const fix_element = (page)=>{
 	{
 		let w_to_regex = (w)=>`(?<!\\w)${w}(?!\\w)`;
 		
+		// Автоопределение языка кода
 		if (!code.className)
 		{
 			let best = {lang: null, c: 0};
@@ -432,11 +433,12 @@ const fix_element = (page)=>{
 				}
 			}
 			
-			if (!multiple_best)
+			if (multiple_best)
+				code.className = "language-default"; else
 				code.className = "language-" + best.lang;
 		}
 		
-		if (code.className)
+		// Подсветка особых слов в коде
 		{
 			let lang = code.className.substr("language-".length);
 			let curr_cw = code_words_color[lang];
@@ -446,6 +448,67 @@ const fix_element = (page)=>{
 					new RegExp(curr_cw[wordt].map(w_to_regex).join('|'),"gi"),
 					w=> `<span class="code-${wordt}">${w}</span>`
 				);
+		}
+		
+		// Подсветка скобок
+		{
+			var br_types = {
+				op: ["(", "[", "{", "&lt;", "'"],
+				cl: [")", "]", "}", "&gt;", "'"],
+			}
+			for (let op in br_types)
+				for (let i=0; i<br_types[op].length; i++)
+					code.innerHTML = code.innerHTML.replace(
+						new RegExp('\\'+br_types[op][i], "g"),
+						`<span class=bracket ${ op=="op" ? "op=true" : "" } bt=${i}>${br_types[op][i]}</span>`
+					);
+			
+			let br_st = [];
+			for (let obj2 of code.getElementsByClassName("bracket"))
+			{
+				let b2t = obj2.getAttribute("bt");
+				
+				if (obj2.getAttribute("op"))
+					br_st.push({
+						obj: obj2,
+						bt: b2t,
+					}); else
+				{
+					let b1 = br_st.pop();
+					let b0 = null;
+					if (!b1) continue;
+					if (b1.obj == obj2.parentElement)
+					{
+						b0 = b1;
+						b1 = br_st.pop();
+					}
+					if (!b1) continue;
+					if (b1.bt == b2t)
+					{
+						let obj1 = b1.obj;
+						
+						let on_enter = ()=>{
+							obj1.className = "code-glowing-bracket";
+							obj2.className = "code-glowing-bracket";
+						}
+						let on_leave = ()=>{
+							obj1.className = null;
+							obj2.className = null;
+						}
+						
+						obj1.addEventListener("mouseenter", on_enter);
+						obj2.addEventListener("mouseenter", on_enter);
+						obj1.addEventListener("mouseleave", on_leave);
+						obj2.addEventListener("mouseleave", on_leave);
+					} else
+					{
+						br_st.push(b1);
+						if (b0) br_st.push(b0);
+					}
+				}
+				
+			}
+			
 		}
 		
 		if (code.parentElement.tagName == "PRE")
