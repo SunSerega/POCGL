@@ -49,6 +49,11 @@
 	
 	window.onresize = ()=>reset_spl();
 	
+	splitter.addEventListener("dblclick", ()=>{
+		spl_X = document.getElementsByClassName("page-container")[0].scrollWidth + 15 + 7;
+		reset_spl();
+	});
+	
 	let spl_grabed = false;
 	splitter.addEventListener("mousedown", (e)=>{
 		spl_grabed=true;
