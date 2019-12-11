@@ -1,4 +1,4 @@
-
+﻿
 # __NativUtils
 # __EventList
 # __ContainerQueue<T>
@@ -64,6 +64,14 @@
 
 # CLTask<T>.GetRes()
 %task.GetRes%
+
+
+
+# __GPUCommandContainer<T>.Equals(object)
+# __GPUCommandContainer<T>.ToString()
+# __GPUCommandContainer<T>.GetType()
+# __GPUCommandContainer<T>.GetHashCode()
+%hidden%
 
 
 
