@@ -389,7 +389,40 @@ begin
   
   {$endregion static function Rotate3D}
   
-  {$region function Println}
+  {$region function Det}
+  
+  if t[0][0]=t[0][1] then
+  begin
+    res +=    $'    '+#10;
+    
+    res +=    $'    public function Det: {t[2]} :='+#10;
+    res +=    $'    ';
+    
+    var skip_col := new Stack<integer>;
+    var ElAt: function(y,x: integer): string :=
+    (y,x)->$'val{y+skip_col.Count}{Range(0,t[0][0]).Where(i->not skip_col.Contains(i)).ElementAt(x)}';
+    
+    var AddDet: procedure;
+    AddDet := ()->
+    if skip_col.Count+2=t[0][0] then
+      res += $'{ElAt(0,0)}*{ElAt(1,1)} - {ElAt(1,0)}*{ElAt(0,1)}' else
+    for var i := 0 to t[0][0]-skip_col.Count-1 do
+    begin
+      if i<>0 then res += i.IsEven ? ' + ' : ' - ';
+      res += $'{ElAt(0,i)} * (';
+      skip_col.Push(i);
+      AddDet;
+      skip_col.Pop;
+      res += ')';
+    end;
+    
+    AddDet();
+    
+    res += ';'#10;
+  end;
+  {$endregion function Det}
+  
+  {$region function ToString}
   
   res +=      $'    '+#10;
   
@@ -430,6 +463,10 @@ begin
   res +=      $'      Result := res.ToString;'+#10;
   res +=      $'    end;'+#10;
   
+  {$endregion function ToString}
+  
+  {$region function Println}
+  
   res += $'    '+#10;
   
   res += $'    public function Println: {t.GetName};'+#10;
@@ -469,6 +506,8 @@ begin
       ).JoinIntoString('+')
     ).JoinIntoString(', ');
   res += $');'+#10;
+  
+  // умножение матрицы на матрицу - в расширениях
   
   {$endregion arithmetics}
   

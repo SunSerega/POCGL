@@ -77,6 +77,9 @@
       );
     end;
     
+    public function Det: single :=
+    val00*val11 - val10*val01;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -284,6 +287,9 @@
       Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
       
     end;
+    
+    public function Det: single :=
+    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
     
     public function ToString: string; override;
     begin
@@ -527,6 +533,9 @@
       
       Result.val33 := 1;
     end;
+    
+    public function Det: single :=
+    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
     
     public function ToString: string; override;
     begin
@@ -1780,6 +1789,9 @@
       );
     end;
     
+    public function Det: double :=
+    val00*val11 - val10*val01;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2014,6 +2026,9 @@
       Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
       
     end;
+    
+    public function Det: double :=
+    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
     
     public function ToString: string; override;
     begin
@@ -2284,6 +2299,9 @@
       
       Result.val33 := 1;
     end;
+    
+    public function Det: double :=
+    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
     
     public function ToString: string; override;
     begin

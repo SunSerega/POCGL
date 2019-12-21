@@ -2357,9 +2357,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec1b): Vec1b := new Vec1b(-v.val0);
+    public static function operator+(v: Vec1b): Vec1b := v;
     public static function operator*(v: Vec1b; k: SByte): Vec1b := new Vec1b(v.val0*k);
+    public static function operator div(v: Vec1b; k: SByte): Vec1b := new Vec1b(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1b): SByte := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1b): SByte := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1b): Vec1b := new Vec1b(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1b): Vec1b := new Vec1b(v1.val0-v2.val0);
     
@@ -2406,9 +2408,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec1ub): Vec1ub := v;
     public static function operator*(v: Vec1ub; k: Byte): Vec1ub := new Vec1ub(v.val0*k);
+    public static function operator div(v: Vec1ub; k: Byte): Vec1ub := new Vec1ub(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1ub): Byte := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1ub): Byte := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1ub): Vec1ub := new Vec1ub(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ub): Vec1ub := new Vec1ub(v1.val0-v2.val0);
     
@@ -2459,9 +2463,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec1s): Vec1s := new Vec1s(-v.val0);
+    public static function operator+(v: Vec1s): Vec1s := v;
     public static function operator*(v: Vec1s; k: Int16): Vec1s := new Vec1s(v.val0*k);
+    public static function operator div(v: Vec1s; k: Int16): Vec1s := new Vec1s(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1s): Int16 := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1s): Int16 := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1s): Vec1s := new Vec1s(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1s): Vec1s := new Vec1s(v1.val0-v2.val0);
     
@@ -2514,9 +2520,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec1us): Vec1us := v;
     public static function operator*(v: Vec1us; k: UInt16): Vec1us := new Vec1us(v.val0*k);
+    public static function operator div(v: Vec1us; k: UInt16): Vec1us := new Vec1us(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1us): UInt16 := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1us): UInt16 := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1us): Vec1us := new Vec1us(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1us): Vec1us := new Vec1us(v1.val0-v2.val0);
     
@@ -2573,9 +2581,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec1i): Vec1i := new Vec1i(-v.val0);
+    public static function operator+(v: Vec1i): Vec1i := v;
     public static function operator*(v: Vec1i; k: Int32): Vec1i := new Vec1i(v.val0*k);
+    public static function operator div(v: Vec1i; k: Int32): Vec1i := new Vec1i(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1i): Int32 := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1i): Int32 := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1i): Vec1i := new Vec1i(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1i): Vec1i := new Vec1i(v1.val0-v2.val0);
     
@@ -2634,9 +2644,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec1ui): Vec1ui := v;
     public static function operator*(v: Vec1ui; k: UInt32): Vec1ui := new Vec1ui(v.val0*k);
+    public static function operator div(v: Vec1ui; k: UInt32): Vec1ui := new Vec1ui(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1ui): UInt32 := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1ui): UInt32 := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1ui): Vec1ui := new Vec1ui(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ui): Vec1ui := new Vec1ui(v1.val0-v2.val0);
     
@@ -2699,9 +2711,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec1i64): Vec1i64 := new Vec1i64(-v.val0);
+    public static function operator+(v: Vec1i64): Vec1i64 := v;
     public static function operator*(v: Vec1i64; k: Int64): Vec1i64 := new Vec1i64(v.val0*k);
+    public static function operator div(v: Vec1i64; k: Int64): Vec1i64 := new Vec1i64(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1i64): Int64 := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1i64): Int64 := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1i64): Vec1i64 := new Vec1i64(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1i64): Vec1i64 := new Vec1i64(v1.val0-v2.val0);
     
@@ -2766,9 +2780,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec1ui64): Vec1ui64 := v;
     public static function operator*(v: Vec1ui64; k: UInt64): Vec1ui64 := new Vec1ui64(v.val0*k);
+    public static function operator div(v: Vec1ui64; k: UInt64): Vec1ui64 := new Vec1ui64(v.val0 div k);
     
-    public static function operator*(v1,v2: Vec1ui64): UInt64 := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1ui64): UInt64 := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1ui64): Vec1ui64 := new Vec1ui64(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1ui64): Vec1ui64 := new Vec1ui64(v1.val0-v2.val0);
     
@@ -2837,10 +2853,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec1f): Vec1f := new Vec1f(-v.val0);
+    public static function operator+(v: Vec1f): Vec1f := v;
     public static function operator*(v: Vec1f; k: single): Vec1f := new Vec1f(v.val0*k);
     public static function operator/(v: Vec1f; k: single): Vec1f := new Vec1f(v.val0/k);
     
-    public static function operator*(v1,v2: Vec1f): single := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1f): single := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1f): Vec1f := new Vec1f(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1f): Vec1f := new Vec1f(v1.val0-v2.val0);
     
@@ -2872,7 +2889,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0;
     
-    public function Normalized := self / single(Sqrt(self.SqrLength_d));
+    public function Normalized := self / single(self.SqrLength_d.Sqrt);
     
     public function ToString: string; override;
     begin
@@ -2914,10 +2931,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec1d): Vec1d := new Vec1d(-v.val0);
+    public static function operator+(v: Vec1d): Vec1d := v;
     public static function operator*(v: Vec1d; k: double): Vec1d := new Vec1d(v.val0*k);
     public static function operator/(v: Vec1d; k: double): Vec1d := new Vec1d(v.val0/k);
     
-    public static function operator*(v1,v2: Vec1d): double := ( v1.val0*v2.val0 );
+    public static function operator*(v1, v2: Vec1d): double := ( v1.val0*v2.val0 );
     public static function operator+(v1, v2: Vec1d): Vec1d := new Vec1d(v1.val0+v2.val0);
     public static function operator-(v1, v2: Vec1d): Vec1d := new Vec1d(v1.val0-v2.val0);
     
@@ -2950,7 +2968,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0;
     
-    public function Normalized := self / Sqrt(self.SqrLength);
+    public function Normalized := self / self.SqrLength.Sqrt;
     
     public function ToString: string; override;
     begin
@@ -2997,9 +3015,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec2b): Vec2b := new Vec2b(-v.val0, -v.val1);
+    public static function operator+(v: Vec2b): Vec2b := v;
     public static function operator*(v: Vec2b; k: SByte): Vec2b := new Vec2b(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2b; k: SByte): Vec2b := new Vec2b(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2b): SByte := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2b): SByte := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2b): Vec2b := new Vec2b(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2b): Vec2b := new Vec2b(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3080,9 +3100,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec2ub): Vec2ub := v;
     public static function operator*(v: Vec2ub; k: Byte): Vec2ub := new Vec2ub(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2ub; k: Byte): Vec2ub := new Vec2ub(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2ub): Byte := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2ub): Byte := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2ub): Vec2ub := new Vec2ub(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ub): Vec2ub := new Vec2ub(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3167,9 +3189,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec2s): Vec2s := new Vec2s(-v.val0, -v.val1);
+    public static function operator+(v: Vec2s): Vec2s := v;
     public static function operator*(v: Vec2s; k: Int16): Vec2s := new Vec2s(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2s; k: Int16): Vec2s := new Vec2s(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2s): Int16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2s): Int16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2s): Vec2s := new Vec2s(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2s): Vec2s := new Vec2s(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3256,9 +3280,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec2us): Vec2us := v;
     public static function operator*(v: Vec2us; k: UInt16): Vec2us := new Vec2us(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2us; k: UInt16): Vec2us := new Vec2us(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2us): UInt16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2us): UInt16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2us): Vec2us := new Vec2us(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2us): Vec2us := new Vec2us(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3349,9 +3375,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec2i): Vec2i := new Vec2i(-v.val0, -v.val1);
+    public static function operator+(v: Vec2i): Vec2i := v;
     public static function operator*(v: Vec2i; k: Int32): Vec2i := new Vec2i(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2i; k: Int32): Vec2i := new Vec2i(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2i): Int32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2i): Int32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2i): Vec2i := new Vec2i(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2i): Vec2i := new Vec2i(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3444,9 +3472,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec2ui): Vec2ui := v;
     public static function operator*(v: Vec2ui; k: UInt32): Vec2ui := new Vec2ui(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2ui; k: UInt32): Vec2ui := new Vec2ui(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2ui): UInt32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2ui): UInt32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2ui): Vec2ui := new Vec2ui(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ui): Vec2ui := new Vec2ui(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3543,9 +3573,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec2i64): Vec2i64 := new Vec2i64(-v.val0, -v.val1);
+    public static function operator+(v: Vec2i64): Vec2i64 := v;
     public static function operator*(v: Vec2i64; k: Int64): Vec2i64 := new Vec2i64(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2i64; k: Int64): Vec2i64 := new Vec2i64(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2i64): Int64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2i64): Int64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2i64): Vec2i64 := new Vec2i64(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2i64): Vec2i64 := new Vec2i64(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3644,9 +3676,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec2ui64): Vec2ui64 := v;
     public static function operator*(v: Vec2ui64; k: UInt64): Vec2ui64 := new Vec2ui64(v.val0*k, v.val1*k);
+    public static function operator div(v: Vec2ui64; k: UInt64): Vec2ui64 := new Vec2ui64(v.val0 div k, v.val1 div k);
     
-    public static function operator*(v1,v2: Vec2ui64): UInt64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2ui64): UInt64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2ui64): Vec2ui64 := new Vec2ui64(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2ui64): Vec2ui64 := new Vec2ui64(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3749,10 +3783,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec2f): Vec2f := new Vec2f(-v.val0, -v.val1);
+    public static function operator+(v: Vec2f): Vec2f := v;
     public static function operator*(v: Vec2f; k: single): Vec2f := new Vec2f(v.val0*k, v.val1*k);
     public static function operator/(v: Vec2f; k: single): Vec2f := new Vec2f(v.val0/k, v.val1/k);
     
-    public static function operator*(v1,v2: Vec2f): single := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2f): single := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2f): Vec2f := new Vec2f(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2f): Vec2f := new Vec2f(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3814,7 +3849,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
-    public function Normalized := self / single(Sqrt(self.SqrLength_d));
+    public function Normalized := self / single(self.SqrLength_d.Sqrt);
     
     public function ToString: string; override;
     begin
@@ -3860,10 +3895,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec2d): Vec2d := new Vec2d(-v.val0, -v.val1);
+    public static function operator+(v: Vec2d): Vec2d := v;
     public static function operator*(v: Vec2d; k: double): Vec2d := new Vec2d(v.val0*k, v.val1*k);
     public static function operator/(v: Vec2d; k: double): Vec2d := new Vec2d(v.val0/k, v.val1/k);
     
-    public static function operator*(v1,v2: Vec2d): double := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
+    public static function operator*(v1, v2: Vec2d): double := ( v1.val0*v2.val0 + v1.val1*v2.val1 );
     public static function operator+(v1, v2: Vec2d): Vec2d := new Vec2d(v1.val0+v2.val0, v1.val1+v2.val1);
     public static function operator-(v1, v2: Vec2d): Vec2d := new Vec2d(v1.val0-v2.val0, v1.val1-v2.val1);
     
@@ -3926,7 +3962,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public function Normalized := self / Sqrt(self.SqrLength);
+    public function Normalized := self / self.SqrLength.Sqrt;
     
     public function ToString: string; override;
     begin
@@ -3977,9 +4013,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec3b): Vec3b := new Vec3b(-v.val0, -v.val1, -v.val2);
+    public static function operator+(v: Vec3b): Vec3b := v;
     public static function operator*(v: Vec3b; k: SByte): Vec3b := new Vec3b(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3b; k: SByte): Vec3b := new Vec3b(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3b): SByte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3b): SByte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3b): Vec3b := new Vec3b(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3b): Vec3b := new Vec3b(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4047,10 +4085,10 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3b) :=
+    public static function CrossCW(v1,v2: Vec3b) :=
     new Vec3b(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
-    public static function DotCCW(v1,v2: Vec3b) :=
+    public static function CrossCCW(v1,v2: Vec3b) :=
     new Vec3b(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
     public function ToString: string; override;
@@ -4100,9 +4138,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec3ub): Vec3ub := v;
     public static function operator*(v: Vec3ub; k: Byte): Vec3ub := new Vec3ub(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3ub; k: Byte): Vec3ub := new Vec3ub(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3ub): Byte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3ub): Byte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3ub): Vec3ub := new Vec3ub(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ub): Vec3ub := new Vec3ub(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4173,12 +4213,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3ub) :=
-    new Vec3ub(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function DotCCW(v1,v2: Vec3ub) :=
-    new Vec3ub(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -4227,9 +4261,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec3s): Vec3s := new Vec3s(-v.val0, -v.val1, -v.val2);
+    public static function operator+(v: Vec3s): Vec3s := v;
     public static function operator*(v: Vec3s; k: Int16): Vec3s := new Vec3s(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3s; k: Int16): Vec3s := new Vec3s(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3s): Int16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3s): Int16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3s): Vec3s := new Vec3s(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3s): Vec3s := new Vec3s(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4303,10 +4339,10 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3s) :=
+    public static function CrossCW(v1,v2: Vec3s) :=
     new Vec3s(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
-    public static function DotCCW(v1,v2: Vec3s) :=
+    public static function CrossCCW(v1,v2: Vec3s) :=
     new Vec3s(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
     public function ToString: string; override;
@@ -4356,9 +4392,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec3us): Vec3us := v;
     public static function operator*(v: Vec3us; k: UInt16): Vec3us := new Vec3us(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3us; k: UInt16): Vec3us := new Vec3us(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3us): UInt16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3us): UInt16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3us): Vec3us := new Vec3us(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3us): Vec3us := new Vec3us(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4435,12 +4473,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3us) :=
-    new Vec3us(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function DotCCW(v1,v2: Vec3us) :=
-    new Vec3us(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -4489,9 +4521,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec3i): Vec3i := new Vec3i(-v.val0, -v.val1, -v.val2);
+    public static function operator+(v: Vec3i): Vec3i := v;
     public static function operator*(v: Vec3i; k: Int32): Vec3i := new Vec3i(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3i; k: Int32): Vec3i := new Vec3i(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3i): Int32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3i): Int32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3i): Vec3i := new Vec3i(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3i): Vec3i := new Vec3i(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4571,10 +4605,10 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3i) :=
+    public static function CrossCW(v1,v2: Vec3i) :=
     new Vec3i(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
-    public static function DotCCW(v1,v2: Vec3i) :=
+    public static function CrossCCW(v1,v2: Vec3i) :=
     new Vec3i(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
     public function ToString: string; override;
@@ -4624,9 +4658,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec3ui): Vec3ui := v;
     public static function operator*(v: Vec3ui; k: UInt32): Vec3ui := new Vec3ui(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3ui; k: UInt32): Vec3ui := new Vec3ui(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3ui): UInt32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3ui): UInt32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3ui): Vec3ui := new Vec3ui(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ui): Vec3ui := new Vec3ui(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4709,12 +4745,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3ui) :=
-    new Vec3ui(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function DotCCW(v1,v2: Vec3ui) :=
-    new Vec3ui(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -4763,9 +4793,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec3i64): Vec3i64 := new Vec3i64(-v.val0, -v.val1, -v.val2);
+    public static function operator+(v: Vec3i64): Vec3i64 := v;
     public static function operator*(v: Vec3i64; k: Int64): Vec3i64 := new Vec3i64(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3i64; k: Int64): Vec3i64 := new Vec3i64(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3i64): Int64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3i64): Int64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3i64): Vec3i64 := new Vec3i64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3i64): Vec3i64 := new Vec3i64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4851,10 +4883,10 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3i64) :=
+    public static function CrossCW(v1,v2: Vec3i64) :=
     new Vec3i64(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
-    public static function DotCCW(v1,v2: Vec3i64) :=
+    public static function CrossCCW(v1,v2: Vec3i64) :=
     new Vec3i64(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
     public function ToString: string; override;
@@ -4904,9 +4936,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec3ui64): Vec3ui64 := v;
     public static function operator*(v: Vec3ui64; k: UInt64): Vec3ui64 := new Vec3ui64(v.val0*k, v.val1*k, v.val2*k);
+    public static function operator div(v: Vec3ui64; k: UInt64): Vec3ui64 := new Vec3ui64(v.val0 div k, v.val1 div k, v.val2 div k);
     
-    public static function operator*(v1,v2: Vec3ui64): UInt64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3ui64): UInt64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3ui64): Vec3ui64 := new Vec3ui64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3ui64): Vec3ui64 := new Vec3ui64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -4995,12 +5029,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public static function Dot(v1,v2: Vec3ui64) :=
-    new Vec3ui64(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function DotCCW(v1,v2: Vec3ui64) :=
-    new Vec3ui64(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -5049,10 +5077,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec3f): Vec3f := new Vec3f(-v.val0, -v.val1, -v.val2);
+    public static function operator+(v: Vec3f): Vec3f := v;
     public static function operator*(v: Vec3f; k: single): Vec3f := new Vec3f(v.val0*k, v.val1*k, v.val2*k);
     public static function operator/(v: Vec3f; k: single): Vec3f := new Vec3f(v.val0/k, v.val1/k, v.val2/k);
     
-    public static function operator*(v1,v2: Vec3f): single := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3f): single := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3f): Vec3f := new Vec3f(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3f): Vec3f := new Vec3f(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -5144,12 +5173,12 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
-    public function Normalized := self / single(Sqrt(self.SqrLength_d));
+    public function Normalized := self / single(self.SqrLength_d.Sqrt);
     
-    public static function Dot(v1,v2: Vec3f) :=
+    public static function CrossCW(v1,v2: Vec3f) :=
     new Vec3f(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
-    public static function DotCCW(v1,v2: Vec3f) :=
+    public static function CrossCCW(v1,v2: Vec3f) :=
     new Vec3f(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
     public function ToString: string; override;
@@ -5200,10 +5229,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec3d): Vec3d := new Vec3d(-v.val0, -v.val1, -v.val2);
+    public static function operator+(v: Vec3d): Vec3d := v;
     public static function operator*(v: Vec3d; k: double): Vec3d := new Vec3d(v.val0*k, v.val1*k, v.val2*k);
     public static function operator/(v: Vec3d; k: double): Vec3d := new Vec3d(v.val0/k, v.val1/k, v.val2/k);
     
-    public static function operator*(v1,v2: Vec3d): double := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
+    public static function operator*(v1, v2: Vec3d): double := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 );
     public static function operator+(v1, v2: Vec3d): Vec3d := new Vec3d(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2);
     public static function operator-(v1, v2: Vec3d): Vec3d := new Vec3d(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2);
     
@@ -5296,12 +5326,12 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function Normalized := self / Sqrt(self.SqrLength);
+    public function Normalized := self / self.SqrLength.Sqrt;
     
-    public static function Dot(v1,v2: Vec3d) :=
+    public static function CrossCW(v1,v2: Vec3d) :=
     new Vec3d(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
-    public static function DotCCW(v1,v2: Vec3d) :=
+    public static function CrossCCW(v1,v2: Vec3d) :=
     new Vec3d(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
     public function ToString: string; override;
@@ -5357,9 +5387,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: SByte read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec4b): Vec4b := new Vec4b(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator+(v: Vec4b): Vec4b := v;
     public static function operator*(v: Vec4b; k: SByte): Vec4b := new Vec4b(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4b; k: SByte): Vec4b := new Vec4b(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4b): SByte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4b): SByte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4b): Vec4b := new Vec4b(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4b): Vec4b := new Vec4b(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -5508,9 +5540,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: Byte read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec4ub): Vec4ub := v;
     public static function operator*(v: Vec4ub; k: Byte): Vec4ub := new Vec4ub(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4ub; k: Byte): Vec4ub := new Vec4ub(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4ub): Byte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4ub): Byte := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4ub): Vec4ub := new Vec4ub(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ub): Vec4ub := new Vec4ub(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -5663,9 +5697,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int16 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec4s): Vec4s := new Vec4s(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator+(v: Vec4s): Vec4s := v;
     public static function operator*(v: Vec4s; k: Int16): Vec4s := new Vec4s(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4s; k: Int16): Vec4s := new Vec4s(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4s): Int16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4s): Int16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4s): Vec4s := new Vec4s(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4s): Vec4s := new Vec4s(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -5820,9 +5856,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt16 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec4us): Vec4us := v;
     public static function operator*(v: Vec4us; k: UInt16): Vec4us := new Vec4us(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4us; k: UInt16): Vec4us := new Vec4us(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4us): UInt16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4us): UInt16 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4us): Vec4us := new Vec4us(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4us): Vec4us := new Vec4us(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -5981,9 +6019,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int32 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec4i): Vec4i := new Vec4i(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator+(v: Vec4i): Vec4i := v;
     public static function operator*(v: Vec4i; k: Int32): Vec4i := new Vec4i(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4i; k: Int32): Vec4i := new Vec4i(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4i): Int32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4i): Int32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4i): Vec4i := new Vec4i(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4i): Vec4i := new Vec4i(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -6144,9 +6184,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt32 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec4ui): Vec4ui := v;
     public static function operator*(v: Vec4ui; k: UInt32): Vec4ui := new Vec4ui(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4ui; k: UInt32): Vec4ui := new Vec4ui(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4ui): UInt32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4ui): UInt32 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4ui): Vec4ui := new Vec4ui(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ui): Vec4ui := new Vec4ui(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -6311,9 +6353,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: Int64 read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec4i64): Vec4i64 := new Vec4i64(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator+(v: Vec4i64): Vec4i64 := v;
     public static function operator*(v: Vec4i64; k: Int64): Vec4i64 := new Vec4i64(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4i64; k: Int64): Vec4i64 := new Vec4i64(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4i64): Int64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4i64): Int64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4i64): Vec4i64 := new Vec4i64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4i64): Vec4i64 := new Vec4i64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -6480,9 +6524,11 @@ uses System.Runtime.CompilerServices;
     end;
     public property val[i: integer]: UInt64 read GetValAt write SetValAt; default;
     
+    public static function operator+(v: Vec4ui64): Vec4ui64 := v;
     public static function operator*(v: Vec4ui64; k: UInt64): Vec4ui64 := new Vec4ui64(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
+    public static function operator div(v: Vec4ui64; k: UInt64): Vec4ui64 := new Vec4ui64(v.val0 div k, v.val1 div k, v.val2 div k, v.val3 div k);
     
-    public static function operator*(v1,v2: Vec4ui64): UInt64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4ui64): UInt64 := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4ui64): Vec4ui64 := new Vec4ui64(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4ui64): Vec4ui64 := new Vec4ui64(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -6653,10 +6699,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: single read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec4f): Vec4f := new Vec4f(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator+(v: Vec4f): Vec4f := v;
     public static function operator*(v: Vec4f; k: single): Vec4f := new Vec4f(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator/(v: Vec4f; k: single): Vec4f := new Vec4f(v.val0/k, v.val1/k, v.val2/k, v.val3/k);
     
-    public static function operator*(v1,v2: Vec4f): single := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4f): single := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4f): Vec4f := new Vec4f(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4f): Vec4f := new Vec4f(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -6778,7 +6825,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
-    public function Normalized := self / single(Sqrt(self.SqrLength_d));
+    public function Normalized := self / single(self.SqrLength_d.Sqrt);
     
     public function ToString: string; override;
     begin
@@ -6832,10 +6879,11 @@ uses System.Runtime.CompilerServices;
     public property val[i: integer]: double read GetValAt write SetValAt; default;
     
     public static function operator-(v: Vec4d): Vec4d := new Vec4d(-v.val0, -v.val1, -v.val2, -v.val3);
+    public static function operator+(v: Vec4d): Vec4d := v;
     public static function operator*(v: Vec4d; k: double): Vec4d := new Vec4d(v.val0*k, v.val1*k, v.val2*k, v.val3*k);
     public static function operator/(v: Vec4d; k: double): Vec4d := new Vec4d(v.val0/k, v.val1/k, v.val2/k, v.val3/k);
     
-    public static function operator*(v1,v2: Vec4d): double := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
+    public static function operator*(v1, v2: Vec4d): double := ( v1.val0*v2.val0 + v1.val1*v2.val1 + v1.val2*v2.val2 + v1.val3*v2.val3 );
     public static function operator+(v1, v2: Vec4d): Vec4d := new Vec4d(v1.val0+v2.val0, v1.val1+v2.val1, v1.val2+v2.val2, v1.val3+v2.val3);
     public static function operator-(v1, v2: Vec4d): Vec4d := new Vec4d(v1.val0-v2.val0, v1.val1-v2.val1, v1.val2-v2.val2, v1.val3-v2.val3);
     
@@ -6958,7 +7006,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public function Normalized := self / Sqrt(self.SqrLength);
+    public function Normalized := self / self.SqrLength.Sqrt;
     
     public function ToString: string; override;
     begin
@@ -7064,6 +7112,9 @@ uses System.Runtime.CompilerServices;
         +sr,  cr
       );
     end;
+    
+    public function Det: single :=
+    val00*val11 - val10*val01;
     
     public function ToString: string; override;
     begin
@@ -7272,6 +7323,9 @@ uses System.Runtime.CompilerServices;
       Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
       
     end;
+    
+    public function Det: single :=
+    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
     
     public function ToString: string; override;
     begin
@@ -7515,6 +7569,9 @@ uses System.Runtime.CompilerServices;
       
       Result.val33 := 1;
     end;
+    
+    public function Det: single :=
+    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
     
     public function ToString: string; override;
     begin
@@ -8768,6 +8825,9 @@ uses System.Runtime.CompilerServices;
       );
     end;
     
+    public function Det: double :=
+    val00*val11 - val10*val01;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -9002,6 +9062,9 @@ uses System.Runtime.CompilerServices;
       Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
       
     end;
+    
+    public function Det: double :=
+    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
     
     public function ToString: string; override;
     begin
@@ -9272,6 +9335,9 @@ uses System.Runtime.CompilerServices;
       
       Result.val33 := 1;
     end;
+    
+    public function Det: double :=
+    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
     
     public function ToString: string; override;
     begin

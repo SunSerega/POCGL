@@ -117,6 +117,8 @@ begin
     res += $');'+#10;
   end;
   
+  res += $'    public static function operator+(v: {t.GetName}): {t.GetName} := v;'+#10;
+  
   res += $'    public static function operator*(v: {t.GetName}; k: {t[2]}): {t.GetName} := new {t.GetName}(';
   res += Range(0,t[0]-1).Select(i->$'v.val{i}*k').JoinIntoString(', ');
   res += $');'+#10;
@@ -128,13 +130,20 @@ begin
     res += Range(0,t[0]-1).Select(i->$'v.val{i}/k').JoinIntoString(', ');
     res += $');'+#10;
     
+  end else
+  begin
+    
+    res += $'    public static function operator div(v: {t.GetName}; k: {t[2]}): {t.GetName} := new {t.GetName}(';
+    res += Range(0,t[0]-1).Select(i->$'v.val{i} div k').JoinIntoString(', ');
+    res += $');'+#10;
+    
   end;
   
   res += $'    '+#10;
   
   
   
-  res += $'    public static function operator*(v1,v2: {t.GetName}): {t[2]} := (';
+  res += $'    public static function operator*(v1, v2: {t.GetName}): {t[2]} := (';
   res += Range(0,t[0]-1).Select(i->$' v1.val{i}*v2.val{i} ').JoinIntoString('+');
   res += $');'+#10;
   
@@ -223,23 +232,23 @@ begin
     
     res +=    $'    public function Normalized := ';
     if t[1] = 'f' then
-      res +=  $'self / single(Sqrt(self.SqrLength_d));'+#10 else
-      res +=  $'self / Sqrt(self.SqrLength);'+#10;
+      res +=  $'self / single(self.SqrLength_d.Sqrt);'+#10 else
+      res +=  $'self / self.SqrLength.Sqrt;'+#10;
     res +=    $'    '+#10;
     
   end;
   
   {$endregion function Normalized}
   
-  {$region static function Dot}
+  {$region static function Cross}
   
-  if t[0] = 3 then
-    foreach var CCW_st in Arr('','CCW') do
+  if (t[0] = 3) and not t[1].Contains('u') then
+    foreach var CW_st in Arr('CW','CCW') do
     begin
-      res += $'    public static function Dot{CCW_st}(v1,v2: {t.GetName}) :='+#10;
+      res += $'    public static function Cross{CW_st}(v1,v2: {t.GetName}) :='+#10;
       res += $'    new {t.GetName}(';
       
-      var k := CCW_st=''?2:1;
+      var k := CW_st='CW'?2:1;
       res +=
         Range(0,2)
         .Select(i->$'v1.val{(i+k*1) mod 3}*v2.val{(i+k*2) mod 3} - v2.val{(i+k*1) mod 3}*v1.val{(i+k*2) mod 3}')
@@ -250,9 +259,9 @@ begin
       res += '    '#10;
     end;
   
-  {$endregion static function Dot}
+  {$endregion static function Cross}
   
-  {$region function Println}
+  {$region function ToString}
   
   res += $'    public function ToString: string; override;'+#10;
   res += $'    begin'+#10;
@@ -268,6 +277,10 @@ begin
   res += $'      Result := res.ToString;'+#10;
   res += $'    end;'+#10;
   res += $'    '+#10;
+  
+  {$endregion function ToString}
+  
+  {$region function Println}
   
   res += $'    public function Println: {t.GetName};'+#10;
   res += $'    begin'+#10;
