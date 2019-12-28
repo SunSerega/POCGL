@@ -98,7 +98,7 @@ type
       sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.js').Trim);
       sw.WriteLine('</script>');
       
-      AddFolder(sw, path);
+      if System.IO.Directory.Exists(path) then AddFolder(sw, path);
       
       sw.WriteLine('</body>');
       sw.WriteLine('</html>');
