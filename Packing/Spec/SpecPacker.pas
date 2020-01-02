@@ -13,6 +13,8 @@ type
       .UseGenericAttributes // прямое указание атрибутов html элемента, надо для спойлеров
     .Build;
     
+    private static enc := new System.Text.UTF8Encoding(true);
+    
     private static last_page_id := 0;
     
     public static procedure AddPage(sw: StreamWriter; path: string);
@@ -27,19 +29,19 @@ type
       if System.IO.File.Exists(path+'.css') then
       begin
         sw.WriteLine('<style>');
-        sw.WriteLine(ReadAllText(path+'.css').Trim);
+        sw.WriteLine(ReadAllText(path+'.css', enc).Trim);
         sw.WriteLine('</style>');
       end;
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText(path+'.md'),
+        ReadAllText(path+'.md', enc),
         md_pipeline
       ).Trim);
       
       if System.IO.File.Exists(path+'.js') then
       begin
         sw.WriteLine('<script>');
-        sw.WriteLine(ReadAllText(path+'.js').Trim);
+        sw.WriteLine(ReadAllText(path+'.js', enc).Trim);
         sw.WriteLine('</script>');
       end;
       
@@ -77,25 +79,25 @@ type
       path := $'{exe_dir}\{path}';
       otp  := $'{exe_dir}\{otp}';
       
-      var sw := new StreamWriter(&File.Create(otp));
+      var sw := new StreamWriter(&File.Create(otp), enc);
       sw.WriteLine('<html>');
       sw.WriteLine('<head>');
       sw.WriteLine('<meta charset="utf-8">');
       
       sw.WriteLine('<style>');
-      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.css').Trim);
+      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.css', enc).Trim);
       sw.WriteLine('</style>');
       
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText($'{exe_dir}\0SpecContainer\.md'),
+        ReadAllText($'{exe_dir}\0SpecContainer\.md', enc),
         md_pipeline
       ).Trim);
       
       sw.WriteLine('<script>');
-      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.js').Trim);
+      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.js', enc).Trim);
       sw.WriteLine('</script>');
       
       if System.IO.Directory.Exists(path) then AddFolder(sw, path);
