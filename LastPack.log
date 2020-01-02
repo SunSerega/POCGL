@@ -239,26 +239,23 @@ Finished compiling "OpenGLABC.pas": OK
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
 Finished compiling "Tester.pas": OK
 Runing Tester
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Rotate3D.pas"
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
+Tester: Finished compiling "MatrMlt.pas": OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\SimpleAddition.pas"
+Tester: Finished compiling "SimpleAddition.pas": OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Простейшие примеры\MatrMlt.pas"
-Tester: Finished compiling "Mtr.Translate.pas": OK
-Tester: Finished compiling "SimpleAddition.pas": OK
-Tester: DONE: "Samples\OpenCL\SimpleAddition.pas"
+Tester: Finished compiling "MatrMlt.pas": OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Простейшие примеры\SimpleAddition.pas"
-Tester: Finished compiling "Mtr.Rotate3D.pas": OK
-Tester: Finished compiling "MatrMlt.pas": OK
-Tester: DONE: "Samples\OpenCL\MatrMlt.pas"
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: DONE: "Tests\Exec\Mtr.Rotate3D.pas"
-Tester: DONE: "Tests\Exec\Mtr.Translate.pas"
-Tester: Finished compiling "MatrMlt.pas": OK
-Tester: DONE: "Samples\OpenCLABC\Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling "SimpleAddition.pas": OK
-Tester: DONE: "Samples\OpenCLABC\Простейшие примеры\SimpleAddition.pas"
-Tester: DONE: "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Rotate3D.pas"
+Tester: Finished compiling "Mtr.Rotate3D.pas": OK
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
+Tester: Finished compiling "Mtr.Translate.pas": OK
+Tester: Runing Test[Tests\Exec\Mtr.Rotate3D]
+Tester: Finished runing Test[Tests\Exec\Mtr.Rotate3D]
+Tester: Runing Test[Tests\Exec\Mtr.Translate]
+Tester: Finished runing Test[Tests\Exec\Mtr.Translate]
 Tester: Done testing
 Finished runing Tester
 ============================== Release ==============================

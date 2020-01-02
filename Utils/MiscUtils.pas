@@ -125,7 +125,7 @@ begin
     try
       if System.IO.File.Exists(timed_log_file) then
         System.IO.File.Copy(timed_log_file, timed_log_file+'.savepoint');
-      System.IO.File.AppendAllLines(timed_log_file, Arr(Format('{0:HH:mm:ss}', DateTime.Now)+$': {line}'));
+      System.IO.File.AppendAllLines(timed_log_file, Arr(Format('{0:HH:mm:ss}', DateTime.Now)+$' | {line}'));
       System.IO.File.Delete(timed_log_file+'.savepoint');
       break;
     except end;
