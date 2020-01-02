@@ -19,33 +19,68 @@ begin
     
     // ====================================================
     
+    var T_MiscInit :=
+      ProcTask(()->exit()) // ToDo
+    ;
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    var T_Spec :=
+      ProcTask(()->Otp('='*30 + ' Specs ' + 30*'=')) +
+      ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker')
+    ;
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    var T_CL :=
+      ProcTask(()->Otp('='*30 + ' OpenCL ' + 30*'=')) +
+      ProcTask(()->exit()) // ToDo
+    ;
+    
+    var T_CLABC :=
+      ProcTask(()->Otp('='*30 + ' OpenCLABC ' + 30*'=')) +
+      CompTask('OpenCLABC.pas') +
+      ExecTask('Packing\Doc\PackComments.pas', 'Comments[OpenCLABC]', 'fname=OpenCLABC')
+    ;
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     var T_GL :=
+      ProcTask(()->Otp('='*30 + ' OpenGL ' + 30*'=')) +
       ExecTask('Packing\Template\Pack Template.pas', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
       ProcTask(()->System.IO.File.Delete('OpenGL.pas')) +
       ProcTask(()->System.IO.File.Move('Packing\Template\GL\0OpenGL.pas', 'OpenGL.pas')) +
       ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', enc).Replace(#10,#13#10), enc))
     ;
     
-    var T_GLABC := CompTask('OpenGLABC.pas');
-    
-//    var T_CL := //ToDo
-    
-    var T_CLABC :=
-      CompTask('OpenCLABC.pas') +
-      ExecTask('Packing\Doc\PackComments.pas', 'Comments[OpenCLABC]', 'fname=OpenCLABC')
+    var T_GLABC :=
+      ProcTask(()->Otp('='*30 + ' OpenGLABC ' + 30*'=')) +
+      CompTask('OpenGLABC.pas')
     ;
     
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    var T_Test :=
+      ProcTask(()->Otp('='*30 + ' Testing ' + 30*'=')) +
+      ExecTask('Tests\Tester.pas', 'Tester')
+    ;
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     (
+      T_MiscInit
+      +
       
-      ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker') *
-      (T_GL + T_GLABC) *
-      (       T_CLABC) *
-      CompTask('Tests\Tester.pas')
+      T_Spec *
+      (T_CL + T_CLABC) *
+      (T_GL + T_GLABC)
       
-      + ExecTask('Tests\Tester.exe', 'Tester')
+      +
+      T_Test
     ).SyncExec;
     
     // ====================================================
+    Otp('='*30 + ' Release ' + 30*'=');
     
     if System.IO.Directory.Exists('Release') then
       System.IO.Directory.Delete('Release', true);

@@ -15,6 +15,67 @@ type
     inherited Create(text);
   end;
   
+  ThrProcOtp = sealed class
+    q := new Queue<string>;
+    done := false;
+    ev := new ManualResetEvent(false);
+    
+    [System.ThreadStatic] static curr: ThrProcOtp;
+    
+    procedure Enq(l: string) :=
+    lock q do
+    begin
+      q.Enqueue(l);
+      ev.Set;
+    end;
+    
+    procedure EnqSub(o: ThrProcOtp) :=
+    foreach var l in o.Enmr do Enq(l);
+    
+    procedure Finish;
+    begin
+      done := true;
+      lock q do ev.Set;
+    end;
+    
+    function Deq: string;
+    begin
+      Result := nil;
+//      lock output do Writeln($'{Thread.CurrentThread.ManagedThreadId}: start deq');
+      
+      lock q do
+        if q.Count=0 then
+        begin
+          if done then
+          begin
+//            lock output do Writeln($'{Thread.CurrentThread.ManagedThreadId}: exit deq');
+            exit;
+          end else
+            ev.Reset;
+        end else
+        begin
+          Result := q.Dequeue;
+//          lock output do Writeln($'{Thread.CurrentThread.ManagedThreadId}: deq ret "{Result}"');
+          exit;
+        end;
+      
+      ev.WaitOne;
+      lock q do Result := (q.Count=0) and done ? nil : q.Dequeue;
+//      lock output do Writeln($'{Thread.CurrentThread.ManagedThreadId}: deq wait ret "{Result}"');
+    end;
+    
+    function Enmr: sequence of string;
+    begin
+      while true do
+      begin
+        var l := Deq;
+        if l=nil then exit;
+        yield l;
+      end;
+    end;
+    
+  end;
+  
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
   if fname.Substring(1).StartsWith(':\') then
@@ -44,6 +105,8 @@ var otp_lock := new object;
 var log_file: string := nil;
 var timed_log_file: string := nil;
 procedure Otp(line: string) :=
+if ThrProcOtp.curr<>nil then
+  ThrProcOtp.curr.Enq(line) else
 lock otp_lock do
 begin
   
@@ -81,7 +144,7 @@ begin
   
   lock sec_procs do
   begin
-    if in_err_state then Thread.CurrentThread.Abort;
+    if in_err_state then exit;
     in_err_state := true;
   end;
   
@@ -95,6 +158,13 @@ begin
       try
         p.Kill;
       except end;
+  
+  if ThrProcOtp.curr<>nil then
+  begin
+    var q := ThrProcOtp.curr.q;
+    ThrProcOtp.curr := nil;
+    lock q do foreach var l in q do Otp(l);
+  end;
   
   if e is MessageException then
     Otp(e.Message) else
@@ -113,11 +183,11 @@ end;
 
 {$region Process execution}
 
-procedure RunFile(fname, nick: string; otp: string->(); params pars: array of string);
+procedure RunFile(fname, nick: string; l_otp: string->(); params pars: array of string);
 begin
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then raise new System.IO.FileNotFoundException(nil,fname);
-  if otp=nil then otp := l->MiscUtils.Otp($'{nick}: {l}');
+  if l_otp=nil then l_otp := l->MiscUtils.Otp($'{nick}: {l}');
   
   MiscUtils.Otp($'Runing {nick}');
   
@@ -130,13 +200,20 @@ begin
   var p := new Process;
   lock sec_procs do sec_procs += p;
   p.StartInfo := psi;
-  p.OutputDataReceived += (o,e) -> if not string.IsNullOrWhiteSpace(e.Data) then otp(e.Data);
+  
+  var thr_otp := new ThrProcOtp;
+  p.OutputDataReceived += (o,e) ->
+  if e.Data=nil then
+    thr_otp.Finish else
+    thr_otp.Enq(e.Data);
+  
   p.Start;
   
   try
     p.BeginOutputReadLine;
     
-    p.WaitForExit;
+    foreach var l in thr_otp.Enmr do l_otp(l);
+//    p.WaitForExit;
     if p.ExitCode<>0 then
     begin
       var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
@@ -156,29 +233,31 @@ begin
   end;
 end;
 
-procedure CompilePasFile(fname: string; otp, err: string->());
+procedure CompilePasFile(fname: string; l_otp, err: string->());
 begin
   fname := GetFullPath(fname);
-  if otp=nil then otp := MiscUtils.Otp;
-  if err=nil then err := s->ErrOtp(new MessageException($'Error compiling "{fname}": {s}'));
+  if l_otp=nil then l_otp := MiscUtils.Otp;
+  if err=nil then err := s->raise new MessageException($'Error compiling "{fname}": {s}');
   
-  otp($'Compiling "{fname}"');
+  l_otp($'Compiling "{fname}"');
   
   var psi := new ProcessStartInfo('C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe', $'"{fname}"');
   fname := fname.Substring(fname.LastIndexOf('\')+1);
 //  fname := fname.Remove(fname.LastIndexOf('.'));
   psi.UseShellExecute := false;
   psi.RedirectStandardOutput := true;
+  psi.RedirectStandardInput := true;
   
   var p := new Process;
   p.StartInfo := psi;
   p.Start;
+  p.StandardInput.WriteLine;
   p.WaitForExit;
   
   var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
     err(res) else
-    otp($'Finished compiling "{fname}": {res}');
+    l_otp($'Finished compiling "{fname}": {res}');
   
 end;
 
@@ -231,12 +310,16 @@ end;
 
 type
   SecThrProc = abstract class
+    own_otp: ThrProcOtp;
+    
     procedure SyncExec; abstract;
     
     function CreateThread := new Thread(()->
     try
       RegisterThr;
+      ThrProcOtp.curr := self.own_otp;
       SyncExec;
+      self.own_otp.Finish;
     except
       on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
       on e: Exception do ErrOtp(e);
@@ -244,6 +327,7 @@ type
     
     function StartExec: Thread;
     begin
+      self.own_otp := new ThrProcOtp;
       Result := CreateThread;
       Result.Start;
     end;
@@ -286,10 +370,11 @@ type
     
     procedure SyncExec; override;
     begin
-      var t1 := p1.StartExec;
-      var t2 := p2.StartExec;
-      t1.Join;
-      t2.Join;
+      p1.StartExec;
+      p2.StartExec;
+      
+      foreach var l in p1.own_otp.Enmr do Otp(l);
+      foreach var l in p2.own_otp.Enmr do Otp(l);
     end;
     
   end;

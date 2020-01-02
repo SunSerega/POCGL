@@ -76,6 +76,9 @@ type
     public static exe_dir := Path.GetDirectoryName(GetEXEFileName);
     public static procedure Pack(path, otp: string);
     begin
+      var nick := otp.Remove(otp.LastIndexOf('.'));
+      MiscUtils.Otp($'Packing spec "{nick}"');
+      
       path := $'{exe_dir}\{path}';
       otp  := $'{exe_dir}\{otp}';
       
@@ -105,6 +108,8 @@ type
       sw.WriteLine('</body>');
       sw.WriteLine('</html>');
       sw.Close;
+      
+      MiscUtils.Otp($'Done packing spec "{nick}"');
     end;
     
   end;
