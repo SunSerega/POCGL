@@ -76,7 +76,7 @@ begin
     res += '';
     
     if CommandLineArgs.Contains('SecondaryProc') then
-      WriteAllText($'{System.IO.Path.GetDirectoryName(GetEXEFileName)}\MtrExt.template', res.ToString, new System.Text.UTF8Encoding(true)) else
+      WriteAllText(GetFullPath('..\MtrExt.template', GetEXEFileName), res.ToString, new System.Text.UTF8Encoding(true)) else
     begin
       System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
       System.Console.Beep;
