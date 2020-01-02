@@ -18,14 +18,16 @@ type
   end;
   
   FuncBlock = sealed class(TextBlock)
-    done := false;
+    own_otp := new ThrProcOtp;
     
     constructor(f: ()->string);
     begin
       Thread.Create(()->
       try
+        RegisterThr;
+        ThrProcOtp.curr := self.own_otp;
         self.str := f();
-        self.done := true;
+        self.own_otp.Finish;
       except
         on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
         on e: Exception do ErrOtp(e);
@@ -34,7 +36,7 @@ type
     
     function Finish: string; override;
     begin
-      while not done do Sleep(10);
+      foreach var l in own_otp.Enmr do Otp(l);
       Result := str;
     end;
     
