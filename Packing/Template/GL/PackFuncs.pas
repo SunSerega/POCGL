@@ -1,7 +1,7 @@
-﻿uses PackingUtils in '..\PackingUtils.pas';
-uses CoreFuncData in '..\..\..\SpecFormating\GL\CoreFuncData.pas';
-uses BinSpecData in '..\..\..\SpecFormating\GLExt\BinSpecData.pas';
-uses FuncFormatData in '..\..\..\Text converters\FuncFormatData.pas';
+﻿uses PackingUtils   in '..\PackingUtils.pas';
+uses CoreFuncData   in '..\..\..\DataScraping\SpecFormating\GL\CoreFuncData.pas';
+uses BinSpecData    in '..\..\..\DataScraping\SpecFormating\GLExt\BinSpecData.pas';
+uses FuncFormatData in '..\..\..\DataScraping\Text converters\FuncFormatData.pas';
 
 {$region Misc types}
 
@@ -42,7 +42,7 @@ type
     self.data := s.ToWords('.').ConvertAll(s->s.ToInteger);
     
     static function LoadAll: sequence of GLCoreVersion :=
-      ReadLines('SpecFormating\GL\versions order.dat')
+      ReadLines('DataScraping\SpecFormating\GL\versions order.dat')
       .Where(l->l.Contains('='))
       .Reverse
       .Select(l-> new GLCoreVersion(l.Split('=')[0].TrimEnd(#9)) )
@@ -50,7 +50,7 @@ type
     
     function LoadFuncs: List<CoreFuncDef>;
     begin
-      var br := new System.IO.BinaryReader(System.IO.File.OpenRead($'SpecFormating\GL\{self} funcs.bin'));
+      var br := new System.IO.BinaryReader(System.IO.File.OpenRead($'DataScraping\SpecFormating\GL\{self} funcs.bin'));
       Result := new List<CoreFuncDef>(br.ReadInt32);
       loop Result.Capacity do Result += CoreFuncDef.Load(br);
       br.Close;
@@ -95,10 +95,10 @@ procedure LoadMisc;
 begin
   Otp('Misc loading');
   
-  foreach var dir in System.IO.Directory.EnumerateDirectories('Reps\OpenGL-Registry\extensions') do
+  foreach var dir in System.IO.Directory.EnumerateDirectories('DataScraping\Reps\OpenGL-Registry\extensions') do
     ext_types += dir.Substring(dir.LastIndexOf('\')+1);
   
-  LoadOverloadControlFolder('Text converters\FuncOverloadControl\GL');
+  LoadOverloadControlFolder('DataScraping\Text converters\FuncOverloadControl\GL');
   
 end;
 
@@ -130,7 +130,7 @@ procedure LoadExtFuncs;
 begin
   Otp('Loading ext funcs');
   
-  var ext_spec_db := BinSpecDB.LoadFromFile('SpecFormating\GLExt\ext spec.bin');
+  var ext_spec_db := BinSpecDB.LoadFromFile('DataScraping\SpecFormating\GLExt\ext spec.bin');
   
   // функции из расширений которые покалечены
   func_name_ext_name_table['glBlendFuncSeparateINGR'] := Lst('INGR_blend_func_separate');
@@ -173,8 +173,8 @@ begin
   Otp('Read funcs from .h''s');
   
   var all_header_files :=
-    System.IO.Directory.EnumerateFiles('Reps\OpenGL-Registry',  '*.h', System.IO.SearchOption.AllDirectories) +
-    System.IO.Directory.EnumerateFiles('Reps\GLBrokenSource',   '*.h', System.IO.SearchOption.AllDirectories)
+    System.IO.Directory.EnumerateFiles('DataScraping\Reps\OpenGL-Registry', '*.h', System.IO.SearchOption.AllDirectories) +
+    System.IO.Directory.EnumerateFiles('DataScraping\Reps\GLBrokenSource',  '*.h', System.IO.SearchOption.AllDirectories)
   ;
   
   var prev := new HashSet<string>;

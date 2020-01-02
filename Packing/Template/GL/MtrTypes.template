@@ -53,7 +53,7 @@
     public property ColPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Scale(k: double): Mtr2x2f := new Mtr2x2f(k, 0.0, 0.0, k);
+    public static function Scale(k: single): Mtr2x2f := new Mtr2x2f(k, 0.0, 0.0, k);
     
     public static function Traslate(X: single): Mtr2x2f := new Mtr2x2f(1.0, X, 0.0, 1.0);
     public static function TraslateTransposed(X: single): Mtr2x2f := new Mtr2x2f(1.0, 0.0, X, 1.0);
@@ -186,7 +186,7 @@
     public property ColPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Scale(k: double): Mtr3x3f := new Mtr3x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
+    public static function Scale(k: single): Mtr3x3f := new Mtr3x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
     
     public static function Traslate(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0);
     public static function TraslateTransposed(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, 1.0);
@@ -424,7 +424,7 @@
     public property ColPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Scale(k: double): Mtr4x4f := new Mtr4x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
+    public static function Scale(k: single): Mtr4x4f := new Mtr4x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
     
     public static function Traslate(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z, 0.0, 0.0, 0.0, 1.0);
     public static function TraslateTransposed(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, Z, 1.0);
@@ -669,7 +669,7 @@
     public property ColPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Scale(k: double): Mtr2x3f := new Mtr2x3f(k, 0.0, 0.0, 0.0, k, 0.0);
+    public static function Scale(k: single): Mtr2x3f := new Mtr2x3f(k, 0.0, 0.0, 0.0, k, 0.0);
     
     public static function Traslate(X, Y: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, X, 0.0, 1.0, Y);
     public static function TraslateTransposed(X: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, 0.0, X, 1.0, 0.0);
@@ -805,7 +805,7 @@
     public property ColPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Scale(k: double): Mtr3x2f := new Mtr3x2f(k, 0.0, 0.0, k, 0.0, 0.0);
+    public static function Scale(k: single): Mtr3x2f := new Mtr3x2f(k, 0.0, 0.0, k, 0.0, 0.0);
     
     public static function Traslate(X: single): Mtr3x2f := new Mtr3x2f(1.0, X, 0.0, 1.0, 0.0, 0.0);
     public static function TraslateTransposed(X, Y: single): Mtr3x2f := new Mtr3x2f(1.0, 0.0, 0.0, 1.0, X, Y);
@@ -952,7 +952,7 @@
     public property ColPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Scale(k: double): Mtr2x4f := new Mtr2x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
+    public static function Scale(k: single): Mtr2x4f := new Mtr2x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
     
     public static function Traslate(X, Y: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y);
     public static function TraslateTransposed(X: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, 0.0, X, 1.0, 0.0, 0.0);
@@ -1103,7 +1103,7 @@
     public property ColPtr3: ^Vec2f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Scale(k: double): Mtr4x2f := new Mtr4x2f(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
+    public static function Scale(k: single): Mtr4x2f := new Mtr4x2f(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
     
     public static function Traslate(X: single): Mtr4x2f := new Mtr4x2f(1.0, X, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
     public static function TraslateTransposed(X, Y: single): Mtr4x2f := new Mtr4x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y);
@@ -1270,7 +1270,7 @@
     public property ColPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Scale(k: double): Mtr3x4f := new Mtr3x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
+    public static function Scale(k: single): Mtr3x4f := new Mtr3x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
     
     public static function Traslate(X, Y, Z: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z);
     public static function TraslateTransposed(X, Y: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y, 1.0, 0.0);
@@ -1521,7 +1521,7 @@
     public property ColPtr3: ^Vec3f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Scale(k: double): Mtr4x3f := new Mtr4x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
+    public static function Scale(k: single): Mtr4x3f := new Mtr4x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
     
     public static function Traslate(X, Y: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
     public static function TraslateTransposed(X, Y, Z: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, X, Y, Z);

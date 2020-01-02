@@ -1,4 +1,4 @@
-﻿uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+﻿uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 {$reference 'itextsharp.dll'}
 uses CoreFuncData;
 
@@ -351,7 +351,7 @@ begin
   
 //  funcs.PrintLines;
   
-  var bw := new System.IO.BinaryWriter(System.IO.File.Create($'SpecFormating\GL\{v} funcs.bin'));
+  var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath($'..\{v} funcs.bin',GetEXEFileName)));
   bw.Write(funcs.Count);
   foreach var f in funcs do f.Save(bw);
   bw.Close;
@@ -365,7 +365,7 @@ end;
 begin
   try
     
-    ReadLines('SpecFormating\GL\versions order.dat')
+    ReadLines(GetFullPath('..\versions order.dat',GetEXEFileName))
     .Where(l->l.Contains('='))
     .Select(l->l.Split('='))
     .Where(l->l[1]<>'') // только в этой программе важно, для 1.1 файл не .pdf
@@ -374,7 +374,7 @@ begin
 //    .TakeLast(1)
 //    .Skip(3)
     
-    .ForEach(l-> ProcessPdf($'Reps\OpenGL-Registry\specs\gl\glspec{l[1]}.pdf', l[0]) );
+    .ForEach(l-> ProcessPdf(GetFullPath($'..\..\..\Reps\OpenGL-Registry\specs\gl\glspec{l[1]}.pdf',GetEXEFileName), l[0]) );
     
     if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
   except

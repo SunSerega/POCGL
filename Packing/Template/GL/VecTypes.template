@@ -36,8 +36,6 @@
     
     public function SqrLength := val0*val0;
     
-    public function SqrLength_d: double := real(val0)*val0;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -89,8 +87,6 @@
     public static function operator implicit(v: Vec1ub): Vec1b := new Vec1b(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -147,8 +143,6 @@
     public static function operator implicit(v: Vec1s): Vec1ub := new Vec1ub(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -207,8 +201,6 @@
     public static function operator implicit(v: Vec1us): Vec1s := new Vec1s(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -271,8 +263,6 @@
     public static function operator implicit(v: Vec1i): Vec1us := new Vec1us(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -337,8 +327,6 @@
     public static function operator implicit(v: Vec1ui): Vec1i := new Vec1i(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -407,8 +395,6 @@
     public static function operator implicit(v: Vec1i64): Vec1ui := new Vec1ui(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -479,8 +465,6 @@
     public static function operator implicit(v: Vec1ui64): Vec1i64 := new Vec1i64(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -556,9 +540,7 @@
     
     public function SqrLength := val0*val0;
     
-    public function SqrLength_d: double := real(val0)*val0;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public function ToString: string; override;
     begin
@@ -724,8 +706,6 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -811,8 +791,6 @@
     public static function operator implicit(v: Vec2ub): Vec2b := new Vec2b(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -903,8 +881,6 @@
     public static function operator implicit(v: Vec2s): Vec2ub := new Vec2ub(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -997,8 +973,6 @@
     public static function operator implicit(v: Vec2us): Vec2s := new Vec2s(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -1095,8 +1069,6 @@
     public static function operator implicit(v: Vec2i): Vec2us := new Vec2us(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -1195,8 +1167,6 @@
     public static function operator implicit(v: Vec2ui): Vec2i := new Vec2i(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -1299,8 +1269,6 @@
     public static function operator implicit(v: Vec2i64): Vec2ui := new Vec2ui(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -1405,8 +1373,6 @@
     public static function operator implicit(v: Vec2ui64): Vec2i64 := new Vec2i64(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -1516,9 +1482,7 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public function ToString: string; override;
     begin
@@ -1752,8 +1716,6 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public static function CrossCW(v1,v2: Vec3b) :=
     new Vec3b(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
@@ -1880,8 +1842,6 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2005,8 +1965,6 @@
     public static function operator implicit(v: Vec3s): Vec3ub := new Vec3ub(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
     public static function CrossCW(v1,v2: Vec3s) :=
     new Vec3s(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -2140,8 +2098,6 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2271,8 +2227,6 @@
     public static function operator implicit(v: Vec3i): Vec3us := new Vec3us(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
     public static function CrossCW(v1,v2: Vec3i) :=
     new Vec3i(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -2412,8 +2366,6 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2549,8 +2501,6 @@
     public static function operator implicit(v: Vec3i64): Vec3ui := new Vec3ui(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
     public static function CrossCW(v1,v2: Vec3i64) :=
     new Vec3i64(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -2696,8 +2646,6 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2840,9 +2788,7 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public static function CrossCW(v1,v2: Vec3f) :=
     new Vec3f(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -3156,8 +3102,6 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -3311,8 +3255,6 @@
     public static function operator implicit(v: Vec4ub): Vec4b := new Vec4b(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -3471,8 +3413,6 @@
     public static function operator implicit(v: Vec4s): Vec4ub := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -3633,8 +3573,6 @@
     public static function operator implicit(v: Vec4us): Vec4s := new Vec4s(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -3799,8 +3737,6 @@
     public static function operator implicit(v: Vec4i): Vec4us := new Vec4us(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -3967,8 +3903,6 @@
     public static function operator implicit(v: Vec4ui): Vec4i := new Vec4i(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -4139,8 +4073,6 @@
     public static function operator implicit(v: Vec4i64): Vec4ui := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -4313,8 +4245,6 @@
     public static function operator implicit(v: Vec4ui64): Vec4i64 := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -4492,9 +4422,7 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public function ToString: string; override;
     begin

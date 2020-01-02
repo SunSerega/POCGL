@@ -11,13 +11,13 @@ uses FuncOverloadControlData;
 // 
 // - Тип результата обрабатывается последним в T%1
 // - Если нативный тип это указатель - все не_массивы становятся var-параметрами
-// - Массив превращаются в передачу [0] var-параметром
-// - Строки разворачиваются в извращения с Marshal (и потом IntPtr, конечно)
+// - Массивы разворачиваются в извращения с Marshal (и потом IntPtr, конечно)
+// - И строки тоже
 
 var
   keywords := HSet('begin', 'end', 'params', 'type', 'end', 'program', 'array', 'unit', 'label', 'event', 'in', 'packed', 'property');
   num_chrs := Range('0','9').ToArray;
-
+  
 {$region Misc utils}
 
 type

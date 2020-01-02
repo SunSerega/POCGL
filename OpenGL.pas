@@ -2367,8 +2367,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0;
     
-    public function SqrLength_d: double := real(val0)*val0;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2420,8 +2418,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec1ub): Vec1b := new Vec1b(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -2478,8 +2474,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec1s): Vec1ub := new Vec1ub(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -2538,8 +2532,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec1us): Vec1s := new Vec1s(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -2602,8 +2594,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec1i): Vec1us := new Vec1us(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -2668,8 +2658,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec1ui): Vec1i := new Vec1i(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -2738,8 +2726,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec1i64): Vec1ui := new Vec1ui(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -2810,8 +2796,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec1ui64): Vec1i64 := new Vec1i64(v.val0);
     
     public function SqrLength := val0*val0;
-    
-    public function SqrLength_d: double := real(val0)*val0;
     
     public function ToString: string; override;
     begin
@@ -2887,9 +2871,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0;
     
-    public function SqrLength_d: double := real(val0)*val0;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public function ToString: string; override;
     begin
@@ -3055,8 +3037,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -3142,8 +3122,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec2ub): Vec2b := new Vec2b(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -3234,8 +3212,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec2s): Vec2ub := new Vec2ub(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -3328,8 +3304,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec2us): Vec2s := new Vec2s(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -3426,8 +3400,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec2i): Vec2us := new Vec2us(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -3526,8 +3498,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec2ui): Vec2i := new Vec2i(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -3630,8 +3600,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec2i64): Vec2ui := new Vec2ui(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -3736,8 +3704,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec2ui64): Vec2i64 := new Vec2i64(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
     
     public function ToString: string; override;
     begin
@@ -3847,9 +3813,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public function ToString: string; override;
     begin
@@ -4083,8 +4047,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public static function CrossCW(v1,v2: Vec3b) :=
     new Vec3b(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
     
@@ -4211,8 +4173,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -4336,8 +4296,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec3s): Vec3ub := new Vec3ub(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
     public static function CrossCW(v1,v2: Vec3s) :=
     new Vec3s(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -4471,8 +4429,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -4602,8 +4558,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec3i): Vec3us := new Vec3us(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
     public static function CrossCW(v1,v2: Vec3i) :=
     new Vec3i(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -4743,8 +4697,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -4880,8 +4832,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec3i64): Vec3ui := new Vec3ui(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
     
     public static function CrossCW(v1,v2: Vec3i64) :=
     new Vec3i64(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -5027,8 +4977,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -5171,9 +5119,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public static function CrossCW(v1,v2: Vec3f) :=
     new Vec3f(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
@@ -5487,8 +5433,6 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
-    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -5642,8 +5586,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec4ub): Vec4b := new Vec4b(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -5802,8 +5744,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec4s): Vec4ub := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -5964,8 +5904,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec4us): Vec4s := new Vec4s(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -6130,8 +6068,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec4i): Vec4us := new Vec4us(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -6298,8 +6234,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec4ui): Vec4i := new Vec4i(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -6470,8 +6404,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec4i64): Vec4ui := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -6644,8 +6576,6 @@ uses System.Runtime.CompilerServices;
     public static function operator implicit(v: Vec4ui64): Vec4i64 := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
-    
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
     
     public function ToString: string; override;
     begin
@@ -6823,9 +6753,7 @@ uses System.Runtime.CompilerServices;
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public function SqrLength_d: double := real(val0)*val0 + real(val1)*val1 + real(val2)*val2 + real(val3)*val3;
-    
-    public function Normalized := self / single(self.SqrLength_d.Sqrt);
+    public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public function ToString: string; override;
     begin
@@ -7089,7 +7017,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr1: ^Vec2f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Scale(k: double): Mtr2x2f := new Mtr2x2f(k, 0.0, 0.0, k);
+    public static function Scale(k: single): Mtr2x2f := new Mtr2x2f(k, 0.0, 0.0, k);
     
     public static function Traslate(X: single): Mtr2x2f := new Mtr2x2f(1.0, X, 0.0, 1.0);
     public static function TraslateTransposed(X: single): Mtr2x2f := new Mtr2x2f(1.0, 0.0, X, 1.0);
@@ -7222,7 +7150,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr2: ^Vec3f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Scale(k: double): Mtr3x3f := new Mtr3x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
+    public static function Scale(k: single): Mtr3x3f := new Mtr3x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
     
     public static function Traslate(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0);
     public static function TraslateTransposed(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, 1.0);
@@ -7460,7 +7388,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr3: ^Vec4f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Scale(k: double): Mtr4x4f := new Mtr4x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
+    public static function Scale(k: single): Mtr4x4f := new Mtr4x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
     
     public static function Traslate(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z, 0.0, 0.0, 0.0, 1.0);
     public static function TraslateTransposed(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, Z, 1.0);
@@ -7705,7 +7633,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr1: ^Vec3f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Scale(k: double): Mtr2x3f := new Mtr2x3f(k, 0.0, 0.0, 0.0, k, 0.0);
+    public static function Scale(k: single): Mtr2x3f := new Mtr2x3f(k, 0.0, 0.0, 0.0, k, 0.0);
     
     public static function Traslate(X, Y: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, X, 0.0, 1.0, Y);
     public static function TraslateTransposed(X: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, 0.0, X, 1.0, 0.0);
@@ -7841,7 +7769,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr2: ^Vec2f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Scale(k: double): Mtr3x2f := new Mtr3x2f(k, 0.0, 0.0, k, 0.0, 0.0);
+    public static function Scale(k: single): Mtr3x2f := new Mtr3x2f(k, 0.0, 0.0, k, 0.0, 0.0);
     
     public static function Traslate(X: single): Mtr3x2f := new Mtr3x2f(1.0, X, 0.0, 1.0, 0.0, 0.0);
     public static function TraslateTransposed(X, Y: single): Mtr3x2f := new Mtr3x2f(1.0, 0.0, 0.0, 1.0, X, Y);
@@ -7988,7 +7916,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr1: ^Vec4f read pointer(IntPtr(pointer(@self)) + 8);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*8);
     
-    public static function Scale(k: double): Mtr2x4f := new Mtr2x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
+    public static function Scale(k: single): Mtr2x4f := new Mtr2x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
     
     public static function Traslate(X, Y: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y);
     public static function TraslateTransposed(X: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, 0.0, X, 1.0, 0.0, 0.0);
@@ -8139,7 +8067,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr3: ^Vec2f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Scale(k: double): Mtr4x2f := new Mtr4x2f(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
+    public static function Scale(k: single): Mtr4x2f := new Mtr4x2f(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
     
     public static function Traslate(X: single): Mtr4x2f := new Mtr4x2f(1.0, X, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
     public static function TraslateTransposed(X, Y: single): Mtr4x2f := new Mtr4x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y);
@@ -8306,7 +8234,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr2: ^Vec4f read pointer(IntPtr(pointer(@self)) + 24);
     public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*12);
     
-    public static function Scale(k: double): Mtr3x4f := new Mtr3x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
+    public static function Scale(k: single): Mtr3x4f := new Mtr3x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
     
     public static function Traslate(X, Y, Z: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z);
     public static function TraslateTransposed(X, Y: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y, 1.0, 0.0);
@@ -8557,7 +8485,7 @@ uses System.Runtime.CompilerServices;
     public property ColPtr3: ^Vec3f read pointer(IntPtr(pointer(@self)) + 48);
     public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*16);
     
-    public static function Scale(k: double): Mtr4x3f := new Mtr4x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
+    public static function Scale(k: single): Mtr4x3f := new Mtr4x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
     
     public static function Traslate(X, Y: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
     public static function TraslateTransposed(X, Y, Z: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, X, Y, Z);

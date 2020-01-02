@@ -1,4 +1,4 @@
-﻿uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+﻿uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 uses CoreFuncData;
 
 const lf = 'Fz';
@@ -159,7 +159,7 @@ end;
 begin
   try
     var s :=
-      ReadAllText(GetFullPath('Reps\OpenGL-Registry\specs\gl\glspec11.ps'))
+      ReadAllText(GetFullPath('..\..\..\Reps\OpenGL-Registry\specs\gl\glspec11.ps', GetEXEFileName))
       .Replace('FB(f)','({)')
       .Replace('FB(g)','(})')
       .Replace('FB(gf)', '(}{)')
@@ -177,7 +177,7 @@ begin
     
 //    funcs.PrintLines;
     
-    var bw := new System.IO.BinaryWriter(System.IO.File.Create('SpecFormating\GL\1.1 funcs.bin'));
+    var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath('..\1.1 funcs.bin', GetEXEFileName)));
     bw.Write(funcs.Count);
     foreach var f in funcs do CoreFuncDef.Create('gl'+f).Save(bw);
     bw.Close;

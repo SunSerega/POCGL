@@ -105,6 +105,6 @@ begin
     );
     
   except
-    on e: Exception do writeln(e); // Эта строчка позволяет выводить всю ошибку, если при выполнении Context.SyncInvoke возникла ошибка
+    on e: Exception do Writeln(e); // Эта строчка позволяет выводить всю ошибку, если при выполнении Context.SyncInvoke возникла ошибка
   end;
 end.

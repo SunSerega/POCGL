@@ -1,7 +1,7 @@
 ﻿unit RepUtils;
 
 uses System.Diagnostics;
-uses MiscUtils in '..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 const GitExe = 'C:\Program Files\Git\bin\git.exe';
 

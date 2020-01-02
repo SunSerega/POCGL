@@ -10,6 +10,10 @@ begin
     System.IO.File.Delete(log_file);
     System.IO.File.Delete(timed_log_file);
     
+    var enc := new System.Text.UTF8Encoding(true);
+    
+    // ====================================================
+    
     System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pcu', System.IO.SearchOption.AllDirectories).ForEach(System.IO.File.Delete);
     System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pdb', System.IO.SearchOption.AllDirectories).Where(fname->not fname.EndsWith('PackAll.pdb')).ForEach(System.IO.File.Delete);
     
@@ -19,7 +23,7 @@ begin
       ExecTask('Packing\Template\Pack Template.pas', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
       ProcTask(()->System.IO.File.Delete('OpenGL.pas')) +
       ProcTask(()->System.IO.File.Move('Packing\Template\GL\0OpenGL.pas', 'OpenGL.pas')) +
-      ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', new System.Text.UTF8Encoding(true)).Replace(#10,#13#10), new System.Text.UTF8Encoding(true)))
+      ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', enc).Replace(#10,#13#10), enc))
     ;
     
     var T_GLABC := CompTask('OpenGLABC.pas');

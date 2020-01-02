@@ -160,7 +160,7 @@ begin
   
   res += $'    '+#10;
   
-  res += $'    public static function Scale(k: double): {t.GetName} := new {t.GetName}(';
+  res += $'    public static function Scale(k: {t[2]}): {t.GetName} := new {t.GetName}(';
   res +=
     Range(0,t[0][0]-1)
     .Cartesian(Range(0,t[0][1]-1))
@@ -224,63 +224,42 @@ begin
     
     foreach var plane in planes do
     begin
+      res += $'    '+#10;
       
       var plane_name := ANT[plane[0]]+ANT[plane[1]];
       var mpc := HSet(plane[0], plane[1]); // mtr plane coord
       
-      res += $'    '+#10;
-      
-      res += $'    public static function Rotate{plane_name}cw(rot: double): {t.GetName};'+#10;
-      res += $'    begin'+#10;
-      res += $'      var sr: {t[2]} := Sin(rot);'+#10;
-      res += $'      var cr: {t[2]} := Cos(rot);'+#10;
-      res += $'      Result := new {t.GetName}('+#10;
-      res += $'        ';
-      res +=
-        Range(0,t[0][0]-1)
-        .Select(y->
-          Range(0,t[0][1]-1)
-          .Select(x->
-          begin
-            if (x in mpc) and (y in mpc) then
+      for var ccw_state := false to true do
+      begin
+        
+        var rot_dir_word := ccw_state ? 'ccw' : 'cw';
+        res += $'    public static function Rotate{plane_name}{rot_dir_word}(rot: double): {t.GetName};'+#10;
+        res += $'    begin'+#10;
+        res += $'      var sr: {t[2]} := Sin(rot);'+#10;
+        res += $'      var cr: {t[2]} := Cos(rot);'+#10;
+        res += $'      Result := new {t.GetName}('+#10;
+        res += $'        ';
+        res +=
+          Range(0,t[0][0]-1)
+          .Select(y->
+            Range(0,t[0][1]-1)
+            .Select(x->
             begin
-              if y=plane[0] then
-                Result := x=plane[0] ? ' cr' : '+sr' else
-                Result := x=plane[0] ? '-sr' : ' cr';
-            end else
-              Result := x=y ? '1.0' : '0.0';
-          end)
-          .JoinIntoString(', ')
-        )
-        .JoinIntoString(','#10'        ') + #10;
-      res += $'      );'+#10;
-      res += $'    end;'+#10;
-      
-      res += $'    public static function Rotate{plane_name}ccw(rot: double): {t.GetName};'+#10;
-      res += $'    begin'+#10;
-      res += $'      var sr: {t[2]} := Sin(rot);'+#10;
-      res += $'      var cr: {t[2]} := Cos(rot);'+#10;
-      res += $'      Result := new {t.GetName}('+#10;
-      res += $'        ';
-      res +=
-        Range(0,t[0][0]-1)
-        .Select(y->
-          Range(0,t[0][1]-1)
-          .Select(x->
-          begin
-            if (x in mpc) and (y in mpc) then
-            begin
-              if y=plane[0] then
-                Result := x=plane[0] ? ' cr' : '-sr' else
-                Result := x=plane[0] ? '+sr' : ' cr';
-            end else
-              Result := x=y ? '1.0' : '0.0';
-          end)
-          .JoinIntoString(', ')
-        )
-        .JoinIntoString(','#10'        ') + #10;
-      res += $'      );'+#10;
-      res += $'    end;'+#10;
+              if (x in mpc) and (y in mpc) then
+              begin
+                if x=y then
+                  Result := ' cr' else
+                  Result := (y=plane[0]) xor ccw_state ? '+sr' : '-sr';
+              end else
+                Result := x=y ? '1.0' : '0.0';
+            end)
+            .JoinIntoString(', ')
+          )
+          .JoinIntoString(','#10'        ') + #10;
+        res += $'      );'+#10;
+        res += $'    end;'+#10;
+        
+      end;
       
     end;
     
@@ -298,92 +277,60 @@ begin
     //     │ +u.y, -u.x,    0 │
     //     └                  ┘
     //
-    // Result =  I  +  Sin(rot)*W  +  (2*Sqr(Sin(rot/2))) * (W*W)
+    // Result =  Identity  +  Sin(rot)*W  +  (2*Sqr(Sin(rot/2))) * (W*W)
     
     var W_val_table: Dictionary<(integer,integer), string> := Dict(
                            ( (0,1), 'u.val2' ), ( (0,2), 'u.val1' ),
       ( (1,0), 'u.val2' ),                      ( (1,2), 'u.val0' ),
       ( (2,0), 'u.val1' ), ( (2,1), 'u.val0' )
     );
-    var W_sign_table: Dictionary<(integer,integer), char> := Dict(
-                      ( (0,1), '+' ), ( (0,2), '-' ),
-      ( (1,0), '-' ),                 ( (1,2), '+' ),
-      ( (2,0), '+' ), ( (2,1), '-' )
+    var W_sign_table: Dictionary<(integer,integer), boolean> := Dict(
+                        ( (0,1), true  ), ( (0,2), false ),
+      ( (1,0), false ),                   ( (1,2), true  ),
+      ( (2,0), true  ), ( (2,1), false )
     );
     
-    res += $'    '+#10;
-    
-    res += $'    public static function Rotate3Dcw(u: Vec3{t[1]}; rot: double): {t.GetName};'+#10;
-    res += $'    begin'+#10;
-    res += $'      var k1 := Sin(rot);'+#10;
-    res += $'      var k2 := 2*Sqr(Sin(rot/2));'+#10;
-    res += $'      '+#10;
-    for var y := 0 to 3-1 do
-      for var x := 0 to 3-1 do
-      begin
-        res += $'      Result.val{y}{x} := ';
-        
-        if x=y then
-          res += '1'+'' else
-          res += (W_sign_table[(y,x)]='+'?'':'-') + $'k1*{W_val_table[(y,x)]}';
-        
-        res += ' + k2*( ';
-        var first_val := true;
-        for var i := 0 to 3-1 do
+    for var ccw_state := false to true do
+    begin
+      res += $'    '+#10;
+      
+      var rot_dir_word := ccw_state ? 'ccw' : 'cw';
+      res += $'    public static function Rotate3D{rot_dir_word}(u: Vec3{t[1]}; rot: double): {t.GetName};'+#10;
+      res += $'    begin'+#10;
+      res += $'      var k1 := Sin(rot);'+#10;
+      res += $'      var k2 := 2*Sqr(Sin(rot/2));'+#10;
+      res += $'      '+#10;
+      for var y := 0 to 3-1 do
+        for var x := 0 to 3-1 do
         begin
-          if (i=x) or (i=y) then continue;
-          var curr_sign_plus := W_sign_table[(y,i)]=W_sign_table[(i,x)];
+          res += $'      Result.val{y}{x} := ';
           
-          if not first_val then
-            res += curr_sign_plus?' + ':' - ' else
-            res += curr_sign_plus?'':'-';
+          if x=y then
+            res += '1' else
+            res += (W_sign_table[(y,x)] xor ccw_state ? '' : '-') + $'k1*{W_val_table[(y,x)]}';
           
-          res += $'{W_val_table[(y,i)]}*{W_val_table[(i,x)]}';
-          first_val := false;
+          res += ' + k2*( ';
+          var first_val := true;
+          for var i := 0 to 3-1 do
+          begin
+            if (i=x) or (i=y) then continue;
+            var curr_sign_plus := W_sign_table[(y,i)]=W_sign_table[(i,x)];
+            
+            if not first_val then
+              res += curr_sign_plus?' + ':' - ' else
+              res += curr_sign_plus?'':'-';
+            
+            res += $'{W_val_table[(y,i)]}*{W_val_table[(i,x)]}';
+            first_val := false;
+          end;
+          res += ' );'#10;
         end;
-        res += ' );'#10;
-      end;
-    res += $'      '+#10;
-    if (t[0][0]=4) and (t[0][1]=4) then
-      res += $'      Result.val33 := 1;' + #10;
-    res += $'    end;'+#10;
-    
-    res += $'    '+#10;
-    
-    res += $'    public static function Rotate3Dccw(u: Vec3{t[1]}; rot: double): {t.GetName};'+#10;
-    res += $'    begin'+#10;
-    res += $'      var k1 := Sin(rot);'+#10;
-    res += $'      var k2 := 2*Sqr(Sin(rot/2));'+#10;
-    res += $'      '+#10;
-    for var y := 0 to 3-1 do
-      for var x := 0 to 3-1 do
-      begin
-        res += $'      Result.val{y}{x} := ';
-        
-        if x=y then
-          res += '1'+'' else
-          res += (W_sign_table[(y,x)]='+'?'-':'') + $'k1*{W_val_table[(y,x)]}';
-        
-        res += ' + k2*( ';
-        var first_val := true;
-        for var i := 0 to 3-1 do
-        begin
-          if (i=x) or (i=y) then continue;
-          var curr_sign_plus := W_sign_table[(y,i)]=W_sign_table[(i,x)];
-          
-          if not first_val then
-            res += curr_sign_plus?' + ':' - ' else
-            res += curr_sign_plus?'':'-';
-          
-          res += $'{W_val_table[(y,i)]}*{W_val_table[(i,x)]}';
-          first_val := false;
-        end;
-        res += ' );'#10;
-      end;
-    res += $'      '+#10;
-    if (t[0][0]=4) and (t[0][1]=4) then
-      res += $'      Result.val33 := 1;' + #10;
-    res += $'    end;'+#10;
+      res += $'      '+#10;
+      if (t[0][0]=4) and (t[0][1]=4) then
+        res += $'      Result.val33 := 1;' + #10;
+      res += $'    end;'+#10;
+      
+    end;
     
   end;
   

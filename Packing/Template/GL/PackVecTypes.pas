@@ -210,19 +210,6 @@ begin
   res += ';'#10;
   res += '    '#10;
   
-  if t[1] <> 'd' then
-  begin
-    
-    res += '    public function SqrLength_d: double := ';
-    res +=
-      Range(0,t[0]-1)
-      .Select(i->$'real(val{i})*val{i}')
-      .JoinIntoString(' + ');
-    res += ';'#10;
-    res += '    '#10;
-    
-  end;
-  
   {$endregion function SqrLength}
   
   {$region function Normalized}
@@ -232,7 +219,7 @@ begin
     
     res +=    $'    public function Normalized := ';
     if t[1] = 'f' then
-      res +=  $'self / single(self.SqrLength_d.Sqrt);'+#10 else
+      res +=  $'self / single(Sqrt(self.SqrLength));'+#10 else
       res +=  $'self / self.SqrLength.Sqrt;'+#10;
     res +=    $'    '+#10;
     
