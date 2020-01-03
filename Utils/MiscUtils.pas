@@ -9,20 +9,74 @@ var sec_procs := new List<Process>;
 var sec_thrs := new List<Thread>;
 var in_err_state := false;
 
+function TimeToStr(self: int64): string; extensionmethod :=
+(self/10/1000/1000).ToString('N7').PadLeft(15);
+
 type
   MessageException = class(Exception)
     constructor(text: string) :=
     inherited Create(text);
   end;
   
+  Timers = static class
+    
+    static pas_comp := int64(0);
+    static every_pas_comp := new Dictionary<string, int64>;
+    
+    static exe_exec := int64(0);
+    static every_exe_exec := new Dictionary<string, int64>;
+    
+    static procedure AddPasTime(nick: string; t: int64) :=
+    lock every_pas_comp do
+    begin
+      pas_comp += t;
+      if every_pas_comp.ContainsKey(nick) then
+        every_pas_comp[nick] += t else
+        every_pas_comp[nick] := t;
+    end;
+    
+    static procedure AddExeTime(nick: string; t: int64) :=
+    lock every_exe_exec do
+    begin
+      exe_exec += t;
+      if every_exe_exec.ContainsKey(nick) then
+        every_exe_exec[nick] += t else
+        every_exe_exec[nick] := t;
+    end;
+    
+    static procedure LogAll;
+    
+  end;
+  
+  OtpLine = sealed class
+    s: string;
+    t: int64;
+    
+    static pack_timer := Stopwatch.StartNew;
+    static function operator implicit(s: string): OtpLine;
+    begin
+      Result := new OtpLine;
+      Result.s := s;
+      Result.t := pack_timer.ElapsedTicks;
+    end;
+    
+    function ConvStr(f: string->string): OtpLine;
+    begin
+      Result := new OtpLine;
+      Result.s := f(self.s);
+      Result.t := self.t;
+    end;
+    
+  end;
+  
   ThrProcOtp = sealed class
-    q := new Queue<string>;
+    q := new Queue<OtpLine>;
     done := false;
     ev := new ManualResetEvent(false);
     
     [System.ThreadStatic] static curr: ThrProcOtp;
     
-    procedure Enq(l: string) :=
+    procedure Enq(l: OtpLine) :=
     lock q do
     begin
       q.Enqueue(l);
@@ -38,7 +92,7 @@ type
       lock q do ev.Set;
     end;
     
-    function Deq: string;
+    function Deq: OtpLine;
     begin
       Result := nil;
 //      lock output do Writeln($'{Thread.CurrentThread.ManagedThreadId}: start deq');
@@ -64,7 +118,7 @@ type
 //      lock output do Writeln($'{Thread.CurrentThread.ManagedThreadId}: deq wait ret "{Result}"');
     end;
     
-    function Enmr: sequence of string;
+    function Enmr: sequence of OtpLine;
     begin
       while true do
       begin
@@ -104,7 +158,7 @@ end;
 var otp_lock := new object;
 var log_file: string := nil;
 var timed_log_file: string := nil;
-procedure Otp(line: string) :=
+procedure Otp(line: OtpLine) :=
 if ThrProcOtp.curr<>nil then
   ThrProcOtp.curr.Enq(line) else
 lock otp_lock do
@@ -115,7 +169,7 @@ begin
     try
       if System.IO.File.Exists(log_file) then
         System.IO.File.Copy(log_file, log_file+'.savepoint');
-      System.IO.File.AppendAllLines(log_file, Arr(line));
+      System.IO.File.AppendAllLines(log_file, Arr(line.s));
       System.IO.File.Delete(log_file+'.savepoint');
       break;
     except end;
@@ -125,17 +179,17 @@ begin
     try
       if System.IO.File.Exists(timed_log_file) then
         System.IO.File.Copy(timed_log_file, timed_log_file+'.savepoint');
-      System.IO.File.AppendAllLines(timed_log_file, Arr(Format('{0:HH:mm:ss}', DateTime.Now)+$' | {line}'));
+      System.IO.File.AppendAllLines(timed_log_file, Arr($'{line.t.TimeToStr} | {line.s}'));
       System.IO.File.Delete(timed_log_file+'.savepoint');
       break;
     except end;
   
-  if line.ToLower.Contains('error') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
-  if line.ToLower.Contains('exception') then  System.Console.ForegroundColor := System.ConsoleColor.Red else
-  if line.ToLower.Contains('warning') then    System.Console.ForegroundColor := System.ConsoleColor.Yellow else
+  if line.s.ToLower.Contains('error') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
+  if line.s.ToLower.Contains('exception') then  System.Console.ForegroundColor := System.ConsoleColor.Red else
+  if line.s.ToLower.Contains('warning') then    System.Console.ForegroundColor := System.ConsoleColor.Yellow else
     System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
   
-  System.Console.WriteLine(line);
+  System.Console.WriteLine(line.s);
 end;
 
 procedure ErrOtp(e: Exception);
@@ -179,15 +233,32 @@ begin
   
 end;
 
+static procedure Timers.LogAll;
+begin
+  log_file := nil;
+  Otp('');
+  
+  Otp($'.pas compilation : {pas_comp.TimeToStr}');
+  var max_key_w := every_pas_comp.Keys.Max(key->key.Length);
+  foreach var key in every_pas_comp.Keys do
+    Otp($'    - {key.PadRight(max_key_w)} : {every_pas_comp[key].TimeToStr}');
+  
+  Otp($'.exe execution   : {exe_exec.TimeToStr}');
+  max_key_w := every_exe_exec.Keys.Max(key->key.Length);
+  foreach var key in every_exe_exec.Keys do
+    Otp($'    - {key.PadRight(max_key_w)} : {every_exe_exec[key].TimeToStr}');
+  
+end;
+
 {$endregion Otp}
 
 {$region Process execution}
 
-procedure RunFile(fname, nick: string; l_otp: string->(); params pars: array of string);
+procedure RunFile(fname, nick: string; l_otp: OtpLine->(); params pars: array of string);
 begin
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then raise new System.IO.FileNotFoundException(nil,fname);
-  if l_otp=nil then l_otp := l->MiscUtils.Otp($'{nick}: {l}');
+  if l_otp=nil then l_otp := l->MiscUtils.Otp(l.ConvStr(s->$'{nick}: {s}'));
   
   MiscUtils.Otp($'Runing {nick}');
   
@@ -208,60 +279,75 @@ begin
     thr_otp.Enq(e.Data);
   
   p.Start;
+  var curr_exe_timer := Stopwatch.StartNew;
   
   try
-    p.BeginOutputReadLine;
-    
-    foreach var l in thr_otp.Enmr do l_otp(l);
-//    p.WaitForExit;
-    if p.ExitCode<>0 then
-    begin
-      var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
-      ErrOtp(new Exception($'Error in {nick}:', ex));
-    end;
-    
-    MiscUtils.Otp($'Finished runing {nick}');
-  except
-    on ThreadAbortException do
-    begin
+    try
+      p.BeginOutputReadLine;
       
-      try
-        p.Kill;
-      except end;
+      foreach var l in thr_otp.Enmr do l_otp(l);
+  //    p.WaitForExit;
       
+      curr_exe_timer.Stop;
+      Timers.AddExeTime(nick, curr_exe_timer.ElapsedTicks);
+      curr_exe_timer.Reset;
+      
+      if p.ExitCode<>0 then
+      begin
+        var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
+        ErrOtp(new Exception($'Error in {nick}:', ex));
+      end;
+      
+      MiscUtils.Otp($'Finished runing {nick}');
+    except
+      on ThreadAbortException do
+      begin
+        
+        try
+          p.Kill;
+        except end;
+        
+      end;
     end;
+  finally
+    curr_exe_timer.Stop;
+    Timers.AddExeTime(nick, curr_exe_timer.ElapsedTicks);
   end;
 end;
 
-procedure CompilePasFile(fname: string; l_otp, err: string->());
+procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->());
 begin
   fname := GetFullPath(fname);
+  var nick := fname.Substring(fname.LastIndexOf('\')+1);
+  
   if l_otp=nil then l_otp := MiscUtils.Otp;
   if err=nil then err := s->raise new MessageException($'Error compiling "{fname}": {s}');
   
   l_otp($'Compiling "{fname}"');
   
   var psi := new ProcessStartInfo('C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe', $'"{fname}"');
-  fname := fname.Substring(fname.LastIndexOf('\')+1);
-//  fname := fname.Remove(fname.LastIndexOf('.'));
   psi.UseShellExecute := false;
   psi.RedirectStandardOutput := true;
   psi.RedirectStandardInput := true;
   
   var p := new Process;
   p.StartInfo := psi;
+  
+  var comp_timer := Stopwatch.StartNew;
   p.Start;
   p.StandardInput.WriteLine;
   p.WaitForExit;
+  comp_timer.Stop;
+  Timers.AddPasTime(nick, comp_timer.ElapsedTicks);
   
   var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
     err(res) else
-    l_otp($'Finished compiling "{fname}": {res}');
+    l_otp($'Finished compiling: {res}');
   
 end;
 
-procedure ExecuteFile(fname, nick: string; otp, err: string->(); params pars: array of string);
+procedure ExecuteFile(fname, nick: string; l_otp: OtpLine->(); err: string->(); params pars: array of string);
 begin
   fname := GetFullPath(fname);
   
@@ -272,7 +358,7 @@ begin
       '.pas':
       begin
         
-        CompilePasFile(fname, otp, err);
+        CompilePasFile(fname, l_otp, err);
         
         fname := fname.Remove(fname.Length-4)+'.exe';
         ffname := ffname.Remove(ffname.Length-4)+'.exe';
@@ -284,7 +370,7 @@ begin
     end else
       raise new MessageException($'file without extention: "{fname}"');
   
-  RunFile(fname, nick, otp, pars);
+  RunFile(fname, nick, l_otp, pars);
 end;
 
 
@@ -304,8 +390,11 @@ ExecuteFile(fname, nick, nil, nil, pars);
 
 procedure RegisterThr;
 begin
-  lock sec_thrs do sec_thrs += Thread.CurrentThread;
-  if in_err_state then Thread.CurrentThread.Abort;
+  var thr := Thread.CurrentThread;
+  
+  lock sec_thrs do sec_thrs += thr;
+  if in_err_state then thr.Abort;
+  
 end;
 
 type

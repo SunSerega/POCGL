@@ -115,7 +115,11 @@ begin
     // ====================================================
     
     Otp('done packing');
-    if not CommandLineArgs.Contains('SecondaryProc') then Readln;
+    if not CommandLineArgs.Contains('SecondaryProc') then
+    begin
+      Timers.LogAll;
+      Readln;
+    end;
     
   except
     on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;

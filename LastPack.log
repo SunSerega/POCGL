@@ -1,6 +1,6 @@
 ============================== Specs ==============================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Spec\SpecPacker.pas"
-Finished compiling "SpecPacker.pas": OK
+Finished compiling: OK
 Runing SpecPacker
 SpecPacker: Packing spec "Гайд по использованию OpenCL и OpenGL"
 SpecPacker: Done packing spec "Гайд по использованию OpenCL и OpenGL"
@@ -12,9 +12,9 @@ Finished runing SpecPacker
 ============================== OpenCL ==============================
 ============================== OpenCLABC ==============================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
-Finished compiling "OpenCLABC.pas": OK
+Finished compiling: OK
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Doc\PackComments.pas"
-Finished compiling "PackComments.pas": OK
+Finished compiling: OK
 Runing Comments[OpenCLABC]
 Comments[OpenCLABC]: WARNING: key %__HostQueue<T>% wasn't used!
 Comments[OpenCLABC]: WARNING: key %CommandQueueBase.Clone()% wasn't used!
@@ -28,7 +28,7 @@ Comments[OpenCLABC]: WARNING: key %gcc.AddWait% wasn't used!
 Finished runing Comments[OpenCLABC]
 ============================== OpenGL ==============================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\Pack Template.pas"
-Finished compiling "Pack Template.pas": OK
+Finished compiling: OK
 Runing Template[OpenGL]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
@@ -39,13 +39,13 @@ Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои програм
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackVecTypes.pas"
-Template[OpenGL]: Finished compiling "PackVecTypes.pas": OK
+Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[PackVecTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[PackVecTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackMtrTypes.pas"
-Template[OpenGL]: Finished compiling "PackMtrTypes.pas": OK
+Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[PackMtrTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[PackMtrTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
@@ -53,7 +53,7 @@ Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои програм
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Records.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Records.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackFuncs.pas"
-Template[OpenGL]: Finished compiling "PackFuncs.pas": OK
+Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[PackFuncs.pas]
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: Misc loading
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: Loading core funcs
@@ -226,7 +226,7 @@ Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои програм
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackMtrExt.pas"
-Template[OpenGL]: Finished compiling "PackMtrExt.pas": OK
+Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[PackMtrExt.pas]
 Template[OpenGL]: Finished runing TemplateCommand[PackMtrExt.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
@@ -234,24 +234,24 @@ Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои програм
 Finished runing Template[OpenGL]
 ============================== OpenGLABC ==============================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenGLABC.pas"
-Finished compiling "OpenGLABC.pas": OK
+Finished compiling: OK
 ============================== Testing ==============================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
-Finished compiling "Tester.pas": OK
+Finished compiling: OK
 Runing Tester
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
-Tester: Finished compiling "MatrMlt.pas": OK
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\SimpleAddition.pas"
-Tester: Finished compiling "SimpleAddition.pas": OK
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Простейшие примеры\MatrMlt.pas"
-Tester: Finished compiling "MatrMlt.pas": OK
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Простейшие примеры\SimpleAddition.pas"
-Tester: Finished compiling "SimpleAddition.pas": OK
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Rotate3D.pas"
-Tester: Finished compiling "Mtr.Rotate3D.pas": OK
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
-Tester: Finished compiling "Mtr.Translate.pas": OK
+Tester: Finished compiling: OK
 Tester: Runing Test[Tests\Exec\Mtr.Rotate3D]
 Tester: Finished runing Test[Tests\Exec\Mtr.Rotate3D]
 Tester: Runing Test[Tests\Exec\Mtr.Translate]
