@@ -38,7 +38,7 @@ body {
 		    page select
 \* ============================== */
 
-.clickable-span {
+.arrow-page-root {
 	cursor: pointer;
 }
 .dot-page-root {
@@ -54,7 +54,10 @@ body {
 .ps-folder {
 	display: table;
 }
-
+.ps-folder-name {
+	cursor: pointer;
+    padding: 1;
+}
 .ps-container {
 	margin-left: 7;
 	padding-left: 7;
@@ -63,7 +66,10 @@ body {
 }
 
 .ps-page {
+}
+.ps-page-name {
 	cursor: pointer;
+    padding: 1;
 }
 
 /* ============================== *\

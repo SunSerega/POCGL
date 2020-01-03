@@ -39,7 +39,7 @@ body {
 		    page select
 \* ============================== */
 
-.clickable-span {
+.arrow-page-root {
 	cursor: pointer;
 }
 .dot-page-root {
@@ -55,7 +55,10 @@ body {
 .ps-folder {
 	display: table;
 }
-
+.ps-folder-name {
+	cursor: pointer;
+    padding: 1;
+}
 .ps-container {
 	margin-left: 7;
 	padding-left: 7;
@@ -64,7 +67,10 @@ body {
 }
 
 .ps-page {
+}
+.ps-page-name {
 	cursor: pointer;
+    padding: 1;
 }
 
 /* ============================== *\
@@ -217,6 +223,11 @@ var selected_page = null;
 
 var currently_loading_folder = null;
 
+const selected_name_color = "#eaeaea";
+const  pointed_name_color = "#d1faff";
+
+const is_selected = (name_span)=>(!selected_page || selected_page.name_span!==name_span);
+
 const select_page = (new_page)=>{
 	if (selected_page == new_page) return;
 	fix_element(new_page);
@@ -232,7 +243,7 @@ const select_page = (new_page)=>{
 	{
 		selected_page.hidden = false;
 		let name_span = selected_page.name_span;
-		if (name_span) name_span.style.backgroundColor = "#D0D0D0";
+		if (name_span) name_span.style.backgroundColor = selected_name_color;
 		
 		let tree_obj = new_page.tree_obj.root;
 		while (tree_obj)
@@ -293,11 +304,14 @@ const on_start_folder = (folder_name, root_page)=>{
 		res.body.append(res.state_span);
 		
 		res.name_span = document.createElement("span");
-		res.name_span.className = "clickable-span";
+		res.name_span.className = "ps-folder-name";
 		res.name_span.innerHTML = folder_name;
 		if (root_page) root_page.name_span = res.name_span;
 		res.body.append(res.name_span);
+		//
 		if (root_page) res.name_span.addEventListener("click", ()=>select_page(root_page));
+		res.name_span.addEventListener("mouseenter", ()=>{ if (is_selected(res.name_span)) res.name_span.style.backgroundColor=pointed_name_color; });
+		res.name_span.addEventListener("mouseleave", ()=>{ if (is_selected(res.name_span)) res.name_span.style.backgroundColor="inherit"; });
 		
 		res.container.className = "ps-container";
 		res.body.append(res.container);
@@ -317,16 +331,22 @@ const on_page_added = (page)=>{
 		name:  page.getAttribute("page_name"),
 	};
 	
+	res.cont_div = document.createElement("div");
+	res.cont_div.className = "ps-page";
+	currently_loading_folder.container.append(res.cont_div);
+	
 	res.dot_span = document.createElement("span");
 	res.dot_span.className = "dot-page-root";
 	res.dot_span.innerHTML = String.fromCharCode( 0x2022 );
-	currently_loading_folder.container.append(res.dot_span);
+	res.cont_div.append(res.dot_span);
 	
 	res.name_span = document.createElement("span");
 	res.name_span.innerHTML = res.name + "<br>";
-	res.name_span.className = "ps-page";
+	res.name_span.className = "ps-page-name";
 	res.name_span.addEventListener("click", ()=>select_page(page));
-	currently_loading_folder.container.append(res.name_span);
+	res.name_span.addEventListener("mouseenter", ()=>{ if (is_selected(res.name_span)) res.name_span.style.backgroundColor=pointed_name_color; });
+	res.name_span.addEventListener("mouseleave", ()=>{ if (is_selected(res.name_span)) res.name_span.style.backgroundColor="inherit"; });
+	res.cont_div.append(res.name_span);
 	page.name_span = res.name_span;
 	
 	res.content_ref = page;
@@ -344,7 +364,7 @@ const on_end_folder = ()=>{
 		
 		if ( folder.folders.length || folder.pages.length )
 		{
-			folder.state_span.className = "clickable-span";
+			folder.state_span.className = "arrow-page-root";
 			folder.state_span.addEventListener("click", folder.reverse_state);
 			folder.name_span.addEventListener("dblclick", folder.reverse_state);
 		} else
