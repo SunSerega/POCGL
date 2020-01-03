@@ -4,6 +4,7 @@ uses System.Diagnostics;
 uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 const GitExe = 'C:\Program Files\Git\bin\git.exe';
+var exe_dir := System.IO.Path.GetDirectoryName(GetEXEFileName);
 
 {$region Otp}
 
@@ -20,7 +21,7 @@ MiscUtils.ErrOtp(e);
 procedure CloneRep(key, folder, nick: string);
 begin
   Otp($'Cloning {nick}');
-  folder := GetFullPath(folder, 'Reps');
+  folder := GetFullPath(folder,exe_dir);
   
   var psi := new ProcessStartInfo(GitExe, $'clone --progress -v "{key}" "{folder}"');
   psi.UseShellExecute := false;
@@ -38,7 +39,7 @@ end;
 procedure PullRep(folder, nick: string);
 begin
   Otp($'Pulling {nick}');
-  folder := GetFullPath(folder, 'Reps');
+  folder := GetFullPath(folder,exe_dir);
   
   var psi := new ProcessStartInfo(GitExe, $'pull --progress -v --no-rebase "origin"');
   psi.WorkingDirectory := folder;
@@ -54,6 +55,16 @@ begin
   
   p.WaitForExit;
   Otp($'Done pulling {nick}');
+  
+end;
+
+procedure UpdateRep(key, folder, nick: string);
+begin
+  folder := GetFullPath(folder,exe_dir);
+  
+  if System.IO.Directory.Exists(folder+'\.git') then
+    PullRep (       folder, nick ) else
+    CloneRep( key,  folder, nick );
   
 end;
 

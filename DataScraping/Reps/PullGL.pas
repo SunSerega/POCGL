@@ -1,14 +1,13 @@
 ﻿uses RepUtils;
 
 const RepKey = 'git@github.com:KhronosGroup/OpenGL-Registry.git';
+const folder = 'OpenGL-Registry';
 
 begin
   
   try
     
-    if System.IO.Directory.Exists('Reps\OpenGL-Registry') then
-      PullRep (         'OpenGL-Registry',  'GLRep') else
-      CloneRep(RepKey,  'OpenGL-Registry',  'GLRep');
+    UpdateRep(RepKey, folder, 'GLRep');
     
   except
     on e: Exception do ErrOtp(e);
