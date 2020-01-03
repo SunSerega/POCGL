@@ -53,6 +53,7 @@ type
     comp_err: string := nil;
     
     static all_loaded := new List<TestInfo>;
+    static test_folders := new List<string>;
     
     {$region Load}
     
@@ -133,6 +134,7 @@ type
       
       foreach var dir in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
       begin
+        test_folders += dir;
         System.IO.File.Copy( 'OpenCL.pcu',    dir+'\OpenCL.pcu',    true );
         System.IO.File.Copy( 'OpenCLABC.pcu', dir+'\OpenCLABC.pcu', true );
         System.IO.File.Copy( 'OpenGL.pcu',    dir+'\OpenGL.pcu',    true );
@@ -306,7 +308,7 @@ type
       
     end;
     
-    static procedure ReSaveAll;
+    static procedure Cleanup;
     begin
       
       foreach var t in all_loaded do
@@ -332,6 +334,14 @@ type
           Otp($'File "{t.td_fname}" updated');
         end;
       
+      foreach var dir in test_folders do
+      begin
+        System.IO.File.Copy( 'OpenCL.pcu',    dir+'\OpenCL.pcu',    true );
+        System.IO.File.Copy( 'OpenCLABC.pcu', dir+'\OpenCLABC.pcu', true );
+        System.IO.File.Copy( 'OpenGL.pcu',    dir+'\OpenGL.pcu',    true );
+        System.IO.File.Copy( 'OpenGLABC.pcu', dir+'\OpenGLABC.pcu', true );
+      end;
+      
     end;
     
   end;
@@ -345,7 +355,8 @@ begin
     
     TestInfo.CompAll;
     TestInfo.ExecAll;
-    TestInfo.ReSaveAll;
+    
+    TestInfo.Cleanup;
     
     Otp('Done testing');
     

@@ -150,7 +150,7 @@ begin
     end;
     
     if block_lvl>0 then continue;
-    ind := Max(Max( l.IndexOf('record'), l.Replace('class;','cvass;').IndexOf('class') ), l.IndexOf('interface') );
+    ind := Max(Max( l.IndexOf('record'), l.Replace('class;','cvass;').IndexOf('class') ), l.Replace('interface;','underface;').IndexOf('interface') );
     if ind<>-1 then
     begin
       var ind2 := l.LastIndexOf('=',ind)-1;

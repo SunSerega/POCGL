@@ -92,7 +92,8 @@ type
   
 begin
   try
-    CommandLineArgs := Arr('fname=OpenCLABC');
+    if not CommandLineArgs.Contains('SecondaryProc') then CommandLineArgs := Arr('fname=OpenCLABC');
+    
     var fname := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
     if fname=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
     fname := fname.SubString('fname='.Length);
@@ -110,7 +111,7 @@ begin
       begin
         if last_line<>nil then res.WriteLine(last_line);
         last_line := CommentData.Apply(l);
-        Result := true;
+        Result := not l.TrimStart(' ').StartsWith('///');
       end,
       c->
       begin
