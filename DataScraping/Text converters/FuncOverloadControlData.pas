@@ -2,6 +2,8 @@
 
 interface
 
+uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+
 type
   
   {$region Base types}
@@ -208,7 +210,7 @@ begin
   Result := new LVL0ChangeController;
   AllLoaded.Add(func_name, Result);
   
-  if not System.IO.File.Exists(file_name) then WriteAllText(file_name,#10,new System.Text.UTF8Encoding(true));
+  if not System.IO.File.Exists(file_name) then WriteAllText(file_name, #10, new System.Text.UTF8Encoding(true));
   System.IO.File.AppendAllLines(file_name,Seq($'F%{func_name}','T%0',''));
   
 end;

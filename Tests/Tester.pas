@@ -131,6 +131,7 @@ type
     
     static procedure LoadAll(path: string; exp_mode: string);
     begin
+      if not System.IO.Directory.Exists(path) then exit;
       
       foreach var dir in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
       begin
