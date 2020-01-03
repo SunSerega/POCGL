@@ -336,10 +336,10 @@ type
       
       foreach var dir in test_folders do
       begin
-        System.IO.File.Copy( 'OpenCL.pcu',    dir+'\OpenCL.pcu',    true );
-        System.IO.File.Copy( 'OpenCLABC.pcu', dir+'\OpenCLABC.pcu', true );
-        System.IO.File.Copy( 'OpenGL.pcu',    dir+'\OpenGL.pcu',    true );
-        System.IO.File.Copy( 'OpenGLABC.pcu', dir+'\OpenGLABC.pcu', true );
+        System.IO.File.Delete( dir+'\OpenCL.pcu'    );
+        System.IO.File.Delete( dir+'\OpenCLABC.pcu' );
+        System.IO.File.Delete( dir+'\OpenGL.pcu'    );
+        System.IO.File.Delete( dir+'\OpenGLABC.pcu' );
       end;
       
     end;
