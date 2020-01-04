@@ -1,0 +1,1 @@
+var k := code['KernelName'];

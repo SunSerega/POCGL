@@ -1,0 +1,1 @@
+var q: CommandQueueBase := 5 as object;

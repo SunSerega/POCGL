@@ -1,0 +1,3 @@
+var q0: CommandQueue<Buffer>;
+...
+var q := new BufferCommandQueue(q0);
