@@ -1,6 +1,5 @@
 Executing default stages:
 Spec + CL + CLABC + GL + GLABC + Test + Release
-Cleared 12 files
 ====================================== Specs =====================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Spec\SpecPacker.pas"
 Finished compiling: OK
@@ -237,7 +236,7 @@ Finished runing Template[OpenGL]
 ==================================== OpenGLABC ===================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenGLABC.pas"
 Finished compiling: OK
-==================================== MiscInit ====================================
+==================================== Pre Init ====================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
 Finished compiling: OK
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Doc\PackComments.pas"

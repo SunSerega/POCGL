@@ -96,7 +96,7 @@ begin
           c += 1;
         end;
         
-        if c<>0 then Otp($'Cleared {c} files');
+//        if c<>0 then Otp($'Cleared {c} files');
       end)
     ;
     
@@ -139,7 +139,7 @@ begin
       {$endregion TemplatePacker}
       
       T_MiscInit :=
-        TitleTask('MiscInit')
+        TitleTask('Pre Init')
         +
         
         T_Tester *
