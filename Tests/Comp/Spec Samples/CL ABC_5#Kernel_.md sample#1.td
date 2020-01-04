@@ -1,8 +1,10 @@
 ﻿
 
 
-#ExpErr
-Compile errors:
-[9,5] CL ABC_5#Kernel_.md sample#1.pas: Resource file '0.cl' not found
+#TestMode
+Comp+Exec
+
+#ExpOtp
+1 2 3 4 5 6 7 8 9 10
 
 
