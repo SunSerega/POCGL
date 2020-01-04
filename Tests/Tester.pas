@@ -325,8 +325,8 @@ type
               Otp($'WARNING: setting {key} was deleted from "{t.td_fname}"') else
             begin
               sw.WriteLine;
-              sw.Write(t.all_settings[key]);
-              sw.WriteLine;
+              sw.WriteLine(key);
+              sw.WriteLine(t.all_settings[key]);
             end;
           
           sw.WriteLine;

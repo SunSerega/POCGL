@@ -263,10 +263,9 @@ begin
   MiscUtils.Otp($'Runing {nick}');
   
   var psi := new ProcessStartInfo(fname, pars.Append('"SecondaryProc"').JoinIntoString);
-  fname := fname.Substring(fname.LastIndexOf('\')+1);
-//  fname := fname.Remove(fname.LastIndexOf('.'));
   psi.UseShellExecute := false;
   psi.RedirectStandardOutput := true;
+  psi.WorkingDirectory := System.IO.Path.GetDirectoryName(fname);
   
   var p := new Process;
   lock sec_procs do sec_procs += p;

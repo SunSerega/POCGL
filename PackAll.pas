@@ -1,10 +1,58 @@
 ﻿program prog;
 
+// АРГУМЕНТЫ КОМАНДНОЙ СТРОКИ:
+// 
+// - "SecondaryProc" | что то вроде тихого режима:
+//   - Readln в конце НЕТУ
+//   - Halt возвращает код исключения, при ошибке
+//   - Данные о замерах времени в конце не выводятся
+// 
+// - "StagesOnly=...+...+..." | запускает только указанные стадии упаковки
+//   - "FirstPack"  - Датаскрапинг спецификаций и исходников. Следует проводить только 1 раз, единственная по-умолчанию выключенная стадия
+//   - "Spec"       - Упаковка справок
+//   - "CL"         - Упаковка "OpenCL.pas"
+//   - "CLABC"      - Упаковка "OpenCLABC.pas"
+//   - "GL"         - Упаковка "OpenGL.pas"
+//   - "GLABC"      - Упаковка "OpenGLABC.pas"
+//   - "Test"       - Тестирование (вообще можно запускать тестер напрямую)
+//   - "Release"    - Создание и наполнение папки Release, а так же копирование чего надо в ProgramFiles
+// === к примеру: "StagesOnly=CLABC+Test+Release"
+// === лишние пробелы по краям имён стадий допускаются, но "StagesOnly=" должно быть слитно и без пробелов в начале
+// 
+
+uses System.Threading;
 uses System.Threading.Tasks;
+uses System.IO;
 uses MiscUtils in 'Utils\MiscUtils.pas';
+
+function EmptyTask := ProcTask(()->exit());
+
+function TitleTask(title: string): SecThrProc;
+begin
+  var c := 80-title.Length;
+  var c2 := c div 2;
+  var c1 := c-c2;
+  
+  var sb := new StringBuilder;
+  sb.Append('=',c1);
+  sb += ' ';
+  sb += title;
+  sb += ' ';
+  sb.Append('=',c2);
+  title := sb.ToString;
+  
+  Result := ProcTask(()->Otp(title));
+end;
+
+function SetEvTask(ev: ManualResetEvent) := ProcTask(()->begin ev.Set() end);
+function EventTask(ev: ManualResetEvent) := ProcTask(()->begin ev.WaitOne() end);
 
 begin
   try
+    //ToDo FirstPack
+    
+    {$region Load}
+    
     log_file := 'LastPack.log';
     timed_log_file := 'LastPack (timed).log';
     System.IO.File.Delete(log_file);
@@ -14,105 +62,300 @@ begin
     
     // ====================================================
     
-    System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pcu', System.IO.SearchOption.AllDirectories).ForEach(System.IO.File.Delete);
-    System.IO.Directory.EnumerateFiles(GetCurrentDir, '*.pdb', System.IO.SearchOption.AllDirectories).Where(fname->not fname.EndsWith('PackAll.pdb')).ForEach(System.IO.File.Delete);
+    var stages: HashSet<string>;
+    begin
+      var arg := CommandLineArgs.SingleOrDefault(arg->arg.StartsWith('StagesOnly='));
+      
+      if arg=nil then
+      begin
+        stages := HSet('Spec', 'CL', 'CLABC', 'GL', 'GLABC', 'Test', 'Release');
+        Otp($'Executing default stages:');
+      end else
+      begin
+        stages := arg.Remove(0,'StagesOnly='.Length).Split('+').Select(st->st.Trim).ToHashSet;
+        Otp($'Executing only stages:');
+      end;
+      
+      Otp(stages.JoinIntoString(' + '));
+    end;
     
-    // ====================================================
+    {$endregion Load}
     
-    var T_MiscInit :=
-      ProcTask(()->exit()) // ToDo
+    {$region MiscClear}
+    
+    var T_MiscClear :=
+      ProcTask(()->
+      begin
+        var c := 0;
+        
+        foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
+        begin
+          try
+            System.IO.File.Delete(fname);
+          except end;
+          c += 1;
+        end;
+        
+        if c<>0 then Otp($'Cleared {c} files');
+      end)
     ;
     
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    {$endregion MiscClear}
     
-    var T_Spec :=
-      ProcTask(()->Otp('='*30 + ' Specs ' + 30*'=')) +
+    {$region MiscInit}
+    var T_MiscInit: SecThrProc;
+    
+    var E_Tester          := new ManualResetEvent(false);
+    var E_DocPacker       := new ManualResetEvent(false);
+    var E_TemplatePacker  := new ManualResetEvent(false);
+    
+    begin
+      
+      {$region Tester}
+      
+      var T_Tester := not stages.Contains('Test') ? EmptyTask :
+        CompTask('Tests\Tester.pas') +
+        SetEvTask(E_Tester)
+      ;
+      
+      {$endregion Tester}
+      
+      {$region DocPacker}
+      
+      var T_DocPacker := not Arr('CLABC').Any(st->stages.Contains(st)) ? EmptyTask :
+        CompTask('Packing\Doc\PackComments.pas') +
+        SetEvTask(E_DocPacker)
+      ;
+      
+      {$endregion DocPacker}
+      
+      {$region TemplatePacker}
+      
+      var T_TemplatePacker := not Arr('GL').Any(st->stages.Contains(st)) ? EmptyTask :
+        CompTask('Packing\Template\Pack Template.pas') +
+        SetEvTask(E_TemplatePacker)
+      ;
+      
+      {$endregion TemplatePacker}
+      
+      T_MiscInit :=
+        TitleTask('MiscInit')
+        +
+        
+        T_Tester *
+        T_DocPacker *
+        T_TemplatePacker
+        
+        +
+        EmptyTask()
+      ;
+      
+    end;
+    {$endregion MiscInit}
+    
+    {$region Spec}
+    
+    var T_Spec := not stages.Contains('Spec') ? EmptyTask :
+      TitleTask('Specs') +
       ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker')
     ;
     
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    {$endregion Spec}
     
-    var T_CL :=
-      ProcTask(()->Otp('='*30 + ' OpenCL ' + 30*'=')) +
-      ProcTask(()->exit()) // ToDo
+    {$region CL}
+    
+    var T_CL := not stages.Contains('CL') ? EmptyTask :
+      TitleTask('OpenCL') +
+      EmptyTask // ToDo
     ;
     
-    var T_CLABC :=
-      ProcTask(()->Otp('='*30 + ' OpenCLABC ' + 30*'=')) +
+    var T_CLABC := not stages.Contains('CLABC') ? EmptyTask :
+      TitleTask('OpenCLABC') +
       CompTask('OpenCLABC.pas') +
-      ExecTask('Packing\Doc\PackComments.pas', 'Comments[OpenCLABC]', 'fname=OpenCLABC')
+      EventTask(E_DocPacker) +
+      ExecTask('Packing\Doc\PackComments.exe', 'Comments[OpenCLABC]', 'fname=OpenCLABC')
     ;
     
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    {$endregion CL}
     
-    var T_GL :=
-      ProcTask(()->Otp('='*30 + ' OpenGL ' + 30*'=')) +
-      ExecTask('Packing\Template\Pack Template.pas', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
+    {$region GL}
+    
+    var T_GL := not stages.Contains('GL') ? EmptyTask :
+      TitleTask('OpenGL') +
+      EventTask(E_TemplatePacker) +
+      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
       ProcTask(()->System.IO.File.Delete('OpenGL.pas')) +
       ProcTask(()->System.IO.File.Move('Packing\Template\GL\0OpenGL.pas', 'OpenGL.pas')) +
       ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', enc).Replace(#10,#13#10), enc))
     ;
     
-    var T_GLABC :=
-      ProcTask(()->Otp('='*30 + ' OpenGLABC ' + 30*'=')) +
+    var T_GLABC := not stages.Contains('GLABC') ? EmptyTask :
+      TitleTask('OpenGLABC') +
       CompTask('OpenGLABC.pas')
     ;
     
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    {$endregion GL}
     
-    var T_Test :=
-      ProcTask(()->Otp('='*30 + ' Testing ' + 30*'=')) +
-      ExecTask('Tests\Tester.pas', 'Tester')
+    {$region Test}
+    
+    var T_Test := not stages.Contains('Test') ? EmptyTask :
+      TitleTask('Testing') +
+      EventTask(E_Tester) +
+      ExecTask('Tests\Tester.exe', 'Tester')
     ;
     
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    {$endregion Test}
+    
+    {$region Release}
+    var T_Release: SecThrProc;
+    if not stages.Contains('Release') then
+      T_Release := EmptyTask else
+    begin
+      
+      {$region Clear}
+      
+      var T_Clear :=
+        ProcTask(()->
+        begin
+          if System.IO.Directory.Exists('Release') then
+            System.IO.Directory.Delete('Release', true);
+        end)
+      ;
+      
+      {$endregion Clear}
+      
+      {$region CopyModules}
+      
+      var T_CopyModules :=
+        ProcTask(()->
+        begin
+          System.IO.Directory.CreateDirectory('Release\bin\Lib');
+          var mns := Lst('OpenCL','OpenCLABC','OpenGL','OpenGLABC');
+          mns.RemoveAll(mn->not stages.Contains(mn.SubString(4)));
+          
+          var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
+          var copy_to_pf := Directory.Exists(pf_dir);
+          if not copy_to_pf then Otp($'WARNING: Dir "{pf_dir}" not found, skiping pf release copy');
+          
+          foreach var mn in mns do
+          begin
+            var fname := $'Packing\Doc\{mn}.res.pas';
+            
+            if FileExists(fname) then
+              Otp($'Packing {mn}.pas with doc') else
+            begin
+              fname := $'{mn}.pas';
+              if FileExists(fname) then
+                Otp($'Packing {fname}') else
+                raise new MessageException($'ERROR: {fname} not found!');
+            end;
+            
+            System.IO.File.Copy( fname, $'Release\bin\Lib\{mn}.pas' );
+            if copy_to_pf then System.IO.File.Copy( fname, $'{pf_dir}\LibSource\{mn}.pas', true );
+          end;
+          
+          if copy_to_pf then
+            foreach var mn in mns do
+            begin
+              var fname := $'{mn}.pcu';
+              
+              if FileExists(fname) then
+                System.IO.File.Copy( fname, $'{pf_dir}\Lib\{mn}.pcu', true ) else
+                Otp($'WARNING: {fname} not found!');
+              
+            end;
+          
+          Otp($'Done copying release modules');
+        end)
+      ;
+      
+      {$endregion CopyModules}
+      
+      {$region CopySamples}
+      
+      var T_CopySamples :=
+        ProcTask(()->
+        begin
+          var c := 0;
+          
+          System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
+          .Where(fname->Path.GetExtension(fname) in ['.pas', '.cl'])
+          .Where(fname->not (Path.GetFileNameWithoutExtension(fname) in [
+            'OpenCL', 'OpenCLABC',
+            'OpenGL', 'OpenGLABC'
+          ]))
+          .ForEach(fname->
+          begin
+            Otp($'Packing sample "{fname}"');
+            var res_f_name := 'Release\InstallerSamples\OpenCL и OpenGL'+fname.Substring('Samples'.Length);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_f_name));
+            System.IO.File.Copy(fname, res_f_name);
+            c += 1;
+          end);
+          
+          Otp($'Packed {c} samples');
+        end)
+      ;
+      
+      {$endregion CopySamples}
+      
+      {$region CopySpec}
+      
+      var T_CopySpec :=
+        ProcTask(()->
+        begin
+          var c := 0;
+          System.IO.Directory.CreateDirectory('Release\InstallerSamples\OpenCL и OpenGL');
+          
+          foreach var spec in Arr('Справка OpenGLABC', 'Справка OpenCLABC', 'Гайд по использованию OpenCL и OpenGL') do
+          begin
+            var fname := $'Packing\Spec\{spec}.html';
+            if FileExists(fname) then
+            begin
+              Otp($'Packing spec "{fname}"');
+              System.IO.File.Copy( fname, $'Release\InstallerSamples\OpenCL и OpenGL\{spec}.html' );
+              c += 1;
+            end else
+              Otp($'WARNING: spec file {fname} not found!');
+            
+          end;
+          
+          Otp($'Packed {c} spec files');
+        end)
+      ;
+      
+      {$endregion CopySpec}
+      
+      T_Release :=
+        TitleTask('Release') +
+        T_Clear
+        +
+        
+        T_CopyModules *
+        T_CopySamples *
+        T_CopySpec
+        
+        +
+        EmptyTask()
+      ;
+    end;
+    {$endregion Release}
+    
+    {$region ExecAll}
     
     (
-      T_MiscInit
+      T_MiscClear
       +
       
       T_Spec *
-      (T_CL + T_CLABC) *
-      (T_GL + T_GLABC)
+      ( T_CL + T_CLABC ) *
+      ( T_GL + T_GLABC ) *
+      
+      T_MiscInit
       
       +
-      T_Test
+      ( T_Test + T_Release )
     ).SyncExec;
-    
-    // ====================================================
-    Otp('='*30 + ' Release ' + 30*'=');
-    
-    if System.IO.Directory.Exists('Release') then
-      System.IO.Directory.Delete('Release', true);
-    
-    System.IO.Directory.CreateDirectory('Release\bin\Lib');
-    System.IO.File.Copy(             'OpenCL.pas',        'Release\bin\Lib\OpenCL.pas'    );
-    System.IO.File.Copy( 'Packing\Doc\OpenCLABC.res.pas', 'Release\bin\Lib\OpenCLABC.pas' );
-    System.IO.File.Copy(             'OpenGL.pas',        'Release\bin\Lib\OpenGL.pas'    );
-    System.IO.File.Copy(             'OpenGLABC.pas',     'Release\bin\Lib\OpenGLABC.pas' );
-    
-    System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
-    .Where(fname->
-      fname.EndsWith('.pas') or
-      fname.EndsWith('.cl') or
-      fname.EndsWith('.txt')
-    ).Where(fname->not (System.IO.Path.GetFileNameWithoutExtension(fname) in [
-      'OpenCL', 'OpenCLABC',
-      'OpenGL', 'OpenGLABC'
-    ]))
-    .ForEach(fname->
-    begin
-      Otp($'Packing sample "{fname}"');
-      var res_f_name := 'Release\InstallerSamples\OpenCL и OpenGL'+fname.Substring('Samples'.Length);
-      System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_f_name));
-      System.IO.File.Copy(fname, res_f_name);
-    end);
-    
-    System.IO.File.Copy( 'Packing\Spec\Справка OpenCLABC.html',                     'Release\InstallerSamples\OpenCL и OpenGL\Справка OpenCLABC.html' );
-    System.IO.File.Copy( 'Packing\Spec\Справка OpenGLABC.html',                     'Release\InstallerSamples\OpenCL и OpenGL\Справка OpenGLABC.html' );
-    System.IO.File.Copy( 'Packing\Spec\Гайд по использованию OpenCL и OpenGL.html', 'Release\InstallerSamples\OpenCL и OpenGL\Гайд по использованию OpenCL и OpenGL.html' );
-    
-    // ====================================================
     
     Otp('done packing');
     if not CommandLineArgs.Contains('SecondaryProc') then
@@ -120,6 +363,8 @@ begin
       Timers.LogAll;
       Readln;
     end;
+    
+    {$endregion ExecAll}
     
   except
     on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;

@@ -1,4 +1,7 @@
-============================== Specs ==============================
+Executing default stages:
+Spec + CL + CLABC + GL + GLABC + Test + Release
+Cleared 12 files
+====================================== Specs =====================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Spec\SpecPacker.pas"
 Finished compiling: OK
 Runing SpecPacker
@@ -9,11 +12,9 @@ SpecPacker: Done packing spec "Справка OpenCLABC"
 SpecPacker: Packing spec "Справка OpenGLABC"
 SpecPacker: Done packing spec "Справка OpenGLABC"
 Finished runing SpecPacker
-============================== OpenCL ==============================
-============================== OpenCLABC ==============================
+===================================== OpenCL =====================================
+==================================== OpenCLABC ===================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
-Finished compiling: OK
-Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Doc\PackComments.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
 Comments[OpenCLABC]: WARNING: key %__HostQueue<T>% wasn't used!
@@ -26,9 +27,7 @@ Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddWait(CommandQueueBase, 
 Comments[OpenCLABC]: WARNING: key %cq.Clone% wasn't used!
 Comments[OpenCLABC]: WARNING: key %gcc.AddWait% wasn't used!
 Finished runing Comments[OpenCLABC]
-============================== OpenGL ==============================
-Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\Pack Template.pas"
-Finished compiling: OK
+===================================== OpenGL =====================================
 Runing Template[OpenGL]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
@@ -102,9 +101,12 @@ Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXCreateWindow
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXDestroyPbuffer" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXDestroyPixmap" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXDestroyWindow" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glFramebufferParameteriMESA" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXGetCurrentReadDrawable" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXGetFBConfigAttrib" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXGetFBConfigs" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glGetFramebufferParameterivMESA" not found in core nor in exts
+Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glGetInteger64vEXT" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXGetProcAddress" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXGetProcAddressARB" not found in core nor in exts
 Template[OpenGL]: TemplateCommand[PackFuncs.pas]: WARNING: func "glXGetVisualFromFBConfig" not found in core nor in exts
@@ -232,12 +234,17 @@ Template[OpenGL]: Finished runing TemplateCommand[PackMtrExt.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
 Finished runing Template[OpenGL]
-============================== OpenGLABC ==============================
+==================================== OpenGLABC ===================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenGLABC.pas"
 Finished compiling: OK
-============================== Testing ==============================
+==================================== MiscInit ====================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Tester.pas"
 Finished compiling: OK
+Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Doc\PackComments.pas"
+Finished compiling: OK
+Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\Pack Template.pas"
+Finished compiling: OK
+===================================== Testing ====================================
 Runing Tester
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
 Tester: Finished compiling: OK
@@ -252,13 +259,22 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\Mtr.Translate.pas"
 Tester: Finished compiling: OK
+Tester: Runing Test[Samples\OpenCLABC\Простейшие примеры\MatrMlt]
+Tester: Finished runing Test[Samples\OpenCLABC\Простейшие примеры\MatrMlt]
+Tester: Runing Test[Samples\OpenCLABC\Простейшие примеры\SimpleAddition]
+Tester: Finished runing Test[Samples\OpenCLABC\Простейшие примеры\SimpleAddition]
 Tester: Runing Test[Tests\Exec\Mtr.Rotate3D]
 Tester: Finished runing Test[Tests\Exec\Mtr.Rotate3D]
 Tester: Runing Test[Tests\Exec\Mtr.Translate]
 Tester: Finished runing Test[Tests\Exec\Mtr.Translate]
 Tester: Done testing
 Finished runing Tester
-============================== Release ==============================
+===================================== Release ====================================
+Packing OpenCL.pas
+Packing OpenCLABC.pas with doc
+Packing OpenGL.pas
+Packing OpenGLABC.pas
+Done copying release modules
 Packing sample "Samples\OpenCL\MatrMlt.cl"
 Packing sample "Samples\OpenCL\MatrMlt.pas"
 Packing sample "Samples\OpenCL\SimpleAddition.cl"
@@ -270,4 +286,9 @@ Packing sample "Samples\OpenCLABC\Простейшие примеры\SimpleAddi
 Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Packing sample "Samples\OpenGL\Тетрис\GraphEngine.pas"
 Packing sample "Samples\OpenGL\Тетрис\Тетрис.pas"
+Packed 11 samples
+Packing spec "Packing\Spec\Справка OpenGLABC.html"
+Packing spec "Packing\Spec\Справка OpenCLABC.html"
+Packing spec "Packing\Spec\Гайд по использованию OpenCL и OpenGL.html"
+Packed 3 spec files
 done packing
