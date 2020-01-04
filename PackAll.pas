@@ -1,5 +1,10 @@
 ﻿program prog;
 
+uses System.Threading;
+uses System.Threading.Tasks;
+uses System.IO;
+uses MiscUtils in 'Utils\MiscUtils.pas';
+
 // АРГУМЕНТЫ КОМАНДНОЙ СТРОКИ:
 // 
 // - "SecondaryProc" | что то вроде тихого режима:
@@ -19,11 +24,6 @@
 // === к примеру: "StagesOnly=CLABC+Test+Release"
 // === лишние пробелы по краям имён стадий допускаются, но "StagesOnly=" должно быть слитно и без пробелов в начале
 // 
-
-uses System.Threading;
-uses System.Threading.Tasks;
-uses System.IO;
-uses MiscUtils in 'Utils\MiscUtils.pas';
 
 function AllModules := Lst('OpenCL','OpenCLABC','OpenGL','OpenGLABC');
 

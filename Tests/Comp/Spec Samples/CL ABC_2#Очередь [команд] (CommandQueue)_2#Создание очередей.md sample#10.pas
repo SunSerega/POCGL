@@ -20,11 +20,16 @@ begin
     A.Println;
   end);
   
+  try
   Context.Default.SyncInvoke(
     Q_BuffWrite +
     Q_BuffRead +
     Q_Otp
   );
+    
+  except
+    on e: Exception do Writeln(e);
+  end;
   
   // Этот же код ещё раз, но без явных очередей
   // Неявно - каждый метод .Write*** и .Read*** всё равно создаёт по очереди

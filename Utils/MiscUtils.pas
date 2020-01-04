@@ -501,19 +501,42 @@ new SecThrProcSum(p1,p2);
 function operator*(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
 new SecThrProcMlt(p1,p2);
 
-function ProcTask(p: Action0) :=
+function ProcTask(p: Action0): SecThrProc :=
 new SecThrProcCustom(p);
 
 function CompTask(fname: string) :=
-new SecThrProcCustom(()->CompilePasFile(fname));
+ProcTask(()->CompilePasFile(fname));
 
 function ExecTask(fname, nick: string; params pars: array of string) :=
-new SecThrProcCustom(()->ExecuteFile(fname, nick, pars));
+ProcTask(()->ExecuteFile(fname, nick, pars));
 
 function EmptyTask := ProcTask(()->exit());
 
 function SetEvTask(ev: ManualResetEvent) := ProcTask(()->begin ev.Set() end);
 function EventTask(ev: ManualResetEvent) := ProcTask(()->begin ev.WaitOne() end);
+
+function CombineAsyncTask(self: sequence of SecThrProc): SecThrProc; extensionmethod;
+begin
+  Result := EmptyTask;
+  
+  var evs := new List<ManualResetEvent>;
+  foreach var t in self do
+  begin
+    var ev := new ManualResetEvent(false);
+    evs += ev;
+    
+    var T_Wait: SecThrProc := EmptyTask;
+    foreach var pev in evs.SkipLast(System.Environment.ProcessorCount+1) do T_Wait:=T_Wait + EventTask(pev);
+    
+    var T_ver :=
+      T_Wait + t +
+      SetEvTask(ev)
+    ;
+    
+    Result := Result * T_ver;
+  end;
+  
+end;
 
 {$endregion Task operations}
 

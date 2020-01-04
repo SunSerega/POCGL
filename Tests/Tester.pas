@@ -49,9 +49,6 @@ type
     expected_comp_err: string;
     expected_otp: string;
     
-    comp_otp: ThrProcOtp;
-    comp_err: string := nil;
-    
     static all_loaded := new List<TestInfo>;
     static test_folders := new List<string>;
     
@@ -170,13 +167,6 @@ type
         
         {$endregion Settings}
         
-        if t.test_mode.Contains('Comp') then
-        begin
-          var ct := ProcTask(()->CompilePasFile(t.pas_fname, Otp, err->begin t.comp_err := err end));
-          ct.StartExec;
-          t.comp_otp := ct.own_otp;
-        end;
-        
         all_loaded += t;
       except
         on TestCanceledException do ;
@@ -189,72 +179,74 @@ type
     static procedure CompAll;
     begin
       
-      foreach var t in all_loaded do
-        if t.test_mode.Contains('Comp') then
-        try
-          var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
+      all_loaded.Where(t->t.test_mode.Contains('Comp'))
+      .Select(t->ProcTask(()->
+      try
+        var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
+        
+        var comp_err: string := nil;
+        CompilePasFile(t.pas_fname, Otp, err->begin comp_err := err end);
+        
+        if comp_err<>nil then
+        begin
+          Otp('Finished compiling: ERRОR');
           
-          foreach var l in t.comp_otp.Enmr do Otp(l);
-          var comp_err := t.comp_err;
-          
-          if comp_err<>nil then
-          begin
-            Otp('Finished compiling: ERRОR');
-            
-            if t.expected_comp_err=nil then
-              case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
-                
-                DialogResult.Yes:
-                begin
-                  t.all_settings['#ExpErr'] := comp_err;
-                  t.used_settings += '#ExpErr';
-                  t.resave_settings := true;
-                  Otp($'%WARNING: settings updated for "{fwoe}.td"');
-                end;
-                
-                DialogResult.No: ;
-                
-                DialogResult.Cancel: Halt;
-              end else
+          if t.expected_comp_err=nil then
+            case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
               
-            if t.expected_comp_err<>comp_err then
-              case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
-                
-                DialogResult.Yes:
-                begin
-                  t.all_settings['#ExpErr'] := comp_err;
-                  t.resave_settings := true;
-                  Otp($'%WARNING: settings updated for "{fwoe}.td"');
-                end;
-                
-                DialogResult.No: ;
-                
-                DialogResult.Cancel: Halt;
+              DialogResult.Yes:
+              begin
+                t.all_settings['#ExpErr'] := comp_err;
+                t.used_settings += '#ExpErr';
+                t.resave_settings := true;
+                Otp($'%WARNING: settings updated for "{fwoe}.td"');
               end;
+              
+              DialogResult.No: ;
+              
+              DialogResult.Cancel: Halt;
+            end else
             
-          end else
-          begin
-            
-            if t.expected_comp_err<>nil then
-              case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
-                
-                DialogResult.Yes:
-                begin
-                  t.all_settings.Remove('#ExpErr');
-                  t.resave_settings := true;
-                  Otp($'%WARNING: settings updated for "{fwoe}.td"');
-                end;
-                
-                DialogResult.No: ;
-                
-                DialogResult.Cancel: Halt;
+          if t.expected_comp_err<>comp_err then
+            case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
+              
+              DialogResult.Yes:
+              begin
+                t.all_settings['#ExpErr'] := comp_err;
+                t.resave_settings := true;
+                Otp($'%WARNING: settings updated for "{fwoe}.td"');
               end;
-            
-          end;
+              
+              DialogResult.No: ;
+              
+              DialogResult.Cancel: Halt;
+            end;
           
-        except
-          on TestCanceledException do ;
+        end else
+        begin
+          
+          if t.expected_comp_err<>nil then
+            case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
+              
+              DialogResult.Yes:
+              begin
+                t.all_settings.Remove('#ExpErr');
+                t.resave_settings := true;
+                Otp($'%WARNING: settings updated for "{fwoe}.td"');
+              end;
+              
+              DialogResult.No: ;
+              
+              DialogResult.Cancel: Halt;
+            end;
+          
         end;
+        
+      except
+        on TestCanceledException do ;
+      end))
+      .CombineAsyncTask
+      .SyncExec;
       
     end;
     

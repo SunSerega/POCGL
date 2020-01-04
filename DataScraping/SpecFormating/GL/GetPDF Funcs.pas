@@ -372,9 +372,6 @@ end;
 
 begin
   try
-    var T_Pdfs: SecThrProc := EmptyTask;
-    
-    var evs := new List<ManualResetEvent>;
     
     ReadLines(GetFullPath('..\versions order.dat',GetEXEFileName))
     .Where(l->l.Contains('='))
@@ -385,28 +382,10 @@ begin
 //    .TakeLast(1)
 //    .Skip(3)
     
-    .ForEach(l->
-    begin
-      var ev := new ManualResetEvent(false);
-      evs += ev;
-      
-      var T_Wait: SecThrProc := EmptyTask;
-      foreach var pev in evs.SkipLast(System.Environment.ProcessorCount+1) do T_Wait:=T_Wait + EventTask(pev);
-      
-      var T_Exec := ProcTask(()->
-        ProcessPdf(GetFullPath($'..\..\..\Reps\OpenGL-Registry\specs\gl\glspec{l[1]}.pdf',GetEXEFileName), l[0])
-      );
-      
-      var T_ver :=
-        T_Wait +
-        T_Exec +
-        SetEvTask(ev)
-      ;
-      
-      T_Pdfs := T_Pdfs * T_ver;
-    end);
-    
-    T_Pdfs.SyncExec;
+    .Select(l->ProcTask(()->
+      ProcessPdf(GetFullPath($'..\..\..\Reps\OpenGL-Registry\specs\gl\glspec{l[1]}.pdf',GetEXEFileName), l[0])
+    )).CombineAsyncTask
+    .SyncExec;
     
     if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
   except
