@@ -207,6 +207,7 @@ type
                 DialogResult.Yes:
                 begin
                   t.all_settings['#ExpErr'] := comp_err;
+                  t.used_settings += '#ExpErr';
                   t.resave_settings := true;
                   Otp($'%WARNING: settings updated for "{fwoe}.td"');
                 end;

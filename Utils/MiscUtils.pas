@@ -303,6 +303,11 @@ begin
       if exp_time_marks then thr_otp_sq := thr_otp_sq.Select(l->
       begin
         var ind := l.s.IndexOf(' | ');
+        if ind=-1 then
+        begin
+          Result := l;
+          exit;
+        end;
         Result := new OtpLine;
         Result.t := start_time_mark+int64.Parse(l.s.Remove(ind).Remove('.'));
         Result.s := l.s.Remove(0, ind+3);

@@ -1,1 +1,0 @@
-Event_Callback = procedure(&event: cl_event; event_command_exec_status: CommandExecutionStatus; user_data: pointer);
