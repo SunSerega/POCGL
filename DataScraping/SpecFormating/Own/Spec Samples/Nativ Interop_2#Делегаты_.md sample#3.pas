@@ -1,4 +1,4 @@
-uses OpenCL;
+﻿uses OpenCL;
 
 begin
   

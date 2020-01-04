@@ -296,19 +296,20 @@ begin
           
           foreach var mn in mns do
           begin
-            var fname := $'Packing\Doc\{mn}.res.pas';
+            var fname := $'{mn}.pas';
+            if not FileExists(fname) then raise new MessageException($'ERROR: {fname} not found!');
             
-            if FileExists(fname) then
-              Otp($'Packing {mn}.pas with doc') else
+            var rel_fname := $'Packing\Doc\{mn}.res.pas';
+            
+            if FileExists(rel_fname) then
+              Otp($'Packing {fname} with doc') else
             begin
-              fname := $'{mn}.pas';
-              if FileExists(fname) then
-                Otp($'Packing {fname}') else
-                raise new MessageException($'ERROR: {fname} not found!');
+              rel_fname := fname;
+              Otp($'Packing {fname}');
             end;
             
-            System.IO.File.Copy( fname, $'Release\bin\Lib\{mn}.pas' );
-            if copy_to_pf then System.IO.File.Copy( fname, $'{pf_dir}\LibSource\{mn}.pas', true );
+            System.IO.File.Copy( fname, $'Release\bin\Lib\{fname}' );
+            if copy_to_pf then System.IO.File.Copy( fname, $'{pf_dir}\LibSource\{fname}', true );
           end;
           
           if copy_to_pf then

@@ -1,4 +1,4 @@
-uses System.Runtime.InteropServices;
+﻿uses System.Runtime.InteropServices;
 uses OpenCL;
 
 begin

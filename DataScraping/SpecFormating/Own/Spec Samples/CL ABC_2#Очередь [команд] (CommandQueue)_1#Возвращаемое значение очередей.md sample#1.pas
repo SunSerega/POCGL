@@ -1,25 +1,25 @@
-uses OpenCLABC;
+п»їuses OpenCLABC;
 
-/// Вывод типа и значения объекта
+/// Р’С‹РІРѕРґ С‚РёРїР° Рё Р·РЅР°С‡РµРЅРёСЏ РѕР±СЉРµРєС‚Р°
 procedure OtpObject(o: object) :=
 Writeln( $'{o?.GetType}[{_ObjectToString(o)}]' );
-// "o?.GetType" это короткая форма "o=nil ? nil : o.GetType",
-// то есть, берём или тип объекта, или nil если сам объект nil
-// _ObjectToString это функция, которую использует Writeln для форматирования значений
+// "o?.GetType" СЌС‚Рѕ РєРѕСЂРѕС‚РєР°СЏ С„РѕСЂРјР° "o=nil ? nil : o.GetType",
+// С‚Рѕ РµСЃС‚СЊ, Р±РµСЂС‘Рј РёР»Рё С‚РёРї РѕР±СЉРµРєС‚Р°, РёР»Рё nil РµСЃР»Рё СЃР°Рј РѕР±СЉРµРєС‚ nil
+// _ObjectToString СЌС‚Рѕ С„СѓРЅРєС†РёСЏ, РєРѕС‚РѕСЂСѓСЋ РёСЃРїРѕР»СЊР·СѓРµС‚ Writeln РґР»СЏ С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёСЏ Р·РЅР°С‡РµРЅРёР№
 
 begin
   var b0 := new Buffer(1);
   
-  // Тип - буфер, потому что очередь создали из буфера
+  // РўРёРї - Р±СѓС„РµСЂ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РѕС‡РµСЂРµРґСЊ СЃРѕР·РґР°Р»Рё РёР· Р±СѓС„РµСЂР°
   OtpObject(  Context.Default.SyncInvoke( b0.NewQueue as CommandQueue<Buffer>   )  );
   
-  // Тип - Int32 (то есть integer), потому что это тип по умолчанию для выражения (5)
+  // РўРёРї - Int32 (С‚Рѕ РµСЃС‚СЊ integer), РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЌС‚Рѕ С‚РёРї РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ РІС‹СЂР°Р¶РµРЅРёСЏ (5)
   OtpObject(  Context.Default.SyncInvoke( HFQ( ()->5                          ) )  );
   
-  // Тип - string, по той же причине
+  // РўРёРї - string, РїРѕ С‚РѕР№ Р¶Рµ РїСЂРёС‡РёРЅРµ
   OtpObject(  Context.Default.SyncInvoke( HFQ( ()->'abc'                      ) )  );
   
-  // Тип отсутствует, потому что HPQ возвращает nil
-  OtpObject(  Context.Default.SyncInvoke( HPQ( ()->Writeln('Выполнилась HPQ') ) )  );
+  // РўРёРї РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚, РїРѕС‚РѕРјСѓ С‡С‚Рѕ HPQ РІРѕР·РІСЂР°С‰Р°РµС‚ nil
+  OtpObject(  Context.Default.SyncInvoke( HPQ( ()->Writeln('Р’С‹РїРѕР»РЅРёР»Р°СЃСЊ HPQ') ) )  );
   
 end.

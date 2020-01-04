@@ -1,7 +1,7 @@
-uses OpenCLABC;
+п»їuses OpenCLABC;
 
 begin
-  {$resource '0.bin'} // добавляет 0.bin внутрь готового .exe файла
+  {$resource '0.bin'} // РґРѕР±Р°РІР»СЏРµС‚ 0.bin РІРЅСѓС‚СЂСЊ РіРѕС‚РѕРІРѕРіРѕ .exe С„Р°Р№Р»Р°
   
   var code := ProgramCode.DeserializeFrom(Context.Default, GetResourceStream('0.bin'));
   

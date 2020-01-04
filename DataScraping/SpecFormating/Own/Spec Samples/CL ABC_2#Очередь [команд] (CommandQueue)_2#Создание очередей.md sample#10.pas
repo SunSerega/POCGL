@@ -1,11 +1,11 @@
-uses OpenCLABC;
+п»їuses OpenCLABC;
 
 begin
   
   var b := new Buffer( 3*sizeof(integer) );
   var A := new integer[3];
   
-  // Код с очередями
+  // РљРѕРґ СЃ РѕС‡РµСЂРµРґСЏРјРё
   
   var Q_BuffWrite :=
     ( b.NewQueue.AddWriteValue(1, 0*sizeof(integer) ) as CommandQueue<Buffer> ) *
@@ -26,21 +26,21 @@ begin
     Q_Otp
   );
   
-  // Этот же код ещё раз, но без явных очередей
-  // Неявно - каждый метод .Write*** и .Read*** всё равно создаёт по очереди
-  // Такая запись короче, но выполняется медленнее
+  // Р­С‚РѕС‚ Р¶Рµ РєРѕРґ РµС‰С‘ СЂР°Р·, РЅРѕ Р±РµР· СЏРІРЅС‹С… РѕС‡РµСЂРµРґРµР№
+  // РќРµСЏРІРЅРѕ - РєР°Р¶РґС‹Р№ РјРµС‚РѕРґ .Write*** Рё .Read*** РІСЃС‘ СЂР°РІРЅРѕ СЃРѕР·РґР°С‘С‚ РїРѕ РѕС‡РµСЂРµРґРё
+  // РўР°РєР°СЏ Р·Р°РїРёСЃСЊ РєРѕСЂРѕС‡Рµ, РЅРѕ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРµРґР»РµРЅРЅРµРµ
   
-  // Аналог Q_BuffWrite
+  // РђРЅР°Р»РѕРі Q_BuffWrite
   System.Threading.Tasks.Parallel.Invoke(
     ()->b.WriteValue(1, 0*sizeof(integer) ),
     ()->b.WriteValue(5, 1*sizeof(integer) ),
     ()->b.WriteValue(7, 2*sizeof(integer) )
   );
   
-  // Аналог Q_BuffRead
+  // РђРЅР°Р»РѕРі Q_BuffRead
   b.ReadArray(A);
   
-  // Аналог Q_Otp
+  // РђРЅР°Р»РѕРі Q_Otp
   A.Println;
   
 end.

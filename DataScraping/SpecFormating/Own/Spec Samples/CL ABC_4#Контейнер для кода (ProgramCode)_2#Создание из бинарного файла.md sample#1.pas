@@ -1,4 +1,4 @@
-uses OpenCLABC;
+﻿uses OpenCLABC;
 
 begin
   var code := new ProgramCode(ReadAllText('0.cl'));
