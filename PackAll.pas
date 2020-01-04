@@ -154,6 +154,8 @@ begin
     
     {$region FirstPack}
     var T_FirstPack: SecThrProc;
+    if not stages.Contains('FirstPack') then
+      T_FirstPack := EmptyTask else
     begin
       
       {$region UpdateReps}

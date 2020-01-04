@@ -22887,6 +22887,23 @@ type
     
     {$endregion EXT_histogram}
     
+    {$region EXT_disjoint_timer_query}
+    
+    public z_QueryCounterEXT := GetGLFuncOrNil&<procedure(id: UInt32; target: DummyEnum)>('glQueryCounterEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure QueryCounterEXT(id: UInt32; target: DummyEnum) := z_QueryCounterEXT(id, target);
+    
+    public z_GetQueryObjectivEXT := GetGLFuncOrNil&<procedure(id: UInt32; pname: DummyEnum; &params: pointer)>('glGetQueryObjectivEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryObjectivEXT(id: UInt32; pname: DummyEnum; &params: array of Int32) := GetQueryObjectivEXT(id, pname, pointer(Marshal.UnsafeAddrOfPinnedArrayElement(&params,0)));
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryObjectivEXT(id: UInt32; pname: DummyEnum; var &params: Int32) := GetQueryObjectivEXT(id, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryObjectivEXT(id: UInt32; pname: DummyEnum; &params: pointer) := z_GetQueryObjectivEXT(id, pname, &params);
+    
+    public z_GetInteger64vEXT := GetGLFuncOrNil&<procedure(pname: GLGetQueries; data: pointer)>('glGetInteger64vEXT');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetInteger64vEXT(pname: GLGetQueries; data: array of Int64) := GetInteger64vEXT(pname, pointer(Marshal.UnsafeAddrOfPinnedArrayElement(data,0)));
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetInteger64vEXT(pname: GLGetQueries; var data: Int64) := GetInteger64vEXT(pname, @data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetInteger64vEXT(pname: GLGetQueries; data: pointer) := z_GetInteger64vEXT(pname, data);
+    
+    {$endregion EXT_disjoint_timer_query}
+    
     {$region ARB_viewport_array EXT_direct_state_access EXT_draw_buffers2 EXT_transform_feedback NV_explicit_multisample NV_parameter_buffer_object NV_transform_feedback}
     
     public z_GetIntegerIndexedvEXT := GetGLFuncOrNil&<procedure(target: GLGetQueries; index: UInt32; data: pointer)>('glGetIntegerIndexedvEXT');
@@ -22967,18 +22984,6 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryObjectui64vEXT(id: UInt32; pname: DummyEnum; &params: pointer) := z_GetQueryObjectui64vEXT(id, pname, &params);
     
     {$endregion EXT_disjoint_timer_query EXT_timer_query}
-    
-    {$region EXT_disjoint_timer_query}
-    
-    public z_QueryCounterEXT := GetGLFuncOrNil&<procedure(id: UInt32; target: DummyEnum)>('glQueryCounterEXT');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure QueryCounterEXT(id: UInt32; target: DummyEnum) := z_QueryCounterEXT(id, target);
-    
-    public z_GetQueryObjectivEXT := GetGLFuncOrNil&<procedure(id: UInt32; pname: DummyEnum; &params: pointer)>('glGetQueryObjectivEXT');
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryObjectivEXT(id: UInt32; pname: DummyEnum; &params: array of Int32) := GetQueryObjectivEXT(id, pname, pointer(Marshal.UnsafeAddrOfPinnedArrayElement(&params,0)));
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryObjectivEXT(id: UInt32; pname: DummyEnum; var &params: Int32) := GetQueryObjectivEXT(id, pname, @&params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryObjectivEXT(id: UInt32; pname: DummyEnum; &params: pointer) := z_GetQueryObjectivEXT(id, pname, &params);
-    
-    {$endregion EXT_disjoint_timer_query}
     
     {$region EXT_texture_border_clamp}
     
@@ -25392,6 +25397,18 @@ type
       Marshal.FreeHGlobal(str_ptr);
       Result := ptr=IntPtr.Zero ? default(T) : Marshal.GetDelegateForFunctionPointer&<T>(ptr);
     end;
+    
+    {$region MESA_framebuffer_flip_y}
+    
+    public z_FramebufferParameteriMESA := GetGLFuncOrNil&<procedure(target: DummyEnum; pname: DummyEnum; param: Int32)>('glFramebufferParameteriMESA');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferParameteriMESA(target: DummyEnum; pname: DummyEnum; param: Int32) := z_FramebufferParameteriMESA(target, pname, param);
+    
+    public z_GetFramebufferParameterivMESA := GetGLFuncOrNil&<procedure(target: DummyEnum; pname: DummyEnum; &params: pointer)>('glGetFramebufferParameterivMESA');
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFramebufferParameterivMESA(target: DummyEnum; pname: DummyEnum; &params: array of Int32) := GetFramebufferParameterivMESA(target, pname, pointer(Marshal.UnsafeAddrOfPinnedArrayElement(&params,0)));
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFramebufferParameterivMESA(target: DummyEnum; pname: DummyEnum; var &params: Int32) := GetFramebufferParameterivMESA(target, pname, @&params);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFramebufferParameterivMESA(target: DummyEnum; pname: DummyEnum; &params: pointer) := z_GetFramebufferParameterivMESA(target, pname, &params);
+    
+    {$endregion MESA_framebuffer_flip_y}
     
     {$region MESA_resize_buffers}
     
