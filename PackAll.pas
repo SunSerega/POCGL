@@ -177,7 +177,7 @@ begin
         TitleTask('Parse Spec | GL | Core', '~') +
         
         ExecTask('DataScraping\SpecFormating\GL\Get1.1 Funcs.pas',      'SpecFormater[GL,1.1]') *
-        ExecTask('DataScraping\SpecFormating\GL\GetPDF Funcs.pas',      'SpecFormater[GL]') *
+        ExecTask('DataScraping\SpecFormating\GL\GetPDF Funcs.pas',      'SpecFormater[GL]', AddTimeMarksStr) *
         CompTask('DataScraping\SpecFormating\GL\DebugChapVerView.pas') *
         CompTask('DataScraping\SpecFormating\GL\DebugVerDifView.pas')
         +
@@ -258,7 +258,7 @@ begin
     var T_Test := not stages.Contains('Test') ? EmptyTask :
       TitleTask('Testing') +
       EventTask(E_Tester) +
-      ExecTask('Tests\Tester.exe', 'Tester')
+      ExecTask('Tests\Tester.exe', 'Tester', AddTimeMarksStr)
     ;
     
     {$endregion Test}

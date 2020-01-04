@@ -199,6 +199,7 @@ type
           
           if comp_err<>nil then
           begin
+            Otp('Finished compiling: ERRОR');
             
             if t.expected_comp_err=nil then
               case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of

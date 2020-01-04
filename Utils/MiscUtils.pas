@@ -8,9 +8,10 @@ uses System.Threading.Tasks;
 var sec_procs := new List<Process>;
 var sec_thrs := new List<Thread>;
 var in_err_state := false;
+var nfi := new System.Globalization.NumberFormatInfo;
 
 function TimeToStr(self: int64): string; extensionmethod :=
-(self/10/1000/1000).ToString('N7').PadLeft(15);
+(self/10/1000/1000).ToString('N7', nfi).PadLeft(15);
 
 type
   MessageException = class(Exception)
@@ -158,6 +159,10 @@ end;
 var otp_lock := new object;
 var log_file: string := nil;
 var timed_log_file: string := nil;
+
+const AddTimeMarksStr = 'AddTimeMarks';
+var otp_time_marks := CommandLineArgs.Contains(AddTimeMarksStr);
+
 procedure Otp(line: OtpLine) :=
 if ThrProcOtp.curr<>nil then
   ThrProcOtp.curr.Enq(line) else
@@ -190,6 +195,7 @@ begin
   if line.s.ToLower.Contains('warning') then    System.Console.ForegroundColor := System.ConsoleColor.Yellow else
     System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
   
+  if otp_time_marks then line.s := $'{line.t.TimeToStr} | {line.s}';
   System.Console.WriteLine(line.s);
 end;
 
@@ -284,14 +290,24 @@ begin
     thr_otp.Finish else
     thr_otp.Enq(e.Data);
   
+  var exp_time_marks := pars.Contains(AddTimeMarksStr);
   p.Start;
+  var start_time_mark := OtpLine.pack_timer.ElapsedTicks;
   var curr_exe_timer := Stopwatch.StartNew;
   
   try
     try
       p.BeginOutputReadLine;
       
-      foreach var l in thr_otp.Enmr do l_otp(l);
+      var thr_otp_sq := thr_otp.Enmr;
+      if exp_time_marks then thr_otp_sq := thr_otp_sq.Select(l->
+      begin
+        var ind := l.s.IndexOf(' | ');
+        Result := new OtpLine;
+        Result.t := start_time_mark+int64.Parse(l.s.Remove(ind).Remove('.'));
+        Result.s := l.s.Remove(0, ind+3);
+      end);
+      foreach var l in thr_otp_sq do l_otp(l);
   //    p.WaitForExit;
       
       curr_exe_timer.Stop;
