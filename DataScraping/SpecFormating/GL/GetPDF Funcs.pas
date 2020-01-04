@@ -5,6 +5,14 @@ uses CoreFuncData;
 uses iTextSharp.text.pdf;
 uses iTextSharp.text.pdf.parser;
 uses System.Text;
+uses System.Threading;
+
+type
+  ThrVars = static class
+    [System.ThreadStatic] static find_next_cache: Dictionary<string, integer>;
+    [System.ThreadStatic] static chapters_def: integer;
+  end;
+  
 
 function ReadPdfFile(fname: string): string;
 begin
@@ -26,18 +34,16 @@ begin
   Result := sb.ToString;
 end;
 
-var find_next_cache: Dictionary<string, integer>;
-
 function FindNext(self: string; from: integer; params keys: array of string); extensionmethod :=
   keys.Select(key->
-    if not find_next_cache.ContainsKey(key) or ( (find_next_cache[key]<=from) and (find_next_cache[key]<>-1) ) then
+    if not ThrVars.find_next_cache.ContainsKey(key) or ( (ThrVars.find_next_cache[key]<=from) and (ThrVars.find_next_cache[key]<>-1) ) then
     begin
       Result := self.IndexOf(key,from);
       if Result<>-1 then Result += key.Length;
-      find_next_cache[key] := Result;
+      ThrVars.find_next_cache[key] := Result;
     end else
     begin
-      Result := find_next_cache[key];
+      Result := ThrVars.find_next_cache[key];
     end
   )
   .Where(ind->ind<>-1)
@@ -75,8 +81,6 @@ end;
 
 
 
-var chapters_def: integer;
-
 function FindChapterIndex(text: string; chapter: List<(integer,string)>): integer;
 begin
   if chapter.Count=0 then exit;
@@ -87,7 +91,7 @@ begin
     chap_name := $'{chap_name} {chapter.Last[1]}';
   
   Result := text.LastIndexOf(chap_name);
-  if Result<chapters_def then raise new System.InvalidOperationException($'chapter "{chap_name.Trim}" not found');
+  if Result<ThrVars.chapters_def then raise new System.InvalidOperationException($'chapter "{chap_name.Trim}" not found');
 end;
 
 function FindAllChapters(text: string): sequence of List<(integer,string)>;
@@ -96,7 +100,7 @@ begin
   
   var ind1 := text.IndexOf('Contents'#10)+'Contents'#10.Length;
   var ind2 := text.IndexOf('A Invariance');
-  chapters_def := ind2;
+  ThrVars.chapters_def := ind2;
   foreach var l in text.Substring(ind1,ind2-ind1).ToWords(#10) do
   begin
     if not l[1].IsDigit then continue;
@@ -146,7 +150,7 @@ function GetAllFuncs(s: string): sequence of CoreFuncDef;
 begin
   var ind1 := 0;
   var res := new StringBuilder;
-  find_next_cache := new Dictionary<string, integer>;
+  ThrVars.find_next_cache := new Dictionary<string, integer>;
   
   var append_ind := s.LastIndexOf('A'#10'Invariance');
   if append_ind=-1 then raise new System.InvalidOperationException('Appendix start not found');
@@ -294,6 +298,7 @@ begin
   var Main_ToDo := 0; //ToDo в заголовке описывающем разделы - не должны быть #0-ов. Ну и лишние пробелы тоже убрать
   
   Otp($'Formating version {v}');
+//  lock output do Writeln($'%%%Formating version {v}');
   var s :=
     ReadPdfFile(fname).Remove(#13)
     .Replace('Chapter', 'Chapter ').Replace('  ', ' ')
@@ -358,12 +363,18 @@ begin
   
 //  readln;
 //  Halt;
+  
+  Otp($'Done with version {v}');
+//  lock output do Writeln($'%%%Done with version {v}');
 end;
 
 
 
 begin
   try
+    var T_Pdfs: SecThrProc := EmptyTask;
+    
+    var evs := new List<ManualResetEvent>;
     
     ReadLines(GetFullPath('..\versions order.dat',GetEXEFileName))
     .Where(l->l.Contains('='))
@@ -374,7 +385,28 @@ begin
 //    .TakeLast(1)
 //    .Skip(3)
     
-    .ForEach(l-> ProcessPdf(GetFullPath($'..\..\..\Reps\OpenGL-Registry\specs\gl\glspec{l[1]}.pdf',GetEXEFileName), l[0]) );
+    .ForEach(l->
+    begin
+      var ev := new ManualResetEvent(false);
+      evs += ev;
+      
+      var T_Wait: SecThrProc := EmptyTask;
+      foreach var pev in evs.SkipLast(System.Environment.ProcessorCount+1) do T_Wait:=T_Wait + EventTask(pev);
+      
+      var T_Exec := ProcTask(()->
+        ProcessPdf(GetFullPath($'..\..\..\Reps\OpenGL-Registry\specs\gl\glspec{l[1]}.pdf',GetEXEFileName), l[0])
+      );
+      
+      var T_ver :=
+        T_Wait +
+        T_Exec +
+        SetEvTask(ev)
+      ;
+      
+      T_Pdfs := T_Pdfs * T_ver;
+    end);
+    
+    T_Pdfs.SyncExec;
     
     if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
   except

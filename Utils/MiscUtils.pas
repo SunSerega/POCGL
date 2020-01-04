@@ -185,6 +185,7 @@ begin
     except end;
   
   if line.s.ToLower.Contains('error') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
+  if line.s.ToLower.Contains('fatal') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
   if line.s.ToLower.Contains('exception') then  System.Console.ForegroundColor := System.ConsoleColor.Red else
   if line.s.ToLower.Contains('warning') then    System.Console.ForegroundColor := System.ConsoleColor.Yellow else
     System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
@@ -239,14 +240,20 @@ begin
   Otp('');
   
   Otp($'.pas compilation : {pas_comp.TimeToStr}');
-  var max_key_w := every_pas_comp.Keys.Max(key->key.Length);
-  foreach var key in every_pas_comp.Keys do
-    Otp($'    - {key.PadRight(max_key_w)} : {every_pas_comp[key].TimeToStr}');
+  if every_pas_comp.Count<>0 then
+  begin
+    var max_key_w := every_pas_comp.Keys.Max(key->key.Length);
+    foreach var key in every_pas_comp.Keys do
+      Otp($'    - {key.PadRight(max_key_w)} : {every_pas_comp[key].TimeToStr}');
+  end;
   
   Otp($'.exe execution   : {exe_exec.TimeToStr}');
-  max_key_w := every_exe_exec.Keys.Max(key->key.Length);
-  foreach var key in every_exe_exec.Keys do
-    Otp($'    - {key.PadRight(max_key_w)} : {every_exe_exec[key].TimeToStr}');
+  if every_exe_exec.Count<>0 then
+  begin
+    var max_key_w := every_exe_exec.Keys.Max(key->key.Length);
+    foreach var key in every_exe_exec.Keys do
+      Otp($'    - {key.PadRight(max_key_w)} : {every_exe_exec[key].TimeToStr}');
+  end;
   
 end;
 
@@ -481,6 +488,11 @@ new SecThrProcCustom(()->CompilePasFile(fname));
 
 function ExecTask(fname, nick: string; params pars: array of string) :=
 new SecThrProcCustom(()->ExecuteFile(fname, nick, pars));
+
+function EmptyTask := ProcTask(()->exit());
+
+function SetEvTask(ev: ManualResetEvent) := ProcTask(()->begin ev.Set() end);
+function EventTask(ev: ManualResetEvent) := ProcTask(()->begin ev.WaitOne() end);
 
 {$endregion Task operations}
 

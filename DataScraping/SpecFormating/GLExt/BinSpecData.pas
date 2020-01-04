@@ -363,7 +363,7 @@ type
       begin
         func_pnh_exceptions := new Dictionary<string, string>;
         
-        ReadLines('SpecFormating\GLExt\func pnh exceptions.dat')
+        ReadLines($'{System.IO.Path.GetDirectoryName(GetEXEFileName)}\func pnh exceptions.dat')
         .Where(l->l.Contains('='))
         .Select(l->l.ToWords('='))
         .ForEach(l->func_pnh_exceptions.Add(l[0].TrimEnd(#9), l[1]));
@@ -682,6 +682,14 @@ type
       end;
     end;
     
+    procedure Save(sw: System.IO.StreamWriter);
+    begin
+      foreach var t in funcs do
+      begin
+        sw.WriteLine($'{#9*2}- {t[0]} [ {t[1]} ]');
+      end;
+    end;
+    
     static function Load(br: System.IO.BinaryReader): NewFuncsChapter;
     begin
       Result := new NewFuncsChapter;
@@ -764,7 +772,7 @@ type
     
     static function RemoveGenFolderName(fname: string): string;
     begin
-      var gen_folder_name := 'SpecFormating\GLExt\ext spec texts';
+      var gen_folder_name := $'{System.IO.Path.GetDirectoryName(GetEXEFileName)}\ext spec texts\';
       if fname.StartsWith(gen_folder_name) then
         Result := fname.Substring(gen_folder_name.Length) else
         Result := fname;
@@ -938,6 +946,22 @@ type
       
     end;
     
+    procedure Save(sw: System.IO.StreamWriter);
+    begin
+      sw.Write($'{self.ExtNames.names.JoinIntoString} [ ');
+      if not self.is_complete then sw.Write('UNDONE_SPEC');
+      sw.WriteLine($'source: {self.fname} ]');
+      
+      if self.ExtStrings<>nil then sw.WriteLine($'{#9}- Strings = [ {self.ExtStrings.strings.JoinIntoString} ]');
+      
+      if self.NewFuncs  <>nil then
+      begin
+        sw.WriteLine($'{#9}- Funcs:');
+        self.NewFuncs.Save(sw);
+      end;
+      
+    end;
+    
     static function Load(br: System.IO.BinaryReader): ExtSpec;
     begin
       Result := new ExtSpec;
@@ -992,6 +1016,16 @@ type
         ext.Save(bw);
       
       bw.Close;
+    end;
+    
+    procedure Log(fname: string);
+    begin
+      var sw := new System.IO.StreamWriter(System.IO.File.Create(fname));
+      
+      foreach var ext in exts do
+        ext.Save(sw);
+      
+      sw.Close;
     end;
     
     static function LoadFromFile(fname: string): BinSpecDB;

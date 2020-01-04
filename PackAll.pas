@@ -25,31 +25,27 @@ uses System.Threading.Tasks;
 uses System.IO;
 uses MiscUtils in 'Utils\MiscUtils.pas';
 
-function EmptyTask := ProcTask(()->exit());
+function AllModules := Lst('OpenCL','OpenCLABC','OpenGL','OpenGLABC');
 
-function TitleTask(title: string): SecThrProc;
+function TitleTask(title: string; decor: char := '='): SecThrProc;
 begin
   var c := 80-title.Length;
   var c2 := c div 2;
   var c1 := c-c2;
   
   var sb := new StringBuilder;
-  sb.Append('=',c1);
+  sb.Append(decor,c1);
   sb += ' ';
   sb += title;
   sb += ' ';
-  sb.Append('=',c2);
+  sb.Append(decor,c2);
   title := sb.ToString;
   
   Result := ProcTask(()->Otp(title));
 end;
 
-function SetEvTask(ev: ManualResetEvent) := ProcTask(()->begin ev.Set() end);
-function EventTask(ev: ManualResetEvent) := ProcTask(()->begin ev.WaitOne() end);
-
 begin
   try
-    //ToDo FirstPack
     
     {$region Load}
     
@@ -87,9 +83,13 @@ begin
       ProcTask(()->
       begin
         var c := 0;
+        var skip_pcu := AllModules;
+        skip_pcu.RemoveAll(mn->stages.Contains(mn.SubString(4)));
+        skip_pcu.Transform(mn->mn+'.pcu');
         
         foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
         begin
+          if skip_pcu.Contains(Path.GetFileName(fname)) then continue;
           try
             System.IO.File.Delete(fname);
           except end;
@@ -149,9 +149,64 @@ begin
         +
         EmptyTask()
       ;
-      
     end;
     {$endregion MiscInit}
+    
+    {$region FirstPack}
+    var T_FirstPack: SecThrProc;
+    begin
+      
+      {$region UpdateReps}
+      
+      var T_UpdateReps :=
+        TitleTask('Update Reps', '~')
+        +
+        
+        ExecTask('DataScraping\Reps\GLBrokenSource\GenerateCoreSource.pas', 'GL BrokenSource') *
+        ExecTask('DataScraping\Reps\PullGL.pas',                            'GLRep Update')
+        
+      ;
+      
+      {$endregion UpdateReps}
+      
+      {$region ParseSpec}
+      
+      var T_ParseSpec_GL_Core :=
+        TitleTask('Parse Spec | GL | Core', '~') +
+        
+        ExecTask('DataScraping\SpecFormating\GL\Get1.1 Funcs.pas',      'SpecFormater[GL,1.1]') *
+        ExecTask('DataScraping\SpecFormating\GL\GetPDF Funcs.pas',      'SpecFormater[GL]') *
+        CompTask('DataScraping\SpecFormating\GL\DebugChapVerView.pas') *
+        CompTask('DataScraping\SpecFormating\GL\DebugVerDifView.pas')
+        +
+        ExecTask('DataScraping\SpecFormating\GL\DebugChapVerView.exe',  'DebugView[CoreSpecs]') *
+        ExecTask('DataScraping\SpecFormating\GL\DebugVerDifView.exe',   'DebugView[CoreSpecDifs]')
+        
+      ;
+      
+      var T_ParseSpec_GL_Ext :=
+        TitleTask('Parse Spec | GL | Ext', '~') +
+        
+        ExecTask('DataScraping\SpecFormating\GLExt\Format ext spec text.pas', 'SpecReader[GLExt]') +
+        ExecTask('DataScraping\SpecFormating\GLExt\Format ext spec bin.pas',  'SpecFormater[GLExt]')
+        
+      ;
+      
+      {$endregion ParseSpec}
+      
+      T_FirstPack :=
+        TitleTask('First Pack') +
+        T_UpdateReps
+        +
+        
+        T_ParseSpec_GL_Ext *
+        T_ParseSpec_GL_Core
+        
+        +
+        EmptyTask
+      ;
+    end;
+    {$endregion FirstPack}
     
     {$region Spec}
     
@@ -230,7 +285,7 @@ begin
         ProcTask(()->
         begin
           System.IO.Directory.CreateDirectory('Release\bin\Lib');
-          var mns := Lst('OpenCL','OpenCLABC','OpenGL','OpenGLABC');
+          var mns := AllModules;
           mns.RemoveAll(mn->not stages.Contains(mn.SubString(4)));
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
@@ -344,7 +399,8 @@ begin
     {$region ExecAll}
     
     (
-      T_MiscClear
+      T_MiscClear +
+      T_FirstPack
       +
       
       T_Spec *

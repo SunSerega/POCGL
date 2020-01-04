@@ -1,10 +1,14 @@
-﻿uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+﻿uses System.IO;
+uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
 begin
   try
-    if System.IO.Directory.Exists('SpecFormating\GLExt\ext spec texts') then System.IO.Directory.Delete('SpecFormating\GLExt\ext spec texts',true);
+    var inp_dir := GetFullPath('..\..\..\Reps\OpenGL-Registry\extensions', GetEXEFileName);
+    var otp_dir := GetFullPath('..\ext spec texts', GetEXEFileName);
     
-    var fls := System.IO.Directory.EnumerateFiles('Reps\OpenGL-Registry\extensions', '*.txt', System.IO.SearchOption.AllDirectories).ToList;
+    if Directory.Exists(otp_dir) then Directory.Delete(otp_dir,true);
+    
+    var fls := Directory.EnumerateFiles(inp_dir, '*.txt',SearchOption.AllDirectories).ToList;
     var done := 0;
     var start_time := DateTime.Now;
     
@@ -12,11 +16,11 @@ begin
     while true do
     begin
       var cdone := done;
-      Otp($'Formating spec texts: {cdone/fls.Count:P}');
+      Otp($'Formating spec texts: {cdone,4} of {fls.Count,4}, {cdone/fls.Count,6:P}');
       if cdone=fls.Count then
       begin
         Otp($'Done in {DateTime.Now-start_time}');
-        if not CommandLineArgs.Contains('SecondaryProc') then Readln;
+        if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString;
         Halt;
       end;
       Sleep(500);
@@ -36,14 +40,13 @@ begin
         .Replace('float params;'#10,'float params);'#10)
       ;
       
-      var fname2 := fname.Replace('Reps\OpenGL-Registry\extensions', 'SpecFormating\GLExt\ext spec texts');
+      var fname2 := otp_dir + fname.Substring(inp_dir.Length);
       System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fname2));
       WriteAllText(fname2, text);
       
       done += 1;
     end;
     
-    if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
   except
     on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
