@@ -73,9 +73,13 @@
 
 
 
+# CLTask<T>.Finished
+%task.Finished%
+# CLTask<T>.Error
+%task.Error%
+
 # CLTask<T>.Wait()
 %task.Wait%
-
 # CLTask<T>.GetRes()
 %task.GetRes%
 

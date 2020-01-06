@@ -7,6 +7,8 @@ procedure FindCommentable(lns: sequence of string; on_line: string->boolean; on_
 
 implementation
 
+{$region Utils}
+
 const block_open_kvds: array of string = ('begin','case','match','try');
 
 function GetFuncEndInd(l: string): integer;
@@ -43,6 +45,89 @@ begin
   
   Result := self;
 end;
+
+{$endregion Utils}
+
+{$region MemberParsers}
+
+function ParseType(l: string; ind: integer; var block_lvl: integer; var last_type: string): string;
+begin
+  var ind2 := l.LastIndexOf('=',ind)-1;
+  while l[ind2-1]=' ' do ind2 -= 1;
+  var ind1 := l.LastIndexOf(' ',ind2-1)+1;
+  
+  last_type := l.Substring(ind1,ind2-ind1).TrimEnd(' ');
+  Result := last_type;
+  
+  block_lvl += 1;
+end;
+
+function ParseMethod(last_type, l: string; ind, h_ind1: integer): string;
+begin
+  var ind1 := l.IndexOf(' ',ind);
+  var ind2 := l.IndexOf('(',ind);
+  if ind2>h_ind1 then ind2 := -1;
+  
+  var ind3 := ind2;
+  if ind3=-1 then ind3 := l.IndexOf(':',ind1);
+  if ind3=-1 then ind3 := l.IndexOf(';',ind1);
+  if ind3=-1 then ind3 := l.Length;
+  var m_name := l.Substring(ind1, ind3-ind1).Trim(' ', ':');
+  
+  var pars := ind2=-1 ? '' : GetParams(
+    l.Substring(ind2+1,l.Substring(0,h_ind1).LastIndexOf(')',h_ind1-1,h_ind1-ind2)-ind2-1)
+  );
+  
+  Result := $'{last_type}.{m_name}({pars})';
+end;
+
+function ParseConstructor(last_type, l: string; ind, h_ind1: integer): string;
+begin
+  var ind2 := l.IndexOf('(',ind);
+  if ind2>h_ind1 then ind2 := -1;
+  
+  var pars := ind2=-1 ? '' : GetParams(
+    l.Substring(ind2+1,l.Substring(0,h_ind1).LastIndexOf(')',h_ind1-1,h_ind1-ind2)-ind2-1)
+  );
+  
+  Result := $'{last_type}.({pars})';
+end;
+
+function ParseProp(last_type, l,_l: string; ind, h_ind1: integer): string;
+begin
+  var ind1 := l.IndexOf(' ',ind);
+  var ind2 := l.IndexOf('[',ind);
+  if ind2>h_ind1 then ind2 := -1;
+  
+  var io_ind := Arr('read','write').Select(s->l.IndexOf(s)).Where(ind-> ind<>-1 ).DefaultIfEmpty(l.Length).First;
+  
+  var ind3 := ind2;
+  if ind3=-1 then ind3 := l.IndexOf(':',ind1);
+  if ind3=-1 then raise new System.InvalidOperationException(_l);
+  var p_name := l.Substring(ind1, ind3-ind1).Trim(' ', ':');
+  
+  if ind2=-1 then
+    Result := $'{last_type}.{p_name}' else
+  begin
+    var pars := GetParams(
+      l.Substring(ind2+1,l.Substring(0,io_ind).LastIndexOf(']',io_ind-1,io_ind-ind2)-ind2-1)
+    );
+    Result := $'{last_type}.{p_name}[{pars}]';
+  end;
+  
+end;
+
+function ParseEvent(last_type, l: string; ind: integer): string;
+begin
+  ind += 'event'.Length+1;
+  var ind2 := l.IndexOf(':', ind);
+  
+  var e_name := l.SubString(ind,ind2-ind).Trim(' ');
+  
+  Result := $'{last_type}.{e_name}';
+end;
+
+{$endregion MemberParsers}
 
 procedure FindCommentable(lns: sequence of string; on_line: string->boolean; on_commentable: string->());
 begin
@@ -83,85 +168,61 @@ begin
     if block_lvl<0 then raise new Exception($'Лишний "end" на строчке "{l}"');
     if bl_p or bl_m then continue;
     
-    if block_lvl>1 then continue;
-    var h_ind1 := GetFuncEndInd(l);
-    if h_ind1=-1 then h_ind1 := l.Length;
-    
-    ind := Max( l.IndexOf('procedure'), l.IndexOf('function') );
-    if ind<>-1 then
-    begin
+    case block_lvl of
       
-      var ind1 := l.IndexOf(' ',ind);
-      var ind2 := l.IndexOf('(',ind);
-      if ind2>h_ind1 then ind2 := -1;
-      
-      var ind3 := ind2;
-      if ind3=-1 then ind3 := l.IndexOf(':',ind1);
-      if ind3=-1 then ind3 := l.IndexOf(';',ind1);
-      if ind3=-1 then ind3 := l.Length;
-      var m_name := l.Substring(ind1, ind3-ind1).Trim(' ', ':');
-      
-      var pars := ind2=-1 ? '' : GetParams(
-        l.Substring(ind2+1,l.Substring(0,h_ind1).LastIndexOf(')',h_ind1-1,h_ind1-ind2)-ind2-1)
-      );
-      
-      on_commentable( $'{last_type}.{m_name}({pars})' );
-      continue;
-    end;
-    ind := l.IndexOf('constructor');
-    if ind<>-1 then
-    begin
-      
-      var ind2 := l.IndexOf('(',ind);
-      if ind2>h_ind1 then ind2 := -1;
-      
-      var pars := ind2=-1 ? '' : GetParams(
-        l.Substring(ind2+1,l.Substring(0,h_ind1).LastIndexOf(')',h_ind1-1,h_ind1-ind2)-ind2-1)
-      );
-      
-      on_commentable( $'{last_type}.({pars})' );
-      continue;
-    end;
-    ind := l.IndexOf('property');
-    if ind<>-1 then
-    begin
-      
-      var ind1 := l.IndexOf(' ',ind);
-      var ind2 := l.IndexOf('[',ind);
-      if ind2>h_ind1 then ind2 := -1;
-      
-      var io_ind := Arr('read','write').Select(s->l.IndexOf(s)).Where(ind-> ind<>-1 ).DefaultIfEmpty(l.Length).First;
-      
-      var ind3 := ind2;
-      if ind3=-1 then ind3 := l.IndexOf(':',ind1);
-      if ind3=-1 then raise new System.InvalidOperationException(_l);
-      var p_name := l.Substring(ind1, ind3-ind1).Trim(' ', ':');
-      
-      if ind2=-1 then
-        on_commentable( $'{last_type}.{p_name}' ) else
+      0:
       begin
-        var pars := GetParams(
-          l.Substring(ind2+1,l.Substring(0,io_ind).LastIndexOf(']',io_ind-1,io_ind-ind2)-ind2-1)
-        );
-        on_commentable( $'{last_type}.{p_name}[{pars}]' );
+        
+        ind := Max(Max( l.IndexOf('record'), l.Replace('class;','cvass;').IndexOf('class') ), l.Replace('interface;','underface;').IndexOf('interface') );
+        if ind<>-1 then
+        begin
+          on_commentable(ParseType(l,ind, block_lvl,last_type));
+          continue;
+        end;
+        
+        ind := Max( l.IndexOf('procedure'), l.IndexOf('function') );
+        if ind<>-1 then
+        begin
+          on_commentable(ParseMethod(last_type,l, ind,l.Length));
+          continue;
+        end;
+        
       end;
       
-      continue;
-    end;
-    
-    if block_lvl>0 then continue;
-    ind := Max(Max( l.IndexOf('record'), l.Replace('class;','cvass;').IndexOf('class') ), l.Replace('interface;','underface;').IndexOf('interface') );
-    if ind<>-1 then
-    begin
-      var ind2 := l.LastIndexOf('=',ind)-1;
-      while l[ind2-1]=' ' do ind2 -= 1;
-      var ind1 := l.LastIndexOf(' ',ind2-1)+1;
+      1:
+      begin
+        var h_ind1 := GetFuncEndInd(l);
+        if h_ind1=-1 then h_ind1 := l.Length;
+        
+        ind := Max( l.IndexOf('procedure'), l.IndexOf('function') );
+        if ind<>-1 then
+        begin
+          on_commentable(ParseMethod(last_type,l, ind,h_ind1));
+          continue;
+        end;
+        
+        ind := l.IndexOf('constructor');
+        if ind<>-1 then
+        begin
+          on_commentable(ParseConstructor(last_type,l, ind,h_ind1));
+          continue;
+        end;
+        
+        ind := l.IndexOf('property');
+        if ind<>-1 then
+        begin
+          on_commentable(ParseProp(last_type,l,_l, ind,h_ind1));
+          continue;
+        end;
+        
+        ind := l.IndexOf(' event ');
+        if ind<>-1 then
+        begin
+          on_commentable(ParseEvent(last_type,l, ind));
+        end;
+        
+      end;
       
-      last_type := l.Substring(ind1,ind2-ind1).TrimEnd(' ');
-      on_commentable( last_type );
-      
-      block_lvl += 1;
-      continue;
     end;
     
   end;

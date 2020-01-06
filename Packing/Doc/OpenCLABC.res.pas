@@ -97,7 +97,7 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo добавить ивенты в упаковщик описаний
+//ToDo добавление ивентов в CLTask не безопастно, если он выполнится до их добавления
 
 //ToDo ___EventList.AttachCallback(ev; cb)
 // - сильно упростит код, потому что GCHandle не придётся создавать вручную
@@ -777,7 +777,9 @@ type
     private wh := new ManualResetEvent(false);
     private q_res: T;
     
+    ///Вызывается, когда выполнение очереди успешно завершено
     public event Finished: (CommandQueue<T>, T)->();
+    ///Вызывается, когда при выполнении очереди было вызвано исключение
     public event Error: Action<CommandQueue<T>, array of Exception>;
     
     protected constructor(q: CommandQueue<T>; c: Context);
