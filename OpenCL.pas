@@ -147,8 +147,10 @@ type
         res.Name.ToWords('_').Select(w->w[1].ToUpper+w.Substring(1).ToLower).JoinIntoString;
     end;
     
+    public function IS_ERROR := val<>SUCCESS;
+    
     public procedure RaiseIfError :=
-    if val<>SUCCESS then raise new OpenCLException(self.ToString);
+    if IS_ERROR then raise new OpenCLException(self.ToString);
     
   end;
   

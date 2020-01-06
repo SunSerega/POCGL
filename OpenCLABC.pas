@@ -97,57 +97,34 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo добавление ивентов в CLTask не безопастно, если он выполнится до их добавления
-
-//ToDo ___EventList.AttachCallback(ev; cb)
-// - сильно упростит код, потому что GCHandle не придётся создавать вручную
-
-//ToDo перегрузки cont.AddErr для ErrorCode и CommandExecutionStatus, потому что это много где надо
+//ToDo Добавление ивентов в CLTask не безопастно, если он выполнится до их добавления
 
 //ToDo cl.SetKernelArg из нескольких потоков одновременно - предусмотреть
 
-//ToDo синхронные (с припиской Fast) варианты всего работающего по принципу HostQueue
+//ToDo Синхронные (с припиской Fast) варианты всего работающего по принципу HostQueue
 //ToDo и асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
 
-//ToDo может сделать Invoke функцией, возвращающей ___EventList?
-
-//ToDo проверить чтоб небыло утечек памяти
-//ToDo проверить чтоб исключение в HPQ нормально выводилось
-//ToDo проверить чтоб CheckErr было во всех классах с под-очередями
-// - при этом исключения под-очередей должны обрабатываться первыми, потому что они выполнялись раньше
-
-//ToDo использовать пустые inherited
+//ToDo Использовать пустые inherited
 // - но у функций они сейчас сломаны - #2145
 
-//ToDo если в предыдущей очереди исключение - остановить выполнение
+//ToDo Если в предыдущей очереди исключение - остановить выполнение
 // - это не критично, но иначе будет выводить кучу лишних ошибок
 
-//ToDo .ThenWaitFor
-//ToDo .ThenWaitForAll
-//ToDo .ThenWaitForAny
-// - Стоп, а для Any может всё же Then не работает?
-// - Может сделать первое и второе методами, а Any глобальными подпрограммами?
-// - нет, лучше наверное все 3 методами, но для Any ещё глобальную функцию
-
-//ToDo проверить все raise - лучше сделать свои исключения
+//ToDo Проверить все raise - лучше сделать свои исключения
 
 //ToDo Написать в справке про AddProc,AddQueue
-
 //ToDo Написать в справке про AddWait
 //ToDo Написать в справке про WaitFor
-//ToDo написать в справке про опастность того, что ThenWaitFor может выполниться после завершения выполнения очереди если она в другом BeginInvoke
+//ToDo Написать в справке про опастность того, что ThenWaitFor может выполниться после завершения выполнения очереди если она в другом BeginInvoke
+//ToDo Написать в справке про ивенты CLTask
 
-//ToDo раздел справки про оптимизацию
+//ToDo Раздел справки про оптимизацию
 // - почему 1 очередь быстрее 2 её кусков
 
-//ToDo система создания описаний через отдельные файлы
+//ToDo Система создания описаний через отдельные файлы
 // - и тексты исключений тоже туда куда то
 
-//ToDo проверить все "//ToDo" в модуле
-
-//ToDo снова проверить все cl. на .RaiseIfError
-
-//ToDo вытащить из справки все "```pas" и засунуть в тесты с запуском
+//ToDo Проверить все "//ToDo" в модуле
 
 //===================================
 // Запланированное:
@@ -159,9 +136,6 @@ uses System.Runtime.CompilerServices;
 //ToDo MW ивенты должны хранится в Dictionary<Context,cl_event>, потому что функция получения MW ивента должна возвращать совместимый с контекстом ивент
 //ToDo UnMakeWaitable, вызываемое из финализатора Wait очередей, чтоб очередь имела возможность стать нормальной
 
-//ToDo возможность приделать колбек к завершению CLTask-а
-// - и сразу написать об этом в справке
-
 //ToDo CommmandQueueBase.ToString для дебага
 // - так же дублирующий protected метод (tabs: integer; index: Dictionary<CommandQueueBase,integer>)
 
@@ -169,21 +143,13 @@ uses System.Runtime.CompilerServices;
 //ToDo CommandQueue.Cycle // бесконечность циклов
 //ToDo CommandQueue.CycleWhile(***->boolean)
 // - Возможность передать свой обработчик ошибок как Exception->Exception
-//
-//Update:
-// - Бесконечный цикл будет больно делать
-// - Чтобы не накапливались Task-и - надо полностью перезапускать очередь
-// - А значит надо что то вроде пре-запуска, чтобы не терять время между итерациями
-//
-//Update2:
-// - Нет, надо через контейнер выполнения добится того, чтоб .Clone не нужен был
-// - Тогда можно будет сделать просто несколько запусков одной очереди, ожидающих друг друга
 
 //ToDo В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
 // - Ивенты должны выполнится, иначе останутся GCHandle которые не освободили
 // - Наверное надо что то типа cl.SetUserEventStatus(ErrorCode.MyCustomQueueCancelCode)
 // - Протестировать как это работает с юзер-ивентами и с маркерами из таких юзер-ивентов
+// - Вроде бы маркер и cl.WaitForEvents имеют свой код ошибки, когда 1 из ивентов неправильный
 
 //ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
 
@@ -234,6 +200,8 @@ uses System.Runtime.CompilerServices;
 type
   
   {$region pre def}
+  
+  __QueueExecContainer = class;
   
   CommandQueueBase = class;
   CommandQueue<T> = class;
@@ -342,6 +310,9 @@ type
     for var i := 0 to count-1 do
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     
+    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback);
+    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback; cont: __QueueExecContainer);
+    
     ///cb должен иметь глобальный try и вызывать "state.RaiseIfError" и "__NativUtils.GCHndFree(data)",
     ///А "cl.ReleaseEvent" если и вызывать - то только на результате вызова AttachCallback
     public function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
@@ -355,6 +326,12 @@ type
     
     protected procedure AddErr(e: Exception) :=
     lock err_lst do err_lst += e;
+    
+    protected procedure AddErr(err: ErrorCode) :=
+    if err.IS_ERROR then AddErr(new OpenCLException(err.ToString));
+    
+    protected procedure AddErr(st: CommandExecutionStatus) :=
+    if st.IS_ERROR then AddErr(new OpenCLException(st.GetError.ToString));
     
   end;
   
@@ -525,17 +502,14 @@ type
       var cq := cl_command_queue.Zero;
       Result := InvokeBase(cont, c, cq, new __EventList);
       
-      var CQFree: Action := ()->
-      begin
-        if cq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(cq); //ToDo cont.AddErr
-      end;
+      var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(cq) );
       
       if Result.GetEv.count=0 then
-        Task.Run(CQFree) else
+        if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
         Result := Result.AttachCallbackBase((ev,st,data)->
         begin
-          //ToDo cont.AddErr( st );
-          Task.Run(CQFree);
+          cont.AddErr( st );
+          if cq<>cl_command_queue.Zero then Task.Run(CQFree);
           __NativUtils.GCHndFree(data);
         end, c, cq);
     end;
@@ -657,17 +631,14 @@ type
       var cq := cl_command_queue.Zero;
       Result := Invoke(cont, c, cq, new __EventList);
       
-      var CQFree: Action := ()->
-      begin
-        if cq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(cq); //ToDo cont.AddErr
-      end;
+      var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(cq) );
       
       if Result.GetEv.count=0 then
-        Task.Run(CQFree) else
+        if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
         Result := Result.AttachCallback((ev,st,data)->
         begin
-          //ToDo cont.AddErr( st );
-          Task.Run(CQFree);
+          cont.AddErr( st );
+          if cq<>cl_command_queue.Zero then Task.Run(CQFree);
           __NativUtils.GCHndFree(data);
         end, c, cq);
     end;
@@ -688,7 +659,7 @@ type
       if mw_lock<>nil then
         Result := Result.AttachCallback((ev,st,data)->
         begin
-          if st.IS_ERROR then cont.AddErr(new OpenCLException( st.ToString ));
+          cont.AddErr( st );
           self.SignalMWEvent;
           __NativUtils.GCHndFree(data);
         end, c, cq);
@@ -715,16 +686,16 @@ type
       Result.res_f := ()->res;
       
       Thread.Create(()->
-      try
-        res := ExecFunc(prev_res.WaitAndGet(), c);
-        cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-        self.SignalMWEvent;
-      except
-        on e: Exception do
-        begin
-          cont.AddErr(e);
-          cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+      begin
+        
+        try
+          res := ExecFunc(prev_res.WaitAndGet(), c);
+          self.SignalMWEvent;
+        except
+          on e: Exception do cont.AddErr(e);
         end;
+        
+        cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
       end).Start;
       
     end;
@@ -767,12 +738,10 @@ type
         cl.ReleaseEvent(
           ev.AttachCallback((ev,st,data)->
           begin
-            if st.IS_ERROR then err_lst.Add( new OpenCLException(st.GetError.ToString) );
+            self.AddErr( st );
             
-            Task.Run(()->
-            begin
-              if cq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(cq).RaiseIfError;
-            end);
+            if cq<>cl_command_queue.Zero then
+              Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
             
             OnQDone( res.Get() );
             wh.Set;
@@ -1410,10 +1379,10 @@ type
     end;
     
     public function BeginInvoke<T>(q: CommandQueue<T>) := new CLTask<T>(q, self);
-    public function BeginInvoke(q: CommandQueueBase): object := BeginInvoke(q.Cast&<object>());
+    public function BeginInvoke(q: CommandQueueBase) := new CLTask<object>(q.Cast&<object>(), self);
     
     public function SyncInvoke<T>(q: CommandQueue<T>) := BeginInvoke(q).GetRes();
-    public function SyncInvoke(q: CommandQueueBase): object := SyncInvoke(q.Cast&<object>());
+    public function SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).GetRes();
     
     protected procedure Finalize; override :=
     if need_finnalize then // если было исключение при инициализации или инициализация произошла из дескриптора
@@ -1558,10 +1527,8 @@ type
           SignalMWEvent else
           prev_ev := prev_ev.AttachCallback((ev,st,data)->
           begin
-            if st.IS_ERROR then cont.AddErr(new OpenCLException( st.GetError.ToString ));
-            
+            cont.AddErr( st );
             self.SignalMWEvent;
-            
             __NativUtils.GCHndFree(data);
           end, c, cq);
         
@@ -1691,6 +1658,11 @@ implementation
 
 {$region Misc}
 
+static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback) :=
+cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
+static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback; cont: __QueueExecContainer) :=
+cont.AddErr( cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)) );
+
 function __EventList.AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
 begin
   
@@ -1710,7 +1682,7 @@ begin
   end else
     ev := self[0];
   
-  cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
+  AttachCallback(ev, cb);
   Result := ev;
 end;
 
@@ -2013,17 +1985,17 @@ type
         Result[i].res := res.res;
         Result[i].res_f := res.res_f;
         
-        var CQFree: Action := ()->
-        begin
-          if ncq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(ncq); //ToDo cont.AddErr
-        end;
+        var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(ncq) );
         
         if res.ev.count=0 then
-          Task.Run(CQFree) else
+        begin
+          if ncq<>cl_command_queue.Zero then
+            Task.Run(CQFree);
+        end else
           res.ev := res.ev.AttachCallback((_ev,_st,_data)->
           begin
-            //ToDo cont.AddErr( _st );
-            Task.Run(CQFree);
+            cont.AddErr( _st );
+            if ncq<>cl_command_queue.Zero then Task.Run(CQFree);
             __NativUtils.GCHndFree(_data);
           end, c, ncq);
         
@@ -2240,17 +2212,14 @@ type
         prev_ev.Retain;
         var ev := qs[i].InvokeBase(cont, c, ncq, prev_ev).GetEv;
         
-        var CQFree: Action := ()->
-        begin
-          if ncq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(ncq); //ToDo cont.AddErr
-        end;
+        var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(ncq) );
         
         if ev.count=0 then
-          Task.Run(CQFree) else
+          if ncq<>cl_command_queue.Zero then Task.Run(CQFree) else
           ev := ev.AttachCallback((_ev,_st,_data)->
           begin
-            //ToDo cont.AddErr( _st );
-            Task.Run(CQFree);
+            cont.AddErr( _st );
+            if ncq<>cl_command_queue.Zero then Task.Run(CQFree);
             __NativUtils.GCHndFree(_data);
           end, c, ncq);
         
@@ -2379,27 +2348,27 @@ type
     function GetWaitEv(cont: __QueueExecContainer; c: Context): __EventList; override;
     begin
       var uev := CommandQueueBase.CreateUserEvent(c);
+      var done := false;
+      var lo := new object;
       
       foreach var q in waitables do
       begin
         var ev := q.GetMWEvent(c._context);
         
-        var done := false;
-        var lo := new object;
-        var cb: Event_Callback := (ev,st,data)->
+        __EventList.AttachCallback(ev, (ev,st,data)->
         begin
+          cont.AddErr( st );
           
-          lock lo do if not done then
-          begin
-            var ec := cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE);
-            if ec.val<0 then cont.AddErr(new OpenCLException( ec.ToString ));
-            done := true;
-          end;
+          lock lo do
+            if not done then
+            begin
+              cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
+              done := true;
+            end;
           
           __NativUtils.GCHndFree(data);
-        end;
+        end);
         
-        cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb));
         cl.ReleaseEvent(ev).RaiseIfError;
       end;
       
@@ -2570,15 +2539,15 @@ type
       var uev := CommandQueueBase.CreateUserEvent(c);
       
       Thread.Create(()->
-      try
-        self.ExecProc(c, prev_res.WaitAndGet);
-        cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      except
-        on e: Exception do
-        begin
-          cont.AddErr(e);
-          cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+      begin
+        
+        try
+          self.ExecProc(c, prev_res.WaitAndGet);
+        except
+          on e: Exception do cont.AddErr(e);
         end;
+        
+        cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
       end).Start;
       
       Result := uev;
@@ -2689,38 +2658,34 @@ type
               end;
               
               enq_f(o_res.WaitAndGet, c, lcq, nil);
-              cl.ReleaseCommandQueue(lcq).RaiseIfError;
             except
               on e: Exception do cont.AddErr(e);
             end;
             
-            cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE).RaiseIfError;
+            cont.AddErr( cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE) );
+            cont.AddErr( cl.ReleaseCommandQueue(lcq) );
           end).Start else
         begin
           
           var set_complete: Event_Callback := (ev,st,data)->
           begin
-            if st.IS_ERROR then cont.AddErr( new OpenCLException(st.GetError.ToString) );
+            cont.AddErr( st );
             
-            Task.Run(()->
-            begin
-              cl.ReleaseCommandQueue(lcq).RaiseIfError; //ToDo cont.AddErr
-            end);
+            Task.Run(()->cont.AddErr( cl.ReleaseCommandQueue(lcq) ));
             
-            cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE);
+            cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
             
             __NativUtils.GCHndFree(data);
           end;
           
           cl.ReleaseEvent(o_res.ev.AttachCallback((ev,st,data)->
           begin
-            if st.IS_ERROR then cont.AddErr( new OpenCLException(st.GetError.ToString) );
+            cont.AddErr( st );
             
-            cl.SetEventCallback(
+            __EventList.AttachCallback(
               enq_f(o_res.Get, c, lcq, prev_ev),
-              CommandExecutionStatus.COMPLETE,
               set_complete,
-              __NativUtils.GCHndAlloc(set_complete)
+              cont
             );
             
             __NativUtils.GCHndFree(data);
@@ -3107,7 +3072,7 @@ type
         cl.WaitForEvents(1,@res_ev);
         cl.ReleaseEvent(res_ev);
         
-        a_hnd.Free; // можно и в callback засунуть, но от этого не сильно лучше
+        a_hnd.Free;
         Result := cl_event.Zero;
       end;
       
