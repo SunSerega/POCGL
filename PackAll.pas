@@ -164,8 +164,8 @@ begin
         TitleTask('Update Reps', '~')
         +
         
-        ExecTask('DataScraping\Reps\GLBrokenSource\GenerateCoreSource.pas', 'GL BrokenSource') *
-        ExecTask('DataScraping\Reps\PullGL.pas',                            'GLRep Update')
+        ExecTask('DataScraping\Reps\0BrokenSource\GL\GenerateCoreSource.pas', 'GL BrokenSource') *
+        ExecTask('DataScraping\Reps\PullReps.pas',                            'GLRep Update')
         
       ;
       
@@ -426,7 +426,6 @@ begin
     {$endregion ExecAll}
     
   except
-    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
 end.

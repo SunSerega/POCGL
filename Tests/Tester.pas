@@ -357,7 +357,6 @@ begin
     
     if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('Press Enter to exit');
   except
-    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
 end.

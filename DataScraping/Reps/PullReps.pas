@@ -1,20 +1,8 @@
-﻿unit RepUtils;
-
-uses System.Diagnostics;
+﻿uses System.Diagnostics;
 uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 const GitExe = 'C:\Program Files\Git\bin\git.exe';
 var exe_dir := System.IO.Path.GetDirectoryName(GetEXEFileName);
-
-{$region Otp}
-
-procedure Otp(line: string) :=
-MiscUtils.Otp(line);
-
-procedure ErrOtp(e: Exception) :=
-MiscUtils.ErrOtp(e);
-
-{$endregion Otp}
 
 {$region Rep operations}
 
@@ -44,18 +32,27 @@ begin
   var psi := new ProcessStartInfo(GitExe, $'pull --progress -v --no-rebase "origin"');
   psi.WorkingDirectory := folder;
   psi.UseShellExecute := false;
+  
+  var thr_otp := new ThrProcOtp;
+  var on_otp: string->() := l->
+  if l=nil then
+    thr_otp.Finish else
+    thr_otp.Enq(l);
+  
   psi.RedirectStandardError := true;
   psi.RedirectStandardOutput := true;
   
-  var p := Process.Start(psi);
-  p.OutputDataReceived += (o,e)->if not string.IsNullOrWhiteSpace(e.Data) then Otp($'{nick} : {e.Data.Trim(#32)}');
-  p.ErrorDataReceived += (o,e)->if not string.IsNullOrWhiteSpace(e.Data) then Otp($'{nick} : {e.Data.Trim(''= ''.ToCharArray())}');
+  var p := new Process;
+  p.StartInfo := psi;
+  p.OutputDataReceived += (o,e)->on_otp(e.Data=nil ? nil :  $'{nick} : {e.Data.Trim(#32)}' );
+  p.ErrorDataReceived += (o,e)->if e.Data<>nil then on_otp( $'{nick} : [Info] {e.Data.Trim(''= ''.ToCharArray())}');
+  
+  p.Start;
   p.BeginOutputReadLine;
   p.BeginErrorReadLine;
+  foreach var l in thr_otp.Enmr do Otp(l);
   
-  p.WaitForExit;
   Otp($'Done pulling {nick}');
-  
 end;
 
 procedure UpdateRep(key, folder, nick: string);
@@ -70,4 +67,16 @@ end;
 
 {$endregion Rep operations}
 
+begin
+  try
+    Arr(
+      new class( name := 'OpenCL Docs',     path := 'OpenCL-Docs',     key := 'git@github.com:KhronosGroup/OpenCL-Docs.git'     ),
+      new class( name := 'OpenCL Registry', path := 'OpenCL-Registry', key := 'git@github.com:KhronosGroup/OpenCL-Registry.git' ),
+      new class( name := 'OpenGL Registry', path := 'OpenGL-Registry', key := 'git@github.com:KhronosGroup/OpenGL-Registry.git' )
+    ).Select(r->ProcTask(()-> UpdateRep(r.key, r.path, r.name) ))
+    .CombineAsyncTask
+    .SyncExec;
+  except
+    on e: Exception do ErrOtp(e);
+  end;
 end.

@@ -99,6 +99,8 @@ uses System.Runtime.CompilerServices;
 
 //ToDo перегрузки cont.AddErr для ErrorCode и CommandExecutionStatus, потому что это много где надо
 
+//ToDo cl.SetKernelArg из нескольких потоков одновременно - предусмотреть
+
 //ToDo синхронные (с припиской Fast) варианты всего работающего по принципу HostQueue
 //ToDo и асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
 

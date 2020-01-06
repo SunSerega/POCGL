@@ -199,9 +199,15 @@ begin
   System.Console.WriteLine(line.s);
 end;
 
+/// Остановка других потоков и подпроцессов, довывод асинхронного вывода и вывод ошибки
+/// На случай ThreadAbortException - после вызова ErrOtp в потоке больше ничего быть не должно
 procedure ErrOtp(e: Exception);
 begin
-  if e is ThreadAbortException then exit;
+  if e is ThreadAbortException then
+  begin
+    Thread.ResetAbort;
+    exit;
+  end;
   
   lock sec_procs do
   begin
@@ -296,47 +302,41 @@ begin
   var curr_exe_timer := Stopwatch.StartNew;
   
   try
-    try
-      p.BeginOutputReadLine;
-      
-      var thr_otp_sq := thr_otp.Enmr;
-      if exp_time_marks then thr_otp_sq := thr_otp_sq.Select(l->
+    p.BeginOutputReadLine;
+    
+    var thr_otp_sq := thr_otp.Enmr;
+    if exp_time_marks then thr_otp_sq := thr_otp_sq.Select(l->
+    begin
+      var ind := l.s.IndexOf(' | ');
+      if ind=-1 then
       begin
-        var ind := l.s.IndexOf(' | ');
-        if ind=-1 then
-        begin
-          Result := l;
-          exit;
-        end;
-        Result := new OtpLine;
-        Result.t := start_time_mark+int64.Parse(l.s.Remove(ind).Remove('.'));
-        Result.s := l.s.Remove(0, ind+3);
-      end);
-      foreach var l in thr_otp_sq do l_otp(l);
-  //    p.WaitForExit;
-      
-      curr_exe_timer.Stop;
-      Timers.AddExeTime(nick, curr_exe_timer.ElapsedTicks);
-      curr_exe_timer.Reset;
-      
-      if p.ExitCode<>0 then
-      begin
-        var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
-        ErrOtp(new Exception($'Error in {nick}:', ex));
+        Result := l;
+        exit;
       end;
-      
-      MiscUtils.Otp($'Finished runing {nick}');
-    except
-      on ThreadAbortException do
-      begin
-        
-        try
-          p.Kill;
-        except end;
-        
-      end;
+      Result := new OtpLine;
+      Result.t := start_time_mark+int64.Parse(l.s.Remove(ind).Remove('.'));
+      Result.s := l.s.Remove(0, ind+3);
+    end);
+    foreach var l in thr_otp_sq do l_otp(l);
+//    p.WaitForExit;
+    
+    curr_exe_timer.Stop;
+    Timers.AddExeTime(nick, curr_exe_timer.ElapsedTicks);
+    curr_exe_timer.Reset;
+    
+    if p.ExitCode<>0 then
+    begin
+      var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
+      ErrOtp(new Exception($'Error in {nick}:', ex));
     end;
+    
+    MiscUtils.Otp($'Finished runing {nick}');
   finally
+    
+    try
+      p.Kill;
+    except end;
+    
     curr_exe_timer.Stop;
     Timers.AddExeTime(nick, curr_exe_timer.ElapsedTicks);
   end;
@@ -437,7 +437,6 @@ type
       SyncExec;
       self.own_otp.Finish;
     except
-      on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
       on e: Exception do ErrOtp(e);
     end);
     

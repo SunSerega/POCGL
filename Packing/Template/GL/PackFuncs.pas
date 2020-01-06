@@ -173,8 +173,8 @@ begin
   Otp('Read funcs from .h''s');
   
   var all_header_files :=
-    System.IO.Directory.EnumerateFiles('DataScraping\Reps\OpenGL-Registry', '*.h', System.IO.SearchOption.AllDirectories) +
-    System.IO.Directory.EnumerateFiles('DataScraping\Reps\GLBrokenSource',  '*.h', System.IO.SearchOption.AllDirectories)
+    System.IO.Directory.EnumerateFiles('DataScraping\Reps\OpenGL-Registry',   '*.h', System.IO.SearchOption.AllDirectories) +
+    System.IO.Directory.EnumerateFiles('DataScraping\Reps\0BrokenSource\GL',  '*.h', System.IO.SearchOption.AllDirectories)
   ;
   
   var prev := new HashSet<string>;
@@ -510,7 +510,6 @@ begin
     
     Otp('done');
   except
-    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
 end.

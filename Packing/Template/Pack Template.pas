@@ -29,7 +29,6 @@ type
         self.str := f();
         self.own_otp.Finish;
       except
-        on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
         on e: Exception do ErrOtp(e);
       end).Start;
     end;
@@ -105,44 +104,35 @@ begin
       lock blocks do blocks.Enqueue(new StrBlock(res.ToString));
       read_done := true;
     except
-      on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
       on e: Exception do ErrOtp(e);
     end).Start;
     
-    Thread.Create(()->
-    try
-      var fname := arg.Remove(arg.LastIndexOf('.'));
-      if CommandLineArgs.Contains('GenPas') then
-        fname += '.pas' else
-        fname += '.templateres';
-      var sw := new System.IO.StreamWriter(System.IO.File.Create(fname), new System.Text.UTF8Encoding(true));
-      
-      while true do
+    var fname := arg.Remove(arg.LastIndexOf('.'));
+    if CommandLineArgs.Contains('GenPas') then
+      fname += '.pas' else
+      fname += '.templateres';
+    var sw := new System.IO.StreamWriter(System.IO.File.Create(fname), new System.Text.UTF8Encoding(true));
+    
+    while true do
+    begin
+      while blocks.Count=0 do
       begin
-        while blocks.Count=0 do
+        if read_done and (blocks.Count=0) then
         begin
-          if read_done and (blocks.Count=0) then
-          begin
-            sw.Flush;
-            sw.Close;
-            Halt;
-          end;
-          Sleep(10);
+          sw.Flush;
+          sw.Close;
+          Halt;
         end;
-        
-        var bl: TextBlock;
-        lock blocks do bl := blocks.Dequeue;
-        sw.Write(bl.Finish);
-        
+        Sleep(10);
       end;
       
-    except
-      on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
-      on e: Exception do ErrOtp(e);
-    end).Start;
+      var bl: TextBlock;
+      lock blocks do bl := blocks.Dequeue;
+      sw.Write(bl.Finish);
+      
+    end;
     
   except
-    on e: System.Threading.ThreadAbortException do System.Threading.Thread.ResetAbort;
     on e: Exception do ErrOtp(e);
   end;
 end.
