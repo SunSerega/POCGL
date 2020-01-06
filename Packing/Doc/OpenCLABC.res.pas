@@ -97,6 +97,11 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
+//ToDo добавить ивенты в упаковщик описаний
+
+//ToDo ___EventList.AttachCallback(ev; cb)
+// - сильно упростит код, потому что GCHandle не придётся создавать вручную
+
 //ToDo перегрузки cont.AddErr для ErrorCode и CommandExecutionStatus, потому что это много где надо
 
 //ToDo cl.SetKernelArg из нескольких потоков одновременно - предусмотреть
@@ -349,6 +354,7 @@ type
   end;
   
   __IQueueRes = interface;
+  ///--
   __QueueExecContainer = abstract class
     private err_lst := new List<Exception>;
     private mu_res := new Dictionary<object, __IQueueRes>;
@@ -358,6 +364,7 @@ type
     
   end;
   
+  ///--
   __IQueueRes = interface
     
     function GetBase: object;
@@ -370,6 +377,7 @@ type
     function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes;
     
   end;
+  ///--
   __QueueRes<T> = record(__IQueueRes)
     res: T;
     res_f: ()->T;
@@ -508,12 +516,17 @@ type
     
     {$region ThenWait}
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от заданой очереди
     public function ThenWaitFor(q: CommandQueueBase): CommandQueueBase := ThenWaitForAll(q);
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAll(qs: sequence of CommandQueueBase): CommandQueueBase := CreateWaitWrapperBase(qs, true);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAll(qs.AsEnumerable);
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от одной из заданных очередей
     public function ThenWaitForAny(qs: sequence of CommandQueueBase): CommandQueueBase := CreateWaitWrapperBase(qs, false);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от одной из заданных очередей
     public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAny(qs.AsEnumerable);
     
     {$endregion ThenWait}
@@ -644,12 +657,17 @@ type
     
     {$region ThenWait}
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от заданой очереди
     public function ThenWaitFor(q: CommandQueueBase): CommandQueue<T> := ThenWaitForAll(q);
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAll(qs: sequence of CommandQueueBase): CommandQueue<T> := CreateWaitWrapper(qs, true);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAll(qs.AsEnumerable);
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от одной из заданных очередей
     public function ThenWaitForAny(qs: sequence of CommandQueueBase): CommandQueue<T> := CreateWaitWrapper(qs, false);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от одной из заданных очередей
     public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAny(qs.AsEnumerable);
     
     protected function CreateWaitWrapper(qs: sequence of CommandQueueBase; all: boolean): CommandQueue<T>;
@@ -713,6 +731,7 @@ type
   end;
   
   // очередь, выполняющая какую то работу на CPU, всегда в отдельном потоке
+  ///--
   __HostQueue<TInp,TRes> = abstract class(CommandQueue<TRes>)
     
     protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<TInp>; abstract;
@@ -855,6 +874,7 @@ type
   end;
   
   __GPUCommandContainer<T> = class;
+  ///--
   __GPUCommandContainerBody<T> = abstract class
     private cc: __GPUCommandContainer<T>;
     
@@ -1142,18 +1162,23 @@ type
       Result := self;
     end;
     
+    ///Добавляет ожидание сигнала выполненности от всех заданных очередей
     public function AddWaitAll(qs: sequence of CommandQueueBase): BufferCommandQueue;
     begin
       InternalAddWaitAll(qs);
       Result := self;
     end;
+    ///Добавляет ожидание первого сигнала выполненности от одной из заданных очередей
     public function AddWaitAny(qs: sequence of CommandQueueBase): BufferCommandQueue;
     begin
       InternalAddWaitAny(qs);
       Result := self;
     end;
+    ///Добавляет ожидание сигнала выполненности от всех заданных очередей
     public function AddWaitAll(params qs: array of CommandQueueBase) := AddWaitAll(qs.AsEnumerable);
+    ///Добавляет ожидание первого сигнала выполненности от одной из заданных очередей
     public function AddWaitAny(params qs: array of CommandQueueBase) := AddWaitAny(qs.AsEnumerable);
+    ///Добавляет ожидание сигнала выполненности от заданной очереди
     public function AddWait(q: CommandQueueBase) := AddWaitAll(q);
     
     {$endregion Non-command add's}
@@ -1625,18 +1650,23 @@ type
       Result := self;
     end;
     
+    ///Добавляет ожидание сигнала выполненности от всех заданных очередей
     public function AddWaitAll(qs: sequence of CommandQueueBase): KernelCommandQueue;
     begin
       InternalAddWaitAll(qs);
       Result := self;
     end;
+    ///Добавляет ожидание первого сигнала выполненности от одной из заданных очередей
     public function AddWaitAny(qs: sequence of CommandQueueBase): KernelCommandQueue;
     begin
       InternalAddWaitAny(qs);
       Result := self;
     end;
+    ///Добавляет ожидание сигнала выполненности от всех заданных очередей
     public function AddWaitAll(params qs: array of CommandQueueBase) := AddWaitAll(qs.AsEnumerable);
+    ///Добавляет ожидание первого сигнала выполненности от одной из заданных очередей
     public function AddWaitAny(params qs: array of CommandQueueBase) := AddWaitAny(qs.AsEnumerable);
+    ///Добавляет ожидание сигнала выполненности от заданной очереди
     public function AddWait(q: CommandQueueBase) := AddWaitAll(q);
     
     {$endregion Non-command add's}
@@ -2190,12 +2220,17 @@ function CombineAsyncQueue<TInp,TRes>(conv: Func<array of TInp, Context, TRes>; 
 
 {$region Wait}
 
+///Создаёт очередь,ожидающую сигнала выполненности от заданой очереди
 function WaitFor(q: CommandQueueBase): CommandQueueBase;
 
+///Создаёт очередь, ожидающую сигнала выполненности от каждой из заданых очередей
 function WaitForAll(qs: sequence of CommandQueueBase): CommandQueueBase;
+///Создаёт очередь, ожидающую сигнала выполненности от каждой из заданых очередей
 function WaitForAll(params qs: array of CommandQueueBase): CommandQueueBase;
 
+///Создаёт очередь, ожидающую первого сигнала выполненности от одной из заданных очередей
 function WaitForAny(qs: sequence of CommandQueueBase): CommandQueueBase;
+///Создаёт очередь, ожидающую первого сигнала выполненности от одной из заданных очередей
 function WaitForAny(params qs: array of CommandQueueBase): CommandQueueBase;
 
 {$endregion Wait}

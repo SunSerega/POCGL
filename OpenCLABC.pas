@@ -97,6 +97,11 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
+//ToDo добавить ивенты в упаковщик описаний
+
+//ToDo ___EventList.AttachCallback(ev; cb)
+// - сильно упростит код, потому что GCHandle не придётся создавать вручную
+
 //ToDo перегрузки cont.AddErr для ErrorCode и CommandExecutionStatus, потому что это много где надо
 
 //ToDo cl.SetKernelArg из нескольких потоков одновременно - предусмотреть

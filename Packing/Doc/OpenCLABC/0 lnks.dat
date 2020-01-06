@@ -1,9 +1,13 @@
 ﻿
 # __NativUtils
 # __EventList
+# __QueueExecContainer
+# __IQueueRes
+# __QueueRes<T>
 # __ContainerQueue<T>
-# __HostQueue<T>
+# __HostQueue<TInp,TRes>
 # __GPUCommand<T>
+# __GPUCommandContainerBody<T>
 # __GPUCommandContainer<T>
 %hidden%
 
@@ -43,10 +47,6 @@
 # CommandQueueBase.Cast<T>()
 %cq.Cast%
 
-# CommandQueueBase.Clone()
-# CommandQueue<T>.Clone()
-%cq.Clone%
-
 # CommandQueue<T>.ThenConvert<T2>(T->T2)
 %cq.ThenConvert%
 # CommandQueue<T>.ThenConvert<T2>((T,Context)->T2)
@@ -56,6 +56,20 @@
 %cq.Multiusable%
 # CommandQueue<T>.Multiusable(integer)
 %cq.MultiusableI%
+
+# CommandQueueBase.ThenWaitFor(CommandQueueBase)
+# CommandQueue<T>.ThenWaitFor(CommandQueueBase)
+%cq.ThenWaitFor%
+# CommandQueueBase.ThenWaitForAll(sequence of CommandQueueBase)
+# CommandQueueBase.ThenWaitForAll(array of CommandQueueBase)
+# CommandQueue<T>.ThenWaitForAll(sequence of CommandQueueBase)
+# CommandQueue<T>.ThenWaitForAll(array of CommandQueueBase)
+%cq.ThenWaitForAll%
+# CommandQueueBase.ThenWaitForAny(sequence of CommandQueueBase)
+# CommandQueueBase.ThenWaitForAny(array of CommandQueueBase)
+# CommandQueue<T>.ThenWaitForAny(sequence of CommandQueueBase)
+# CommandQueue<T>.ThenWaitForAny(array of CommandQueueBase)
+%cq.ThenWaitForAny%
 
 
 
@@ -73,23 +87,38 @@
 # __GPUCommandContainer<T>.GetHashCode()
 %hidden%
 
+# BufferCommandQueue.AddQueue(CommandQueueBase)
+# KernelCommandQueue.AddQueue(CommandQueueBase)
+%gcc.AddQueue%
+
+# BufferCommandQueue.AddProc((Buffer,Context)->())
+# BufferCommandQueue.AddProc(Buffer->())
+# KernelCommandQueue.AddProc((Kernel,Context)->())
+# KernelCommandQueue.AddProc(Kernel->())
+%gcc.AddProc%
+
+# BufferCommandQueue.AddWait(CommandQueueBase)
+# KernelCommandQueue.AddWait(CommandQueueBase)
+%gcc.AddWait%
+
+# BufferCommandQueue.AddWaitAll(sequence of CommandQueueBase)
+# BufferCommandQueue.AddWaitAll(array of CommandQueueBase)
+# KernelCommandQueue.AddWaitAll(sequence of CommandQueueBase)
+# KernelCommandQueue.AddWaitAll(array of CommandQueueBase)
+%gcc.AddWaitAll%
+
+# BufferCommandQueue.AddWaitAny(sequence of CommandQueueBase)
+# BufferCommandQueue.AddWaitAny(array of CommandQueueBase)
+# KernelCommandQueue.AddWaitAny(sequence of CommandQueueBase)
+# KernelCommandQueue.AddWaitAny(array of CommandQueueBase)
+%gcc.AddWaitAny%
+
 
 
 # BufferCommandQueue.(Buffer)
 %bcq.ctor%
 # BufferCommandQueue.(CommandQueue<Buffer>)
 %bcq.ctorQ%
-
-# BufferCommandQueue.Clone()
-%cq.Clone%
-
-# BufferCommandQueue.AddQueue(CommandQueueBase)
-%gcc.AddQueue%
-# BufferCommandQueue.AddProc((Buffer,Context)->())
-# BufferCommandQueue.AddProc(Buffer->())
-%gcc.AddProc%
-# BufferCommandQueue.AddWait(CommandQueueBase, boolean)
-%gcc.AddWait%
 
 # BufferCommandQueue.AddWriteData(pointer)
 %b.WriteData%
@@ -206,17 +235,6 @@
 %kcq.ctor%
 # KernelCommandQueue.(CommandQueue<Kernel>)
 %kcq.ctorQ%
-
-# KernelCommandQueue.Clone()
-%cq.Clone%
-
-# KernelCommandQueue.AddQueue(CommandQueueBase)
-%gcc.AddQueue%
-# KernelCommandQueue.AddProc((Kernel,Context)->())
-# KernelCommandQueue.AddProc(Kernel->())
-%gcc.AddProc%
-# KernelCommandQueue.AddWait(CommandQueueBase, boolean)
-%gcc.AddWait%
 
 # KernelCommandQueue.AddExec(array of integer, array of CommandQueue<Buffer>)
 # KernelCommandQueue.AddExec(array of CommandQueue<integer>, array of CommandQueue<Buffer>)
@@ -567,6 +585,19 @@
 # .HPQ(()->())
 # .HPQ(Context->())
 %g.HPQ%
+
+
+
+# .WaitFor(CommandQueueBase)
+%g.WaitFor%
+
+# .WaitForAll(sequence of CommandQueueBase)
+# .WaitForAll(array of CommandQueueBase)
+%g.WaitForAll%
+
+# .WaitForAny(sequence of CommandQueueBase)
+# .WaitForAny(array of CommandQueueBase)
+%g.WaitForAny%
 
 
 

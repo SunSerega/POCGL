@@ -16,15 +16,6 @@ Finished runing SpecPacker
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
-Comments[OpenCLABC]: WARNING: key %__HostQueue<T>% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueueBase.Clone()% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.Clone()% wasn't used!
-Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.Clone()% wasn't used!
-Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWait(CommandQueueBase, boolean)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.Clone()% wasn't used!
-Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddWait(CommandQueueBase, boolean)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %cq.Clone% wasn't used!
-Comments[OpenCLABC]: WARNING: key %gcc.AddWait% wasn't used!
 Finished runing Comments[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
