@@ -307,8 +307,9 @@ type
   
   __IQueueRes = interface;
   __QueueExecContainer = abstract class
-    private err_lst := new List<Exception>;
-    private mu_res := new Dictionary<object, __IQueueRes>;
+    private err_lst := new List<Exception>;                 // Список исключений, вызванных при выполнении
+    private mu_res := new Dictionary<object, __IQueueRes>;  // Результат хабов от .Multiusable
+    private done_qs := new HashSet<CommandQueueBase>;       // Очереди, вызавшие .SignalMWEvent
     
     protected procedure AddErr(e: Exception) :=
     lock err_lst do err_lst += e;
@@ -510,29 +511,35 @@ type
     
     {$region Event's}
     
-    protected function GetMWEvent(c: cl_context): cl_event;
+    protected function GetMWEvent(cont: __QueueExecContainer; c: cl_context): cl_event;
     begin
       
       lock mw_lock do
       begin
         
-        if self.mw_ev=cl_event.Zero then
+        if self.mw_ev<>cl_event.Zero then
+          cl.RetainEvent(self.mw_ev).RaiseIfError else
         begin
-          var ec: ErrorCode;
-          self.mw_ev := cl.CreateUserEvent(c, ec);
-          ec.RaiseIfError;
-        end else
-          cl.RetainEvent(self.mw_ev).RaiseIfError;
+          var self_done: boolean;
+          lock cont.done_qs do self_done := cont.done_qs.Contains(self);
+          if not self_done then
+          begin
+            var ec: ErrorCode;
+            self.mw_ev := cl.CreateUserEvent(c, ec);
+            ec.RaiseIfError;
+          end;
+        end;
         
         Result := self.mw_ev;
       end;
       
     end;
     
-    protected procedure SignalMWEvent :=
-    if mw_lock<>nil then lock mw_lock do
+    protected procedure SignalMWEvent(cont: __QueueExecContainer) :=
+    lock mw_lock do
     begin
       if self.mw_ev=cl_event.Zero then exit;
+      lock cont.done_qs do if not cont.done_qs.Add(self) then exit;
       cl.SetUserEventStatus(self.mw_ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
       self.mw_ev := cl_event.Zero;
     end;
@@ -635,12 +642,14 @@ type
       Result := InvokeSubQs(cont, c, cq, prev_ev);
       
       if mw_lock<>nil then
-        Result := Result.AttachCallback((ev,st,data)->
-        begin
-          cont.AddErr( st );
-          self.SignalMWEvent;
-          __NativUtils.GCHndFree(data);
-        end, c, cq);
+        if Result.ev.count=0 then
+          self.SignalMWEvent(cont) else
+          Result := Result.AttachCallback((ev,st,data)->
+          begin
+            cont.AddErr( st );
+            self.SignalMWEvent(cont);
+            __NativUtils.GCHndFree(data);
+          end, c, cq);
       
     end;
     
@@ -668,7 +677,7 @@ type
         
         try
           res := ExecFunc(prev_res.WaitAndGet(), c);
-          self.SignalMWEvent;
+          if self.mw_lock<>nil then self.SignalMWEvent(cont);
         except
           on e: Exception do cont.AddErr(e);
         end;
@@ -1522,11 +1531,11 @@ type
       begin
         
         if prev_ev.count=0 then
-          SignalMWEvent else
+          SignalMWEvent(cont) else
           prev_ev := prev_ev.AttachCallback((ev,st,data)->
           begin
             cont.AddErr( st );
-            self.SignalMWEvent;
+            self.SignalMWEvent(cont);
             __NativUtils.GCHndFree(data);
           end, c, cq);
         
@@ -2002,7 +2011,7 @@ type
           if ncq<>cl_command_queue.Zero then
             Task.Run(CQFree);
         end else
-          res.ev := res.ev.AttachCallback((_ev,_st,_data)->
+          res := res.AttachCallback((_ev,_st,_data)->
           begin
             cont.AddErr( _st );
             if ncq<>cl_command_queue.Zero then Task.Run(CQFree);
@@ -2349,7 +2358,11 @@ type
     begin
       Result := new __EventList(waitables.Length);
       foreach var q in waitables do
-        Result += q.GetMWEvent(c._context);
+      begin
+        var ev := q.GetMWEvent(cont, c._context);
+        if ev=cl_event.Zero then continue;
+        Result += ev;
+      end;
     end;
     
   end;
@@ -2359,11 +2372,14 @@ type
     begin
       var uev := CommandQueueBase.CreateUserEvent(c);
       var done := false;
+      var any_ev := false;
       var lo := new object;
       
       foreach var q in waitables do
       begin
-        var ev := q.GetMWEvent(c._context);
+        var ev := q.GetMWEvent(cont, c._context);
+        if ev=cl_event.Zero then continue;
+        any_ev := true;
         
         __EventList.AttachCallback(ev, (ev,st,data)->
         begin
@@ -2382,7 +2398,12 @@ type
         cl.ReleaseEvent(ev).RaiseIfError;
       end;
       
-      Result := uev;
+      if any_ev then
+        Result := uev else
+      begin
+        cl.ReleaseEvent(uev).RaiseIfError;
+        Result := new __EventList;
+      end;
     end;
     
   end;
