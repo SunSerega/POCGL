@@ -97,60 +97,25 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo добавление ивентов в CLTask не безопастно, если он выполнится до их добавления
-
-//ToDo ___EventList.AttachCallback(ev; cb)
-// - сильно упростит код, потому что GCHandle не придётся создавать вручную
-
-//ToDo перегрузки cont.AddErr для ErrorCode и CommandExecutionStatus, потому что это много где надо
-
-//ToDo cl.SetKernelArg из нескольких потоков одновременно - предусмотреть
-
-//ToDo синхронные (с припиской Fast) варианты всего работающего по принципу HostQueue
-//ToDo и асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
-
-//ToDo может сделать Invoke функцией, возвращающей ___EventList?
-
-//ToDo проверить чтоб небыло утечек памяти
-//ToDo проверить чтоб исключение в HPQ нормально выводилось
-//ToDo проверить чтоб CheckErr было во всех классах с под-очередями
-// - при этом исключения под-очередей должны обрабатываться первыми, потому что они выполнялись раньше
-
-//ToDo использовать пустые inherited
-// - но у функций они сейчас сломаны - #2145
-
-//ToDo если в предыдущей очереди исключение - остановить выполнение
-// - это не критично, но иначе будет выводить кучу лишних ошибок
-
-//ToDo .ThenWaitFor
-//ToDo .ThenWaitForAll
-//ToDo .ThenWaitForAny
-// - Стоп, а для Any может всё же Then не работает?
-// - Может сделать первое и второе методами, а Any глобальными подпрограммами?
-// - нет, лучше наверное все 3 методами, но для Any ещё глобальную функцию
-
-//ToDo проверить все raise - лучше сделать свои исключения
-
 //ToDo Написать в справке про AddProc,AddQueue
-
 //ToDo Написать в справке про AddWait
 //ToDo Написать в справке про WaitFor
-//ToDo написать в справке про опастность того, что ThenWaitFor может выполниться после завершения выполнения очереди если она в другом BeginInvoke
+//ToDo Написать в справке про опастность того, что ThenWaitFor может выполниться после завершения выполнения очереди если она в другом BeginInvoke
+//ToDo Написать в справке про ивенты CLTask
 
-//ToDo раздел справки про оптимизацию
+//ToDo Раздел справки про оптимизацию
 // - почему 1 очередь быстрее 2 её кусков
-
-//ToDo система создания описаний через отдельные файлы
-// - и тексты исключений тоже туда куда то
-
-//ToDo проверить все "//ToDo" в модуле
-
-//ToDo снова проверить все cl. на .RaiseIfError
-
-//ToDo вытащить из справки все "```pas" и засунуть в тесты с запуском
 
 //===================================
 // Запланированное:
+
+//ToDo Если в предыдущей очереди исключение - остановить выполнение
+// - это не критично, но иначе будет выводить кучу лишних ошибок
+
+//ToDo cl.SetKernelArg из нескольких потоков одновременно - предусмотреть
+
+//ToDo Синхронные (с припиской Fast) варианты всего работающего по принципу HostQueue
+//ToDo и асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
 
 //ToDo исправить десериализацию ProgramCode
 
@@ -159,9 +124,6 @@ uses System.Runtime.CompilerServices;
 //ToDo MW ивенты должны хранится в Dictionary<Context,cl_event>, потому что функция получения MW ивента должна возвращать совместимый с контекстом ивент
 //ToDo UnMakeWaitable, вызываемое из финализатора Wait очередей, чтоб очередь имела возможность стать нормальной
 
-//ToDo возможность приделать колбек к завершению CLTask-а
-// - и сразу написать об этом в справке
-
 //ToDo CommmandQueueBase.ToString для дебага
 // - так же дублирующий protected метод (tabs: integer; index: Dictionary<CommandQueueBase,integer>)
 
@@ -169,21 +131,13 @@ uses System.Runtime.CompilerServices;
 //ToDo CommandQueue.Cycle // бесконечность циклов
 //ToDo CommandQueue.CycleWhile(***->boolean)
 // - Возможность передать свой обработчик ошибок как Exception->Exception
-//
-//Update:
-// - Бесконечный цикл будет больно делать
-// - Чтобы не накапливались Task-и - надо полностью перезапускать очередь
-// - А значит надо что то вроде пре-запуска, чтобы не терять время между итерациями
-//
-//Update2:
-// - Нет, надо через контейнер выполнения добится того, чтоб .Clone не нужен был
-// - Тогда можно будет сделать просто несколько запусков одной очереди, ожидающих друг друга
 
 //ToDo В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
 // - Ивенты должны выполнится, иначе останутся GCHandle которые не освободили
 // - Наверное надо что то типа cl.SetUserEventStatus(ErrorCode.MyCustomQueueCancelCode)
 // - Протестировать как это работает с юзер-ивентами и с маркерами из таких юзер-ивентов
+// - Вроде бы маркер и cl.WaitForEvents имеют свой код ошибки, когда 1 из ивентов неправильный
 
 //ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
 
@@ -212,13 +166,11 @@ uses System.Runtime.CompilerServices;
 
 //ToDo issue компилятора:
 // - #1981
-// - #2048
-// - #2067
-// - #2068
 // - #2118
-// - #2119
 // - #2120
-// - #2140
+// - #2145
+// - #2150
+// - #2173
 
 {$endregion ToDo}
 
@@ -234,6 +186,8 @@ uses System.Runtime.CompilerServices;
 type
   
   {$region pre def}
+  
+  __QueueExecContainer = class;
   
   CommandQueueBase = class;
   CommandQueue<T> = class;
@@ -347,6 +301,9 @@ type
     for var i := 0 to count-1 do
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     
+    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback);
+    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback; cont: __QueueExecContainer);
+    
     ///cb должен иметь глобальный try и вызывать "state.RaiseIfError" и "__NativUtils.GCHndFree(data)",
     ///А "cl.ReleaseEvent" если и вызывать - то только на результате вызова AttachCallback
     public function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
@@ -362,17 +319,29 @@ type
     protected procedure AddErr(e: Exception) :=
     lock err_lst do err_lst += e;
     
+    protected procedure AddErr(err: ErrorCode) :=
+    if err.IS_ERROR then AddErr(new OpenCLException(err.ToString));
+    
+    protected procedure AddErr(st: CommandExecutionStatus) :=
+    if st.IS_ERROR then AddErr(new OpenCLException(st.GetError.ToString));
+    
   end;
   
   ///--
   __IQueueRes = interface
     
+    function ResBase: object;
+    function ResFBase: ()->object;
+    function EvBase: __EventList;
+    
+    //ToDo #2150
+    //TODo #2173
+//    function ResFBase<T2>(f2: object->T2): ()->T2;
+    function IsF: boolean;
+    
     function GetBase: object;
-    function GetEv: __EventList;
     
     function WaitAndGetBase: object;
-    
-    function LazyQuickTransformBase<T2>(f: object->T2): __IQueueRes; //ToDo плохо, лишний боксинг результата. Может сделать extensionmethod-ом?
     
     function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes;
     
@@ -383,10 +352,15 @@ type
     res_f: ()->T;
     ev: __EventList;
     
+    function ResBase: object := self.res;
+    function ResFBase: ()->object := ()->self.res_f();
+    function EvBase: __EventList := self.ev;
+    
+//    function __IQueueRes.ResFBase<T2>(f2: object->T2): ()->T2 := ()->f2(self.res_f());
+    function IsF: boolean := self.res_f<>nil;
+    
     function Get: T := res_f=nil ? res : res_f();
     function GetBase: object := Get();
-    
-    function GetEv: __EventList := self.ev;
     
     function WaitAndGet: T;
     begin
@@ -404,36 +378,21 @@ type
     function LazyQuickTransform<T2>(f: T->T2): __QueueRes<T2>;
     begin
       Result.ev := self.ev;
+      
       if self.res_f<>nil then
       begin
         var f0 := self.res_f;
         Result.res_f := ()->f(f0());
       end else
+      
       if self.ev.count=0 then
         Result.res := f(self.res) else
+        
       begin
         var r0 := self.res;
         Result.res_f := ()->f(r0);
       end;
-    end;
-    function LazyQuickTransformBase<T2>(f: object->T2): __IQueueRes;
-    begin
-      var res: __QueueRes<T2>;
       
-      res.ev := self.ev;
-      if self.res_f<>nil then
-      begin
-        var f0 := self.res_f;
-        res.res_f := ()->f(f0());
-      end else
-      if self.ev.count=0 then
-        res.res := f(self.res) else
-      begin
-        var r0 := self.res;
-        res.res_f := ()->f(r0);
-      end;
-      
-      Result := res;
     end;
     
     function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): __QueueRes<T>;
@@ -447,10 +406,6 @@ type
   end;
   
   {$endregion hidden utils}
-  
-  {$region Exception's}
-  
-  {$endregion Exception's}
   
   {$region CommandQueue}
   
@@ -473,7 +428,7 @@ type
     
     ///Если данная очередь проходит по условию "... is CommandQueue<T>" - возвращает себя же
     ///Иначе возвращает очередь-обёртку, выполняющую "res := T(res)", где res - результат данной очереди
-    public function Cast<T>: CommandQueue<T>; //ToDo в справку
+    public function Cast<T>: CommandQueue<T>;
     
     {$endregion Cast}
     
@@ -542,17 +497,14 @@ type
       var cq := cl_command_queue.Zero;
       Result := InvokeBase(cont, c, cq, new __EventList);
       
-      var CQFree: Action := ()->
-      begin
-        if cq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(cq); //ToDo cont.AddErr
-      end;
+      var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(cq) );
       
-      if Result.GetEv.count=0 then
-        Task.Run(CQFree) else
+      if Result.EvBase.count=0 then
+        if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
         Result := Result.AttachCallbackBase((ev,st,data)->
         begin
-          //ToDo cont.AddErr( st );
-          Task.Run(CQFree);
+          cont.AddErr( st );
+          if cq<>cl_command_queue.Zero then Task.Run(CQFree);
           __NativUtils.GCHndFree(data);
         end, c, cq);
     end;
@@ -689,17 +641,14 @@ type
       var cq := cl_command_queue.Zero;
       Result := Invoke(cont, c, cq, new __EventList);
       
-      var CQFree: Action := ()->
-      begin
-        if cq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(cq); //ToDo cont.AddErr
-      end;
+      var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(cq) );
       
-      if Result.GetEv.count=0 then
-        Task.Run(CQFree) else
+      if Result.ev.count=0 then
+        if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
         Result := Result.AttachCallback((ev,st,data)->
         begin
-          //ToDo cont.AddErr( st );
-          Task.Run(CQFree);
+          cont.AddErr( st );
+          if cq<>cl_command_queue.Zero then Task.Run(CQFree);
           __NativUtils.GCHndFree(data);
         end, c, cq);
     end;
@@ -721,7 +670,7 @@ type
       if mw_lock<>nil then
         Result := Result.AttachCallback((ev,st,data)->
         begin
-          if st.IS_ERROR then cont.AddErr(new OpenCLException( st.ToString ));
+          cont.AddErr( st );
           self.SignalMWEvent;
           __NativUtils.GCHndFree(data);
         end, c, cq);
@@ -749,16 +698,16 @@ type
       Result.res_f := ()->res;
       
       Thread.Create(()->
-      try
-        res := ExecFunc(prev_res.WaitAndGet(), c);
-        cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-        self.SignalMWEvent;
-      except
-        on e: Exception do
-        begin
-          cont.AddErr(e);
-          cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+      begin
+        
+        try
+          res := ExecFunc(prev_res.WaitAndGet(), c);
+          self.SignalMWEvent;
+        except
+          on e: Exception do cont.AddErr(e);
         end;
+        
+        cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
       end).Start;
       
     end;
@@ -777,10 +726,26 @@ type
     private wh := new ManualResetEvent(false);
     private q_res: T;
     
+    {$region event's}
+    
+    private Finished: Action<CommandQueue<T>, T>;
+    private Error: Action<CommandQueue<T>, array of Exception>;
+    
     ///Вызывается, когда выполнение очереди успешно завершено
-    public event Finished: (CommandQueue<T>, T)->();
+    public procedure WhenFinished(cb: Action<CommandQueue<T>, T> ) :=
+    lock self do
+      if wh.WaitOne(0) then
+        cb(q, q_res) else
+        Finished := Delegate.Combine(Finished, cb) as Action<CommandQueue<T>, T>;
+    
     ///Вызывается, когда при выполнении очереди было вызвано исключение
-    public event Error: Action<CommandQueue<T>, array of Exception>;
+    public procedure WhenError(cb: Action<CommandQueue<T>, array of Exception> ) :=
+    lock self do
+      if wh.WaitOne(0) then
+        cb(q, self.err_lst.ToArray) else
+        Error := Delegate.Combine(Error, cb) as Action<CommandQueue<T>, array of Exception>;
+    
+    {$endregion event's}
     
     protected constructor(q: CommandQueue<T>; c: Context);
     begin
@@ -791,10 +756,10 @@ type
       
       // mu выполняют лишний .Retain, чтоб ивент не удалился пока очередь ещё запускается
       foreach var qr in mu_res.Values do
-        qr.GetEv.Release;
+        qr.EvBase.Release;
       mu_res := nil;
       
-      var ev := res.GetEv;
+      var ev := res.ev;
       
       if ev.count=0 then
       begin
@@ -804,12 +769,10 @@ type
         cl.ReleaseEvent(
           ev.AttachCallback((ev,st,data)->
           begin
-            if st.IS_ERROR then err_lst.Add( new OpenCLException(st.GetError.ToString) );
+            self.AddErr( st );
             
-            Task.Run(()->
-            begin
-              if cq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(cq).RaiseIfError;
-            end);
+            if cq<>cl_command_queue.Zero then
+              Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
             
             OnQDone( res.Get() );
             wh.Set;
@@ -824,17 +787,20 @@ type
     try
       self.q_res := res;
       
-      if err_lst.Count=0 then
+      lock self do
       begin
-        var lFinished := Finished;
-        if lFinished<>nil then lFinished(q, res);
-      end else
-      begin
-        var lError := Error;
-        if lError<>nil then lError(q, err_lst.ToArray);
+        
+        if err_lst.Count=0 then
+        begin
+          if Finished<>nil then Finished(q, res);
+        end else
+        begin
+          if Error<>nil then Error(q, self.err_lst.ToArray);
+        end;
+        
+        wh.Set;
       end;
       
-      wh.Set;
     except
       on e: Exception do
       begin
@@ -919,6 +885,7 @@ type
     
     {$region reintroduce методы}
     
+    //ToDo #2145
     ///--
     public function Equals(obj: object): boolean; reintroduce := inherited Equals(obj);
     ///--
@@ -942,7 +909,7 @@ type
     {$region constructor's}
     
     ///Создаёт BufferCommandQueue, который будет применять команды к указанному буферу
-    public constructor(b: Buffer) := inherited Create(b);
+    public constructor(b: Buffer) := inherited;
     ///Создаёт BufferCommandQueue, который будет применять команды к буферу, который вернёт указанная очередь
     ///За 1 выполнение BufferCommandQueue - q выполняется ровно 1 раз
     public constructor(q: CommandQueue<Buffer>);
@@ -1542,10 +1509,10 @@ type
     {$region constructor's}
     
     ///Создаёт KernelCommandQueue, который будет применять команды к указанному kernel'у
-    public constructor(k: Kernel) := inherited Create(k);
+    public constructor(k: Kernel) := inherited;
     ///Создаёт KernelCommandQueue, который будет применять команды к kernel'у, который вернёт указанная очередь
     ///Каждое выполнение KernelCommandQueue q выполняется ровно один раз
-    public constructor(q: CommandQueue<Kernel>) := inherited Create(q);
+    public constructor(q: CommandQueue<Kernel>) := inherited;
     
     {$endregion constructor's}
     
@@ -1848,14 +1815,14 @@ type
     public function BeginInvoke<T>(q: CommandQueue<T>) := new CLTask<T>(q, self);
     ///Запускает данную очередь и все её подочереди
     ///Как только всё запущено: возвращает объект типа CLTask<>, через который можно следить за процессом выполнения
-    public function BeginInvoke(q: CommandQueueBase): object := BeginInvoke(q.Cast&<object>());
+    public function BeginInvoke(q: CommandQueueBase) := new CLTask<object>(q.Cast&<object>(), self);
     
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения и возвращает полученный результат
     public function SyncInvoke<T>(q: CommandQueue<T>) := BeginInvoke(q).GetRes();
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения и возвращает полученный результат
-    public function SyncInvoke(q: CommandQueueBase): object := SyncInvoke(q.Cast&<object>());
+    public function SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).GetRes();
     
     protected procedure Finalize; override :=
     if need_finnalize then // если было исключение при инициализации или инициализация произошла из дескриптора
@@ -2025,10 +1992,8 @@ type
           SignalMWEvent else
           prev_ev := prev_ev.AttachCallback((ev,st,data)->
           begin
-            if st.IS_ERROR then cont.AddErr(new OpenCLException( st.GetError.ToString ));
-            
+            cont.AddErr( st );
             self.SignalMWEvent;
-            
             __NativUtils.GCHndFree(data);
           end, c, cq);
         
@@ -2243,6 +2208,11 @@ implementation
 
 {$region Misc}
 
+static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback) :=
+cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
+static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback; cont: __QueueExecContainer) :=
+cont.AddErr( cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)) );
+
 function __EventList.AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
 begin
   
@@ -2262,7 +2232,7 @@ begin
   end else
     ev := self[0];
   
-  cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
+  AttachCallback(ev, cb);
   Result := ev;
 end;
 
@@ -2271,6 +2241,18 @@ begin
   var ec: ErrorCode;
   Result := cl.CreateUserEvent(c._context, ec);
   ec.RaiseIfError;
+end;
+
+function LazyQuickTransformBase<T2>(self: __IQueueRes; f: object->T2): __QueueRes<T2>; extensionmethod;
+begin
+  Result.ev := self.EvBase;
+  
+  if self.IsF then
+    Result.res_f := ()->f( self.ResFBase()() ) else //ToDo #2150, #2173
+  if self.EvBase.count=0 then
+    Result.res   :=     f( self.ResBase()    ) else
+    Result.res_f := ()->f( self.ResBase()    );
+  
 end;
 
 {$endregion Misc}
@@ -2522,7 +2504,7 @@ type
   
   {$region Async}
   
-  HQAExecutor<T> = abstract class //ToDo #issue не дающая сделать __QueueRes<T> в результате
+  HQAExecutor<T> = abstract class //ToDo #2150
     
     /// синхронно или асинхронно запускает очереди qs и возвращает общий для них ивент в _prev_ev
     protected function WorkOn(qs: array of CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var _prev_ev: __EventList): array of __QueueRes<T>; abstract;
@@ -2565,17 +2547,17 @@ type
         Result[i].res := res.res;
         Result[i].res_f := res.res_f;
         
-        var CQFree: Action := ()->
-        begin
-          if ncq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(ncq); //ToDo cont.AddErr
-        end;
+        var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(ncq) );
         
         if res.ev.count=0 then
-          Task.Run(CQFree) else
+        begin
+          if ncq<>cl_command_queue.Zero then
+            Task.Run(CQFree);
+        end else
           res.ev := res.ev.AttachCallback((_ev,_st,_data)->
           begin
-            //ToDo cont.AddErr( _st );
-            Task.Run(CQFree);
+            cont.AddErr( _st );
+            if ncq<>cl_command_queue.Zero then Task.Run(CQFree);
             __NativUtils.GCHndFree(_data);
           end, c, ncq);
         
@@ -2598,7 +2580,7 @@ type
     private executor: HQAExecutor<TInp>;
     
     protected procedure InitExecutor(is_sync: boolean) :=
-    self.executor := is_sync ? new HQAExecutorSync<TInp> as HQAExecutor<TInp> : new HQAExecutorAsync<TInp>; //ToDo #issue лишний as
+    self.executor := is_sync ? new HQAExecutorSync<TInp> as HQAExecutor<TInp> : new HQAExecutorAsync<TInp>;
     
     public function GetQS: sequence of CommandQueueBase := qs.Cast&<CommandQueueBase>;
     
@@ -2662,7 +2644,7 @@ type
 function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): array of CommandQueueBase; where T: IQueueArray;
 begin
   var enmr := inp.GetEnumerator;
-  if not enmr.MoveNext then raise new InvalidOperationException('inp Empty');
+  if not enmr.MoveNext then raise new InvalidOperationException('CombineSyncQueue и CombineAsyncQueue не могут принимать 0 очередей');
   
   var res := new List<CommandQueueBase>;
   while true do
@@ -2692,7 +2674,7 @@ type
     begin
       
       for var i := 0 to qs.Length-2 do
-        prev_ev := qs[i].InvokeBase(cont, c, cq, prev_ev).GetEv;
+        prev_ev := qs[i].InvokeBase(cont, c, cq, prev_ev).EvBase;
       
       Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(cont, c, cq, prev_ev);
     end;
@@ -2790,19 +2772,16 @@ type
       begin
         var ncq := cl_command_queue.Zero;
         prev_ev.Retain;
-        var ev := qs[i].InvokeBase(cont, c, ncq, prev_ev).GetEv;
+        var ev := qs[i].InvokeBase(cont, c, ncq, prev_ev).EvBase;
         
-        var CQFree: Action := ()->
-        begin
-          if ncq<>cl_command_queue.Zero then cl.ReleaseCommandQueue(ncq); //ToDo cont.AddErr
-        end;
+        var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(ncq) );
         
         if ev.count=0 then
-          Task.Run(CQFree) else
+          if ncq<>cl_command_queue.Zero then Task.Run(CQFree) else
           ev := ev.AttachCallback((_ev,_st,_data)->
           begin
-            //ToDo cont.AddErr( _st );
-            Task.Run(CQFree);
+            cont.AddErr( _st );
+            if ncq<>cl_command_queue.Zero then Task.Run(CQFree);
             __NativUtils.GCHndFree(_data);
           end, c, ncq);
         
@@ -2931,27 +2910,27 @@ type
     function GetWaitEv(cont: __QueueExecContainer; c: Context): __EventList; override;
     begin
       var uev := CommandQueueBase.CreateUserEvent(c);
+      var done := false;
+      var lo := new object;
       
       foreach var q in waitables do
       begin
         var ev := q.GetMWEvent(c._context);
         
-        var done := false;
-        var lo := new object;
-        var cb: Event_Callback := (ev,st,data)->
+        __EventList.AttachCallback(ev, (ev,st,data)->
         begin
+          cont.AddErr( st );
           
-          lock lo do if not done then
-          begin
-            var ec := cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE);
-            if ec.val<0 then cont.AddErr(new OpenCLException( ec.ToString ));
-            done := true;
-          end;
+          lock lo do
+            if not done then
+            begin
+              cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
+              done := true;
+            end;
           
           __NativUtils.GCHndFree(data);
-        end;
+        end);
         
-        cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb));
         cl.ReleaseEvent(ev).RaiseIfError;
       end;
       
@@ -3098,10 +3077,10 @@ type
     self.q := q;
     
     protected function InvokeObj(o: T; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    q.InvokeBase(cont, c, cq, prev_ev).GetEv;
+    q.InvokeBase(cont, c, cq, prev_ev).EvBase;
     
     protected function InvokeQueue(o_q: ()->CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    q.InvokeBase(cont, c, cq, prev_ev).GetEv;
+    q.InvokeBase(cont, c, cq, prev_ev).EvBase;
     
   end;
   
@@ -3122,15 +3101,15 @@ type
       var uev := CommandQueueBase.CreateUserEvent(c);
       
       Thread.Create(()->
-      try
-        self.ExecProc(c, prev_res.WaitAndGet);
-        cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      except
-        on e: Exception do
-        begin
-          cont.AddErr(e);
-          cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE).RaiseIfError;
+      begin
+        
+        try
+          self.ExecProc(c, prev_res.WaitAndGet);
+        except
+          on e: Exception do cont.AddErr(e);
         end;
+        
+        cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
       end).Start;
       
       Result := uev;
@@ -3241,38 +3220,34 @@ type
               end;
               
               enq_f(o_res.WaitAndGet, c, lcq, nil);
-              cl.ReleaseCommandQueue(lcq).RaiseIfError;
             except
               on e: Exception do cont.AddErr(e);
             end;
             
-            cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE).RaiseIfError;
+            cont.AddErr( cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE) );
+            cont.AddErr( cl.ReleaseCommandQueue(lcq) );
           end).Start else
         begin
           
           var set_complete: Event_Callback := (ev,st,data)->
           begin
-            if st.IS_ERROR then cont.AddErr( new OpenCLException(st.GetError.ToString) );
+            cont.AddErr( st );
             
-            Task.Run(()->
-            begin
-              cl.ReleaseCommandQueue(lcq).RaiseIfError; //ToDo cont.AddErr
-            end);
+            Task.Run(()->cont.AddErr( cl.ReleaseCommandQueue(lcq) ));
             
-            cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE);
+            cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
             
             __NativUtils.GCHndFree(data);
           end;
           
           cl.ReleaseEvent(o_res.ev.AttachCallback((ev,st,data)->
           begin
-            if st.IS_ERROR then cont.AddErr( new OpenCLException(st.GetError.ToString) );
+            cont.AddErr( st );
             
-            cl.SetEventCallback(
+            __EventList.AttachCallback(
               enq_f(o_res.Get, c, lcq, prev_ev),
-              CommandExecutionStatus.COMPLETE,
               set_complete,
-              __NativUtils.GCHndAlloc(set_complete)
+              cont
             );
             
             __NativUtils.GCHndFree(data);
@@ -3403,7 +3378,7 @@ type
     
     public constructor(val: T; offset_q: CommandQueue<integer>);
     begin
-      self.val      := new IntPtr(__NativUtils.CopyToUnm(val)); //ToDo так же остальным BufferCommand*Value
+      self.val      := new IntPtr(__NativUtils.CopyToUnm(val));
       self.offset_q := offset_q;
     end;
     
@@ -3455,14 +3430,21 @@ type
       Result := (b, l_c, l_cq, prev_ev)->
       begin
         var res_ev: cl_event;
-        var l_val := val.Get; //ToDo плохо, надо копировать в неуправляемую область памяти
+        var val_ptr := new IntPtr(__NativUtils.CopyToUnm(val.Get()));
         
         cl.EnqueueWriteBuffer(
           l_cq, b.memobj, 0,
           new UIntPtr(offset.Get), new UIntPtr(Marshal.SizeOf&<T>),
-          new IntPtr(@l_val),
+          val_ptr,
           prev_ev.count,prev_ev.evs,res_ev
         ).RaiseIfError;
+        
+        __EventList.AttachCallback(res_ev, (ev,st,data)->
+        begin
+          cont.AddErr(st);
+          Marshal.FreeHGlobal(val_ptr);
+          __NativUtils.GCHndFree(data);
+        end);
         
         Result := res_ev;
       end;
@@ -3659,7 +3641,7 @@ type
         cl.WaitForEvents(1,@res_ev);
         cl.ReleaseEvent(res_ev);
         
-        a_hnd.Free; // можно и в callback засунуть, но от этого не сильно лучше
+        a_hnd.Free;
         Result := cl_event.Zero;
       end;
       
@@ -3667,13 +3649,13 @@ type
     
   end;
   
-  BufferCommandValueFill<T> = sealed class(EnqueueableGPUCommand<Buffer>)
-    public val: object;
+  BufferCommandValueFill<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
+    public val: IntPtr;
     public offset_q, len_q: CommandQueue<integer>;
     
     public constructor(val: T; offset_q, len_q: CommandQueue<integer>);
     begin
-      self.val      := val;
+      self.val      := new IntPtr(__NativUtils.CopyToUnm(val));
       self.offset_q := offset_q;
       self.len_q    := len_q;
     end;
@@ -3689,11 +3671,10 @@ type
       Result := (b, l_c, l_cq, prev_ev)->
       begin
         var res_ev: cl_event;
-        var l_val := T(val);
         
         cl.EnqueueFillBuffer(
           l_cq, b.memobj,
-          new IntPtr(@l_val), new UIntPtr(Marshal.SizeOf&<T>),
+          val, new UIntPtr(Marshal.SizeOf&<T>),
           new UIntPtr(offset.Get), new UIntPtr(len.Get),
           prev_ev.count,prev_ev.evs,res_ev
         ).RaiseIfError;
@@ -3703,8 +3684,11 @@ type
       
     end;
     
+    protected procedure Finalize; override :=
+    Marshal.FreeHGlobal(self.val);
+    
   end;
-  BufferCommandValueFillQ<T> = sealed class(EnqueueableGPUCommand<Buffer>)
+  BufferCommandValueFillQ<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
     public val_q: CommandQueue<T>;
     public offset_q, len_q: CommandQueue<integer>;
     
@@ -3727,14 +3711,21 @@ type
       Result := (b, l_c, l_cq, prev_ev)->
       begin
         var res_ev: cl_event;
-        var l_val := val.Get;
+        var val_ptr := new IntPtr(__NativUtils.CopyToUnm(val.Get()));
         
         cl.EnqueueFillBuffer(
           l_cq, b.memobj,
-          new IntPtr(@l_val), new UIntPtr(Marshal.SizeOf&<T>),
+          val_ptr, new UIntPtr(Marshal.SizeOf&<T>),
           new UIntPtr(offset.Get), new UIntPtr(len.Get),
           prev_ev.count,prev_ev.evs,res_ev
         ).RaiseIfError;
+        
+        __EventList.AttachCallback(res_ev, (ev,st,data)->
+        begin
+          cont.AddErr(st);
+          Marshal.FreeHGlobal(val_ptr);
+          __NativUtils.GCHndFree(data);
+        end);
         
         Result := res_ev;
       end;

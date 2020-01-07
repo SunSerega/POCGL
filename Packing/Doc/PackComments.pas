@@ -20,7 +20,7 @@ type
       var sb: StringBuilder := nil;
       var cns := new List<string>;
       
-      foreach var l in ReadLines(fname) do
+      foreach var l in ReadLines(fname, new System.Text.UTF8Encoding(true)) do
         if l.StartsWith('#') then
         begin
           

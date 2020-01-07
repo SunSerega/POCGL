@@ -73,9 +73,9 @@
 
 
 
-# CLTask<T>.Finished
+# CLTask<T>.WhenFinished(Action<CommandQueue<T>, T>)
 %task.Finished%
-# CLTask<T>.Error
+# CLTask<T>.WhenError(Action<CommandQueue<T>, array of Exception>)
 %task.Error%
 
 # CLTask<T>.Wait()

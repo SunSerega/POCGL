@@ -219,6 +219,7 @@ begin
         if ind<>-1 then
         begin
           on_commentable(ParseEvent(last_type,l, ind));
+          continue;
         end;
         
       end;

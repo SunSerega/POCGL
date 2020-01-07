@@ -147,7 +147,9 @@ type
         
         {$region Settings}
         t.LoadSettingsDict;
-        if t.all_settings.ContainsKey('#SkipTest') then raise new TestCanceledException;
+        
+        if t.all_settings.ContainsKey('#SkipTest') then continue;
+        all_loaded += t;
         
         t.test_mode := t.ExtractSettingStr('#TestMode', exp_mode).Split('+').ToHashSet;
         
@@ -167,7 +169,6 @@ type
         
         {$endregion Settings}
         
-        all_loaded += t;
       except
         on TestCanceledException do ;
       end;
@@ -199,7 +200,7 @@ type
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
-                Otp($'%WARNING: settings updated for "{fwoe}.td"');
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
               end;
               
               DialogResult.No: ;
@@ -214,7 +215,7 @@ type
               begin
                 t.all_settings['#ExpErr'] := comp_err;
                 t.resave_settings := true;
-                Otp($'%WARNING: settings updated for "{fwoe}.td"');
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
               end;
               
               DialogResult.No: ;
@@ -232,7 +233,7 @@ type
               begin
                 t.all_settings.Remove('#ExpErr');
                 t.resave_settings := true;
-                Otp($'%WARNING: settings updated for "{fwoe}.td"');
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
               end;
               
               DialogResult.No: ;
@@ -258,11 +259,17 @@ type
         try
           var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
           
-          var res_sb := new StringBuilder;
-          if TimedExecute(()->RunFile(fwoe+'.exe', $'Test[{fwoe}]', l->res_sb.AppendLine(l.s)), 1000) then
+          if not FileExists(fwoe+'.exe') then
           begin
-            Otp($'ERROR: execution took too long for "{fwoe}.exe"');
-            raise new TestCanceledException;
+            Otp($'ERROR: File {fwoe}.exe not found');
+            continue;
+          end;
+          
+          var res_sb := new StringBuilder;
+          if TimedExecute(()->RunFile(fwoe+'.exe', $'Test[{fwoe}]', l->res_sb.AppendLine(l.s)), 5000) then
+          begin
+            Otp($'ERROR: Execution took too long for "{fwoe}.exe"');
+            continue;
           end;
           
           var res := res_sb.ToString.Remove(#13).Trim(#10);
@@ -271,7 +278,7 @@ type
             t.all_settings['#ExpOtp'] := res;
             t.used_settings += '#ExpOtp';
             t.resave_settings := true;
-            Otp($'WARNING: settings updated for "{fwoe}.td"');
+            Otp($'WARNING: Settings updated for "{fwoe}.td"');
           end else
           if t.expected_otp<>res then
           begin
@@ -287,7 +294,7 @@ type
               begin
                 t.all_settings['#ExpOtp'] := res;
                 t.resave_settings := true;
-                Otp($'%WARNING: settings updated for "{fwoe}.td"');
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
               end;
               
               DialogResult.No: ;
@@ -316,7 +323,7 @@ type
           var used_settings := t.used_settings.ToHashSet;
           foreach var key in t.all_settings.Keys do
             if not used_settings.Contains(key) then
-              Otp($'WARNING: setting {key} was deleted from "{t.td_fname}"') else
+              Otp($'WARNING: Setting {key} was deleted from "{t.td_fname}"') else
             begin
               sw.WriteLine;
               sw.WriteLine(key);
@@ -326,7 +333,7 @@ type
           sw.WriteLine;
           sw.WriteLine;
           sw.Close;
-          Otp($'File "{t.td_fname}" updated');
+          Otp($'WARNING: File "{t.td_fname}" updated');
         end;
       
       foreach var dir in test_folders do

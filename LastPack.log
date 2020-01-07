@@ -267,6 +267,8 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: Finished compiling: ERRОR
+Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\CLABC\ErrOtp.pas"
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\GL\Mtr.Rotate3D.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\GL\Mtr.Translate.pas"
@@ -274,7 +276,7 @@ Tester: Finished compiling: OK
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#0]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#0]
+Tester: ERROR: execution took too long for "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#0.exe"
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
@@ -289,6 +291,8 @@ Tester: Runing Test[Samples\OpenCLABC\Простейшие примеры\MatrMl
 Tester: Finished runing Test[Samples\OpenCLABC\Простейшие примеры\MatrMlt]
 Tester: Runing Test[Samples\OpenCLABC\Простейшие примеры\SimpleAddition]
 Tester: Finished runing Test[Samples\OpenCLABC\Простейшие примеры\SimpleAddition]
+Tester: Runing Test[Tests\Exec\CLABC\ErrOtp]
+Tester: Finished runing Test[Tests\Exec\CLABC\ErrOtp]
 Tester: Runing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Finished runing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Runing Test[Tests\Exec\GL\Mtr.Translate]
