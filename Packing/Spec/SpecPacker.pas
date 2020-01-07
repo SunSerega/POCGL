@@ -15,7 +15,7 @@ type
     
     private static enc := new System.Text.UTF8Encoding(true);
     
-    private static last_page_id := 0;
+    private static last_page_id: integer;
     
     public static procedure AddPage(sw: StreamWriter; path: string);
     begin
@@ -78,6 +78,7 @@ type
     begin
       var nick := otp.Remove(otp.LastIndexOf('.'));
       MiscUtils.Otp($'Packing spec "{nick}"');
+      last_page_id := 0;
       
       path := $'{exe_dir}\{path}';
       otp  := $'{exe_dir}\{otp}';
