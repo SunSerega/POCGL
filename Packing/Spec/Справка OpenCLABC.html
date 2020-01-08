@@ -140,12 +140,17 @@ body {
 const selected_name_color = "#eaeaea";
 const  pointed_name_color = "#d1faff";
 
+var localStorageKey = "";
+
 /* ============================== *\
 		     page load
 \* ============================== */
 
 var root_folder = null;
 var currently_loading_folder = null;
+
+var prev_opened_folders = null;
+var opened_folders = [];
 
 var page_by_path = {};
 const define_page_with_path = (path, page)=>{
@@ -182,8 +187,13 @@ const on_start_folder = (folder_name, root_page)=>{
 	{
 		root_folder = res;
 		res.path = "";
-		document.getElementById("page-select-container").append(res.container);
+		
+		localStorageKey = `spec : ${folder_name} : `;
+		let prev_opened_folders_str = localStorage[localStorageKey+"opened_folders"];
+		prev_opened_folders = prev_opened_folders_str ? JSON.parse(prev_opened_folders_str) : [];
+		
 		res.container.className = "ps-root-container";
+		document.getElementById("page-select-container").append(res.container);
 		if (root_page) select_page(root_page);
 	} else
 	{
@@ -193,7 +203,15 @@ const on_start_folder = (folder_name, root_page)=>{
 		
 		res.body = document.createElement("div");
 		res.body.className = "ps-folder";
-		res.state = false;
+		{
+			let ind = prev_opened_folders.indexOf(res.path);
+			res.state = ind!==-1;
+			if (res.state)
+			{
+				prev_opened_folders.splice(ind,1);
+				opened_folders.push(res.path);
+			}
+		}
 		currently_loading_folder.container.append(res.body);
 		
 		res.update = ()=>{
@@ -202,10 +220,18 @@ const on_start_folder = (folder_name, root_page)=>{
 		}
 		res.reverse_state = ()=>{
 			res.state = !res.state;
+			
+			if (res.state)
+				opened_folders.push(res.path); else
+				opened_folders.splice(opened_folders.indexOf(res.path), 1);
+			localStorage[localStorageKey+"opened_folders"] = JSON.stringify(opened_folders);
+			
 			res.update();
 		};
 		
 		res.state_span = document.createElement("span");
+		res.state_span.className = "dot-page-root";
+		res.state_span.innerHTML = String.fromCharCode( 0x2022 );
 		res.body.append(res.state_span);
 		
 		res.name_span = document.createElement("span");
@@ -274,14 +300,10 @@ const on_end_folder = ()=>{
 			folder.state_span.className = "arrow-page-root";
 			folder.state_span.addEventListener("click", folder.reverse_state);
 			folder.name_span.addEventListener("dblclick", folder.reverse_state);
+			currently_loading_folder.update();
 		} else
-		{
 			folder.empty = true;
-			folder.state_span.innerHTML = String.fromCharCode(0x2022);
-			folder.state_span.className = "dot-page-root";
-		}
 		
-		currently_loading_folder.update();
 	}
 	
 	if (currently_loading_folder !== root_folder)
@@ -684,6 +706,10 @@ window.onload = ()=>{
 	for (path in broken_links)
 		console.error(`Page "${path}" referenced ${broken_links[path].length} times but not found:`, broken_links[path].map(lnk=>lnk.source));
 	
+	localStorage[localStorageKey+"opened_folders"] = JSON.stringify(opened_folders);
+	if (prev_opened_folders.length) console.log("folders were marked as opened, but not found:", prev_opened_folders);
+	delete prev_opened_folders;
+	
 }
 </script>
 <script>on_start_folder("CL ABC", null)</script>
@@ -824,7 +850,7 @@ end.
 <script>on_start_folder("Возвращаемое значение очередей", document.getElementById("page-5"))</script>
 <script>on_end_folder()</script>
 <div id="page-6" page_name="" hidden=true>
-<h1>Есть всего 7 базовых способов создать очередь:</h1>
+<h1>Есть всего 8 базовых способов создать очередь:</h1>
 <ol>
 <li><p><a path="Из буфера или kernel'a">		Из буфера / kernel'а					</a></p>
 </li>
@@ -837,6 +863,8 @@ end.
 <li><p><a path="Из очереди + преобразователя">	Из очереди + преобразования результата	</a></p>
 </li>
 <li><p><a path="Из повторения очереди">			Из повторения одной очереди				</a></p>
+</li>
+<li><p><a path="Из ожидания очередей">			Из ожидания очередей					</a></p>
 </li>
 <li><p><a path="Не создавая явно">				Не пытаясь								</a></p>
 </li>
@@ -1036,7 +1064,11 @@ end.
 <p><del>В данный момент всё ещё не работает... Но уже совсем скоро, правда-правда!</del></p>
 </div>
 <script>on_page_added(document.getElementById("page-12"))</script>
-<div id="page-13" page_name="Не создавая явно" hidden=true>
+<div id="page-13" page_name="Из ожидания очередей" hidden=true>
+
+</div>
+<script>on_page_added(document.getElementById("page-13"))</script>
+<div id="page-14" page_name="Не создавая явно" hidden=true>
 <p>Передавать команды по одной, когда их несколько - ужасно медленно!<br />
 Но нередко бывает так, что команда всего одна. Или для отладки надо одноразово выполнить одну команду.</p>
 <p>Для таких случаев можно создавать очередь неявно:<br />
@@ -1096,9 +1128,9 @@ end.
 читают в полученный объект содержимое буфера и возвращают этот объект.
 Они также используют неявную очередь (для чтения буфера).</p>
 </div>
-<script>on_page_added(document.getElementById("page-13"))</script>
+<script>on_page_added(document.getElementById("page-14"))</script>
 <script>on_end_folder()</script>
-<div id="page-14" page_name="" hidden=true>
+<div id="page-15" page_name="" hidden=true>
 <p>Самый простой способ выполнить очередь - вызвать метод <code>Context.SyncInvoke</code>.<br />
 Он синхронно выполняет очередь и вызвращает её результат.</p>
 <p>Но если надо выполнить очередь асинхронно - лучше использовать метод <code>Context.BeginInvoke</code>.<br />
@@ -1124,9 +1156,9 @@ end;
 </code></pre>
 <p>Для этого кода есть стандартный снипет. Чтобы активировать его - напишите <code>tryo</code> и нажмите Shift+Пробел.</p>
 </div>
-<script>on_start_folder("Выполнение очередей", document.getElementById("page-14"))</script>
+<script>on_start_folder("Выполнение очередей", document.getElementById("page-15"))</script>
 <script>on_end_folder()</script>
-<div id="page-15" page_name="" hidden=true>
+<div id="page-16" page_name="" hidden=true>
 <p>Все методы создающие одну команду (<code>.Add*</code> методы и все методы неявных очередей)
 могут принимать очередь вместо значения в качестве любого параметра. Но в таком случае
 возвращаемый тип очереди должен совпадать с типом параметра. К примеру:</p>
@@ -1159,9 +1191,9 @@ end.
 <p>Обычно очереди-параметры используются при вызове kernel'а,
 когда надо записать что-то в буфер прямо перед вызовом kernel'а.</p>
 </div>
-<script>on_start_folder("Вложенные очереди", document.getElementById("page-15"))</script>
+<script>on_start_folder("Вложенные очереди", document.getElementById("page-16"))</script>
 <script>on_end_folder()</script>
-<div id="page-16" page_name="" hidden=true>
+<div id="page-17" page_name="" hidden=true>
 <h1><code>ToDo</code> эта страница будет переделана и перенесена на страницу создания очередей, потому что необходимость в .Clone скоро отпадёт и большинство текста тут станет устаревшим</h1>
 <pre><code>// 3.4.0
 // 
@@ -1234,9 +1266,9 @@ end.
 // 
 </code></pre>
 </div>
-<script>on_start_folder("Множественное использование очереди", document.getElementById("page-16"))</script>
+<script>on_start_folder("Множественное использование очереди", document.getElementById("page-17"))</script>
 <script>on_end_folder()</script>
-<div id="page-17" page_name="" hidden=true>
+<div id="page-18" page_name="" hidden=true>
 <p>Между командами для GPU (хранимыми в очередях типов <code>BufferCommandQueue</code> и <code>KernelCommandQueue</code>)
 бывает надо вставить выполнение другой очереди или кода для CPU.</p>
 <p>Это можно сделать, используя несколько <code>.NewQueue</code>:</p>
@@ -1271,10 +1303,10 @@ q.AddQueue(q);
 Поэтому очередь, созданная предыдущим кодом при попытке выполнения начнёт циклически запускать саму себя.
 Ну а закончится это уже только при переполнении стека, или при переполнении всей RAM.</p>
 </div>
-<script>on_start_folder("Особые команды у [Buffer,Kernel]CommandQueue", document.getElementById("page-17"))</script>
+<script>on_start_folder("Особые команды у [Buffer,Kernel]CommandQueue", document.getElementById("page-18"))</script>
 <script>on_end_folder()</script>
 <script>on_end_folder()</script>
-<div id="page-18" page_name="" hidden=true>
+<div id="page-19" page_name="" hidden=true>
 <p>Программы, выпоняемые на GPU, не могут использовать оперативную память (без определённых расширений).
 Поэтому приходится выделять память на самом GPU.</p>
 <p>Объекты типа <code>Buffer</code> содержат информацию об области памяти,
@@ -1291,9 +1323,9 @@ q.AddQueue(q);
 Но если снова использовать буфер, у которого освободили память - память опять выделится.</p>
 <p>Если сборщик мусора удаляет объект типа <code>Buffer</code> - <code>.Dispose</code> вызывается автоматически.</p>
 </div>
-<script>on_start_folder("Буфер (Buffer)", document.getElementById("page-18"))</script>
+<script>on_start_folder("Буфер (Buffer)", document.getElementById("page-19"))</script>
 <script>on_end_folder()</script>
-<div id="page-19" page_name="" hidden=true>
+<div id="page-20" page_name="" hidden=true>
 <p>Обычные программы невозможно запустить на GPU. Для этого надо писать особые программы.<br />
 В контексте OpenCL - эти программы обычно пишутся на языке &quot;OpenCL C&quot; (основанном на языке &quot;C&quot;).</p>
 <p>Язык OpenCL-C это часть библиотеки OpenCL, поэтому его справку можно найти <a href="https://www.khronos.org/registry/OpenCL/">там же</a> где и справку OpenCL.</p>
@@ -1308,8 +1340,8 @@ q.AddQueue(q);
 </li>
 </ul>
 </div>
-<script>on_start_folder("Контейнер для кода (ProgramCode)", document.getElementById("page-19"))</script>
-<div id="page-20" page_name="Создание из исходного кода" hidden=true>
+<script>on_start_folder("Контейнер для кода (ProgramCode)", document.getElementById("page-20"))</script>
+<div id="page-21" page_name="Создание из исходного кода" hidden=true>
 <p>Конструктор <code>ProgramCode</code> (<code>new ProgramCode(...)</code>) принимает тексты исходников программы на языке OpenCL-C.<br />
 <strong>Именно тексты исходников, не имена файлов</strong></p>
 <p>Так же, как исходники паскаля хранят в .pas файлах, исходники OpenCL-C кода хранят в .cl файлах.
@@ -1317,8 +1349,8 @@ q.AddQueue(q);
 Так как конструктор <code>ProgramCode</code> принимает текст - исходники программы на OpenCL-C можно хранить даже в строке в .pas программе.
 Тем не менее, хранение исходников OpenCL-C кода в .cl файлах упрощает жизнь, потому что тогда их легко найти.</p>
 </div>
-<script>on_page_added(document.getElementById("page-20"))</script>
-<div id="page-21" page_name="Создание из бинарного файла" hidden=true>
+<script>on_page_added(document.getElementById("page-21"))</script>
+<div id="page-22" page_name="Создание из бинарного файла" hidden=true>
 <h2><code>ToDo</code> в данный момент наблюдаются некоторые проблемы, возможно <code>ProgramCode.DeserializeFrom</code> реализован неправильно.</h2>
 <p>После создания объекта типа <code>ProgramCode</code> из исходников можно вызвать
 метод <code>ProgramCode.SerializeTo</code>, чтобы сохранить код в бинарном и прекомпилированном виде.
@@ -1367,9 +1399,9 @@ begin
 end.
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-21"))</script>
+<script>on_page_added(document.getElementById("page-22"))</script>
 <script>on_end_folder()</script>
-<div id="page-22" page_name="" hidden=true>
+<div id="page-23" page_name="" hidden=true>
 <p>Объект типа <code>Kernel</code> представляет одну подпрограмму в OpenCL-C коде,
 объявленную с ключевым словом <code>__kernel</code>.</p>
 <hr />
@@ -1417,7 +1449,7 @@ end.
 }
 </code></pre>
 </div>
-<script>on_start_folder("Kernel", document.getElementById("page-22"))</script>
+<script>on_start_folder("Kernel", document.getElementById("page-23"))</script>
 <script>on_end_folder()</script>
 <script>on_end_folder()</script>
 </body>

@@ -8,12 +8,17 @@
 const selected_name_color = "#eaeaea";
 const  pointed_name_color = "#d1faff";
 
+var localStorageKey = "";
+
 /* ============================== *\
 		     page load
 \* ============================== */
 
 var root_folder = null;
 var currently_loading_folder = null;
+
+var prev_opened_folders = null;
+var opened_folders = [];
 
 var page_by_path = {};
 const define_page_with_path = (path, page)=>{
@@ -50,8 +55,13 @@ const on_start_folder = (folder_name, root_page)=>{
 	{
 		root_folder = res;
 		res.path = "";
-		document.getElementById("page-select-container").append(res.container);
+		
+		localStorageKey = `spec : ${folder_name} : `;
+		let prev_opened_folders_str = localStorage[localStorageKey+"opened_folders"];
+		prev_opened_folders = prev_opened_folders_str ? JSON.parse(prev_opened_folders_str) : [];
+		
 		res.container.className = "ps-root-container";
+		document.getElementById("page-select-container").append(res.container);
 		if (root_page) select_page(root_page);
 	} else
 	{
@@ -61,7 +71,15 @@ const on_start_folder = (folder_name, root_page)=>{
 		
 		res.body = document.createElement("div");
 		res.body.className = "ps-folder";
-		res.state = false;
+		{
+			let ind = prev_opened_folders.indexOf(res.path);
+			res.state = ind!==-1;
+			if (res.state)
+			{
+				prev_opened_folders.splice(ind,1);
+				opened_folders.push(res.path);
+			}
+		}
 		currently_loading_folder.container.append(res.body);
 		
 		res.update = ()=>{
@@ -70,10 +88,18 @@ const on_start_folder = (folder_name, root_page)=>{
 		}
 		res.reverse_state = ()=>{
 			res.state = !res.state;
+			
+			if (res.state)
+				opened_folders.push(res.path); else
+				opened_folders.splice(opened_folders.indexOf(res.path), 1);
+			localStorage[localStorageKey+"opened_folders"] = JSON.stringify(opened_folders);
+			
 			res.update();
 		};
 		
 		res.state_span = document.createElement("span");
+		res.state_span.className = "dot-page-root";
+		res.state_span.innerHTML = String.fromCharCode( 0x2022 );
 		res.body.append(res.state_span);
 		
 		res.name_span = document.createElement("span");
@@ -142,14 +168,10 @@ const on_end_folder = ()=>{
 			folder.state_span.className = "arrow-page-root";
 			folder.state_span.addEventListener("click", folder.reverse_state);
 			folder.name_span.addEventListener("dblclick", folder.reverse_state);
+			currently_loading_folder.update();
 		} else
-		{
 			folder.empty = true;
-			folder.state_span.innerHTML = String.fromCharCode(0x2022);
-			folder.state_span.className = "dot-page-root";
-		}
 		
-		currently_loading_folder.update();
 	}
 	
 	if (currently_loading_folder !== root_folder)
@@ -551,6 +573,10 @@ window.onload = ()=>{
 	
 	for (path in broken_links)
 		console.error(`Page "${path}" referenced ${broken_links[path].length} times but not found:`, broken_links[path].map(lnk=>lnk.source));
+	
+	localStorage[localStorageKey+"opened_folders"] = JSON.stringify(opened_folders);
+	if (prev_opened_folders.length) console.log("folders were marked as opened, but not found:", prev_opened_folders);
+	delete prev_opened_folders;
 	
 }
 
