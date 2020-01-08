@@ -180,11 +180,11 @@ const on_start_folder = (folder_name, root_page)=>{
 	
 	if (!root_folder)
 	{
-		if (root_page) select_page(root_page);
 		root_folder = res;
 		res.path = "";
 		document.getElementById("page-select-container").append(res.container);
 		res.container.className = "ps-root-container";
+		if (root_page) select_page(root_page);
 	} else
 	{
 		currently_loading_folder.folders.push(res);
