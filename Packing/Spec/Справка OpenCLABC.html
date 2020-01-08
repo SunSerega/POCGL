@@ -134,127 +134,34 @@ body {
 <div class="page-base" id="splitter"></div>
 <script>
 /* ============================== *\
-		   on page load
+		        misc
 \* ============================== */
-
-{
-	
-	let page_select = document.getElementById("page-select");
-	let page_display = document.getElementById("page-display");
-	let splitter = document.getElementById("splitter");
-	
-	let ww = window.innerWidth;
-	let wh = window.innerHeight;
-	
-	for (let cont of document.getElementsByClassName("page-container"))
-	{
-		let par = cont.parentElement;
-		par.update_cont = (w)=>{
-			cont.style.width = w-15 + "px";
-			cont.style.height = wh-15 + "px";
-		};
-	}
-	
-	let spl_X = ww * 0.30;
-	const reset_spl = ()=>{
-		ww = window.innerWidth;
-		wh = window.innerHeight;
-		
-		page_select.style.height = wh + "px";
-		splitter.style.height = wh + "px";
-		page_display.style.height = wh + "px";
-		
-		if (ww-5<spl_X) spl_X = ww-5;
-		if (spl_X<5) spl_X = 5;
-		
-		page_select.style.width = spl_X + "px";
-		splitter.style.left = spl_X + "px";
-		let x2 = spl_X+splitter.clientWidth;
-		let w2 = ww - x2;
-		page_display.style.left = x2 + "px";
-		page_display.style.width = w2 + "px";
-		
-		page_select.update_cont(spl_X);
-		page_display.update_cont(w2);
-	}
-	reset_spl();
-	
-	window.onresize = ()=>reset_spl();
-	
-	splitter.addEventListener("dblclick", ()=>{
-		let w = 0;
-		let psc = document.getElementsByClassName("page-container")[0];
-		let psc2 = psc.children[0];
-		for (let n of psc2.children)
-			if (n.clientWidth>w) w = n.clientWidth;
-		
-		let get_margin = (el)=>{
-			let style = el.currentStyle || window.getComputedStyle(el);
-			return parseFloat(style.marginLeft) + parseFloat(style.marginRight);
-		}
-		
-		spl_X = w +
-			get_margin(psc) +
-			get_margin(psc2)
-		;
-		reset_spl();
-	});
-	
-	let spl_grabed = false;
-	splitter.addEventListener("mousedown", (e)=>{
-		spl_grabed=true;
-		e.preventDefault();
-	});
-	window.addEventListener("mousemove", (e)=>{if (spl_grabed) {
-		spl_X = e.clientX - splitter.clientWidth/2;
-		reset_spl();
-		e.preventDefault();
-	}});
-	window.addEventListener("mouseup", ()=>spl_grabed=false);
-	
-}
-
-/* ============================== *\
-		    page select
-\* ============================== */
-
-var root_folder = null;
-var selected_page = null;
-
-var currently_loading_folder = null;
 
 const selected_name_color = "#eaeaea";
 const  pointed_name_color = "#d1faff";
 
-const is_selected = (name_span)=>(!selected_page || selected_page.name_span!==name_span);
+/* ============================== *\
+		     page load
+\* ============================== */
 
-const select_page = (new_page)=>{
-	if (selected_page == new_page) return;
-	fix_element(new_page);
+var root_folder = null;
+var currently_loading_folder = null;
+
+var page_by_path = {};
+const define_page_with_path = (path, page)=>{
 	
-	if (selected_page) {
-		selected_page.hidden = true;
-		let name_span = selected_page.name_span;
-		if (name_span) name_span.style.backgroundColor = "inherit";
-	}
+	if (page_by_path[path])
+		console.error(`page with path "${path}" defined multiple times`); else
+		page_by_path[path] = page;
 	
-	selected_page = new_page;
-	if (selected_page)
+	if (broken_links[path])
 	{
-		selected_page.hidden = false;
-		let name_span = selected_page.name_span;
-		if (name_span) name_span.style.backgroundColor = selected_name_color;
-		
-		let tree_obj = new_page.tree_obj.root;
-		while (tree_obj)
-		{
-			if ( tree_obj.state==false && tree_obj.reverse_state ) tree_obj.reverse_state();
-			tree_obj = tree_obj.root;
-		}
-		
+		for (let lnk of broken_links[path])
+			lnk.fix(page);
+		delete broken_links[path];
 	}
 	
-};
+}
 
 const on_start_folder = (folder_name, root_page)=>{
 	let res = {
@@ -273,18 +180,16 @@ const on_start_folder = (folder_name, root_page)=>{
 	
 	if (!root_folder)
 	{
+		if (root_page) select_page(root_page);
 		root_folder = res;
+		res.path = "";
 		document.getElementById("page-select-container").append(res.container);
 		res.container.className = "ps-root-container";
 	} else
 	{
 		currently_loading_folder.folders.push(res);
 		res.root = currently_loading_folder;
-		
-		for (let t of broken_links)
-			if (t.path.substr(0,t.path.indexOf('/')) == folder_name)
-				t.path = t.path.substr(t.path.indexOf('/')+1); else
-				t.path = "../"+t.path;
+		res.path = res.root.path + folder_name + '/';
 		
 		res.body = document.createElement("div");
 		res.body.className = "ps-folder";
@@ -324,12 +229,12 @@ const on_start_folder = (folder_name, root_page)=>{
 
 const on_page_added = (page)=>{
 	document.getElementById("page-display-container-body").append(page);
-	fix_links(page);
 	
 	let res = {
 		root: currently_loading_folder,
-		name:  page.getAttribute("page_name"),
+		name: page.getAttribute("page_name"),
 	};
+	res.path = currently_loading_folder.path + res.name;
 	
 	res.cont_div = document.createElement("div");
 	res.cont_div.className = "ps-page";
@@ -353,8 +258,10 @@ const on_page_added = (page)=>{
 	page.tree_obj = res;
 	
 	currently_loading_folder.pages.push(res);
+	define_page_with_path(res.path, page);
+	fix_links(page);
 	
-	if (!selected_page) select_page(page);
+	if (!selected_page && !document.location.hash) select_page(page);
 }
 
 const on_end_folder = ()=>{
@@ -377,139 +284,132 @@ const on_end_folder = ()=>{
 		currently_loading_folder.update();
 	}
 	
-	if (currently_loading_folder.name_span && !currently_loading_folder.content_ref)
+	if (currently_loading_folder !== root_folder)
 	{
-		let res = document.createElement("div");
-		res.hidden = true;
-		res.name_span = currently_loading_folder.name_span;
-		res.name_span.addEventListener("click", ()=>select_page(res));
-		document.getElementById("page-display-container-body").append(res);
-		currently_loading_folder.content_ref = res;
-		res.tree_obj = currently_loading_folder;
 		
-		if (currently_loading_folder.folders.length)
+		if (!currently_loading_folder.content_ref)
 		{
-			let h = document.createElement("h1");
-			h.innerHTML = "Под-папки:";
-			res.append(h);
+			let res = document.createElement("div");
+			res.hidden = true;
+			res.name_span = currently_loading_folder.name_span;
+			res.name_span.addEventListener("click", ()=>select_page(res));
+			document.getElementById("page-display-container-body").append(res);
+			currently_loading_folder.content_ref = res;
+			res.tree_obj = currently_loading_folder;
 			
-			let l = document.createElement("ul");
-			for (let folder of currently_loading_folder.folders)
+			if (currently_loading_folder.folders.length)
 			{
-				let li = document.createElement("li");
-				li.innerHTML = folder.name_span.innerHTML;
-				make_smart_link(li, folder.content_ref);
-				l.append(li);
+				let h = document.createElement("h1");
+				h.innerHTML = "Под-папки:";
+				res.append(h);
+				
+				let l = document.createElement("ul");
+				for (let folder of currently_loading_folder.folders)
+				{
+					let li = document.createElement("li");
+					li.innerHTML = folder.name_span.innerHTML;
+					make_smart_link(li, folder.content_ref);
+					l.append(li);
+				}
+				res.append(l);
+				
 			}
-			res.append(l);
+			
+			if (currently_loading_folder.pages.length)
+			{
+				let h = document.createElement("h1");
+				h.innerHTML = "Страницы:";
+				res.append(h);
+				
+				let l = document.createElement("ul");
+				for (let page of currently_loading_folder.pages)
+				{
+					let li = document.createElement("li");
+					li.innerHTML = page.name_span.innerHTML;
+					make_smart_link(li, page.content_ref);
+					l.append(li);
+				}
+				res.append(l);
+				
+			}
 			
 		}
 		
-		if (currently_loading_folder.pages.length)
-		{
-			let h = document.createElement("h1");
-			h.innerHTML = "Страницы:";
-			res.append(h);
-			
-			let l = document.createElement("ul");
-			for (let page of currently_loading_folder.pages)
-			{
-				let li = document.createElement("li");
-				li.innerHTML = page.name_span.innerHTML;
-				make_smart_link(li, page.content_ref);
-				l.append(li);
-			}
-			res.append(l);
-			
-		}
-		
+		define_page_with_path(currently_loading_folder.path, currently_loading_folder.content_ref);
+		currently_loading_folder = currently_loading_folder.root;
 	}
 	
-	//try_fix_broken_links();
-	
-	broken_links = broken_links.map((t)=>{
-		
-		if (t.path.startsWith("../"))
-		{
-			t.path = t.path.substr(3);
-			return t;
-		} else
-		{
-			var page_name = t.path.toLowerCase();
-			
-			if (page_name == "")
-				make_smart_link(t.lnk, currently_loading_folder.content_ref); else
-				for (let page of currently_loading_folder.pages)
-					if (page.name.toLowerCase() == page_name)
-						make_smart_link(t.lnk, page.content_ref);
-			
-			return null;
-		};
-		
-	}).filter((t)=>t);
-	
-	currently_loading_folder = currently_loading_folder.root;
 }
 
 /* ============================== *\
-	       page display
+	        page display
 \* ============================== */
 
-const find_page_by_path = (path)=>{
-	let folder = currently_loading_folder;
+var selected_page = null;
+const is_selected = (name_span)=>(!selected_page || selected_page.name_span!==name_span);
+const select_page = (new_page)=>{
+	if (selected_page == new_page) return;
+	document.location.hash = new_page.tree_obj.path;
+	fix_element(new_page);
 	
-	while (path.startsWith("../"))
-	{
-		path = path.substr(3);
-		folder = folder.root;
+	if (selected_page) {
+		selected_page.hidden = true;
+		let name_span = selected_page.name_span;
+		if (name_span) name_span.style.backgroundColor = "inherit";
 	}
 	
-	while (path.includes('/'))
+	selected_page = new_page;
+	if (selected_page)
 	{
-		let sfn = path.substr(0,path.indexOf('/')).toLowerCase();
-		path = path.substr(path.indexOf('/')+1);
+		selected_page.hidden = false;
+		let name_span = selected_page.name_span;
+		if (name_span) name_span.style.backgroundColor = selected_name_color;
 		
-		let nfound = true;
-		for (let sf of folder.folders)
-			if (sf.name.toLowerCase() == sfn)
-			{
-				folder = sf;
-				nfound = false;
-				break;
-			}
+		let tree_obj = new_page.tree_obj.root;
+		while (tree_obj)
+		{
+			if ( tree_obj.state==false && tree_obj.reverse_state ) tree_obj.reverse_state();
+			tree_obj = tree_obj.root;
+		}
 		
-		if (nfound) return null;
 	}
 	
-	if (path == "")
-		return folder.content_ref; else
-		for (let page of folder.pages)
-			if (page.name.toLowerCase() == path.toLowerCase())
-				return page.content_ref;
-	
-	return null;
 }
+
 const make_smart_link = (lnk, page)=>{
 	lnk.className = "smart-link";
 	lnk.addEventListener("click", ()=>select_page(page));
 }
 
-var broken_links = [];
+var broken_links = {};
+const define_broken_lnk = (path, source, fixer)=>{
+	if (!broken_links[path]) broken_links[path] = [];
+	broken_links[path].push({
+		source:	source,
+		fix:	fixer,
+	});
+}
+
 const fix_links = (page)=>{
 	
 	for (let lnk of page.getElementsByTagName('a'))
 	{
 		lnk.path = lnk.getAttribute("path");
+		if (!lnk.path) continue;
 		lnk.removeAttribute("path");
 		
-		if (!lnk.path) continue;
-		let page = find_page_by_path(lnk.path);
-		if (page)
-			make_smart_link(lnk, page); else
-			broken_links.push({
-				"path": lnk.path,
-				"lnk": lnk
-			});
+		start_folder = currently_loading_folder;
+		while (lnk.path.startsWith("../"))
+		{
+			start_folder = start_folder.root;
+			lnk.path = lnk.path.substr(3);
+		}
+		lnk.path = start_folder.path+lnk.path;
+		
+		let lnk_page = page_by_path[lnk.path];
+		if (lnk_page)
+			make_smart_link(lnk, lnk_page); else
+			define_broken_lnk(lnk.path, page.tree_obj.path, new_page=>make_smart_link(lnk, new_page))
 		
 	}
 	
@@ -691,6 +591,100 @@ const fix_element = (page)=>{
 	}
 	
 }
+
+/* ============================== *\
+		        init
+\* ============================== */
+
+{
+	if (document.location.hash)
+		define_broken_lnk(
+			decodeURIComponent(document.location.hash.substr(1)),
+			"document.location.hash",
+			page=>select_page(page)
+		);
+	
+	let page_select = document.getElementById("page-select");
+	let page_display = document.getElementById("page-display");
+	let splitter = document.getElementById("splitter");
+	
+	let ww = window.innerWidth;
+	let wh = window.innerHeight;
+	
+	for (let cont of document.getElementsByClassName("page-container"))
+	{
+		let par = cont.parentElement;
+		par.update_cont = (w)=>{
+			cont.style.width = w-15 + "px";
+			cont.style.height = wh-15 + "px";
+		};
+	}
+	
+	let spl_X = ww * 0.30;
+	const reset_spl = ()=>{
+		ww = window.innerWidth;
+		wh = window.innerHeight;
+		
+		page_select.style.height = wh + "px";
+		splitter.style.height = wh + "px";
+		page_display.style.height = wh + "px";
+		
+		if (ww-5<spl_X) spl_X = ww-5;
+		if (spl_X<5) spl_X = 5;
+		
+		page_select.style.width = spl_X + "px";
+		splitter.style.left = spl_X + "px";
+		let x2 = spl_X+splitter.clientWidth;
+		let w2 = ww - x2;
+		page_display.style.left = x2 + "px";
+		page_display.style.width = w2 + "px";
+		
+		page_select.update_cont(spl_X);
+		page_display.update_cont(w2);
+	}
+	reset_spl();
+	
+	window.onresize = ()=>reset_spl();
+	
+	splitter.addEventListener("dblclick", ()=>{
+		let w = 0;
+		let psc = document.getElementsByClassName("page-container")[0];
+		let psc2 = psc.children[0];
+		for (let n of psc2.children)
+			if (n.clientWidth>w) w = n.clientWidth;
+		
+		let get_margin = (el)=>{
+			let style = el.currentStyle || window.getComputedStyle(el);
+			return parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+		}
+		
+		spl_X = w +
+			get_margin(psc) +
+			get_margin(psc2)
+		;
+		reset_spl();
+	});
+	
+	let spl_grabed = false;
+	splitter.addEventListener("mousedown", (e)=>{
+		spl_grabed=true;
+		e.preventDefault();
+	});
+	window.addEventListener("mousemove", (e)=>{if (spl_grabed) {
+		spl_X = e.clientX - splitter.clientWidth/2;
+		reset_spl();
+		e.preventDefault();
+	}});
+	window.addEventListener("mouseup", ()=>spl_grabed=false);
+	
+}
+
+window.onload = ()=>{
+	
+	for (path in broken_links)
+		console.error(`Page "${path}" referenced ${broken_links[path].length} times but not found:`, broken_links[path].map(lnk=>lnk.source));
+	
+}
 </script>
 <script>on_start_folder("CL ABC", null)</script>
 <script>on_start_folder("Общие сведения", null)</script>
@@ -751,7 +745,7 @@ const fix_element = (page)=>{
 <p>Контекст используется только для
 <a path="../Буфер (Buffer)/">инициализации буферов</a>
 и
-<a path="../Очередь [команд] (CommandQueue)/Выполнение очередей">выполнения команд</a>
+<a path="../Очередь [команд] (CommandQueue)/Выполнение очередей/">выполнения команд</a>
 на GPU.</p>
 </div>
 <script>on_start_folder("Контекст (Context)", document.getElementById("page-3"))</script>
@@ -920,7 +914,7 @@ HPQ — Host Procedure Queue<br />
 (Хост в контексте OpenCL - это CPU, потому что с него посылаются команды для GPU)</p>
 <p>Они возвращают очередь, выполняющую код (функцию/процедуру соотвественно) на CPU.<br />
 Подробнее уже описано
-<a path="Возвращаемое значение очередей">
+<a path="../Возвращаемое значение очередей/">
 на предыдущей странице
 </a>
 .</p>
