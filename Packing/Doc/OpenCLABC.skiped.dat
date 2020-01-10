@@ -56,7 +56,6 @@ CLTask<T>.QBase()
 CLTask<T>.QResBase()
 CLTask<T>.(CommandQueue<T>, Context)
 CLTask<T>.OnQDone(T)
-__CLTaskResLess
 __CLTaskResLess.QBase()
 __CLTaskResLess.QResBase()
 __CLTaskResLess.(CommandQueueBase, Context)

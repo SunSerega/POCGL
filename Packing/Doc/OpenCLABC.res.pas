@@ -544,10 +544,6 @@ type
     
     {$region Mutiusable}
     
-    ///Создаёт массив из n очередей-удлинителей для данной очереди
-    ///Подробнее смотрите в справке: "Очередь>>Множественное использование"
-    public function Multiusable(n: integer): array of CommandQueue<T>;
-    
     ///Создаёт функцию, с которой можно создать любое кол-во очередей-удлинителей для данной очереди
     ///Подробнее смотрите в справке: "Очередь>>Множественное использование"
     public function Multiusable: ()->CommandQueue<T>;
@@ -819,6 +815,7 @@ type
     
   end;
   
+  ///--
   __CLTaskResLess = sealed class(CLTaskBase)
     private q: CommandQueueBase;
     private q_res: object;
@@ -2720,24 +2717,10 @@ type
 function MultiusableCommandQueueHub<T>.MakeNode :=
 new MultiusableCommandQueueNode<T>(self);
 
-function CommandQueue<T>.Multiusable(n: integer): array of CommandQueue<T>;
-begin
-  if self is ConstQueue<T> then
-    Result := ArrFill(n, self) else
-  begin
-    var hub := new MultiusableCommandQueueHub<T>(self);
-    Result := ArrGen(n, i->hub.MakeNode());
-  end;
-end;
-
 function CommandQueue<T>.Multiusable: ()->CommandQueue<T>;
 begin
-  if self is ConstQueue<T> then
-    Result := ()->self else
-  begin
-    var hub := new MultiusableCommandQueueHub<T>(self);
-    Result := hub.MakeNode;
-  end;
+  var hub := new MultiusableCommandQueueHub<T>(self);
+  Result := hub.MakeNode;
 end;
 
 {$endregion Multiusable}
@@ -4446,16 +4429,21 @@ function Buffer.GetData(offset, len: CommandQueue<integer>): IntPtr;
 begin
   var res: IntPtr;
   
-  var Qs_len := len.Multiusable(2);
+  var Qs_len: ()->CommandQueue<integer>;
+  if len is ConstQueue<integer> then
+    Qs_len := ()->len else
+  if len is MultiusableCommandQueueNode<integer>(var mcqn) then
+    Qs_len := mcqn.hub.MakeNode else
+    Qs_len := len.Multiusable;
   
-  var Q_res := Qs_len[0].ThenConvert(len_val->
+  var Q_res := Qs_len().ThenConvert(len_val->
   begin
     Result := Marshal.AllocHGlobal(len_val);
     res := Result;
   end);
   
   Context.Default.SyncInvoke(
-    self.NewQueue.AddReadData(Q_res, offset,Qs_len[1]) as CommandQueue<Buffer>
+    self.NewQueue.AddReadData(Q_res, offset,Qs_len()) as CommandQueue<Buffer>
   );
   
   Result := res;
@@ -4477,25 +4465,27 @@ begin
     Result := TArray(res);
   end else
   begin
-    var Qs_szs := szs.Multiusable(2);
+    var Qs_szs: ()->CommandQueue<array of integer>;
+    if szs is ConstQueue<array of integer> then
+      Qs_szs := ()->szs else
+    if szs is MultiusableCommandQueueNode<array of integer>(var mcqn) then
+      Qs_szs := mcqn.hub.MakeNode else
+      Qs_szs := szs.Multiusable;
     
-    var Qs_a_base := Qs_szs[0].ThenConvert(szs_val->
+    var Qs_a := Qs_szs().ThenConvert(szs_val->
     System.Array.CreateInstance(
       el_t,
       szs_val
-    )).Multiusable(2);
+    )).Multiusable;
     
-    var Q_a := Qs_a_base[0];
-    var Q_a_len := Qs_szs[1].ThenConvert( szs_val -> Marshal.SizeOf(el_t)*szs_val.Aggregate((i1,i2)->i1*i2) );
-    var Q_res := Qs_a_base[1];
+    var Q_a := Qs_a();
+    var Q_a_len := Qs_szs().ThenConvert( szs_val -> Marshal.SizeOf(el_t)*szs_val.Aggregate((i1,i2)->i1*i2) );
+    var Q_res := Qs_a().Cast&<TArray>;
     
-    Result := TArray(
-      Context.Default.SyncInvoke(
-        self.NewQueue
-        .AddReadArray(Q_a, offset, Q_a_len) as CommandQueue<Buffer>
-      *
-        Q_res
-      )
+    Result := Context.Default.SyncInvoke(
+      self.NewQueue.AddReadArray(Q_a, offset, Q_a_len)
+      as CommandQueue<Buffer> +
+      Q_res
     );
   end;
   
