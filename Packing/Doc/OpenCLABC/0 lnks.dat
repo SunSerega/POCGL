@@ -1,9 +1,10 @@
 ﻿
 # __NativUtils
 # __EventList
-# __QueueExecContainer
 # __IQueueRes
 # __QueueRes<T>
+# __MWEventContainer
+# __CLTaskResLess
 # __ContainerQueue<T>
 # __HostQueue<TInp,TRes>
 # __GPUCommand<T>
@@ -18,8 +19,10 @@
 # CommandQueue<T>
 %class-CQ%
 
+# CLTaskBase
+%class-TaskBase%
 # CLTask<T>
-%class-TASK%
+%class-Task%
 
 # BufferCommandQueue
 %class-BCQ%
@@ -73,15 +76,24 @@
 
 
 
-# CLTask<T>.WhenFinished(Action<CommandQueue<T>, T>)
-%task.Finished%
-# CLTask<T>.WhenError(Action<CommandQueue<T>, array of Exception>)
+# CLTaskBase.WhenDone(Action<CLTaskBase>)
+# CLTask<T>.WhenDone(Action<CLTask<T>>)
+%task.Done%
+# CLTaskBase.WhenComplete(Action<CLTaskBase, object>)
+# CLTask<T>.WhenComplete(Action<CLTask<T>, T>)
+%task.Complete%
+# CLTaskBase.WhenError(Action<CLTaskBase, array of Exception>)
+# CLTask<T>.WhenError(Action<CLTask<T>, array of Exception>)
 %task.Error%
 
-# CLTask<T>.Wait()
+# CLTaskBase.OrgQueue
+# CLTask<T>.OrgQueue
+%task.OrgQueue%
+# CLTaskBase.Wait()
 %task.Wait%
-# CLTask<T>.GetRes()
-%task.GetRes%
+# CLTaskBase.WaitRes()
+# CLTask<T>.WaitRes()
+%task.WaitRes%
 
 
 

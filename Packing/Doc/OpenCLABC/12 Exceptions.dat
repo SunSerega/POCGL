@@ -4,4 +4,7 @@
 # FlattenQueueArray:inp empty
 CombineSyncQueue и CombineAsyncQueue не могут принимать 0 очередей
 
+# task:errors
+При выполнении очереди было вызвано ({0}) исключений. Используйте try чтоб получить больше информации
+
 

@@ -109,6 +109,10 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Запланированное:
 
+//ToDo Очередь-обработчик ошибок
+// - сделать легко, надо только вставить свой промежуточный CLTaskBase
+// - единственное - для Wait очереди надо хранить так же оригинальный таск
+
 //ToDo Если в предыдущей очереди исключение - остановить выполнение
 // - это не критично, но иначе будет выводить кучу лишних ошибок
 
@@ -120,9 +124,6 @@ uses System.Runtime.CompilerServices;
 //ToDo исправить десериализацию ProgramCode
 
 //ToDo когда partial классы начнут нормально себя вести - использовать их чтоб переместить все "__*" классы в implementation
-
-//ToDo MW ивенты должны хранится в Dictionary<Context,cl_event>, потому что функция получения MW ивента должна возвращать совместимый с контекстом ивент
-//ToDo UnMakeWaitable, вызываемое из финализатора Wait очередей, чтоб очередь имела возможность стать нормальной
 
 //ToDo CommmandQueueBase.ToString для дебага
 // - так же дублирующий protected метод (tabs: integer; index: Dictionary<CommandQueueBase,integer>)
@@ -187,10 +188,11 @@ type
   
   {$region pre def}
   
-  __QueueExecContainer = class;
-  
   CommandQueueBase = class;
   CommandQueue<T> = class;
+  
+  CLTaskBase = class;
+  CLTask<T> = class;
   
   Buffer = class;
   Kernel = class;
@@ -199,13 +201,7 @@ type
   
   ProgramCode = class;
   
-  ///Интерфейс, который реализован только классом ConstQueue<>
-  ///Позволяет получить значение, из которого была создана константая очередь, не зная его типа
-  IConstQueue = interface
-    ///Возвращает значение из которого была создана данная константная очередь
-    function GetConstVal: Object;
-  end;
-  ConstQueue<T> = class;
+  DeviceTypeFlags = OpenCL.DeviceTypeFlags;
   
   {$endregion pre def}
   
@@ -302,29 +298,11 @@ type
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     
     public static procedure AttachCallback(ev: cl_event; cb: Event_Callback);
-    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback; cont: __QueueExecContainer);
+    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase);
     
     ///cb должен иметь глобальный try и вызывать "state.RaiseIfError" и "__NativUtils.GCHndFree(data)",
     ///А "cl.ReleaseEvent" если и вызывать - то только на результате вызова AttachCallback
     public function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
-    
-  end;
-  
-  __IQueueRes = interface;
-  ///--
-  __QueueExecContainer = abstract class
-    private err_lst := new List<Exception>;                 // Список исключений, вызванных при выполнении
-    private mu_res := new Dictionary<object, __IQueueRes>;  // Результат хабов от .Multiusable
-    private done_qs := new HashSet<CommandQueueBase>;       // Очереди, вызавшие .SignalMWEvent
-    
-    protected procedure AddErr(e: Exception) :=
-    lock err_lst do err_lst += e;
-    
-    protected procedure AddErr(err: ErrorCode) :=
-    if err.IS_ERROR then AddErr(new OpenCLException(err.ToString));
-    
-    protected procedure AddErr(st: CommandExecutionStatus) :=
-    if st.IS_ERROR then AddErr(new OpenCLException(st.GetError.ToString));
     
   end;
   
@@ -406,16 +384,21 @@ type
     
   end;
   
+  ///--
+  __MWEventContainer = sealed class // MW = Multi Wait
+    curr_ev: cl_event;
+    cached: integer;
+  end;
+  
   {$endregion hidden utils}
+  
+  {$region CommandQueue's}
   
   {$region CommandQueue}
   
   ///Базовый тип очереди с неопределённым типом возвращаемого значения
   ///От этого класса наследуют все типы очередей
   CommandQueueBase = abstract class
-    
-    protected mw_lock: object; // nil, пока не будет создана Wait очередь с ожиданием данной очереди
-    protected mw_ev: cl_event;
     
     {$region Queue converters}
     
@@ -491,83 +474,40 @@ type
     
     {$region Invoke}
     
-    protected function InvokeBase(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __IQueueRes; abstract;
+    protected function InvokeBase(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __IQueueRes; abstract;
     
-    protected function InvokeNewQBase(cont: __QueueExecContainer; c: Context): __IQueueRes;
-    begin
-      var cq := cl_command_queue.Zero;
-      Result := InvokeBase(cont, c, cq, new __EventList);
-      
-      var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(cq) );
-      
-      if Result.EvBase.count=0 then
-        if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
-        Result := Result.AttachCallbackBase((ev,st,data)->
-        begin
-          cont.AddErr( st );
-          if cq<>cl_command_queue.Zero then Task.Run(CQFree);
-          __NativUtils.GCHndFree(data);
-        end, c, cq);
-    end;
+    protected function InvokeNewQBase(tsk: CLTaskBase; c: Context): __IQueueRes;
     
     {$endregion Invoke}
     
     {$region Utils}
     
-    {$region Misc}
+    {$region MW}
     
-    protected procedure MakeWaitable :=
-    if mw_lock=nil then // чтоб лишний раз "lock self" не делать
-      lock self do
-        if mw_lock=nil then // ещё раз если изменилось пока ждали lock
-          mw_lock := new Object;
+    private waiters_c := 0;
+    protected function IsWaitable := waiters_c<>0;
+    protected procedure MakeWaitable := lock self do waiters_c += 1;
+    protected procedure UnMakeWaitable := lock self do waiters_c -= 1;
+    
+    /// добавляет tsk в качестве ключа для всех ожидаемых очередей
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); abstract;
+    
+    private mw_evs: Dictionary<CLTaskBase, __MWEventContainer>;
+    protected procedure RegisterWaiterTask(tsk: CLTaskBase) :=
+    lock mw_evs do mw_evs.Add(tsk, new __MWEventContainer);
+    
+    protected function GetMWEvent(tsk: CLTaskBase; c: Context): cl_event;
+    protected procedure SignalMWEvent(tsk: CLTaskBase);
+    
+    {$endregion MW}
+    
+    {$region Misc}
     
     protected static function CreateUserEvent(c: Context): cl_event;
     
-    {$endregion Misc}
-    
-    {$region Event's}
-    
-    protected function GetMWEvent(cont: __QueueExecContainer; c: cl_context): cl_event;
-    begin
-      
-      lock mw_lock do
-      begin
-        
-        if self.mw_ev<>cl_event.Zero then
-          cl.RetainEvent(self.mw_ev).RaiseIfError else
-        begin
-          var self_done: boolean;
-          lock cont.done_qs do self_done := cont.done_qs.Contains(self);
-          if not self_done then
-          begin
-            var ec: ErrorCode;
-            self.mw_ev := cl.CreateUserEvent(c, ec);
-            ec.RaiseIfError;
-          end;
-        end;
-        
-        Result := self.mw_ev;
-      end;
-      
-    end;
-    
-    protected procedure SignalMWEvent(cont: __QueueExecContainer) :=
-    lock mw_lock do
-    begin
-      if self.mw_ev=cl_event.Zero then exit;
-      lock cont.done_qs do if not cont.done_qs.Add(self) then exit;
-      cl.SetUserEventStatus(self.mw_ev, CommandExecutionStatus.COMPLETE).RaiseIfError;
-      self.mw_ev := cl_event.Zero;
-    end;
-    
-    {$endregion Event's}
-    
-    {$region ThenWait}
-    
     protected function CreateWaitWrapperBase(qs: sequence of CommandQueueBase; all: boolean): CommandQueueBase; abstract;
     
-    {$endregion ThenWait}
+    {$endregion Misc}
     
     {$endregion Utils}
     
@@ -639,126 +579,142 @@ type
     
     {$region Invoke}
     
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; abstract;
-    protected function InvokeBase(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __IQueueRes; override :=
-    Invoke(cont, c, cq, prev_ev);
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; abstract;
+    protected function InvokeBase(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __IQueueRes; override :=
+    Invoke(tsk, c, cq, prev_ev);
     
-    protected function InvokeNewQ(cont: __QueueExecContainer; c: Context): __QueueRes<T>;
-    begin
-      var cq := cl_command_queue.Zero;
-      Result := Invoke(cont, c, cq, new __EventList);
-      
-      var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(cq) );
-      
-      if Result.ev.count=0 then
-        if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
-        Result := Result.AttachCallback((ev,st,data)->
-        begin
-          cont.AddErr( st );
-          if cq<>cl_command_queue.Zero then Task.Run(CQFree);
-          __NativUtils.GCHndFree(data);
-        end, c, cq);
-    end;
+    protected function InvokeNewQ(tsk: CLTaskBase; c: Context): __QueueRes<T>;
     
     {$endregion Invoke}
     
   end;
   
-  // очередь, выполняющая незначитальный объём своей работы, но запускающая под-очереди
-  ///--
-  __ContainerQueue<T> = abstract class(CommandQueue<T>)
-    
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; abstract;
-    
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
-    begin
-      Result := InvokeSubQs(cont, c, cq, prev_ev);
-      
-      if mw_lock<>nil then
-        if Result.ev.count=0 then
-          self.SignalMWEvent(cont) else
-          Result := Result.AttachCallback((ev,st,data)->
-          begin
-            cont.AddErr( st );
-            self.SignalMWEvent(cont);
-            __NativUtils.GCHndFree(data);
-          end, c, cq);
-      
-    end;
-    
-  end;
-  
-  // очередь, выполняющая какую то работу на CPU, всегда в отдельном потоке
-  ///--
-  __HostQueue<TInp,TRes> = abstract class(CommandQueue<TRes>)
-    
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<TInp>; abstract;
-    
-    protected function ExecFunc(o: TInp; c: Context): TRes; abstract;
-    
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<TRes>; override;
-    begin
-      var prev_res := InvokeSubQs(cont, c, cq, prev_ev);
-      
-      var uev := CreateUserEvent(c);
-      Result.ev := uev;
-      
-      var res: TRes;
-      Result.res_f := ()->res;
-      
-      Thread.Create(()->
-      begin
-        
-        try
-          res := ExecFunc(prev_res.WaitAndGet(), c);
-          if self.mw_lock<>nil then self.SignalMWEvent(cont);
-        except
-          on e: Exception do cont.AddErr(e);
-        end;
-        
-        cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
-      end).Start;
-      
-    end;
-    
-  end;
-  
   {$endregion CommandQueue}
   
-  {$region Misc}
+  {$region CLTask}
   
-  DeviceTypeFlags = OpenCL.DeviceTypeFlags;
+  ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
+  CLTaskBase = abstract class
+    protected err_lst := new List<Exception>;                 // Список исключений, вызванных при выполнении
+    protected mu_res := new Dictionary<object, __IQueueRes>;  // Результаты хабов от .Multiusable
+    
+    protected wh := new ManualResetEvent(false);
+    protected wh_lock := new object;
+    
+    {$region Utils}
+    
+    protected procedure AddErr(e: Exception) :=
+    lock err_lst do err_lst += e;
+    
+    protected procedure AddErr(err: ErrorCode) :=
+    if err.IS_ERROR then AddErr(new OpenCLException(err.ToString));
+    
+    protected procedure AddErr(st: CommandExecutionStatus) :=
+    if st.IS_ERROR then AddErr(new OpenCLException(st.GetError.ToString));
+    
+    /// Возвращает True если очередь уже завершилась
+    protected function AddEventHandler<T>(var ev: T; cb: T): boolean; where T: Delegate;
+    begin
+      lock wh_lock do
+        Result := wh.WaitOne(0);
+      if not Result then
+        ev := Delegate.Combine(ev, cb) as T;
+    end;
+    
+    {$endregion Utils}
+    
+    {$region def}
+    
+    protected function QBase: CommandQueueBase; abstract;
+    protected function QResBase: object; abstract;
+    
+    {$endregion def}
+    
+    {$region events}
+    
+    private EvDone: Action<CLTaskBase>;
+    private EvComplete: Action<CLTaskBase, object>;
+    private EvError: Action<CLTaskBase, array of Exception>;
+    
+    ///Добавляет подпрограмму-обработчик, которая будет вызвана когда выполнение очереди завершится (успешно или с ошибой)
+    public procedure WhenDone(cb: Action<CLTaskBase>) :=
+    if AddEventHandler(EvDone, cb) then cb(self);
+    
+    ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если выполнение очереди завершится успешно
+    public procedure WhenComplete(cb: Action<CLTaskBase, object>) :=
+    if AddEventHandler(EvComplete, cb) then cb(self, QResBase);
+    
+    ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если при выполнении очереди будет вызвано исключение
+    public procedure WhenError(cb: Action<CLTaskBase, array of Exception>) :=
+    if AddEventHandler(EvError, cb) then lock err_lst do cb(self, err_lst.ToArray);
+    
+    {$endregion events}
+    
+    ///Возвращает очередь, выполнение которой описывает данный объект
+    public property OrgQueue: CommandQueueBase read QBase;
+    
+    ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
+    ///Вызывает исключение, если оно было вызвано при выполнении
+    public procedure Wait;
+    begin
+      wh.WaitOne;
+      lock err_lst do if err_lst.Count<>0 then raise new AggregateException(
+        Format(
+          'При выполнении очереди было вызвано ({0}) исключений. Используйте try чтоб получить больше информации',
+          err_lst
+        ),
+        err_lst
+      );
+    end;
+    
+    ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
+    ///Вызывает исключение, если оно было вызвано при выполнении
+    ///А затем возвращает результат выполнения
+    public function WaitRes: object;
+    begin
+      Wait;
+      Result := QResBase;
+    end;
+    
+  end;
   
-  ///Представляет задачу, создаваемую методом Context.BeginInvoke
-  CLTask<T> = sealed class(__QueueExecContainer)
+  ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
+  CLTask<T> = sealed class(CLTaskBase)
     private q: CommandQueue<T>;
-    private wh := new ManualResetEvent(false);
     private q_res: T;
+    
+    {$region def}
+    
+    protected function QBase: CommandQueueBase; override := q;
+    protected function QResBase: object; override := q_res;
+    
+    {$endregion def}
     
     {$region event's}
     
-    private Finished: Action<CommandQueue<T>, T>;
-    private Error: Action<CommandQueue<T>, array of Exception>;
+    private EvDone: Action<CLTask<T>>;
+    private EvComplete: Action<CLTask<T>, T>;
+    private EvError: Action<CLTask<T>, array of Exception>;
     
-    ///Вызывается, когда выполнение очереди успешно завершено
-    public procedure WhenFinished(cb: Action<CommandQueue<T>, T> ) :=
-    lock self do
-      if wh.WaitOne(0) then
-        cb(q, q_res) else
-        Finished := Delegate.Combine(Finished, cb) as Action<CommandQueue<T>, T>;
+    ///Добавляет подпрограмму-обработчик, которая будет вызвана когда выполнение очереди завершится (успешно или с ошибой)
+    public procedure WhenDone(cb: Action<CLTask<T>>); reintroduce :=
+    if AddEventHandler(EvDone, cb) then cb(self);
     
-    ///Вызывается, когда при выполнении очереди было вызвано исключение
-    public procedure WhenError(cb: Action<CommandQueue<T>, array of Exception> ) :=
-    lock self do
-      if wh.WaitOne(0) then
-        cb(q, self.err_lst.ToArray) else
-        Error := Delegate.Combine(Error, cb) as Action<CommandQueue<T>, array of Exception>;
+    ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если выполнение очереди завершится успешно
+    public procedure WhenComplete(cb: Action<CLTask<T>, T>); reintroduce :=
+    if AddEventHandler(EvComplete, cb) then cb(self, q_res);
+    
+    ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если при выполнении очереди будет вызвано исключение
+    public procedure WhenError(cb: Action<CLTask<T>, array of Exception>); reintroduce :=
+    if AddEventHandler(EvError, cb) then lock err_lst do cb(self, err_lst.ToArray);
     
     {$endregion event's}
     
     protected constructor(q: CommandQueue<T>; c: Context);
     begin
       self.q := q;
+      
+      q.RegisterWaitables(self, new HashSet<object>);
       
       var cq := cl_command_queue.Zero;
       var res := q.Invoke(self, c, cq, new __EventList);
@@ -784,7 +740,6 @@ type
               Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
             
             OnQDone( res.Get() );
-            wh.Set;
             
             __NativUtils.GCHndFree(data);
           end, c, cq)
@@ -796,41 +751,67 @@ type
     try
       self.q_res := res;
       
-      lock self do
+      var lb_EvDone:      Action<CLTaskBase>;
+      var lb_EvComplete:  Action<CLTaskBase, object>;
+      var lb_EvError:     Action<CLTaskBase, array of Exception>;
+      
+      var l_EvDone:       Action<CLTask<T>>;
+      var l_EvComplete:   Action<CLTask<T>, T>;
+      var l_EvError:      Action<CLTask<T>, array of Exception>;
+      
+      lock wh_lock do
       begin
         
-        if err_lst.Count=0 then
-        begin
-          if Finished<>nil then Finished(q, res);
-        end else
-        begin
-          if Error<>nil then Error(q, self.err_lst.ToArray);
-        end;
+        lb_EvDone     := inherited EvDone;
+        lb_EvComplete := inherited EvComplete;
+        lb_EvError    := inherited EvError;
+        
+        l_EvDone      := EvDone;
+        l_EvComplete  := EvComplete;
+        l_EvError     := EvError;
         
         wh.Set;
+      end;
+      
+      try
+        if lb_EvDone<>nil then lb_EvDone(self);
+        if  l_EvDone<>nil then  l_EvDone(self);
+      except
+        on e: Exception do AddErr(e);
+      end;
+      
+      try
+        if lb_EvComplete<>nil then lb_EvComplete(self, res);
+        if  l_EvComplete<>nil then  l_EvComplete(self, res);
+      except
+        on e: Exception do AddErr(e);
+      end;
+      
+      if (lb_EvError<>nil) or (l_EvError<>nil) then
+      begin
+        var err_arr: array of Exception;
+        lock err_lst do err_arr := err_lst.ToArray;
+        
+        if lb_EvError<>nil then lb_EvError(self, err_arr);
+        if  l_EvError<>nil then  l_EvError(self, err_arr);
+        
       end;
       
     except
       on e: Exception do
       begin
-        err_lst += e;
+        AddErr(e);
         wh.Set;
       end;
     end;
     
-    ///Ожидает окончания выполнения очереди
-    ///Вызывает исключение, если оно было вызвано при выполнении
-    public procedure Wait;
-    begin
-      wh.WaitOne;
-      if err_lst.Count<>0 then raise new AggregateException(
-        $'При выполнении очереди было вызвано ({err_lst.Count}) исключений. Используйте try чтоб получить больше информации',
-        err_lst
-      );
-    end;
+    ///Возвращает очередь, выполнение которой описывает данный объект
+    public property OrgQueue: CommandQueue<T> read q;
     
-    ///Вызывает .Wait, а затем получает результат выполнения
-    public function GetRes: T;
+    ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
+    ///Вызывает исключение, если оно было вызвано при выполнении
+    ///А затем возвращает результат выполнения
+    public function WaitRes: T; reintroduce;
     begin
       Wait;
       Result := self.q_res;
@@ -838,15 +819,228 @@ type
     
   end;
   
-  {$endregion Misc}
+  __CLTaskResLess = sealed class(CLTaskBase)
+    private q: CommandQueueBase;
+    private q_res: object;
+    
+    protected function QBase: CommandQueueBase; override := q;
+    protected function QResBase: object; override := q_res;
+    
+    protected constructor(q: CommandQueueBase; c: Context);
+    begin
+      self.q := q;
+      
+      q.RegisterWaitables(self, new HashSet<object>);
+      
+      var cq := cl_command_queue.Zero;
+      var res := q.InvokeBase(self, c, cq, new __EventList);
+      
+      // mu выполняют лишний .Retain, чтоб ивент не удалился пока очередь ещё запускается
+      foreach var qr in mu_res.Values do
+        qr.EvBase.Release;
+      mu_res := nil;
+      
+      var ev := res.EvBase;
+      
+      if ev.count=0 then
+      begin
+        if cq<>cl_command_queue.Zero then raise new NotImplementedException; // не должно произойти никогда
+        OnQDone( res.GetBase() );
+      end else
+        cl.ReleaseEvent(
+          ev.AttachCallback((ev,st,data)->
+          begin
+            self.AddErr( st );
+            
+            if cq<>cl_command_queue.Zero then
+              Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
+            
+            OnQDone( res.GetBase() );
+            
+            __NativUtils.GCHndFree(data);
+          end, c, cq)
+        ).RaiseIfError;
+      
+    end;
+    
+    private procedure OnQDone(res: object) :=
+    try
+      self.q_res := res;
+      
+      var lb_EvDone:      Action<CLTaskBase>;
+      var lb_EvComplete:  Action<CLTaskBase, object>;
+      var lb_EvError:     Action<CLTaskBase, array of Exception>;
+      
+      lock wh_lock do
+      begin
+        
+        lb_EvDone     := inherited EvDone;
+        lb_EvComplete := inherited EvComplete;
+        lb_EvError    := inherited EvError;
+        
+        wh.Set;
+      end;
+      
+      try
+        if lb_EvDone<>nil then lb_EvDone(self);
+      except
+        on e: Exception do AddErr(e);
+      end;
+      
+      try
+        if lb_EvComplete<>nil then lb_EvComplete(self, res);
+      except
+        on e: Exception do AddErr(e);
+      end;
+      
+      if lb_EvError<>nil then
+      begin
+        var err_arr: array of Exception;
+        lock err_lst do err_arr := err_lst.ToArray;
+        
+        lb_EvError(self, err_arr);
+        
+      end;
+      
+    except
+      on e: Exception do
+      begin
+        AddErr(e);
+        wh.Set;
+      end;
+    end;
+    
+  end;
+  
+  {$endregion CLTask}
+  
+  {$region ContainerQueue}
+  
+  // очередь, выполняющая незначитальный объём своей работы, но запускающая под-очереди
+  ///--
+  __ContainerQueue<T> = abstract class(CommandQueue<T>)
+    
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; abstract;
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    begin
+      Result := InvokeSubQs(tsk, c, cq, prev_ev);
+      
+      if self.IsWaitable then
+        if Result.ev.count=0 then
+          self.SignalMWEvent(tsk) else
+          Result := Result.AttachCallback((ev,st,data)->
+          begin
+            tsk.AddErr( st );
+            self.SignalMWEvent(tsk);
+            __NativUtils.GCHndFree(data);
+          end, c, cq);
+      
+    end;
+    
+  end;
+  
+  {$endregion ContainerQueue}
+  
+  {$region HostQueue}
+  
+  // очередь, выполняющая какую то работу на CPU, всегда в отдельном потоке
+  ///--
+  __HostQueue<TInp,TRes> = abstract class(CommandQueue<TRes>)
+    
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<TInp>; abstract;
+    
+    protected function ExecFunc(o: TInp; c: Context): TRes; abstract;
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<TRes>; override;
+    begin
+      var prev_res := InvokeSubQs(tsk, c, cq, prev_ev);
+      
+      var uev := CreateUserEvent(c);
+      Result.ev := uev;
+      
+      var res: TRes;
+      Result.res_f := ()->res;
+      
+      Thread.Create(()->
+      begin
+        
+        try
+          res := ExecFunc(prev_res.WaitAndGet(), c);
+          if self.IsWaitable then self.SignalMWEvent(tsk);
+        except
+          on e: Exception do tsk.AddErr(e);
+        end;
+        
+        tsk.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
+      end).Start;
+      
+    end;
+    
+  end;
+  
+  {$endregion HostQueue}
+  
+  {$region ConstQueue}
+  
+  ///Интерфейс, который реализован только классом ConstQueue<>
+  ///Позволяет получить значение, из которого была создана константая очередь, не зная его типа
+  IConstQueue = interface
+    ///Возвращает значение из которого была создана данная константная очередь
+    function GetConstVal: Object;
+  end;
+  ///Представляет константную очередь
+  ///Константные очереди ничего не выполняют и возвращает заданное при создании значение
+  ConstQueue<T> = sealed class(CommandQueue<T>, IConstQueue)
+    private res: T;
+    
+    ///Создаёт новую константную очередь из заданного значения
+    public constructor(o: T) :=
+    self.res := o;
+    
+    ///--
+    public function GetConstVal: object := self.res;
+    ///Возвращает значение из которого была создана данная константная очередь
+    public property Val: T read self.res;
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    begin
+      
+      if self.IsWaitable then
+      begin
+        
+        if prev_ev.count=0 then
+          SignalMWEvent(tsk) else
+          prev_ev := prev_ev.AttachCallback((ev,st,data)->
+          begin
+            tsk.AddErr( st );
+            self.SignalMWEvent(tsk);
+            __NativUtils.GCHndFree(data);
+          end, c, cq);
+        
+      end;
+      
+      Result.ev := prev_ev;
+      Result.res := self.res;
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override := exit;
+    
+  end;
+  
+  {$endregion ConstQueue}
+  
+  {$endregion CommandQueue's}
   
   {$region GPUCommand}
   
   ///--
   __GPUCommand<T> = abstract class
     
-    protected function InvokeObj(o: T; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; abstract;
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; abstract;
+    protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; abstract;
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; abstract;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); abstract;
     
   end;
   
@@ -855,7 +1049,9 @@ type
   __GPUCommandContainerBody<T> = abstract class
     private cc: __GPUCommandContainer<T>;
     
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; abstract;
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; abstract;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); abstract;
     
   end;
   
@@ -887,8 +1083,14 @@ type
     
     {$region sub implementation}
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override :=
-    body.Invoke(cont, c, cq, prev_ev);
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override :=
+    body.Invoke(tsk, c, cq, prev_ev);
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      body.RegisterWaitables(tsk, prev_hubs);
+      foreach var comm in commands do comm.RegisterWaitables(tsk, prev_hubs);
+    end;
     
     {$endregion sub implementation}
     
@@ -1824,14 +2026,14 @@ type
     public function BeginInvoke<T>(q: CommandQueue<T>) := new CLTask<T>(q, self);
     ///Запускает данную очередь и все её подочереди
     ///Как только всё запущено: возвращает объект типа CLTask<>, через который можно следить за процессом выполнения
-    public function BeginInvoke(q: CommandQueueBase) := new CLTask<object>(q.Cast&<object>(), self);
+    public function BeginInvoke(q: CommandQueueBase): CLTaskBase := new __CLTaskResLess(q, self);
     
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения и возвращает полученный результат
-    public function SyncInvoke<T>(q: CommandQueue<T>) := BeginInvoke(q).GetRes();
+    public function SyncInvoke<T>(q: CommandQueue<T>) := BeginInvoke(q).WaitRes();
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения и возвращает полученный результат
-    public function SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).GetRes();
+    public function SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).WaitRes();
     
     protected procedure Finalize; override :=
     if need_finnalize then // если было исключение при инициализации или инициализация произошла из дескриптора
@@ -1974,47 +2176,6 @@ type
   end;
   
   {$endregion ProgramCode}
-  
-  {$region ConstQueue}
-  
-  ///Представляет константную очередь
-  ///Константные очереди ничего не выполняют и возвращает заданное при создании значение
-  ConstQueue<T> = sealed class(CommandQueue<T>, IConstQueue)
-    private res: T;
-    
-    ///Создаёт новую константную очередь из заданного значения
-    public constructor(o: T) :=
-    self.res := o;
-    
-    ///--
-    public function GetConstVal: object := self.res;
-    ///Возвращает значение из которого была создана данная константная очередь
-    public property Val: T read self.res;
-    
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
-    begin
-      
-      if mw_lock<>nil then
-      begin
-        
-        if prev_ev.count=0 then
-          SignalMWEvent(cont) else
-          prev_ev := prev_ev.AttachCallback((ev,st,data)->
-          begin
-            cont.AddErr( st );
-            self.SignalMWEvent(cont);
-            __NativUtils.GCHndFree(data);
-          end, c, cq);
-        
-      end;
-      
-      Result.ev := prev_ev;
-      Result.res := self.res;
-    end;
-    
-  end;
-  
-  {$endregion ConstQueue}
   
 {$region Сахарные подпрограммы}
 
@@ -2217,10 +2378,96 @@ implementation
 
 {$region Misc}
 
+{$region CommandQueue}
+
+function CommandQueueBase.InvokeNewQBase(tsk: CLTaskBase; c: Context): __IQueueRes;
+begin
+  var cq := cl_command_queue.Zero;
+  Result := InvokeBase(tsk, c, cq, new __EventList);
+  
+  var CQFree: Action := ()->tsk.AddErr( cl.ReleaseCommandQueue(cq) );
+  
+  if Result.EvBase.count=0 then
+    if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
+    Result := Result.AttachCallbackBase((ev,st,data)->
+    begin
+      tsk.AddErr( st );
+      if cq<>cl_command_queue.Zero then Task.Run(CQFree);
+      __NativUtils.GCHndFree(data);
+    end, c, cq);
+end;
+
+function CommandQueue<T>.InvokeNewQ(tsk: CLTaskBase; c: Context): __QueueRes<T>;
+begin
+  var cq := cl_command_queue.Zero;
+  Result := Invoke(tsk, c, cq, new __EventList);
+  
+  var CQFree: Action := ()->tsk.AddErr( cl.ReleaseCommandQueue(cq) );
+  
+  if Result.ev.count=0 then
+    if cq<>cl_command_queue.Zero then Task.Run(CQFree) else
+    Result := Result.AttachCallback((ev,st,data)->
+    begin
+      tsk.AddErr( st );
+      if cq<>cl_command_queue.Zero then Task.Run(CQFree);
+      __NativUtils.GCHndFree(data);
+    end, c, cq);
+end;
+
+function CommandQueueBase.GetMWEvent(tsk: CLTaskBase; c: Context): cl_event;
+begin
+  var cont: __MWEventContainer;
+  lock mw_evs do cont := mw_evs[tsk];
+  
+  lock cont do
+    if cont.cached<>0 then
+      cont.cached -= 1 else
+    begin
+      Result := cont.curr_ev;
+      
+      if Result=cl_event.Zero then
+      begin
+        Result := CreateUserEvent(c);
+        cont.curr_ev := Result;
+      end;
+      
+      tsk.WhenDone(tsk->lock mw_evs do mw_evs.Remove(tsk));
+    end;
+  
+end;
+
+procedure CommandQueueBase.SignalMWEvent(tsk: CLTaskBase);
+begin
+  var conts: array of __MWEventContainer;
+  lock mw_evs do conts := mw_evs.Values.ToArray;
+  
+  for var i := 0 to conts.Length-1 do
+  begin
+    var cont := conts[i];
+    lock cont do
+      if cont.curr_ev=cl_event.Zero then
+        cont.cached += 1 else
+      begin
+        tsk.AddErr( cl.SetUserEventStatus(cont.curr_ev, CommandExecutionStatus.COMPLETE) );
+        cont.curr_ev := cl_event.Zero;
+      end;
+  end;
+  
+end;
+
+static function CommandQueueBase.CreateUserEvent(c: Context): cl_event;
+begin
+  var ec: ErrorCode;
+  Result := cl.CreateUserEvent(c._context, ec);
+  ec.RaiseIfError;
+end;
+
+{$endregion CommandQueue}
+
 static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback) :=
 cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
-static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback; cont: __QueueExecContainer) :=
-cont.AddErr( cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)) );
+static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase) :=
+tsk.AddErr( cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)) );
 
 function __EventList.AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
 begin
@@ -2243,13 +2490,6 @@ begin
   
   AttachCallback(ev, cb);
   Result := ev;
-end;
-
-static function CommandQueueBase.CreateUserEvent(c: Context): cl_event;
-begin
-  var ec: ErrorCode;
-  Result := cl.CreateUserEvent(c._context, ec);
-  ec.RaiseIfError;
 end;
 
 function LazyQuickTransformBase<T2>(self: __IQueueRes; f: object->T2): __QueueRes<T2>; extensionmethod;
@@ -2286,8 +2526,11 @@ type
     
     public constructor(q: CommandQueueBase) := self.q := q;
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override :=
-    __QueueRes&<T>( q.InvokeBase(cont, c, cq, prev_ev).LazyQuickTransformBase(o->T(o)) );
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override :=
+    __QueueRes&<T>( q.InvokeBase(tsk, c, cq, prev_ev).LazyQuickTransformBase(o->T(o)) );
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
     
   end;
   
@@ -2304,10 +2547,12 @@ end;
 type
   CommandQueueHostFuncBase<T> = abstract class(__HostQueue<object,T>)
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<object>; override;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<object>; override;
     begin
       Result.ev := prev_ev;
     end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override := exit;
     
   end;
   
@@ -2375,8 +2620,11 @@ type
   CommandQueueThenConvertBase<TInp,TRes> = abstract class(__HostQueue<TInp, TRes>)
     q: CommandQueue<TInp>;
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<TInp>; override :=
-    q.Invoke(cont, c, cq, prev_ev);
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<TInp>; override :=
+    q.Invoke(tsk, c, cq, prev_ev);
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
     
   end;
   
@@ -2436,15 +2684,15 @@ type
     public q: CommandQueue<T>;
     public constructor(q: CommandQueue<T>) := self.q := q;
     
-    public function OnNodeInvoked(cont: __QueueExecContainer; c: Context): __QueueRes<T>;
+    public function OnNodeInvoked(tsk: CLTaskBase; c: Context): __QueueRes<T>;
     begin
       
       var res_o: __IQueueRes;
-      if cont.mu_res.TryGetValue(self, res_o) then
+      if tsk.mu_res.TryGetValue(self, res_o) then
         Result := __QueueRes&<T>( res_o ) else
       begin
-        Result := self.q.InvokeNewQ(cont, c);
-        cont.mu_res.Add(self, Result);
+        Result := self.q.InvokeNewQ(tsk, c);
+        tsk.mu_res.Add(self, Result);
       end;
       
       Result.ev.Retain;
@@ -2458,11 +2706,14 @@ type
     public hub: MultiusableCommandQueueHub<T>;
     public constructor(hub: MultiusableCommandQueueHub<T>) := self.hub := hub;
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
     begin
-      Result := hub.OnNodeInvoked(cont, c);
+      Result := hub.OnNodeInvoked(tsk, c);
       Result.ev := prev_ev + Result.ev;
     end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    if prev_hubs.Add(hub) then hub.q.RegisterWaitables(tsk, prev_hubs);
     
   end;
   
@@ -2507,6 +2758,9 @@ type
     
     public constructor(qs: array of CommandQueueBase) := self.qs := qs;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    foreach var q in qs do q.RegisterWaitables(tsk, prev_hubs);
+    
   end;
   
   {$endregion Sync}
@@ -2516,20 +2770,20 @@ type
   HQAExecutor<T> = abstract class //ToDo #2150
     
     /// синхронно или асинхронно запускает очереди qs и возвращает общий для них ивент в _prev_ev
-    protected function WorkOn(qs: array of CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var _prev_ev: __EventList): array of __QueueRes<T>; abstract;
+    protected function WorkOn(qs: array of CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var _prev_ev: __EventList): array of __QueueRes<T>; abstract;
     
   end;
   
   HQAExecutorSync<T> = sealed class(HQAExecutor<T>)
     
-    protected function WorkOn(qs: array of CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var _prev_ev: __EventList): array of __QueueRes<T>; override;
+    protected function WorkOn(qs: array of CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var _prev_ev: __EventList): array of __QueueRes<T>; override;
     begin
       var prev_ev := _prev_ev;
       Result := new __QueueRes<T>[qs.Length];
       
       for var i := 0 to qs.Length-1 do
       begin
-        var r := qs[i].Invoke(cont, c, cq, prev_ev);
+        var r := qs[i].Invoke(tsk, c, cq, prev_ev);
         prev_ev := r.ev;
         Result[i] := r;
       end;
@@ -2540,7 +2794,7 @@ type
   end;
   HQAExecutorAsync<T> = sealed class(HQAExecutor<T>)
     
-    protected function WorkOn(qs: array of CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var _prev_ev: __EventList): array of __QueueRes<T>; override;
+    protected function WorkOn(qs: array of CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var _prev_ev: __EventList): array of __QueueRes<T>; override;
     begin
       var prev_ev := _prev_ev;
       Result := new __QueueRes<T>[qs.Length];
@@ -2552,11 +2806,11 @@ type
       begin
         var ncq := cl_command_queue.Zero;
         prev_ev.Retain;
-        var res := qs[i].Invoke(cont, c, ncq, prev_ev);
+        var res := qs[i].Invoke(tsk, c, ncq, prev_ev);
         Result[i].res := res.res;
         Result[i].res_f := res.res_f;
         
-        var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(ncq) );
+        var CQFree: Action := ()->tsk.AddErr( cl.ReleaseCommandQueue(ncq) );
         
         if res.ev.count=0 then
         begin
@@ -2565,7 +2819,7 @@ type
         end else
           res := res.AttachCallback((_ev,_st,_data)->
           begin
-            cont.AddErr( _st );
+            tsk.AddErr( _st );
             if ncq<>cl_command_queue.Zero then Task.Run(CQFree);
             __NativUtils.GCHndFree(_data);
           end, c, ncq);
@@ -2593,9 +2847,9 @@ type
     
     public function GetQS: sequence of CommandQueueBase := qs.Cast&<CommandQueueBase>;
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<array of TInp>; override;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<array of TInp>; override;
     begin
-      var res := executor.WorkOn(qs, cont, c, cq, prev_ev);
+      var res := executor.WorkOn(qs, tsk, c, cq, prev_ev);
       
       if res.Any(qr->qr.res_f<>nil) then
       begin
@@ -2618,6 +2872,9 @@ type
       
       Result.ev := prev_ev;
     end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    foreach var q in qs do q.RegisterWaitables(tsk, prev_hubs);
     
   end;
   
@@ -2679,13 +2936,13 @@ end;
 type
   CommandQueueSyncArray<T> = sealed class(SimpleQueueArray<T>)
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
     begin
       
       for var i := 0 to qs.Length-2 do
-        prev_ev := qs[i].InvokeBase(cont, c, cq, prev_ev).EvBase;
+        prev_ev := qs[i].InvokeBase(tsk, c, cq, prev_ev).EvBase;
       
-      Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(cont, c, cq, prev_ev);
+      Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(tsk, c, cq, prev_ev);
     end;
     
   end;
@@ -2771,7 +3028,7 @@ new HostQueueArrayC<TInp,TRes>(qs.ToArray, conv, true);
 type
   CommandQueueAsyncArray<T> = sealed class(SimpleQueueArray<T>)
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
     begin
       
       var evs := new __EventList[qs.Length-1];
@@ -2781,15 +3038,15 @@ type
       begin
         var ncq := cl_command_queue.Zero;
         prev_ev.Retain;
-        var ev := qs[i].InvokeBase(cont, c, ncq, prev_ev).EvBase;
+        var ev := qs[i].InvokeBase(tsk, c, ncq, prev_ev).EvBase;
         
-        var CQFree: Action := ()->cont.AddErr( cl.ReleaseCommandQueue(ncq) );
+        var CQFree: Action := ()->tsk.AddErr( cl.ReleaseCommandQueue(ncq) );
         
         if ev.count=0 then
           if ncq<>cl_command_queue.Zero then Task.Run(CQFree) else
           ev := ev.AttachCallback((_ev,_st,_data)->
           begin
-            cont.AddErr( _st );
+            tsk.AddErr( _st );
             if ncq<>cl_command_queue.Zero then Task.Run(CQFree);
             __NativUtils.GCHndFree(_data);
           end, c, ncq);
@@ -2800,7 +3057,7 @@ type
       
       // ничего страшного что 1 из веток использует внешний cq, пока только 1. Так даже эффективнее
       prev_ev.Retain;
-      Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(cont, c, cq, prev_ev);
+      Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(tsk, c, cq, prev_ev);
       var res_ev := Result.ev;
       prev_ev.Release;
       
@@ -2892,26 +3149,32 @@ new HostQueueArrayC<TInp,TRes>(qs.ToArray, conv, false);
 
 type
   WCQWaiter = abstract class
-    waitables: array of CommandQueueBase;
+    private waitables: array of CommandQueueBase;
     
-    constructor(waitables: array of CommandQueueBase);
+    public constructor(waitables: array of CommandQueueBase);
     begin
       foreach var q in waitables do q.MakeWaitable;
       self.waitables := waitables;
     end;
     
-    function GetWaitEv(cont: __QueueExecContainer; c: Context): __EventList; abstract;
+    protected procedure RegisterWaitables(tsk: CLTaskBase) :=
+    foreach var q in waitables do q.RegisterWaiterTask(tsk);
+    
+    public function GetWaitEv(tsk: CLTaskBase; c: Context): __EventList; abstract;
+    
+    protected procedure Finalize; override :=
+    foreach var q in waitables do q.UnMakeWaitable;
     
   end;
   
   WCQWaiterAll = sealed class(WCQWaiter)
     
-    function GetWaitEv(cont: __QueueExecContainer; c: Context): __EventList; override;
+    public function GetWaitEv(tsk: CLTaskBase; c: Context): __EventList; override;
     begin
       Result := new __EventList(waitables.Length);
       foreach var q in waitables do
       begin
-        var ev := q.GetMWEvent(cont, c._context);
+        var ev := q.GetMWEvent(tsk, c);
         if ev=cl_event.Zero then continue;
         Result += ev;
       end;
@@ -2920,7 +3183,7 @@ type
   end;
   WCQWaiterAny = sealed class(WCQWaiter)
     
-    function GetWaitEv(cont: __QueueExecContainer; c: Context): __EventList; override;
+    public function GetWaitEv(tsk: CLTaskBase; c: Context): __EventList; override;
     begin
       var uev := CommandQueueBase.CreateUserEvent(c);
       var done := false;
@@ -2929,18 +3192,18 @@ type
       
       foreach var q in waitables do
       begin
-        var ev := q.GetMWEvent(cont, c._context);
+        var ev := q.GetMWEvent(tsk, c);
         if ev=cl_event.Zero then continue;
         any_ev := true;
         
         __EventList.AttachCallback(ev, (ev,st,data)->
         begin
-          cont.AddErr( st );
+          tsk.AddErr( st );
           
           lock lo do
             if not done then
             begin
-              cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
+              tsk.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
               done := true;
             end;
           
@@ -2966,10 +3229,13 @@ type
     public constructor(waiter: WCQWaiter) :=
     self.waiter := waiter;
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<object>; override;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<object>; override;
     begin
-      Result.ev := waiter.GetWaitEv(cont, c);
+      Result.ev := waiter.GetWaitEv(tsk, c);
     end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    waiter.RegisterWaitables(tsk);
     
   end;
   CommandQueueThenWaitFor<T> = sealed class(__ContainerQueue<T>)
@@ -2982,10 +3248,16 @@ type
       self.q := q;
     end;
     
-    protected function InvokeSubQs(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
     begin
-      Result := q.Invoke(cont, c, cq, prev_ev);
-      Result.ev := waiter.GetWaitEv(cont, c) + Result.ev;
+      Result := q.Invoke(tsk, c, cq, prev_ev);
+      Result.ev := waiter.GetWaitEv(tsk, c) + Result.ev;
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      waiter.RegisterWaitables(tsk);
+      q.RegisterWaitables(tsk, prev_hubs);
     end;
     
   end;
@@ -3020,7 +3292,7 @@ new CommandQueueThenWaitFor<T>(
 
 {$region GPUCommand}
 
-{$region GPUCommandContainerBody}
+{$region GPUCommandContainer}
 
 type
   __CCBObj<T> = sealed class(__GPUCommandContainerBody<T>)
@@ -3032,7 +3304,7 @@ type
       self.cc := cc;
     end;
     
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
     begin
       var res := self.o;
       
@@ -3041,11 +3313,13 @@ type
           b.Init(c);
       
       foreach var comm in cc.commands do
-        prev_ev := comm.InvokeObj(res, cont, c, cq, prev_ev);
+        prev_ev := comm.InvokeObj(res, tsk, c, cq, prev_ev);
       
       Result.ev := prev_ev;
       Result.res := res;
     end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override := exit;
     
   end;
   
@@ -3058,15 +3332,18 @@ type
       self.cc := cc;
     end;
     
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __QueueRes<T>; override;
     begin
       var new_plug: ()->CommandQueue<T> := hub.MakeNode;
       
       foreach var comm in cc.commands do
-        prev_ev := comm.InvokeQueue(new_plug, cont, c, cq, prev_ev);
+        prev_ev := comm.InvokeQueue(new_plug, tsk, c, cq, prev_ev);
       
-      Result := new_plug().Invoke(cont, c, cq, prev_ev);
+      Result := new_plug().Invoke(tsk, c, cq, prev_ev);
     end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    hub.q.RegisterWaitables(tsk, prev_hubs);
     
   end;
   
@@ -3086,7 +3363,7 @@ begin
     Result := (self.body as __CCBQueue<Buffer>).hub.MakeNode.ThenConvert(b->integer(b.Size32));
 end;
 
-{$endregion GPUCommandContainerBody}
+{$endregion GPUCommandContainer}
 
 {$region QueueCommand}
 
@@ -3097,11 +3374,14 @@ type
     public constructor(q: CommandQueueBase) :=
     self.q := q;
     
-    protected function InvokeObj(o: T; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    q.InvokeBase(cont, c, cq, prev_ev).EvBase;
+    protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
+    q.InvokeBase(tsk, c, cq, prev_ev).EvBase;
     
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    q.InvokeBase(cont, c, cq, prev_ev).EvBase;
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
+    q.InvokeBase(tsk, c, cq, prev_ev).EvBase;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
     
   end;
   
@@ -3117,7 +3397,7 @@ type
     
     protected procedure ExecProc(c: Context; o: T); abstract;
     
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_res: __QueueRes<T>): cl_event;
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_res: __QueueRes<T>): cl_event;
     begin
       var uev := CommandQueueBase.CreateUserEvent(c);
       
@@ -3127,25 +3407,27 @@ type
         try
           self.ExecProc(c, prev_res.WaitAndGet);
         except
-          on e: Exception do cont.AddErr(e);
+          on e: Exception do tsk.AddErr(e);
         end;
         
-        cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
+        tsk.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
       end).Start;
       
       Result := uev;
     end;
     
-    protected function InvokeObj(o: T; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override;
+    protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override;
     begin
       var prev_res: __QueueRes<T>;
       prev_res.res := o;
       prev_res.ev := prev_ev;
-      Result := Invoke(cont, c, cq, prev_res);
+      Result := Invoke(tsk, c, cq, prev_res);
     end;
     
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    Invoke(cont, c, cq, o_q().Invoke(cont, c, cq, prev_ev));
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
+    Invoke(tsk, c, cq, o_q().Invoke(tsk, c, cq, prev_ev));
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override := exit;
     
   end;
   
@@ -3183,11 +3465,14 @@ type
     public constructor(waiter: WCQWaiter) :=
     self.waiter := waiter;
     
-    protected function InvokeObj(o: T; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    waiter.GetWaitEv(cont, c) + prev_ev;
+    protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
+    waiter.GetWaitEv(tsk, c) + prev_ev;
     
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    waiter.GetWaitEv(cont, c) + prev_ev;
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
+    waiter.GetWaitEv(tsk, c) + prev_ev;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override :=
+    waiter.RegisterWaitables(tsk);
     
   end;
   
@@ -3205,7 +3490,7 @@ type
   EnqueueableGPUCommand<T> = abstract class(__GPUCommand<T>)
     protected allow_sync_enq := true;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (T, Context, cl_command_queue, __EventList)->cl_event; abstract;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (T, Context, cl_command_queue, __EventList)->cl_event; abstract;
     
     protected procedure FixCQ(c: Context; var cq: cl_command_queue) :=
     if cq=cl_command_queue.Zero then
@@ -3215,9 +3500,9 @@ type
       ec.RaiseIfError;
     end;
     
-    protected function Invoke(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList; o_res: __QueueRes<T>): __EventList;
+    protected function Invoke(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList; o_res: __QueueRes<T>): __EventList;
     begin
-      var enq_f := InvokeParams(cont, c, cq, o_res.ev);
+      var enq_f := InvokeParams(tsk, c, cq, o_res.ev);
       
       if allow_sync_enq and (o_res.ev.count=0) then
         Result := enq_f(o_res.Get, c, cq, prev_ev) else
@@ -3242,33 +3527,33 @@ type
               
               enq_f(o_res.WaitAndGet, c, lcq, nil);
             except
-              on e: Exception do cont.AddErr(e);
+              on e: Exception do tsk.AddErr(e);
             end;
             
-            cont.AddErr( cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE) );
-            cont.AddErr( cl.ReleaseCommandQueue(lcq) );
+            tsk.AddErr( cl.SetUserEventStatus(uev,CommandExecutionStatus.COMPLETE) );
+            tsk.AddErr( cl.ReleaseCommandQueue(lcq) );
           end).Start else
         begin
           
           var set_complete: Event_Callback := (ev,st,data)->
           begin
-            cont.AddErr( st );
+            tsk.AddErr( st );
             
-            Task.Run(()->cont.AddErr( cl.ReleaseCommandQueue(lcq) ));
+            Task.Run(()->tsk.AddErr( cl.ReleaseCommandQueue(lcq) ));
             
-            cont.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
+            tsk.AddErr( cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE) );
             
             __NativUtils.GCHndFree(data);
           end;
           
           cl.ReleaseEvent(o_res.ev.AttachCallback((ev,st,data)->
           begin
-            cont.AddErr( st );
+            tsk.AddErr( st );
             
             __EventList.AttachCallback(
               enq_f(o_res.Get, c, lcq, prev_ev),
               set_complete,
-              cont
+              tsk
             );
             
             __NativUtils.GCHndFree(data);
@@ -3281,16 +3566,16 @@ type
       
     end;
     
-    protected function InvokeObj(o: T; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override;
+    protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override;
     begin
       var o_res: __QueueRes<T>;
       o_res.res := o;
       o_res.ev := new __EventList;
-      Result := Invoke(cont, c, cq, prev_ev, o_res);
+      Result := Invoke(tsk, c, cq, prev_ev, o_res);
     end;
     
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
-    Invoke(cont, c, cq, new __EventList, o_q().Invoke(cont, c, cq, prev_ev));
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; tsk: CLTaskBase; c: Context; var cq: cl_command_queue; prev_ev: __EventList): __EventList; override :=
+    Invoke(tsk, c, cq, new __EventList, o_q().Invoke(tsk, c, cq, prev_ev));
     
   end;
   
@@ -3328,11 +3613,11 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var ptr     := ptr_q    .Invoke(cont, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
-      var len     := len_q    .Invoke(cont, c, cq, new __EventList);
+      var ptr     := ptr_q    .Invoke(tsk, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
+      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, ptr.ev, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3353,6 +3638,13 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      ptr_q   .RegisterWaitables(tsk, prev_hubs);
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
+    end;
+    
   end;
   
   BufferCommandWriteArray = sealed class(EnqueueableGPUCommand<Buffer>)
@@ -3367,11 +3659,11 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var a       := a_q      .Invoke(cont, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
-      var len     := len_q    .Invoke(cont, c, cq, new __EventList);
+      var a       := a_q      .Invoke(tsk, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
+      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, a.ev, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3391,6 +3683,13 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      a_q     .RegisterWaitables(tsk, prev_hubs);
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
+    end;
+    
   end;
   
   BufferCommandWriteValue<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
@@ -3403,9 +3702,9 @@ type
       self.offset_q := offset_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, offset.ev);
       
       FixCQ(c, cq);
@@ -3426,6 +3725,11 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
     protected procedure Finalize; override :=
     Marshal.FreeHGlobal(self.val);
     
@@ -3440,10 +3744,10 @@ type
       self.offset_q := offset_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var val     := val_q    .Invoke(cont, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
+      var val     := val_q    .Invoke(tsk, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, val.ev, offset.ev);
       
       FixCQ(c, cq);
@@ -3462,7 +3766,7 @@ type
         
         __EventList.AttachCallback(res_ev, (ev,st,data)->
         begin
-          cont.AddErr(st);
+          tsk.AddErr(st);
           Marshal.FreeHGlobal(val_ptr);
           __NativUtils.GCHndFree(data);
         end);
@@ -3470,6 +3774,12 @@ type
         Result := res_ev;
       end;
       
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      val_q   .RegisterWaitables(tsk, prev_hubs);
+      offset_q.RegisterWaitables(tsk, prev_hubs);
     end;
     
   end;
@@ -3505,11 +3815,11 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var ptr     := ptr_q    .Invoke(cont, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
-      var len     := len_q    .Invoke(cont, c, cq, new __EventList);
+      var ptr     := ptr_q    .Invoke(tsk, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
+      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, ptr.ev, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3530,6 +3840,13 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      ptr_q   .RegisterWaitables(tsk, prev_hubs);
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
+    end;
+    
   end;
   
   BufferCommandReadArray = sealed class(EnqueueableGPUCommand<Buffer>)
@@ -3544,11 +3861,11 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var a       := a_q      .Invoke(cont, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
-      var len     := len_q    .Invoke(cont, c, cq, new __EventList);
+      var a       := a_q      .Invoke(tsk, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
+      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, a.ev, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3566,6 +3883,13 @@ type
         Result := cl_event.Zero;
       end;
       
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      a_q     .RegisterWaitables(tsk, prev_hubs);
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
     end;
     
   end;
@@ -3595,12 +3919,12 @@ type
       self.len_q          := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var ptr         := ptr_q        .Invoke(cont, c, cq, new __EventList);
-      var pattern_len := pattern_len_q.Invoke(cont, c, cq, new __EventList);
-      var offset      := offset_q     .Invoke(cont, c, cq, new __EventList);
-      var len         := len_q        .Invoke(cont, c, cq, new __EventList);
+      var ptr         := ptr_q        .Invoke(tsk, c, cq, new __EventList);
+      var pattern_len := pattern_len_q.Invoke(tsk, c, cq, new __EventList);
+      var offset      := offset_q     .Invoke(tsk, c, cq, new __EventList);
+      var len         := len_q        .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, ptr.ev, pattern_len.ev, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3621,6 +3945,14 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      ptr_q         .RegisterWaitables(tsk, prev_hubs);
+      pattern_len_q .RegisterWaitables(tsk, prev_hubs);
+      offset_q      .RegisterWaitables(tsk, prev_hubs);
+      len_q         .RegisterWaitables(tsk, prev_hubs);
+    end;
+    
   end;
   
   BufferCommandArrayFill = sealed class(EnqueueableGPUCommand<Buffer>)
@@ -3635,11 +3967,11 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var a       := a_q      .Invoke(cont, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
-      var len     := len_q    .Invoke(cont, c, cq, new __EventList);
+      var a       := a_q      .Invoke(tsk, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
+      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, a.ev, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3668,6 +4000,13 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      a_q     .RegisterWaitables(tsk, prev_hubs);
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
+    end;
+    
   end;
   
   BufferCommandValueFill<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
@@ -3681,10 +4020,10 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
-      var len     := len_q    .Invoke(cont, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
+      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3705,6 +4044,12 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
+    end;
+    
     protected procedure Finalize; override :=
     Marshal.FreeHGlobal(self.val);
     
@@ -3720,11 +4065,11 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var val     := val_q    .Invoke(cont, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(cont, c, cq, new __EventList);
-      var len     := len_q    .Invoke(cont, c, cq, new __EventList);
+      var val     := val_q    .Invoke(tsk, c, cq, new __EventList);
+      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
+      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, val.ev, offset.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3743,7 +4088,7 @@ type
         
         __EventList.AttachCallback(res_ev, (ev,st,data)->
         begin
-          cont.AddErr(st);
+          tsk.AddErr(st);
           Marshal.FreeHGlobal(val_ptr);
           __NativUtils.GCHndFree(data);
         end);
@@ -3751,6 +4096,13 @@ type
         Result := res_ev;
       end;
       
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      val_q   .RegisterWaitables(tsk, prev_hubs);
+      offset_q.RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
     end;
     
   end;
@@ -3787,12 +4139,12 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var buf   := buf_q  .Invoke(cont, c, cq, new __EventList);
-      var f_pos := f_pos_q.Invoke(cont, c, cq, new __EventList);
-      var t_pos := t_pos_q.Invoke(cont, c, cq, new __EventList);
-      var len   := len_q  .Invoke(cont, c, cq, new __EventList);
+      var buf   := buf_q  .Invoke(tsk, c, cq, new __EventList);
+      var f_pos := f_pos_q.Invoke(tsk, c, cq, new __EventList);
+      var t_pos := t_pos_q.Invoke(tsk, c, cq, new __EventList);
+      var len   := len_q  .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, buf.ev, f_pos.ev, t_pos.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3816,6 +4168,14 @@ type
       
     end;
     
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      buf_q   .RegisterWaitables(tsk, prev_hubs);
+      f_pos_q .RegisterWaitables(tsk, prev_hubs);
+      t_pos_q .RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
+    end;
+    
   end;
   BufferCommandCopyTo = sealed class(EnqueueableGPUCommand<Buffer>)
     public buf_q: CommandQueue<Buffer>;
@@ -3829,12 +4189,12 @@ type
       self.len_q    := len_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var buf   := buf_q  .Invoke(cont, c, cq, new __EventList);
-      var f_pos := f_pos_q.Invoke(cont, c, cq, new __EventList);
-      var t_pos := t_pos_q.Invoke(cont, c, cq, new __EventList);
-      var len   := len_q  .Invoke(cont, c, cq, new __EventList);
+      var buf   := buf_q  .Invoke(tsk, c, cq, new __EventList);
+      var f_pos := f_pos_q.Invoke(tsk, c, cq, new __EventList);
+      var t_pos := t_pos_q.Invoke(tsk, c, cq, new __EventList);
+      var len   := len_q  .Invoke(tsk, c, cq, new __EventList);
       ev_res := __EventList.Combine(ev_res, buf.ev, f_pos.ev, t_pos.ev, len.ev);
       
       FixCQ(c, cq);
@@ -3856,6 +4216,14 @@ type
         Result := res_ev;
       end;
       
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      buf_q   .RegisterWaitables(tsk, prev_hubs);
+      f_pos_q .RegisterWaitables(tsk, prev_hubs);
+      t_pos_q .RegisterWaitables(tsk, prev_hubs);
+      len_q   .RegisterWaitables(tsk, prev_hubs);
     end;
     
   end;
@@ -3885,15 +4253,15 @@ type
       self.args_q     := args_q;
     end;
     
-    protected function InvokeParams(cont: __QueueExecContainer; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Kernel, Context, cl_command_queue, __EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Kernel, Context, cl_command_queue, __EventList)->cl_event; override;
     begin
-      var work_szs  := work_szs_q.Invoke(cont, c, cq, new __EventList);
+      var work_szs  := work_szs_q.Invoke(tsk, c, cq, new __EventList);
       var count := ev_res.count + work_szs.ev.count;
       
       var args := new __QueueRes<Buffer>[args_q.Length];
       for var i := 0 to args.Length-1 do
       begin
-        var arg := args_q[i].Invoke(cont, c, cq, new __EventList);
+        var arg := args_q[i].Invoke(tsk, c, cq, new __EventList);
         count += arg.ev.count;
         args[i] := arg;
       end;
@@ -3928,6 +4296,15 @@ type
         
         Result := res_ev;
       end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
+    begin
+      work_szs_q.RegisterWaitables(tsk, prev_hubs);
+      
+      foreach var arg in args_q do 
+        arg.RegisterWaitables(tsk, prev_hubs);
       
     end;
     
