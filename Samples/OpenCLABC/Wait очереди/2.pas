@@ -20,8 +20,8 @@ begin
   var D2 := NamedQ('D2');
   
   Context.Default.SyncInvoke(
-    ( A1 + B1             + C1 .ThenWaitFor(C2) + D1 ) *
-    ( A2 .ThenWaitFor(B1) + B2 + C2             + D2 )
+    ( A1 + B1          + C1 + WaitFor(C2) + D1 ) *
+    ( A2 + WaitFor(B1) + B2 + C2          + D2 )
   );
   
 end.

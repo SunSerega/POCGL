@@ -16,8 +16,6 @@ Finished runing SpecPacker
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
-Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.Multiusable(integer)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %cq.MultiusableI% wasn't used!
 Finished runing Comments[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
@@ -237,8 +235,6 @@ Finished compiling: OK
 Runing Tester
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#0.pas"
-Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#6.pas"
@@ -281,8 +277,6 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Finished compiling: OK
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
-Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#0]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#0]
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]

@@ -380,6 +380,8 @@ const select_page = (new_page)=>{
 		if (name_span) name_span.style.backgroundColor = "inherit";
 	}
 	
+	document.getElementById("page-display-container-body").scrollTop = 0;
+	
 	selected_page = new_page;
 	if (selected_page)
 	{
@@ -439,12 +441,13 @@ const fix_links = (page)=>{
 
 const code_words_color = {
 	"pas": {
-		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const"],
-		"build-in": ["nil", "integer", "string"],
+		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class", "sizeof"],
+		"build-in": ["nil", "integer", "string", "object", "byte"],
 		"red": ["ToDo"],
 	},
 	"cl-c": {
-		"keyword": ["__kernel"],
+		"keyword": ["__kernel", "__global"],
+		"build-in": ["int", "void"],
 	},
 	"default": {
 		

@@ -57,8 +57,6 @@
 
 # CommandQueue<T>.Multiusable()
 %cq.Multiusable%
-# CommandQueue<T>.Multiusable(integer)
-%cq.MultiusableI%
 
 # CommandQueueBase.ThenWaitFor(CommandQueueBase)
 # CommandQueue<T>.ThenWaitFor(CommandQueueBase)

@@ -24,64 +24,6 @@
 ///
 unit OpenCLABC;
 
-{$region 3.6 —— Ожидание очередей}
-
-//ToDo ещё раз переделать этот раздел перед пулом
-// 
-// В OpenCL для синхронизации команд используются cl_event'ы
-// Они позволяют любой 1 очереди ожидать выполнения списка других очередей
-// 
-// Методика OpenCLABC, использования операций с очередями (как сложение и умножение) для синхронизации - в целом проще
-// Но накладывает некоторые ограничения на возможности программиста
-// Методы как .ThenConvert и .Multiusable созданны чтоб обойти большинство этих ограничений
-// Но всё же они покрывают не все ограничения
-// 
-// Поэтому на крайний случай - в OpenCLABC так же есть глобальная функция WaitForQueue
-// Она создаёт очередь, ожидающую выполнение 1 очереди и затем выполняющую другую
-// 
-// Первая очередь (wait_source) работает не по правилам остального OpenCLABC
-// В качестве wait_source можно передать очередь, уже использованную в том же вызов Context.BeginInvoke
-// И так же можно передавать очередь, выполняемую в другом, независимом вызове Context.BeginInvoke
-// Это потому, что очередь которую возвращает WaitForQueue не выполняет wait_source
-// Она только ожидает сигнала окончания выполнения от wait_source
-// 
-// Вторая очередь (next) работает уже проще
-// Она начинает выполняться как только получен сигнал от wait_source
-// Очередь, которую возвращает WaitForQueue считаеться выполненной тогда, когда выполнилась next
-// И её возвращаемое значение - это то что вернула next
-// 
-// Так же у WaitForQueue есть опциональный параметр - allow_wait_source_cloning с типом boolean
-// Он указывает, следует ли клонировать wait_source при клонировании возвращённой очереди
-// Значение по-умолчанию у него True
-// Однако если wait_source выполняеться в отдельном вызове Context.BeginInvoke - его клонирование создаст очередь,
-// на которую нет ссылок в программе, а значит она никогда не выполниться
-// 
-//TODO и теперь, при создании примера, я наконец задумался о применимости такого синтаксиса WaitForQueue
-// - Может лучше добавить .ThenWaitFor? Потом как то подумать, есть ли случаи где не сработает .ThenWaitFor, но будет полезно WaitForQueue
-// - Возможные примеры:
-// 
-//     D
-//    /
-//   B
-//  / \
-// A   E
-//  \ /
-//   C
-//    \
-//     F
-// 
-//Проблема: это всё делаеться через 3 .Multiusable (A, B и C). Надо бы написать через Mu и подумать, можно ли проще
-// 
-// A--C--E--G
-//  \      /
-//   \    /
-// B--D--F--H
-// 
-//Проблема: WaitForQueue не сделает код проще. А вот .ThenWaitFor помогло бы
-// 
-
-{$endregion 3.6 —— Ожидание очередей}
-
 interface
 
 uses OpenCL;
@@ -97,17 +39,11 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo Написать в справке про AddProc,AddQueue
-//ToDo Написать в справке про AddWait
-//ToDo Написать в справке про WaitFor
-//ToDo Написать в справке про опастность того, что ThenWaitFor может выполниться после завершения выполнения очереди если она в другом BeginInvoke
-//ToDo Написать в справке про ивенты CLTask
+//===================================
+// Запланированное:
 
 //ToDo Раздел справки про оптимизацию
 // - почему 1 очередь быстрее 2 её кусков
-
-//===================================
-// Запланированное:
 
 //ToDo Очередь-обработчик ошибок
 // - сделать легко, надо только вставить свой промежуточный CLTaskBase
@@ -381,7 +317,7 @@ type
   end;
   
   __MWEventContainer = sealed class // MW = Multi Wait
-    curr_ev: cl_event;
+    curr_evs := new Queue<cl_event>;
     cached: integer;
   end;
   
@@ -478,9 +414,8 @@ type
     /// добавляет tsk в качестве ключа для всех ожидаемых очередей
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); abstract;
     
-    private mw_evs: Dictionary<CLTaskBase, __MWEventContainer>;
-    protected procedure RegisterWaiterTask(tsk: CLTaskBase) :=
-    lock mw_evs do mw_evs.Add(tsk, new __MWEventContainer);
+    private mw_evs := new Dictionary<CLTaskBase, __MWEventContainer>;
+    protected procedure RegisterWaiterTask(tsk: CLTaskBase);
     
     protected function GetMWEvent(tsk: CLTaskBase; c: Context): cl_event;
     protected procedure SignalMWEvent(tsk: CLTaskBase);
@@ -1848,6 +1783,13 @@ begin
     end, c, cq);
 end;
 
+procedure CommandQueueBase.RegisterWaiterTask(tsk: CLTaskBase) :=
+lock mw_evs do if not mw_evs.ContainsKey(tsk) then
+begin
+  mw_evs.Add(tsk, new __MWEventContainer);
+  tsk.WhenDone(tsk->mw_evs.Remove(tsk));
+end;
+
 function CommandQueueBase.GetMWEvent(tsk: CLTaskBase; c: Context): cl_event;
 begin
   var cont: __MWEventContainer;
@@ -1857,15 +1799,8 @@ begin
     if cont.cached<>0 then
       cont.cached -= 1 else
     begin
-      Result := cont.curr_ev;
-      
-      if Result=cl_event.Zero then
-      begin
-        Result := CreateUserEvent(c);
-        cont.curr_ev := Result;
-      end;
-      
-      tsk.WhenDone(tsk->lock mw_evs do mw_evs.Remove(tsk));
+      Result := CreateUserEvent(c);
+      cont.curr_evs.Enqueue(Result);
     end;
   
 end;
@@ -1879,11 +1814,11 @@ begin
   begin
     var cont := conts[i];
     lock cont do
-      if cont.curr_ev=cl_event.Zero then
+      if cont.curr_evs.Count=0 then
         cont.cached += 1 else
       begin
-        tsk.AddErr( cl.SetUserEventStatus(cont.curr_ev, CommandExecutionStatus.COMPLETE) );
-        cont.curr_ev := cl_event.Zero;
+        var ev := cont.curr_evs.Dequeue;
+        tsk.AddErr( cl.SetUserEventStatus(ev, CommandExecutionStatus.COMPLETE) );
       end;
   end;
   

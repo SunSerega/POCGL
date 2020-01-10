@@ -380,6 +380,8 @@ const select_page = (new_page)=>{
 		if (name_span) name_span.style.backgroundColor = "inherit";
 	}
 	
+	document.getElementById("page-display-container-body").scrollTop = 0;
+	
 	selected_page = new_page;
 	if (selected_page)
 	{
@@ -439,12 +441,13 @@ const fix_links = (page)=>{
 
 const code_words_color = {
 	"pas": {
-		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const"],
-		"build-in": ["nil", "integer", "string"],
+		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class", "sizeof"],
+		"build-in": ["nil", "integer", "string", "object", "byte"],
 		"red": ["ToDo"],
 	},
 	"cl-c": {
-		"keyword": ["__kernel"],
+		"keyword": ["__kernel", "__global"],
+		"build-in": ["int", "void"],
 	},
 	"default": {
 		
@@ -766,7 +769,11 @@ window.onload = ()=>{
 Однако такая ситуация теоретически невозможна, потому что OpenCL поддерживается
 всеми современными устройствами, занимающимися выводом изображения на экран.<br />
 Если <code>Context.Default = nil</code> - переустановите графические драйверы.</p>
-<p><code>Context.Default</code> можно перезаписывать. Это может понадобиться, если во всей программе использовать только один контекст, но не стандартный.</p>
+<hr />
+<p><code>Context.Default</code> можно перезаписывать.</p>
+<p>Используйте эту возможность только если во всей программе нужет общий контекст, но не стандартный.</p>
+<p>Частая перезапись <code>Context.Default</code> может привести к созданию сложно-ловимых багов в ваших программах.</p>
+<hr />
 <p>Операции, у которых невозможно указать контекст, всегда используют <code>Context.Default</code>.</p>
 <p>Контекст используется только для
 <a path="../Буфер (Buffer)/">инициализации буферов</a>
@@ -791,10 +798,6 @@ window.onload = ()=>{
 <li><p><a path="Выполнение очередей/">							Выполнение													</a></p>
 </li>
 <li><p><a path="Вложенные очереди/">								Вложенные очереди											</a></p>
-</li>
-<li><p><a path="Множественное использование очереди/">			Множественное использование									</a></p>
-</li>
-<li><p><a path="Особые команды у [Buffer,Kernel]CommandQueue/">	Особые команды у <code>BufferCommandQueue</code>/<code>KernelCommandQueue</code>	</a></p>
 </li>
 </ul>
 </div>
@@ -835,7 +838,7 @@ begin
 end.
 </code></pre>
 <p>После выполнения очереди метод <code>Context.SyncInvoke</code> возвращает то, что вернула очередь.<br />
-А если использовать метод <code>Context.BeginInvoke</code> - возвращаемое значение можно получить с помощью метода <code>CLTask.GetRes</code>.</p>
+А если использовать метод <code>Context.BeginInvoke</code> - возвращаемое значение можно получить с помощью метода <code>CLTask.WaitRes</code>.</p>
 <hr />
 <p>Бывает необходимо хранить несколько очередей, с разными возвращаемыми значениями,
 вместе, к примеру, в переменной типа <code>List&lt;&gt;</code>.<br />
@@ -850,23 +853,27 @@ end.
 <script>on_start_folder("Возвращаемое значение очередей", document.getElementById("page-5"))</script>
 <script>on_end_folder()</script>
 <div id="page-6" page_name="" hidden=true>
-<h1>Есть всего 8 базовых способов создать очередь:</h1>
+<h1>Есть всего 10 базовых способов создать очередь:</h1>
 <ol>
-<li><p><a path="Из буфера или kernel'a">		Из буфера / kernel'а					</a></p>
+<li><p><a path="Из буфера или kernel'a">				Из буфера / kernel'а					</a></p>
 </li>
-<li><p><a path="Из готового результата">		Из готового результата					</a></p>
+<li><p><a path="Из готового результата">				Из готового результата					</a></p>
 </li>
-<li><p><a path="С кодом для CPU">				Из обычной подпрограммы					</a></p>
+<li><p><a path="С кодом для CPU">						Из обычной подпрограммы					</a></p>
 </li>
-<li><p><a path="Комбинируя другие очереди">		Из нескольких других очередей			</a></p>
+<li><p><a path="Комбинируя другие очереди">				Из нескольких других очередей			</a></p>
 </li>
-<li><p><a path="Из очереди + преобразователя">	Из очереди + преобразования результата	</a></p>
+<li><p><a path="Из очереди + преобразователя">			Из очереди + преобразования результата	</a></p>
 </li>
-<li><p><a path="Из повторения очереди">			Из повторения одной очереди				</a></p>
+<li><p><a path="Из повторения очереди">					Из повторения одной очереди				</a></p>
 </li>
-<li><p><a path="Из ожидания очередей">			Из ожидания очередей					</a></p>
+<li><p><a path="Множественное использование очереди">	Несколько очередей с общей работой		</a></p>
 </li>
-<li><p><a path="Не создавая явно">				Не пытаясь								</a></p>
+<li><p><a path="Особые .Add методы">					Особыми <code>.Add*</code> методами				</a></p>
+</li>
+<li><p><a path="Из ожидания очередей">					Из ожидания других очередей				</a></p>
+</li>
+<li><p><a path="Не создавая явно">						Не пытаясь								</a></p>
 </li>
 </ol>
 </div>
@@ -988,7 +995,7 @@ end.
 А значит, возвращаемые типы очередей A и B должны быть одинаковыми, чтобы к ним можно было применить +=/*=.</p>
 <p>Если надо сложить/умножить много очередей - лучше применять <code>CombineSyncQueue</code>/<code>CombineAsyncQueue</code> соответственно.<br />
 Эти подпрограммы работают немного быстрее чем сложение и умножение, если объединять больше двух очередей.</p>
-<p>Кроме того они также могут принимать ещё один параметр перед очередями:
+<p>Кроме того, они могут принимать ещё один параметр перед очередями:
 Этот параметр позволяет указать функцию преобразования, которая использует результаты всех входных очередей:</p>
 <pre><code>uses OpenCLABC;
 
@@ -1064,211 +1071,92 @@ end.
 <p><del>В данный момент всё ещё не работает... Но уже совсем скоро, правда-правда!</del></p>
 </div>
 <script>on_page_added(document.getElementById("page-12"))</script>
-<div id="page-13" page_name="Из ожидания очередей" hidden=true>
-
-</div>
-<script>on_page_added(document.getElementById("page-13"))</script>
-<div id="page-14" page_name="Не создавая явно" hidden=true>
-<p>Передавать команды по одной, когда их несколько - ужасно медленно!<br />
-Но нередко бывает так, что команда всего одна. Или для отладки надо одноразово выполнить одну команду.</p>
-<p>Для таких случаев можно создавать очередь неявно:<br />
-У каждого метода очереди, создаваемой с <code>.NewQueue</code> есть дублирующий метод в оригинальном объекте.<br />
-Такие методы сами создают новую очередь, добавляют в неё одну соответствующую команду и выполняют полученную очередь в <code>Context.Default.SyncInvoke(...)</code>.</p>
-<p>Следующий пример сравнивает явные и неявные очереди:</p>
+<div id="page-13" page_name="Множественное использование очереди" hidden=true>
+<p>Одну и ту же очередь можно использовать несколько раз, в том числе одновременно:</p>
 <pre><code>uses OpenCLABC;
 
 begin
+  var Q := HPQ(()-&gt;lock output do Writeln('Q выполнилась'));
   
-  var b := new Buffer( 3*sizeof(integer) );
-  var A := new integer[3];
+  var t1 := Context.Default.BeginInvoke(Q);
+  var t2 := Context.Default.BeginInvoke(Q*Q);
   
-  // Код с очередями
-  
-  var Q_BuffWrite :=
-    ( b.NewQueue.AddWriteValue(1, 0*sizeof(integer) ) as CommandQueue&lt;Buffer&gt; ) *
-    ( b.NewQueue.AddWriteValue(5, 1*sizeof(integer) ) as CommandQueue&lt;Buffer&gt; ) *
-    ( b.NewQueue.AddWriteValue(7, 2*sizeof(integer) ) as CommandQueue&lt;Buffer&gt; )
-  ;
-  
-  var Q_BuffRead := b.NewQueue.AddReadArray(A) as CommandQueue&lt;Buffer&gt;;
-  
-  var Q_Otp := HPQ(()-&gt;
+  t1.Wait;
+  t2.Wait;
+end.
+</code></pre>
+<p>Но эта программа выведет &quot;Q выполнилась&quot; три раза, потому что при каждом упоминании - Q запускается ещё раз.</p>
+<p>Это не всегда хорошо. К примеру, может быть так что <code>Q</code> содержит какой то затратный алгоритм. Или ввод значения с клавиатуры:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var Q := HFQ(()-&gt;
   begin
-    A.Println;
+    lock input do
+      Result := ReadInteger;
   end);
   
-  Context.Default.SyncInvoke(
-    Q_BuffWrite +
-    Q_BuffRead +
-    Q_Otp
-  );
-  
-  // Этот же код ещё раз, но без явных очередей
-  // Неявно - каждый метод .Write*** и .Read*** всё равно создаёт по очереди
-  // Такая запись короче, но выполняется медленнее
-  
-  // Аналог Q_BuffWrite
-  System.Threading.Tasks.Parallel.Invoke(
-    ()-&gt;b.WriteValue(1, 0*sizeof(integer) ),
-    ()-&gt;b.WriteValue(5, 1*sizeof(integer) ),
-    ()-&gt;b.WriteValue(7, 2*sizeof(integer) )
-  );
-  
-  // Аналог Q_BuffRead
-  b.ReadArray(A);
-  
-  // Аналог Q_Otp
-  A.Println;
+  Context.Default.SyncInvoke(CombineAsyncQueue(
+    res-&gt;res,
+    Q,
+    Q.ThenConvert(i-&gt;i*i),
+    Q.ThenConvert(i-&gt;i*i*i)
+  )).Println;
   
 end.
 </code></pre>
-<p>Кроме того, у типа <code>Buffer</code> есть дополнительные методы <code>Buffer.Get...</code>.
-Соответствующих методов у очередей — нет (<code>ToDo</code> возможно, в будущем появятся).<br />
-Методы <code>.Get...</code> создают новый объект типа записи, массива или выделяют область неуправляемой памяти,
-читают в полученный объект содержимое буфера и возвращают этот объект.
-Они также используют неявную очередь (для чтения буфера).</p>
-</div>
-<script>on_page_added(document.getElementById("page-14"))</script>
-<script>on_end_folder()</script>
-<div id="page-15" page_name="" hidden=true>
-<p>Самый простой способ выполнить очередь - вызвать метод <code>Context.SyncInvoke</code>.<br />
-Он синхронно выполняет очередь и вызвращает её результат.</p>
-<p>Но если надо выполнить очередь асинхронно - лучше использовать метод <code>Context.BeginInvoke</code>.<br />
-Он запускает асинхронное выполнение очереди и как только очередь была полностью запущена - возвращает объект типа <code>CLTask&lt;&gt;</code>, через который можно:</p>
-<ul>
-<li>Ожидать пока выполнение не закончится методом <code>CLTask&lt;&gt;.Wait</code>.</li>
-<li>Ожидать пока выполнение не закончится и сразу получить возвращаемое значение, методом <code>CLTask&lt;&gt;.GetRes</code>.</li>
-</ul>
-<p>Метод <code>Context.SyncInvoke</code> реализован через <code>.BeginInvoke(...).GetRes</code>. Поэтому, далее везде, где сказано &quot;... происходит при вызове <code>.BeginInvoke</code>&quot;, это же относится и к <code>.SyncInvoke</code>.</p>
-<p>У <code>CLTask</code>, как и у очереди - в <code>&lt;&gt;</code>, указывается тип возвращаемого значения. То есть:</p>
-<pre><code>var t: CLTask&lt;integer&gt;;
-</code></pre>
-<p>В такую переменную можно сохранить только результат <code>Context.BeginInvoke</code> для очереди типа <code>CommandQueue&lt;integer&gt;</code>.</p>
-<p>Если при выполнении возникла ошибку, о ней выведет не полную информацию. Чтобы получить всю информацию - используется <code>try</code>:</p>
-<pre><code>try
-  
-  //ToDo ваш код, вызывающий ошибку
-  
-except
-  // Writeln выводит все внутренние исключения. &quot;e.ToString&quot; тоже.
-  on e: Exception do Writeln(e);
-end;
-</code></pre>
-<p>Для этого кода есть стандартный снипет. Чтобы активировать его - напишите <code>tryo</code> и нажмите Shift+Пробел.</p>
-</div>
-<script>on_start_folder("Выполнение очередей", document.getElementById("page-15"))</script>
-<script>on_end_folder()</script>
-<div id="page-16" page_name="" hidden=true>
-<p>Все методы создающие одну команду (<code>.Add*</code> методы и все методы неявных очередей)
-могут принимать очередь вместо значения в качестве любого параметра. Но в таком случае
-возвращаемый тип очереди должен совпадать с типом параметра. К примеру:</p>
+<p>Эта программа запросит три разных значения, что не всегда то что надо.</p>
+<p>Чтоб использовать результат одной очереди несколько раз - используется <code>.Multiusable</code>:</p>
 <pre><code>uses OpenCLABC;
 
 begin
-  var b := new Buffer(10*sizeof(integer));
-  // Очищаем весь буфер ноликами, чтобы не было мусора
-  b.FillValue(0);
+  var Q := HFQ(()-&gt;
+  begin
+    lock input do
+      Result := ReadInteger;
+  end);
   
-  var q := b.NewQueue
-    
-    // Второй параметр AddWriteValue - отступ от начала буфера
-    // Он имеет тип integer, а значит можно передать и CommandQueue&lt;integer&gt;
-    // Таким образом, в параметр сохраняется алгоритм, а не готовое значение
-    // Поэтому 3 вызова ниже могут получится с 3 разными отступами
-    .AddWriteValue(5, HFQ(()-&gt; Random(0,9)*sizeof(integer) ))
-    
-  as CommandQueue&lt;Buffer&gt;;
+  var Qs := Q.Multiusable;
   
-  Context.Default.SyncInvoke(q);
-  Context.Default.SyncInvoke(q);
-  Context.Default.SyncInvoke(q);
-  
-  b.GetArray1&amp;&lt;integer&gt;.Println;
+  Context.Default.SyncInvoke(CombineAsyncQueue(
+    res-&gt;res,
+    Qs(),
+    Qs().ThenConvert(i-&gt;i*i),
+    Qs().ThenConvert(i-&gt;i*i*i)
+  )).Println;
   
 end.
 </code></pre>
-<p>Все очереди-параметры начинают выполнятся сразу при вызове метода <code>Context.BeginInvoke</code>, не ожидая других очередей.</p>
-<p>Обычно очереди-параметры используются при вызове kernel'а,
-когда надо записать что-то в буфер прямо перед вызовом kernel'а.</p>
-</div>
-<script>on_start_folder("Вложенные очереди", document.getElementById("page-16"))</script>
-<script>on_end_folder()</script>
-<div id="page-17" page_name="" hidden=true>
-<h1><code>ToDo</code> эта страница будет переделана и перенесена на страницу создания очередей, потому что необходимость в .Clone скоро отпадёт и большинство текста тут станет устаревшим</h1>
-<pre><code>// 3.4.0
-// 
-// Одну и ту же очередь можно использовать несколько раз:
-// &lt;-------------------------&gt;
-// var Q1: CommandQueue&lt;...&gt;;
-// ...
-// Context.Default.SyncInvoke(Q1);
-// Context.Default.SyncInvoke(Q1);
-// &lt;-------------------------&gt;
-// 
-// Однако, во время выполнения очередь хранит в себе данные о своём состоянии выполнения и результат, когда он уже вычислен
-// Это значит, что 1 объект очереди нельзя выполнять в 2 местах параллельно
-// Иначе данные о состоянии и результате двух выполнений перемешаются
-// То есть, такой код:
-// &lt;-------------------------&gt;
-// var Q1: CommandQueue&lt;...&gt;;
-// ...
-// Context.Default.SyncInvoke( Q1 * Q1 );
-// &lt;-------------------------&gt;
-// Приведёт к вызову исключения QueueDoubleInvokeException
-// 
-// Однако, если вам всё же надо использовать одну очередь в нескольких местах одновременно - есть 2 способа:
+<p><code>.Multiusable</code> создаёт новую функцию, вызывая которую можно получить любое количество очередей,
+у которых будет общий результат.</p>
+<p>Каждый вызов <code>.Multiusable</code> создаёт именно новую функцию.<br />
+Это значит, что если использовать результаты двух вызовов <code>.Multiusable</code> - исходная очередь выполнится два раза.</p>
+<p><code>.Multiusable</code> не работает между вызовами <code>Context.BeginInvoke</code>,
+потому что каждый следующий <code>Context.BeginInvoke</code> может быть вызван на новом объекте типа <code>Context</code>:</p>
+<pre><code>uses OpenCLABC;
 
-// 3.4.1 — Клонирование очередей (.Clone)
-// 
-// Методом .Clone можно создать полную копию очереди
-// При этом, если исходная очередь проводила какие то вычисления,
-// они будут произведены дважды, оригиналом и копией, при вызове обоих
-// 
-// Клон очереди является полностью независимым объектом
-// Его можно вызывать не только параллельно с оригиналом
-// Оригинал и копию можно вызывать даже в двух разных Context.BeginInvoke одновременно
-// 
-
-// 3.4.2 — Удлинители для очередей (.Multiusable)
-// 
-// Вариант выполнять очередь несколько раз, как в случае с .Clone, нередко не подходит,
-// потому что это удваивает затраты производительности
-// И некоторые очереди (например, выполнения kernel'ов) могут дать разные результаты, если выполнить их лишний раз
-// 
-// Если вам нужно использовать результат одной очереди многократно, лучше использовать метод .Multiusable
-// !! Созданные таким образом очереди НЕ является независимыми объектами !!
-// 
-// .Multiusable работает словно провод-удлинитель,
-// если сравнивать возвращаемое значение очереди с розеткой
-// 
-// Исходная очередь, для которой вызвали .Multiusable начинает выполняться сразу при вызове Context.BeginInvoke,
-// Если хотя бы 1 из очередей, которую вернул метод .Multiusable была использована в этом Context.BeginInvoke
-// 
-// Очереди, которые вернул .Multiusable могут быть использованы параллельно:
-// &lt;-------------------------&gt;
-// var Q1: CommandQueue&lt;...&gt;;
-// ...
-// Qs1 := Q1.Multiusable(3); // создаёт массив из 3 очередей
-// Context.Default.SyncInvoke( Qs1[0] * Qs1[1] * Qs1[2].ThenConvert(o-&gt;...) );
-// &lt;-------------------------&gt;
-// Однако, все очереди, полученные из .Multiusable всё ещё связаны оригинальной очередью
-// А так как Context.BeginInvoke управляет переключением состояния выполнения очереди
-// Следующий код попытается два раза запустить очередь Q1:
-// &lt;-------------------------&gt;
-// var Q1: CommandQueue&lt;...&gt;;
-// ...
-// Qs1 := Q1.Multiusable(2);
-// Context.Default.BeginInvoke( Qs1[0] );
-// Context.Default.BeginInvoke( Qs1[1] );
-// &lt;-------------------------&gt;
-// А т.к. это запрещено - будет вызвано исключение QueueDoubleInvokeException
-// Чтобы исправить такой код - надо объеденить вызовы метода Context.BeginInvoke
-// 
+begin
+  var Q := HFQ(()-&gt;
+  begin
+    lock input do
+      Result := ReadInteger;
+  end);
+  
+  var Qs := Q.Multiusable;
+  
+  Context.Default.SyncInvoke( Qs()                      ).Println;
+  Context.Default.SyncInvoke( Qs().ThenConvert(i-&gt;i*i)  ).Println;
+  
+end.
 </code></pre>
+<p>Эта программа запросит ввод два раза.</p>
+<p>Если контекст у двух очередей общий - лучше объединить вызовы <code>Context.BeginInvoke</code>.
+Так не только <code>.Multiusable</code> будет работать, но и выполнение будет в целом быстрее.</p>
+<p>А если контекст разный - надо сохранять результат в переменную и использовать <code>Wait</code> очереди
+(<a path="Из ожидания очередей">подробнее на странице ниже</a>).</p>
 </div>
-<script>on_start_folder("Множественное использование очереди", document.getElementById("page-17"))</script>
-<script>on_end_folder()</script>
-<div id="page-18" page_name="" hidden=true>
+<script>on_page_added(document.getElementById("page-13"))</script>
+<div id="page-14" page_name="Особые .Add методы" hidden=true>
 <p>Между командами для GPU (хранимыми в очередях типов <code>BufferCommandQueue</code> и <code>KernelCommandQueue</code>)
 бывает надо вставить выполнение другой очереди или кода для CPU.</p>
 <p>Это можно сделать, используя несколько <code>.NewQueue</code>:</p>
@@ -1301,9 +1189,317 @@ q.AddQueue(q);
 </code></pre>
 <p>Все <code>.Add*</code> методы добавляют команды в существующую очередь, а не создают новую.
 Поэтому очередь, созданная предыдущим кодом при попытке выполнения начнёт циклически запускать саму себя.
-Ну а закончится это уже только при переполнении стека, или при переполнении всей RAM.</p>
+Но это вызовет скорее не зависание, а переполнение стека (что, в целом, не лучше).</p>
 </div>
-<script>on_start_folder("Особые команды у [Buffer,Kernel]CommandQueue", document.getElementById("page-18"))</script>
+<script>on_page_added(document.getElementById("page-14"))</script>
+<div id="page-15" page_name="Из ожидания очередей" hidden=true>
+<p>Есть всего 3 группы подпрограмм, создающих очереди для ожидания других очередей:</p>
+<ol>
+<li><p>Глобальные, <code>WaitFor*</code>:<br />
+Ничего не делают сами, но блокируют выполнение пока указанные очереди не выполнятся.</p>
+</li>
+<li><p>Особые методы <code>.Add*</code> - <code>.AddWait*</code>:<br />
+Как и <code>.AddQueue</code> и <code>.AddProc</code>, <code>.AddWait(...)</code> это всего лишь аналог
+<code>.AddQueue(WaitFor(...))</code>, существующий только ради простоты кода.</p>
+</li>
+<li><p>Методы очередей, <code>.ThenWaitFor*</code>:<br />
+Так же не имеет незаменимых применений, но ещё полезнее.<br />
+<code>Q.ThenWaitFor(...)</code> работает как <code>Q + WaitFor(...)</code>, за исключением того, что возвращает результат <code>Q</code>.<br />
+То есть, правильнее будет:</p>
+<pre><code> var Qs := Q.Multiusable;
+ Result := Qs() + WaitFor(...) + Qs();
+</code></pre>
+<p>Но это уже даже в одну строчку не напишешь.</p>
+</li>
+</ol>
+<p>В каждой из групп Wait очередей - <code>*</code> можно заменить:</p>
+<ol>
+<li>Ничем: Ожидание одной очереди.</li>
+<li>На <code>All</code>: Ожидание всех указанных очередей.</li>
+<li>На <code>Any</code>: Ожидание любой из указанных очередей (какая раньше выполнится).</li>
+</ol>
+<p>То есть, к примеру, <code>WaitForAny</code> создаёт очередь, которая ничего не делает и ожидает выполнения любой из указанных очередей.</p>
+<hr />
+<p><code>Wait</code> очереди делают реализацию некоторых сложных деревьев выполнения очередей возможными.<br />
+Примеры можно найти в папке <code>C:\PABCWork.NET\Samples\OpenCLABC\Wait очереди</code>.</p>
+<p>Но они наиболее полезны благодаря одному особенному свойству:<br />
+<code>Wait</code> очереди работают даже между вызовами <code>Context.BeginInvoke</code>, в отличии от всего остального в <code>OpenCLABC</code>.</p>
+<p>Это не всегда безопастно:</p>
+<pre><code>Context.Default.BeginInvoke(Q1);
+Context.Default.BeginInvoke(WaitFor(Q1) + Q2);
+</code></pre>
+<p>Проблема этого кода в том, что <code>Q1</code> может закончить выполнятся ещё до того как <code>WaitFor(Q1)</code> начнёт ожидать.</p>
+<p>Чтоб такое не происходило - надо всегда запускать ожидаемую очередь
+в том же или, хотя бы, следующем вызове <code>Context.BeginInvoke</code> что и ожидающая:</p>
+<pre><code>Context.Default.BeginInvoke(WaitFor(Q1) + Q2);
+Context.Default.BeginInvoke(Q1);
+</code></pre>
+<p>Но, как всегда, лучше, по возможности, объединять вызовы <code>Context.BeginInvoke</code>:</p>
+<pre><code>Context.Default.BeginInvoke(
+  ( Q1 ) *
+  ( WaitFor(Q1) + Q2 )
+);
+</code></pre>
+<p>Если ожидаемая и ожидающая очереди находятся в общем <code>Context.BeginInvoke</code> - не важно в каком порядке они написаны.
+<code>OpenCLABC</code> гарантирует что ожидающие очереди начнут ожидать до начала выполнения ожидаемых.</p>
+<hr />
+<h3>Множественное ожидание несколько раз выполнившейся очереди</h3>
+<p>Когда начинает выполняться <code>Context.BeginInvoke</code> - для каждой ожидающей очереди в соответствующей
+ожидаемой очереди создаётся новый счётчик для того, сколько раз ожидаемая очередь была выполнена.</p>
+<p>Поэтому можно делать так:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var Q1 := HPQ(()-&gt;
+  begin
+    Sleep(200);
+    lock output do Writeln('Выполнилась Q1');
+  end);
+  
+  var Q2 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q2'));
+  var Q3 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q3'));
+  
+  var t1 := Context.Default.BeginInvoke(
+    (WaitFor(Q1)+Q2) *
+    (WaitFor(Q1)+Q3)
+  );
+  Context.Default.BeginInvoke(Q1+Q1);
+  
+  t1.Wait;
+end.
+</code></pre>
+<p>Ну и, конечно, лучше совместить вызовы <code>Context.BeginInvoke</code>, раз контекст общий:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var Q1 := HPQ(()-&gt;
+  begin
+    Sleep(200);
+    lock output do Writeln('Выполнилась Q1');
+  end);
+  
+  var Q2 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q2'));
+  var Q3 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q3'));
+  
+  Context.Default.SyncInvoke(
+    (Q1+Q1) *
+    (WaitFor(Q1)+Q2) *
+    (WaitFor(Q1)+Q3)
+  );
+  
+end.
+</code></pre>
+<p>Каждое окончание выполнения <code>Q1</code> добавляет 1 в счётчик внутри <code>Q1</code>.<br />
+Каждое окончание ожидания <code>WaitFor(Q1)</code> отнимание 1 от того же счётчика.</p>
+<p>Будьте осторожны, лишняя <code>Wait</code> очередь вызовет зависание:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var Q1 := HFQ(()-&gt;0);
+  
+  var t1 := Context.Default.BeginInvoke(
+    WaitFor(Q1) +
+    WaitFor(Q1) // второго запуска Q1 никогда не произойдёт, поэтому это зависнет
+  );
+  Context.Default.BeginInvoke(Q1);
+  
+  t1.Wait;
+end.
+</code></pre>
+<hr />
+<p>Cчётчик создаётся для каждой пары [ожидаемой очереди] и [вызова <code>Context.BeginInvoke</code>] для ожидающей очереди.
+То есть это тоже сработает:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var Q1 := HPQ(()-&gt;
+  begin
+    Sleep(200);
+    lock output do Writeln('Выполнилась Q1');
+  end);
+  
+  var Q2 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q2'));
+  var Q3 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q3'));
+  
+  var Q4 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q4'));
+  var Q5 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q5'));
+  
+  var t1 := Context.Default.BeginInvoke(
+    (WaitFor(Q1)+Q2) *
+    (WaitFor(Q1)+Q3)
+  );
+  var t2 := Context.Default.BeginInvoke(
+    (WaitFor(Q1)+Q4) *
+    (WaitFor(Q1)+Q5)
+  );
+  Context.Default.BeginInvoke(Q1+Q1);
+  
+  t1.Wait;
+  t2.Wait;
+end.
+</code></pre>
+<p>Но каждый <code>Context.BeginInvoke</code> для ожидаемой очереди - добавляет в уже существующий счётчик:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var Q1 := HPQ(()-&gt;
+  begin
+    Sleep(200);
+    lock output do Writeln('Выполнилась Q1');
+  end);
+  
+  var Q2 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q2'));
+  var Q3 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q3'));
+  
+  var t1 := Context.Default.BeginInvoke(
+    (WaitFor(Q1)+Q2) *
+    (WaitFor(Q1)+Q3)
+  );
+  Context.Default.BeginInvoke(WaitFor(Q1)+Q1);
+  Context.Default.BeginInvoke(Q1);
+  
+  t1.Wait;
+end.
+</code></pre>
+<hr />
+<p>И последнее что надо знать - <code>Wait-Any</code> очередь хоть и ожидает выполнения любой одной очереди из списка,
+но отнимает 1 от счётчиков всех ожидаемых очередей из того списка.</p>
+</div>
+<script>on_page_added(document.getElementById("page-15"))</script>
+<div id="page-16" page_name="Не создавая явно" hidden=true>
+<p>Передавать команды по одной, когда их несколько - ужасно медленно!<br />
+Но нередко бывает так, что команда всего одна. Или для отладки надо одноразово выполнить одну команду.</p>
+<p>Для таких случаев можно создавать очередь неявно:<br />
+У каждого метода очереди, создаваемой с <code>.NewQueue</code> есть дублирующий метод в оригинальном объекте.
+Такие методы сами создают новую очередь, добавляют в неё одну соответствующую команду и выполняют полученную очередь в <code>Context.Default.SyncInvoke(...)</code>.</p>
+<p>Обычный код с очередями:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var b := new Buffer( 3*sizeof(integer) );
+  var A := new integer[3];
+  
+  var Q_BuffWrite :=
+    ( b.NewQueue.AddWriteValue(1, 0*sizeof(integer) ) as CommandQueue&lt;Buffer&gt; ) *
+    ( b.NewQueue.AddWriteValue(5, 1*sizeof(integer) ) as CommandQueue&lt;Buffer&gt; ) *
+    ( b.NewQueue.AddWriteValue(7, 2*sizeof(integer) ) as CommandQueue&lt;Buffer&gt; )
+  ;
+  
+  var Q_BuffRead := b.NewQueue.AddReadArray(A) as CommandQueue&lt;Buffer&gt;;
+  
+  var Q_Otp := HPQ(()-&gt;
+  begin
+    A.Println;
+  end);
+  
+  Context.Default.SyncInvoke(
+    Q_BuffWrite +
+    Q_BuffRead +
+    Q_Otp
+  );
+  
+end.
+</code></pre>
+<p>Он же, но с неявными очередями:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var b := new Buffer( 3*sizeof(integer) );
+  var A := new integer[3];
+  
+  // Аналог Q_BuffWrite
+  System.Threading.Tasks.Parallel.Invoke(
+    ()-&gt;b.WriteValue(1, 0*sizeof(integer) ),
+    ()-&gt;b.WriteValue(5, 1*sizeof(integer) ),
+    ()-&gt;b.WriteValue(7, 2*sizeof(integer) )
+  );
+  
+  // Аналог Q_BuffRead
+  b.ReadArray(A);
+  
+  // Аналог Q_Otp
+  A.Println;
+  
+end.
+</code></pre>
+<p>Кроме того, у типа <code>Buffer</code> есть дополнительные методы <code>Buffer.Get...</code>.
+Соответствующих методов у очередей — нет (<code>ToDo</code> возможно, в будущем появятся).</p>
+<p>Методы <code>.Get...</code> создают новый объект типа записи, массива или выделяют область неуправляемой памяти,
+читают в полученный объект содержимое буфера и возвращают этот объект.
+Они также используют неявную очередь (для чтения буфера).</p>
+</div>
+<script>on_page_added(document.getElementById("page-16"))</script>
+<script>on_end_folder()</script>
+<div id="page-17" page_name="" hidden=true>
+<p>Самый простой способ выполнить очередь - вызвать метод <code>Context.SyncInvoke</code>.<br />
+Он синхронно выполняет очередь и вызвращает её результат.</p>
+<p>Но если надо выполнить очередь асинхронно - лучше использовать метод <code>Context.BeginInvoke</code>.<br />
+Он запускает асинхронное выполнение очереди и как только очередь была полностью запущена - возвращает объект типа <code>CLTask&lt;&gt;</code>, у которого есть:</p>
+<ul>
+<li>Event'ы (но реализованы методами), позволяющие указать что должно выполнятся когда выполнение <code>CLTask</code> завершится.</li>
+<li>Свойство, возвращающие оригинальную очередь.</li>
+<li>Методы для ожидания окончания выполнения и получения результата очереди.</li>
+</ul>
+<p>Метод <code>Context.SyncInvoke</code> реализован как <code>.BeginInvoke(...).WaitRes</code>.
+Поэтому, везде где сказано &quot;... происходит при вызове <code>.BeginInvoke</code>&quot;, это же относится и к <code>.SyncInvoke</code>.</p>
+<p>У <code>CLTask</code>, как и у очереди - в <code>&lt;&gt;</code>, указывается тип возвращаемого значения. То есть:</p>
+<pre><code>var t: CLTask&lt;integer&gt;;
+</code></pre>
+<p>В такую переменную можно сохранить только результат <code>Context.BeginInvoke</code> для очереди типа <code>CommandQueue&lt;integer&gt;</code>.</p>
+<p>И как и у <code>CommandQueue</code>:</p>
+<ul>
+<li>Существует так же и тип <code>CLTaskBase</code>, у которого типа возвращаемого значения не указывается.</li>
+<li>Переменной типа <code>CLTaskBase</code> можно присвоить <code>CLTask</code> с любым возвращаемым значением.</li>
+<li><code>Context.BeginInvoke</code> для очереди типа <code>CommandQueueBase</code> возвращает <code>CLTaskBase</code>.</li>
+</ul>
+<p>Если при выполнении возникла ошибка, о ней выведет не полную информацию. Чтобы получить всю информацию - используется <code>try</code>:</p>
+<pre><code>try
+  
+  //ToDo ваш код, вызывающий ошибку
+  
+except
+  // Writeln выводит все внутренние исключения. &quot;e.ToString&quot; тоже.
+  on e: Exception do Writeln(e);
+end;
+</code></pre>
+<p>Для этого кода есть стандартный снипет. Чтобы активировать его - напишите <code>tryo</code> и нажмите Shift+Пробел.</p>
+</div>
+<script>on_start_folder("Выполнение очередей", document.getElementById("page-17"))</script>
+<script>on_end_folder()</script>
+<div id="page-18" page_name="" hidden=true>
+<p>Все методы создающие одну команду (<code>.Add*</code> методы и все методы неявных очередей)
+могут принимать очередь вместо значения в качестве любого параметра. Но в таком случае
+возвращаемый тип очереди должен совпадать с типом параметра. К примеру:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var b := new Buffer(10*sizeof(integer));
+  // Очищаем весь буфер ноликами, чтобы не было мусора
+  b.FillValue(0);
+  
+  var q := b.NewQueue
+    
+    // Второй параметр AddWriteValue - отступ от начала буфера
+    // Он имеет тип integer, а значит можно передать и CommandQueue&lt;integer&gt;
+    // Таким образом, в параметр сохраняется алгоритм, а не готовое значение
+    // Поэтому 3 вызова ниже могут получится с 3 разными отступами
+    .AddWriteValue(5, HFQ(()-&gt; Random(0,9)*sizeof(integer) ))
+    
+  as CommandQueue&lt;Buffer&gt;;
+  
+  Context.Default.SyncInvoke(q);
+  Context.Default.SyncInvoke(q);
+  Context.Default.SyncInvoke(q);
+  
+  b.GetArray1&amp;&lt;integer&gt;.Println;
+  
+end.
+</code></pre>
+<p>Все очереди-параметры начинают выполнятся сразу при вызове метода <code>Context.BeginInvoke</code>, не ожидая других очередей.</p>
+<p>Обычно очереди-параметры используются при вызове kernel'а,
+когда надо записать что-то в буфер прямо перед вызовом kernel'а.</p>
+</div>
+<script>on_start_folder("Вложенные очереди", document.getElementById("page-18"))</script>
 <script>on_end_folder()</script>
 <script>on_end_folder()</script>
 <div id="page-19" page_name="" hidden=true>
@@ -1331,7 +1527,7 @@ q.AddQueue(q);
 <p>Язык OpenCL-C это часть библиотеки OpenCL, поэтому его справку можно найти <a href="https://www.khronos.org/registry/OpenCL/">там же</a> где и справку OpenCL.</p>
 <p>В <code>OpenCLABC</code> код на языке &quot;OpenCL C&quot; хранится в объектах типа <code>ProgramCode</code>.<br />
 Объекты этого типа используются только как контейнеры.
-Один объект ProgramCode может содержать любое количествово подпрограмм-kernel-ов.</p>
+Один объект ProgramCode может содержать любое количествово подпрограмм-kernel'ов.</p>
 <h1>Есть 2 способа создать объект типа <code>ProgramCode</code>:</h1>
 <ul>
 <li><p><a path="Создание из исходного кода">Из исходного кода</a></p>
@@ -1345,8 +1541,8 @@ q.AddQueue(q);
 <p>Конструктор <code>ProgramCode</code> (<code>new ProgramCode(...)</code>) принимает тексты исходников программы на языке OpenCL-C.<br />
 <strong>Именно тексты исходников, не имена файлов</strong></p>
 <p>Так же, как исходники паскаля хранят в .pas файлах, исходники OpenCL-C кода хранят в .cl файлах.
-Но вообще, это не принципиально, потому что код даже не обязательно должен быть в файле.
-Так как конструктор <code>ProgramCode</code> принимает текст - исходники программы на OpenCL-C можно хранить даже в строке в .pas программе.
+Но вообще, это не принципиально, потому что код даже не обязательно должен быть в файле.</p>
+<p>Так как конструктор <code>ProgramCode</code> принимает текст - исходники программы на OpenCL-C можно хранить даже в строке в .pas программе.
 Тем не менее, хранение исходников OpenCL-C кода в .cl файлах упрощает жизнь, потому что тогда их легко найти.</p>
 </div>
 <script>on_page_added(document.getElementById("page-21"))</script>
@@ -1409,7 +1605,7 @@ end.
 <pre><code>var k := code['KernelName'];
 </code></pre>
 <p>Где <code>code</code> имеет тип <code>ProgramCode</code>, а <code>'KernelName'</code> — имя подпрограммы-kernel'а в исходном коде (регистр важен!).</p>
-<p>Пример выполнения kernel-а:</p>
+<p>Пример выполнения kernel'а:</p>
 <pre><code>uses OpenCLABC;
 
 begin

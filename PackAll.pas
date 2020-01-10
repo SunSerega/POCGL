@@ -289,6 +289,7 @@ begin
           System.IO.Directory.CreateDirectory('Release\bin\Lib');
           var mns := AllModules;
           mns.RemoveAll(mn->not stages.Contains(mn.SubString(4)));
+          if mns.Count=0 then mns := AllModules;
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);
