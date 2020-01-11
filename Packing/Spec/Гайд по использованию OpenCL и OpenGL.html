@@ -441,8 +441,8 @@ const fix_links = (page)=>{
 
 const code_words_color = {
 	"pas": {
-		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class", "sizeof"],
-		"build-in": ["nil", "integer", "string", "object", "byte"],
+		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external", "static"],
+		"build-in": ["nil", "string", "object", "shortint","byte", "smallint","word", "integer","longword","cardinal", "int64", "uint64", "single","real"],
 		"red": ["ToDo"],
 	},
 	"cl-c": {
@@ -773,6 +773,7 @@ window.onload = ()=>{
 <p>Неуправляемые .dll могут содержать только глобальные подпрограммы.</p>
 <p>Для получения подпрограммы из неуправляемой .dll - в PABC.Net используется <code>external</code> (как использовать - смотрите в справке PABC.Net).</p>
 <p>Так же можно использовать всеобщий .Net-овский атрибут <code>DllImport</code>. О нём можно прочитать на том же сайте microsoft'а, ссылка выше.</p>
+<p>Но это вам вряд ли понадобится, н.у. модули сами справляются с получением функций.</p>
 <hr />
 <p>Большинство проблем при использовании неуправляемых .dll - вытекают из следующих 2 различий:</p>
 <ol>
