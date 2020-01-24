@@ -441,7 +441,7 @@ const fix_links = (page)=>{
 
 const code_words_color = {
 	"pas": {
-		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external", "static"],
+		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external", "static", "array", "where"],
 		"build-in": ["nil", "string", "object", "shortint","byte", "smallint","word", "integer","longword","cardinal", "int64", "uint64", "single","real"],
 		"red": ["ToDo"],
 	},
@@ -1052,15 +1052,178 @@ begin
 end.
 </code></pre>
 <p>Генерируют практически одинаковые .exe .</p>
-<hr />
-<p>Подпрограммы в н.у. модулях имеют перегрузки как с указателями, так и с <code>var</code>-параметрами.
-На следующих 2 страницах это не сказано, но перегрузки для управляемых массивов и строк так же присутствуют где надо.<br />
-(если не присутствуют, но надо - это хороший повод для issue)</p>
+<p>Отличие состоит в том, что передавать содержимое класса (к примеру массива)
+<code>var</code>-параметром безопастно.</p>
+<p>В то же время если передавать указатель на содержимое класса - сборщик мусора
+может в любой момент переместить память, ломая указатель.</p>
+<p>Статичные поля так же могут быть перемещены, как и содержимое экземпляров,
+даже если они имеют размерный тип.</p>
+<p>А захваченные лямбдой переменные - превращаются в поля специального анонимного
+класса, поэтому, опять же, могут быть перемещены даже если у них размерный тип.</p>
 </div>
 <script>on_page_added(document.getElementById("page-4"))</script>
-<div id="page-5" page_name="Массивы" hidden=true>
-<p>В .Net массивы хранят не только содержимое, но и данные о своём размере.<br />
-Для одно-мерных массивов размер получают свойством <code>.Length</code>, а для много-мерных методом <code>.GetLength(integer)</code>.</p>
+<div id="page-5" page_name="Тесты эффектов сборщика мусора" hidden=true>
+<p>Кроме удаления неиспользуемых экземпляров классов, сборщик мусора так же может произвольно
+перемещать используемые объекты, более плотно их упаковая их в памяти.</p>
+<p>И он прекрасно справляется с тем, чтоб сделать эти перемещения незаметными, в обычных ситуациях.
+Но как только речь находит об указателях и неуправляемом коде - начинаются проблемы.
+Чтоб избажать их, надо очень хорошо понимать как работает сборщик мусора.</p>
+<div class="spoiler" summary="Страницы в данной папке операются на результаты теста:" hidden="true">
+<pre><code>uses System;
+uses System.Runtime.InteropServices;
+
+type
+  punch_gc_callback = procedure(ptr: pointer);
+  
+function get_addr(a: array of integer) := '$'+Marshal.UnsafeAddrOfPinnedArrayElement(a,0).ToString('X');
+
+function ptr_adr&lt;T&gt;(var a: T) := new IntPtr(@a);
+
+function copy_arr(a: IntPtr; punch_gc: punch_gc_callback): IntPtr;
+external 'Dll1.dll';
+function copy_arr(a: ^integer; punch_gc: punch_gc_callback): IntPtr;
+external 'Dll1.dll';
+
+function copy_arr(var a: integer; punch_gc: punch_gc_callback): IntPtr;
+external 'Dll1.dll';
+function copy_arr(var a: byte; punch_gc: punch_gc_callback): IntPtr;
+external 'Dll1.dll';
+
+function copy_arr([MarshalAs(UnmanagedType.LPArray)] a: array of integer; punch_gc: punch_gc_callback): IntPtr;
+external 'Dll1.dll';
+
+function copy_arr_recall1(var a: integer; punch_gc: punch_gc_callback): IntPtr :=
+copy_arr(@a, punch_gc);
+
+function copy_arr_recall2(a: array of integer; punch_gc: punch_gc_callback): IntPtr :=
+copy_arr(a, punch_gc);
+
+function copy_arr_recall3(var a: integer; punch_gc: punch_gc_callback): IntPtr :=
+copy_arr(a, punch_gc);
+
+function copy_arr_recall4_helper(a: ^integer; punch_gc: punch_gc_callback): IntPtr;
+begin
+  punch_gc(a);
+  Result := copy_arr(a^, ptr-&gt;begin end); // второй раз вызывать punch_gc и вывод - ни к чему, всё ломается уже на предыдущей строчке
+end;
+function copy_arr_recall4(var a: integer; punch_gc: punch_gc_callback): IntPtr :=
+copy_arr_recall4_helper(@a, punch_gc);
+
+function copy_arr_recall5(var a: integer; punch_gc: punch_gc_callback): IntPtr :=
+copy_arr(PByte(pointer(@a))^, punch_gc);
+
+// У меня это вызывает смещение массива в памяти, но только при первом вызове
+// Writeln тоже вызывает этот метод, поэтому придётся обходиться Console.WriteLine
+// Вообще это ужастный костыль, но я не знаю ничего лучше
+procedure punch_gc := System.Diagnostics.Debug.WriteLine('');
+
+begin
+  var a := Arr(1,2,3,4,5,6);
+  var b := Arr(1,2,3,4,5);
+  Console.WriteLine('begin');
+  Console.WriteLine(get_addr(a));
+  Console.WriteLine(get_addr(b));
+  
+  // punch_gc работает только 1 раз, эти строчки только чтоб протестировать, работает ли он у вас вообще
+//  punch_gc;
+//  Console.WriteLine('after first gc');
+//  Console.WriteLine(get_addr(a));
+//  Console.WriteLine(get_addr(b));
+  
+  {$region заголовки вызова copy_arr}
+  
+  // безопастно
+//  var ptr := copy_arr(a,              // передавать как массив безопастно
+//  var ptr := copy_arr(a[0],           // передавать элемент массива var-параметром безопастно
+//  var ptr := copy_arr(a[1],           // и это касается не только элемента [0]
+//  var ptr := copy_arr_recall2(a,      // безопастно, потому что с точки зрения copy_arr_recall2 ситуация та же что &quot;copy_arr(a,&quot;
+//  var ptr := copy_arr_recall3(a[0],   // и var-параметры тоже безопастны через промежуточные подпрограммы
+//  var ptr := copy_arr_recall5(a[0],   // тут указатели не попадают в готовый .exe, они только чтоб испокоить компилятор, поэтому безопастно
+  
+  // НЕ безопастно
+//  var ptr := copy_arr(Marshal.UnsafeAddrOfPinnedArrayElement(a,0), ptr-&gt; // GC не следит за содержимым IntPtr
+//  var ptr := copy_arr(ptr_adr(a[0]),  // и за другими формами указателей тоже
+//  var ptr := copy_arr_recall1(a[0],   // проблема не в передаче адреса возвращаемым значением
+//  var ptr := copy_arr_recall4(a[0],   // кроме того, проблема вообще не в неуправляемом коде, в управляемом тоже воспроизводится
+  
+  {$endregion заголовки вызова copy_arr}
+  
+  var ptr := copy_arr(a,
+  ptr-&gt;
+  begin
+    Console.WriteLine('before gc');
+    Console.WriteLine(get_addr(a));
+    Console.WriteLine('$'+IntPtr(ptr).ToString('X'));
+    Console.WriteLine(get_addr(b));
+    
+    // &quot;b&quot; в любом случае перемещается при punch_gc, его ничего не держит. Таким образом оно показывает что punch_gc успешно сработал
+    // Но главное тут - если &quot;ptr&quot; и &quot;a&quot; окажутся разным, значит неуправляемый код потерял настоящий адрес &quot;a&quot; при перемещении
+    // Тесты приведённые тут показывают так же что GC вообще не перемещает &quot;a&quot; в любом безопасном сценарии. И никогда не меняет &quot;ptr&quot;
+    punch_gc;
+    Console.WriteLine('after gc');
+    Console.WriteLine(get_addr(a));
+    Console.WriteLine('$'+IntPtr(ptr).ToString('X'));
+    Console.WriteLine(get_addr(b));
+  end);
+  
+  Console.WriteLine('end');
+  Console.WriteLine(get_addr(a));
+  Console.WriteLine(get_addr(b));
+  
+//  punch_gc;
+//  Console.WriteLine('after last gc');
+//  Console.WriteLine(get_addr(a));
+//  Console.WriteLine(get_addr(b));
+  
+  // Показывает эффекты НЕ безопастного вызова
+  // Точнее если неуправляемый код потеряет адрес массива,
+  // то тут будет мусор (или ошибку доступа, но её я ни разу не получил)
+  // вместо того, что было содержимым массива
+  var res := new byte[20];
+  Marshal.Copy(ptr,res,0,20);
+  res.Println;
+end.
+</code></pre>
+<p><code>Dll1.dll</code> должна быть неуправляемой библиотекой, содержащей следующую функцию (это C++):</p>
+<pre><code>extern &quot;C&quot; __declspec(dllexport) BYTE* copy_arr(int* a, void (*punch_gc)(void*))
+{
+    BYTE* res = new BYTE[20]; // выделяем 20 байт неуправляемой памяти
+    punch_gc(a); // вызываем ту подпрограмму, чей адрес сюда передали
+    memcpy(res, a, 20); // копируем 20 байт из &quot;a&quot; в &quot;res&quot;
+    return res; // плохо что неуправляемая память не освобождается, но в этом тесте не важно
+}
+</code></pre>
+<p>Подробнее о параметрах:</p>
+<ol>
+<li><p><code>a</code> принимает указатель на <code>integer</code>, что в C++ так же может являеться массивом с элементами типа <code>integer</code>;</p>
+</li>
+<li><p><code>punch_gc</code> принемает адрес подпрограммы, принемающей <code>void*</code> (безтиповый указатель)
+и возвращающей <code>void</code> (ничего не возвращающей, то есть это процедура);</p>
+</li>
+<li><p>Ну и возвращаемое значение - <code>BYTE*</code>. Так же как <code>a</code>, вообще указатель, но в данном случае массив.</p>
+</li>
+</ol>
+<p>Пожалуйста, попробуйте поэксперементировать с этим кодом сами. И если найдёте
+что то интересное - обязательно напишите в issue. В этом деле много тестов не бывает.</p>
+</div>
+<h3>В кратце:</h3>
+<p>Вся безопастность зависит только от объявления подпрограммы. Если подпрограмма принимает:</p>
+<ul>
+<li><p>Массив или <code>var</code>-параметр:<br />
+Пока вызов не завершится - сборщик мусора НЕ будет передвигать объект в памяти.</p>
+</li>
+<li><p>Указатель в любом виде (типизированный, безтиповый или даже обёрнутый в запись вроде <code>IntPtr</code>):<br />
+Передавать адрес содержимого класса НЕ безопастно.</p>
+</li>
+<li><p>Любой размерный тип (то есть запись):<br />
+Сборщик мусора никак не управляет записями, при передаче в
+подпрограмму их значение копируется. Поэтому это всегда безопастно.</p>
+</li>
+</ul>
+</div>
+<script>on_page_added(document.getElementById("page-5"))</script>
+<div id="page-6" page_name="Массивы" hidden=true>
+<p>В .Net массивы хранят не только содержимое, но и данные о своём размере.</p>
 <p>А в C++ вместо обычных массивов используется безформенная область памяти.<br />
 При её выделении - в переменную записывается указатель <code>[0]</code> элемента.
 А о том чтоб сохранить данные о размере этой области - должен позаботится программист.<br />
@@ -1070,64 +1233,99 @@ end.
 <pre><code>glИмяПодпрограммы(@a[0]);
 </code></pre>
 <p>Но в PascalABC.Net так делать нельзя! Получение адреса элемента массива моментально создаёт утечку памяти,
-потому что компилятор, на всякий случай, вставляет полную блокировку массива в памяти.</p>
-<p>Она нужна, потому что сборщик мусора (то что управляет памятью в .Net) может перемещать содержимое
-классов (в том числе массивов) в памяти, ради экономии места. После такого перемещения, любой указатель
-на содержимое класса может оказаться устаревшим. И перемещения могут происходит в любой произвольный момент.</p>
-<p>Чтоб заблокировать массив в памяти - компилятор использует <code>GCHandle</code> с <code>GCHandleType.Pinned</code>.
-Обычно <code>GCHandle</code> освобождают методом <code>.Free</code>. Но если дать компилятору использовать
+потому что компилятор, на всякий случай, вставляет полную блокировку массива в памяти, используя <code>GCHandle</code> с <code>GCHandleType.Pinned</code>.</p>
+<p>Такая блокировка нужна, потому что иначе полученный указатель может в любой момент стать устаревшим.</p>
+<p>Обычно <code>GCHandle</code> освобождают методом <code>.Free</code>. Но если позволить компилятору использовать
 <code>GCHandle</code> - освобождение никогда не произойдёт, потому что компилятор не знает когда указатель уже не нужен.</p>
+<hr />
 <p>Из очевидных вариантов - использовать <code>GCHandle</code> самостоятельно. Он создаётся статичным методом <code>GCHandle.Alloc</code>.
-Далее, адрес можно получить методом <code>.AddrOfPinnedObject</code>.<br />
-Но это не лучший способ, потому что <code>GCHandle</code> довольно ограничен. К примеру, он может заблокировать <code>array of char</code>,
-но не <code>array of r</code>, для <code>r</code> - запись, содержащая поле типа <code>char</code>. И то же самое с <code>DateTime</code> и ещё несколькими стандартными
-типами, которые <code>GCHandle</code> считает &quot;опасными&quot;. Кроме того, с <code>GCHandle</code> можно получить только адрес <code>[0]</code> элемента.</p>
+Далее, адрес можно получить методом <code>GCHandle.AddrOfPinnedObject</code>.</p>
+<p>Но <code>GCHandle</code> довольно ограничен. К примеру, он может заблокировать <code>array of char</code>, но не <code>array of r</code>,
+для <code>r</code> - запись, содержащая поле типа <code>char</code>. И то же самое с <code>DateTime</code> и ещё несколькими стандартными
+типами, которые <code>GCHandle</code> считает &quot;опасными&quot;.</p>
 <hr />
-<p>Более простой и не_ограниченный способ - использовать <code>Marshal.UnsafeAddrOfPinnedArrayElement</code>:</p>
-<pre><code>glИмяПодпрограммы(Marshal.UnsafeAddrOfPinnedArrayElement(a,0));
+<p>Как видно в тесте на странице выше - массив можно заблокировать в памяти без <code>GCHandle</code>, если выбрать правильный тип параметра.
+И, в отличии от <code>GCHandle</code>, это будет работать с массивами с любым размерным типом элементов.</p>
+<p>К примеру, если имеем процедуру <code>p1</code> из неуправляемой .dll, принимающую массив из двух чисел типа <code>integer</code>:</p>
+<pre><code>var a := new integer[5](...);
+p1(a); // передача массива целиком
+p1(a[3]); // передача [3] элемента var-параметром
 </code></pre>
-<p>Это работает с любыми массивами (но если массив хранит классы, или записи содержащие классы среди полей - работать будет не правильно).</p>
-<p><code>Marshal.UnsafeAddrOfPinnedArrayElement</code> требует бОльшего тестирования. И когда оно будет проведено - я добавлю сюда коды тестов.</p>
-<p>Но пока я могу только утверждать, что:</p>
-<ul>
-<li><p>Если сохранить результат <code>Marshal.UnsafeAddrOfPinnedArrayElement</code> в локальную переменную-указатель,
-а затем дождаться перемещения массива в памяти - сборщик мусора изменит адрес, хранимый в переменной.</p>
-</li>
-<li><p>А пока работает подпрограмма из неуправляемой .dll - сборщик мусора вообще не двигает массив, если его адрес передали параметром.</p>
-</li>
-</ul>
-<p>Но сохранение адреса в статичном поле (в том числе глобальной переменной) или
-в содержимом класса - не всегда оказывается безопасным. Именно это требует бОльшего тестирования.</p>
+<p>Из первого вызова <code>p1</code> возьмёт только элементы <code>a[0]</code> и <code>a[1]</code>, потому что <code>p1</code> по условию требует только два элемента.</p>
+<p>Из второго вызова <code>p1</code> возьмёт <code>a[3]</code> и <code>a[4]</code>, потому что в C++ нет разницы между указателем на один элемент и указателем на начало массива.</p>
 <hr />
-<p>Некоторые могли уже заметить, неуправляемые <code>var</code>-параметр и массив из 1 элемента - ничем не отличаются.</p>
-<p>То есть, если нужно передать параметром массив из 1 элемента, когда уже есть локальная переменная - можно вместо массива передать адрес этой переменной:</p>
-<pre><code>var i: integer;
-...
-glИмяПодпрограммы(@i);
+<p>Обычнно эти два способа передать массив в неуправляемый код - всё что вам понадобится.</p>
+<p>Но, допустим, вы хотите написать подпрограмму для создания OpenGL буфера из массива векторов.
+Можно сделать перегрузку для каждого типа вектора, но тогда получится очень много дублей кода.
+Этого довольно просто избежать, используя шаблоны:</p>
+<pre><code>// это не настоящая подпрограмма, а только пример
+procedure FillBuffer(var data: byte);
+external 'some.dll';
+
+// external подпрограммы не могут быть шаблонными, поэтому нужна ещё одна промежуточная перегрузка
+// &quot;where T: record;&quot; делает так, что FillBuffer будет можно вызвать только для размерных типов T
+procedure FillBuffer&lt;T&gt;(var data: T); where T: record;
+begin
+  // Компилятор развернёт это в &quot;FillBuffer(data)&quot;
+  // То есть никакие преобразования в .exe не попадут
+  // Но указатели всё равно нужны, чтоб компилятор не ругался на несовместимость типов
+  FillBuffer(PByte(pointer(@data))^);
+end;
+
+procedure FillBuffer&lt;T&gt;(data: array of T); where T: record;
+begin
+  // В C++ нет разницы между массивом и адресом начала его содержимого
+  // Поэтому можно передавать массив в виде [0] элемента-var-параметра.
+  FillBuffer(data[0]);
+end;
 </code></pre>
-<p>Но, обычно, если подпрограмма принимает массив - она так же принимает и <code>var</code>-параметр. То есть должно быть можно и так:</p>
-<pre><code>var i: integer;
-...
-glИмяПодпрограммы(i); // компилятор выберет перегрузку, принимающую var-параметр
+<p>Но это для одномерных массивов. А что насчёт многомерных?</p>
+<p>Сделать перегрузку для заданного кол-ва измерений не сложно:</p>
+<pre><code>procedure FillBuffer&lt;T&gt;(data: array[,] of T); where T: record;
+begin
+  // Многомерные массивы расположены в памяти как одномерные,
+  // Но обращение к элементам идёт по нескольким индексам
+  // Элемент [0,0,...] в любом случае будет в самом начале,
+  // Поэтому кол-во измерений не влияет на сложность кода
+  // Элемент [x,y] будет расположен на позиции &quot;x*h+y&quot;, где &quot;h&quot; - кол-во допустимых значений &quot;y&quot;
+  FillBuffer(data[0,0]);
+end;
 </code></pre>
+<p>Но, опять же, получается так, что для каждой размерности - приходится добавлять перегрузку.</p>
+<p>И, к сожалению, в данном случае я не знаю красивого способа обхода.<br />
+Лучшее что я могу придумать - создать <code>Dictionary&lt;integer, Action&lt;System.Array&gt;&gt;</code>,
+где ключи - размерности массивов, а значения - делегаты, работающие с соответствующей размерностью.<br />
+Когда происходит вызов с массивом определённой размерности - создавать новый делегат
+в виде динамичного метода, с помощью <code>System.Reflection.Emit</code>, если его ещё нет в словаре.</p>
 </div>
-<script>on_page_added(document.getElementById("page-5"))</script>
-<div id="page-6" page_name="Строки" hidden=true>
+<script>on_page_added(document.getElementById("page-6"))</script>
+<div id="page-7" page_name="Строки" hidden=true>
 <p>Как и массивы - неуправляемые строки это указатель на первый символ строки.<br />
 Но со строками ещё сложнее - исходные библиотеки хранят строки в кодировке ANSI (и требуют 1 байт на символ)<br />
 А управляемые строки - хранят символы в кодировке Unicode (2 байта на символ).</p>
 <p>Кроме того, у неуправляемых строк принятно добавлять в конце строки символ <code>#0</code>.
 Это позволяет вообще не хранить длину строки. Вместо этого конец строки считается там, где первый раз встретится символ <code>#0</code>.</p>
+<hr />
 <p>Благо, для перевода между этими типами уже есть <code>Marshal.StringToHGlobalAnsi</code> и <code>Marshal.PtrToStringAnsi</code>.</p>
-<p><code>Marshal.StringToHGlobalAnsi</code> возвращает <code>IntPtr</code>, чтоб лишний раз не пачкать руки об указатели.<br />
-<code>IntPtr</code> это целое число со знаком, занимающее в памяти тот же объём, что и указатель.<br />
-Обычно <code>IntPtr</code> используется для дескрипторов. То есть указателей, разъименование которых не ожидается.</p>
 <p>Но будьте осторожны - <code>Marshal.StringToHGlobalAnsi</code> выделяет неуправляемую память для хранения неуправляемого варианта строки.<br />
-Когда неуправляемая память стала не нужна - её надо обязательно удалить с помощью <code>Marshal.FreeHGlobal</code>, иначе получите утечку памяти.</p>
+Когда неуправляемая память стала не нужна - её надо обязательно удалить методом <code>Marshal.FreeHGlobal</code>, иначе получите утечку памяти.</p>
+<hr />
+<p>В отличии от массивов - пытаться передавать строки в виде символа-<code>var</code>-параметра безсмысленно, из за разницы форматов.</p>
+<p>Более того, передача символа строки <code>var</code>-параметром, в отличии от массивов, всё равно вызывает копирование строки,
+на всякий случай, потому что в .Net строки неизменяемы, а компилятор не может знать,
+будет неуправляемый код только читать, или ещё и перезаписывать строку.</p>
+<p>Единственный способ не выполнять лишних копирований - написать свою обёртку неуправляемых строк. Обычно оно того не стоит.</p>
+<p>Но если вы, к примеру, создаёте много OpenGL шейдеров из исходников - можно перед компиляцией программы:</p>
+<ol>
+<li>Прочитать все текстовые файлы исходников шейдеров;</li>
+<li>Использовать <code>Marshal.StringToHGlobalAnsi</code> чтоб получить неуправляемые строки;</li>
+<li>Пересохранить их в бинарном виде (то есть как массив байт содержимого неуправляемой строки);</li>
+<li>Полученные бинарные файлы подключать в виде <code>$resource</code>, читать как массив байт и его уже передавать неуправляемому коду вместо строки.</li>
+</ol>
 </div>
-<script>on_page_added(document.getElementById("page-6"))</script>
+<script>on_page_added(document.getElementById("page-7"))</script>
 <script>on_end_folder()</script>
-<div id="page-7" page_name="" hidden=true>
+<div id="page-8" page_name="" hidden=true>
 <p>Делегаты - это адреса подпрограмм:</p>
 <pre><code>procedure p1(i: integer);
 begin
@@ -1216,7 +1414,7 @@ begin
 end.
 </code></pre>
 </div>
-<script>on_start_folder("Делегаты", document.getElementById("page-7"))</script>
+<script>on_start_folder("Делегаты", document.getElementById("page-8"))</script>
 <script>on_end_folder()</script>
 <script>on_end_folder()</script>
 </body>

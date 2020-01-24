@@ -309,7 +309,7 @@ const fix_links = (page)=>{
 
 const code_words_color = {
 	"pas": {
-		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external", "static"],
+		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external", "static", "array", "where"],
 		"build-in": ["nil", "string", "object", "shortint","byte", "smallint","word", "integer","longword","cardinal", "int64", "uint64", "single","real"],
 		"red": ["ToDo"],
 	},
