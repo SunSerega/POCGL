@@ -1,0 +1,71 @@
+﻿enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
+Skipped group attrib for type [GLfloat]
+Skipped group attrib for type [GLfixed]
+Skipped group attrib for type [GLboolean]
+Skipped group attrib for type [GLuint]
+Skipped group attrib for type [GLhandleARB]
+Skipped group attrib for type [GLintptr]
+Skipped group attrib for type [GLsizeiptr]
+Group [MaterialFace] not defined
+Skipped group attrib for type [GLintptrARB]
+Skipped group attrib for type [GLdouble]
+Skipped group attrib for type [GLbitfield]
+Skipped group attrib for type [GLsizeiptrARB]
+Skipped group attrib for type [GLint]
+Skipped group attrib for type [GLclampf]
+Skipped group attrib for type [GLsync]
+Skipped group attrib for type [GLbyte]
+Skipped group attrib for type [GLhalfNV]
+Skipped group attrib for type [GLshort]
+Skipped group attrib for type [GLubyte]
+Skipped group attrib for type [GLushort]
+Group [ColorTableParameterPNameSGI] not defined
+Skipped group attrib for type [void]
+Skipped group attrib for type [struct _cl_context]
+Skipped group attrib for type [struct _cl_event]
+Skipped group attrib for type [GLclampd]
+Group [IglooFunctionSelectSGIX] not defined
+Skipped group attrib for type [GLsizei]
+Group [TexBumpParameterATI] not defined
+Skipped group attrib for type [GLvdpauSurfaceNV]
+group [AttribMask] wasn't used in any function
+group [ClearBufferMask] wasn't used in any function
+group [BufferStorageMask] wasn't used in any function
+group [ClientAttribMask] wasn't used in any function
+group [ContextFlagMask] wasn't used in any function
+group [ContextProfileMask] wasn't used in any function
+group [MapBufferAccessMask] wasn't used in any function
+group [MemoryBarrierMask] wasn't used in any function
+group [OcclusionQueryEventMaskAMD] wasn't used in any function
+group [SyncObjectMask] wasn't used in any function
+group [UseProgramStageMask] wasn't used in any function
+group [SubgroupSupportedFeatures] wasn't used in any function
+group [TextureStorageMaskAMD] wasn't used in any function
+group [PathFontStyle] wasn't used in any function
+group [PathMetricMask] wasn't used in any function
+group [BufferBitQCOM] wasn't used in any function
+group [MapTextureFormatINTEL] wasn't used in any function
+group [Boolean] wasn't used in any function
+group [TextureSwizzle] wasn't used in any function
+group [TextureCompareMode] wasn't used in any function
+group [PixelTexGenMode] wasn't used in any function
+group [TextureEnvMode] wasn't used in any function
+group [LightEnvModeSGIX] wasn't used in any function
+group [ColorMaterialFace] wasn't used in any function
+group [FeedBackToken] wasn't used in any function
+group [FogMode] wasn't used in any function
+group [GetPixelMap] wasn't used in any function
+group [TextureGenMode] wasn't used in any function
+group [TextureMagFilter] wasn't used in any function
+group [TextureMinFilter] wasn't used in any function
+group [TextureWrapMode] wasn't used in any function
+group [GetConvolutionParameter] wasn't used in any function
+group [ConvolutionBorderModeEXT] wasn't used in any function
+group [PointParameterNameSGIS] wasn't used in any function
+group [TextureFilterFuncSGIS] wasn't used in any function
+group [LightModelColorControl] wasn't used in any function
+group [PixelStoreResampleMode] wasn't used in any function
+group [PixelStoreSubsampleRate] wasn't used in any function
+group [CheckFramebufferStatusTarget] wasn't used in any function
+group [DrawBufferModeATI] wasn't used in any function
+group [FramebufferFetchNoncoherent] wasn't used in any function
