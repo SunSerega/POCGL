@@ -1,5 +1,5 @@
 ﻿{$reference System.XML.dll}
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
 var enc := new System.Text.UTF8Encoding(true);
 var log := new System.IO.StreamWriter(
@@ -15,7 +15,7 @@ type
     
   end;
 
-var xmls := System.IO.Directory.EnumerateFiles(GetFullPath($'..\..\Reps\OpenGL-Registry\xml', GetEXEFileName), '*.xml').ToHashSet;
+var xmls := System.IO.Directory.EnumerateFiles(GetFullPath($'..\..\..\Reps\OpenGL-Registry\xml', GetEXEFileName), '*.xml').ToHashSet;
 
 type
   XmlNode = sealed class
@@ -315,7 +315,7 @@ var funcs := new List<FuncData>;
 procedure ScrapFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
-  var root := new XmlNode(GetFullPath($'..\..\Reps\OpenGL-Registry\xml\{api_name}.xml', GetEXEFileName));
+  var root := new XmlNode(GetFullPath($'..\..\..\Reps\OpenGL-Registry\xml\{api_name}.xml', GetEXEFileName));
   
   foreach var enums in root.Nodes['enums'] do
   begin
