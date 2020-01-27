@@ -1,7 +1,6 @@
 ﻿{$reference System.XML.dll}
 uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
-var enc := new System.Text.UTF8Encoding(true);
 var log := new System.IO.StreamWriter(
   GetFullPath('..\log.dat', GetEXEFileName),
   false, enc
@@ -65,98 +64,13 @@ type
     
   end;
   
-  {$region Fixers}
-  
-  Fixer = abstract class
-    protected used: boolean;
-    
-    private static all := new List<Fixer>;
-    
-    protected static function ReadBlocks(fname: string): sequence of (string, array of string);
-    begin
-      var res := new List<string>;
-      var name: string := nil;
-      
-      foreach var l in ReadLines(fname, enc) do
-        if l.StartsWith('#') then
-        begin
-          if res.Count<>0 then
-          begin
-            yield (name, res.ToArray);
-            res.Clear;
-          end;
-          name := l.Substring(1).Trim;
-        end else
-        if string.IsNullOrWhiteSpace(l) then
-          name := nil else
-          res += l;
-      
-      if res.Count<>0 then yield (name, res.ToArray);
-    end;
-    
-    protected constructor := all.Add(self);
-    
-    public function AllUnused := all.Where(f->not f.used);
-    protected procedure WarnUnused; abstract;
-    
-  end;
-  
-  //ToDo использовать только как шаблон будущих фиксеров
-  Deprecated_GroupFixer = sealed class(Fixer)
-    private gname: string;
-    private add_enums := new List<string>;
-    private rem_enums := new List<string>;
-    private constructor := exit;
-    
-    private static all := new Dictionary<string, Deprecated_GroupFixer>;
-    private static empty := new Deprecated_GroupFixer;
-    
-//    static constructor;
-    static procedure Init_ShouldNewerBcsDeprecated;
-    begin
-      
-      foreach var bl in ReadBlocks(GetFullPath('..\Fixers\groups.dat', GetEXEFileName)) do
-      begin
-        var res := new Deprecated_GroupFixer;
-        res.gname := bl[0];
-        
-        foreach var l in bl[1] do
-          if l.StartsWith('+') then
-            res.add_enums += l.Substring(1).Trim else
-          if l.StartsWith('-') then
-            res.rem_enums += l.Substring(1).Trim else
-            Otp($'GroupFixer syntax error: [{l}]');
-        
-        all.Add(bl[0], res);
-      end;
-      
-    end;
-    
-    public static property Item[gname: string]: Deprecated_GroupFixer read all.ContainsKey(gname) ? all[gname] : empty; default;
-    
-    public function Apply(gd: Dictionary<string, int64>): sequence of string;
-    begin
-      used := true;
-      foreach var ename in rem_enums do
-        if not gd.Remove(ename) then
-          Otp($'WARNING: failed to apply rem_enums[{ename}] of GroupFixer to [{gname}]');
-      // чтоб предыдущие строчки не выполнились до запроса первого элемента
-      yield sequence add_enums;
-    end;
-    
-    protected procedure WarnUnused; override :=
-    log.WriteLine($'Fixer of group [{gname}] wasn''t used');
-    
-  end;
-  
-  {$endregion Fixers}
-  
   Group = sealed class
     private name: string;
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
     
     public static All := new List<Group>;
+    public static Used := new HashSet<string>;
     
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
@@ -262,7 +176,9 @@ type
       var gname := n['group'];
       if gname<>nil then
       begin
-        if self.t<>'GLenum' then
+        Group.Used += gname;
+        
+        if not (self.t in ['GLenum', 'GLbitfield']) then
         begin
           if LogCache.invalid_type_for_group.Add(t) then
             log.WriteLine($'Skipped group attrib for type [{t}]');
@@ -272,6 +188,7 @@ type
           if LogCache.missing_group.Add(gname) then
             log.WriteLine($'Group [{gname}] not defined');
         end;
+        
       end;
       
     end;
@@ -359,12 +276,11 @@ begin
   Otp($'Saving as binary');
   var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath($'..\funcs.bin', GetEXEFileName)));
   
-  var grs_hs := funcs.SelectMany(f->f.pars).Select(par->par.gr).Where(gr->gr<>nil).ToHashSet;
-  foreach var gr in Group.All do
-    if not grs_hs.Contains(gr) then
-      log.WriteLine($'group [{gr.name}] wasn''t used in any function');
-  
-  var grs := grs_hs.ToList;
+  var grs := funcs
+    .SelectMany(f->f.pars)
+    .Select(par->par.gr)
+    .Where(gr->gr<>nil)
+    .ToHashSet.ToList;
   bw.Write(grs.Count);
   foreach var gr in grs do
     gr.Save(bw);
@@ -376,16 +292,23 @@ begin
 end;
 
 begin
-  
-  ScrapFile('gl');
-  ScrapFile('wgl');
-  ScrapFile('glx');
-  
-  foreach var fname in xmls do
-    log.WriteLine($'file "fname" wasn''t used');
-  
-  SaveFuncs;
-  
-  if not CommandLineArgs.Contains('SecondaryProc') then Otp($'done');
-  log.Close;
+  try
+    ScrapFile('gl');
+    ScrapFile('wgl');
+    ScrapFile('glx');
+    
+    foreach var fname in xmls do
+      log.WriteLine($'file "fname" wasn''t used');
+    
+    foreach var gr in Group.All do
+      if not Group.Used.Contains(gr.name) then
+        log.WriteLine($'group [{gr.name}] wasn''t used in any function');
+    
+    SaveFuncs;
+    
+    if not CommandLineArgs.Contains('SecondaryProc') then Otp($'done');
+    log.Close;
+  except
+    on e: Exception do ErrOtp(e);
+  end;
 end.

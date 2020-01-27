@@ -9,7 +9,6 @@ Skipped group attrib for type [GLsizeiptr]
 Group [MaterialFace] not defined
 Skipped group attrib for type [GLintptrARB]
 Skipped group attrib for type [GLdouble]
-Skipped group attrib for type [GLbitfield]
 Skipped group attrib for type [GLsizeiptrARB]
 Skipped group attrib for type [GLint]
 Skipped group attrib for type [GLclampf]
@@ -23,29 +22,17 @@ Group [ColorTableParameterPNameSGI] not defined
 Skipped group attrib for type [void]
 Skipped group attrib for type [struct _cl_context]
 Skipped group attrib for type [struct _cl_event]
+Group [FfdMaskSGIX] not defined
 Skipped group attrib for type [GLclampd]
 Group [IglooFunctionSelectSGIX] not defined
 Skipped group attrib for type [GLsizei]
+Group [SampleMaskNV] not defined
 Group [TexBumpParameterATI] not defined
 Skipped group attrib for type [GLvdpauSurfaceNV]
-group [AttribMask] wasn't used in any function
-group [ClearBufferMask] wasn't used in any function
-group [BufferStorageMask] wasn't used in any function
-group [ClientAttribMask] wasn't used in any function
 group [ContextFlagMask] wasn't used in any function
 group [ContextProfileMask] wasn't used in any function
-group [MapBufferAccessMask] wasn't used in any function
-group [MemoryBarrierMask] wasn't used in any function
-group [OcclusionQueryEventMaskAMD] wasn't used in any function
-group [SyncObjectMask] wasn't used in any function
-group [UseProgramStageMask] wasn't used in any function
 group [SubgroupSupportedFeatures] wasn't used in any function
-group [TextureStorageMaskAMD] wasn't used in any function
-group [PathFontStyle] wasn't used in any function
-group [PathMetricMask] wasn't used in any function
-group [BufferBitQCOM] wasn't used in any function
 group [MapTextureFormatINTEL] wasn't used in any function
-group [Boolean] wasn't used in any function
 group [TextureSwizzle] wasn't used in any function
 group [TextureCompareMode] wasn't used in any function
 group [PixelTexGenMode] wasn't used in any function
