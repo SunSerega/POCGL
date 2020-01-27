@@ -11,6 +11,7 @@ type
     
     static invalid_type_for_group := new HashSet<string>;
     static missing_group := new HashSet<string>;
+    static func_with_enum_without_group := new HashSet<string>;
     
   end;
 
@@ -158,10 +159,11 @@ type
     ptr: integer;
     gr: Group := nil;
     
-    constructor(n: XmlNode; groups: Dictionary<string, Group>);
+    constructor(func_name: string; n: XmlNode; groups: Dictionary<string, Group>);
     begin
       
       self.name := n.Nodes['name'].Single.Text;
+      if func_name=nil then func_name := self.name;
       
       self.t := n.Nodes['ptype'].SingleOrDefault?.Text;
       if self.t=nil then
@@ -173,12 +175,14 @@ type
       
       self.ptr := n.Text.Count(ch->ch='*');
       
+      var is_enum := self.t in ['GLenum', 'GLbitfield'];
+      
       var gname := n['group'];
       if gname<>nil then
       begin
         Group.Used += gname;
         
-        if not (self.t in ['GLenum', 'GLbitfield']) then
+        if not is_enum then
         begin
           if LogCache.invalid_type_for_group.Add(t) then
             log.WriteLine($'Skipped group attrib for type [{t}]');
@@ -189,7 +193,11 @@ type
             log.WriteLine($'Group [{gname}] not defined');
         end;
         
-      end;
+      end;// else
+//      if is_enum then
+//        if LogCache.func_with_enum_without_group.Add(func_name) then
+//          Otp(func_name);
+//          log.WriteLine($'Command [{func_name}] has enum parameter without group');
       
     end;
     
@@ -213,9 +221,9 @@ type
     
     public constructor(n: XmlNode; groups: Dictionary<string, Group>);
     begin
-      pars += new ParData(n.Nodes['proto'].Single, groups);
+      pars += new ParData(nil, n.Nodes['proto'].Single, groups);
       foreach var pn in n.Nodes['param'] do
-        pars += new ParData(pn, groups);
+        pars += new ParData(pars[0].name, pn, groups);
     end;
     
     public procedure Save(bw: System.IO.BinaryWriter; grs: List<Group>);
