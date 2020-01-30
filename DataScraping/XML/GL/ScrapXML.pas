@@ -5,6 +5,11 @@ var log := new System.IO.StreamWriter(
   GetFullPath('..\log.dat', GetEXEFileName),
   false, enc
 );
+var allowed_api := HSet(
+  'gl','glcore', // gl есть всюду где glcore, glcore только чтоб не выводить лишнее сообщение в лог
+  'wgl',
+  'glx'
+);
 
 type
   LogCache = static class
@@ -12,9 +17,10 @@ type
     static invalid_type_for_group := new HashSet<string>;
     static missing_group := new HashSet<string>;
     static func_with_enum_without_group := new HashSet<string>;
+    static invalid_api := new HashSet<string>;
     
   end;
-
+  
 var xmls := System.IO.Directory.EnumerateFiles(GetFullPath($'..\..\..\Reps\OpenGL-Registry\xml', GetEXEFileName), '*.xml').ToHashSet;
 
 type
@@ -70,8 +76,8 @@ type
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
     
-    public static All := new List<Group>;
-    public static Used := new HashSet<string>;
+    public static All: Dictionary<string, Group>;
+    public static Used: HashSet<string>;
     
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
@@ -104,9 +110,10 @@ type
     public static procedure operator+=(gb: GroupBuilder; enum: (string,int64,boolean)) :=
     gb.enums += enum;
     
-    public static function SealAll(api_name: string): Dictionary<string, Group>;
+    public static procedure SealAll(api_name: string);
     begin
-      Result := new Dictionary<string, Group>;
+      Group.All := new Dictionary<string, Group>;
+      Group.Used := new HashSet<string>;
       
       foreach var gname in all.Keys do
       begin
@@ -142,8 +149,7 @@ type
           else
           begin
             res.bitmask := group_t=gt_bitmask;
-            Group.All += res;
-            Result.Add(gname, res);
+            Group.All.Add(gname, res);
           end;
         end;
         
@@ -155,11 +161,13 @@ type
   end;
   
   ParData = sealed class
-    name, t: string;
-    ptr: integer;
-    gr: Group := nil;
+    private name, t: string;
+    private ptr: integer;
+    private gr: Group := nil;
     
-    constructor(func_name: string; n: XmlNode; groups: Dictionary<string, Group>);
+    public on_used: ()->();
+    
+    public constructor(func_name: string; n: XmlNode);
     begin
       
       self.name := n.Nodes['name'].Single.Text;
@@ -184,31 +192,36 @@ type
         
         if not is_enum then
         begin
+          on_used += ()->
           if LogCache.invalid_type_for_group.Add(t) then
             log.WriteLine($'Skipped group attrib for type [{t}]');
         end else
-        if not groups.TryGetValue(gname, self.gr) then
+        if not Group.All.TryGetValue(gname, self.gr) then
         begin
+          on_used += ()->
           if LogCache.missing_group.Add(gname) then
-            log.WriteLine($'Group [{gname}] not defined');
+            log.WriteLine($'Group [{gname}] isn''t defined');
         end;
         
       end;// else
 //      if is_enum then
-//        if LogCache.func_with_enum_without_group.Add(func_name) then
-//          Otp(func_name);
-//          log.WriteLine($'Command [{func_name}] has enum parameter without group');
+//        on_used += ()->
+//          if LogCache.func_with_enum_without_group.Add(func_name) then
+//            Otp(func_name);
+//            log.WriteLine($'Command [{func_name}] has enum parameter without group');
+      
+      var ToDo := 0; // расскоментировать когда группы приведут в кое-какой порядк
       
     end;
     
-    public procedure Save(bw: System.IO.BinaryWriter; grs: List<Group>);
+    public procedure Save(bw: System.IO.BinaryWriter; grs: array of Group);
     begin
       bw.Write(name);
       bw.Write(t);
       bw.Write(ptr);
       
       var ind := gr=nil ? -1 : grs.IndexOf(gr);
-      if (gr<>nil) and (ind=-1) then raise new MessageException($'Group [{gr.name}] not found in saved list');
+      if (gr<>nil) and (ind=-1) then raise new MessageException($'ERROR: Group [{gr.name}] not found in saved list');
       bw.Write(ind);
       
     end;
@@ -219,14 +232,37 @@ type
     // первая пара - имя функции и возвращаемое значение
     private pars := new List<ParData>;
     
-    public constructor(n: XmlNode; groups: Dictionary<string, Group>);
+    private constructor(n: XmlNode);
     begin
-      pars += new ParData(nil, n.Nodes['proto'].Single, groups);
+      pars += new ParData(nil, n.Nodes['proto'].Single);
       foreach var pn in n.Nodes['param'] do
-        pars += new ParData(pars[0].name, pn, groups);
+        pars += new ParData(pars[0].name, pn);
     end;
     
-    public procedure Save(bw: System.IO.BinaryWriter; grs: List<Group>);
+    private static _all: Dictionary<string, FuncData>;
+    private static Used: HashSet<string>;
+    
+    public static procedure InitNodes(nodes: sequence of XmlNode);
+    begin
+      _all := new Dictionary<string, FuncData>;
+      Used := new HashSet<string>;
+      foreach var n in nodes do
+      begin
+        var f := new FuncData(n);
+        _all.Add(f.pars[0].name, f);
+      end;
+    end;
+    
+    private static function GetItem(fn: string): FuncData;
+    begin
+      Result := _all[fn];
+      if Used.Add(fn) then
+        foreach var par in Result.pars do
+          if par.on_used<>nil then par.on_used;
+    end;
+    public static property All[fn: string]: FuncData read GetItem; default;
+    
+    public procedure Save(bw: System.IO.BinaryWriter; grs: array of Group);
     begin
       bw.Write(pars.Count);
       foreach var par in pars do
@@ -235,7 +271,80 @@ type
     
   end;
   
-var funcs := new List<FuncData>;
+  Feature = sealed class
+    private name, api: string;
+    private num: array of integer;
+    private add: List<FuncData>;
+    private rem: List<FuncData>;
+    
+    public constructor(n: XmlNode);
+    begin
+      name := n['name'];
+      api := n['api'];
+      num := n['number'].ToWords('.').ConvertAll(s->s.ToInteger);
+      add := n.Nodes['require'].SelectMany(rn->rn.Nodes['command']).Select(c->FuncData[c['name']]).ToList;
+      rem := n.Nodes['remove' ].SelectMany(rn->rn.Nodes['command']).Select(c->FuncData[c['name']]).ToList;
+    end;
+    
+    public procedure Save(bw: System.IO.BinaryWriter; fncs: array of FuncData);
+    begin
+      bw.Write(name);
+      bw.Write(api);
+      bw.Write(num.Length);
+      
+      foreach var n in num do
+        bw.Write(n);
+      
+      bw.Write(add.Count);
+      foreach var f in add do
+      begin
+        var ind := fncs.IndexOf(f);
+        if ind=-1 then raise new MessageException($'ERROR: Func [{f.pars[0].name}] not found in saved list');
+        bw.Write(ind);
+      end;
+      
+      bw.Write(rem.Count);
+      foreach var f in rem do
+      begin
+        var ind := fncs.IndexOf(f);
+        if ind=-1 then raise new MessageException($'ERROR: Func [{f.pars[0].name}] not found in saved list');
+        bw.Write(ind);
+      end;
+      
+    end;
+    
+  end;
+  Extension = sealed class
+    private name: string;
+    private apis: array of string;
+    private add := new List<FuncData>;
+    
+    public constructor(n: XmlNode);
+    begin
+      name := n['name'];
+      apis := n['supported'].ToWords('|');
+      add := n.Nodes['require'].SelectMany(rn->rn.Nodes['command']).Select(c->FuncData[c['name']]).ToList;
+      if n.Nodes['remove'].Any then Otp('WARNING: ext [{name}] had "remove" tag');
+    end;
+    
+    public procedure Save(bw: System.IO.BinaryWriter; fncs: array of FuncData);
+    begin
+      bw.Write(name);
+      
+      bw.Write(apis.Length);
+      foreach var api in apis do
+        bw.Write(api);
+      
+      bw.Write(add.Count);
+      foreach var f in add do
+        bw.Write(fncs.IndexOf(f));
+      
+    end;
+    
+  end;
+  
+var features := new List<Feature>;
+var extensions := new List<Extension>;
 
 procedure ScrapFile(api_name: string);
 begin
@@ -244,20 +353,36 @@ begin
   
   foreach var enums in root.Nodes['enums'] do
   begin
-    var bitmask := enums['type'] = 'bitmask';
+    var bitmask := false;
+    var enums_t := enums['type'];
+    
+    if enums_t<>nil then
+      case enums_t of
+        
+        'bitmask': bitmask := true;
+        
+        else log.WriteLine($'Invalid <enums> type: [{enums_t}]');
+      end;
     
     foreach var enum in enums.Nodes['enum'] do
-      if (enum['api']<>nil) and (enum['api']<>'gl') then
-        log.WriteLine($'enum "{enum[''name'']}" had api "{enum[''api'']}"') else
+      if (enum['api']<>nil) and not allowed_api.Contains(enum['api']) then
+        log.WriteLine($'Enum "{enum[''name'']}" had api "{enum[''api'']}"') else
       if enum['group']<>nil then
       begin
         var val_str := enum['value'];
         var val: int64;
         
+        // у всех энумов из групп пока что тип UInt32, так что этот функционал не нужен
+        if enum['type']<>nil then raise new System.NotImplementedException;
+        
+//        var enum_t := enum['type'];
+//        if enum_t=nil then enum_t := 'u' else
+//        Writeln(enum_t);
+        
         try
           if val_str.StartsWith('0x') then
-           val := System.Convert.ToInt64(val_str, 16) else
-           val := System.Convert.ToInt64(val_str);
+            val := System.Convert.ToInt64(val_str, 16) else
+            val := System.Convert.ToInt64(val_str);
         except
           on e: Exception do log.WriteLine($'Error registering value [{val}] of token [{enum[''name'']}] in api [{api_name}]: {e}');
         end;
@@ -272,47 +397,84 @@ begin
     
   end;
   
-  var groups := GroupBuilder.SealAll(api_name);
+  GroupBuilder.SealAll(api_name);
   
-  foreach var command in root.Nodes['commands'].Single.Nodes['command'] do
-    funcs += new FuncData(command, groups);
+  FuncData.InitNodes(root.Nodes['commands'].Single.Nodes['command']);
+  
+  foreach var n in root.Nodes['feature'] do
+  begin
+    var f := new Feature(n);
+    if f.api in allowed_api then
+      features += f else
+    if LogCache.invalid_api.Add(f.api) then
+      log.WriteLine($'Invalid feature api: [{f.api}]');
+  end;
+  
+  foreach var n in root.Nodes['extensions'].Single.Nodes['extension'] do
+  begin
+    var ext := new Extension(n);
+    
+    foreach var api in ext.apis do
+      if not allowed_api.Contains(api) and LogCache.invalid_api.Add(api) then
+        log.WriteLine($'Invalid feature api: [{api}]');
+    
+    if ext.apis.Any(api->api in allowed_api) then
+      extensions += ext;
+    
+  end;
+  
+  foreach var gr in Group.All.Values do
+    if not Group.Used.Contains(gr.name) then
+      log.WriteLine($'Group [{gr.name}] wasn''t used in any function');
   
 end;
 
-procedure SaveFuncs;
+procedure SaveBin;
 begin
   Otp($'Saving as binary');
   var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath($'..\funcs.bin', GetEXEFileName)));
+  
+  var funcs := (
+    features.SelectMany(f->f.add.Concat(f.rem)) +
+    extensions.SelectMany(ext->ext.add)
+  ).ToHashSet.ToArray;
   
   var grs := funcs
     .SelectMany(f->f.pars)
     .Select(par->par.gr)
     .Where(gr->gr<>nil)
-    .ToHashSet.ToList;
-  bw.Write(grs.Count);
+    .ToHashSet.ToArray
+  ;
+  
+  bw.Write(grs.Length);
   foreach var gr in grs do
     gr.Save(bw);
   
-  bw.Write(funcs.Count);
+  bw.Write(funcs.Length);
   foreach var func in funcs do
     func.Save(bw, grs);
+  
+  bw.Write(features.Count);
+  foreach var f in features do
+    f.Save(bw, funcs);
+  
+  bw.Write(extensions.Count);
+  foreach var ext in extensions do
+    ext.Save(bw, funcs);
   
 end;
 
 begin
   try
+    
     ScrapFile('gl');
     ScrapFile('wgl');
     ScrapFile('glx');
     
     foreach var fname in xmls do
-      log.WriteLine($'file "fname" wasn''t used');
+      log.WriteLine($'File [{fname}] wasn''t used');
     
-    foreach var gr in Group.All do
-      if not Group.Used.Contains(gr.name) then
-        log.WriteLine($'group [{gr.name}] wasn''t used in any function');
-    
-    SaveFuncs;
+    SaveBin;
     
     if not CommandLineArgs.Contains('SecondaryProc') then Otp($'done');
     log.Close;

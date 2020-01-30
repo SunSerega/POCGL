@@ -1,4 +1,5 @@
 ﻿unit MiscUtils;
+
 uses System.Diagnostics;
 uses System.Threading;
 uses System.Threading.Tasks;
@@ -9,6 +10,7 @@ var sec_procs := new List<Process>;
 var sec_thrs := new List<Thread>;
 var in_err_state := false;
 var nfi := new System.Globalization.NumberFormatInfo;
+var enc := new System.Text.UTF8Encoding(true);
 
 function TimeToStr(self: int64): string; extensionmethod :=
 (self/10/1000/1000).ToString('N7', nfi).PadLeft(15);
@@ -270,6 +272,63 @@ begin
 end;
 
 {$endregion Otp}
+
+{$region Fixers}
+
+type
+  Fixer<T> = abstract class// where T: Fixer<T>; //ToDo #2191
+    protected name: string;
+    protected used: boolean;
+    
+    private static all := new Dictionary<string, T>;
+    public static adders := new List<T>;
+    protected static empty: T;
+    protected constructor(name: string);
+    begin
+      self.name := name;
+      if name=nil then exit; // внутренний фиксер, то есть или empty, или содержащийся в контейнере
+      all.Add(name, T(self as object)); //ToDo #2191, но T() нужно
+    end;
+    
+    private static function GetItem(name: string): T;
+    begin
+      if all.TryGetValue(name, Result) then
+        (Result as object as Fixer<T>).used := true else //ToDo #2191
+        Result := empty;
+    end;
+    public static property Item[name: string]: T read GetItem; default;
+    
+    protected static function ReadBlocks(lines: sequence of string; power_sign: string): sequence of (string, array of string);
+    begin
+      var res := new List<string>;
+      var name: string := nil;
+      
+      foreach var l in lines do
+        if l.StartsWith(power_sign) then
+        begin
+          if name<>nil then
+          begin
+            yield (name, res.ToArray);
+            res.Clear;
+          end;
+          name := l.Substring(power_sign.Length).Trim;
+        end else
+        if name<>nil then
+          res += l;
+      
+      if name<>nil then yield (name, res.ToArray);
+    end;
+    protected static function ReadBlocks(fname: string) := ReadBlocks(ReadLines(fname), '#');
+    
+    protected procedure WarnUnused; abstract;
+    public static procedure WarnAllUnused :=
+    foreach var f in all.Values do
+      if ((f as object as Fixer<T>).name<>nil) and not (f as object as Fixer<T>).used then //ToDo #2191 //ToDo #2191
+        (f as object as Fixer<T>).WarnUnused; //ToDo #2191
+    
+  end;
+  
+{$endregion Fixers}
 
 {$region Process execution}
 
@@ -540,6 +599,7 @@ end;
 {$endregion Task operations}
 
 begin
+  DefaultEncoding := enc;
   RegisterThr;
   while not System.Environment.CurrentDirectory.EndsWith('POCGL') do
     System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);

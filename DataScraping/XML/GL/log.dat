@@ -1,58 +1,62 @@
-﻿enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
+﻿Enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
 Skipped group attrib for type [GLfloat]
-Skipped group attrib for type [GLfixed]
-Skipped group attrib for type [GLboolean]
-Skipped group attrib for type [GLuint]
-Skipped group attrib for type [GLhandleARB]
-Skipped group attrib for type [GLintptr]
-Skipped group attrib for type [GLsizeiptr]
-Group [MaterialFace] not defined
-Skipped group attrib for type [GLintptrARB]
-Skipped group attrib for type [GLdouble]
-Skipped group attrib for type [GLsizeiptrARB]
+Group [MaterialFace] isn't defined
 Skipped group attrib for type [GLint]
-Skipped group attrib for type [GLclampf]
-Skipped group attrib for type [GLsync]
-Skipped group attrib for type [GLbyte]
-Skipped group attrib for type [GLhalfNV]
-Skipped group attrib for type [GLshort]
+Skipped group attrib for type [GLuint]
+Skipped group attrib for type [GLboolean]
 Skipped group attrib for type [GLubyte]
+Skipped group attrib for type [GLbyte]
+Skipped group attrib for type [GLdouble]
+Skipped group attrib for type [GLshort]
 Skipped group attrib for type [GLushort]
-Group [ColorTableParameterPNameSGI] not defined
+Skipped group attrib for type [GLsizei]
 Skipped group attrib for type [void]
+Skipped group attrib for type [GLsizeiptr]
+Skipped group attrib for type [GLintptr]
+Skipped group attrib for type [GLsync]
+Invalid feature api: [gles1]
+Invalid feature api: [gles2]
+Invalid feature api: [glsc2]
 Skipped group attrib for type [struct _cl_context]
 Skipped group attrib for type [struct _cl_event]
-Group [FfdMaskSGIX] not defined
+Group [ColorTableParameterPNameSGI] isn't defined
+Skipped group attrib for type [GLhandleARB]
+Skipped group attrib for type [GLsizeiptrARB]
+Skipped group attrib for type [GLintptrARB]
+Group [TexBumpParameterATI] isn't defined
 Skipped group attrib for type [GLclampd]
-Group [IglooFunctionSelectSGIX] not defined
-Skipped group attrib for type [GLsizei]
-Group [SampleMaskNV] not defined
-Group [TexBumpParameterATI] not defined
+Skipped group attrib for type [GLclampf]
+Invalid feature api: [disabled]
+Group [SampleMaskNV] isn't defined
+Skipped group attrib for type [GLhalfNV]
 Skipped group attrib for type [GLvdpauSurfaceNV]
-group [ContextFlagMask] wasn't used in any function
-group [ContextProfileMask] wasn't used in any function
-group [SubgroupSupportedFeatures] wasn't used in any function
-group [MapTextureFormatINTEL] wasn't used in any function
-group [TextureSwizzle] wasn't used in any function
-group [TextureCompareMode] wasn't used in any function
-group [PixelTexGenMode] wasn't used in any function
-group [TextureEnvMode] wasn't used in any function
-group [LightEnvModeSGIX] wasn't used in any function
-group [ColorMaterialFace] wasn't used in any function
-group [FeedBackToken] wasn't used in any function
-group [FogMode] wasn't used in any function
-group [GetPixelMap] wasn't used in any function
-group [TextureGenMode] wasn't used in any function
-group [TextureMagFilter] wasn't used in any function
-group [TextureMinFilter] wasn't used in any function
-group [TextureWrapMode] wasn't used in any function
-group [GetConvolutionParameter] wasn't used in any function
-group [ConvolutionBorderModeEXT] wasn't used in any function
-group [PointParameterNameSGIS] wasn't used in any function
-group [TextureFilterFuncSGIS] wasn't used in any function
-group [LightModelColorControl] wasn't used in any function
-group [PixelStoreResampleMode] wasn't used in any function
-group [PixelStoreSubsampleRate] wasn't used in any function
-group [CheckFramebufferStatusTarget] wasn't used in any function
-group [DrawBufferModeATI] wasn't used in any function
-group [FramebufferFetchNoncoherent] wasn't used in any function
+Skipped group attrib for type [GLfixed]
+Group [IglooFunctionSelectSGIX] isn't defined
+Group [FfdMaskSGIX] isn't defined
+Group [ContextFlagMask] wasn't used in any function
+Group [ContextProfileMask] wasn't used in any function
+Group [SubgroupSupportedFeatures] wasn't used in any function
+Group [MapTextureFormatINTEL] wasn't used in any function
+Group [TextureSwizzle] wasn't used in any function
+Group [TextureCompareMode] wasn't used in any function
+Group [PixelTexGenMode] wasn't used in any function
+Group [TextureEnvMode] wasn't used in any function
+Group [LightEnvModeSGIX] wasn't used in any function
+Group [ColorMaterialFace] wasn't used in any function
+Group [FeedBackToken] wasn't used in any function
+Group [FogMode] wasn't used in any function
+Group [GetPixelMap] wasn't used in any function
+Group [TextureGenMode] wasn't used in any function
+Group [TextureMagFilter] wasn't used in any function
+Group [TextureMinFilter] wasn't used in any function
+Group [TextureWrapMode] wasn't used in any function
+Group [GetConvolutionParameter] wasn't used in any function
+Group [ConvolutionBorderModeEXT] wasn't used in any function
+Group [PointParameterNameSGIS] wasn't used in any function
+Group [TextureFilterFuncSGIS] wasn't used in any function
+Group [LightModelColorControl] wasn't used in any function
+Group [PixelStoreResampleMode] wasn't used in any function
+Group [PixelStoreSubsampleRate] wasn't used in any function
+Group [CheckFramebufferStatusTarget] wasn't used in any function
+Group [DrawBufferModeATI] wasn't used in any function
+Group [FramebufferFetchNoncoherent] wasn't used in any function
