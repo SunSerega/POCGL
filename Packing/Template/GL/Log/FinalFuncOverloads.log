@@ -2,38 +2,38 @@
 
 
 # glActiveShaderProgram
- UInt32 | UInt32 |
+ ProgramPipelineName | ProgramName |
 
 # glActiveTexture
  TextureUnit |
 
 # glAttachShader
- UInt32 | UInt32 |
+ ProgramName | ShaderName |
 
 # glBeginConditionalRender
  UInt32 | ConditionalRenderMode |
 
 # glBeginQuery
- QueryTarget | UInt32 |
+ QueryTarget | QueryName |
 
 # glBeginQueryIndexed
- QueryTarget | UInt32 | UInt32 |
+ QueryTarget | UInt32 | QueryName |
 
 # glBeginTransformFeedback
  PrimitiveType |
 
 # glBindAttribLocation
- UInt32 | UInt32 | string |
- UInt32 | UInt32 | IntPtr |
+ ProgramName | UInt32 | string |
+ ProgramName | UInt32 | IntPtr |
 
 # glBindBuffer
- BufferTargetARB | UInt32 |
+ BufferTargetARB | BufferName |
 
 # glBindBufferBase
- BufferTargetARB | UInt32 | UInt32 |
+ BufferTargetARB | UInt32 | BufferName |
 
 # glBindBufferRange
- BufferTargetARB | UInt32 | UInt32 | IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | BufferName | IntPtr | IntPtr |
 
 # glBindBuffersBase
  BufferTargetARB | UInt32 | Int32 | array of UInt32 |
@@ -70,18 +70,18 @@
  BufferTargetARB | UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
 
 # glBindFragDataLocation
- UInt32 | UInt32 | string |
- UInt32 | UInt32 | IntPtr |
+ ProgramName | UInt32 | string |
+ ProgramName | UInt32 | IntPtr |
 
 # glBindFragDataLocationIndexed
- UInt32 | UInt32 | UInt32 | string |
- UInt32 | UInt32 | UInt32 | IntPtr |
+ ProgramName | UInt32 | UInt32 | string |
+ ProgramName | UInt32 | UInt32 | IntPtr |
 
 # glBindFramebuffer
- FramebufferTarget | UInt32 |
+ FramebufferTarget | FramebufferName |
 
 # glBindImageTexture
- UInt32 | UInt32 | Int32 | boolean | Int32 | BufferAccessARB | InternalFormat |
+ UInt32 | TextureName | Int32 | boolean | Int32 | BufferAccessARB | InternalFormat |
 
 # glBindImageTextures
  UInt32 | Int32 | array of UInt32 |
@@ -89,13 +89,13 @@
  UInt32 | Int32 | IntPtr |
 
 # glBindProgramPipeline
- UInt32 |
+ ProgramPipelineName |
 
 # glBindRenderbuffer
- RenderbufferTarget | UInt32 |
+ RenderbufferTarget | RenderbufferName |
 
 # glBindSampler
- UInt32 | UInt32 |
+ UInt32 | SamplerName |
 
 # glBindSamplers
  UInt32 | Int32 | array of UInt32 |
@@ -103,7 +103,7 @@
  UInt32 | Int32 | IntPtr |
 
 # glBindTexture
- TextureTarget | UInt32 |
+ TextureTarget | TextureName |
 
 # glBindTextures
  UInt32 | Int32 | array of UInt32 |
@@ -111,16 +111,16 @@
  UInt32 | Int32 | IntPtr |
 
 # glBindTextureUnit
- UInt32 | UInt32 |
+ UInt32 | TextureName |
 
 # glBindTransformFeedback
- BindTransformFeedbackTarget | UInt32 |
+ BindTransformFeedbackTarget | TransformFeedbackName |
 
 # glBindVertexArray
- UInt32 |
+ VertexArrayName |
 
 # glBindVertexBuffer
- UInt32 | UInt32 | IntPtr | Int32 |
+ UInt32 | BufferName | IntPtr | Int32 |
 
 # glBindVertexBuffers
  UInt32 | Int32 | array of UInt32 | array of IntPtr | array of Int32 |
@@ -300,7 +300,7 @@
  ColorPointerType | IntPtr |
 
 # glCompileShader
- UInt32 |
+ ShaderName |
 
 # glCompressedTexImage1D
  TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | IntPtr |
@@ -336,7 +336,7 @@
  UInt32 | CopyImageSubDataTarget | Int32 | Int32 | Int32 | Int32 | UInt32 | CopyImageSubDataTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glCopyNamedBufferSubData
- UInt32 | UInt32 | IntPtr | IntPtr | IntPtr |
+ BufferName | BufferName | IntPtr | IntPtr | IntPtr |
 
 # glCopyTexImage1D
  TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | Int32 |
@@ -354,13 +354,13 @@
  TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glCopyTextureSubImage1D
- UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+ TextureName | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glCopyTextureSubImage2D
- UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+ TextureName | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glCopyTextureSubImage3D
- UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+ TextureName | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glCreateBuffers
  Int32 | array of UInt32 |
@@ -373,7 +373,7 @@
  Int32 | IntPtr |
 
 # glCreateProgram
- UInt32 |
+ ProgramName |
 
 # glCreateProgramPipelines
  Int32 | array of UInt32 |
@@ -396,12 +396,12 @@
  Int32 | IntPtr |
 
 # glCreateShader
- UInt32 | ShaderType |
+ ShaderName | ShaderType |
 
 # glCreateShaderProgramv
- UInt32 | ShaderType | Int32 | array of string |
- UInt32 | ShaderType | Int32 | array of IntPtr |
- UInt32 | ShaderType | Int32 | IntPtr |
+ ProgramName | ShaderType | Int32 | array of string |
+ ProgramName | ShaderType | Int32 | array of IntPtr |
+ ProgramName | ShaderType | Int32 | IntPtr |
 
 # glCreateTextures
  TextureTarget | Int32 | array of UInt32 |
@@ -444,7 +444,7 @@
  Int32 | IntPtr |
 
 # glDeleteProgram
- UInt32 |
+ ProgramName |
 
 # glDeleteProgramPipelines
  Int32 | array of UInt32 |
@@ -467,7 +467,7 @@
  Int32 | IntPtr |
 
 # glDeleteShader
- UInt32 |
+ ShaderName |
 
 # glDeleteSync
  GLsync |
@@ -508,7 +508,7 @@
  UInt32 | real | real |
 
 # glDetachShader
- UInt32 | UInt32 |
+ ProgramName | ShaderName |
 
 # glDisable
  EnableCap |
@@ -517,7 +517,7 @@
  EnableCap | UInt32 |
 
 # glDisableVertexArrayAttrib
- UInt32 | UInt32 |
+ VertexArrayName | UInt32 |
 
 # glDisableVertexAttribArray
  UInt32 |
@@ -576,16 +576,16 @@
  PrimitiveType | UInt32 | UInt32 | Int32 | DrawElementsType | IntPtr | Int32 |
 
 # glDrawTransformFeedback
- PrimitiveType | UInt32 |
+ PrimitiveType | TransformFeedbackName |
 
 # glDrawTransformFeedbackInstanced
- PrimitiveType | UInt32 | Int32 |
+ PrimitiveType | TransformFeedbackName | Int32 |
 
 # glDrawTransformFeedbackStream
- PrimitiveType | UInt32 | UInt32 |
+ PrimitiveType | TransformFeedbackName | UInt32 |
 
 # glDrawTransformFeedbackStreamInstanced
- PrimitiveType | UInt32 | UInt32 | Int32 |
+ PrimitiveType | TransformFeedbackName | UInt32 | Int32 |
 
 # glEnable
  EnableCap |
@@ -594,7 +594,7 @@
  EnableCap | UInt32 |
 
 # glEnableVertexArrayAttrib
- UInt32 | UInt32 |
+ VertexArrayName | UInt32 |
 
 # glEnableVertexAttribArray
  UInt32 |
@@ -612,16 +612,16 @@
  BufferTargetARB | IntPtr | IntPtr |
 
 # glFlushMappedNamedBufferRange
- UInt32 | IntPtr | IntPtr |
+ BufferName | IntPtr | IntPtr |
 
 # glFramebufferParameteri
  FramebufferTarget | FramebufferParameterName | Int32 |
 
 # glFramebufferRenderbuffer
- FramebufferTarget | FramebufferAttachment | RenderbufferTarget | UInt32 |
+ FramebufferTarget | FramebufferAttachment | RenderbufferTarget | RenderbufferName |
 
 # glFramebufferTexture
- FramebufferTarget | FramebufferAttachment | UInt32 | Int32 |
+ FramebufferTarget | FramebufferAttachment | TextureName | Int32 |
 
 # glFramebufferTexture1D
  FramebufferTarget | FramebufferAttachment | TextureTarget | UInt32 | Int32 |
@@ -633,7 +633,7 @@
  FramebufferTarget | FramebufferAttachment | TextureTarget | UInt32 | Int32 | Int32 |
 
 # glFramebufferTextureLayer
- FramebufferTarget | FramebufferAttachment | UInt32 | Int32 | Int32 |
+ FramebufferTarget | FramebufferAttachment | TextureName | Int32 | Int32 |
 
 # glFrontFace
  FrontFaceDirection |
@@ -647,7 +647,7 @@
  TextureTarget |
 
 # glGenerateTextureMipmap
- UInt32 |
+ TextureName |
 
 # glGenFramebuffers
  Int32 | array of UInt32 |
@@ -759,9 +759,9 @@
  UInt32 | ShaderType | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetActiveSubroutineUniformiv
- UInt32 | ShaderType | UInt32 | SubroutineParameterName | array of Int32 |
- UInt32 | ShaderType | UInt32 | SubroutineParameterName | var!Int32 |
- UInt32 | ShaderType | UInt32 | SubroutineParameterName | IntPtr |
+ ProgramName | ShaderType | UInt32 | SubroutineParameterName | array of Int32 |
+ ProgramName | ShaderType | UInt32 | SubroutineParameterName | var!Int32 |
+ ProgramName | ShaderType | UInt32 | SubroutineParameterName | IntPtr |
 
 # glGetActiveSubroutineUniformName
  UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | string |
@@ -871,8 +871,8 @@
  UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetAttribLocation
- Int32 | UInt32 | string |
- Int32 | UInt32 | IntPtr |
+ Int32 | ProgramName | string |
+ Int32 | ProgramName | IntPtr |
 
 # glGetBooleani_v
  BufferTargetARB | UInt32 | array of boolean |
@@ -1423,12 +1423,12 @@
  GetPName | IntPtr |
 
 # glGetFragDataIndex
- Int32 | UInt32 | string |
- Int32 | UInt32 | IntPtr |
+ Int32 | ProgramName | string |
+ Int32 | ProgramName | IntPtr |
 
 # glGetFragDataLocation
- Int32 | UInt32 | string |
- Int32 | UInt32 | IntPtr |
+ Int32 | ProgramName | string |
+ Int32 | ProgramName | IntPtr |
 
 # glGetFramebufferAttachmentParameteriv
  FramebufferTarget | FramebufferAttachment | FramebufferAttachmentParameterName | array of Int32 |
@@ -1568,24 +1568,24 @@
  TextureTarget | Int32 | PixelFormat | PixelType | Int32 | IntPtr |
 
 # glGetnUniformdv
- UInt32 | Int32 | Int32 | array of real |
- UInt32 | Int32 | Int32 | var!real |
- UInt32 | Int32 | Int32 | IntPtr |
+ ProgramName | Int32 | Int32 | array of real |
+ ProgramName | Int32 | Int32 | var!real |
+ ProgramName | Int32 | Int32 | IntPtr |
 
 # glGetnUniformfv
- UInt32 | Int32 | Int32 | array of single |
- UInt32 | Int32 | Int32 | var!single |
- UInt32 | Int32 | Int32 | IntPtr |
+ ProgramName | Int32 | Int32 | array of single |
+ ProgramName | Int32 | Int32 | var!single |
+ ProgramName | Int32 | Int32 | IntPtr |
 
 # glGetnUniformiv
- UInt32 | Int32 | Int32 | array of Int32 |
- UInt32 | Int32 | Int32 | var!Int32 |
- UInt32 | Int32 | Int32 | IntPtr |
+ ProgramName | Int32 | Int32 | array of Int32 |
+ ProgramName | Int32 | Int32 | var!Int32 |
+ ProgramName | Int32 | Int32 | IntPtr |
 
 # glGetnUniformuiv
- UInt32 | Int32 | Int32 | array of UInt32 |
- UInt32 | Int32 | Int32 | var!UInt32 |
- UInt32 | Int32 | Int32 | IntPtr |
+ ProgramName | Int32 | Int32 | array of UInt32 |
+ ProgramName | Int32 | Int32 | var!UInt32 |
+ ProgramName | Int32 | Int32 | IntPtr |
 
 # glGetObjectLabel
  ObjectIdentifier | UInt32 | Int32 | array of Int32 | string |
@@ -1628,14 +1628,14 @@
  UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetProgramInterfaceiv
- UInt32 | ProgramInterface | ProgramInterfacePName | array of Int32 |
- UInt32 | ProgramInterface | ProgramInterfacePName | var!Int32 |
- UInt32 | ProgramInterface | ProgramInterfacePName | IntPtr |
+ ProgramName | ProgramInterface | ProgramInterfacePName | array of Int32 |
+ ProgramName | ProgramInterface | ProgramInterfacePName | var!Int32 |
+ ProgramName | ProgramInterface | ProgramInterfacePName | IntPtr |
 
 # glGetProgramiv
- UInt32 | ProgramPropertyARB | array of Int32 |
- UInt32 | ProgramPropertyARB | var!Int32 |
- UInt32 | ProgramPropertyARB | IntPtr |
+ ProgramName | ProgramPropertyARB | array of Int32 |
+ ProgramName | ProgramPropertyARB | var!Int32 |
+ ProgramName | ProgramPropertyARB | IntPtr |
 
 # glGetProgramPipelineInfoLog
  UInt32 | Int32 | array of Int32 | string |
@@ -1651,8 +1651,8 @@
  UInt32 | PipelineParameterName | IntPtr |
 
 # glGetProgramResourceIndex
- UInt32 | UInt32 | ProgramInterface | string |
- UInt32 | UInt32 | ProgramInterface | IntPtr |
+ UInt32 | ProgramName | ProgramInterface | string |
+ UInt32 | ProgramName | ProgramInterface | IntPtr |
 
 # glGetProgramResourceiv
  UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | array of Int32 | array of Int32 |
@@ -1684,12 +1684,12 @@
  UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | IntPtr | IntPtr |
 
 # glGetProgramResourceLocation
- Int32 | UInt32 | ProgramInterface | string |
- Int32 | UInt32 | ProgramInterface | IntPtr |
+ Int32 | ProgramName | ProgramInterface | string |
+ Int32 | ProgramName | ProgramInterface | IntPtr |
 
 # glGetProgramResourceLocationIndex
- Int32 | UInt32 | ProgramInterface | string |
- Int32 | UInt32 | ProgramInterface | IntPtr |
+ Int32 | ProgramName | ProgramInterface | string |
+ Int32 | ProgramName | ProgramInterface | IntPtr |
 
 # glGetProgramResourceName
  UInt32 | ProgramInterface | UInt32 | Int32 | array of Int32 | string |
@@ -1700,21 +1700,21 @@
  UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetProgramStageiv
- UInt32 | ShaderType | ProgramStagePName | array of Int32 |
- UInt32 | ShaderType | ProgramStagePName | var!Int32 |
- UInt32 | ShaderType | ProgramStagePName | IntPtr |
+ ProgramName | ShaderType | ProgramStagePName | array of Int32 |
+ ProgramName | ShaderType | ProgramStagePName | var!Int32 |
+ ProgramName | ShaderType | ProgramStagePName | IntPtr |
 
 # glGetQueryBufferObjecti64v
- UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+ QueryName | BufferName | QueryObjectParameterName | IntPtr |
 
 # glGetQueryBufferObjectiv
- UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+ QueryName | BufferName | QueryObjectParameterName | IntPtr |
 
 # glGetQueryBufferObjectui64v
- UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+ QueryName | BufferName | QueryObjectParameterName | IntPtr |
 
 # glGetQueryBufferObjectuiv
- UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+ QueryName | BufferName | QueryObjectParameterName | IntPtr |
 
 # glGetQueryIndexediv
  QueryTarget | UInt32 | QueryParameterName | array of Int32 |
@@ -1780,9 +1780,9 @@
  UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetShaderiv
- UInt32 | ShaderParameterName | array of Int32 |
- UInt32 | ShaderParameterName | var!Int32 |
- UInt32 | ShaderParameterName | IntPtr |
+ ShaderName | ShaderParameterName | array of Int32 |
+ ShaderName | ShaderParameterName | var!Int32 |
+ ShaderName | ShaderParameterName | IntPtr |
 
 # glGetShaderPrecisionFormat
  ShaderType | PrecisionType | array of Int32 | array of Int32 |
@@ -1810,12 +1810,12 @@
  string | StringName | UInt32 |
 
 # glGetSubroutineIndex
- UInt32 | UInt32 | ShaderType | string |
- UInt32 | UInt32 | ShaderType | IntPtr |
+ UInt32 | ProgramName | ShaderType | string |
+ UInt32 | ProgramName | ShaderType | IntPtr |
 
 # glGetSubroutineUniformLocation
- Int32 | UInt32 | ShaderType | string |
- Int32 | UInt32 | ShaderType | IntPtr |
+ Int32 | ProgramName | ShaderType | string |
+ Int32 | ProgramName | ShaderType | IntPtr |
 
 # glGetSynciv
  GLsync | SyncParameterName | Int32 | array of Int32 | array of Int32 |
@@ -1969,38 +1969,38 @@
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glGetUniformBlockIndex
- UInt32 | UInt32 | string |
- UInt32 | UInt32 | IntPtr |
+ UInt32 | ProgramName | string |
+ UInt32 | ProgramName | IntPtr |
 
 # glGetUniformdv
- UInt32 | Int32 | array of real |
- UInt32 | Int32 | var!real |
- UInt32 | Int32 | IntPtr |
+ ProgramName | Int32 | array of real |
+ ProgramName | Int32 | var!real |
+ ProgramName | Int32 | IntPtr |
 
 # glGetUniformfv
- UInt32 | Int32 | array of single |
- UInt32 | Int32 | var!single |
- UInt32 | Int32 | IntPtr |
+ ProgramName | Int32 | array of single |
+ ProgramName | Int32 | var!single |
+ ProgramName | Int32 | IntPtr |
 
 # glGetUniformIndices
- UInt32 | Int32 | array of string | array of UInt32 |
- UInt32 | Int32 | array of string | var!UInt32 |
- UInt32 | Int32 | array of string | IntPtr |
- UInt32 | Int32 | array of IntPtr | array of UInt32 |
- UInt32 | Int32 | array of IntPtr | var!UInt32 |
- UInt32 | Int32 | array of IntPtr | IntPtr |
- UInt32 | Int32 | IntPtr | array of UInt32 |
- UInt32 | Int32 | IntPtr | var!UInt32 |
- UInt32 | Int32 | IntPtr | IntPtr |
+ ProgramName | Int32 | array of string | array of UInt32 |
+ ProgramName | Int32 | array of string | var!UInt32 |
+ ProgramName | Int32 | array of string | IntPtr |
+ ProgramName | Int32 | array of IntPtr | array of UInt32 |
+ ProgramName | Int32 | array of IntPtr | var!UInt32 |
+ ProgramName | Int32 | array of IntPtr | IntPtr |
+ ProgramName | Int32 | IntPtr | array of UInt32 |
+ ProgramName | Int32 | IntPtr | var!UInt32 |
+ ProgramName | Int32 | IntPtr | IntPtr |
 
 # glGetUniformiv
- UInt32 | Int32 | array of Int32 |
- UInt32 | Int32 | var!Int32 |
- UInt32 | Int32 | IntPtr |
+ ProgramName | Int32 | array of Int32 |
+ ProgramName | Int32 | var!Int32 |
+ ProgramName | Int32 | IntPtr |
 
 # glGetUniformLocation
- Int32 | UInt32 | string |
- Int32 | UInt32 | IntPtr |
+ Int32 | ProgramName | string |
+ Int32 | ProgramName | IntPtr |
 
 # glGetUniformSubroutineuiv
  ShaderType | Int32 | array of UInt32 |
@@ -2008,9 +2008,9 @@
  ShaderType | Int32 | IntPtr |
 
 # glGetUniformuiv
- UInt32 | Int32 | array of UInt32 |
- UInt32 | Int32 | var!UInt32 |
- UInt32 | Int32 | IntPtr |
+ ProgramName | Int32 | array of UInt32 |
+ ProgramName | Int32 | var!UInt32 |
+ ProgramName | Int32 | IntPtr |
 
 # glGetVertexArrayIndexed64iv
  UInt32 | UInt32 | VertexArrayPName | array of Int64 |
@@ -2066,10 +2066,10 @@
  HintTarget | HintMode |
 
 # glInvalidateBufferData
- UInt32 |
+ BufferName |
 
 # glInvalidateBufferSubData
- UInt32 | IntPtr | IntPtr |
+ BufferName | IntPtr | IntPtr |
 
 # glInvalidateFramebuffer
  FramebufferTarget | Int32 | array of InvalidateFramebufferAttachment |
@@ -2092,13 +2092,13 @@
  FramebufferTarget | Int32 | IntPtr | Int32 | Int32 | Int32 | Int32 |
 
 # glInvalidateTexImage
- UInt32 | Int32 |
+ TextureName | Int32 |
 
 # glInvalidateTexSubImage
- UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+ TextureName | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glIsBuffer
- boolean | UInt32 |
+ boolean | BufferName |
 
 # glIsEnabled
  boolean | EnableCap |
@@ -2107,43 +2107,43 @@
  boolean | EnableCap | UInt32 |
 
 # glIsFramebuffer
- boolean | UInt32 |
+ boolean | FramebufferName |
 
 # glIsProgram
- boolean | UInt32 |
+ boolean | ProgramName |
 
 # glIsProgramPipeline
- boolean | UInt32 |
+ boolean | ProgramPipelineName |
 
 # glIsQuery
- boolean | UInt32 |
+ boolean | QueryName |
 
 # glIsRenderbuffer
- boolean | UInt32 |
+ boolean | RenderbufferName |
 
 # glIsSampler
- boolean | UInt32 |
+ boolean | SamplerName |
 
 # glIsShader
- boolean | UInt32 |
+ boolean | ShaderName |
 
 # glIsSync
  boolean | GLsync |
 
 # glIsTexture
- boolean | UInt32 |
+ boolean | TextureName |
 
 # glIsTransformFeedback
- boolean | UInt32 |
+ boolean | TransformFeedbackName |
 
 # glIsVertexArray
- boolean | UInt32 |
+ boolean | VertexArrayName |
 
 # glLineWidth
  single |
 
 # glLinkProgram
- UInt32 |
+ ProgramName |
 
 # glLogicOp
  LogicOp |
@@ -2155,10 +2155,10 @@
  IntPtr | BufferTargetARB | IntPtr | IntPtr | MapBufferAccessMask |
 
 # glMapNamedBuffer
- IntPtr | UInt32 | BufferAccessARB |
+ IntPtr | BufferName | BufferAccessARB |
 
 # glMapNamedBufferRange
- IntPtr | UInt32 | IntPtr | IntPtr | MapBufferAccessMask |
+ IntPtr | BufferName | IntPtr | IntPtr | MapBufferAccessMask |
 
 # glMemoryBarrier
  MemoryBarrierMask |
@@ -2274,7 +2274,7 @@
  UInt32 | IntPtr | IntPtr | IntPtr |
 
 # glNamedFramebufferDrawBuffer
- UInt32 | ColorBuffer |
+ FramebufferName | ColorBuffer |
 
 # glNamedFramebufferDrawBuffers
  UInt32 | Int32 | array of ColorBuffer |
@@ -2282,25 +2282,25 @@
  UInt32 | Int32 | IntPtr |
 
 # glNamedFramebufferParameteri
- UInt32 | FramebufferParameterName | Int32 |
+ FramebufferName | FramebufferParameterName | Int32 |
 
 # glNamedFramebufferReadBuffer
- UInt32 | ColorBuffer |
+ FramebufferName | ColorBuffer |
 
 # glNamedFramebufferRenderbuffer
- UInt32 | FramebufferAttachment | RenderbufferTarget | UInt32 |
+ FramebufferName | FramebufferAttachment | RenderbufferTarget | RenderbufferName |
 
 # glNamedFramebufferTexture
- UInt32 | FramebufferAttachment | UInt32 | Int32 |
+ FramebufferName | FramebufferAttachment | TextureName | Int32 |
 
 # glNamedFramebufferTextureLayer
- UInt32 | FramebufferAttachment | UInt32 | Int32 | Int32 |
+ FramebufferName | FramebufferAttachment | TextureName | Int32 | Int32 |
 
 # glNamedRenderbufferStorage
- UInt32 | InternalFormat | Int32 | Int32 |
+ RenderbufferName | InternalFormat | Int32 | Int32 |
 
 # glNamedRenderbufferStorageMultisample
- UInt32 | Int32 | InternalFormat | Int32 | Int32 |
+ RenderbufferName | Int32 | InternalFormat | Int32 | Int32 |
 
 # glNormalP3ui
  NormalPointerType | UInt32 |
@@ -2367,10 +2367,10 @@
  UInt32 | DummyEnum | IntPtr | Int32 |
 
 # glProgramParameteri
- UInt32 | ProgramParameterPName | Int32 |
+ ProgramName | ProgramParameterPName | Int32 |
 
 # glProgramUniform1d
- UInt32 | Int32 | real |
+ ProgramName | Int32 | real |
 
 # glProgramUniform1dv
  UInt32 | Int32 | Int32 | array of real |
@@ -2378,7 +2378,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform1f
- UInt32 | Int32 | single |
+ ProgramName | Int32 | single |
 
 # glProgramUniform1fv
  UInt32 | Int32 | Int32 | array of single |
@@ -2386,7 +2386,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform1i
- UInt32 | Int32 | Int32 |
+ ProgramName | Int32 | Int32 |
 
 # glProgramUniform1iv
  UInt32 | Int32 | Int32 | array of Int32 |
@@ -2394,7 +2394,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform1ui
- UInt32 | Int32 | UInt32 |
+ ProgramName | Int32 | UInt32 |
 
 # glProgramUniform1uiv
  UInt32 | Int32 | Int32 | array of UInt32 |
@@ -2402,7 +2402,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform2d
- UInt32 | Int32 | real | real |
+ ProgramName | Int32 | real | real |
 
 # glProgramUniform2dv
  UInt32 | Int32 | Int32 | array of real |
@@ -2410,7 +2410,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform2f
- UInt32 | Int32 | single | single |
+ ProgramName | Int32 | single | single |
 
 # glProgramUniform2fv
  UInt32 | Int32 | Int32 | array of single |
@@ -2418,7 +2418,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform2i
- UInt32 | Int32 | Int32 | Int32 |
+ ProgramName | Int32 | Int32 | Int32 |
 
 # glProgramUniform2iv
  UInt32 | Int32 | Int32 | array of Int32 |
@@ -2426,7 +2426,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform2ui
- UInt32 | Int32 | UInt32 | UInt32 |
+ ProgramName | Int32 | UInt32 | UInt32 |
 
 # glProgramUniform2uiv
  UInt32 | Int32 | Int32 | array of UInt32 |
@@ -2434,7 +2434,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform3d
- UInt32 | Int32 | real | real | real |
+ ProgramName | Int32 | real | real | real |
 
 # glProgramUniform3dv
  UInt32 | Int32 | Int32 | array of real |
@@ -2442,7 +2442,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform3f
- UInt32 | Int32 | single | single | single |
+ ProgramName | Int32 | single | single | single |
 
 # glProgramUniform3fv
  UInt32 | Int32 | Int32 | array of single |
@@ -2450,7 +2450,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform3i
- UInt32 | Int32 | Int32 | Int32 | Int32 |
+ ProgramName | Int32 | Int32 | Int32 | Int32 |
 
 # glProgramUniform3iv
  UInt32 | Int32 | Int32 | array of Int32 |
@@ -2458,7 +2458,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform3ui
- UInt32 | Int32 | UInt32 | UInt32 | UInt32 |
+ ProgramName | Int32 | UInt32 | UInt32 | UInt32 |
 
 # glProgramUniform3uiv
  UInt32 | Int32 | Int32 | array of UInt32 |
@@ -2466,7 +2466,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform4d
- UInt32 | Int32 | real | real | real | real |
+ ProgramName | Int32 | real | real | real | real |
 
 # glProgramUniform4dv
  UInt32 | Int32 | Int32 | array of real |
@@ -2474,7 +2474,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform4f
- UInt32 | Int32 | single | single | single | single |
+ ProgramName | Int32 | single | single | single | single |
 
 # glProgramUniform4fv
  UInt32 | Int32 | Int32 | array of single |
@@ -2482,7 +2482,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform4i
- UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+ ProgramName | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glProgramUniform4iv
  UInt32 | Int32 | Int32 | array of Int32 |
@@ -2490,7 +2490,7 @@
  UInt32 | Int32 | Int32 | IntPtr |
 
 # glProgramUniform4ui
- UInt32 | Int32 | UInt32 | UInt32 | UInt32 | UInt32 |
+ ProgramName | Int32 | UInt32 | UInt32 | UInt32 | UInt32 |
 
 # glProgramUniform4uiv
  UInt32 | Int32 | Int32 | array of UInt32 |
@@ -2595,7 +2595,7 @@
  DebugSource | UInt32 | Int32 | IntPtr |
 
 # glQueryCounter
- UInt32 | QueryCounterTarget |
+ QueryName | QueryCounterTarget |
 
 # glReadBuffer
  ReadBufferMode |
@@ -2619,7 +2619,7 @@
  UInt32 | DummyFlags |
 
 # glSamplerParameterf
- UInt32 | SamplerParameterF | single |
+ SamplerName | SamplerParameterF | single |
 
 # glSamplerParameterfv
  UInt32 | SamplerParameterF | array of single |
@@ -2685,7 +2685,7 @@
  UInt32 | Int32 | IntPtr | IntPtr |
 
 # glShaderStorageBlockBinding
- UInt32 | UInt32 | UInt32 |
+ ProgramName | UInt32 | UInt32 |
 
 # glSpecializeShader
  UInt32 | string | UInt32 | array of UInt32 | array of UInt32 |
@@ -2726,10 +2726,10 @@
  StencilFaceDirection | StencilOp | StencilOp | StencilOp |
 
 # glTexBuffer
- TextureTarget | InternalFormat | UInt32 |
+ TextureTarget | InternalFormat | BufferName |
 
 # glTexBufferRange
- TextureTarget | InternalFormat | UInt32 | IntPtr | IntPtr |
+ TextureTarget | InternalFormat | BufferName | IntPtr | IntPtr |
 
 # glTexCoordP1ui
  TexCoordPointerType | UInt32 |
@@ -2829,13 +2829,13 @@
  TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
 
 # glTextureBuffer
- UInt32 | InternalFormat | UInt32 |
+ TextureName | InternalFormat | BufferName |
 
 # glTextureBufferRange
- UInt32 | InternalFormat | UInt32 | IntPtr | IntPtr |
+ TextureName | InternalFormat | BufferName | IntPtr | IntPtr |
 
 # glTextureParameterf
- UInt32 | TextureParameterName | single |
+ TextureName | TextureParameterName | single |
 
 # glTextureParameterfv
  UInt32 | TextureParameterName | array of single |
@@ -2861,19 +2861,19 @@
  UInt32 | TextureParameterName | IntPtr |
 
 # glTextureStorage1D
- UInt32 | Int32 | InternalFormat | Int32 |
+ TextureName | Int32 | InternalFormat | Int32 |
 
 # glTextureStorage2D
- UInt32 | Int32 | InternalFormat | Int32 | Int32 |
+ TextureName | Int32 | InternalFormat | Int32 | Int32 |
 
 # glTextureStorage2DMultisample
- UInt32 | Int32 | InternalFormat | Int32 | Int32 | boolean |
+ TextureName | Int32 | InternalFormat | Int32 | Int32 | boolean |
 
 # glTextureStorage3D
- UInt32 | Int32 | InternalFormat | Int32 | Int32 | Int32 |
+ TextureName | Int32 | InternalFormat | Int32 | Int32 | Int32 |
 
 # glTextureStorage3DMultisample
- UInt32 | Int32 | InternalFormat | Int32 | Int32 | Int32 | boolean |
+ TextureName | Int32 | InternalFormat | Int32 | Int32 | Int32 | boolean |
 
 # glTextureSubImage1D
  UInt32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
@@ -2885,13 +2885,13 @@
  UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
 
 # glTextureView
- UInt32 | TextureTarget | UInt32 | InternalFormat | UInt32 | UInt32 | UInt32 | UInt32 |
+ TextureName | TextureTarget | TextureName | InternalFormat | UInt32 | UInt32 | UInt32 | UInt32 |
 
 # glTransformFeedbackBufferBase
- UInt32 | UInt32 | UInt32 |
+ TransformFeedbackName | UInt32 | BufferName |
 
 # glTransformFeedbackBufferRange
- UInt32 | UInt32 | UInt32 | IntPtr | IntPtr |
+ TransformFeedbackName | UInt32 | BufferName | IntPtr | IntPtr |
 
 # glTransformFeedbackVaryings
  UInt32 | Int32 | array of string | TransformFeedbackBufferMode |
@@ -3027,7 +3027,7 @@
  Int32 | Int32 | IntPtr |
 
 # glUniformBlockBinding
- UInt32 | UInt32 | UInt32 |
+ ProgramName | UInt32 | UInt32 |
 
 # glUniformMatrix2dv
  Int32 | Int32 | boolean | array of real |
@@ -3128,40 +3128,40 @@
  boolean | BufferTargetARB |
 
 # glUnmapNamedBuffer
- boolean | UInt32 |
+ boolean | BufferName |
 
 # glUseProgram
- UInt32 |
+ ProgramName |
 
 # glUseProgramStages
- UInt32 | UseProgramStageMask | UInt32 |
+ ProgramPipelineName | UseProgramStageMask | ProgramName |
 
 # glValidateProgram
- UInt32 |
+ ProgramName |
 
 # glValidateProgramPipeline
- UInt32 |
+ ProgramPipelineName |
 
 # glVertexArrayAttribBinding
- UInt32 | UInt32 | UInt32 |
+ VertexArrayName | UInt32 | UInt32 |
 
 # glVertexArrayAttribFormat
- UInt32 | UInt32 | Int32 | VertexAttribType | boolean | UInt32 |
+ VertexArrayName | UInt32 | Int32 | VertexAttribType | boolean | UInt32 |
 
 # glVertexArrayAttribIFormat
- UInt32 | UInt32 | Int32 | VertexAttribIType | UInt32 |
+ VertexArrayName | UInt32 | Int32 | VertexAttribIType | UInt32 |
 
 # glVertexArrayAttribLFormat
- UInt32 | UInt32 | Int32 | VertexAttribLType | UInt32 |
+ VertexArrayName | UInt32 | Int32 | VertexAttribLType | UInt32 |
 
 # glVertexArrayBindingDivisor
- UInt32 | UInt32 | UInt32 |
+ VertexArrayName | UInt32 | UInt32 |
 
 # glVertexArrayElementBuffer
- UInt32 | UInt32 |
+ VertexArrayName | BufferName |
 
 # glVertexArrayVertexBuffer
- UInt32 | UInt32 | UInt32 | IntPtr | Int32 |
+ VertexArrayName | UInt32 | BufferName | IntPtr | Int32 |
 
 # glVertexArrayVertexBuffers
  UInt32 | UInt32 | Int32 | array of UInt32 | array of IntPtr | array of Int32 |

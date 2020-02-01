@@ -13,10 +13,10 @@ end;
 begin
   try
     InitLog(log, '..\Log\Funcs.log');
-    InitLog(func_ovrs_log, '..\Log\FinalFuncOverloads.log');
+    InitLog(log_func_ovrs, '..\Log\FinalFuncOverloads.log');
     var res := new StringBuilder;
     
-    loop 3 do func_ovrs_log.WriteLine;
+    loop 3 do log_func_ovrs.WriteLine;
     
     Otp($'Reading .bin');
     var br := new System.IO.BinaryReader(System.IO.File.OpenRead('DataScraping\XML\GL\funcs.bin'));
@@ -83,15 +83,16 @@ begin
     res += '  ';
     
     var ToDo := 0; //ToDo extensions
+    Otp($'WARNING: Extension funcs aren''t packed yet');
     
     GroupFixer.WarnAllUnused;
     FuncOrgParam.WarnUnusedTypeTable;
     FuncFixer.WarnAllUnused;
     
-    loop 1 do func_ovrs_log.WriteLine;
+    loop 1 do log_func_ovrs.WriteLine;
     
     log.Close;
-    func_ovrs_log.Close;
+    log_func_ovrs.Close;
     WriteAllText(GetFullPath('..\Funcs.template', GetEXEFileName), res.ToString);
     if CommandLineArgs.Contains('SecondaryProc') then ReadString('done');
   except

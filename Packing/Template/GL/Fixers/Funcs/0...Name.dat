@@ -1,0 +1,612 @@
+
+
+
+# glGetQueryBufferObjecti64v
+!repl_par_t
+UInt32= QueryName | BufferName
+
+# glGetQueryBufferObjectiv
+!repl_par_t
+UInt32= QueryName | BufferName
+
+# glGetQueryBufferObjectui64v
+!repl_par_t
+UInt32= QueryName | BufferName
+
+# glGetQueryBufferObjectuiv
+!repl_par_t
+UInt32= QueryName | BufferName
+
+# glBeginQuery
+!repl_par_t
+UInt32=QueryName
+
+# glBeginQueryIndexed
+!repl_par_t
+UInt32= UInt32 | QueryName
+
+# glIsQuery
+!repl_par_t
+UInt32=QueryName
+
+# glQueryCounter
+!repl_par_t
+UInt32=QueryName
+
+
+
+
+# glBindBuffer
+!repl_par_t
+UInt32=BufferName
+
+# glBindBufferBase
+!repl_par_t
+UInt32= UInt32 | BufferName
+
+# glBindBufferRange
+!repl_par_t
+UInt32= UInt32 | BufferName
+
+# glBindVertexBuffer
+!repl_par_t
+UInt32= UInt32 | BufferName
+
+# glCopyNamedBufferSubData
+!repl_par_t
+UInt32= BufferName | BufferName
+
+# glFlushMappedNamedBufferRange
+!repl_par_t
+UInt32=BufferName
+
+# glInvalidateBufferData
+!repl_par_t
+UInt32=BufferName
+
+# glInvalidateBufferSubData
+!repl_par_t
+UInt32=BufferName
+
+# glIsBuffer
+!repl_par_t
+UInt32=BufferName
+
+# glMapNamedBuffer
+!repl_par_t
+UInt32=BufferName
+
+# glMapNamedBufferRange
+!repl_par_t
+UInt32=BufferName
+
+# glTexBuffer
+!repl_par_t
+UInt32=BufferName
+
+# glTexBufferRange
+!repl_par_t
+UInt32=BufferName
+
+# glTextureBuffer
+!repl_par_t
+UInt32= TextureName | BufferName
+
+# glTextureBufferRange
+!repl_par_t
+UInt32= TextureName | BufferName
+
+# glTransformFeedbackBufferBase
+!repl_par_t
+UInt32= TransformFeedbackName | UInt32 | BufferName
+
+# glTransformFeedbackBufferRange
+!repl_par_t
+UInt32= TransformFeedbackName | UInt32 | BufferName
+
+# glUnmapNamedBuffer
+!repl_par_t
+UInt32=BufferName
+
+# glVertexArrayElementBuffer
+!repl_par_t
+UInt32= VertexArrayName | BufferName
+
+# glVertexArrayVertexBuffer
+!repl_par_t
+UInt32= VertexArrayName | UInt32 | BufferName
+
+
+
+
+
+# glBindImageTexture
+!repl_par_t
+UInt32= UInt32 | TextureName
+
+# glBindTexture
+!repl_par_t
+UInt32=TextureName
+
+# glBindTextureUnit
+!repl_par_t
+UInt32= UInt32 | TextureName
+
+# glCopyTextureSubImage1D
+!repl_par_t
+UInt32=TextureName
+
+# glCopyTextureSubImage2D
+!repl_par_t
+UInt32=TextureName
+
+# glCopyTextureSubImage3D
+!repl_par_t
+UInt32=TextureName
+
+# glFramebufferTexture
+!repl_par_t
+UInt32=TextureName
+
+# glFramebufferTextureLayer
+!repl_par_t
+UInt32=TextureName
+
+# glGenerateTextureMipmap
+!repl_par_t
+UInt32=TextureName
+
+# glInvalidateTexImage
+!repl_par_t
+UInt32=TextureName
+
+# glInvalidateTexSubImage
+!repl_par_t
+UInt32=TextureName
+
+# glIsTexture
+!repl_par_t
+UInt32=TextureName
+
+# glNamedFramebufferTexture
+!repl_par_t
+UInt32= FramebufferName | TextureName
+
+# glNamedFramebufferTextureLayer
+!repl_par_t
+UInt32= FramebufferName | TextureName
+
+# glTextureParameterf
+!repl_par_t
+UInt32=TextureName
+
+# glTextureStorage1D
+!repl_par_t
+UInt32=TextureName
+
+# glTextureStorage2D
+!repl_par_t
+UInt32=TextureName
+
+# glTextureStorage2DMultisample
+!repl_par_t
+UInt32=TextureName
+
+# glTextureStorage3D
+!repl_par_t
+UInt32=TextureName
+
+# glTextureStorage3DMultisample
+!repl_par_t
+UInt32=TextureName
+
+# glTextureView
+!repl_par_t
+UInt32= TextureName | TextureName | UInt32 | UInt32 | UInt32 | UInt32
+
+
+
+
+
+# glActiveShaderProgram
+!repl_par_t
+UInt32= ProgramPipelineName | ProgramName
+
+# glBindProgramPipeline
+!repl_par_t
+UInt32=ProgramPipelineName
+
+# glIsProgramPipeline
+!repl_par_t
+UInt32=ProgramPipelineName
+
+# glUseProgramStages
+!repl_par_t
+UInt32= ProgramPipelineName | ProgramName
+
+# glValidateProgramPipeline
+!repl_par_t
+UInt32=ProgramPipelineName
+
+
+
+
+
+# glAttachShader
+!repl_par_t
+UInt32= ProgramName | ShaderName
+
+# glCompileShader
+!repl_par_t
+UInt32=ShaderName
+
+# glCreateShader
+!repl_par_t
+UInt32=ShaderName
+
+# glDeleteShader
+!repl_par_t
+UInt32=ShaderName
+
+# glDetachShader
+!repl_par_t
+UInt32= ProgramName | ShaderName
+
+# glGetShaderiv
+!repl_par_t
+UInt32=ShaderName
+
+# glIsShader
+!repl_par_t
+UInt32=ShaderName
+
+
+
+
+
+
+# glBindFramebuffer
+!repl_par_t
+UInt32=FramebufferName
+
+# glIsFramebuffer
+!repl_par_t
+UInt32=FramebufferName
+
+# glNamedFramebufferDrawBuffer
+!repl_par_t
+UInt32=FramebufferName
+
+# glNamedFramebufferParameteri
+!repl_par_t
+UInt32=FramebufferName
+
+# glNamedFramebufferReadBuffer
+!repl_par_t
+UInt32=FramebufferName
+
+# glNamedFramebufferRenderbuffer
+!repl_par_t
+UInt32= FramebufferName | RenderbufferName
+
+
+
+
+
+# glBindRenderbuffer
+!repl_par_t
+UInt32=RenderbufferName
+
+# glFramebufferRenderbuffer
+!repl_par_t
+UInt32=RenderbufferName
+
+# glIsRenderbuffer
+!repl_par_t
+UInt32=RenderbufferName
+
+# glNamedRenderbufferStorage
+!repl_par_t
+UInt32=RenderbufferName
+
+# glNamedRenderbufferStorageMultisample
+!repl_par_t
+UInt32=RenderbufferName
+
+
+
+
+
+# glBindSampler
+!repl_par_t
+UInt32= UInt32 | SamplerName
+
+# glIsSampler
+!repl_par_t
+UInt32=SamplerName
+
+# glSamplerParameterf
+!repl_par_t
+UInt32=SamplerName
+
+
+
+
+
+# glBindTransformFeedback
+!repl_par_t
+UInt32=TransformFeedbackName
+
+# glDrawTransformFeedback
+!repl_par_t
+UInt32=TransformFeedbackName
+
+# glDrawTransformFeedbackInstanced
+!repl_par_t
+UInt32=TransformFeedbackName
+
+# glDrawTransformFeedbackStream
+!repl_par_t
+UInt32= TransformFeedbackName | UInt32
+
+# glDrawTransformFeedbackStreamInstanced
+!repl_par_t
+UInt32= TransformFeedbackName | UInt32
+
+# glIsTransformFeedback
+!repl_par_t
+UInt32=TransformFeedbackName
+
+
+
+
+
+# glBindVertexArray
+!repl_par_t
+UInt32=VertexArrayName
+
+# glDisableVertexArrayAttrib
+!repl_par_t
+UInt32= VertexArrayName | UInt32
+
+# glEnableVertexArrayAttrib
+!repl_par_t
+UInt32= VertexArrayName | UInt32
+
+# glIsVertexArray
+!repl_par_t
+UInt32=VertexArrayName
+
+# glVertexArrayAttribBinding
+!repl_par_t
+UInt32= VertexArrayName | UInt32 | UInt32
+
+# glVertexArrayAttribFormat
+!repl_par_t
+UInt32= VertexArrayName | UInt32 | UInt32
+
+# glVertexArrayAttribIFormat
+!repl_par_t
+UInt32= VertexArrayName | UInt32 | UInt32
+
+# glVertexArrayAttribLFormat
+!repl_par_t
+UInt32= VertexArrayName | UInt32 | UInt32
+
+# glVertexArrayBindingDivisor
+!repl_par_t
+UInt32= VertexArrayName | UInt32 | UInt32
+
+
+
+
+
+# glBindAttribLocation
+!repl_par_t
+UInt32= ProgramName | UInt32
+
+# glBindFragDataLocation
+!repl_par_t
+UInt32= ProgramName | UInt32
+
+# glBindFragDataLocationIndexed
+!repl_par_t
+UInt32= ProgramName | UInt32 | UInt32
+
+# glCreateProgram
+!repl_par_t
+UInt32=ProgramName
+
+# glCreateShaderProgramv
+!repl_par_t
+UInt32=ProgramName
+
+# glDeleteProgram
+!repl_par_t
+UInt32=ProgramName
+
+# glGetActiveSubroutineUniformiv
+!repl_par_t
+UInt32= ProgramName | UInt32
+
+# glGetAttribLocation
+!repl_par_t
+UInt32=ProgramName
+
+# glGetFragDataIndex
+!repl_par_t
+UInt32=ProgramName
+
+# glGetFragDataLocation
+!repl_par_t
+UInt32=ProgramName
+
+# glGetnUniformdv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetnUniformfv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetnUniformiv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetnUniformuiv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetProgramInterfaceiv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetProgramiv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetProgramResourceIndex
+!repl_par_t
+UInt32= UInt32 | ProgramName
+
+# glGetProgramResourceLocation
+!repl_par_t
+UInt32=ProgramName
+
+# glGetProgramResourceLocationIndex
+!repl_par_t
+UInt32=ProgramName
+
+# glGetProgramStageiv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetSubroutineIndex
+!repl_par_t
+UInt32= UInt32 | ProgramName
+
+# glGetSubroutineUniformLocation
+!repl_par_t
+UInt32=ProgramName
+
+# glGetUniformBlockIndex
+!repl_par_t
+UInt32= UInt32 | ProgramName
+
+# glGetUniformdv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetUniformfv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetUniformIndices
+!repl_par_t
+UInt32=ProgramName
+
+# glGetUniformiv
+!repl_par_t
+UInt32=ProgramName
+
+# glGetUniformLocation
+!repl_par_t
+UInt32=ProgramName
+
+# glGetUniformuiv
+!repl_par_t
+UInt32=ProgramName
+
+# glIsProgram
+!repl_par_t
+UInt32=ProgramName
+
+# glLinkProgram
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramParameteri
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform1d
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform1f
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform1i
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform1ui
+!repl_par_t
+UInt32= ProgramName | UInt32
+
+# glProgramUniform2d
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform2f
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform2i
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform2ui
+!repl_par_t
+UInt32= ProgramName | UInt32 | UInt32
+
+# glProgramUniform3d
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform3f
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform3i
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform3ui
+!repl_par_t
+UInt32= ProgramName | UInt32 | UInt32 | UInt32
+
+# glProgramUniform4d
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform4f
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform4i
+!repl_par_t
+UInt32=ProgramName
+
+# glProgramUniform4ui
+!repl_par_t
+UInt32= ProgramName | UInt32 | UInt32 | UInt32 | UInt32
+
+# glShaderStorageBlockBinding
+!repl_par_t
+UInt32= ProgramName | UInt32 | UInt32
+
+# glUniformBlockBinding
+!repl_par_t
+UInt32= ProgramName | UInt32 | UInt32
+
+# glUseProgram
+!repl_par_t
+UInt32=ProgramName
+
+# glValidateProgram
+!repl_par_t
+UInt32=ProgramName
+
+

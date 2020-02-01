@@ -2,7 +2,7 @@
 uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
 var log := new System.IO.StreamWriter(
-  GetFullPath('..\log.dat', GetEXEFileName),
+  GetFullPath('..\xml.log', GetEXEFileName),
   false, enc
 );
 var allowed_api := HSet(

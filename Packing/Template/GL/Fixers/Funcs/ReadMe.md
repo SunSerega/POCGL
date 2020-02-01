@@ -58,10 +58,12 @@ Syntax:
 # FuncName
 !repl_par_t
 DummyEnum=GroupName
-!repl_par_t
-InvalidTypeName= TypeName1 | TypeName2
+InvalidTypeName= TypeName1 | array of TypeName2
 ```
-In second example `InvalidTypeName` should be used exactly 2 times.
+`DummyEnum` should be used exactly once.\
+`InvalidTypeName` should be used exactly 2 times.
+
+`TypeName1` would not be matched with `array of TypeName1`.
 
 Return type is always before parameters.\
 Same applies to other change types. 

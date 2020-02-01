@@ -1,10 +1,12 @@
 ﻿unit FuncData;
 
 interface
+//ToDo кодогенерация для генериков - нужна доп перегрузка
+//ToDo использовать Func<> и Action<>
 
 uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
-var log, func_ovrs_log: System.IO.StreamWriter;
+var log, log_func_ovrs: System.IO.StreamWriter;
 
 procedure InitLog(var initable_log: System.IO.StreamWriter; fname: string);
 
@@ -298,14 +300,14 @@ type
       
       if not is_proc or (org_par.Length>1) then
       begin
-        func_ovrs_log.WriteLine($'# {name}');
+        log_func_ovrs.WriteLine($'# {name}');
         foreach var ovr in all_overloads do
         begin
           foreach var par in is_proc?ovr.Skip(1):ovr do
-            func_ovrs_log.Write($' {par[0]*''array of ''}{par[1]} |');
-          func_ovrs_log.WriteLine;
+            log_func_ovrs.Write($' {par[0]*''array of ''}{par[1]} |');
+          log_func_ovrs.WriteLine;
         end;
-        func_ovrs_log.WriteLine;
+        log_func_ovrs.WriteLine;
       end;
       
       if all_overloads.Count=0 then
@@ -700,47 +702,31 @@ begin
   
 end;
 
+function ToTName(tname: string): (integer,string);
+begin
+  tname := tname.Trim;
+  var c := 0;
+  while tname.StartsWith('array of ') do
+  begin
+    c += 1;
+    tname := tname.Substring('array of '.Length).Trim;
+  end;
+  Result := (c,tname);
+end;
+
 {$endregion Misc}
 
 {$region GroupFixer}
 
 type
-  GroupFixerContainer = sealed class(GroupFixer)
-    private fixers: array of GroupFixer;
-    public constructor(name: string; fixers: sequence of GroupFixer);
-    begin
-      inherited Create(name);
-      self.fixers := fixers.ToArray;
-    end;
-    
-    public function Apply(gr: Group): boolean; override;
-    begin
-//      Result := fixers.Any(f->f.Apply(gr)); //ToDo #2197
-      
-      foreach var f in fixers do
-        if f.Apply(gr) then
-        begin
-          Result := true;
-          exit;
-        end;
-      
-    end;
-    
-  end;
-  InternalGroupFixer = abstract class(GroupFixer)
-    
-    public constructor :=
-    inherited Create(nil);
-    
-  end;
-  
-  GroupAdder = sealed class(InternalGroupFixer)
+  GroupAdder = sealed class(GroupFixer)
     private name: string;
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
     
     public constructor(name: string; data: sequence of string);
     begin
+      inherited Create(nil);
       self.name := name;
       var enmr := data.Where(l->not string.IsNullOrWhiteSpace(l)).GetEnumerator;
       
@@ -756,7 +742,7 @@ type
         );
       end;
       
-      GroupFixer.adders.Add( self );
+      self.RegisterAsAdder;
     end;
     
     public function Apply(gr: Group): boolean; override;
@@ -765,28 +751,40 @@ type
       gr.bitmask  := self.bitmask;
       gr.enums    := self.enums;
       gr.FinishInit;
+      self.used := true;
       Result := false;
     end;
     
   end;
-  GroupRemover = sealed class(InternalGroupFixer)
+  GroupRemover = sealed class(GroupFixer)
     
-    public constructor(data: sequence of string) :=
-    if data.Any(l->not string.IsNullOrWhiteSpace(l)) then raise new System.FormatException;
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(name);
+      if data.Any(l->not string.IsNullOrWhiteSpace(l)) then raise new System.FormatException;
+    end;
     
-    public function Apply(gr: Group): boolean; override := true;
+    public function Apply(gr: Group): boolean; override;
+    begin
+      self.used := true;
+      Result := true;
+    end;
     
   end;
   
-  GroupNameFixer = sealed class(InternalGroupFixer)
+  GroupNameFixer = sealed class(GroupFixer)
     public new_name: string;
     
-    public constructor(data: sequence of string) :=
-    self.new_name := data.Single(l->not string.IsNullOrWhiteSpace(l));
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(name);
+      self.new_name := data.Single(l->not string.IsNullOrWhiteSpace(l));
+    end;
     
     public function Apply(gr: Group): boolean; override;
     begin
       gr.name := new_name;
+      self.used := true;
       Result := false;
     end;
     
@@ -794,35 +792,19 @@ type
   
 static constructor GroupFixer.Create;
 begin
-  empty := new GroupFixerContainer(nil, new GroupFixer[0]);
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Enums', GetEXEFileName), '*.dat');
   foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname)) do
-  begin
-    var ToDo2196 := 0; //ToDo #2196
-    
-    new GroupFixerContainer(gr[0],
-      ReadBlocks(gr[1],'!')
-      .Select(bl->
-      begin
-        var res: GroupFixer;
-        
-        case bl[0] of
-          
-          'add': new GroupAdder(gr[0], bl[1]);
-          'remove': res := new GroupRemover(bl[1]);
-          
-          'rename': res := new GroupNameFixer(bl[1]);
-          
-          else raise new MessageException($'Invalid group fixer type [!{bl[0]}] for group [{gr[0]}]');
-        end;
-        
-        Result := res;
-      end)
-      .Where(f->f<>nil)
-    );
-    
-  end;
+    foreach var bl in ReadBlocks(gr[1],'!',false) do
+    case bl[0] of
+      
+      'add':    GroupAdder    .Create(gr[0], bl[1]);
+      'remove': GroupRemover  .Create(gr[0], bl[1]);
+      
+      'rename': GroupNameFixer.Create(gr[0], bl[1]);
+      
+      else raise new MessageException($'Invalid group fixer type [!{bl[0]}] for group [{gr[0]}]');
+    end;
   
 end;
 
@@ -831,52 +813,12 @@ end;
 {$region FuncFixer}
 
 type
-  FuncFixerContainer = sealed class(FuncFixer)
-    private fixers: array of FuncFixer;
-    public constructor(name: string; fixers: sequence of FuncFixer);
-    begin
-      inherited Create(name);
-      self.fixers := fixers.ToArray;
-    end;
-    
-    public function Apply(fnc: Func): boolean; override;
-    begin
-//      Result := fixers.Any(f->f.Apply(gr)); //ToDo #2197
-      
-      foreach var f in fixers do
-        if f.Apply(fnc) then
-        begin
-          Result := true;
-          exit;
-        end;
-      
-    end;
-    
-  end;
-  InternalFuncFixer = abstract class(FuncFixer)
-    
-    public constructor :=
-    inherited Create(nil);
-    
-    static function ToTName(tname: string): (integer, string);
-    begin
-      tname := tname.Trim;
-      var c := 0;
-      while tname.StartsWith('array of') do
-      begin
-        c += 1;
-        tname := tname.Substring('array of'.Length).Trim;
-      end;
-      Result := (c,tname);
-    end;
-    
-  end;
-  
-  FuncAdder = sealed class(InternalFuncFixer)
+  FuncAdder = sealed class(FuncFixer)
     public org_par := new List<FuncOrgParam>;
     
     public constructor(name: string; data: sequence of string);
     begin
+      inherited Create(nil);
       var enmr := data.Where(l->not string.IsNullOrWhiteSpace(l)).GetEnumerator;
       
       if not enmr.MoveNext then raise new System.FormatException;
@@ -901,74 +843,82 @@ type
         org_par += param;
       end;
       
-      FuncFixer.adders.Add( self );
+      self.RegisterAsAdder;
     end;
     
     public function Apply(f: Func): boolean; override;
     begin
       f.org_par := self.org_par.ToArray;
       f.BasicInit;
+      self.used := true;
       Result := false;
     end;
     
   end;
-  FuncRemover = sealed class(InternalFuncFixer)
+  FuncRemover = sealed class(FuncFixer)
     
-    public constructor(data: sequence of string) :=
-    if data.Any(l->not string.IsNullOrWhiteSpace(l)) then raise new System.FormatException;
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(name);
+      if data.Any(l->not string.IsNullOrWhiteSpace(l)) then raise new System.FormatException;
+    end;
     
-    public function Apply(f: Func): boolean; override := true;
+    public function Apply(f: Func): boolean; override;
+    begin
+      self.used := true;
+      Result := true;
+    end;
     
   end;
   
-  FuncReplParTFixer = sealed class(InternalFuncFixer)
+  FuncReplParTFixer = sealed class(FuncFixer)
     public old_tname: (integer,string);
     public new_tnames: array of (integer,string);
     
-    public constructor(data: sequence of string);
+    public constructor(name: string; data: string);
     begin
-      var s := data.Single(l->not string.IsNullOrWhiteSpace(l)).Split('=');
+      inherited Create(name);
+      var s := data.Split('=');
       old_tname := ToTName( s[0] );
       new_tnames := s[1].Split('|').ConvertAll(ToTName);
     end;
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new FuncReplParTFixer(name, l);
     
     public function Apply(f: Func): boolean; override;
     begin
       f.InitPossibleParTypes;
       
-      if new_tnames.Length=1 then
-      begin
-        foreach var par in f.possible_par_types do
-          for var i := 0 to par.Count-1 do
-            if par[i]=old_tname then
-              par[i] := new_tnames[0];
-      end else
-      begin
-        var tn_id := 0;
-        foreach var par in f.possible_par_types do
-          for var i := 0 to par.Count-1 do
-            if par[i]=old_tname then
-            begin
-              par[i] := new_tnames[tn_id];
-              tn_id += 1;
-            end;
-        if tn_id<>new_tnames.Length then
-          raise new MessageException($'ERROR: Only {tn_id}/{new_tnames.Length} [new_tnames] of [FuncReplParTFixer] of func [{f.name}] were used');
-      end;
+      var tn_id := 0;
+      foreach var par in f.possible_par_types do
+        for var i := 0 to par.Count-1 do
+          if par[i]=old_tname then
+          begin
+            if tn_id=new_tnames.Length then
+              raise new MessageException($'ERROR: Not enough {_ObjectToString(new_tnames)} replacement type for {old_tname} in [FuncReplParTFixer] of func [{f.name}]');
+            par[i] := new_tnames[tn_id];
+            tn_id += 1;
+          end;
+      if tn_id<>new_tnames.Length then
+        raise new MessageException($'ERROR: Only {tn_id}/{new_tnames.Length} [new_tnames] of [FuncReplParTFixer] of func [{f.name}] were used');
       
+      self.used := true;
       Result := false;
     end;
     
   end;
-  FuncPPTFixer = sealed class(InternalFuncFixer)
+  FuncPPTFixer = sealed class(FuncFixer)
     public add_ts: array of List<(integer,string)>;
     public rem_ts: array of List<(integer,string)>;
     
-    public constructor(data: sequence of string);
+    public constructor(name: string; data: sequence of string);
     begin
+      inherited Create(name);
       var s := data.Single(l->not string.IsNullOrWhiteSpace(l)).Split('|');
       var par_c := s.Length-1;
-      if s[par_c].Trim<>'' then raise new System.FormatException;
+      if not string.IsNullOrWhiteSpace(s[par_c]) then raise new System.FormatException;
       
       SetLength(add_ts, par_c);
       SetLength(rem_ts, par_c);
@@ -1018,15 +968,17 @@ type
             f.possible_par_types[i] += t;
       end;
       
+      self.used := true;
       Result := false;
     end;
     
   end;
   
-  FuncClearOvrsFixer = sealed class(InternalFuncFixer)
+  FuncClearOvrsFixer = sealed class(FuncFixer)
     
-    public constructor(data: sequence of string);
+    public constructor(name: string; data: sequence of string);
     begin
+      inherited Create(name);
       if data.Any(l->not string.IsNullOrWhiteSpace(l)) then raise new System.FormatException;
     end;
     
@@ -1034,25 +986,24 @@ type
     begin
       f.InitOverloads;
       f.all_overloads.Clear;
+      self.used := true;
       Result := false;
     end;
     
   end;
-  FuncOvrsFixerBase = abstract class(InternalFuncFixer)
-    public overloads := new List<array of (integer,string)>;
+  FuncOvrsFixerBase = abstract class(FuncFixer)
+    public ovr: array of (integer,string);
     
-    public constructor(data: sequence of string);
+    public constructor(name: string; data: string);
     begin
-      foreach var l in data do
-      begin
-        if string.IsNullOrWhiteSpace(l) then continue;
-        var s := l.Split('|');
-        if s[s.Length-1].Trim<>'' then raise new System.FormatException;
-        var ovr: array of (integer,string) := nil;
-        SetLength(ovr, s.Length-1);
-        ovr.Fill(i->ToTName(s[i]));
-        overloads += ovr;
-      end;
+      inherited Create(name);
+      
+      var s := data.Split('|');
+      if not string.IsNullOrWhiteSpace(s[s.Length-1]) then raise new System.FormatException(data);
+      
+      SetLength(ovr, s.Length-1);
+      ovr.Fill(i->ToTName(s[i]));
+      
     end;
     
     public static function PrepareOvr(add_void: boolean; ovr: array of (integer,string)): array of (integer,string);
@@ -1068,46 +1019,59 @@ type
         Result := ovr;
     end;
     
-    public function OvrInd(lst: List<array of (integer,string)>; ovr: array of (integer,string); fn: string): integer;
+    public function OvrInd(lst: List<array of (integer,string)>; ovr: array of (integer,string)): integer;
     begin
       Result := -1;
       if lst.Count=0 then exit;
       if lst[0].Length<>ovr.Length then
-        raise new MessageException($'ERROR: [{self.GetType}] of func [{fn}] had wrong param count: {lst[0].Length} org vs {ovr.Length} custom');
+        raise new MessageException($'ERROR: [{self.GetType}] of func [{self.name}] had wrong param count: {lst[0].Length} org vs {ovr.Length} custom');
       Result := lst.FindIndex(povr->povr.SequenceEqual(ovr));
     end;
     
   end;
   FuncAddOvrsFixer = sealed class(FuncOvrsFixerBase)
     
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new FuncAddOvrsFixer(name, l);
+    
     public function Apply(f: Func): boolean; override;
     begin
       f.InitOverloads;
       
-      foreach var ovr in overloads.Select(ovr-> PrepareOvr(f.is_proc,ovr) ) do
-        if OvrInd(f.all_overloads, ovr, f.name)<>-1 then
-          Otp($'ERROR: [FuncAddOvrsFixer] of func [{f.name}] failed to add overload [{ovr.JoinToString}]') else
-          f.all_overloads += ovr;
+      var povr := PrepareOvr(f.is_proc, ovr);
+      if OvrInd(f.all_overloads, povr)<>-1 then
+        Otp($'ERROR: [FuncAddOvrsFixer] of func [{f.name}] failed to add overload [{povr.JoinToString}]') else
+        f.all_overloads += povr;
         
+      self.used := true;
       Result := false;
     end;
     
   end;
   FuncRemOvrsFixer = sealed class(FuncOvrsFixerBase)
     
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new FuncRemOvrsFixer(name, l);
+    
     public function Apply(f: Func): boolean; override;
     begin
       f.InitOverloads;
       
-      foreach var ovr in overloads.Select(ovr-> PrepareOvr(f.is_proc,ovr) ) do
-      begin
-        var ind := OvrInd(f.all_overloads, ovr, f.name);
-        if ind=-1 then
-          Otp($'ERROR: [FuncRemOvrsFixer] of func [{f.name}] failed to remove overload [{ovr.JoinToString}]') else
-          f.all_overloads.RemoveAt(ind);
-      end;
+      var povr := PrepareOvr(f.is_proc, ovr);
+      var ind := OvrInd(f.all_overloads, povr);
+      if ind=-1 then
+        Otp($'ERROR: [FuncRemOvrsFixer] of func [{f.name}] failed to remove overload [{povr.JoinToString}]') else
+        f.all_overloads.RemoveAt(ind);
       
-      
+      self.used := true;
       Result := false;
     end;
     
@@ -1115,39 +1079,24 @@ type
   
 static constructor FuncFixer.Create;
 begin
-  empty := new FuncFixerContainer(nil, new FuncFixer[0]);
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Funcs', GetEXEFileName), '*.dat');
-  foreach var gr in fls.SelectMany(fname->FuncFixer.ReadBlocks(fname)) do
-  begin
-    var ToDo2196 := 0; //ToDo #2196
-    
-    new FuncFixerContainer(gr[0],
-      ReadBlocks(gr[1],'!')
-      .Select(bl->
-      begin
-        var res: FuncFixer;
-        
-        case bl[0] of
-          
-          'add': new FuncAdder(gr[0], bl[1]);
-          'remove': res := new FuncRemover(bl[1]);
-          
-          'repl_par_t':         res := new FuncReplParTFixer(bl[1]);
-          'possible_par_types': res := new FuncPPTFixer(bl[1]);
-          'clear_ovrs':         res := new FuncClearOvrsFixer(bl[1]);
-          'add_ovrs':           res := new FuncAddOvrsFixer(bl[1]);
-          'rem_ovrs':           res := new FuncRemOvrsFixer(bl[1]);
-          
-          else raise new MessageException($'Invalid func fixer type [!{bl[0]}] for func [{gr[0]}]');
-        end;
-        
-        Result := res;
-      end)
-      .Where(f->f<>nil)
-    );
-    
-  end;
+  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname)) do
+    foreach var bl in ReadBlocks(gr[1],'!',false) do
+    case bl[0] of
+      
+      'add':                FuncAdder         .Create(gr[0], bl[1]);
+      'remove':             FuncRemover       .Create(gr[0], bl[1]);
+      
+      'repl_par_t':         FuncReplParTFixer .Create(gr[0], bl[1]);
+      'possible_par_types': FuncPPTFixer      .Create(gr[0], bl[1]);
+      
+      'clear_ovrs':         FuncClearOvrsFixer.Create(gr[0], bl[1]);
+      'add_ovrs':           FuncAddOvrsFixer  .Create(gr[0], bl[1]);
+      'rem_ovrs':           FuncRemOvrsFixer  .Create(gr[0], bl[1]);
+      
+      else raise new MessageException($'Invalid func fixer type [!{bl[0]}] for func [{gr[0]}]');
+    end;
   
 end;
 

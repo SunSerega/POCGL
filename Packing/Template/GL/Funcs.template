@@ -10,8 +10,8 @@
     
     // added in gl4.1
     public z_ActiveShaderProgram_adr := GetFuncAdr('glActiveShaderProgram');
-    public z_ActiveShaderProgram_ovr_0 := GetFuncOrNil&<procedure(pipeline: UInt32; program: UInt32)>(z_ActiveShaderProgram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ActiveShaderProgram(pipeline: UInt32; program: UInt32);
+    public z_ActiveShaderProgram_ovr_0 := GetFuncOrNil&<procedure(pipeline: ProgramPipelineName; program: ProgramName)>(z_ActiveShaderProgram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ActiveShaderProgram(pipeline: ProgramPipelineName; program: ProgramName);
     begin
       z_ActiveShaderProgram_ovr_0(pipeline, program);
     end;
@@ -26,8 +26,8 @@
     
     // added in gl2.0
     public z_AttachShader_adr := GetFuncAdr('glAttachShader');
-    public z_AttachShader_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; shader: UInt32)>(z_AttachShader_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AttachShader(program: UInt32; shader: UInt32);
+    public z_AttachShader_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; shader: ShaderName)>(z_AttachShader_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AttachShader(program: ProgramName; shader: ShaderName);
     begin
       z_AttachShader_ovr_0(program, shader);
     end;
@@ -42,16 +42,16 @@
     
     // added in gl1.5
     public z_BeginQuery_adr := GetFuncAdr('glBeginQuery');
-    public z_BeginQuery_ovr_0 := GetFuncOrNil&<procedure(target: QueryTarget; id: UInt32)>(z_BeginQuery_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BeginQuery(target: QueryTarget; id: UInt32);
+    public z_BeginQuery_ovr_0 := GetFuncOrNil&<procedure(target: QueryTarget; id: QueryName)>(z_BeginQuery_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BeginQuery(target: QueryTarget; id: QueryName);
     begin
       z_BeginQuery_ovr_0(target, id);
     end;
     
     // added in gl4.0
     public z_BeginQueryIndexed_adr := GetFuncAdr('glBeginQueryIndexed');
-    public z_BeginQueryIndexed_ovr_0 := GetFuncOrNil&<procedure(target: QueryTarget; index: UInt32; id: UInt32)>(z_BeginQueryIndexed_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BeginQueryIndexed(target: QueryTarget; index: UInt32; id: UInt32);
+    public z_BeginQueryIndexed_ovr_0 := GetFuncOrNil&<procedure(target: QueryTarget; index: UInt32; id: QueryName)>(z_BeginQueryIndexed_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BeginQueryIndexed(target: QueryTarget; index: UInt32; id: QueryName);
     begin
       z_BeginQueryIndexed_ovr_0(target, index, id);
     end;
@@ -66,38 +66,38 @@
     
     // added in gl2.0
     public z_BindAttribLocation_adr := GetFuncAdr('glBindAttribLocation');
-    public z_BindAttribLocation_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; index: UInt32; name: IntPtr)>(z_BindAttribLocation_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindAttribLocation(program: UInt32; index: UInt32; name: string);
+    public z_BindAttribLocation_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; index: UInt32; name: IntPtr)>(z_BindAttribLocation_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindAttribLocation(program: ProgramName; index: UInt32; name: string);
     begin
       var par_3_str_ptr := Marshal.StringToHGlobalAnsi(name);
       z_BindAttribLocation_ovr_0(program, index, par_3_str_ptr);
       Marshal.FreeHGlobal(par_3_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindAttribLocation(program: UInt32; index: UInt32; name: IntPtr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindAttribLocation(program: ProgramName; index: UInt32; name: IntPtr);
     begin
       z_BindAttribLocation_ovr_0(program, index, name);
     end;
     
     // added in gl1.5
     public z_BindBuffer_adr := GetFuncAdr('glBindBuffer');
-    public z_BindBuffer_ovr_0 := GetFuncOrNil&<procedure(target: BufferTargetARB; buffer: UInt32)>(z_BindBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBuffer(target: BufferTargetARB; buffer: UInt32);
+    public z_BindBuffer_ovr_0 := GetFuncOrNil&<procedure(target: BufferTargetARB; buffer: BufferName)>(z_BindBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBuffer(target: BufferTargetARB; buffer: BufferName);
     begin
       z_BindBuffer_ovr_0(target, buffer);
     end;
     
     // added in gl3.1
     public z_BindBufferBase_adr := GetFuncAdr('glBindBufferBase');
-    public z_BindBufferBase_ovr_0 := GetFuncOrNil&<procedure(target: BufferTargetARB; index: UInt32; buffer: UInt32)>(z_BindBufferBase_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferBase(target: BufferTargetARB; index: UInt32; buffer: UInt32);
+    public z_BindBufferBase_ovr_0 := GetFuncOrNil&<procedure(target: BufferTargetARB; index: UInt32; buffer: BufferName)>(z_BindBufferBase_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferBase(target: BufferTargetARB; index: UInt32; buffer: BufferName);
     begin
       z_BindBufferBase_ovr_0(target, index, buffer);
     end;
     
     // added in gl3.1
     public z_BindBufferRange_adr := GetFuncAdr('glBindBufferRange');
-    public z_BindBufferRange_ovr_0 := GetFuncOrNil&<procedure(target: BufferTargetARB; index: UInt32; buffer: UInt32; offset: IntPtr; size: IntPtr)>(z_BindBufferRange_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferRange(target: BufferTargetARB; index: UInt32; buffer: UInt32; offset: IntPtr; size: IntPtr);
+    public z_BindBufferRange_ovr_0 := GetFuncOrNil&<procedure(target: BufferTargetARB; index: UInt32; buffer: BufferName; offset: IntPtr; size: IntPtr)>(z_BindBufferRange_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindBufferRange(target: BufferTargetARB; index: UInt32; buffer: BufferName; offset: IntPtr; size: IntPtr);
     begin
       z_BindBufferRange_ovr_0(target, index, buffer, offset, size);
     end;
@@ -240,44 +240,44 @@
     
     // added in gl3.0
     public z_BindFragDataLocation_adr := GetFuncAdr('glBindFragDataLocation');
-    public z_BindFragDataLocation_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; color: UInt32; name: IntPtr)>(z_BindFragDataLocation_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocation(program: UInt32; color: UInt32; name: string);
+    public z_BindFragDataLocation_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; color: UInt32; name: IntPtr)>(z_BindFragDataLocation_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocation(program: ProgramName; color: UInt32; name: string);
     begin
       var par_3_str_ptr := Marshal.StringToHGlobalAnsi(name);
       z_BindFragDataLocation_ovr_0(program, color, par_3_str_ptr);
       Marshal.FreeHGlobal(par_3_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocation(program: UInt32; color: UInt32; name: IntPtr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocation(program: ProgramName; color: UInt32; name: IntPtr);
     begin
       z_BindFragDataLocation_ovr_0(program, color, name);
     end;
     
     // added in gl3.3
     public z_BindFragDataLocationIndexed_adr := GetFuncAdr('glBindFragDataLocationIndexed');
-    public z_BindFragDataLocationIndexed_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; colorNumber: UInt32; index: UInt32; name: IntPtr)>(z_BindFragDataLocationIndexed_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocationIndexed(program: UInt32; colorNumber: UInt32; index: UInt32; name: string);
+    public z_BindFragDataLocationIndexed_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; colorNumber: UInt32; index: UInt32; name: IntPtr)>(z_BindFragDataLocationIndexed_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocationIndexed(program: ProgramName; colorNumber: UInt32; index: UInt32; name: string);
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(name);
       z_BindFragDataLocationIndexed_ovr_0(program, colorNumber, index, par_4_str_ptr);
       Marshal.FreeHGlobal(par_4_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocationIndexed(program: UInt32; colorNumber: UInt32; index: UInt32; name: IntPtr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFragDataLocationIndexed(program: ProgramName; colorNumber: UInt32; index: UInt32; name: IntPtr);
     begin
       z_BindFragDataLocationIndexed_ovr_0(program, colorNumber, index, name);
     end;
     
     // added in gl3.0
     public z_BindFramebuffer_adr := GetFuncAdr('glBindFramebuffer');
-    public z_BindFramebuffer_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; framebuffer: UInt32)>(z_BindFramebuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFramebuffer(target: FramebufferTarget; framebuffer: UInt32);
+    public z_BindFramebuffer_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; framebuffer: FramebufferName)>(z_BindFramebuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindFramebuffer(target: FramebufferTarget; framebuffer: FramebufferName);
     begin
       z_BindFramebuffer_ovr_0(target, framebuffer);
     end;
     
     // added in gl4.2
     public z_BindImageTexture_adr := GetFuncAdr('glBindImageTexture');
-    public z_BindImageTexture_ovr_0 := GetFuncOrNil&<procedure(unit: UInt32; texture: UInt32; level: Int32; layered: boolean; layer: Int32; access: BufferAccessARB; format: InternalFormat)>(z_BindImageTexture_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindImageTexture(unit: UInt32; texture: UInt32; level: Int32; layered: boolean; layer: Int32; access: BufferAccessARB; format: InternalFormat);
+    public z_BindImageTexture_ovr_0 := GetFuncOrNil&<procedure(unit: UInt32; texture: TextureName; level: Int32; layered: boolean; layer: Int32; access: BufferAccessARB; format: InternalFormat)>(z_BindImageTexture_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindImageTexture(unit: UInt32; texture: TextureName; level: Int32; layered: boolean; layer: Int32; access: BufferAccessARB; format: InternalFormat);
     begin
       z_BindImageTexture_ovr_0(unit, texture, level, layered, layer, access, format);
     end;
@@ -301,24 +301,24 @@
     
     // added in gl4.1
     public z_BindProgramPipeline_adr := GetFuncAdr('glBindProgramPipeline');
-    public z_BindProgramPipeline_ovr_0 := GetFuncOrNil&<procedure(pipeline: UInt32)>(z_BindProgramPipeline_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindProgramPipeline(pipeline: UInt32);
+    public z_BindProgramPipeline_ovr_0 := GetFuncOrNil&<procedure(pipeline: ProgramPipelineName)>(z_BindProgramPipeline_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindProgramPipeline(pipeline: ProgramPipelineName);
     begin
       z_BindProgramPipeline_ovr_0(pipeline);
     end;
     
     // added in gl3.0
     public z_BindRenderbuffer_adr := GetFuncAdr('glBindRenderbuffer');
-    public z_BindRenderbuffer_ovr_0 := GetFuncOrNil&<procedure(target: RenderbufferTarget; renderbuffer: UInt32)>(z_BindRenderbuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindRenderbuffer(target: RenderbufferTarget; renderbuffer: UInt32);
+    public z_BindRenderbuffer_ovr_0 := GetFuncOrNil&<procedure(target: RenderbufferTarget; renderbuffer: RenderbufferName)>(z_BindRenderbuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindRenderbuffer(target: RenderbufferTarget; renderbuffer: RenderbufferName);
     begin
       z_BindRenderbuffer_ovr_0(target, renderbuffer);
     end;
     
     // added in gl3.3
     public z_BindSampler_adr := GetFuncAdr('glBindSampler');
-    public z_BindSampler_ovr_0 := GetFuncOrNil&<procedure(unit: UInt32; sampler: UInt32)>(z_BindSampler_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindSampler(unit: UInt32; sampler: UInt32);
+    public z_BindSampler_ovr_0 := GetFuncOrNil&<procedure(unit: UInt32; sampler: SamplerName)>(z_BindSampler_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindSampler(unit: UInt32; sampler: SamplerName);
     begin
       z_BindSampler_ovr_0(unit, sampler);
     end;
@@ -341,9 +341,9 @@
     end;
     
     // added in gl1.1
-    public static procedure z_BindTexture(target: TextureTarget; texture: UInt32);
+    public static procedure z_BindTexture(target: TextureTarget; texture: TextureName);
     external 'opengl32.dll' name 'glBindTexture';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindTexture(target: TextureTarget; texture: UInt32) := z_BindTexture;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindTexture(target: TextureTarget; texture: TextureName) := z_BindTexture;
     
     // added in gl4.4
     public z_BindTextures_adr := GetFuncAdr('glBindTextures');
@@ -364,32 +364,32 @@
     
     // added in gl4.5
     public z_BindTextureUnit_adr := GetFuncAdr('glBindTextureUnit');
-    public z_BindTextureUnit_ovr_0 := GetFuncOrNil&<procedure(unit: UInt32; texture: UInt32)>(z_BindTextureUnit_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindTextureUnit(unit: UInt32; texture: UInt32);
+    public z_BindTextureUnit_ovr_0 := GetFuncOrNil&<procedure(unit: UInt32; texture: TextureName)>(z_BindTextureUnit_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindTextureUnit(unit: UInt32; texture: TextureName);
     begin
       z_BindTextureUnit_ovr_0(unit, texture);
     end;
     
     // added in gl4.0
     public z_BindTransformFeedback_adr := GetFuncAdr('glBindTransformFeedback');
-    public z_BindTransformFeedback_ovr_0 := GetFuncOrNil&<procedure(target: BindTransformFeedbackTarget; id: UInt32)>(z_BindTransformFeedback_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindTransformFeedback(target: BindTransformFeedbackTarget; id: UInt32);
+    public z_BindTransformFeedback_ovr_0 := GetFuncOrNil&<procedure(target: BindTransformFeedbackTarget; id: TransformFeedbackName)>(z_BindTransformFeedback_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindTransformFeedback(target: BindTransformFeedbackTarget; id: TransformFeedbackName);
     begin
       z_BindTransformFeedback_ovr_0(target, id);
     end;
     
     // added in gl3.0
     public z_BindVertexArray_adr := GetFuncAdr('glBindVertexArray');
-    public z_BindVertexArray_ovr_0 := GetFuncOrNil&<procedure(array: UInt32)>(z_BindVertexArray_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindVertexArray(array: UInt32);
+    public z_BindVertexArray_ovr_0 := GetFuncOrNil&<procedure(array: VertexArrayName)>(z_BindVertexArray_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindVertexArray(array: VertexArrayName);
     begin
       z_BindVertexArray_ovr_0(array);
     end;
     
     // added in gl4.3
     public z_BindVertexBuffer_adr := GetFuncAdr('glBindVertexBuffer');
-    public z_BindVertexBuffer_ovr_0 := GetFuncOrNil&<procedure(bindingindex: UInt32; buffer: UInt32; offset: IntPtr; stride: Int32)>(z_BindVertexBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindVertexBuffer(bindingindex: UInt32; buffer: UInt32; offset: IntPtr; stride: Int32);
+    public z_BindVertexBuffer_ovr_0 := GetFuncOrNil&<procedure(bindingindex: UInt32; buffer: BufferName; offset: IntPtr; stride: Int32)>(z_BindVertexBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BindVertexBuffer(bindingindex: UInt32; buffer: BufferName; offset: IntPtr; stride: Int32);
     begin
       z_BindVertexBuffer_ovr_0(bindingindex, buffer, offset, stride);
     end;
@@ -921,8 +921,8 @@
     
     // added in gl2.0
     public z_CompileShader_adr := GetFuncAdr('glCompileShader');
-    public z_CompileShader_ovr_0 := GetFuncOrNil&<procedure(shader: UInt32)>(z_CompileShader_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompileShader(shader: UInt32);
+    public z_CompileShader_ovr_0 := GetFuncOrNil&<procedure(shader: ShaderName)>(z_CompileShader_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CompileShader(shader: ShaderName);
     begin
       z_CompileShader_ovr_0(shader);
     end;
@@ -1017,8 +1017,8 @@
     
     // added in gl4.5
     public z_CopyNamedBufferSubData_adr := GetFuncAdr('glCopyNamedBufferSubData');
-    public z_CopyNamedBufferSubData_ovr_0 := GetFuncOrNil&<procedure(readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: IntPtr)>(z_CopyNamedBufferSubData_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyNamedBufferSubData(readBuffer: UInt32; writeBuffer: UInt32; readOffset: IntPtr; writeOffset: IntPtr; size: IntPtr);
+    public z_CopyNamedBufferSubData_ovr_0 := GetFuncOrNil&<procedure(readBuffer: BufferName; writeBuffer: BufferName; readOffset: IntPtr; writeOffset: IntPtr; size: IntPtr)>(z_CopyNamedBufferSubData_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyNamedBufferSubData(readBuffer: BufferName; writeBuffer: BufferName; readOffset: IntPtr; writeOffset: IntPtr; size: IntPtr);
     begin
       z_CopyNamedBufferSubData_ovr_0(readBuffer, writeBuffer, readOffset, writeOffset, size);
     end;
@@ -1053,24 +1053,24 @@
     
     // added in gl4.5
     public z_CopyTextureSubImage1D_adr := GetFuncAdr('glCopyTextureSubImage1D');
-    public z_CopyTextureSubImage1D_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32)>(z_CopyTextureSubImage1D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyTextureSubImage1D(texture: UInt32; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32);
+    public z_CopyTextureSubImage1D_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32)>(z_CopyTextureSubImage1D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyTextureSubImage1D(texture: TextureName; level: Int32; xoffset: Int32; x: Int32; y: Int32; width: Int32);
     begin
       z_CopyTextureSubImage1D_ovr_0(texture, level, xoffset, x, y, width);
     end;
     
     // added in gl4.5
     public z_CopyTextureSubImage2D_adr := GetFuncAdr('glCopyTextureSubImage2D');
-    public z_CopyTextureSubImage2D_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32)>(z_CopyTextureSubImage2D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyTextureSubImage2D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
+    public z_CopyTextureSubImage2D_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32)>(z_CopyTextureSubImage2D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyTextureSubImage2D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
     begin
       z_CopyTextureSubImage2D_ovr_0(texture, level, xoffset, yoffset, x, y, width, height);
     end;
     
     // added in gl4.5
     public z_CopyTextureSubImage3D_adr := GetFuncAdr('glCopyTextureSubImage3D');
-    public z_CopyTextureSubImage3D_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32)>(z_CopyTextureSubImage3D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyTextureSubImage3D(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
+    public z_CopyTextureSubImage3D_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32)>(z_CopyTextureSubImage3D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyTextureSubImage3D(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; x: Int32; y: Int32; width: Int32; height: Int32);
     begin
       z_CopyTextureSubImage3D_ovr_0(texture, level, xoffset, yoffset, zoffset, x, y, width, height);
     end;
@@ -1111,8 +1111,8 @@
     
     // added in gl2.0
     public z_CreateProgram_adr := GetFuncAdr('glCreateProgram');
-    public z_CreateProgram_ovr_0 := GetFuncOrNil&<function: UInt32>(z_CreateProgram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateProgram: UInt32;
+    public z_CreateProgram_ovr_0 := GetFuncOrNil&<function: ProgramName>(z_CreateProgram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateProgram: ProgramName;
     begin
       Result := z_CreateProgram_ovr_0;
     end;
@@ -1187,27 +1187,27 @@
     
     // added in gl2.0
     public z_CreateShader_adr := GetFuncAdr('glCreateShader');
-    public z_CreateShader_ovr_0 := GetFuncOrNil&<function(type: ShaderType): UInt32>(z_CreateShader_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShader(type: ShaderType): UInt32;
+    public z_CreateShader_ovr_0 := GetFuncOrNil&<function(type: ShaderType): ShaderName>(z_CreateShader_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShader(type: ShaderType): ShaderName;
     begin
       Result := z_CreateShader_ovr_0(type);
     end;
     
     // added in gl4.1
     public z_CreateShaderProgramv_adr := GetFuncAdr('glCreateShaderProgramv');
-    public z_CreateShaderProgramv_ovr_0 := GetFuncOrNil&<function(type: ShaderType; count: Int32; var strings: IntPtr): UInt32>(z_CreateShaderProgramv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShaderProgramv(type: ShaderType; count: Int32; strings: array of string): UInt32;
+    public z_CreateShaderProgramv_ovr_0 := GetFuncOrNil&<function(type: ShaderType; count: Int32; var strings: IntPtr): ProgramName>(z_CreateShaderProgramv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShaderProgramv(type: ShaderType; count: Int32; strings: array of string): ProgramName;
     begin
       var par_3_str_ptr := strings.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
       Result := z_CreateShaderProgramv_ovr_0(type, count, par_3_str_ptr[0]);
       foreach var arr_el1 in par_3_str_ptr do Marshal.FreeHGlobal(arr_el1);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShaderProgramv(type: ShaderType; count: Int32; strings: array of IntPtr): UInt32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShaderProgramv(type: ShaderType; count: Int32; strings: array of IntPtr): ProgramName;
     begin
       Result := z_CreateShaderProgramv_ovr_0(type, count, strings[0]);
     end;
-    public z_CreateShaderProgramv_ovr_2 := GetFuncOrNil&<function(type: ShaderType; count: Int32; strings: IntPtr): UInt32>(z_CreateShaderProgramv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShaderProgramv(type: ShaderType; count: Int32; strings: IntPtr): UInt32;
+    public z_CreateShaderProgramv_ovr_2 := GetFuncOrNil&<function(type: ShaderType; count: Int32; strings: IntPtr): ProgramName>(z_CreateShaderProgramv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateShaderProgramv(type: ShaderType; count: Int32; strings: IntPtr): ProgramName;
     begin
       Result := z_CreateShaderProgramv_ovr_2(type, count, strings);
     end;
@@ -1343,8 +1343,8 @@
     
     // added in gl2.0
     public z_DeleteProgram_adr := GetFuncAdr('glDeleteProgram');
-    public z_DeleteProgram_ovr_0 := GetFuncOrNil&<procedure(program: UInt32)>(z_DeleteProgram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DeleteProgram(program: UInt32);
+    public z_DeleteProgram_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName)>(z_DeleteProgram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DeleteProgram(program: ProgramName);
     begin
       z_DeleteProgram_ovr_0(program);
     end;
@@ -1419,8 +1419,8 @@
     
     // added in gl2.0
     public z_DeleteShader_adr := GetFuncAdr('glDeleteShader');
-    public z_DeleteShader_ovr_0 := GetFuncOrNil&<procedure(shader: UInt32)>(z_DeleteShader_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DeleteShader(shader: UInt32);
+    public z_DeleteShader_ovr_0 := GetFuncOrNil&<procedure(shader: ShaderName)>(z_DeleteShader_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DeleteShader(shader: ShaderName);
     begin
       z_DeleteShader_ovr_0(shader);
     end;
@@ -1528,8 +1528,8 @@
     
     // added in gl2.0
     public z_DetachShader_adr := GetFuncAdr('glDetachShader');
-    public z_DetachShader_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; shader: UInt32)>(z_DetachShader_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DetachShader(program: UInt32; shader: UInt32);
+    public z_DetachShader_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; shader: ShaderName)>(z_DetachShader_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DetachShader(program: ProgramName; shader: ShaderName);
     begin
       z_DetachShader_ovr_0(program, shader);
     end;
@@ -1549,8 +1549,8 @@
     
     // added in gl4.5
     public z_DisableVertexArrayAttrib_adr := GetFuncAdr('glDisableVertexArrayAttrib');
-    public z_DisableVertexArrayAttrib_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; index: UInt32)>(z_DisableVertexArrayAttrib_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DisableVertexArrayAttrib(vaobj: UInt32; index: UInt32);
+    public z_DisableVertexArrayAttrib_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; index: UInt32)>(z_DisableVertexArrayAttrib_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DisableVertexArrayAttrib(vaobj: VertexArrayName; index: UInt32);
     begin
       z_DisableVertexArrayAttrib_ovr_0(vaobj, index);
     end;
@@ -1701,32 +1701,32 @@
     
     // added in gl4.0
     public z_DrawTransformFeedback_adr := GetFuncAdr('glDrawTransformFeedback');
-    public z_DrawTransformFeedback_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: UInt32)>(z_DrawTransformFeedback_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedback(mode: PrimitiveType; id: UInt32);
+    public z_DrawTransformFeedback_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: TransformFeedbackName)>(z_DrawTransformFeedback_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedback(mode: PrimitiveType; id: TransformFeedbackName);
     begin
       z_DrawTransformFeedback_ovr_0(mode, id);
     end;
     
     // added in gl4.2
     public z_DrawTransformFeedbackInstanced_adr := GetFuncAdr('glDrawTransformFeedbackInstanced');
-    public z_DrawTransformFeedbackInstanced_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: UInt32; instancecount: Int32)>(z_DrawTransformFeedbackInstanced_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedbackInstanced(mode: PrimitiveType; id: UInt32; instancecount: Int32);
+    public z_DrawTransformFeedbackInstanced_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: TransformFeedbackName; instancecount: Int32)>(z_DrawTransformFeedbackInstanced_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedbackInstanced(mode: PrimitiveType; id: TransformFeedbackName; instancecount: Int32);
     begin
       z_DrawTransformFeedbackInstanced_ovr_0(mode, id, instancecount);
     end;
     
     // added in gl4.0
     public z_DrawTransformFeedbackStream_adr := GetFuncAdr('glDrawTransformFeedbackStream');
-    public z_DrawTransformFeedbackStream_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: UInt32; stream: UInt32)>(z_DrawTransformFeedbackStream_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedbackStream(mode: PrimitiveType; id: UInt32; stream: UInt32);
+    public z_DrawTransformFeedbackStream_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: TransformFeedbackName; stream: UInt32)>(z_DrawTransformFeedbackStream_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedbackStream(mode: PrimitiveType; id: TransformFeedbackName; stream: UInt32);
     begin
       z_DrawTransformFeedbackStream_ovr_0(mode, id, stream);
     end;
     
     // added in gl4.2
     public z_DrawTransformFeedbackStreamInstanced_adr := GetFuncAdr('glDrawTransformFeedbackStreamInstanced');
-    public z_DrawTransformFeedbackStreamInstanced_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: UInt32; stream: UInt32; instancecount: Int32)>(z_DrawTransformFeedbackStreamInstanced_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedbackStreamInstanced(mode: PrimitiveType; id: UInt32; stream: UInt32; instancecount: Int32);
+    public z_DrawTransformFeedbackStreamInstanced_ovr_0 := GetFuncOrNil&<procedure(mode: PrimitiveType; id: TransformFeedbackName; stream: UInt32; instancecount: Int32)>(z_DrawTransformFeedbackStreamInstanced_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawTransformFeedbackStreamInstanced(mode: PrimitiveType; id: TransformFeedbackName; stream: UInt32; instancecount: Int32);
     begin
       z_DrawTransformFeedbackStreamInstanced_ovr_0(mode, id, stream, instancecount);
     end;
@@ -1746,8 +1746,8 @@
     
     // added in gl4.5
     public z_EnableVertexArrayAttrib_adr := GetFuncAdr('glEnableVertexArrayAttrib');
-    public z_EnableVertexArrayAttrib_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; index: UInt32)>(z_EnableVertexArrayAttrib_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EnableVertexArrayAttrib(vaobj: UInt32; index: UInt32);
+    public z_EnableVertexArrayAttrib_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; index: UInt32)>(z_EnableVertexArrayAttrib_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EnableVertexArrayAttrib(vaobj: VertexArrayName; index: UInt32);
     begin
       z_EnableVertexArrayAttrib_ovr_0(vaobj, index);
     end;
@@ -1820,8 +1820,8 @@
     
     // added in gl4.5
     public z_FlushMappedNamedBufferRange_adr := GetFuncAdr('glFlushMappedNamedBufferRange');
-    public z_FlushMappedNamedBufferRange_ovr_0 := GetFuncOrNil&<procedure(buffer: UInt32; offset: IntPtr; length: IntPtr)>(z_FlushMappedNamedBufferRange_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FlushMappedNamedBufferRange(buffer: UInt32; offset: IntPtr; length: IntPtr);
+    public z_FlushMappedNamedBufferRange_ovr_0 := GetFuncOrNil&<procedure(buffer: BufferName; offset: IntPtr; length: IntPtr)>(z_FlushMappedNamedBufferRange_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FlushMappedNamedBufferRange(buffer: BufferName; offset: IntPtr; length: IntPtr);
     begin
       z_FlushMappedNamedBufferRange_ovr_0(buffer, offset, length);
     end;
@@ -1836,16 +1836,16 @@
     
     // added in gl3.0
     public z_FramebufferRenderbuffer_adr := GetFuncAdr('glFramebufferRenderbuffer');
-    public z_FramebufferRenderbuffer_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: UInt32)>(z_FramebufferRenderbuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferRenderbuffer(target: FramebufferTarget; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: UInt32);
+    public z_FramebufferRenderbuffer_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: RenderbufferName)>(z_FramebufferRenderbuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferRenderbuffer(target: FramebufferTarget; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: RenderbufferName);
     begin
       z_FramebufferRenderbuffer_ovr_0(target, attachment, renderbuffertarget, renderbuffer);
     end;
     
     // added in gl3.2
     public z_FramebufferTexture_adr := GetFuncAdr('glFramebufferTexture');
-    public z_FramebufferTexture_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; texture: UInt32; level: Int32)>(z_FramebufferTexture_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferTexture(target: FramebufferTarget; attachment: FramebufferAttachment; texture: UInt32; level: Int32);
+    public z_FramebufferTexture_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; texture: TextureName; level: Int32)>(z_FramebufferTexture_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferTexture(target: FramebufferTarget; attachment: FramebufferAttachment; texture: TextureName; level: Int32);
     begin
       z_FramebufferTexture_ovr_0(target, attachment, texture, level);
     end;
@@ -1876,8 +1876,8 @@
     
     // added in gl3.0
     public z_FramebufferTextureLayer_adr := GetFuncAdr('glFramebufferTextureLayer');
-    public z_FramebufferTextureLayer_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; texture: UInt32; level: Int32; layer: Int32)>(z_FramebufferTextureLayer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferTextureLayer(target: FramebufferTarget; attachment: FramebufferAttachment; texture: UInt32; level: Int32; layer: Int32);
+    public z_FramebufferTextureLayer_ovr_0 := GetFuncOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; texture: TextureName; level: Int32; layer: Int32)>(z_FramebufferTextureLayer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferTextureLayer(target: FramebufferTarget; attachment: FramebufferAttachment; texture: TextureName; level: Int32; layer: Int32);
     begin
       z_FramebufferTextureLayer_ovr_0(target, attachment, texture, level, layer);
     end;
@@ -1914,8 +1914,8 @@
     
     // added in gl4.5
     public z_GenerateTextureMipmap_adr := GetFuncAdr('glGenerateTextureMipmap');
-    public z_GenerateTextureMipmap_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32)>(z_GenerateTextureMipmap_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GenerateTextureMipmap(texture: UInt32);
+    public z_GenerateTextureMipmap_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName)>(z_GenerateTextureMipmap_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GenerateTextureMipmap(texture: TextureName);
     begin
       z_GenerateTextureMipmap_ovr_0(texture);
     end;
@@ -2385,17 +2385,17 @@
     
     // added in gl4.0
     public z_GetActiveSubroutineUniformiv_adr := GetFuncAdr('glGetActiveSubroutineUniformiv');
-    public z_GetActiveSubroutineUniformiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; var values: Int32)>(z_GetActiveSubroutineUniformiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetActiveSubroutineUniformiv(program: UInt32; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; values: array of Int32);
+    public z_GetActiveSubroutineUniformiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; var values: Int32)>(z_GetActiveSubroutineUniformiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetActiveSubroutineUniformiv(program: ProgramName; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; values: array of Int32);
     begin
       z_GetActiveSubroutineUniformiv_ovr_0(program, shadertype, index, pname, values[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetActiveSubroutineUniformiv(program: UInt32; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; var values: Int32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetActiveSubroutineUniformiv(program: ProgramName; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; var values: Int32);
     begin
       z_GetActiveSubroutineUniformiv_ovr_0(program, shadertype, index, pname, values);
     end;
-    public z_GetActiveSubroutineUniformiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; values: IntPtr)>(z_GetActiveSubroutineUniformiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetActiveSubroutineUniformiv(program: UInt32; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; values: IntPtr);
+    public z_GetActiveSubroutineUniformiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; values: IntPtr)>(z_GetActiveSubroutineUniformiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetActiveSubroutineUniformiv(program: ProgramName; shadertype: ShaderType; index: UInt32; pname: SubroutineParameterName; values: IntPtr);
     begin
       z_GetActiveSubroutineUniformiv_ovr_2(program, shadertype, index, pname, values);
     end;
@@ -2891,14 +2891,14 @@
     
     // added in gl2.0
     public z_GetAttribLocation_adr := GetFuncAdr('glGetAttribLocation');
-    public z_GetAttribLocation_ovr_0 := GetFuncOrNil&<function(program: UInt32; name: IntPtr): Int32>(z_GetAttribLocation_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetAttribLocation(program: UInt32; name: string): Int32;
+    public z_GetAttribLocation_ovr_0 := GetFuncOrNil&<function(program: ProgramName; name: IntPtr): Int32>(z_GetAttribLocation_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetAttribLocation(program: ProgramName; name: string): Int32;
     begin
       var par_2_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetAttribLocation_ovr_0(program, par_2_str_ptr);
       Marshal.FreeHGlobal(par_2_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetAttribLocation(program: UInt32; name: IntPtr): Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetAttribLocation(program: ProgramName; name: IntPtr): Int32;
     begin
       Result := z_GetAttribLocation_ovr_0(program, name);
     end;
@@ -5542,28 +5542,28 @@
     
     // added in gl3.3
     public z_GetFragDataIndex_adr := GetFuncAdr('glGetFragDataIndex');
-    public z_GetFragDataIndex_ovr_0 := GetFuncOrNil&<function(program: UInt32; name: IntPtr): Int32>(z_GetFragDataIndex_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataIndex(program: UInt32; name: string): Int32;
+    public z_GetFragDataIndex_ovr_0 := GetFuncOrNil&<function(program: ProgramName; name: IntPtr): Int32>(z_GetFragDataIndex_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataIndex(program: ProgramName; name: string): Int32;
     begin
       var par_2_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetFragDataIndex_ovr_0(program, par_2_str_ptr);
       Marshal.FreeHGlobal(par_2_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataIndex(program: UInt32; name: IntPtr): Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataIndex(program: ProgramName; name: IntPtr): Int32;
     begin
       Result := z_GetFragDataIndex_ovr_0(program, name);
     end;
     
     // added in gl3.0
     public z_GetFragDataLocation_adr := GetFuncAdr('glGetFragDataLocation');
-    public z_GetFragDataLocation_ovr_0 := GetFuncOrNil&<function(program: UInt32; name: IntPtr): Int32>(z_GetFragDataLocation_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataLocation(program: UInt32; name: string): Int32;
+    public z_GetFragDataLocation_ovr_0 := GetFuncOrNil&<function(program: ProgramName; name: IntPtr): Int32>(z_GetFragDataLocation_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataLocation(program: ProgramName; name: string): Int32;
     begin
       var par_2_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetFragDataLocation_ovr_0(program, par_2_str_ptr);
       Marshal.FreeHGlobal(par_2_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataLocation(program: UInt32; name: IntPtr): Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetFragDataLocation(program: ProgramName; name: IntPtr): Int32;
     begin
       Result := z_GetFragDataLocation_ovr_0(program, name);
     end;
@@ -6010,68 +6010,68 @@
     
     // added in gl4.5
     public z_GetnUniformdv_adr := GetFuncAdr('glGetnUniformdv');
-    public z_GetnUniformdv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; var params: real)>(z_GetnUniformdv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformdv(program: UInt32; location: Int32; bufSize: Int32; params: array of real);
+    public z_GetnUniformdv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; var params: real)>(z_GetnUniformdv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformdv(program: ProgramName; location: Int32; bufSize: Int32; params: array of real);
     begin
       z_GetnUniformdv_ovr_0(program, location, bufSize, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformdv(program: UInt32; location: Int32; bufSize: Int32; var params: real);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformdv(program: ProgramName; location: Int32; bufSize: Int32; var params: real);
     begin
       z_GetnUniformdv_ovr_0(program, location, bufSize, params);
     end;
-    public z_GetnUniformdv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformdv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformdv(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr);
+    public z_GetnUniformdv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformdv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformdv(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr);
     begin
       z_GetnUniformdv_ovr_2(program, location, bufSize, params);
     end;
     
     // added in gl4.5
     public z_GetnUniformfv_adr := GetFuncAdr('glGetnUniformfv');
-    public z_GetnUniformfv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; var params: single)>(z_GetnUniformfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformfv(program: UInt32; location: Int32; bufSize: Int32; params: array of single);
+    public z_GetnUniformfv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; var params: single)>(z_GetnUniformfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformfv(program: ProgramName; location: Int32; bufSize: Int32; params: array of single);
     begin
       z_GetnUniformfv_ovr_0(program, location, bufSize, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformfv(program: UInt32; location: Int32; bufSize: Int32; var params: single);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformfv(program: ProgramName; location: Int32; bufSize: Int32; var params: single);
     begin
       z_GetnUniformfv_ovr_0(program, location, bufSize, params);
     end;
-    public z_GetnUniformfv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformfv(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr);
+    public z_GetnUniformfv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformfv(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr);
     begin
       z_GetnUniformfv_ovr_2(program, location, bufSize, params);
     end;
     
     // added in gl4.5
     public z_GetnUniformiv_adr := GetFuncAdr('glGetnUniformiv');
-    public z_GetnUniformiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; var params: Int32)>(z_GetnUniformiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformiv(program: UInt32; location: Int32; bufSize: Int32; params: array of Int32);
+    public z_GetnUniformiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; var params: Int32)>(z_GetnUniformiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformiv(program: ProgramName; location: Int32; bufSize: Int32; params: array of Int32);
     begin
       z_GetnUniformiv_ovr_0(program, location, bufSize, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformiv(program: UInt32; location: Int32; bufSize: Int32; var params: Int32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformiv(program: ProgramName; location: Int32; bufSize: Int32; var params: Int32);
     begin
       z_GetnUniformiv_ovr_0(program, location, bufSize, params);
     end;
-    public z_GetnUniformiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformiv(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr);
+    public z_GetnUniformiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformiv(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr);
     begin
       z_GetnUniformiv_ovr_2(program, location, bufSize, params);
     end;
     
     // added in gl4.5
     public z_GetnUniformuiv_adr := GetFuncAdr('glGetnUniformuiv');
-    public z_GetnUniformuiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; var params: UInt32)>(z_GetnUniformuiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformuiv(program: UInt32; location: Int32; bufSize: Int32; params: array of UInt32);
+    public z_GetnUniformuiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; var params: UInt32)>(z_GetnUniformuiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformuiv(program: ProgramName; location: Int32; bufSize: Int32; params: array of UInt32);
     begin
       z_GetnUniformuiv_ovr_0(program, location, bufSize, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformuiv(program: UInt32; location: Int32; bufSize: Int32; var params: UInt32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformuiv(program: ProgramName; location: Int32; bufSize: Int32; var params: UInt32);
     begin
       z_GetnUniformuiv_ovr_0(program, location, bufSize, params);
     end;
-    public z_GetnUniformuiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformuiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformuiv(program: UInt32; location: Int32; bufSize: Int32; params: IntPtr);
+    public z_GetnUniformuiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr)>(z_GetnUniformuiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnUniformuiv(program: ProgramName; location: Int32; bufSize: Int32; params: IntPtr);
     begin
       z_GetnUniformuiv_ovr_2(program, location, bufSize, params);
     end;
@@ -6237,34 +6237,34 @@
     
     // added in gl4.3
     public z_GetProgramInterfaceiv_adr := GetFuncAdr('glGetProgramInterfaceiv');
-    public z_GetProgramInterfaceiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; programInterface: ProgramInterface; pname: ProgramInterfacePName; var params: Int32)>(z_GetProgramInterfaceiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramInterfaceiv(program: UInt32; programInterface: ProgramInterface; pname: ProgramInterfacePName; params: array of Int32);
+    public z_GetProgramInterfaceiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; programInterface: ProgramInterface; pname: ProgramInterfacePName; var params: Int32)>(z_GetProgramInterfaceiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramInterfaceiv(program: ProgramName; programInterface: ProgramInterface; pname: ProgramInterfacePName; params: array of Int32);
     begin
       z_GetProgramInterfaceiv_ovr_0(program, programInterface, pname, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramInterfaceiv(program: UInt32; programInterface: ProgramInterface; pname: ProgramInterfacePName; var params: Int32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramInterfaceiv(program: ProgramName; programInterface: ProgramInterface; pname: ProgramInterfacePName; var params: Int32);
     begin
       z_GetProgramInterfaceiv_ovr_0(program, programInterface, pname, params);
     end;
-    public z_GetProgramInterfaceiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; programInterface: ProgramInterface; pname: ProgramInterfacePName; params: IntPtr)>(z_GetProgramInterfaceiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramInterfaceiv(program: UInt32; programInterface: ProgramInterface; pname: ProgramInterfacePName; params: IntPtr);
+    public z_GetProgramInterfaceiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; programInterface: ProgramInterface; pname: ProgramInterfacePName; params: IntPtr)>(z_GetProgramInterfaceiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramInterfaceiv(program: ProgramName; programInterface: ProgramInterface; pname: ProgramInterfacePName; params: IntPtr);
     begin
       z_GetProgramInterfaceiv_ovr_2(program, programInterface, pname, params);
     end;
     
     // added in gl2.0
     public z_GetProgramiv_adr := GetFuncAdr('glGetProgramiv');
-    public z_GetProgramiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; pname: ProgramPropertyARB; var params: Int32)>(z_GetProgramiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramiv(program: UInt32; pname: ProgramPropertyARB; params: array of Int32);
+    public z_GetProgramiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; pname: ProgramPropertyARB; var params: Int32)>(z_GetProgramiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramiv(program: ProgramName; pname: ProgramPropertyARB; params: array of Int32);
     begin
       z_GetProgramiv_ovr_0(program, pname, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramiv(program: UInt32; pname: ProgramPropertyARB; var params: Int32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramiv(program: ProgramName; pname: ProgramPropertyARB; var params: Int32);
     begin
       z_GetProgramiv_ovr_0(program, pname, params);
     end;
-    public z_GetProgramiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; pname: ProgramPropertyARB; params: IntPtr)>(z_GetProgramiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramiv(program: UInt32; pname: ProgramPropertyARB; params: IntPtr);
+    public z_GetProgramiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; pname: ProgramPropertyARB; params: IntPtr)>(z_GetProgramiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramiv(program: ProgramName; pname: ProgramPropertyARB; params: IntPtr);
     begin
       z_GetProgramiv_ovr_2(program, pname, params);
     end;
@@ -6323,14 +6323,14 @@
     
     // added in gl4.3
     public z_GetProgramResourceIndex_adr := GetFuncAdr('glGetProgramResourceIndex');
-    public z_GetProgramResourceIndex_ovr_0 := GetFuncOrNil&<function(program: UInt32; programInterface: ProgramInterface; name: IntPtr): UInt32>(z_GetProgramResourceIndex_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceIndex(program: UInt32; programInterface: ProgramInterface; name: string): UInt32;
+    public z_GetProgramResourceIndex_ovr_0 := GetFuncOrNil&<function(program: ProgramName; programInterface: ProgramInterface; name: IntPtr): UInt32>(z_GetProgramResourceIndex_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceIndex(program: ProgramName; programInterface: ProgramInterface; name: string): UInt32;
     begin
       var par_3_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetProgramResourceIndex_ovr_0(program, programInterface, par_3_str_ptr);
       Marshal.FreeHGlobal(par_3_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceIndex(program: UInt32; programInterface: ProgramInterface; name: IntPtr): UInt32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceIndex(program: ProgramName; programInterface: ProgramInterface; name: IntPtr): UInt32;
     begin
       Result := z_GetProgramResourceIndex_ovr_0(program, programInterface, name);
     end;
@@ -6456,28 +6456,28 @@
     
     // added in gl4.3
     public z_GetProgramResourceLocation_adr := GetFuncAdr('glGetProgramResourceLocation');
-    public z_GetProgramResourceLocation_ovr_0 := GetFuncOrNil&<function(program: UInt32; programInterface: ProgramInterface; name: IntPtr): Int32>(z_GetProgramResourceLocation_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocation(program: UInt32; programInterface: ProgramInterface; name: string): Int32;
+    public z_GetProgramResourceLocation_ovr_0 := GetFuncOrNil&<function(program: ProgramName; programInterface: ProgramInterface; name: IntPtr): Int32>(z_GetProgramResourceLocation_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocation(program: ProgramName; programInterface: ProgramInterface; name: string): Int32;
     begin
       var par_3_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetProgramResourceLocation_ovr_0(program, programInterface, par_3_str_ptr);
       Marshal.FreeHGlobal(par_3_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocation(program: UInt32; programInterface: ProgramInterface; name: IntPtr): Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocation(program: ProgramName; programInterface: ProgramInterface; name: IntPtr): Int32;
     begin
       Result := z_GetProgramResourceLocation_ovr_0(program, programInterface, name);
     end;
     
     // added in gl4.3
     public z_GetProgramResourceLocationIndex_adr := GetFuncAdr('glGetProgramResourceLocationIndex');
-    public z_GetProgramResourceLocationIndex_ovr_0 := GetFuncOrNil&<function(program: UInt32; programInterface: ProgramInterface; name: IntPtr): Int32>(z_GetProgramResourceLocationIndex_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocationIndex(program: UInt32; programInterface: ProgramInterface; name: string): Int32;
+    public z_GetProgramResourceLocationIndex_ovr_0 := GetFuncOrNil&<function(program: ProgramName; programInterface: ProgramInterface; name: IntPtr): Int32>(z_GetProgramResourceLocationIndex_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocationIndex(program: ProgramName; programInterface: ProgramInterface; name: string): Int32;
     begin
       var par_3_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetProgramResourceLocationIndex_ovr_0(program, programInterface, par_3_str_ptr);
       Marshal.FreeHGlobal(par_3_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocationIndex(program: UInt32; programInterface: ProgramInterface; name: IntPtr): Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetProgramResourceLocationIndex(program: ProgramName; programInterface: ProgramInterface; name: IntPtr): Int32;
     begin
       Result := z_GetProgramResourceLocationIndex_ovr_0(program, programInterface, name);
     end;
@@ -6519,49 +6519,49 @@
     
     // added in gl4.0
     public z_GetProgramStageiv_adr := GetFuncAdr('glGetProgramStageiv');
-    public z_GetProgramStageiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; shadertype: ShaderType; pname: ProgramStagePName; var values: Int32)>(z_GetProgramStageiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStageiv(program: UInt32; shadertype: ShaderType; pname: ProgramStagePName; values: array of Int32);
+    public z_GetProgramStageiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; shadertype: ShaderType; pname: ProgramStagePName; var values: Int32)>(z_GetProgramStageiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStageiv(program: ProgramName; shadertype: ShaderType; pname: ProgramStagePName; values: array of Int32);
     begin
       z_GetProgramStageiv_ovr_0(program, shadertype, pname, values[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStageiv(program: UInt32; shadertype: ShaderType; pname: ProgramStagePName; var values: Int32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStageiv(program: ProgramName; shadertype: ShaderType; pname: ProgramStagePName; var values: Int32);
     begin
       z_GetProgramStageiv_ovr_0(program, shadertype, pname, values);
     end;
-    public z_GetProgramStageiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; shadertype: ShaderType; pname: ProgramStagePName; values: IntPtr)>(z_GetProgramStageiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStageiv(program: UInt32; shadertype: ShaderType; pname: ProgramStagePName; values: IntPtr);
+    public z_GetProgramStageiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; shadertype: ShaderType; pname: ProgramStagePName; values: IntPtr)>(z_GetProgramStageiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStageiv(program: ProgramName; shadertype: ShaderType; pname: ProgramStagePName; values: IntPtr);
     begin
       z_GetProgramStageiv_ovr_2(program, shadertype, pname, values);
     end;
     
     // added in gl4.5
     public z_GetQueryBufferObjecti64v_adr := GetFuncAdr('glGetQueryBufferObjecti64v');
-    public z_GetQueryBufferObjecti64v_ovr_0 := GetFuncOrNil&<procedure(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjecti64v_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjecti64v(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr);
+    public z_GetQueryBufferObjecti64v_ovr_0 := GetFuncOrNil&<procedure(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjecti64v_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjecti64v(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr);
     begin
       z_GetQueryBufferObjecti64v_ovr_0(id, buffer, pname, offset);
     end;
     
     // added in gl4.5
     public z_GetQueryBufferObjectiv_adr := GetFuncAdr('glGetQueryBufferObjectiv');
-    public z_GetQueryBufferObjectiv_ovr_0 := GetFuncOrNil&<procedure(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjectiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjectiv(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr);
+    public z_GetQueryBufferObjectiv_ovr_0 := GetFuncOrNil&<procedure(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjectiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjectiv(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr);
     begin
       z_GetQueryBufferObjectiv_ovr_0(id, buffer, pname, offset);
     end;
     
     // added in gl4.5
     public z_GetQueryBufferObjectui64v_adr := GetFuncAdr('glGetQueryBufferObjectui64v');
-    public z_GetQueryBufferObjectui64v_ovr_0 := GetFuncOrNil&<procedure(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjectui64v_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjectui64v(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr);
+    public z_GetQueryBufferObjectui64v_ovr_0 := GetFuncOrNil&<procedure(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjectui64v_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjectui64v(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr);
     begin
       z_GetQueryBufferObjectui64v_ovr_0(id, buffer, pname, offset);
     end;
     
     // added in gl4.5
     public z_GetQueryBufferObjectuiv_adr := GetFuncAdr('glGetQueryBufferObjectuiv');
-    public z_GetQueryBufferObjectuiv_ovr_0 := GetFuncOrNil&<procedure(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjectuiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjectuiv(id: UInt32; buffer: UInt32; pname: QueryObjectParameterName; offset: IntPtr);
+    public z_GetQueryBufferObjectuiv_ovr_0 := GetFuncOrNil&<procedure(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr)>(z_GetQueryBufferObjectuiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetQueryBufferObjectuiv(id: QueryName; buffer: BufferName; pname: QueryObjectParameterName; offset: IntPtr);
     begin
       z_GetQueryBufferObjectuiv_ovr_0(id, buffer, pname, offset);
     end;
@@ -6790,17 +6790,17 @@
     
     // added in gl2.0
     public z_GetShaderiv_adr := GetFuncAdr('glGetShaderiv');
-    public z_GetShaderiv_ovr_0 := GetFuncOrNil&<procedure(shader: UInt32; pname: ShaderParameterName; var params: Int32)>(z_GetShaderiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShaderiv(shader: UInt32; pname: ShaderParameterName; params: array of Int32);
+    public z_GetShaderiv_ovr_0 := GetFuncOrNil&<procedure(shader: ShaderName; pname: ShaderParameterName; var params: Int32)>(z_GetShaderiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShaderiv(shader: ShaderName; pname: ShaderParameterName; params: array of Int32);
     begin
       z_GetShaderiv_ovr_0(shader, pname, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShaderiv(shader: UInt32; pname: ShaderParameterName; var params: Int32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShaderiv(shader: ShaderName; pname: ShaderParameterName; var params: Int32);
     begin
       z_GetShaderiv_ovr_0(shader, pname, params);
     end;
-    public z_GetShaderiv_ovr_2 := GetFuncOrNil&<procedure(shader: UInt32; pname: ShaderParameterName; params: IntPtr)>(z_GetShaderiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShaderiv(shader: UInt32; pname: ShaderParameterName; params: IntPtr);
+    public z_GetShaderiv_ovr_2 := GetFuncOrNil&<procedure(shader: ShaderName; pname: ShaderParameterName; params: IntPtr)>(z_GetShaderiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetShaderiv(shader: ShaderName; pname: ShaderParameterName; params: IntPtr);
     begin
       z_GetShaderiv_ovr_2(shader, pname, params);
     end;
@@ -6899,28 +6899,28 @@
     
     // added in gl4.0
     public z_GetSubroutineIndex_adr := GetFuncAdr('glGetSubroutineIndex');
-    public z_GetSubroutineIndex_ovr_0 := GetFuncOrNil&<function(program: UInt32; shadertype: ShaderType; name: IntPtr): UInt32>(z_GetSubroutineIndex_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineIndex(program: UInt32; shadertype: ShaderType; name: string): UInt32;
+    public z_GetSubroutineIndex_ovr_0 := GetFuncOrNil&<function(program: ProgramName; shadertype: ShaderType; name: IntPtr): UInt32>(z_GetSubroutineIndex_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineIndex(program: ProgramName; shadertype: ShaderType; name: string): UInt32;
     begin
       var par_3_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetSubroutineIndex_ovr_0(program, shadertype, par_3_str_ptr);
       Marshal.FreeHGlobal(par_3_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineIndex(program: UInt32; shadertype: ShaderType; name: IntPtr): UInt32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineIndex(program: ProgramName; shadertype: ShaderType; name: IntPtr): UInt32;
     begin
       Result := z_GetSubroutineIndex_ovr_0(program, shadertype, name);
     end;
     
     // added in gl4.0
     public z_GetSubroutineUniformLocation_adr := GetFuncAdr('glGetSubroutineUniformLocation');
-    public z_GetSubroutineUniformLocation_ovr_0 := GetFuncOrNil&<function(program: UInt32; shadertype: ShaderType; name: IntPtr): Int32>(z_GetSubroutineUniformLocation_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineUniformLocation(program: UInt32; shadertype: ShaderType; name: string): Int32;
+    public z_GetSubroutineUniformLocation_ovr_0 := GetFuncOrNil&<function(program: ProgramName; shadertype: ShaderType; name: IntPtr): Int32>(z_GetSubroutineUniformLocation_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineUniformLocation(program: ProgramName; shadertype: ShaderType; name: string): Int32;
     begin
       var par_3_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetSubroutineUniformLocation_ovr_0(program, shadertype, par_3_str_ptr);
       Marshal.FreeHGlobal(par_3_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineUniformLocation(program: UInt32; shadertype: ShaderType; name: IntPtr): Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSubroutineUniformLocation(program: ProgramName; shadertype: ShaderType; name: IntPtr): Int32;
     begin
       Result := z_GetSubroutineUniformLocation_ovr_0(program, shadertype, name);
     end;
@@ -7503,128 +7503,128 @@
     
     // added in gl3.1
     public z_GetUniformBlockIndex_adr := GetFuncAdr('glGetUniformBlockIndex');
-    public z_GetUniformBlockIndex_ovr_0 := GetFuncOrNil&<function(program: UInt32; uniformBlockName: IntPtr): UInt32>(z_GetUniformBlockIndex_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformBlockIndex(program: UInt32; uniformBlockName: string): UInt32;
+    public z_GetUniformBlockIndex_ovr_0 := GetFuncOrNil&<function(program: ProgramName; uniformBlockName: IntPtr): UInt32>(z_GetUniformBlockIndex_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformBlockIndex(program: ProgramName; uniformBlockName: string): UInt32;
     begin
       var par_2_str_ptr := Marshal.StringToHGlobalAnsi(uniformBlockName);
       Result := z_GetUniformBlockIndex_ovr_0(program, par_2_str_ptr);
       Marshal.FreeHGlobal(par_2_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformBlockIndex(program: UInt32; uniformBlockName: IntPtr): UInt32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformBlockIndex(program: ProgramName; uniformBlockName: IntPtr): UInt32;
     begin
       Result := z_GetUniformBlockIndex_ovr_0(program, uniformBlockName);
     end;
     
     // added in gl4.0
     public z_GetUniformdv_adr := GetFuncAdr('glGetUniformdv');
-    public z_GetUniformdv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; var params: real)>(z_GetUniformdv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformdv(program: UInt32; location: Int32; params: array of real);
+    public z_GetUniformdv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; var params: real)>(z_GetUniformdv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformdv(program: ProgramName; location: Int32; params: array of real);
     begin
       z_GetUniformdv_ovr_0(program, location, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformdv(program: UInt32; location: Int32; var params: real);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformdv(program: ProgramName; location: Int32; var params: real);
     begin
       z_GetUniformdv_ovr_0(program, location, params);
     end;
-    public z_GetUniformdv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; params: IntPtr)>(z_GetUniformdv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformdv(program: UInt32; location: Int32; params: IntPtr);
+    public z_GetUniformdv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; params: IntPtr)>(z_GetUniformdv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformdv(program: ProgramName; location: Int32; params: IntPtr);
     begin
       z_GetUniformdv_ovr_2(program, location, params);
     end;
     
     // added in gl2.0
     public z_GetUniformfv_adr := GetFuncAdr('glGetUniformfv');
-    public z_GetUniformfv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; var params: single)>(z_GetUniformfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformfv(program: UInt32; location: Int32; params: array of single);
+    public z_GetUniformfv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; var params: single)>(z_GetUniformfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformfv(program: ProgramName; location: Int32; params: array of single);
     begin
       z_GetUniformfv_ovr_0(program, location, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformfv(program: UInt32; location: Int32; var params: single);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformfv(program: ProgramName; location: Int32; var params: single);
     begin
       z_GetUniformfv_ovr_0(program, location, params);
     end;
-    public z_GetUniformfv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; params: IntPtr)>(z_GetUniformfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformfv(program: UInt32; location: Int32; params: IntPtr);
+    public z_GetUniformfv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; params: IntPtr)>(z_GetUniformfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformfv(program: ProgramName; location: Int32; params: IntPtr);
     begin
       z_GetUniformfv_ovr_2(program, location, params);
     end;
     
     // added in gl3.1
     public z_GetUniformIndices_adr := GetFuncAdr('glGetUniformIndices');
-    public z_GetUniformIndices_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; uniformCount: Int32; var uniformNames: IntPtr; var uniformIndices: UInt32)>(z_GetUniformIndices_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: array of string; uniformIndices: array of UInt32);
+    public z_GetUniformIndices_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; uniformCount: Int32; var uniformNames: IntPtr; var uniformIndices: UInt32)>(z_GetUniformIndices_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: array of string; uniformIndices: array of UInt32);
     begin
       var par_3_str_ptr := uniformNames.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
       z_GetUniformIndices_ovr_0(program, uniformCount, par_3_str_ptr[0], uniformIndices[0]);
       foreach var arr_el1 in par_3_str_ptr do Marshal.FreeHGlobal(arr_el1);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: array of string; var uniformIndices: UInt32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: array of string; var uniformIndices: UInt32);
     begin
       var par_3_str_ptr := uniformNames.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
       z_GetUniformIndices_ovr_0(program, uniformCount, par_3_str_ptr[0], uniformIndices);
       foreach var arr_el1 in par_3_str_ptr do Marshal.FreeHGlobal(arr_el1);
     end;
-    public z_GetUniformIndices_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; uniformCount: Int32; var uniformNames: IntPtr; uniformIndices: IntPtr)>(z_GetUniformIndices_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: array of string; uniformIndices: IntPtr);
+    public z_GetUniformIndices_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; uniformCount: Int32; var uniformNames: IntPtr; uniformIndices: IntPtr)>(z_GetUniformIndices_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: array of string; uniformIndices: IntPtr);
     begin
       var par_3_str_ptr := uniformNames.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
       z_GetUniformIndices_ovr_2(program, uniformCount, par_3_str_ptr[0], uniformIndices);
       foreach var arr_el1 in par_3_str_ptr do Marshal.FreeHGlobal(arr_el1);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: array of IntPtr; uniformIndices: array of UInt32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: array of IntPtr; uniformIndices: array of UInt32);
     begin
       z_GetUniformIndices_ovr_0(program, uniformCount, uniformNames[0], uniformIndices[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: array of IntPtr; var uniformIndices: UInt32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: array of IntPtr; var uniformIndices: UInt32);
     begin
       z_GetUniformIndices_ovr_0(program, uniformCount, uniformNames[0], uniformIndices);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: array of IntPtr; uniformIndices: IntPtr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: array of IntPtr; uniformIndices: IntPtr);
     begin
       z_GetUniformIndices_ovr_2(program, uniformCount, uniformNames[0], uniformIndices);
     end;
-    public z_GetUniformIndices_ovr_6 := GetFuncOrNil&<procedure(program: UInt32; uniformCount: Int32; uniformNames: IntPtr; var uniformIndices: UInt32)>(z_GetUniformIndices_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: IntPtr; uniformIndices: array of UInt32);
+    public z_GetUniformIndices_ovr_6 := GetFuncOrNil&<procedure(program: ProgramName; uniformCount: Int32; uniformNames: IntPtr; var uniformIndices: UInt32)>(z_GetUniformIndices_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: IntPtr; uniformIndices: array of UInt32);
     begin
       z_GetUniformIndices_ovr_6(program, uniformCount, uniformNames, uniformIndices[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: IntPtr; var uniformIndices: UInt32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: IntPtr; var uniformIndices: UInt32);
     begin
       z_GetUniformIndices_ovr_6(program, uniformCount, uniformNames, uniformIndices);
     end;
-    public z_GetUniformIndices_ovr_8 := GetFuncOrNil&<procedure(program: UInt32; uniformCount: Int32; uniformNames: IntPtr; uniformIndices: IntPtr)>(z_GetUniformIndices_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: UInt32; uniformCount: Int32; uniformNames: IntPtr; uniformIndices: IntPtr);
+    public z_GetUniformIndices_ovr_8 := GetFuncOrNil&<procedure(program: ProgramName; uniformCount: Int32; uniformNames: IntPtr; uniformIndices: IntPtr)>(z_GetUniformIndices_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformIndices(program: ProgramName; uniformCount: Int32; uniformNames: IntPtr; uniformIndices: IntPtr);
     begin
       z_GetUniformIndices_ovr_8(program, uniformCount, uniformNames, uniformIndices);
     end;
     
     // added in gl2.0
     public z_GetUniformiv_adr := GetFuncAdr('glGetUniformiv');
-    public z_GetUniformiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; var params: Int32)>(z_GetUniformiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformiv(program: UInt32; location: Int32; params: array of Int32);
+    public z_GetUniformiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; var params: Int32)>(z_GetUniformiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformiv(program: ProgramName; location: Int32; params: array of Int32);
     begin
       z_GetUniformiv_ovr_0(program, location, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformiv(program: UInt32; location: Int32; var params: Int32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformiv(program: ProgramName; location: Int32; var params: Int32);
     begin
       z_GetUniformiv_ovr_0(program, location, params);
     end;
-    public z_GetUniformiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; params: IntPtr)>(z_GetUniformiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformiv(program: UInt32; location: Int32; params: IntPtr);
+    public z_GetUniformiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; params: IntPtr)>(z_GetUniformiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformiv(program: ProgramName; location: Int32; params: IntPtr);
     begin
       z_GetUniformiv_ovr_2(program, location, params);
     end;
     
     // added in gl2.0
     public z_GetUniformLocation_adr := GetFuncAdr('glGetUniformLocation');
-    public z_GetUniformLocation_ovr_0 := GetFuncOrNil&<function(program: UInt32; name: IntPtr): Int32>(z_GetUniformLocation_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformLocation(program: UInt32; name: string): Int32;
+    public z_GetUniformLocation_ovr_0 := GetFuncOrNil&<function(program: ProgramName; name: IntPtr): Int32>(z_GetUniformLocation_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformLocation(program: ProgramName; name: string): Int32;
     begin
       var par_2_str_ptr := Marshal.StringToHGlobalAnsi(name);
       Result := z_GetUniformLocation_ovr_0(program, par_2_str_ptr);
       Marshal.FreeHGlobal(par_2_str_ptr);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformLocation(program: UInt32; name: IntPtr): Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetUniformLocation(program: ProgramName; name: IntPtr): Int32;
     begin
       Result := z_GetUniformLocation_ovr_0(program, name);
     end;
@@ -7648,17 +7648,17 @@
     
     // added in gl3.0
     public z_GetUniformuiv_adr := GetFuncAdr('glGetUniformuiv');
-    public z_GetUniformuiv_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; var params: UInt32)>(z_GetUniformuiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformuiv(program: UInt32; location: Int32; params: array of UInt32);
+    public z_GetUniformuiv_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; var params: UInt32)>(z_GetUniformuiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformuiv(program: ProgramName; location: Int32; params: array of UInt32);
     begin
       z_GetUniformuiv_ovr_0(program, location, params[0]);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformuiv(program: UInt32; location: Int32; var params: UInt32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformuiv(program: ProgramName; location: Int32; var params: UInt32);
     begin
       z_GetUniformuiv_ovr_0(program, location, params);
     end;
-    public z_GetUniformuiv_ovr_2 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; params: IntPtr)>(z_GetUniformuiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformuiv(program: UInt32; location: Int32; params: IntPtr);
+    public z_GetUniformuiv_ovr_2 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; params: IntPtr)>(z_GetUniformuiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetUniformuiv(program: ProgramName; location: Int32; params: IntPtr);
     begin
       z_GetUniformuiv_ovr_2(program, location, params);
     end;
@@ -7840,16 +7840,16 @@
     
     // added in gl4.3
     public z_InvalidateBufferData_adr := GetFuncAdr('glInvalidateBufferData');
-    public z_InvalidateBufferData_ovr_0 := GetFuncOrNil&<procedure(buffer: UInt32)>(z_InvalidateBufferData_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateBufferData(buffer: UInt32);
+    public z_InvalidateBufferData_ovr_0 := GetFuncOrNil&<procedure(buffer: BufferName)>(z_InvalidateBufferData_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateBufferData(buffer: BufferName);
     begin
       z_InvalidateBufferData_ovr_0(buffer);
     end;
     
     // added in gl4.3
     public z_InvalidateBufferSubData_adr := GetFuncAdr('glInvalidateBufferSubData');
-    public z_InvalidateBufferSubData_ovr_0 := GetFuncOrNil&<procedure(buffer: UInt32; offset: IntPtr; length: IntPtr)>(z_InvalidateBufferSubData_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateBufferSubData(buffer: UInt32; offset: IntPtr; length: IntPtr);
+    public z_InvalidateBufferSubData_ovr_0 := GetFuncOrNil&<procedure(buffer: BufferName; offset: IntPtr; length: IntPtr)>(z_InvalidateBufferSubData_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateBufferSubData(buffer: BufferName; offset: IntPtr; length: IntPtr);
     begin
       z_InvalidateBufferSubData_ovr_0(buffer, offset, length);
     end;
@@ -7924,24 +7924,24 @@
     
     // added in gl4.3
     public z_InvalidateTexImage_adr := GetFuncAdr('glInvalidateTexImage');
-    public z_InvalidateTexImage_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; level: Int32)>(z_InvalidateTexImage_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateTexImage(texture: UInt32; level: Int32);
+    public z_InvalidateTexImage_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; level: Int32)>(z_InvalidateTexImage_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateTexImage(texture: TextureName; level: Int32);
     begin
       z_InvalidateTexImage_ovr_0(texture, level);
     end;
     
     // added in gl4.3
     public z_InvalidateTexSubImage_adr := GetFuncAdr('glInvalidateTexSubImage');
-    public z_InvalidateTexSubImage_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32)>(z_InvalidateTexSubImage_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateTexSubImage(texture: UInt32; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32);
+    public z_InvalidateTexSubImage_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32)>(z_InvalidateTexSubImage_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure InvalidateTexSubImage(texture: TextureName; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32);
     begin
       z_InvalidateTexSubImage_ovr_0(texture, level, xoffset, yoffset, zoffset, width, height, depth);
     end;
     
     // added in gl1.5
     public z_IsBuffer_adr := GetFuncAdr('glIsBuffer');
-    public z_IsBuffer_ovr_0 := GetFuncOrNil&<function(buffer: UInt32): boolean>(z_IsBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsBuffer(buffer: UInt32): boolean;
+    public z_IsBuffer_ovr_0 := GetFuncOrNil&<function(buffer: BufferName): boolean>(z_IsBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsBuffer(buffer: BufferName): boolean;
     begin
       Result := z_IsBuffer_ovr_0(buffer);
     end;
@@ -7961,56 +7961,56 @@
     
     // added in gl3.0
     public z_IsFramebuffer_adr := GetFuncAdr('glIsFramebuffer');
-    public z_IsFramebuffer_ovr_0 := GetFuncOrNil&<function(framebuffer: UInt32): boolean>(z_IsFramebuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsFramebuffer(framebuffer: UInt32): boolean;
+    public z_IsFramebuffer_ovr_0 := GetFuncOrNil&<function(framebuffer: FramebufferName): boolean>(z_IsFramebuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsFramebuffer(framebuffer: FramebufferName): boolean;
     begin
       Result := z_IsFramebuffer_ovr_0(framebuffer);
     end;
     
     // added in gl2.0
     public z_IsProgram_adr := GetFuncAdr('glIsProgram');
-    public z_IsProgram_ovr_0 := GetFuncOrNil&<function(program: UInt32): boolean>(z_IsProgram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsProgram(program: UInt32): boolean;
+    public z_IsProgram_ovr_0 := GetFuncOrNil&<function(program: ProgramName): boolean>(z_IsProgram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsProgram(program: ProgramName): boolean;
     begin
       Result := z_IsProgram_ovr_0(program);
     end;
     
     // added in gl4.1
     public z_IsProgramPipeline_adr := GetFuncAdr('glIsProgramPipeline');
-    public z_IsProgramPipeline_ovr_0 := GetFuncOrNil&<function(pipeline: UInt32): boolean>(z_IsProgramPipeline_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsProgramPipeline(pipeline: UInt32): boolean;
+    public z_IsProgramPipeline_ovr_0 := GetFuncOrNil&<function(pipeline: ProgramPipelineName): boolean>(z_IsProgramPipeline_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsProgramPipeline(pipeline: ProgramPipelineName): boolean;
     begin
       Result := z_IsProgramPipeline_ovr_0(pipeline);
     end;
     
     // added in gl1.5
     public z_IsQuery_adr := GetFuncAdr('glIsQuery');
-    public z_IsQuery_ovr_0 := GetFuncOrNil&<function(id: UInt32): boolean>(z_IsQuery_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsQuery(id: UInt32): boolean;
+    public z_IsQuery_ovr_0 := GetFuncOrNil&<function(id: QueryName): boolean>(z_IsQuery_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsQuery(id: QueryName): boolean;
     begin
       Result := z_IsQuery_ovr_0(id);
     end;
     
     // added in gl3.0
     public z_IsRenderbuffer_adr := GetFuncAdr('glIsRenderbuffer');
-    public z_IsRenderbuffer_ovr_0 := GetFuncOrNil&<function(renderbuffer: UInt32): boolean>(z_IsRenderbuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsRenderbuffer(renderbuffer: UInt32): boolean;
+    public z_IsRenderbuffer_ovr_0 := GetFuncOrNil&<function(renderbuffer: RenderbufferName): boolean>(z_IsRenderbuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsRenderbuffer(renderbuffer: RenderbufferName): boolean;
     begin
       Result := z_IsRenderbuffer_ovr_0(renderbuffer);
     end;
     
     // added in gl3.3
     public z_IsSampler_adr := GetFuncAdr('glIsSampler');
-    public z_IsSampler_ovr_0 := GetFuncOrNil&<function(sampler: UInt32): boolean>(z_IsSampler_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsSampler(sampler: UInt32): boolean;
+    public z_IsSampler_ovr_0 := GetFuncOrNil&<function(sampler: SamplerName): boolean>(z_IsSampler_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsSampler(sampler: SamplerName): boolean;
     begin
       Result := z_IsSampler_ovr_0(sampler);
     end;
     
     // added in gl2.0
     public z_IsShader_adr := GetFuncAdr('glIsShader');
-    public z_IsShader_ovr_0 := GetFuncOrNil&<function(shader: UInt32): boolean>(z_IsShader_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsShader(shader: UInt32): boolean;
+    public z_IsShader_ovr_0 := GetFuncOrNil&<function(shader: ShaderName): boolean>(z_IsShader_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsShader(shader: ShaderName): boolean;
     begin
       Result := z_IsShader_ovr_0(shader);
     end;
@@ -8024,22 +8024,22 @@
     end;
     
     // added in gl1.1
-    public static function z_IsTexture(texture: UInt32): boolean;
+    public static function z_IsTexture(texture: TextureName): boolean;
     external 'opengl32.dll' name 'glIsTexture';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsTexture(texture: UInt32): boolean := z_IsTexture;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsTexture(texture: TextureName): boolean := z_IsTexture;
     
     // added in gl4.0
     public z_IsTransformFeedback_adr := GetFuncAdr('glIsTransformFeedback');
-    public z_IsTransformFeedback_ovr_0 := GetFuncOrNil&<function(id: UInt32): boolean>(z_IsTransformFeedback_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsTransformFeedback(id: UInt32): boolean;
+    public z_IsTransformFeedback_ovr_0 := GetFuncOrNil&<function(id: TransformFeedbackName): boolean>(z_IsTransformFeedback_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsTransformFeedback(id: TransformFeedbackName): boolean;
     begin
       Result := z_IsTransformFeedback_ovr_0(id);
     end;
     
     // added in gl3.0
     public z_IsVertexArray_adr := GetFuncAdr('glIsVertexArray');
-    public z_IsVertexArray_ovr_0 := GetFuncOrNil&<function(array: UInt32): boolean>(z_IsVertexArray_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsVertexArray(array: UInt32): boolean;
+    public z_IsVertexArray_ovr_0 := GetFuncOrNil&<function(array: VertexArrayName): boolean>(z_IsVertexArray_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IsVertexArray(array: VertexArrayName): boolean;
     begin
       Result := z_IsVertexArray_ovr_0(array);
     end;
@@ -8051,8 +8051,8 @@
     
     // added in gl2.0
     public z_LinkProgram_adr := GetFuncAdr('glLinkProgram');
-    public z_LinkProgram_ovr_0 := GetFuncOrNil&<procedure(program: UInt32)>(z_LinkProgram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LinkProgram(program: UInt32);
+    public z_LinkProgram_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName)>(z_LinkProgram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LinkProgram(program: ProgramName);
     begin
       z_LinkProgram_ovr_0(program);
     end;
@@ -8080,16 +8080,16 @@
     
     // added in gl4.5
     public z_MapNamedBuffer_adr := GetFuncAdr('glMapNamedBuffer');
-    public z_MapNamedBuffer_ovr_0 := GetFuncOrNil&<function(buffer: UInt32; access: BufferAccessARB): IntPtr>(z_MapNamedBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function MapNamedBuffer(buffer: UInt32; access: BufferAccessARB): IntPtr;
+    public z_MapNamedBuffer_ovr_0 := GetFuncOrNil&<function(buffer: BufferName; access: BufferAccessARB): IntPtr>(z_MapNamedBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function MapNamedBuffer(buffer: BufferName; access: BufferAccessARB): IntPtr;
     begin
       Result := z_MapNamedBuffer_ovr_0(buffer, access);
     end;
     
     // added in gl4.5
     public z_MapNamedBufferRange_adr := GetFuncAdr('glMapNamedBufferRange');
-    public z_MapNamedBufferRange_ovr_0 := GetFuncOrNil&<function(buffer: UInt32; offset: IntPtr; length: IntPtr; access: MapBufferAccessMask): IntPtr>(z_MapNamedBufferRange_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function MapNamedBufferRange(buffer: UInt32; offset: IntPtr; length: IntPtr; access: MapBufferAccessMask): IntPtr;
+    public z_MapNamedBufferRange_ovr_0 := GetFuncOrNil&<function(buffer: BufferName; offset: IntPtr; length: IntPtr; access: MapBufferAccessMask): IntPtr>(z_MapNamedBufferRange_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function MapNamedBufferRange(buffer: BufferName; offset: IntPtr; length: IntPtr; access: MapBufferAccessMask): IntPtr;
     begin
       Result := z_MapNamedBufferRange_ovr_0(buffer, offset, length, access);
     end;
@@ -8481,8 +8481,8 @@
     
     // added in gl4.5
     public z_NamedFramebufferDrawBuffer_adr := GetFuncAdr('glNamedFramebufferDrawBuffer');
-    public z_NamedFramebufferDrawBuffer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: UInt32; buf: ColorBuffer)>(z_NamedFramebufferDrawBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferDrawBuffer(framebuffer: UInt32; buf: ColorBuffer);
+    public z_NamedFramebufferDrawBuffer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: FramebufferName; buf: ColorBuffer)>(z_NamedFramebufferDrawBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferDrawBuffer(framebuffer: FramebufferName; buf: ColorBuffer);
     begin
       z_NamedFramebufferDrawBuffer_ovr_0(framebuffer, buf);
     end;
@@ -8506,56 +8506,56 @@
     
     // added in gl4.5
     public z_NamedFramebufferParameteri_adr := GetFuncAdr('glNamedFramebufferParameteri');
-    public z_NamedFramebufferParameteri_ovr_0 := GetFuncOrNil&<procedure(framebuffer: UInt32; pname: FramebufferParameterName; param: Int32)>(z_NamedFramebufferParameteri_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferParameteri(framebuffer: UInt32; pname: FramebufferParameterName; param: Int32);
+    public z_NamedFramebufferParameteri_ovr_0 := GetFuncOrNil&<procedure(framebuffer: FramebufferName; pname: FramebufferParameterName; param: Int32)>(z_NamedFramebufferParameteri_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferParameteri(framebuffer: FramebufferName; pname: FramebufferParameterName; param: Int32);
     begin
       z_NamedFramebufferParameteri_ovr_0(framebuffer, pname, param);
     end;
     
     // added in gl4.5
     public z_NamedFramebufferReadBuffer_adr := GetFuncAdr('glNamedFramebufferReadBuffer');
-    public z_NamedFramebufferReadBuffer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: UInt32; src: ColorBuffer)>(z_NamedFramebufferReadBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferReadBuffer(framebuffer: UInt32; src: ColorBuffer);
+    public z_NamedFramebufferReadBuffer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: FramebufferName; src: ColorBuffer)>(z_NamedFramebufferReadBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferReadBuffer(framebuffer: FramebufferName; src: ColorBuffer);
     begin
       z_NamedFramebufferReadBuffer_ovr_0(framebuffer, src);
     end;
     
     // added in gl4.5
     public z_NamedFramebufferRenderbuffer_adr := GetFuncAdr('glNamedFramebufferRenderbuffer');
-    public z_NamedFramebufferRenderbuffer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: UInt32; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: UInt32)>(z_NamedFramebufferRenderbuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferRenderbuffer(framebuffer: UInt32; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: UInt32);
+    public z_NamedFramebufferRenderbuffer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: FramebufferName; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: RenderbufferName)>(z_NamedFramebufferRenderbuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferRenderbuffer(framebuffer: FramebufferName; attachment: FramebufferAttachment; renderbuffertarget: RenderbufferTarget; renderbuffer: RenderbufferName);
     begin
       z_NamedFramebufferRenderbuffer_ovr_0(framebuffer, attachment, renderbuffertarget, renderbuffer);
     end;
     
     // added in gl4.5
     public z_NamedFramebufferTexture_adr := GetFuncAdr('glNamedFramebufferTexture');
-    public z_NamedFramebufferTexture_ovr_0 := GetFuncOrNil&<procedure(framebuffer: UInt32; attachment: FramebufferAttachment; texture: UInt32; level: Int32)>(z_NamedFramebufferTexture_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferTexture(framebuffer: UInt32; attachment: FramebufferAttachment; texture: UInt32; level: Int32);
+    public z_NamedFramebufferTexture_ovr_0 := GetFuncOrNil&<procedure(framebuffer: FramebufferName; attachment: FramebufferAttachment; texture: TextureName; level: Int32)>(z_NamedFramebufferTexture_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferTexture(framebuffer: FramebufferName; attachment: FramebufferAttachment; texture: TextureName; level: Int32);
     begin
       z_NamedFramebufferTexture_ovr_0(framebuffer, attachment, texture, level);
     end;
     
     // added in gl4.5
     public z_NamedFramebufferTextureLayer_adr := GetFuncAdr('glNamedFramebufferTextureLayer');
-    public z_NamedFramebufferTextureLayer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: UInt32; attachment: FramebufferAttachment; texture: UInt32; level: Int32; layer: Int32)>(z_NamedFramebufferTextureLayer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferTextureLayer(framebuffer: UInt32; attachment: FramebufferAttachment; texture: UInt32; level: Int32; layer: Int32);
+    public z_NamedFramebufferTextureLayer_ovr_0 := GetFuncOrNil&<procedure(framebuffer: FramebufferName; attachment: FramebufferAttachment; texture: TextureName; level: Int32; layer: Int32)>(z_NamedFramebufferTextureLayer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferTextureLayer(framebuffer: FramebufferName; attachment: FramebufferAttachment; texture: TextureName; level: Int32; layer: Int32);
     begin
       z_NamedFramebufferTextureLayer_ovr_0(framebuffer, attachment, texture, level, layer);
     end;
     
     // added in gl4.5
     public z_NamedRenderbufferStorage_adr := GetFuncAdr('glNamedRenderbufferStorage');
-    public z_NamedRenderbufferStorage_ovr_0 := GetFuncOrNil&<procedure(renderbuffer: UInt32; internalformat: InternalFormat; width: Int32; height: Int32)>(z_NamedRenderbufferStorage_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedRenderbufferStorage(renderbuffer: UInt32; internalformat: InternalFormat; width: Int32; height: Int32);
+    public z_NamedRenderbufferStorage_ovr_0 := GetFuncOrNil&<procedure(renderbuffer: RenderbufferName; internalformat: InternalFormat; width: Int32; height: Int32)>(z_NamedRenderbufferStorage_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedRenderbufferStorage(renderbuffer: RenderbufferName; internalformat: InternalFormat; width: Int32; height: Int32);
     begin
       z_NamedRenderbufferStorage_ovr_0(renderbuffer, internalformat, width, height);
     end;
     
     // added in gl4.5
     public z_NamedRenderbufferStorageMultisample_adr := GetFuncAdr('glNamedRenderbufferStorageMultisample');
-    public z_NamedRenderbufferStorageMultisample_ovr_0 := GetFuncOrNil&<procedure(renderbuffer: UInt32; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32)>(z_NamedRenderbufferStorageMultisample_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedRenderbufferStorageMultisample(renderbuffer: UInt32; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32);
+    public z_NamedRenderbufferStorageMultisample_ovr_0 := GetFuncOrNil&<procedure(renderbuffer: RenderbufferName; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32)>(z_NamedRenderbufferStorageMultisample_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedRenderbufferStorageMultisample(renderbuffer: RenderbufferName; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32);
     begin
       z_NamedRenderbufferStorageMultisample_ovr_0(renderbuffer, samples, internalformat, width, height);
     end;
@@ -8755,16 +8755,16 @@
     
     // added in gl4.1
     public z_ProgramParameteri_adr := GetFuncAdr('glProgramParameteri');
-    public z_ProgramParameteri_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; pname: ProgramParameterPName; value: Int32)>(z_ProgramParameteri_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramParameteri(program: UInt32; pname: ProgramParameterPName; value: Int32);
+    public z_ProgramParameteri_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; pname: ProgramParameterPName; value: Int32)>(z_ProgramParameteri_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramParameteri(program: ProgramName; pname: ProgramParameterPName; value: Int32);
     begin
       z_ProgramParameteri_ovr_0(program, pname, value);
     end;
     
     // added in gl4.1
     public z_ProgramUniform1d_adr := GetFuncAdr('glProgramUniform1d');
-    public z_ProgramUniform1d_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: real)>(z_ProgramUniform1d_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1d(program: UInt32; location: Int32; v0: real);
+    public z_ProgramUniform1d_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: real)>(z_ProgramUniform1d_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1d(program: ProgramName; location: Int32; v0: real);
     begin
       z_ProgramUniform1d_ovr_0(program, location, v0);
     end;
@@ -8788,8 +8788,8 @@
     
     // added in gl4.1
     public z_ProgramUniform1f_adr := GetFuncAdr('glProgramUniform1f');
-    public z_ProgramUniform1f_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: single)>(z_ProgramUniform1f_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1f(program: UInt32; location: Int32; v0: single);
+    public z_ProgramUniform1f_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: single)>(z_ProgramUniform1f_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1f(program: ProgramName; location: Int32; v0: single);
     begin
       z_ProgramUniform1f_ovr_0(program, location, v0);
     end;
@@ -8813,8 +8813,8 @@
     
     // added in gl4.1
     public z_ProgramUniform1i_adr := GetFuncAdr('glProgramUniform1i');
-    public z_ProgramUniform1i_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: Int32)>(z_ProgramUniform1i_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i(program: UInt32; location: Int32; v0: Int32);
+    public z_ProgramUniform1i_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: Int32)>(z_ProgramUniform1i_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i(program: ProgramName; location: Int32; v0: Int32);
     begin
       z_ProgramUniform1i_ovr_0(program, location, v0);
     end;
@@ -8838,8 +8838,8 @@
     
     // added in gl4.1
     public z_ProgramUniform1ui_adr := GetFuncAdr('glProgramUniform1ui');
-    public z_ProgramUniform1ui_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: UInt32)>(z_ProgramUniform1ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui(program: UInt32; location: Int32; v0: UInt32);
+    public z_ProgramUniform1ui_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: UInt32)>(z_ProgramUniform1ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui(program: ProgramName; location: Int32; v0: UInt32);
     begin
       z_ProgramUniform1ui_ovr_0(program, location, v0);
     end;
@@ -8863,8 +8863,8 @@
     
     // added in gl4.1
     public z_ProgramUniform2d_adr := GetFuncAdr('glProgramUniform2d');
-    public z_ProgramUniform2d_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: real; v1: real)>(z_ProgramUniform2d_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2d(program: UInt32; location: Int32; v0: real; v1: real);
+    public z_ProgramUniform2d_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: real; v1: real)>(z_ProgramUniform2d_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2d(program: ProgramName; location: Int32; v0: real; v1: real);
     begin
       z_ProgramUniform2d_ovr_0(program, location, v0, v1);
     end;
@@ -8888,8 +8888,8 @@
     
     // added in gl4.1
     public z_ProgramUniform2f_adr := GetFuncAdr('glProgramUniform2f');
-    public z_ProgramUniform2f_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: single; v1: single)>(z_ProgramUniform2f_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2f(program: UInt32; location: Int32; v0: single; v1: single);
+    public z_ProgramUniform2f_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: single; v1: single)>(z_ProgramUniform2f_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2f(program: ProgramName; location: Int32; v0: single; v1: single);
     begin
       z_ProgramUniform2f_ovr_0(program, location, v0, v1);
     end;
@@ -8913,8 +8913,8 @@
     
     // added in gl4.1
     public z_ProgramUniform2i_adr := GetFuncAdr('glProgramUniform2i');
-    public z_ProgramUniform2i_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: Int32; v1: Int32)>(z_ProgramUniform2i_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i(program: UInt32; location: Int32; v0: Int32; v1: Int32);
+    public z_ProgramUniform2i_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: Int32; v1: Int32)>(z_ProgramUniform2i_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i(program: ProgramName; location: Int32; v0: Int32; v1: Int32);
     begin
       z_ProgramUniform2i_ovr_0(program, location, v0, v1);
     end;
@@ -8938,8 +8938,8 @@
     
     // added in gl4.1
     public z_ProgramUniform2ui_adr := GetFuncAdr('glProgramUniform2ui');
-    public z_ProgramUniform2ui_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: UInt32; v1: UInt32)>(z_ProgramUniform2ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui(program: UInt32; location: Int32; v0: UInt32; v1: UInt32);
+    public z_ProgramUniform2ui_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: UInt32; v1: UInt32)>(z_ProgramUniform2ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui(program: ProgramName; location: Int32; v0: UInt32; v1: UInt32);
     begin
       z_ProgramUniform2ui_ovr_0(program, location, v0, v1);
     end;
@@ -8963,8 +8963,8 @@
     
     // added in gl4.1
     public z_ProgramUniform3d_adr := GetFuncAdr('glProgramUniform3d');
-    public z_ProgramUniform3d_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: real; v1: real; v2: real)>(z_ProgramUniform3d_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3d(program: UInt32; location: Int32; v0: real; v1: real; v2: real);
+    public z_ProgramUniform3d_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: real; v1: real; v2: real)>(z_ProgramUniform3d_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3d(program: ProgramName; location: Int32; v0: real; v1: real; v2: real);
     begin
       z_ProgramUniform3d_ovr_0(program, location, v0, v1, v2);
     end;
@@ -8988,8 +8988,8 @@
     
     // added in gl4.1
     public z_ProgramUniform3f_adr := GetFuncAdr('glProgramUniform3f');
-    public z_ProgramUniform3f_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: single; v1: single; v2: single)>(z_ProgramUniform3f_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3f(program: UInt32; location: Int32; v0: single; v1: single; v2: single);
+    public z_ProgramUniform3f_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: single; v1: single; v2: single)>(z_ProgramUniform3f_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3f(program: ProgramName; location: Int32; v0: single; v1: single; v2: single);
     begin
       z_ProgramUniform3f_ovr_0(program, location, v0, v1, v2);
     end;
@@ -9013,8 +9013,8 @@
     
     // added in gl4.1
     public z_ProgramUniform3i_adr := GetFuncAdr('glProgramUniform3i');
-    public z_ProgramUniform3i_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32)>(z_ProgramUniform3i_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i(program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32);
+    public z_ProgramUniform3i_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: Int32; v1: Int32; v2: Int32)>(z_ProgramUniform3i_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i(program: ProgramName; location: Int32; v0: Int32; v1: Int32; v2: Int32);
     begin
       z_ProgramUniform3i_ovr_0(program, location, v0, v1, v2);
     end;
@@ -9038,8 +9038,8 @@
     
     // added in gl4.1
     public z_ProgramUniform3ui_adr := GetFuncAdr('glProgramUniform3ui');
-    public z_ProgramUniform3ui_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32)>(z_ProgramUniform3ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui(program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32);
+    public z_ProgramUniform3ui_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32)>(z_ProgramUniform3ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui(program: ProgramName; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32);
     begin
       z_ProgramUniform3ui_ovr_0(program, location, v0, v1, v2);
     end;
@@ -9063,8 +9063,8 @@
     
     // added in gl4.1
     public z_ProgramUniform4d_adr := GetFuncAdr('glProgramUniform4d');
-    public z_ProgramUniform4d_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: real; v1: real; v2: real; v3: real)>(z_ProgramUniform4d_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4d(program: UInt32; location: Int32; v0: real; v1: real; v2: real; v3: real);
+    public z_ProgramUniform4d_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: real; v1: real; v2: real; v3: real)>(z_ProgramUniform4d_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4d(program: ProgramName; location: Int32; v0: real; v1: real; v2: real; v3: real);
     begin
       z_ProgramUniform4d_ovr_0(program, location, v0, v1, v2, v3);
     end;
@@ -9088,8 +9088,8 @@
     
     // added in gl4.1
     public z_ProgramUniform4f_adr := GetFuncAdr('glProgramUniform4f');
-    public z_ProgramUniform4f_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: single; v1: single; v2: single; v3: single)>(z_ProgramUniform4f_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4f(program: UInt32; location: Int32; v0: single; v1: single; v2: single; v3: single);
+    public z_ProgramUniform4f_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: single; v1: single; v2: single; v3: single)>(z_ProgramUniform4f_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4f(program: ProgramName; location: Int32; v0: single; v1: single; v2: single; v3: single);
     begin
       z_ProgramUniform4f_ovr_0(program, location, v0, v1, v2, v3);
     end;
@@ -9113,8 +9113,8 @@
     
     // added in gl4.1
     public z_ProgramUniform4i_adr := GetFuncAdr('glProgramUniform4i');
-    public z_ProgramUniform4i_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32)>(z_ProgramUniform4i_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i(program: UInt32; location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32);
+    public z_ProgramUniform4i_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32)>(z_ProgramUniform4i_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i(program: ProgramName; location: Int32; v0: Int32; v1: Int32; v2: Int32; v3: Int32);
     begin
       z_ProgramUniform4i_ovr_0(program, location, v0, v1, v2, v3);
     end;
@@ -9138,8 +9138,8 @@
     
     // added in gl4.1
     public z_ProgramUniform4ui_adr := GetFuncAdr('glProgramUniform4ui');
-    public z_ProgramUniform4ui_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32)>(z_ProgramUniform4ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui(program: UInt32; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32);
+    public z_ProgramUniform4ui_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32)>(z_ProgramUniform4ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui(program: ProgramName; location: Int32; v0: UInt32; v1: UInt32; v2: UInt32; v3: UInt32);
     begin
       z_ProgramUniform4ui_ovr_0(program, location, v0, v1, v2, v3);
     end;
@@ -9491,8 +9491,8 @@
     
     // added in gl3.3
     public z_QueryCounter_adr := GetFuncAdr('glQueryCounter');
-    public z_QueryCounter_ovr_0 := GetFuncOrNil&<procedure(id: UInt32; target: QueryCounterTarget)>(z_QueryCounter_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure QueryCounter(id: UInt32; target: QueryCounterTarget);
+    public z_QueryCounter_ovr_0 := GetFuncOrNil&<procedure(id: QueryName; target: QueryCounterTarget)>(z_QueryCounter_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure QueryCounter(id: QueryName; target: QueryCounterTarget);
     begin
       z_QueryCounter_ovr_0(id, target);
     end;
@@ -9565,8 +9565,8 @@
     
     // added in gl3.3
     public z_SamplerParameterf_adr := GetFuncAdr('glSamplerParameterf');
-    public z_SamplerParameterf_ovr_0 := GetFuncOrNil&<procedure(sampler: UInt32; pname: SamplerParameterF; param: single)>(z_SamplerParameterf_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterf(sampler: UInt32; pname: SamplerParameterF; param: single);
+    public z_SamplerParameterf_ovr_0 := GetFuncOrNil&<procedure(sampler: SamplerName; pname: SamplerParameterF; param: single)>(z_SamplerParameterf_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplerParameterf(sampler: SamplerName; pname: SamplerParameterF; param: single);
     begin
       z_SamplerParameterf_ovr_0(sampler, pname, param);
     end;
@@ -9787,8 +9787,8 @@
     
     // added in gl4.3
     public z_ShaderStorageBlockBinding_adr := GetFuncAdr('glShaderStorageBlockBinding');
-    public z_ShaderStorageBlockBinding_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; storageBlockIndex: UInt32; storageBlockBinding: UInt32)>(z_ShaderStorageBlockBinding_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderStorageBlockBinding(program: UInt32; storageBlockIndex: UInt32; storageBlockBinding: UInt32);
+    public z_ShaderStorageBlockBinding_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; storageBlockIndex: UInt32; storageBlockBinding: UInt32)>(z_ShaderStorageBlockBinding_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ShaderStorageBlockBinding(program: ProgramName; storageBlockIndex: UInt32; storageBlockBinding: UInt32);
     begin
       z_ShaderStorageBlockBinding_ovr_0(program, storageBlockIndex, storageBlockBinding);
     end;
@@ -9931,16 +9931,16 @@
     
     // added in gl3.1
     public z_TexBuffer_adr := GetFuncAdr('glTexBuffer');
-    public z_TexBuffer_ovr_0 := GetFuncOrNil&<procedure(target: TextureTarget; internalformat: InternalFormat; buffer: UInt32)>(z_TexBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexBuffer(target: TextureTarget; internalformat: InternalFormat; buffer: UInt32);
+    public z_TexBuffer_ovr_0 := GetFuncOrNil&<procedure(target: TextureTarget; internalformat: InternalFormat; buffer: BufferName)>(z_TexBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexBuffer(target: TextureTarget; internalformat: InternalFormat; buffer: BufferName);
     begin
       z_TexBuffer_ovr_0(target, internalformat, buffer);
     end;
     
     // added in gl4.3
     public z_TexBufferRange_adr := GetFuncAdr('glTexBufferRange');
-    public z_TexBufferRange_ovr_0 := GetFuncOrNil&<procedure(target: TextureTarget; internalformat: InternalFormat; buffer: UInt32; offset: IntPtr; size: IntPtr)>(z_TexBufferRange_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexBufferRange(target: TextureTarget; internalformat: InternalFormat; buffer: UInt32; offset: IntPtr; size: IntPtr);
+    public z_TexBufferRange_ovr_0 := GetFuncOrNil&<procedure(target: TextureTarget; internalformat: InternalFormat; buffer: BufferName; offset: IntPtr; size: IntPtr)>(z_TexBufferRange_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexBufferRange(target: TextureTarget; internalformat: InternalFormat; buffer: BufferName; offset: IntPtr; size: IntPtr);
     begin
       z_TexBufferRange_ovr_0(target, internalformat, buffer, offset, size);
     end;
@@ -10213,24 +10213,24 @@
     
     // added in gl4.5
     public z_TextureBuffer_adr := GetFuncAdr('glTextureBuffer');
-    public z_TextureBuffer_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; internalformat: InternalFormat; buffer: UInt32)>(z_TextureBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBuffer(texture: UInt32; internalformat: InternalFormat; buffer: UInt32);
+    public z_TextureBuffer_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; internalformat: InternalFormat; buffer: BufferName)>(z_TextureBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBuffer(texture: TextureName; internalformat: InternalFormat; buffer: BufferName);
     begin
       z_TextureBuffer_ovr_0(texture, internalformat, buffer);
     end;
     
     // added in gl4.5
     public z_TextureBufferRange_adr := GetFuncAdr('glTextureBufferRange');
-    public z_TextureBufferRange_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; internalformat: InternalFormat; buffer: UInt32; offset: IntPtr; size: IntPtr)>(z_TextureBufferRange_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBufferRange(texture: UInt32; internalformat: InternalFormat; buffer: UInt32; offset: IntPtr; size: IntPtr);
+    public z_TextureBufferRange_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; internalformat: InternalFormat; buffer: BufferName; offset: IntPtr; size: IntPtr)>(z_TextureBufferRange_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBufferRange(texture: TextureName; internalformat: InternalFormat; buffer: BufferName; offset: IntPtr; size: IntPtr);
     begin
       z_TextureBufferRange_ovr_0(texture, internalformat, buffer, offset, size);
     end;
     
     // added in gl4.5
     public z_TextureParameterf_adr := GetFuncAdr('glTextureParameterf');
-    public z_TextureParameterf_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; pname: TextureParameterName; param: single)>(z_TextureParameterf_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterf(texture: UInt32; pname: TextureParameterName; param: single);
+    public z_TextureParameterf_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; pname: TextureParameterName; param: single)>(z_TextureParameterf_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureParameterf(texture: TextureName; pname: TextureParameterName; param: single);
     begin
       z_TextureParameterf_ovr_0(texture, pname, param);
     end;
@@ -10313,40 +10313,40 @@
     
     // added in gl4.5
     public z_TextureStorage1D_adr := GetFuncAdr('glTextureStorage1D');
-    public z_TextureStorage1D_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; levels: Int32; internalformat: InternalFormat; width: Int32)>(z_TextureStorage1D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage1D(texture: UInt32; levels: Int32; internalformat: InternalFormat; width: Int32);
+    public z_TextureStorage1D_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; levels: Int32; internalformat: InternalFormat; width: Int32)>(z_TextureStorage1D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage1D(texture: TextureName; levels: Int32; internalformat: InternalFormat; width: Int32);
     begin
       z_TextureStorage1D_ovr_0(texture, levels, internalformat, width);
     end;
     
     // added in gl4.5
     public z_TextureStorage2D_adr := GetFuncAdr('glTextureStorage2D');
-    public z_TextureStorage2D_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32)>(z_TextureStorage2D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage2D(texture: UInt32; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32);
+    public z_TextureStorage2D_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32)>(z_TextureStorage2D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage2D(texture: TextureName; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32);
     begin
       z_TextureStorage2D_ovr_0(texture, levels, internalformat, width, height);
     end;
     
     // added in gl4.5
     public z_TextureStorage2DMultisample_adr := GetFuncAdr('glTextureStorage2DMultisample');
-    public z_TextureStorage2DMultisample_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; fixedsamplelocations: boolean)>(z_TextureStorage2DMultisample_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage2DMultisample(texture: UInt32; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; fixedsamplelocations: boolean);
+    public z_TextureStorage2DMultisample_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; fixedsamplelocations: boolean)>(z_TextureStorage2DMultisample_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage2DMultisample(texture: TextureName; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; fixedsamplelocations: boolean);
     begin
       z_TextureStorage2DMultisample_ovr_0(texture, samples, internalformat, width, height, fixedsamplelocations);
     end;
     
     // added in gl4.5
     public z_TextureStorage3D_adr := GetFuncAdr('glTextureStorage3D');
-    public z_TextureStorage3D_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32)>(z_TextureStorage3D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage3D(texture: UInt32; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32);
+    public z_TextureStorage3D_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32)>(z_TextureStorage3D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage3D(texture: TextureName; levels: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32);
     begin
       z_TextureStorage3D_ovr_0(texture, levels, internalformat, width, height, depth);
     end;
     
     // added in gl4.5
     public z_TextureStorage3DMultisample_adr := GetFuncAdr('glTextureStorage3DMultisample');
-    public z_TextureStorage3DMultisample_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean)>(z_TextureStorage3DMultisample_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage3DMultisample(texture: UInt32; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
+    public z_TextureStorage3DMultisample_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean)>(z_TextureStorage3DMultisample_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage3DMultisample(texture: TextureName; samples: Int32; internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedsamplelocations: boolean);
     begin
       z_TextureStorage3DMultisample_ovr_0(texture, samples, internalformat, width, height, depth, fixedsamplelocations);
     end;
@@ -10377,24 +10377,24 @@
     
     // added in gl4.3
     public z_TextureView_adr := GetFuncAdr('glTextureView');
-    public z_TextureView_ovr_0 := GetFuncOrNil&<procedure(texture: UInt32; target: TextureTarget; origtexture: UInt32; internalformat: InternalFormat; minlevel: UInt32; numlevels: UInt32; minlayer: UInt32; numlayers: UInt32)>(z_TextureView_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureView(texture: UInt32; target: TextureTarget; origtexture: UInt32; internalformat: InternalFormat; minlevel: UInt32; numlevels: UInt32; minlayer: UInt32; numlayers: UInt32);
+    public z_TextureView_ovr_0 := GetFuncOrNil&<procedure(texture: TextureName; target: TextureTarget; origtexture: TextureName; internalformat: InternalFormat; minlevel: UInt32; numlevels: UInt32; minlayer: UInt32; numlayers: UInt32)>(z_TextureView_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureView(texture: TextureName; target: TextureTarget; origtexture: TextureName; internalformat: InternalFormat; minlevel: UInt32; numlevels: UInt32; minlayer: UInt32; numlayers: UInt32);
     begin
       z_TextureView_ovr_0(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers);
     end;
     
     // added in gl4.5
     public z_TransformFeedbackBufferBase_adr := GetFuncAdr('glTransformFeedbackBufferBase');
-    public z_TransformFeedbackBufferBase_ovr_0 := GetFuncOrNil&<procedure(xfb: UInt32; index: UInt32; buffer: UInt32)>(z_TransformFeedbackBufferBase_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackBufferBase(xfb: UInt32; index: UInt32; buffer: UInt32);
+    public z_TransformFeedbackBufferBase_ovr_0 := GetFuncOrNil&<procedure(xfb: TransformFeedbackName; index: UInt32; buffer: BufferName)>(z_TransformFeedbackBufferBase_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackBufferBase(xfb: TransformFeedbackName; index: UInt32; buffer: BufferName);
     begin
       z_TransformFeedbackBufferBase_ovr_0(xfb, index, buffer);
     end;
     
     // added in gl4.5
     public z_TransformFeedbackBufferRange_adr := GetFuncAdr('glTransformFeedbackBufferRange');
-    public z_TransformFeedbackBufferRange_ovr_0 := GetFuncOrNil&<procedure(xfb: UInt32; index: UInt32; buffer: UInt32; offset: IntPtr; size: IntPtr)>(z_TransformFeedbackBufferRange_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackBufferRange(xfb: UInt32; index: UInt32; buffer: UInt32; offset: IntPtr; size: IntPtr);
+    public z_TransformFeedbackBufferRange_ovr_0 := GetFuncOrNil&<procedure(xfb: TransformFeedbackName; index: UInt32; buffer: BufferName; offset: IntPtr; size: IntPtr)>(z_TransformFeedbackBufferRange_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TransformFeedbackBufferRange(xfb: TransformFeedbackName; index: UInt32; buffer: BufferName; offset: IntPtr; size: IntPtr);
     begin
       z_TransformFeedbackBufferRange_ovr_0(xfb, index, buffer, offset, size);
     end;
@@ -10820,8 +10820,8 @@
     
     // added in gl3.1
     public z_UniformBlockBinding_adr := GetFuncAdr('glUniformBlockBinding');
-    public z_UniformBlockBinding_ovr_0 := GetFuncOrNil&<procedure(program: UInt32; uniformBlockIndex: UInt32; uniformBlockBinding: UInt32)>(z_UniformBlockBinding_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformBlockBinding(program: UInt32; uniformBlockIndex: UInt32; uniformBlockBinding: UInt32);
+    public z_UniformBlockBinding_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName; uniformBlockIndex: UInt32; uniformBlockBinding: UInt32)>(z_UniformBlockBinding_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformBlockBinding(program: ProgramName; uniformBlockIndex: UInt32; uniformBlockBinding: UInt32);
     begin
       z_UniformBlockBinding_ovr_0(program, uniformBlockIndex, uniformBlockBinding);
     end;
@@ -11159,96 +11159,96 @@
     
     // added in gl4.5
     public z_UnmapNamedBuffer_adr := GetFuncAdr('glUnmapNamedBuffer');
-    public z_UnmapNamedBuffer_ovr_0 := GetFuncOrNil&<function(buffer: UInt32): boolean>(z_UnmapNamedBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UnmapNamedBuffer(buffer: UInt32): boolean;
+    public z_UnmapNamedBuffer_ovr_0 := GetFuncOrNil&<function(buffer: BufferName): boolean>(z_UnmapNamedBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UnmapNamedBuffer(buffer: BufferName): boolean;
     begin
       Result := z_UnmapNamedBuffer_ovr_0(buffer);
     end;
     
     // added in gl2.0
     public z_UseProgram_adr := GetFuncAdr('glUseProgram');
-    public z_UseProgram_ovr_0 := GetFuncOrNil&<procedure(program: UInt32)>(z_UseProgram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UseProgram(program: UInt32);
+    public z_UseProgram_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName)>(z_UseProgram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UseProgram(program: ProgramName);
     begin
       z_UseProgram_ovr_0(program);
     end;
     
     // added in gl4.1
     public z_UseProgramStages_adr := GetFuncAdr('glUseProgramStages');
-    public z_UseProgramStages_ovr_0 := GetFuncOrNil&<procedure(pipeline: UInt32; stages: UseProgramStageMask; program: UInt32)>(z_UseProgramStages_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UseProgramStages(pipeline: UInt32; stages: UseProgramStageMask; program: UInt32);
+    public z_UseProgramStages_ovr_0 := GetFuncOrNil&<procedure(pipeline: ProgramPipelineName; stages: UseProgramStageMask; program: ProgramName)>(z_UseProgramStages_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UseProgramStages(pipeline: ProgramPipelineName; stages: UseProgramStageMask; program: ProgramName);
     begin
       z_UseProgramStages_ovr_0(pipeline, stages, program);
     end;
     
     // added in gl2.0
     public z_ValidateProgram_adr := GetFuncAdr('glValidateProgram');
-    public z_ValidateProgram_ovr_0 := GetFuncOrNil&<procedure(program: UInt32)>(z_ValidateProgram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ValidateProgram(program: UInt32);
+    public z_ValidateProgram_ovr_0 := GetFuncOrNil&<procedure(program: ProgramName)>(z_ValidateProgram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ValidateProgram(program: ProgramName);
     begin
       z_ValidateProgram_ovr_0(program);
     end;
     
     // added in gl4.1
     public z_ValidateProgramPipeline_adr := GetFuncAdr('glValidateProgramPipeline');
-    public z_ValidateProgramPipeline_ovr_0 := GetFuncOrNil&<procedure(pipeline: UInt32)>(z_ValidateProgramPipeline_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ValidateProgramPipeline(pipeline: UInt32);
+    public z_ValidateProgramPipeline_ovr_0 := GetFuncOrNil&<procedure(pipeline: ProgramPipelineName)>(z_ValidateProgramPipeline_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ValidateProgramPipeline(pipeline: ProgramPipelineName);
     begin
       z_ValidateProgramPipeline_ovr_0(pipeline);
     end;
     
     // added in gl4.5
     public z_VertexArrayAttribBinding_adr := GetFuncAdr('glVertexArrayAttribBinding');
-    public z_VertexArrayAttribBinding_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; attribindex: UInt32; bindingindex: UInt32)>(z_VertexArrayAttribBinding_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribBinding(vaobj: UInt32; attribindex: UInt32; bindingindex: UInt32);
+    public z_VertexArrayAttribBinding_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; attribindex: UInt32; bindingindex: UInt32)>(z_VertexArrayAttribBinding_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribBinding(vaobj: VertexArrayName; attribindex: UInt32; bindingindex: UInt32);
     begin
       z_VertexArrayAttribBinding_ovr_0(vaobj, attribindex, bindingindex);
     end;
     
     // added in gl4.5
     public z_VertexArrayAttribFormat_adr := GetFuncAdr('glVertexArrayAttribFormat');
-    public z_VertexArrayAttribFormat_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; attribindex: UInt32; size: Int32; type: VertexAttribType; normalized: boolean; relativeoffset: UInt32)>(z_VertexArrayAttribFormat_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribFormat(vaobj: UInt32; attribindex: UInt32; size: Int32; type: VertexAttribType; normalized: boolean; relativeoffset: UInt32);
+    public z_VertexArrayAttribFormat_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; type: VertexAttribType; normalized: boolean; relativeoffset: UInt32)>(z_VertexArrayAttribFormat_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribFormat(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; type: VertexAttribType; normalized: boolean; relativeoffset: UInt32);
     begin
       z_VertexArrayAttribFormat_ovr_0(vaobj, attribindex, size, type, normalized, relativeoffset);
     end;
     
     // added in gl4.5
     public z_VertexArrayAttribIFormat_adr := GetFuncAdr('glVertexArrayAttribIFormat');
-    public z_VertexArrayAttribIFormat_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; attribindex: UInt32; size: Int32; type: VertexAttribIType; relativeoffset: UInt32)>(z_VertexArrayAttribIFormat_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribIFormat(vaobj: UInt32; attribindex: UInt32; size: Int32; type: VertexAttribIType; relativeoffset: UInt32);
+    public z_VertexArrayAttribIFormat_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; type: VertexAttribIType; relativeoffset: UInt32)>(z_VertexArrayAttribIFormat_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribIFormat(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; type: VertexAttribIType; relativeoffset: UInt32);
     begin
       z_VertexArrayAttribIFormat_ovr_0(vaobj, attribindex, size, type, relativeoffset);
     end;
     
     // added in gl4.5
     public z_VertexArrayAttribLFormat_adr := GetFuncAdr('glVertexArrayAttribLFormat');
-    public z_VertexArrayAttribLFormat_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; attribindex: UInt32; size: Int32; type: VertexAttribLType; relativeoffset: UInt32)>(z_VertexArrayAttribLFormat_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribLFormat(vaobj: UInt32; attribindex: UInt32; size: Int32; type: VertexAttribLType; relativeoffset: UInt32);
+    public z_VertexArrayAttribLFormat_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; type: VertexAttribLType; relativeoffset: UInt32)>(z_VertexArrayAttribLFormat_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayAttribLFormat(vaobj: VertexArrayName; attribindex: UInt32; size: Int32; type: VertexAttribLType; relativeoffset: UInt32);
     begin
       z_VertexArrayAttribLFormat_ovr_0(vaobj, attribindex, size, type, relativeoffset);
     end;
     
     // added in gl4.5
     public z_VertexArrayBindingDivisor_adr := GetFuncAdr('glVertexArrayBindingDivisor');
-    public z_VertexArrayBindingDivisor_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; bindingindex: UInt32; divisor: UInt32)>(z_VertexArrayBindingDivisor_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayBindingDivisor(vaobj: UInt32; bindingindex: UInt32; divisor: UInt32);
+    public z_VertexArrayBindingDivisor_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; bindingindex: UInt32; divisor: UInt32)>(z_VertexArrayBindingDivisor_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayBindingDivisor(vaobj: VertexArrayName; bindingindex: UInt32; divisor: UInt32);
     begin
       z_VertexArrayBindingDivisor_ovr_0(vaobj, bindingindex, divisor);
     end;
     
     // added in gl4.5
     public z_VertexArrayElementBuffer_adr := GetFuncAdr('glVertexArrayElementBuffer');
-    public z_VertexArrayElementBuffer_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; buffer: UInt32)>(z_VertexArrayElementBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayElementBuffer(vaobj: UInt32; buffer: UInt32);
+    public z_VertexArrayElementBuffer_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; buffer: BufferName)>(z_VertexArrayElementBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayElementBuffer(vaobj: VertexArrayName; buffer: BufferName);
     begin
       z_VertexArrayElementBuffer_ovr_0(vaobj, buffer);
     end;
     
     // added in gl4.5
     public z_VertexArrayVertexBuffer_adr := GetFuncAdr('glVertexArrayVertexBuffer');
-    public z_VertexArrayVertexBuffer_ovr_0 := GetFuncOrNil&<procedure(vaobj: UInt32; bindingindex: UInt32; buffer: UInt32; offset: IntPtr; stride: Int32)>(z_VertexArrayVertexBuffer_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayVertexBuffer(vaobj: UInt32; bindingindex: UInt32; buffer: UInt32; offset: IntPtr; stride: Int32);
+    public z_VertexArrayVertexBuffer_ovr_0 := GetFuncOrNil&<procedure(vaobj: VertexArrayName; bindingindex: UInt32; buffer: BufferName; offset: IntPtr; stride: Int32)>(z_VertexArrayVertexBuffer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayVertexBuffer(vaobj: VertexArrayName; bindingindex: UInt32; buffer: BufferName; offset: IntPtr; stride: Int32);
     begin
       z_VertexArrayVertexBuffer_ovr_0(vaobj, bindingindex, buffer, offset, stride);
     end;

@@ -284,45 +284,64 @@ type
     protected name: string;
     protected used: boolean;
     
-    private static all := new Dictionary<string, TFixer>;
-    public static adders := new List<TFixer>;
-    protected static empty: TFixer;
+    private static all := new Dictionary<string, List<TFixer>>;
+    private static function GetItem(name: string): List<TFixer>;
+    begin
+      if not all.TryGetValue(name, Result) then
+      begin
+        Result := new List<TFixer>;
+        all[name] := Result;
+      end;
+    end;
+    public static property Item[name: string]: List<TFixer> read GetItem; default;
+    
+    private static adders := new List<TFixer>;
+    public procedure RegisterAsAdder := adders.Add(TFixer(self as object)); //ToDo #2191, но TFixer() нужно
+    
     protected constructor(name: string);
     begin
       self.name := name;
       if name=nil then exit; // внутренний фиксер, то есть или empty, или содержащийся в контейнере
-      all.Add(name, TFixer(self as object)); //ToDo #2191, но T() нужно
+      Item[name].Add( TFixer(self as object) ); //ToDo #2191, но TFixer() нужно
     end;
     
-    private static function GetItem(name: string): TFixer;
+    private static function DetemplateName(name: string; lns: array of string; templ_ind: integer): sequence of (string, array of string);
     begin
-      if all.TryGetValue(name, Result) then
-        (Result as object as Fixer<TFixer, TFixable>).used := true else //ToDo #2191
-        Result := empty;
+      Result := Seq((name,lns));
+      var ind1 := name.IndexOf('[');
+      if ind1=-1 then exit;
+      var ind2 := name.IndexOf(']',ind1+1);
+      if ind2=-1 then exit;
+      
+      var s1 := name.Remove(ind1);
+      var s2 := name.Substring(ind2+1);
+      
+      Result := name.Substring(ind1+1,ind2-ind1-1)
+        .Split(',').Select(s->s.Trim)
+        .Select(s->( Concat(s1,s,s2), lns.ConvertAll(l->l.Replace($'%{templ_ind}%',s)) ))
+        .SelectMany(t->DetemplateName(t[0],t[1],templ_ind+1));
     end;
-    public static property Item[name: string]: TFixer read GetItem; default;
-    
-    protected static function ReadBlocks(lines: sequence of string; power_sign: string): sequence of (string, array of string);
+    protected static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (string, array of string);
     begin
       var res := new List<string>;
-      var name: string := nil;
+      var names := new List<string>;
       
       foreach var l in lines do
         if l.StartsWith(power_sign) then
         begin
-          if name<>nil then
+          if (res.Count<>0) or not concat_blocks then
           begin
-            yield (name, res.ToArray);
+            yield sequence names.SelectMany(name->Fixer&<TFixer,TFixable>.DetemplateName(name, res.ToArray, 0));
             res.Clear;
+            names.Clear;
           end;
-          name := l.Substring(power_sign.Length).Trim;
+          names += l.Substring(power_sign.Length).Trim;
         end else
-        if name<>nil then
           res += l;
       
-      if name<>nil then yield (name, res.ToArray);
+      yield sequence names.SelectMany(name->Fixer&<TFixer,TFixable>.DetemplateName(name, res.ToArray, 0));
     end;
-    protected static function ReadBlocks(fname: string) := ReadBlocks(ReadLines(fname), '#');
+    protected static function ReadBlocks(fname: string; concat_blocks: boolean := false) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
     /// Return "True" if "o" is deleted
     protected function Apply(o: TFixable): boolean; abstract;
@@ -345,8 +364,9 @@ type
       for var i := lst.Count-1 downto 0 do
       begin
         var o := lst[i];
-        if (Item[o.GetName] as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
-          lst.RemoveAt(i);
+        foreach var f in Item[o.GetName] do
+          if (f as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
+            lst.RemoveAt(i);
       end;
       
       lst.Capacity := lst.Count;
@@ -354,9 +374,9 @@ type
     
     protected procedure WarnUnused; abstract;
     public static procedure WarnAllUnused :=
-    foreach var f in all.Values do
-      if ((f as object as Fixer<TFixer, TFixable>).name<>nil) and not (f as object as Fixer<TFixer, TFixable>).used then //ToDo #2191 //ToDo #2191
-        (f as object as Fixer<TFixer, TFixable>).WarnUnused; //ToDo #2191
+    foreach var l in all.Values do
+      if l.Any(f->not (f as object as Fixer<TFixer, TFixable>).used) then //ToDo #2191
+        (l[0] as object as Fixer<TFixer, TFixable>).WarnUnused; //ToDo #2191
     
   end;
   
