@@ -341,7 +341,7 @@ type
       
       yield sequence names.SelectMany(name->Fixer&<TFixer,TFixable>.DetemplateName(name, res.ToArray, 0));
     end;
-    protected static function ReadBlocks(fname: string; concat_blocks: boolean := false) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
+    protected static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
     /// Return "True" if "o" is deleted
     protected function Apply(o: TFixable): boolean; abstract;

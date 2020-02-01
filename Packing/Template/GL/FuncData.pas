@@ -921,7 +921,7 @@ static constructor GroupFixer.Create;
 begin
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Enums', GetEXEFileName), '*.dat');
-  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname)) do
+  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
     foreach var bl in ReadBlocks(gr[1],'!',false) do
     case bl[0] of
       
@@ -1146,14 +1146,8 @@ type
         Result := ovr;
     end;
     
-    public function OvrInd(lst: List<array of (integer,string)>; ovr: array of (integer,string)): integer;
-    begin
-      Result := -1;
-      if lst.Count=0 then exit;
-      if lst[0].Length<>ovr.Length then
-        raise new MessageException($'ERROR: [{self.GetType}] of func [{self.name}] had wrong param count: {lst[0].Length} org vs {ovr.Length} custom');
-      Result := lst.FindIndex(povr->povr.SequenceEqual(ovr));
-    end;
+    public function OvrInd(lst: List<array of (integer,string)>; ovr: array of (integer,string)) :=
+    lst.FindIndex(povr->povr.SequenceEqual(ovr));
     
   end;
   FuncAddOvrsFixer = sealed class(FuncOvrsFixerBase)
@@ -1170,6 +1164,9 @@ type
       f.InitOverloads;
       
       var povr := PrepareOvr(f.is_proc, ovr);
+      if f.org_par.Length<>povr.Length then
+        raise new MessageException($'ERROR: [FuncAddOvrsFixer] of func [{self.name}] had wrong param count: {f.org_par.Length} org vs {povr.Length} custom');
+      
       if OvrInd(f.all_overloads, povr)<>-1 then
         Otp($'ERROR: [FuncAddOvrsFixer] of func [{f.name}] failed to add overload [{povr.JoinToString}]') else
         f.all_overloads += povr;
@@ -1193,6 +1190,9 @@ type
       f.InitOverloads;
       
       var povr := PrepareOvr(f.is_proc, ovr);
+      if f.org_par.Length<>povr.Length then
+        raise new MessageException($'ERROR: [FuncRemOvrsFixer] of func [{self.name}] had wrong param count: {f.org_par.Length} org vs {povr.Length} custom');
+      
       var ind := OvrInd(f.all_overloads, povr);
       if ind=-1 then
         Otp($'ERROR: [FuncRemOvrsFixer] of func [{f.name}] failed to remove overload [{povr.JoinToString}]') else
@@ -1208,7 +1208,7 @@ static constructor FuncFixer.Create;
 begin
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Funcs', GetEXEFileName), '*.dat');
-  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname)) do
+  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
     foreach var bl in ReadBlocks(gr[1],'!',false) do
     case bl[0] of
       
