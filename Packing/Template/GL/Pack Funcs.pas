@@ -26,11 +26,13 @@ begin
     res += '  '#10;
     res += '  '#10;
     Feature.WriteAll(res);
+    res += '  {region Extensions}'#10;
+    res += '  '#10;
+    foreach var ext in extensions do ext.Write(res);
+    res += '  {endregion Extensions}'#10;
+    res += '  '#10;
     res += '  '#10;
     res += '  ';
-    
-    var ToDo := 0; //ToDo extensions
-    Otp($'WARNING: Extension funcs aren''t packed yet');
     
     GroupFixer.WarnAllUnused;
     FuncOrgParam.WarnUnusedTypeTable;

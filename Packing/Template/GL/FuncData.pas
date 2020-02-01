@@ -292,10 +292,13 @@ type
       
     end;
     
-    public static procedure WriteGetPtrFunc(sb: StringBuilder);
+    public static procedure WriteGetPtrFunc(sb: StringBuilder; api: string);
     begin
+      if api='wgl' then exit;
       sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
-      sb += '    external ''opengl32.dll'' name ''wglGetProcAddress'';'#10;
+      if api='glx' then
+        sb += '    external ''opengl32.dll'' name ''glXGetProcAddress'';'#10 else
+        sb += '    external ''opengl32.dll'' name ''wglGetProcAddress'';'#10;
       sb += '    public static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
       sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
       sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
@@ -416,7 +419,7 @@ type
         
       end;
       
-      if (api='gl') and (version <= '1.1') then // use_external
+      if ((api='gl') and (version<>nil) and (version <= '1.1')) or (api='wgl') then // use_external
       begin
         
         for var ovr_i := 0 to all_overloads.Count-1 do
@@ -721,7 +724,7 @@ type
       end;
       
       sb += $'  {api} = sealed class'+#10;
-      if api='gl' then Func.WriteGetPtrFunc(sb);
+      Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
       
       foreach var f in all_funcs.Keys.Where(f->not deprecated.ContainsKey(f)).OrderBy(f->f.name) do
@@ -735,7 +738,7 @@ type
       
       if not deprecated.Any then continue;
       sb += $'  {api}D = sealed class'+#10;
-      if api='gl' then Func.WriteGetPtrFunc(sb);
+      Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
       
       foreach var f in all_funcs.Keys.Where(f->deprecated.ContainsKey(f)).OrderBy(f->f.name) do
@@ -776,9 +779,22 @@ type
     
     public procedure Write(sb: StringBuilder);
     begin
+      if add.Count=0 then exit;
       
-      var ToDo := 0;
+      var display_name := api+name.Split('_').Select(w->
+      begin
+        if w.Length<>0 then w[1] := w[1].ToUpper;
+        Result := w;
+      end).JoinToString('') + ext_group;
+      sb += $'  {display_name} = sealed class'+#10;
+      Func.WriteGetPtrFunc(sb, api);
+      sb += $'    '+#10;
       
+      foreach var f in add do
+        f.Write(sb, api, nil);
+      
+      sb += $'  end;'+#10;
+      sb += $'  '+#10;
     end;
     
   end;
