@@ -1,7 +1,6 @@
 ﻿unit FuncData;
 
 interface
-//ToDo использовать Func<> и Action<>
 
 uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
@@ -344,8 +343,15 @@ type
       
       var WriteOvrT: procedure(ovr: array of (integer,string); generic_names: List<string>; name: string; marshals: boolean) := (ovr,generic_names,name,marshals)->
       begin
-        if marshals then WriteMarshalAs(ovr[0],true);
-        sb += is_proc ? 'procedure' : 'function';
+        var use_standart_dt := (name=nil) and ovr.Skip(1).All(par->not par[1].StartsWith('var!'));
+        if use_standart_dt then
+        begin
+          sb += is_proc ? 'Action' : 'Func';
+        end else
+        begin
+          if marshals then WriteMarshalAs(ovr[0],true);
+          sb += is_proc ? 'procedure' : 'function';
+        end;
         if name<>nil then
         begin
           sb += ' ';
@@ -365,28 +371,39 @@ type
         
         if ovr.Length>1 then
         begin
-          sb += '(';
+          sb += use_standart_dt ? '<' : '(';
           for var par_i := 1 to ovr.Length-1 do
           begin
             var par := ovr[par_i];
-            if marshals then WriteMarshalAs(par,false);
-            if par[1].StartsWith('var!') then sb += 'var ';
-            sb += org_par[par_i].name;
-            sb += ': ';
+            if not use_standart_dt then
+            begin
+              if marshals then WriteMarshalAs(par,false);
+              if par[1].StartsWith('var!') then sb += 'var ';
+              sb += org_par[par_i].name;
+              sb += ': ';
+            end;
             loop par[0] do sb += 'array of ';
             sb += par[1].Split('!').Last;
-            sb += '; ';
+            sb += use_standart_dt ? ', ' : '; ';
           end;
           sb.Length -= 2; // лишнее '; '
-          sb += ')';
+          sb += use_standart_dt ? '>' : ')';
         end;
         
         if not is_proc then
-        begin
-          sb += ': ';
-          loop ovr[0][0] do sb += 'array of ';
-          sb += ovr[0][1];
-        end;
+          if use_standart_dt then
+          begin
+            sb.Length -= 1;
+            sb += ', ';
+            loop ovr[0][0] do sb += 'array of ';
+            sb += ovr[0][1];
+            sb += '>';
+          end else
+          begin
+            sb += ': ';
+            loop ovr[0][0] do sb += 'array of ';
+            sb += ovr[0][1];
+          end;
         
       end;
       
