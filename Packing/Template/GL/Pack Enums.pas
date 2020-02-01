@@ -1,13 +1,9 @@
 ﻿uses FuncData;
 uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
-//var log := new System.IO.StreamWriter(
-//  GetFullPath('..\enums.log', GetEXEFileName),
-//  false, enc
-//);
-
 begin
   try
+    InitLog(log, '..\Log\Enums.log');
     var res := new StringBuilder;
     
     Otp($'Reading groups');
@@ -47,6 +43,7 @@ begin
     res += '  ';
     
     GroupFixer.WarnAllUnused;
+    log.Close;
     WriteAllText(GetFullPath('..\Enums.template', GetEXEFileName), res.ToString);
     if CommandLineArgs.Contains('SecondaryProc') then ReadString('done');
   except

@@ -1,0 +1,5201 @@
+﻿
+
+
+# glActiveShaderProgram
+ UInt32 | UInt32 |
+
+# glActiveTexture
+ TextureUnit |
+
+# glAttachShader
+ UInt32 | UInt32 |
+
+# glBeginConditionalRender
+ UInt32 | ConditionalRenderMode |
+
+# glBeginQuery
+ QueryTarget | UInt32 |
+
+# glBeginQueryIndexed
+ QueryTarget | UInt32 | UInt32 |
+
+# glBeginTransformFeedback
+ PrimitiveType |
+
+# glBindAttribLocation
+ UInt32 | UInt32 | string |
+ UInt32 | UInt32 | IntPtr |
+
+# glBindBuffer
+ BufferTargetARB | UInt32 |
+
+# glBindBufferBase
+ BufferTargetARB | UInt32 | UInt32 |
+
+# glBindBufferRange
+ BufferTargetARB | UInt32 | UInt32 | IntPtr | IntPtr |
+
+# glBindBuffersBase
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 |
+ BufferTargetARB | UInt32 | Int32 | IntPtr |
+
+# glBindBuffersRange
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | array of IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | array of IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | array of IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | var!IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | var!IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | var!IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | array of IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | array of IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | array of IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | var!IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | var!IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | var!IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | array of IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | array of IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | array of IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | var!IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | var!IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | var!IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | IntPtr | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | IntPtr | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
+
+# glBindFragDataLocation
+ UInt32 | UInt32 | string |
+ UInt32 | UInt32 | IntPtr |
+
+# glBindFragDataLocationIndexed
+ UInt32 | UInt32 | UInt32 | string |
+ UInt32 | UInt32 | UInt32 | IntPtr |
+
+# glBindFramebuffer
+ FramebufferTarget | UInt32 |
+
+# glBindImageTexture
+ UInt32 | UInt32 | Int32 | boolean | Int32 | BufferAccessARB | InternalFormat |
+
+# glBindImageTextures
+ UInt32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | IntPtr |
+
+# glBindProgramPipeline
+ UInt32 |
+
+# glBindRenderbuffer
+ RenderbufferTarget | UInt32 |
+
+# glBindSampler
+ UInt32 | UInt32 |
+
+# glBindSamplers
+ UInt32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | IntPtr |
+
+# glBindTexture
+ TextureTarget | UInt32 |
+
+# glBindTextures
+ UInt32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | IntPtr |
+
+# glBindTextureUnit
+ UInt32 | UInt32 |
+
+# glBindTransformFeedback
+ BindTransformFeedbackTarget | UInt32 |
+
+# glBindVertexArray
+ UInt32 |
+
+# glBindVertexBuffer
+ UInt32 | UInt32 | IntPtr | Int32 |
+
+# glBindVertexBuffers
+ UInt32 | Int32 | array of UInt32 | array of IntPtr | array of Int32 |
+ UInt32 | Int32 | array of UInt32 | array of IntPtr | var!Int32 |
+ UInt32 | Int32 | array of UInt32 | array of IntPtr | IntPtr |
+ UInt32 | Int32 | array of UInt32 | var!IntPtr | array of Int32 |
+ UInt32 | Int32 | array of UInt32 | var!IntPtr | var!Int32 |
+ UInt32 | Int32 | array of UInt32 | var!IntPtr | IntPtr |
+ UInt32 | Int32 | array of UInt32 | IntPtr | array of Int32 |
+ UInt32 | Int32 | array of UInt32 | IntPtr | var!Int32 |
+ UInt32 | Int32 | array of UInt32 | IntPtr | IntPtr |
+ UInt32 | Int32 | var!UInt32 | array of IntPtr | array of Int32 |
+ UInt32 | Int32 | var!UInt32 | array of IntPtr | var!Int32 |
+ UInt32 | Int32 | var!UInt32 | array of IntPtr | IntPtr |
+ UInt32 | Int32 | var!UInt32 | var!IntPtr | array of Int32 |
+ UInt32 | Int32 | var!UInt32 | var!IntPtr | var!Int32 |
+ UInt32 | Int32 | var!UInt32 | var!IntPtr | IntPtr |
+ UInt32 | Int32 | var!UInt32 | IntPtr | array of Int32 |
+ UInt32 | Int32 | var!UInt32 | IntPtr | var!Int32 |
+ UInt32 | Int32 | var!UInt32 | IntPtr | IntPtr |
+ UInt32 | Int32 | IntPtr | array of IntPtr | array of Int32 |
+ UInt32 | Int32 | IntPtr | array of IntPtr | var!Int32 |
+ UInt32 | Int32 | IntPtr | array of IntPtr | IntPtr |
+ UInt32 | Int32 | IntPtr | var!IntPtr | array of Int32 |
+ UInt32 | Int32 | IntPtr | var!IntPtr | var!Int32 |
+ UInt32 | Int32 | IntPtr | var!IntPtr | IntPtr |
+ UInt32 | Int32 | IntPtr | IntPtr | array of Int32 |
+ UInt32 | Int32 | IntPtr | IntPtr | var!Int32 |
+ UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
+
+# glBlendColor
+ single | single | single | single |
+
+# glBlendEquation
+ BlendEquationModeEXT |
+
+# glBlendEquationi
+ UInt32 | BlendEquationModeEXT |
+
+# glBlendEquationSeparate
+ BlendEquationModeEXT | BlendEquationModeEXT |
+
+# glBlendEquationSeparatei
+ UInt32 | BlendEquationModeEXT | BlendEquationModeEXT |
+
+# glBlendFunc
+ BlendingFactor | BlendingFactor |
+
+# glBlendFunci
+ UInt32 | BlendingFactor | BlendingFactor |
+
+# glBlendFuncSeparate
+ BlendingFactor | BlendingFactor | BlendingFactor | BlendingFactor |
+
+# glBlendFuncSeparatei
+ UInt32 | BlendingFactor | BlendingFactor | BlendingFactor | BlendingFactor |
+
+# glBlitFramebuffer
+ Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | ClearBufferMask | BlitFramebufferFilter |
+
+# glBlitNamedFramebuffer
+ UInt32 | UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | ClearBufferMask | BlitFramebufferFilter |
+
+# glBufferData
+ BufferTargetARB | IntPtr | IntPtr | BufferUsageARB |
+
+# glBufferStorage
+ BufferStorageTarget | IntPtr | IntPtr | BufferStorageMask |
+
+# glBufferSubData
+ BufferTargetARB | IntPtr | IntPtr | IntPtr |
+
+# glCheckFramebufferStatus
+ FramebufferStatus | FramebufferTarget |
+
+# glCheckNamedFramebufferStatus
+ FramebufferStatus | UInt32 | FramebufferTarget |
+
+# glClampColor
+ ClampColorTargetARB | ClampColorModeARB |
+
+# glClear
+ ClearBufferMask |
+
+# glClearBufferData
+ BufferStorageTarget | InternalFormat | PixelFormat | PixelType | IntPtr |
+
+# glClearBufferfi
+ Buffer | Int32 | single | Int32 |
+
+# glClearBufferfv
+ Buffer | Int32 | array of single |
+ Buffer | Int32 | var!single |
+ Buffer | Int32 | IntPtr |
+
+# glClearBufferiv
+ Buffer | Int32 | array of Int32 |
+ Buffer | Int32 | var!Int32 |
+ Buffer | Int32 | IntPtr |
+
+# glClearBufferSubData
+ BufferTargetARB | InternalFormat | IntPtr | IntPtr | PixelFormat | PixelType | IntPtr |
+
+# glClearBufferuiv
+ Buffer | Int32 | array of UInt32 |
+ Buffer | Int32 | var!UInt32 |
+ Buffer | Int32 | IntPtr |
+
+# glClearColor
+ single | single | single | single |
+
+# glClearDepth
+ real |
+
+# glClearDepthf
+ single |
+
+# glClearNamedBufferData
+ UInt32 | InternalFormat | PixelFormat | PixelType | IntPtr |
+
+# glClearNamedBufferSubData
+ UInt32 | InternalFormat | IntPtr | IntPtr | PixelFormat | PixelType | IntPtr |
+
+# glClearNamedFramebufferfi
+ UInt32 | Buffer | Int32 | single | Int32 |
+
+# glClearNamedFramebufferfv
+ UInt32 | Buffer | Int32 | array of single |
+ UInt32 | Buffer | Int32 | var!single |
+ UInt32 | Buffer | Int32 | IntPtr |
+
+# glClearNamedFramebufferiv
+ UInt32 | Buffer | Int32 | array of Int32 |
+ UInt32 | Buffer | Int32 | var!Int32 |
+ UInt32 | Buffer | Int32 | IntPtr |
+
+# glClearNamedFramebufferuiv
+ UInt32 | Buffer | Int32 | array of UInt32 |
+ UInt32 | Buffer | Int32 | var!UInt32 |
+ UInt32 | Buffer | Int32 | IntPtr |
+
+# glClearStencil
+ Int32 |
+
+# glClearTexImage
+ UInt32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glClearTexSubImage
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glClientWaitSync
+ SyncStatus | GLsync | SyncObjectMask | UInt64 |
+
+# glClipControl
+ ClipControlOrigin | ClipControlDepth |
+
+# glColorMask
+ boolean | boolean | boolean | boolean |
+
+# glColorMaski
+ UInt32 | boolean | boolean | boolean | boolean |
+
+# glColorP3ui
+ ColorPointerType | UInt32 |
+
+# glColorP3uiv
+ ColorPointerType | array of UInt32 |
+ ColorPointerType | var!UInt32 |
+ ColorPointerType | IntPtr |
+
+# glColorP4ui
+ ColorPointerType | UInt32 |
+
+# glColorP4uiv
+ ColorPointerType | array of UInt32 |
+ ColorPointerType | var!UInt32 |
+ ColorPointerType | IntPtr |
+
+# glCompileShader
+ UInt32 |
+
+# glCompressedTexImage1D
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | IntPtr |
+
+# glCompressedTexImage2D
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | Int32 | IntPtr |
+
+# glCompressedTexImage3D
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | Int32 | Int32 | IntPtr |
+
+# glCompressedTexSubImage1D
+ TextureTarget | Int32 | Int32 | Int32 | PixelFormat | Int32 | IntPtr |
+
+# glCompressedTexSubImage2D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | Int32 | IntPtr |
+
+# glCompressedTexSubImage3D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | Int32 | IntPtr |
+
+# glCompressedTextureSubImage1D
+ UInt32 | Int32 | Int32 | Int32 | PixelFormat | Int32 | IntPtr |
+
+# glCompressedTextureSubImage2D
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | Int32 | IntPtr |
+
+# glCompressedTextureSubImage3D
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | Int32 | IntPtr |
+
+# glCopyBufferSubData
+ CopyBufferSubDataTarget | CopyBufferSubDataTarget | IntPtr | IntPtr | IntPtr |
+
+# glCopyImageSubData
+ UInt32 | CopyImageSubDataTarget | Int32 | Int32 | Int32 | Int32 | UInt32 | CopyImageSubDataTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyNamedBufferSubData
+ UInt32 | UInt32 | IntPtr | IntPtr | IntPtr |
+
+# glCopyTexImage1D
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyTexImage2D
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyTexSubImage1D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyTexSubImage2D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyTexSubImage3D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyTextureSubImage1D
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyTextureSubImage2D
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCopyTextureSubImage3D
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glCreateBuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glCreateFramebuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glCreateProgram
+ UInt32 |
+
+# glCreateProgramPipelines
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glCreateQueries
+ QueryTarget | Int32 | array of UInt32 |
+ QueryTarget | Int32 | var!UInt32 |
+ QueryTarget | Int32 | IntPtr |
+
+# glCreateRenderbuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glCreateSamplers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glCreateShader
+ UInt32 | ShaderType |
+
+# glCreateShaderProgramv
+ UInt32 | ShaderType | Int32 | array of string |
+ UInt32 | ShaderType | Int32 | array of IntPtr |
+ UInt32 | ShaderType | Int32 | IntPtr |
+
+# glCreateTextures
+ TextureTarget | Int32 | array of UInt32 |
+ TextureTarget | Int32 | var!UInt32 |
+ TextureTarget | Int32 | IntPtr |
+
+# glCreateTransformFeedbacks
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glCreateVertexArrays
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glCullFace
+ CullFaceMode |
+
+# glDebugMessageCallback
+ GLDEBUGPROC | IntPtr |
+
+# glDebugMessageControl
+ DebugSource | DebugType | DebugSeverity | Int32 | array of UInt32 | boolean |
+ DebugSource | DebugType | DebugSeverity | Int32 | var!UInt32 | boolean |
+ DebugSource | DebugType | DebugSeverity | Int32 | IntPtr | boolean |
+
+# glDebugMessageInsert
+ DebugSource | DebugType | UInt32 | DebugSeverity | Int32 | string |
+ DebugSource | DebugType | UInt32 | DebugSeverity | Int32 | IntPtr |
+
+# glDeleteBuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteFramebuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteProgram
+ UInt32 |
+
+# glDeleteProgramPipelines
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteQueries
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteRenderbuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteSamplers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteShader
+ UInt32 |
+
+# glDeleteSync
+ GLsync |
+
+# glDeleteTextures
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteTransformFeedbacks
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDeleteVertexArrays
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glDepthFunc
+ DepthFunction |
+
+# glDepthMask
+ boolean |
+
+# glDepthRange
+ real | real |
+
+# glDepthRangeArrayv
+ UInt32 | Int32 | array of real |
+ UInt32 | Int32 | var!real |
+ UInt32 | Int32 | IntPtr |
+
+# glDepthRangef
+ single | single |
+
+# glDepthRangeIndexed
+ UInt32 | real | real |
+
+# glDetachShader
+ UInt32 | UInt32 |
+
+# glDisable
+ EnableCap |
+
+# glDisablei
+ EnableCap | UInt32 |
+
+# glDisableVertexArrayAttrib
+ UInt32 | UInt32 |
+
+# glDisableVertexAttribArray
+ UInt32 |
+
+# glDispatchCompute
+ UInt32 | UInt32 | UInt32 |
+
+# glDispatchComputeIndirect
+ IntPtr |
+
+# glDrawArrays
+ PrimitiveType | Int32 | Int32 |
+
+# glDrawArraysIndirect
+ PrimitiveType | IntPtr |
+
+# glDrawArraysInstanced
+ PrimitiveType | Int32 | Int32 | Int32 |
+
+# glDrawArraysInstancedBaseInstance
+ PrimitiveType | Int32 | Int32 | Int32 | UInt32 |
+
+# glDrawBuffer
+ DrawBufferMode |
+
+# glDrawBuffers
+ Int32 | array of DrawBufferMode |
+ Int32 | var!DrawBufferMode |
+ Int32 | IntPtr |
+
+# glDrawElements
+ PrimitiveType | Int32 | DrawElementsType | IntPtr |
+
+# glDrawElementsBaseVertex
+ PrimitiveType | Int32 | DrawElementsType | IntPtr | Int32 |
+
+# glDrawElementsIndirect
+ PrimitiveType | DrawElementsType | IntPtr |
+
+# glDrawElementsInstanced
+ PrimitiveType | Int32 | DrawElementsType | IntPtr | Int32 |
+
+# glDrawElementsInstancedBaseInstance
+ PrimitiveType | Int32 | PrimitiveType | IntPtr | Int32 | UInt32 |
+
+# glDrawElementsInstancedBaseVertex
+ PrimitiveType | Int32 | DrawElementsType | IntPtr | Int32 | Int32 |
+
+# glDrawElementsInstancedBaseVertexBaseInstance
+ PrimitiveType | Int32 | DrawElementsType | IntPtr | Int32 | Int32 | UInt32 |
+
+# glDrawRangeElements
+ PrimitiveType | UInt32 | UInt32 | Int32 | DrawElementsType | IntPtr |
+
+# glDrawRangeElementsBaseVertex
+ PrimitiveType | UInt32 | UInt32 | Int32 | DrawElementsType | IntPtr | Int32 |
+
+# glDrawTransformFeedback
+ PrimitiveType | UInt32 |
+
+# glDrawTransformFeedbackInstanced
+ PrimitiveType | UInt32 | Int32 |
+
+# glDrawTransformFeedbackStream
+ PrimitiveType | UInt32 | UInt32 |
+
+# glDrawTransformFeedbackStreamInstanced
+ PrimitiveType | UInt32 | UInt32 | Int32 |
+
+# glEnable
+ EnableCap |
+
+# glEnablei
+ EnableCap | UInt32 |
+
+# glEnableVertexArrayAttrib
+ UInt32 | UInt32 |
+
+# glEnableVertexAttribArray
+ UInt32 |
+
+# glEndQuery
+ QueryTarget |
+
+# glEndQueryIndexed
+ QueryTarget | UInt32 |
+
+# glFenceSync
+ GLsync | SyncCondition | DummyFlags |
+
+# glFlushMappedBufferRange
+ BufferTargetARB | IntPtr | IntPtr |
+
+# glFlushMappedNamedBufferRange
+ UInt32 | IntPtr | IntPtr |
+
+# glFramebufferParameteri
+ FramebufferTarget | FramebufferParameterName | Int32 |
+
+# glFramebufferRenderbuffer
+ FramebufferTarget | FramebufferAttachment | RenderbufferTarget | UInt32 |
+
+# glFramebufferTexture
+ FramebufferTarget | FramebufferAttachment | UInt32 | Int32 |
+
+# glFramebufferTexture1D
+ FramebufferTarget | FramebufferAttachment | TextureTarget | UInt32 | Int32 |
+
+# glFramebufferTexture2D
+ FramebufferTarget | FramebufferAttachment | TextureTarget | UInt32 | Int32 |
+
+# glFramebufferTexture3D
+ FramebufferTarget | FramebufferAttachment | TextureTarget | UInt32 | Int32 | Int32 |
+
+# glFramebufferTextureLayer
+ FramebufferTarget | FramebufferAttachment | UInt32 | Int32 | Int32 |
+
+# glFrontFace
+ FrontFaceDirection |
+
+# glGenBuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenerateMipmap
+ TextureTarget |
+
+# glGenerateTextureMipmap
+ UInt32 |
+
+# glGenFramebuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenProgramPipelines
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenQueries
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenRenderbuffers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenSamplers
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenTextures
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenTransformFeedbacks
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGenVertexArrays
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glGetActiveAtomicCounterBufferiv
+ UInt32 | UInt32 | AtomicCounterBufferPName | array of Int32 |
+ UInt32 | UInt32 | AtomicCounterBufferPName | var!Int32 |
+ UInt32 | UInt32 | AtomicCounterBufferPName | IntPtr |
+
+# glGetActiveAttrib
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of AttributeType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!AttributeType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!AttributeType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
+
+# glGetActiveSubroutineName
+ UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | string |
+ UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | string |
+ UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | ShaderType | UInt32 | Int32 | IntPtr | string |
+ UInt32 | ShaderType | UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetActiveSubroutineUniformiv
+ UInt32 | ShaderType | UInt32 | SubroutineParameterName | array of Int32 |
+ UInt32 | ShaderType | UInt32 | SubroutineParameterName | var!Int32 |
+ UInt32 | ShaderType | UInt32 | SubroutineParameterName | IntPtr |
+
+# glGetActiveSubroutineUniformName
+ UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | string |
+ UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | string |
+ UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | ShaderType | UInt32 | Int32 | IntPtr | string |
+ UInt32 | ShaderType | UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetActiveUniform
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UniformType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UniformType | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UniformType | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
+
+# glGetActiveUniformBlockiv
+ UInt32 | UInt32 | UniformBlockPName | array of Int32 |
+ UInt32 | UInt32 | UniformBlockPName | var!Int32 |
+ UInt32 | UInt32 | UniformBlockPName | IntPtr |
+
+# glGetActiveUniformBlockName
+ UInt32 | UInt32 | Int32 | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetActiveUniformName
+ UInt32 | UInt32 | Int32 | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetActiveUniformsiv
+ UInt32 | Int32 | array of UInt32 | UniformPName | array of Int32 |
+ UInt32 | Int32 | array of UInt32 | UniformPName | var!Int32 |
+ UInt32 | Int32 | array of UInt32 | UniformPName | IntPtr |
+ UInt32 | Int32 | var!UInt32 | UniformPName | array of Int32 |
+ UInt32 | Int32 | var!UInt32 | UniformPName | var!Int32 |
+ UInt32 | Int32 | var!UInt32 | UniformPName | IntPtr |
+ UInt32 | Int32 | IntPtr | UniformPName | array of Int32 |
+ UInt32 | Int32 | IntPtr | UniformPName | var!Int32 |
+ UInt32 | Int32 | IntPtr | UniformPName | IntPtr |
+
+# glGetAttachedShaders
+ UInt32 | Int32 | array of Int32 | array of UInt32 |
+ UInt32 | Int32 | array of Int32 | var!UInt32 |
+ UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | Int32 | var!Int32 | array of UInt32 |
+ UInt32 | Int32 | var!Int32 | var!UInt32 |
+ UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | Int32 | IntPtr | array of UInt32 |
+ UInt32 | Int32 | IntPtr | var!UInt32 |
+ UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetAttribLocation
+ Int32 | UInt32 | string |
+ Int32 | UInt32 | IntPtr |
+
+# glGetBooleani_v
+ BufferTargetARB | UInt32 | array of boolean |
+ BufferTargetARB | UInt32 | var!boolean |
+ BufferTargetARB | UInt32 | IntPtr |
+
+# glGetBooleanv
+ GetPName | array of boolean |
+ GetPName | var!boolean |
+ GetPName | IntPtr |
+
+# glGetBufferParameteri64v
+ BufferTargetARB | BufferPNameARB | array of Int64 |
+ BufferTargetARB | BufferPNameARB | var!Int64 |
+ BufferTargetARB | BufferPNameARB | IntPtr |
+
+# glGetBufferParameteriv
+ BufferTargetARB | BufferPNameARB | array of Int32 |
+ BufferTargetARB | BufferPNameARB | var!Int32 |
+ BufferTargetARB | BufferPNameARB | IntPtr |
+
+# glGetBufferPointerv
+ BufferTargetARB | BufferPointerNameARB | array of IntPtr |
+ BufferTargetARB | BufferPointerNameARB | var!IntPtr |
+ BufferTargetARB | BufferPointerNameARB | IntPtr |
+
+# glGetBufferSubData
+ BufferTargetARB | IntPtr | IntPtr | IntPtr |
+
+# glGetCompressedTexImage
+ TextureTarget | Int32 | IntPtr |
+
+# glGetCompressedTextureImage
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glGetCompressedTextureSubImage
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | IntPtr |
+
+# glGetDebugMessageLog
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | array of DebugType | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | var!DebugType | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of DebugSource | IntPtr | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | array of DebugType | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!DebugSource | IntPtr | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of DebugType | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!DebugType | IntPtr | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UInt32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | array of DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | array of DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | array of DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | array of DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | array of DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | array of DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | var!DebugSeverity | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | var!DebugSeverity | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | var!DebugSeverity | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | var!DebugSeverity | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | var!DebugSeverity | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | var!DebugSeverity | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr | array of Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr | array of Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr | var!Int32 | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr | var!Int32 | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr | IntPtr | IntPtr |
+
+# glGetDoublei_v
+ DummyEnum | UInt32 | array of real |
+ DummyEnum | UInt32 | var!real |
+ DummyEnum | UInt32 | IntPtr |
+
+# glGetDoublev
+ GetPName | array of real |
+ GetPName | var!real |
+ GetPName | IntPtr |
+
+# glGetError
+ ErrorCode |
+
+# glGetFloati_v
+ DummyEnum | UInt32 | array of single |
+ DummyEnum | UInt32 | var!single |
+ DummyEnum | UInt32 | IntPtr |
+
+# glGetFloatv
+ GetPName | array of single |
+ GetPName | var!single |
+ GetPName | IntPtr |
+
+# glGetFragDataIndex
+ Int32 | UInt32 | string |
+ Int32 | UInt32 | IntPtr |
+
+# glGetFragDataLocation
+ Int32 | UInt32 | string |
+ Int32 | UInt32 | IntPtr |
+
+# glGetFramebufferAttachmentParameteriv
+ FramebufferTarget | FramebufferAttachment | FramebufferAttachmentParameterName | array of Int32 |
+ FramebufferTarget | FramebufferAttachment | FramebufferAttachmentParameterName | var!Int32 |
+ FramebufferTarget | FramebufferAttachment | FramebufferAttachmentParameterName | IntPtr |
+
+# glGetFramebufferParameteriv
+ FramebufferTarget | FramebufferAttachmentParameterName | array of Int32 |
+ FramebufferTarget | FramebufferAttachmentParameterName | var!Int32 |
+ FramebufferTarget | FramebufferAttachmentParameterName | IntPtr |
+
+# glGetGraphicsResetStatus
+ GraphicsResetStatus |
+
+# glGetInteger64i_v
+ DummyEnum | UInt32 | array of Int64 |
+ DummyEnum | UInt32 | var!Int64 |
+ DummyEnum | UInt32 | IntPtr |
+
+# glGetInteger64v
+ GetPName | array of Int64 |
+ GetPName | var!Int64 |
+ GetPName | IntPtr |
+
+# glGetIntegeri_v
+ DummyEnum | UInt32 | array of Int32 |
+ DummyEnum | UInt32 | var!Int32 |
+ DummyEnum | UInt32 | IntPtr |
+
+# glGetIntegerv
+ GetPName | array of Int32 |
+ GetPName | var!Int32 |
+ GetPName | IntPtr |
+
+# glGetInternalformati64v
+ TextureTarget | InternalFormat | InternalFormatPName | Int32 | array of Int64 |
+ TextureTarget | InternalFormat | InternalFormatPName | Int32 | var!Int64 |
+ TextureTarget | InternalFormat | InternalFormatPName | Int32 | IntPtr |
+
+# glGetInternalformativ
+ TextureTarget | InternalFormat | InternalFormatPName | Int32 | array of Int32 |
+ TextureTarget | InternalFormat | InternalFormatPName | Int32 | var!Int32 |
+ TextureTarget | InternalFormat | InternalFormatPName | Int32 | IntPtr |
+
+# glGetMultisamplefv
+ GetMultisamplePNameNV | UInt32 | array of single |
+ GetMultisamplePNameNV | UInt32 | var!single |
+ GetMultisamplePNameNV | UInt32 | IntPtr |
+
+# glGetNamedBufferParameteri64v
+ UInt32 | VertexBufferObjectParameter | array of Int64 |
+ UInt32 | VertexBufferObjectParameter | var!Int64 |
+ UInt32 | VertexBufferObjectParameter | IntPtr |
+
+# glGetNamedBufferParameteriv
+ UInt32 | VertexBufferObjectParameter | array of Int32 |
+ UInt32 | VertexBufferObjectParameter | var!Int32 |
+ UInt32 | VertexBufferObjectParameter | IntPtr |
+
+# glGetNamedBufferPointerv
+ UInt32 | VertexBufferObjectParameter | array of IntPtr |
+ UInt32 | VertexBufferObjectParameter | var!IntPtr |
+ UInt32 | VertexBufferObjectParameter | IntPtr |
+
+# glGetNamedBufferSubData
+ UInt32 | IntPtr | IntPtr | IntPtr |
+
+# glGetNamedFramebufferAttachmentParameteriv
+ UInt32 | FramebufferAttachment | FramebufferAttachmentParameterName | array of Int32 |
+ UInt32 | FramebufferAttachment | FramebufferAttachmentParameterName | var!Int32 |
+ UInt32 | FramebufferAttachment | FramebufferAttachmentParameterName | IntPtr |
+
+# glGetNamedFramebufferParameteriv
+ UInt32 | GetFramebufferParameter | array of Int32 |
+ UInt32 | GetFramebufferParameter | var!Int32 |
+ UInt32 | GetFramebufferParameter | IntPtr |
+
+# glGetNamedRenderbufferParameteriv
+ UInt32 | RenderbufferParameterName | array of Int32 |
+ UInt32 | RenderbufferParameterName | var!Int32 |
+ UInt32 | RenderbufferParameterName | IntPtr |
+
+# glGetnColorTable
+ ColorTableTarget | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glGetnCompressedTexImage
+ TextureTarget | Int32 | Int32 | IntPtr |
+
+# glGetnConvolutionFilter
+ ConvolutionTarget | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glGetnHistogram
+ HistogramTargetEXT | boolean | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glGetnMapdv
+ MapTarget | MapQuery | Int32 | array of real |
+ MapTarget | MapQuery | Int32 | var!real |
+ MapTarget | MapQuery | Int32 | IntPtr |
+
+# glGetnMapfv
+ MapTarget | MapQuery | Int32 | array of single |
+ MapTarget | MapQuery | Int32 | var!single |
+ MapTarget | MapQuery | Int32 | IntPtr |
+
+# glGetnMapiv
+ MapTarget | MapQuery | Int32 | array of Int32 |
+ MapTarget | MapQuery | Int32 | var!Int32 |
+ MapTarget | MapQuery | Int32 | IntPtr |
+
+# glGetnMinmax
+ MinmaxTargetEXT | boolean | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glGetnPixelMapfv
+ PixelMap | Int32 | array of single |
+ PixelMap | Int32 | var!single |
+ PixelMap | Int32 | IntPtr |
+
+# glGetnPixelMapuiv
+ PixelMap | Int32 | array of UInt32 |
+ PixelMap | Int32 | var!UInt32 |
+ PixelMap | Int32 | IntPtr |
+
+# glGetnPixelMapusv
+ PixelMap | Int32 | array of UInt16 |
+ PixelMap | Int32 | var!UInt16 |
+ PixelMap | Int32 | IntPtr |
+
+# glGetnPolygonStipple
+ Int32 | array of Byte |
+ Int32 | var!Byte |
+ Int32 | IntPtr |
+
+# glGetnSeparableFilter
+ SeparableTargetEXT | PixelFormat | PixelType | Int32 | IntPtr | Int32 | IntPtr | IntPtr |
+
+# glGetnTexImage
+ TextureTarget | Int32 | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glGetnUniformdv
+ UInt32 | Int32 | Int32 | array of real |
+ UInt32 | Int32 | Int32 | var!real |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glGetnUniformfv
+ UInt32 | Int32 | Int32 | array of single |
+ UInt32 | Int32 | Int32 | var!single |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glGetnUniformiv
+ UInt32 | Int32 | Int32 | array of Int32 |
+ UInt32 | Int32 | Int32 | var!Int32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glGetnUniformuiv
+ UInt32 | Int32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glGetObjectLabel
+ ObjectIdentifier | UInt32 | Int32 | array of Int32 | string |
+ ObjectIdentifier | UInt32 | Int32 | array of Int32 | IntPtr |
+ ObjectIdentifier | UInt32 | Int32 | var!Int32 | string |
+ ObjectIdentifier | UInt32 | Int32 | var!Int32 | IntPtr |
+ ObjectIdentifier | UInt32 | Int32 | IntPtr | string |
+ ObjectIdentifier | UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetObjectPtrLabel
+ IntPtr | Int32 | array of Int32 | string |
+ IntPtr | Int32 | array of Int32 | IntPtr |
+ IntPtr | Int32 | var!Int32 | string |
+ IntPtr | Int32 | var!Int32 | IntPtr |
+ IntPtr | Int32 | IntPtr | string |
+ IntPtr | Int32 | IntPtr | IntPtr |
+
+# glGetPointerv
+ GetPointervPName | array of IntPtr |
+ GetPointervPName | var!IntPtr |
+ GetPointervPName | IntPtr |
+
+# glGetProgramBinary
+ UInt32 | Int32 | array of Int32 | array of DummyEnum | IntPtr |
+ UInt32 | Int32 | array of Int32 | var!DummyEnum | IntPtr |
+ UInt32 | Int32 | array of Int32 | IntPtr | IntPtr |
+ UInt32 | Int32 | var!Int32 | array of DummyEnum | IntPtr |
+ UInt32 | Int32 | var!Int32 | var!DummyEnum | IntPtr |
+ UInt32 | Int32 | var!Int32 | IntPtr | IntPtr |
+ UInt32 | Int32 | IntPtr | array of DummyEnum | IntPtr |
+ UInt32 | Int32 | IntPtr | var!DummyEnum | IntPtr |
+ UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
+
+# glGetProgramInfoLog
+ UInt32 | Int32 | array of Int32 | string |
+ UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | Int32 | var!Int32 | string |
+ UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | Int32 | IntPtr | string |
+ UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetProgramInterfaceiv
+ UInt32 | ProgramInterface | ProgramInterfacePName | array of Int32 |
+ UInt32 | ProgramInterface | ProgramInterfacePName | var!Int32 |
+ UInt32 | ProgramInterface | ProgramInterfacePName | IntPtr |
+
+# glGetProgramiv
+ UInt32 | ProgramPropertyARB | array of Int32 |
+ UInt32 | ProgramPropertyARB | var!Int32 |
+ UInt32 | ProgramPropertyARB | IntPtr |
+
+# glGetProgramPipelineInfoLog
+ UInt32 | Int32 | array of Int32 | string |
+ UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | Int32 | var!Int32 | string |
+ UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | Int32 | IntPtr | string |
+ UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetProgramPipelineiv
+ UInt32 | PipelineParameterName | array of Int32 |
+ UInt32 | PipelineParameterName | var!Int32 |
+ UInt32 | PipelineParameterName | IntPtr |
+
+# glGetProgramResourceIndex
+ UInt32 | UInt32 | ProgramInterface | string |
+ UInt32 | UInt32 | ProgramInterface | IntPtr |
+
+# glGetProgramResourceiv
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | array of Int32 | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | array of Int32 | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | array of Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | var!Int32 | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | var!Int32 | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | var!Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | IntPtr | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | IntPtr | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of ProgramResourceProperty | Int32 | IntPtr | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | array of Int32 | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | array of Int32 | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | array of Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | var!Int32 | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | var!Int32 | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | var!Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | IntPtr | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | IntPtr | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!ProgramResourceProperty | Int32 | IntPtr | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | array of Int32 | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | array of Int32 | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | array of Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | var!Int32 | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | var!Int32 | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | var!Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | IntPtr | array of Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | IntPtr | var!Int32 |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | Int32 | IntPtr | IntPtr |
+
+# glGetProgramResourceLocation
+ Int32 | UInt32 | ProgramInterface | string |
+ Int32 | UInt32 | ProgramInterface | IntPtr |
+
+# glGetProgramResourceLocationIndex
+ Int32 | UInt32 | ProgramInterface | string |
+ Int32 | UInt32 | ProgramInterface | IntPtr |
+
+# glGetProgramResourceName
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of Int32 | string |
+ UInt32 | ProgramInterface | UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!Int32 | string |
+ UInt32 | ProgramInterface | UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | string |
+ UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetProgramStageiv
+ UInt32 | ShaderType | ProgramStagePName | array of Int32 |
+ UInt32 | ShaderType | ProgramStagePName | var!Int32 |
+ UInt32 | ShaderType | ProgramStagePName | IntPtr |
+
+# glGetQueryBufferObjecti64v
+ UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetQueryBufferObjectiv
+ UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetQueryBufferObjectui64v
+ UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetQueryBufferObjectuiv
+ UInt32 | UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetQueryIndexediv
+ QueryTarget | UInt32 | QueryParameterName | array of Int32 |
+ QueryTarget | UInt32 | QueryParameterName | var!Int32 |
+ QueryTarget | UInt32 | QueryParameterName | IntPtr |
+
+# glGetQueryiv
+ QueryTarget | QueryParameterName | array of Int32 |
+ QueryTarget | QueryParameterName | var!Int32 |
+ QueryTarget | QueryParameterName | IntPtr |
+
+# glGetQueryObjecti64v
+ UInt32 | QueryObjectParameterName | array of Int64 |
+ UInt32 | QueryObjectParameterName | var!Int64 |
+ UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetQueryObjectiv
+ UInt32 | QueryObjectParameterName | array of Int32 |
+ UInt32 | QueryObjectParameterName | var!Int32 |
+ UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetQueryObjectui64v
+ UInt32 | QueryObjectParameterName | array of UInt64 |
+ UInt32 | QueryObjectParameterName | var!UInt64 |
+ UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetQueryObjectuiv
+ UInt32 | QueryObjectParameterName | array of UInt32 |
+ UInt32 | QueryObjectParameterName | var!UInt32 |
+ UInt32 | QueryObjectParameterName | IntPtr |
+
+# glGetRenderbufferParameteriv
+ RenderbufferTarget | RenderbufferParameterName | array of Int32 |
+ RenderbufferTarget | RenderbufferParameterName | var!Int32 |
+ RenderbufferTarget | RenderbufferParameterName | IntPtr |
+
+# glGetSamplerParameterfv
+ UInt32 | SamplerParameterF | array of single |
+ UInt32 | SamplerParameterF | var!single |
+ UInt32 | SamplerParameterF | IntPtr |
+
+# glGetSamplerParameterIiv
+ UInt32 | SamplerParameterI | array of Int32 |
+ UInt32 | SamplerParameterI | var!Int32 |
+ UInt32 | SamplerParameterI | IntPtr |
+
+# glGetSamplerParameterIuiv
+ UInt32 | SamplerParameterI | array of UInt32 |
+ UInt32 | SamplerParameterI | var!UInt32 |
+ UInt32 | SamplerParameterI | IntPtr |
+
+# glGetSamplerParameteriv
+ UInt32 | SamplerParameterI | array of Int32 |
+ UInt32 | SamplerParameterI | var!Int32 |
+ UInt32 | SamplerParameterI | IntPtr |
+
+# glGetShaderInfoLog
+ UInt32 | Int32 | array of Int32 | string |
+ UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | Int32 | var!Int32 | string |
+ UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | Int32 | IntPtr | string |
+ UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetShaderiv
+ UInt32 | ShaderParameterName | array of Int32 |
+ UInt32 | ShaderParameterName | var!Int32 |
+ UInt32 | ShaderParameterName | IntPtr |
+
+# glGetShaderPrecisionFormat
+ ShaderType | PrecisionType | array of Int32 | array of Int32 |
+ ShaderType | PrecisionType | array of Int32 | var!Int32 |
+ ShaderType | PrecisionType | array of Int32 | IntPtr |
+ ShaderType | PrecisionType | var!Int32 | array of Int32 |
+ ShaderType | PrecisionType | var!Int32 | var!Int32 |
+ ShaderType | PrecisionType | var!Int32 | IntPtr |
+ ShaderType | PrecisionType | IntPtr | array of Int32 |
+ ShaderType | PrecisionType | IntPtr | var!Int32 |
+ ShaderType | PrecisionType | IntPtr | IntPtr |
+
+# glGetShaderSource
+ UInt32 | Int32 | array of Int32 | string |
+ UInt32 | Int32 | array of Int32 | IntPtr |
+ UInt32 | Int32 | var!Int32 | string |
+ UInt32 | Int32 | var!Int32 | IntPtr |
+ UInt32 | Int32 | IntPtr | string |
+ UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetString
+ string | StringName |
+
+# glGetStringi
+ string | StringName | UInt32 |
+
+# glGetSubroutineIndex
+ UInt32 | UInt32 | ShaderType | string |
+ UInt32 | UInt32 | ShaderType | IntPtr |
+
+# glGetSubroutineUniformLocation
+ Int32 | UInt32 | ShaderType | string |
+ Int32 | UInt32 | ShaderType | IntPtr |
+
+# glGetSynciv
+ GLsync | SyncParameterName | Int32 | array of Int32 | array of Int32 |
+ GLsync | SyncParameterName | Int32 | array of Int32 | var!Int32 |
+ GLsync | SyncParameterName | Int32 | array of Int32 | IntPtr |
+ GLsync | SyncParameterName | Int32 | var!Int32 | array of Int32 |
+ GLsync | SyncParameterName | Int32 | var!Int32 | var!Int32 |
+ GLsync | SyncParameterName | Int32 | var!Int32 | IntPtr |
+ GLsync | SyncParameterName | Int32 | IntPtr | array of Int32 |
+ GLsync | SyncParameterName | Int32 | IntPtr | var!Int32 |
+ GLsync | SyncParameterName | Int32 | IntPtr | IntPtr |
+
+# glGetTexImage
+ TextureTarget | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glGetTexLevelParameterfv
+ TextureTarget | Int32 | GetTextureParameter | array of single |
+ TextureTarget | Int32 | GetTextureParameter | var!single |
+ TextureTarget | Int32 | GetTextureParameter | IntPtr |
+
+# glGetTexLevelParameteriv
+ TextureTarget | Int32 | GetTextureParameter | array of Int32 |
+ TextureTarget | Int32 | GetTextureParameter | var!Int32 |
+ TextureTarget | Int32 | GetTextureParameter | IntPtr |
+
+# glGetTexParameterfv
+ TextureTarget | GetTextureParameter | array of single |
+ TextureTarget | GetTextureParameter | var!single |
+ TextureTarget | GetTextureParameter | IntPtr |
+
+# glGetTexParameterIiv
+ TextureTarget | GetTextureParameter | array of Int32 |
+ TextureTarget | GetTextureParameter | var!Int32 |
+ TextureTarget | GetTextureParameter | IntPtr |
+
+# glGetTexParameterIuiv
+ TextureTarget | GetTextureParameter | array of UInt32 |
+ TextureTarget | GetTextureParameter | var!UInt32 |
+ TextureTarget | GetTextureParameter | IntPtr |
+
+# glGetTexParameteriv
+ TextureTarget | GetTextureParameter | array of Int32 |
+ TextureTarget | GetTextureParameter | var!Int32 |
+ TextureTarget | GetTextureParameter | IntPtr |
+
+# glGetTextureImage
+ UInt32 | Int32 | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glGetTextureLevelParameterfv
+ UInt32 | Int32 | GetTextureParameter | array of single |
+ UInt32 | Int32 | GetTextureParameter | var!single |
+ UInt32 | Int32 | GetTextureParameter | IntPtr |
+
+# glGetTextureLevelParameteriv
+ UInt32 | Int32 | GetTextureParameter | array of Int32 |
+ UInt32 | Int32 | GetTextureParameter | var!Int32 |
+ UInt32 | Int32 | GetTextureParameter | IntPtr |
+
+# glGetTextureParameterfv
+ UInt32 | GetTextureParameter | array of single |
+ UInt32 | GetTextureParameter | var!single |
+ UInt32 | GetTextureParameter | IntPtr |
+
+# glGetTextureParameterIiv
+ UInt32 | GetTextureParameter | array of Int32 |
+ UInt32 | GetTextureParameter | var!Int32 |
+ UInt32 | GetTextureParameter | IntPtr |
+
+# glGetTextureParameterIuiv
+ UInt32 | GetTextureParameter | array of UInt32 |
+ UInt32 | GetTextureParameter | var!UInt32 |
+ UInt32 | GetTextureParameter | IntPtr |
+
+# glGetTextureParameteriv
+ UInt32 | GetTextureParameter | array of Int32 |
+ UInt32 | GetTextureParameter | var!Int32 |
+ UInt32 | GetTextureParameter | IntPtr |
+
+# glGetTextureSubImage
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glGetTransformFeedbacki_v
+ UInt32 | TransformFeedbackPName | UInt32 | array of Int32 |
+ UInt32 | TransformFeedbackPName | UInt32 | var!Int32 |
+ UInt32 | TransformFeedbackPName | UInt32 | IntPtr |
+
+# glGetTransformFeedbacki64_v
+ UInt32 | TransformFeedbackPName | UInt32 | array of Int64 |
+ UInt32 | TransformFeedbackPName | UInt32 | var!Int64 |
+ UInt32 | TransformFeedbackPName | UInt32 | IntPtr |
+
+# glGetTransformFeedbackiv
+ UInt32 | TransformFeedbackPName | array of Int32 |
+ UInt32 | TransformFeedbackPName | var!Int32 |
+ UInt32 | TransformFeedbackPName | IntPtr |
+
+# glGetTransformFeedbackVarying
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!GlslTypeToken | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!GlslTypeToken | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
+
+# glGetUniformBlockIndex
+ UInt32 | UInt32 | string |
+ UInt32 | UInt32 | IntPtr |
+
+# glGetUniformdv
+ UInt32 | Int32 | array of real |
+ UInt32 | Int32 | var!real |
+ UInt32 | Int32 | IntPtr |
+
+# glGetUniformfv
+ UInt32 | Int32 | array of single |
+ UInt32 | Int32 | var!single |
+ UInt32 | Int32 | IntPtr |
+
+# glGetUniformIndices
+ UInt32 | Int32 | array of string | array of UInt32 |
+ UInt32 | Int32 | array of string | var!UInt32 |
+ UInt32 | Int32 | array of string | IntPtr |
+ UInt32 | Int32 | array of IntPtr | array of UInt32 |
+ UInt32 | Int32 | array of IntPtr | var!UInt32 |
+ UInt32 | Int32 | array of IntPtr | IntPtr |
+ UInt32 | Int32 | IntPtr | array of UInt32 |
+ UInt32 | Int32 | IntPtr | var!UInt32 |
+ UInt32 | Int32 | IntPtr | IntPtr |
+
+# glGetUniformiv
+ UInt32 | Int32 | array of Int32 |
+ UInt32 | Int32 | var!Int32 |
+ UInt32 | Int32 | IntPtr |
+
+# glGetUniformLocation
+ Int32 | UInt32 | string |
+ Int32 | UInt32 | IntPtr |
+
+# glGetUniformSubroutineuiv
+ ShaderType | Int32 | array of UInt32 |
+ ShaderType | Int32 | var!UInt32 |
+ ShaderType | Int32 | IntPtr |
+
+# glGetUniformuiv
+ UInt32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | IntPtr |
+
+# glGetVertexArrayIndexed64iv
+ UInt32 | UInt32 | VertexArrayPName | array of Int64 |
+ UInt32 | UInt32 | VertexArrayPName | var!Int64 |
+ UInt32 | UInt32 | VertexArrayPName | IntPtr |
+
+# glGetVertexArrayIndexediv
+ UInt32 | UInt32 | VertexArrayPName | array of Int32 |
+ UInt32 | UInt32 | VertexArrayPName | var!Int32 |
+ UInt32 | UInt32 | VertexArrayPName | IntPtr |
+
+# glGetVertexArrayiv
+ UInt32 | VertexArrayPName | array of Int32 |
+ UInt32 | VertexArrayPName | var!Int32 |
+ UInt32 | VertexArrayPName | IntPtr |
+
+# glGetVertexAttribdv
+ UInt32 | VertexAttribPropertyARB | array of real |
+ UInt32 | VertexAttribPropertyARB | var!real |
+ UInt32 | VertexAttribPropertyARB | IntPtr |
+
+# glGetVertexAttribfv
+ UInt32 | VertexAttribPropertyARB | array of single |
+ UInt32 | VertexAttribPropertyARB | var!single |
+ UInt32 | VertexAttribPropertyARB | IntPtr |
+
+# glGetVertexAttribIiv
+ UInt32 | VertexAttribEnum | array of Int32 |
+ UInt32 | VertexAttribEnum | var!Int32 |
+ UInt32 | VertexAttribEnum | IntPtr |
+
+# glGetVertexAttribIuiv
+ UInt32 | VertexAttribEnum | array of UInt32 |
+ UInt32 | VertexAttribEnum | var!UInt32 |
+ UInt32 | VertexAttribEnum | IntPtr |
+
+# glGetVertexAttribiv
+ UInt32 | VertexAttribPropertyARB | array of Int32 |
+ UInt32 | VertexAttribPropertyARB | var!Int32 |
+ UInt32 | VertexAttribPropertyARB | IntPtr |
+
+# glGetVertexAttribLdv
+ UInt32 | VertexAttribEnum | array of real |
+ UInt32 | VertexAttribEnum | var!real |
+ UInt32 | VertexAttribEnum | IntPtr |
+
+# glGetVertexAttribPointerv
+ UInt32 | VertexAttribPointerPropertyARB | array of IntPtr |
+ UInt32 | VertexAttribPointerPropertyARB | var!IntPtr |
+ UInt32 | VertexAttribPointerPropertyARB | IntPtr |
+
+# glHint
+ HintTarget | HintMode |
+
+# glInvalidateBufferData
+ UInt32 |
+
+# glInvalidateBufferSubData
+ UInt32 | IntPtr | IntPtr |
+
+# glInvalidateFramebuffer
+ FramebufferTarget | Int32 | array of InvalidateFramebufferAttachment |
+ FramebufferTarget | Int32 | var!InvalidateFramebufferAttachment |
+ FramebufferTarget | Int32 | IntPtr |
+
+# glInvalidateNamedFramebufferData
+ UInt32 | Int32 | array of FramebufferAttachment |
+ UInt32 | Int32 | var!FramebufferAttachment |
+ UInt32 | Int32 | IntPtr |
+
+# glInvalidateNamedFramebufferSubData
+ UInt32 | Int32 | array of FramebufferAttachment | Int32 | Int32 | Int32 | Int32 |
+ UInt32 | Int32 | var!FramebufferAttachment | Int32 | Int32 | Int32 | Int32 |
+ UInt32 | Int32 | IntPtr | Int32 | Int32 | Int32 | Int32 |
+
+# glInvalidateSubFramebuffer
+ FramebufferTarget | Int32 | array of InvalidateFramebufferAttachment | Int32 | Int32 | Int32 | Int32 |
+ FramebufferTarget | Int32 | var!InvalidateFramebufferAttachment | Int32 | Int32 | Int32 | Int32 |
+ FramebufferTarget | Int32 | IntPtr | Int32 | Int32 | Int32 | Int32 |
+
+# glInvalidateTexImage
+ UInt32 | Int32 |
+
+# glInvalidateTexSubImage
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glIsBuffer
+ boolean | UInt32 |
+
+# glIsEnabled
+ boolean | EnableCap |
+
+# glIsEnabledi
+ boolean | EnableCap | UInt32 |
+
+# glIsFramebuffer
+ boolean | UInt32 |
+
+# glIsProgram
+ boolean | UInt32 |
+
+# glIsProgramPipeline
+ boolean | UInt32 |
+
+# glIsQuery
+ boolean | UInt32 |
+
+# glIsRenderbuffer
+ boolean | UInt32 |
+
+# glIsSampler
+ boolean | UInt32 |
+
+# glIsShader
+ boolean | UInt32 |
+
+# glIsSync
+ boolean | GLsync |
+
+# glIsTexture
+ boolean | UInt32 |
+
+# glIsTransformFeedback
+ boolean | UInt32 |
+
+# glIsVertexArray
+ boolean | UInt32 |
+
+# glLineWidth
+ single |
+
+# glLinkProgram
+ UInt32 |
+
+# glLogicOp
+ LogicOp |
+
+# glMapBuffer
+ IntPtr | BufferTargetARB | BufferAccessARB |
+
+# glMapBufferRange
+ IntPtr | BufferTargetARB | IntPtr | IntPtr | MapBufferAccessMask |
+
+# glMapNamedBuffer
+ IntPtr | UInt32 | BufferAccessARB |
+
+# glMapNamedBufferRange
+ IntPtr | UInt32 | IntPtr | IntPtr | MapBufferAccessMask |
+
+# glMemoryBarrier
+ MemoryBarrierMask |
+
+# glMemoryBarrierByRegion
+ MemoryBarrierMask |
+
+# glMinSampleShading
+ single |
+
+# glMultiDrawArrays
+ PrimitiveType | array of Int32 | array of Int32 | Int32 |
+ PrimitiveType | array of Int32 | var!Int32 | Int32 |
+ PrimitiveType | array of Int32 | IntPtr | Int32 |
+ PrimitiveType | var!Int32 | array of Int32 | Int32 |
+ PrimitiveType | var!Int32 | var!Int32 | Int32 |
+ PrimitiveType | var!Int32 | IntPtr | Int32 |
+ PrimitiveType | IntPtr | array of Int32 | Int32 |
+ PrimitiveType | IntPtr | var!Int32 | Int32 |
+ PrimitiveType | IntPtr | IntPtr | Int32 |
+
+# glMultiDrawArraysIndirect
+ PrimitiveType | IntPtr | Int32 | Int32 |
+
+# glMultiDrawArraysIndirectCount
+ PrimitiveType | IntPtr | IntPtr | Int32 | Int32 |
+
+# glMultiDrawElements
+ PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 |
+
+# glMultiDrawElementsBaseVertex
+ PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 | array of Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 | var!Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 | IntPtr |
+ PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | array of Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | var!Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | IntPtr |
+ PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | array of Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | var!Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | IntPtr |
+ PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | array of Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | var!Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | IntPtr |
+ PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | array of Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | var!Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | IntPtr |
+ PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | array of Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | var!Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | IntPtr |
+ PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | array of Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | var!Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | IntPtr |
+ PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | array of Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | var!Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | IntPtr |
+ PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | array of Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | var!Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | IntPtr |
+
+# glMultiDrawElementsIndirect
+ PrimitiveType | DrawElementsType | IntPtr | Int32 | Int32 |
+
+# glMultiDrawElementsIndirectCount
+ PrimitiveType | DrawElementsType | IntPtr | IntPtr | Int32 | Int32 |
+
+# glMultiTexCoordP1ui
+ TextureUnit | TexCoordPointerType | UInt32 |
+
+# glMultiTexCoordP1uiv
+ TextureUnit | TexCoordPointerType | array of UInt32 |
+ TextureUnit | TexCoordPointerType | var!UInt32 |
+ TextureUnit | TexCoordPointerType | IntPtr |
+
+# glMultiTexCoordP2ui
+ TextureUnit | TexCoordPointerType | UInt32 |
+
+# glMultiTexCoordP2uiv
+ TextureUnit | TexCoordPointerType | array of UInt32 |
+ TextureUnit | TexCoordPointerType | var!UInt32 |
+ TextureUnit | TexCoordPointerType | IntPtr |
+
+# glMultiTexCoordP3ui
+ TextureUnit | TexCoordPointerType | UInt32 |
+
+# glMultiTexCoordP3uiv
+ TextureUnit | TexCoordPointerType | array of UInt32 |
+ TextureUnit | TexCoordPointerType | var!UInt32 |
+ TextureUnit | TexCoordPointerType | IntPtr |
+
+# glMultiTexCoordP4ui
+ TextureUnit | TexCoordPointerType | UInt32 |
+
+# glMultiTexCoordP4uiv
+ TextureUnit | TexCoordPointerType | array of UInt32 |
+ TextureUnit | TexCoordPointerType | var!UInt32 |
+ TextureUnit | TexCoordPointerType | IntPtr |
+
+# glNamedBufferData
+ UInt32 | IntPtr | IntPtr | VertexBufferObjectUsage |
+
+# glNamedBufferStorage
+ UInt32 | IntPtr | IntPtr | BufferStorageMask |
+
+# glNamedBufferSubData
+ UInt32 | IntPtr | IntPtr | IntPtr |
+
+# glNamedFramebufferDrawBuffer
+ UInt32 | ColorBuffer |
+
+# glNamedFramebufferDrawBuffers
+ UInt32 | Int32 | array of ColorBuffer |
+ UInt32 | Int32 | var!ColorBuffer |
+ UInt32 | Int32 | IntPtr |
+
+# glNamedFramebufferParameteri
+ UInt32 | FramebufferParameterName | Int32 |
+
+# glNamedFramebufferReadBuffer
+ UInt32 | ColorBuffer |
+
+# glNamedFramebufferRenderbuffer
+ UInt32 | FramebufferAttachment | RenderbufferTarget | UInt32 |
+
+# glNamedFramebufferTexture
+ UInt32 | FramebufferAttachment | UInt32 | Int32 |
+
+# glNamedFramebufferTextureLayer
+ UInt32 | FramebufferAttachment | UInt32 | Int32 | Int32 |
+
+# glNamedRenderbufferStorage
+ UInt32 | InternalFormat | Int32 | Int32 |
+
+# glNamedRenderbufferStorageMultisample
+ UInt32 | Int32 | InternalFormat | Int32 | Int32 |
+
+# glNormalP3ui
+ NormalPointerType | UInt32 |
+
+# glNormalP3uiv
+ NormalPointerType | array of UInt32 |
+ NormalPointerType | var!UInt32 |
+ NormalPointerType | IntPtr |
+
+# glObjectLabel
+ ObjectIdentifier | UInt32 | Int32 | string |
+ ObjectIdentifier | UInt32 | Int32 | IntPtr |
+
+# glObjectPtrLabel
+ IntPtr | Int32 | string |
+ IntPtr | Int32 | IntPtr |
+
+# glPatchParameterfv
+ PatchParameterName | array of single |
+ PatchParameterName | var!single |
+ PatchParameterName | IntPtr |
+
+# glPatchParameteri
+ PatchParameterName | Int32 |
+
+# glPixelStoref
+ PixelStoreParameter | single |
+
+# glPixelStorei
+ PixelStoreParameter | Int32 |
+
+# glPointParameterf
+ PointParameterNameARB | single |
+
+# glPointParameterfv
+ PointParameterNameARB | array of single |
+ PointParameterNameARB | var!single |
+ PointParameterNameARB | IntPtr |
+
+# glPointParameteri
+ PointParameterNameARB | Int32 |
+
+# glPointParameteriv
+ PointParameterNameARB | array of Int32 |
+ PointParameterNameARB | var!Int32 |
+ PointParameterNameARB | IntPtr |
+
+# glPointSize
+ single |
+
+# glPolygonMode
+ DummyEnum | PolygonMode |
+
+# glPolygonOffset
+ single | single |
+
+# glPolygonOffsetClamp
+ single | single | single |
+
+# glPrimitiveRestartIndex
+ UInt32 |
+
+# glProgramBinary
+ UInt32 | DummyEnum | IntPtr | Int32 |
+
+# glProgramParameteri
+ UInt32 | ProgramParameterPName | Int32 |
+
+# glProgramUniform1d
+ UInt32 | Int32 | real |
+
+# glProgramUniform1dv
+ UInt32 | Int32 | Int32 | array of real |
+ UInt32 | Int32 | Int32 | var!real |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform1f
+ UInt32 | Int32 | single |
+
+# glProgramUniform1fv
+ UInt32 | Int32 | Int32 | array of single |
+ UInt32 | Int32 | Int32 | var!single |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform1i
+ UInt32 | Int32 | Int32 |
+
+# glProgramUniform1iv
+ UInt32 | Int32 | Int32 | array of Int32 |
+ UInt32 | Int32 | Int32 | var!Int32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform1ui
+ UInt32 | Int32 | UInt32 |
+
+# glProgramUniform1uiv
+ UInt32 | Int32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform2d
+ UInt32 | Int32 | real | real |
+
+# glProgramUniform2dv
+ UInt32 | Int32 | Int32 | array of real |
+ UInt32 | Int32 | Int32 | var!real |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform2f
+ UInt32 | Int32 | single | single |
+
+# glProgramUniform2fv
+ UInt32 | Int32 | Int32 | array of single |
+ UInt32 | Int32 | Int32 | var!single |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform2i
+ UInt32 | Int32 | Int32 | Int32 |
+
+# glProgramUniform2iv
+ UInt32 | Int32 | Int32 | array of Int32 |
+ UInt32 | Int32 | Int32 | var!Int32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform2ui
+ UInt32 | Int32 | UInt32 | UInt32 |
+
+# glProgramUniform2uiv
+ UInt32 | Int32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform3d
+ UInt32 | Int32 | real | real | real |
+
+# glProgramUniform3dv
+ UInt32 | Int32 | Int32 | array of real |
+ UInt32 | Int32 | Int32 | var!real |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform3f
+ UInt32 | Int32 | single | single | single |
+
+# glProgramUniform3fv
+ UInt32 | Int32 | Int32 | array of single |
+ UInt32 | Int32 | Int32 | var!single |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform3i
+ UInt32 | Int32 | Int32 | Int32 | Int32 |
+
+# glProgramUniform3iv
+ UInt32 | Int32 | Int32 | array of Int32 |
+ UInt32 | Int32 | Int32 | var!Int32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform3ui
+ UInt32 | Int32 | UInt32 | UInt32 | UInt32 |
+
+# glProgramUniform3uiv
+ UInt32 | Int32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform4d
+ UInt32 | Int32 | real | real | real | real |
+
+# glProgramUniform4dv
+ UInt32 | Int32 | Int32 | array of real |
+ UInt32 | Int32 | Int32 | var!real |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform4f
+ UInt32 | Int32 | single | single | single | single |
+
+# glProgramUniform4fv
+ UInt32 | Int32 | Int32 | array of single |
+ UInt32 | Int32 | Int32 | var!single |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform4i
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glProgramUniform4iv
+ UInt32 | Int32 | Int32 | array of Int32 |
+ UInt32 | Int32 | Int32 | var!Int32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniform4ui
+ UInt32 | Int32 | UInt32 | UInt32 | UInt32 | UInt32 |
+
+# glProgramUniform4uiv
+ UInt32 | Int32 | Int32 | array of UInt32 |
+ UInt32 | Int32 | Int32 | var!UInt32 |
+ UInt32 | Int32 | Int32 | IntPtr |
+
+# glProgramUniformMatrix2dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix2fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix2x3dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix2x3fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix2x4dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix2x4fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix3dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix3fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix3x2dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix3x2fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix3x4dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix3x4fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix4dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix4fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix4x2dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix4x2fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix4x3dv
+ UInt32 | Int32 | Int32 | boolean | array of real |
+ UInt32 | Int32 | Int32 | boolean | var!real |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProgramUniformMatrix4x3fv
+ UInt32 | Int32 | Int32 | boolean | array of single |
+ UInt32 | Int32 | Int32 | boolean | var!single |
+ UInt32 | Int32 | Int32 | boolean | IntPtr |
+
+# glProvokingVertex
+ VertexProvokingMode |
+
+# glPushDebugGroup
+ DebugSource | UInt32 | Int32 | string |
+ DebugSource | UInt32 | Int32 | IntPtr |
+
+# glQueryCounter
+ UInt32 | QueryCounterTarget |
+
+# glReadBuffer
+ ReadBufferMode |
+
+# glReadnPixels
+ Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | Int32 | IntPtr |
+
+# glReadPixels
+ Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glRenderbufferStorage
+ RenderbufferTarget | InternalFormat | Int32 | Int32 |
+
+# glRenderbufferStorageMultisample
+ RenderbufferTarget | Int32 | InternalFormat | Int32 | Int32 |
+
+# glSampleCoverage
+ single | boolean |
+
+# glSampleMaski
+ UInt32 | DummyFlags |
+
+# glSamplerParameterf
+ UInt32 | SamplerParameterF | single |
+
+# glSamplerParameterfv
+ UInt32 | SamplerParameterF | array of single |
+ UInt32 | SamplerParameterF | var!single |
+ UInt32 | SamplerParameterF | IntPtr |
+
+# glSamplerParameteri
+ UInt32 | SamplerParameterI | Int32 |
+
+# glSamplerParameterIiv
+ UInt32 | SamplerParameterI | array of Int32 |
+ UInt32 | SamplerParameterI | var!Int32 |
+ UInt32 | SamplerParameterI | IntPtr |
+
+# glSamplerParameterIuiv
+ UInt32 | SamplerParameterI | array of UInt32 |
+ UInt32 | SamplerParameterI | var!UInt32 |
+ UInt32 | SamplerParameterI | IntPtr |
+
+# glSamplerParameteriv
+ UInt32 | SamplerParameterI | array of Int32 |
+ UInt32 | SamplerParameterI | var!Int32 |
+ UInt32 | SamplerParameterI | IntPtr |
+
+# glScissor
+ Int32 | Int32 | Int32 | Int32 |
+
+# glScissorArrayv
+ UInt32 | Int32 | array of Int32 |
+ UInt32 | Int32 | var!Int32 |
+ UInt32 | Int32 | IntPtr |
+
+# glScissorIndexed
+ UInt32 | Int32 | Int32 | Int32 | Int32 |
+
+# glScissorIndexedv
+ UInt32 | array of Int32 |
+ UInt32 | var!Int32 |
+ UInt32 | IntPtr |
+
+# glSecondaryColorP3ui
+ ColorPointerType | UInt32 |
+
+# glSecondaryColorP3uiv
+ ColorPointerType | array of UInt32 |
+ ColorPointerType | var!UInt32 |
+ ColorPointerType | IntPtr |
+
+# glShaderBinary
+ Int32 | array of UInt32 | DummyEnum | IntPtr | Int32 |
+ Int32 | var!UInt32 | DummyEnum | IntPtr | Int32 |
+ Int32 | IntPtr | DummyEnum | IntPtr | Int32 |
+
+# glShaderSource
+ UInt32 | Int32 | array of string | array of Int32 |
+ UInt32 | Int32 | array of string | var!Int32 |
+ UInt32 | Int32 | array of string | IntPtr |
+ UInt32 | Int32 | array of IntPtr | array of Int32 |
+ UInt32 | Int32 | array of IntPtr | var!Int32 |
+ UInt32 | Int32 | array of IntPtr | IntPtr |
+ UInt32 | Int32 | IntPtr | array of Int32 |
+ UInt32 | Int32 | IntPtr | var!Int32 |
+ UInt32 | Int32 | IntPtr | IntPtr |
+
+# glShaderStorageBlockBinding
+ UInt32 | UInt32 | UInt32 |
+
+# glSpecializeShader
+ UInt32 | string | UInt32 | array of UInt32 | array of UInt32 |
+ UInt32 | string | UInt32 | array of UInt32 | var!UInt32 |
+ UInt32 | string | UInt32 | array of UInt32 | IntPtr |
+ UInt32 | string | UInt32 | var!UInt32 | array of UInt32 |
+ UInt32 | string | UInt32 | var!UInt32 | var!UInt32 |
+ UInt32 | string | UInt32 | var!UInt32 | IntPtr |
+ UInt32 | string | UInt32 | IntPtr | array of UInt32 |
+ UInt32 | string | UInt32 | IntPtr | var!UInt32 |
+ UInt32 | string | UInt32 | IntPtr | IntPtr |
+ UInt32 | IntPtr | UInt32 | array of UInt32 | array of UInt32 |
+ UInt32 | IntPtr | UInt32 | array of UInt32 | var!UInt32 |
+ UInt32 | IntPtr | UInt32 | array of UInt32 | IntPtr |
+ UInt32 | IntPtr | UInt32 | var!UInt32 | array of UInt32 |
+ UInt32 | IntPtr | UInt32 | var!UInt32 | var!UInt32 |
+ UInt32 | IntPtr | UInt32 | var!UInt32 | IntPtr |
+ UInt32 | IntPtr | UInt32 | IntPtr | array of UInt32 |
+ UInt32 | IntPtr | UInt32 | IntPtr | var!UInt32 |
+ UInt32 | IntPtr | UInt32 | IntPtr | IntPtr |
+
+# glStencilFunc
+ StencilFunction | Int32 | UInt32 |
+
+# glStencilFuncSeparate
+ StencilFaceDirection | StencilFunction | Int32 | UInt32 |
+
+# glStencilMask
+ UInt32 |
+
+# glStencilMaskSeparate
+ StencilFaceDirection | UInt32 |
+
+# glStencilOp
+ StencilOp | StencilOp | StencilOp |
+
+# glStencilOpSeparate
+ StencilFaceDirection | StencilOp | StencilOp | StencilOp |
+
+# glTexBuffer
+ TextureTarget | InternalFormat | UInt32 |
+
+# glTexBufferRange
+ TextureTarget | InternalFormat | UInt32 | IntPtr | IntPtr |
+
+# glTexCoordP1ui
+ TexCoordPointerType | UInt32 |
+
+# glTexCoordP1uiv
+ TexCoordPointerType | array of UInt32 |
+ TexCoordPointerType | var!UInt32 |
+ TexCoordPointerType | IntPtr |
+
+# glTexCoordP2ui
+ TexCoordPointerType | UInt32 |
+
+# glTexCoordP2uiv
+ TexCoordPointerType | array of UInt32 |
+ TexCoordPointerType | var!UInt32 |
+ TexCoordPointerType | IntPtr |
+
+# glTexCoordP3ui
+ TexCoordPointerType | UInt32 |
+
+# glTexCoordP3uiv
+ TexCoordPointerType | array of UInt32 |
+ TexCoordPointerType | var!UInt32 |
+ TexCoordPointerType | IntPtr |
+
+# glTexCoordP4ui
+ TexCoordPointerType | UInt32 |
+
+# glTexCoordP4uiv
+ TexCoordPointerType | array of UInt32 |
+ TexCoordPointerType | var!UInt32 |
+ TexCoordPointerType | IntPtr |
+
+# glTexImage1D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTexImage2D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTexImage2DMultisample
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | boolean |
+
+# glTexImage3D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTexImage3DMultisample
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | boolean |
+
+# glTexParameterf
+ TextureTarget | TextureParameterName | single |
+
+# glTexParameterfv
+ TextureTarget | TextureParameterName | array of single |
+ TextureTarget | TextureParameterName | var!single |
+ TextureTarget | TextureParameterName | IntPtr |
+
+# glTexParameteri
+ TextureTarget | TextureParameterName | Int32 |
+
+# glTexParameterIiv
+ TextureTarget | TextureParameterName | array of Int32 |
+ TextureTarget | TextureParameterName | var!Int32 |
+ TextureTarget | TextureParameterName | IntPtr |
+
+# glTexParameterIuiv
+ TextureTarget | TextureParameterName | array of UInt32 |
+ TextureTarget | TextureParameterName | var!UInt32 |
+ TextureTarget | TextureParameterName | IntPtr |
+
+# glTexParameteriv
+ TextureTarget | TextureParameterName | array of Int32 |
+ TextureTarget | TextureParameterName | var!Int32 |
+ TextureTarget | TextureParameterName | IntPtr |
+
+# glTexStorage1D
+ TextureTarget | Int32 | InternalFormat | Int32 |
+
+# glTexStorage2D
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 |
+
+# glTexStorage2DMultisample
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | boolean |
+
+# glTexStorage3D
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 |
+
+# glTexStorage3DMultisample
+ TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | boolean |
+
+# glTexSubImage1D
+ TextureTarget | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTexSubImage2D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTexSubImage3D
+ TextureTarget | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTextureBuffer
+ UInt32 | InternalFormat | UInt32 |
+
+# glTextureBufferRange
+ UInt32 | InternalFormat | UInt32 | IntPtr | IntPtr |
+
+# glTextureParameterf
+ UInt32 | TextureParameterName | single |
+
+# glTextureParameterfv
+ UInt32 | TextureParameterName | array of single |
+ UInt32 | TextureParameterName | var!single |
+ UInt32 | TextureParameterName | IntPtr |
+
+# glTextureParameteri
+ UInt32 | TextureParameterName | Int32 |
+
+# glTextureParameterIiv
+ UInt32 | TextureParameterName | array of Int32 |
+ UInt32 | TextureParameterName | var!Int32 |
+ UInt32 | TextureParameterName | IntPtr |
+
+# glTextureParameterIuiv
+ UInt32 | TextureParameterName | array of UInt32 |
+ UInt32 | TextureParameterName | var!UInt32 |
+ UInt32 | TextureParameterName | IntPtr |
+
+# glTextureParameteriv
+ UInt32 | TextureParameterName | array of Int32 |
+ UInt32 | TextureParameterName | var!Int32 |
+ UInt32 | TextureParameterName | IntPtr |
+
+# glTextureStorage1D
+ UInt32 | Int32 | InternalFormat | Int32 |
+
+# glTextureStorage2D
+ UInt32 | Int32 | InternalFormat | Int32 | Int32 |
+
+# glTextureStorage2DMultisample
+ UInt32 | Int32 | InternalFormat | Int32 | Int32 | boolean |
+
+# glTextureStorage3D
+ UInt32 | Int32 | InternalFormat | Int32 | Int32 | Int32 |
+
+# glTextureStorage3DMultisample
+ UInt32 | Int32 | InternalFormat | Int32 | Int32 | Int32 | boolean |
+
+# glTextureSubImage1D
+ UInt32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTextureSubImage2D
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTextureSubImage3D
+ UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glTextureView
+ UInt32 | TextureTarget | UInt32 | InternalFormat | UInt32 | UInt32 | UInt32 | UInt32 |
+
+# glTransformFeedbackBufferBase
+ UInt32 | UInt32 | UInt32 |
+
+# glTransformFeedbackBufferRange
+ UInt32 | UInt32 | UInt32 | IntPtr | IntPtr |
+
+# glTransformFeedbackVaryings
+ UInt32 | Int32 | array of string | TransformFeedbackBufferMode |
+ UInt32 | Int32 | array of IntPtr | TransformFeedbackBufferMode |
+ UInt32 | Int32 | IntPtr | TransformFeedbackBufferMode |
+
+# glUniform1d
+ Int32 | real |
+
+# glUniform1dv
+ Int32 | Int32 | array of real |
+ Int32 | Int32 | var!real |
+ Int32 | Int32 | IntPtr |
+
+# glUniform1f
+ Int32 | single |
+
+# glUniform1fv
+ Int32 | Int32 | array of single |
+ Int32 | Int32 | var!single |
+ Int32 | Int32 | IntPtr |
+
+# glUniform1i
+ Int32 | Int32 |
+
+# glUniform1iv
+ Int32 | Int32 | array of Int32 |
+ Int32 | Int32 | var!Int32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniform1ui
+ Int32 | UInt32 |
+
+# glUniform1uiv
+ Int32 | Int32 | array of UInt32 |
+ Int32 | Int32 | var!UInt32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniform2d
+ Int32 | real | real |
+
+# glUniform2dv
+ Int32 | Int32 | array of real |
+ Int32 | Int32 | var!real |
+ Int32 | Int32 | IntPtr |
+
+# glUniform2f
+ Int32 | single | single |
+
+# glUniform2fv
+ Int32 | Int32 | array of single |
+ Int32 | Int32 | var!single |
+ Int32 | Int32 | IntPtr |
+
+# glUniform2i
+ Int32 | Int32 | Int32 |
+
+# glUniform2iv
+ Int32 | Int32 | array of Int32 |
+ Int32 | Int32 | var!Int32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniform2ui
+ Int32 | UInt32 | UInt32 |
+
+# glUniform2uiv
+ Int32 | Int32 | array of UInt32 |
+ Int32 | Int32 | var!UInt32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniform3d
+ Int32 | real | real | real |
+
+# glUniform3dv
+ Int32 | Int32 | array of real |
+ Int32 | Int32 | var!real |
+ Int32 | Int32 | IntPtr |
+
+# glUniform3f
+ Int32 | single | single | single |
+
+# glUniform3fv
+ Int32 | Int32 | array of single |
+ Int32 | Int32 | var!single |
+ Int32 | Int32 | IntPtr |
+
+# glUniform3i
+ Int32 | Int32 | Int32 | Int32 |
+
+# glUniform3iv
+ Int32 | Int32 | array of Int32 |
+ Int32 | Int32 | var!Int32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniform3ui
+ Int32 | UInt32 | UInt32 | UInt32 |
+
+# glUniform3uiv
+ Int32 | Int32 | array of UInt32 |
+ Int32 | Int32 | var!UInt32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniform4d
+ Int32 | real | real | real | real |
+
+# glUniform4dv
+ Int32 | Int32 | array of real |
+ Int32 | Int32 | var!real |
+ Int32 | Int32 | IntPtr |
+
+# glUniform4f
+ Int32 | single | single | single | single |
+
+# glUniform4fv
+ Int32 | Int32 | array of single |
+ Int32 | Int32 | var!single |
+ Int32 | Int32 | IntPtr |
+
+# glUniform4i
+ Int32 | Int32 | Int32 | Int32 | Int32 |
+
+# glUniform4iv
+ Int32 | Int32 | array of Int32 |
+ Int32 | Int32 | var!Int32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniform4ui
+ Int32 | UInt32 | UInt32 | UInt32 | UInt32 |
+
+# glUniform4uiv
+ Int32 | Int32 | array of UInt32 |
+ Int32 | Int32 | var!UInt32 |
+ Int32 | Int32 | IntPtr |
+
+# glUniformBlockBinding
+ UInt32 | UInt32 | UInt32 |
+
+# glUniformMatrix2dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix2fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix2x3dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix2x3fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix2x4dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix2x4fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix3dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix3fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix3x2dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix3x2fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix3x4dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix3x4fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix4dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix4fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix4x2dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix4x2fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix4x3dv
+ Int32 | Int32 | boolean | array of real |
+ Int32 | Int32 | boolean | var!real |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformMatrix4x3fv
+ Int32 | Int32 | boolean | array of single |
+ Int32 | Int32 | boolean | var!single |
+ Int32 | Int32 | boolean | IntPtr |
+
+# glUniformSubroutinesuiv
+ ShaderType | Int32 | array of UInt32 |
+ ShaderType | Int32 | var!UInt32 |
+ ShaderType | Int32 | IntPtr |
+
+# glUnmapBuffer
+ boolean | BufferTargetARB |
+
+# glUnmapNamedBuffer
+ boolean | UInt32 |
+
+# glUseProgram
+ UInt32 |
+
+# glUseProgramStages
+ UInt32 | UseProgramStageMask | UInt32 |
+
+# glValidateProgram
+ UInt32 |
+
+# glValidateProgramPipeline
+ UInt32 |
+
+# glVertexArrayAttribBinding
+ UInt32 | UInt32 | UInt32 |
+
+# glVertexArrayAttribFormat
+ UInt32 | UInt32 | Int32 | VertexAttribType | boolean | UInt32 |
+
+# glVertexArrayAttribIFormat
+ UInt32 | UInt32 | Int32 | VertexAttribIType | UInt32 |
+
+# glVertexArrayAttribLFormat
+ UInt32 | UInt32 | Int32 | VertexAttribLType | UInt32 |
+
+# glVertexArrayBindingDivisor
+ UInt32 | UInt32 | UInt32 |
+
+# glVertexArrayElementBuffer
+ UInt32 | UInt32 |
+
+# glVertexArrayVertexBuffer
+ UInt32 | UInt32 | UInt32 | IntPtr | Int32 |
+
+# glVertexArrayVertexBuffers
+ UInt32 | UInt32 | Int32 | array of UInt32 | array of IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | array of IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | array of IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of UInt32 | var!IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | var!IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | var!IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of UInt32 | IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!UInt32 | array of IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | array of IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | array of IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!UInt32 | var!IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | var!IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | var!IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!UInt32 | IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | array of IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | array of IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | array of IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | var!IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | var!IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | var!IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
+
+# glVertexAttrib1d
+ UInt32 | real |
+
+# glVertexAttrib1dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttrib1f
+ UInt32 | single |
+
+# glVertexAttrib1fv
+ UInt32 | array of single |
+ UInt32 | var!single |
+ UInt32 | IntPtr |
+
+# glVertexAttrib1s
+ UInt32 | Int16 |
+
+# glVertexAttrib1sv
+ UInt32 | array of Int16 |
+ UInt32 | var!Int16 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib2d
+ UInt32 | real | real |
+
+# glVertexAttrib2dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttrib2f
+ UInt32 | single | single |
+
+# glVertexAttrib2fv
+ UInt32 | array of single |
+ UInt32 | var!single |
+ UInt32 | IntPtr |
+
+# glVertexAttrib2s
+ UInt32 | Int16 | Int16 |
+
+# glVertexAttrib2sv
+ UInt32 | array of Int16 |
+ UInt32 | var!Int16 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib3d
+ UInt32 | real | real | real |
+
+# glVertexAttrib3dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttrib3f
+ UInt32 | single | single | single |
+
+# glVertexAttrib3fv
+ UInt32 | array of single |
+ UInt32 | var!single |
+ UInt32 | IntPtr |
+
+# glVertexAttrib3s
+ UInt32 | Int16 | Int16 | Int16 |
+
+# glVertexAttrib3sv
+ UInt32 | array of Int16 |
+ UInt32 | var!Int16 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4bv
+ UInt32 | array of SByte |
+ UInt32 | var!SByte |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4d
+ UInt32 | real | real | real | real |
+
+# glVertexAttrib4dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4f
+ UInt32 | single | single | single | single |
+
+# glVertexAttrib4fv
+ UInt32 | array of single |
+ UInt32 | var!single |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4iv
+ UInt32 | array of Int32 |
+ UInt32 | var!Int32 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4Nbv
+ UInt32 | array of SByte |
+ UInt32 | var!SByte |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4Niv
+ UInt32 | array of Int32 |
+ UInt32 | var!Int32 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4Nsv
+ UInt32 | array of Int16 |
+ UInt32 | var!Int16 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4Nub
+ UInt32 | Byte | Byte | Byte | Byte |
+
+# glVertexAttrib4Nubv
+ UInt32 | array of Byte |
+ UInt32 | var!Byte |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4Nuiv
+ UInt32 | array of UInt32 |
+ UInt32 | var!UInt32 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4Nusv
+ UInt32 | array of UInt16 |
+ UInt32 | var!UInt16 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4s
+ UInt32 | Int16 | Int16 | Int16 | Int16 |
+
+# glVertexAttrib4sv
+ UInt32 | array of Int16 |
+ UInt32 | var!Int16 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4ubv
+ UInt32 | array of Byte |
+ UInt32 | var!Byte |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4uiv
+ UInt32 | array of UInt32 |
+ UInt32 | var!UInt32 |
+ UInt32 | IntPtr |
+
+# glVertexAttrib4usv
+ UInt32 | array of UInt16 |
+ UInt32 | var!UInt16 |
+ UInt32 | IntPtr |
+
+# glVertexAttribBinding
+ UInt32 | UInt32 |
+
+# glVertexAttribDivisor
+ UInt32 | UInt32 |
+
+# glVertexAttribFormat
+ UInt32 | Int32 | VertexAttribType | boolean | UInt32 |
+
+# glVertexAttribI1i
+ UInt32 | Int32 |
+
+# glVertexAttribI1iv
+ UInt32 | array of Int32 |
+ UInt32 | var!Int32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI1ui
+ UInt32 | UInt32 |
+
+# glVertexAttribI1uiv
+ UInt32 | array of UInt32 |
+ UInt32 | var!UInt32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI2i
+ UInt32 | Int32 | Int32 |
+
+# glVertexAttribI2iv
+ UInt32 | array of Int32 |
+ UInt32 | var!Int32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI2ui
+ UInt32 | UInt32 | UInt32 |
+
+# glVertexAttribI2uiv
+ UInt32 | array of UInt32 |
+ UInt32 | var!UInt32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI3i
+ UInt32 | Int32 | Int32 | Int32 |
+
+# glVertexAttribI3iv
+ UInt32 | array of Int32 |
+ UInt32 | var!Int32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI3ui
+ UInt32 | UInt32 | UInt32 | UInt32 |
+
+# glVertexAttribI3uiv
+ UInt32 | array of UInt32 |
+ UInt32 | var!UInt32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI4bv
+ UInt32 | array of SByte |
+ UInt32 | var!SByte |
+ UInt32 | IntPtr |
+
+# glVertexAttribI4i
+ UInt32 | Int32 | Int32 | Int32 | Int32 |
+
+# glVertexAttribI4iv
+ UInt32 | array of Int32 |
+ UInt32 | var!Int32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI4sv
+ UInt32 | array of Int16 |
+ UInt32 | var!Int16 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI4ubv
+ UInt32 | array of Byte |
+ UInt32 | var!Byte |
+ UInt32 | IntPtr |
+
+# glVertexAttribI4ui
+ UInt32 | UInt32 | UInt32 | UInt32 | UInt32 |
+
+# glVertexAttribI4uiv
+ UInt32 | array of UInt32 |
+ UInt32 | var!UInt32 |
+ UInt32 | IntPtr |
+
+# glVertexAttribI4usv
+ UInt32 | array of UInt16 |
+ UInt32 | var!UInt16 |
+ UInt32 | IntPtr |
+
+# glVertexAttribIFormat
+ UInt32 | Int32 | VertexAttribIType | UInt32 |
+
+# glVertexAttribIPointer
+ UInt32 | Int32 | VertexAttribPointerType | Int32 | IntPtr |
+
+# glVertexAttribL1d
+ UInt32 | real |
+
+# glVertexAttribL1dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttribL2d
+ UInt32 | real | real |
+
+# glVertexAttribL2dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttribL3d
+ UInt32 | real | real | real |
+
+# glVertexAttribL3dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttribL4d
+ UInt32 | real | real | real | real |
+
+# glVertexAttribL4dv
+ UInt32 | array of real |
+ UInt32 | var!real |
+ UInt32 | IntPtr |
+
+# glVertexAttribLFormat
+ UInt32 | Int32 | VertexAttribLType | UInt32 |
+
+# glVertexAttribLPointer
+ UInt32 | Int32 | VertexAttribPointerType | Int32 | IntPtr |
+
+# glVertexAttribP1ui
+ UInt32 | VertexAttribPointerType | boolean | UInt32 |
+
+# glVertexAttribP1uiv
+ UInt32 | VertexAttribPointerType | boolean | array of UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | var!UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | IntPtr |
+
+# glVertexAttribP2ui
+ UInt32 | VertexAttribPointerType | boolean | UInt32 |
+
+# glVertexAttribP2uiv
+ UInt32 | VertexAttribPointerType | boolean | array of UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | var!UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | IntPtr |
+
+# glVertexAttribP3ui
+ UInt32 | VertexAttribPointerType | boolean | UInt32 |
+
+# glVertexAttribP3uiv
+ UInt32 | VertexAttribPointerType | boolean | array of UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | var!UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | IntPtr |
+
+# glVertexAttribP4ui
+ UInt32 | VertexAttribPointerType | boolean | UInt32 |
+
+# glVertexAttribP4uiv
+ UInt32 | VertexAttribPointerType | boolean | array of UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | var!UInt32 |
+ UInt32 | VertexAttribPointerType | boolean | IntPtr |
+
+# glVertexAttribPointer
+ UInt32 | Int32 | VertexAttribPointerType | boolean | Int32 | IntPtr |
+
+# glVertexBindingDivisor
+ UInt32 | UInt32 |
+
+# glVertexP2ui
+ VertexPointerType | UInt32 |
+
+# glVertexP2uiv
+ VertexPointerType | array of UInt32 |
+ VertexPointerType | var!UInt32 |
+ VertexPointerType | IntPtr |
+
+# glVertexP3ui
+ VertexPointerType | UInt32 |
+
+# glVertexP3uiv
+ VertexPointerType | array of UInt32 |
+ VertexPointerType | var!UInt32 |
+ VertexPointerType | IntPtr |
+
+# glVertexP4ui
+ VertexPointerType | UInt32 |
+
+# glVertexP4uiv
+ VertexPointerType | array of UInt32 |
+ VertexPointerType | var!UInt32 |
+ VertexPointerType | IntPtr |
+
+# glViewport
+ Int32 | Int32 | Int32 | Int32 |
+
+# glViewportArrayv
+ UInt32 | Int32 | array of single |
+ UInt32 | Int32 | var!single |
+ UInt32 | Int32 | IntPtr |
+
+# glViewportIndexedf
+ UInt32 | single | single | single | single |
+
+# glViewportIndexedfv
+ UInt32 | array of single |
+ UInt32 | var!single |
+ UInt32 | IntPtr |
+
+# glWaitSync
+ GLsync | DummyFlags | UInt64 |
+
+# glAccum
+ AccumOp | single |
+
+# glAlphaFunc
+ AlphaFunction | single |
+
+# glAreTexturesResident
+ boolean | Int32 | array of UInt32 | array of boolean |
+ boolean | Int32 | array of UInt32 | var!boolean |
+ boolean | Int32 | array of UInt32 | IntPtr |
+ boolean | Int32 | var!UInt32 | array of boolean |
+ boolean | Int32 | var!UInt32 | var!boolean |
+ boolean | Int32 | var!UInt32 | IntPtr |
+ boolean | Int32 | IntPtr | array of boolean |
+ boolean | Int32 | IntPtr | var!boolean |
+ boolean | Int32 | IntPtr | IntPtr |
+
+# glArrayElement
+ Int32 |
+
+# glBegin
+ PrimitiveType |
+
+# glBitmap
+ Int32 | Int32 | single | single | single | single | array of Byte |
+ Int32 | Int32 | single | single | single | single | var!Byte |
+ Int32 | Int32 | single | single | single | single | IntPtr |
+
+# glCallList
+ UInt32 |
+
+# glCallLists
+ Int32 | ListNameType | IntPtr |
+
+# glClearAccum
+ single | single | single | single |
+
+# glClearIndex
+ single |
+
+# glClientActiveTexture
+ TextureUnit |
+
+# glClipPlane
+ ClipPlaneName | array of real |
+ ClipPlaneName | var!real |
+ ClipPlaneName | IntPtr |
+
+# glColor3b
+ SByte | SByte | SByte |
+
+# glColor3bv
+ array of SByte |
+ var!SByte |
+ IntPtr |
+
+# glColor3d
+ real | real | real |
+
+# glColor3dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glColor3f
+ single | single | single |
+
+# glColor3fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glColor3i
+ Int32 | Int32 | Int32 |
+
+# glColor3iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glColor3s
+ Int16 | Int16 | Int16 |
+
+# glColor3sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glColor3ub
+ Byte | Byte | Byte |
+
+# glColor3ubv
+ array of Byte |
+ var!Byte |
+ IntPtr |
+
+# glColor3ui
+ UInt32 | UInt32 | UInt32 |
+
+# glColor3uiv
+ array of UInt32 |
+ var!UInt32 |
+ IntPtr |
+
+# glColor3us
+ UInt16 | UInt16 | UInt16 |
+
+# glColor3usv
+ array of UInt16 |
+ var!UInt16 |
+ IntPtr |
+
+# glColor4b
+ SByte | SByte | SByte | SByte |
+
+# glColor4bv
+ array of SByte |
+ var!SByte |
+ IntPtr |
+
+# glColor4d
+ real | real | real | real |
+
+# glColor4dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glColor4f
+ single | single | single | single |
+
+# glColor4fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glColor4i
+ Int32 | Int32 | Int32 | Int32 |
+
+# glColor4iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glColor4s
+ Int16 | Int16 | Int16 | Int16 |
+
+# glColor4sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glColor4ub
+ Byte | Byte | Byte | Byte |
+
+# glColor4ubv
+ array of Byte |
+ var!Byte |
+ IntPtr |
+
+# glColor4ui
+ UInt32 | UInt32 | UInt32 | UInt32 |
+
+# glColor4uiv
+ array of UInt32 |
+ var!UInt32 |
+ IntPtr |
+
+# glColor4us
+ UInt16 | UInt16 | UInt16 | UInt16 |
+
+# glColor4usv
+ array of UInt16 |
+ var!UInt16 |
+ IntPtr |
+
+# glColorMaterial
+ DummyEnum | ColorMaterialParameter |
+
+# glColorPointer
+ Int32 | ColorPointerType | Int32 | IntPtr |
+
+# glCopyPixels
+ Int32 | Int32 | Int32 | Int32 | PixelCopyType |
+
+# glDeleteLists
+ UInt32 | Int32 |
+
+# glDisableClientState
+ EnableCap |
+
+# glDrawPixels
+ Int32 | Int32 | PixelFormat | PixelType | IntPtr |
+
+# glEdgeFlag
+ boolean |
+
+# glEdgeFlagPointer
+ Int32 | IntPtr |
+
+# glEdgeFlagv
+ array of boolean |
+ var!boolean |
+ IntPtr |
+
+# glEnableClientState
+ EnableCap |
+
+# glEvalCoord1d
+ real |
+
+# glEvalCoord1dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glEvalCoord1f
+ single |
+
+# glEvalCoord1fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glEvalCoord2d
+ real | real |
+
+# glEvalCoord2dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glEvalCoord2f
+ single | single |
+
+# glEvalCoord2fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glEvalMesh1
+ MeshMode1 | Int32 | Int32 |
+
+# glEvalMesh2
+ MeshMode2 | Int32 | Int32 | Int32 | Int32 |
+
+# glEvalPoint1
+ Int32 |
+
+# glEvalPoint2
+ Int32 | Int32 |
+
+# glFeedbackBuffer
+ Int32 | FeedbackType | array of single |
+ Int32 | FeedbackType | var!single |
+ Int32 | FeedbackType | IntPtr |
+
+# glFogCoordd
+ real |
+
+# glFogCoorddv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glFogCoordf
+ single |
+
+# glFogCoordfv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glFogCoordPointer
+ FogPointerTypeEXT | Int32 | IntPtr |
+
+# glFogf
+ FogParameter | single |
+
+# glFogfv
+ FogParameter | array of single |
+ FogParameter | var!single |
+ FogParameter | IntPtr |
+
+# glFogi
+ FogParameter | Int32 |
+
+# glFogiv
+ FogParameter | array of Int32 |
+ FogParameter | var!Int32 |
+ FogParameter | IntPtr |
+
+# glFrustum
+ real | real | real | real | real | real |
+
+# glGenLists
+ UInt32 | Int32 |
+
+# glGetClipPlane
+ ClipPlaneName | array of real |
+ ClipPlaneName | var!real |
+ ClipPlaneName | IntPtr |
+
+# glGetLightfv
+ LightName | LightParameter | array of single |
+ LightName | LightParameter | var!single |
+ LightName | LightParameter | IntPtr |
+
+# glGetLightiv
+ LightName | LightParameter | array of Int32 |
+ LightName | LightParameter | var!Int32 |
+ LightName | LightParameter | IntPtr |
+
+# glGetMapdv
+ MapTarget | GetMapQuery | array of real |
+ MapTarget | GetMapQuery | var!real |
+ MapTarget | GetMapQuery | IntPtr |
+
+# glGetMapfv
+ MapTarget | GetMapQuery | array of single |
+ MapTarget | GetMapQuery | var!single |
+ MapTarget | GetMapQuery | IntPtr |
+
+# glGetMapiv
+ MapTarget | GetMapQuery | array of Int32 |
+ MapTarget | GetMapQuery | var!Int32 |
+ MapTarget | GetMapQuery | IntPtr |
+
+# glGetMaterialfv
+ DummyEnum | MaterialParameter | array of single |
+ DummyEnum | MaterialParameter | var!single |
+ DummyEnum | MaterialParameter | IntPtr |
+
+# glGetMaterialiv
+ DummyEnum | MaterialParameter | array of Int32 |
+ DummyEnum | MaterialParameter | var!Int32 |
+ DummyEnum | MaterialParameter | IntPtr |
+
+# glGetPixelMapfv
+ PixelMap | array of single |
+ PixelMap | var!single |
+ PixelMap | IntPtr |
+
+# glGetPixelMapuiv
+ PixelMap | array of UInt32 |
+ PixelMap | var!UInt32 |
+ PixelMap | IntPtr |
+
+# glGetPixelMapusv
+ PixelMap | array of UInt16 |
+ PixelMap | var!UInt16 |
+ PixelMap | IntPtr |
+
+# glGetPolygonStipple
+ array of Byte |
+ var!Byte |
+ IntPtr |
+
+# glGetTexEnvfv
+ TextureEnvTarget | TextureEnvParameter | array of single |
+ TextureEnvTarget | TextureEnvParameter | var!single |
+ TextureEnvTarget | TextureEnvParameter | IntPtr |
+
+# glGetTexEnviv
+ TextureEnvTarget | TextureEnvParameter | array of Int32 |
+ TextureEnvTarget | TextureEnvParameter | var!Int32 |
+ TextureEnvTarget | TextureEnvParameter | IntPtr |
+
+# glGetTexGendv
+ TextureCoordName | TextureGenParameter | array of real |
+ TextureCoordName | TextureGenParameter | var!real |
+ TextureCoordName | TextureGenParameter | IntPtr |
+
+# glGetTexGenfv
+ TextureCoordName | TextureGenParameter | array of single |
+ TextureCoordName | TextureGenParameter | var!single |
+ TextureCoordName | TextureGenParameter | IntPtr |
+
+# glGetTexGeniv
+ TextureCoordName | TextureGenParameter | array of Int32 |
+ TextureCoordName | TextureGenParameter | var!Int32 |
+ TextureCoordName | TextureGenParameter | IntPtr |
+
+# glIndexd
+ real |
+
+# glIndexdv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glIndexf
+ single |
+
+# glIndexfv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glIndexi
+ Int32 |
+
+# glIndexiv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glIndexMask
+ UInt32 |
+
+# glIndexPointer
+ IndexPointerType | Int32 | IntPtr |
+
+# glIndexs
+ Int16 |
+
+# glIndexsv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glIndexub
+ Byte |
+
+# glIndexubv
+ array of Byte |
+ var!Byte |
+ IntPtr |
+
+# glInterleavedArrays
+ InterleavedArrayFormat | Int32 | IntPtr |
+
+# glIsList
+ boolean | UInt32 |
+
+# glLightf
+ LightName | LightParameter | single |
+
+# glLightfv
+ LightName | LightParameter | array of single |
+ LightName | LightParameter | var!single |
+ LightName | LightParameter | IntPtr |
+
+# glLighti
+ LightName | LightParameter | Int32 |
+
+# glLightiv
+ LightName | LightParameter | array of Int32 |
+ LightName | LightParameter | var!Int32 |
+ LightName | LightParameter | IntPtr |
+
+# glLightModelf
+ LightModelParameter | single |
+
+# glLightModelfv
+ LightModelParameter | array of single |
+ LightModelParameter | var!single |
+ LightModelParameter | IntPtr |
+
+# glLightModeli
+ LightModelParameter | Int32 |
+
+# glLightModeliv
+ LightModelParameter | array of Int32 |
+ LightModelParameter | var!Int32 |
+ LightModelParameter | IntPtr |
+
+# glLineStipple
+ Int32 | UInt16 |
+
+# glListBase
+ UInt32 |
+
+# glLoadMatrixd
+ array of real |
+ var!real |
+ IntPtr |
+
+# glLoadMatrixf
+ array of single |
+ var!single |
+ IntPtr |
+
+# glLoadName
+ UInt32 |
+
+# glLoadTransposeMatrixd
+ array of real |
+ var!real |
+ IntPtr |
+
+# glLoadTransposeMatrixf
+ array of single |
+ var!single |
+ IntPtr |
+
+# glMap1d
+ MapTarget | real | real | Int32 | Int32 | array of real |
+ MapTarget | real | real | Int32 | Int32 | var!real |
+ MapTarget | real | real | Int32 | Int32 | IntPtr |
+
+# glMap1f
+ MapTarget | single | single | Int32 | Int32 | array of single |
+ MapTarget | single | single | Int32 | Int32 | var!single |
+ MapTarget | single | single | Int32 | Int32 | IntPtr |
+
+# glMap2d
+ MapTarget | real | real | Int32 | Int32 | real | real | Int32 | Int32 | array of real |
+ MapTarget | real | real | Int32 | Int32 | real | real | Int32 | Int32 | var!real |
+ MapTarget | real | real | Int32 | Int32 | real | real | Int32 | Int32 | IntPtr |
+
+# glMap2f
+ MapTarget | single | single | Int32 | Int32 | single | single | Int32 | Int32 | array of single |
+ MapTarget | single | single | Int32 | Int32 | single | single | Int32 | Int32 | var!single |
+ MapTarget | single | single | Int32 | Int32 | single | single | Int32 | Int32 | IntPtr |
+
+# glMapGrid1d
+ Int32 | real | real |
+
+# glMapGrid1f
+ Int32 | single | single |
+
+# glMapGrid2d
+ Int32 | real | real | Int32 | real | real |
+
+# glMapGrid2f
+ Int32 | single | single | Int32 | single | single |
+
+# glMaterialf
+ DummyEnum | MaterialParameter | single |
+
+# glMaterialfv
+ DummyEnum | MaterialParameter | array of single |
+ DummyEnum | MaterialParameter | var!single |
+ DummyEnum | MaterialParameter | IntPtr |
+
+# glMateriali
+ DummyEnum | MaterialParameter | Int32 |
+
+# glMaterialiv
+ DummyEnum | MaterialParameter | array of Int32 |
+ DummyEnum | MaterialParameter | var!Int32 |
+ DummyEnum | MaterialParameter | IntPtr |
+
+# glMatrixMode
+ MatrixMode |
+
+# glMultiTexCoord1d
+ TextureUnit | real |
+
+# glMultiTexCoord1dv
+ TextureUnit | array of real |
+ TextureUnit | var!real |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord1f
+ TextureUnit | single |
+
+# glMultiTexCoord1fv
+ TextureUnit | array of single |
+ TextureUnit | var!single |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord1i
+ TextureUnit | Int32 |
+
+# glMultiTexCoord1iv
+ TextureUnit | array of Int32 |
+ TextureUnit | var!Int32 |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord1s
+ TextureUnit | Int16 |
+
+# glMultiTexCoord1sv
+ TextureUnit | array of Int16 |
+ TextureUnit | var!Int16 |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord2d
+ TextureUnit | real | real |
+
+# glMultiTexCoord2dv
+ TextureUnit | array of real |
+ TextureUnit | var!real |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord2f
+ TextureUnit | single | single |
+
+# glMultiTexCoord2fv
+ TextureUnit | array of single |
+ TextureUnit | var!single |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord2i
+ TextureUnit | Int32 | Int32 |
+
+# glMultiTexCoord2iv
+ TextureUnit | array of Int32 |
+ TextureUnit | var!Int32 |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord2s
+ TextureUnit | Int16 | Int16 |
+
+# glMultiTexCoord2sv
+ TextureUnit | array of Int16 |
+ TextureUnit | var!Int16 |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord3d
+ TextureUnit | real | real | real |
+
+# glMultiTexCoord3dv
+ TextureUnit | array of real |
+ TextureUnit | var!real |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord3f
+ TextureUnit | single | single | single |
+
+# glMultiTexCoord3fv
+ TextureUnit | array of single |
+ TextureUnit | var!single |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord3i
+ TextureUnit | Int32 | Int32 | Int32 |
+
+# glMultiTexCoord3iv
+ TextureUnit | array of Int32 |
+ TextureUnit | var!Int32 |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord3s
+ TextureUnit | Int16 | Int16 | Int16 |
+
+# glMultiTexCoord3sv
+ TextureUnit | array of Int16 |
+ TextureUnit | var!Int16 |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord4d
+ TextureUnit | real | real | real | real |
+
+# glMultiTexCoord4dv
+ TextureUnit | array of real |
+ TextureUnit | var!real |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord4f
+ TextureUnit | single | single | single | single |
+
+# glMultiTexCoord4fv
+ TextureUnit | array of single |
+ TextureUnit | var!single |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord4i
+ TextureUnit | Int32 | Int32 | Int32 | Int32 |
+
+# glMultiTexCoord4iv
+ TextureUnit | array of Int32 |
+ TextureUnit | var!Int32 |
+ TextureUnit | IntPtr |
+
+# glMultiTexCoord4s
+ TextureUnit | Int16 | Int16 | Int16 | Int16 |
+
+# glMultiTexCoord4sv
+ TextureUnit | array of Int16 |
+ TextureUnit | var!Int16 |
+ TextureUnit | IntPtr |
+
+# glMultMatrixd
+ array of real |
+ var!real |
+ IntPtr |
+
+# glMultMatrixf
+ array of single |
+ var!single |
+ IntPtr |
+
+# glMultTransposeMatrixd
+ array of real |
+ var!real |
+ IntPtr |
+
+# glMultTransposeMatrixf
+ array of single |
+ var!single |
+ IntPtr |
+
+# glNewList
+ UInt32 | ListMode |
+
+# glNormal3b
+ SByte | SByte | SByte |
+
+# glNormal3bv
+ array of SByte |
+ var!SByte |
+ IntPtr |
+
+# glNormal3d
+ real | real | real |
+
+# glNormal3dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glNormal3f
+ single | single | single |
+
+# glNormal3fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glNormal3i
+ Int32 | Int32 | Int32 |
+
+# glNormal3iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glNormal3s
+ Int16 | Int16 | Int16 |
+
+# glNormal3sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glNormalPointer
+ NormalPointerType | Int32 | IntPtr |
+
+# glOrtho
+ real | real | real | real | real | real |
+
+# glPassThrough
+ single |
+
+# glPixelMapfv
+ PixelMap | Int32 | array of single |
+ PixelMap | Int32 | var!single |
+ PixelMap | Int32 | IntPtr |
+
+# glPixelMapuiv
+ PixelMap | Int32 | array of UInt32 |
+ PixelMap | Int32 | var!UInt32 |
+ PixelMap | Int32 | IntPtr |
+
+# glPixelMapusv
+ PixelMap | Int32 | array of UInt16 |
+ PixelMap | Int32 | var!UInt16 |
+ PixelMap | Int32 | IntPtr |
+
+# glPixelTransferf
+ PixelTransferParameter | single |
+
+# glPixelTransferi
+ PixelTransferParameter | Int32 |
+
+# glPixelZoom
+ single | single |
+
+# glPolygonStipple
+ array of Byte |
+ var!Byte |
+ IntPtr |
+
+# glPrioritizeTextures
+ Int32 | array of UInt32 | array of single |
+ Int32 | array of UInt32 | var!single |
+ Int32 | array of UInt32 | IntPtr |
+ Int32 | var!UInt32 | array of single |
+ Int32 | var!UInt32 | var!single |
+ Int32 | var!UInt32 | IntPtr |
+ Int32 | IntPtr | array of single |
+ Int32 | IntPtr | var!single |
+ Int32 | IntPtr | IntPtr |
+
+# glPushAttrib
+ AttribMask |
+
+# glPushClientAttrib
+ ClientAttribMask |
+
+# glPushName
+ UInt32 |
+
+# glRasterPos2d
+ real | real |
+
+# glRasterPos2dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glRasterPos2f
+ single | single |
+
+# glRasterPos2fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glRasterPos2i
+ Int32 | Int32 |
+
+# glRasterPos2iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glRasterPos2s
+ Int16 | Int16 |
+
+# glRasterPos2sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glRasterPos3d
+ real | real | real |
+
+# glRasterPos3dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glRasterPos3f
+ single | single | single |
+
+# glRasterPos3fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glRasterPos3i
+ Int32 | Int32 | Int32 |
+
+# glRasterPos3iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glRasterPos3s
+ Int16 | Int16 | Int16 |
+
+# glRasterPos3sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glRasterPos4d
+ real | real | real | real |
+
+# glRasterPos4dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glRasterPos4f
+ single | single | single | single |
+
+# glRasterPos4fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glRasterPos4i
+ Int32 | Int32 | Int32 | Int32 |
+
+# glRasterPos4iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glRasterPos4s
+ Int16 | Int16 | Int16 | Int16 |
+
+# glRasterPos4sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glRectd
+ real | real | real | real |
+
+# glRectdv
+ array of real | array of real |
+ array of real | var!real |
+ array of real | IntPtr |
+ var!real | array of real |
+ var!real | var!real |
+ var!real | IntPtr |
+ IntPtr | array of real |
+ IntPtr | var!real |
+ IntPtr | IntPtr |
+
+# glRectf
+ single | single | single | single |
+
+# glRectfv
+ array of single | array of single |
+ array of single | var!single |
+ array of single | IntPtr |
+ var!single | array of single |
+ var!single | var!single |
+ var!single | IntPtr |
+ IntPtr | array of single |
+ IntPtr | var!single |
+ IntPtr | IntPtr |
+
+# glRecti
+ Int32 | Int32 | Int32 | Int32 |
+
+# glRectiv
+ array of Int32 | array of Int32 |
+ array of Int32 | var!Int32 |
+ array of Int32 | IntPtr |
+ var!Int32 | array of Int32 |
+ var!Int32 | var!Int32 |
+ var!Int32 | IntPtr |
+ IntPtr | array of Int32 |
+ IntPtr | var!Int32 |
+ IntPtr | IntPtr |
+
+# glRects
+ Int16 | Int16 | Int16 | Int16 |
+
+# glRectsv
+ array of Int16 | array of Int16 |
+ array of Int16 | var!Int16 |
+ array of Int16 | IntPtr |
+ var!Int16 | array of Int16 |
+ var!Int16 | var!Int16 |
+ var!Int16 | IntPtr |
+ IntPtr | array of Int16 |
+ IntPtr | var!Int16 |
+ IntPtr | IntPtr |
+
+# glRenderMode
+ Int32 | RenderingMode |
+
+# glRotated
+ real | real | real | real |
+
+# glRotatef
+ single | single | single | single |
+
+# glScaled
+ real | real | real |
+
+# glScalef
+ single | single | single |
+
+# glSecondaryColor3b
+ SByte | SByte | SByte |
+
+# glSecondaryColor3bv
+ array of SByte |
+ var!SByte |
+ IntPtr |
+
+# glSecondaryColor3d
+ real | real | real |
+
+# glSecondaryColor3dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glSecondaryColor3f
+ single | single | single |
+
+# glSecondaryColor3fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glSecondaryColor3i
+ Int32 | Int32 | Int32 |
+
+# glSecondaryColor3iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glSecondaryColor3s
+ Int16 | Int16 | Int16 |
+
+# glSecondaryColor3sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glSecondaryColor3ub
+ Byte | Byte | Byte |
+
+# glSecondaryColor3ubv
+ array of Byte |
+ var!Byte |
+ IntPtr |
+
+# glSecondaryColor3ui
+ UInt32 | UInt32 | UInt32 |
+
+# glSecondaryColor3uiv
+ array of UInt32 |
+ var!UInt32 |
+ IntPtr |
+
+# glSecondaryColor3us
+ UInt16 | UInt16 | UInt16 |
+
+# glSecondaryColor3usv
+ array of UInt16 |
+ var!UInt16 |
+ IntPtr |
+
+# glSecondaryColorPointer
+ Int32 | ColorPointerType | Int32 | IntPtr |
+
+# glSelectBuffer
+ Int32 | array of UInt32 |
+ Int32 | var!UInt32 |
+ Int32 | IntPtr |
+
+# glShadeModel
+ ShadingModel |
+
+# glTexCoord1d
+ real |
+
+# glTexCoord1dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glTexCoord1f
+ single |
+
+# glTexCoord1fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glTexCoord1i
+ Int32 |
+
+# glTexCoord1iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glTexCoord1s
+ Int16 |
+
+# glTexCoord1sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glTexCoord2d
+ real | real |
+
+# glTexCoord2dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glTexCoord2f
+ single | single |
+
+# glTexCoord2fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glTexCoord2i
+ Int32 | Int32 |
+
+# glTexCoord2iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glTexCoord2s
+ Int16 | Int16 |
+
+# glTexCoord2sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glTexCoord3d
+ real | real | real |
+
+# glTexCoord3dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glTexCoord3f
+ single | single | single |
+
+# glTexCoord3fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glTexCoord3i
+ Int32 | Int32 | Int32 |
+
+# glTexCoord3iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glTexCoord3s
+ Int16 | Int16 | Int16 |
+
+# glTexCoord3sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glTexCoord4d
+ real | real | real | real |
+
+# glTexCoord4dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glTexCoord4f
+ single | single | single | single |
+
+# glTexCoord4fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glTexCoord4i
+ Int32 | Int32 | Int32 | Int32 |
+
+# glTexCoord4iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glTexCoord4s
+ Int16 | Int16 | Int16 | Int16 |
+
+# glTexCoord4sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glTexCoordPointer
+ Int32 | TexCoordPointerType | Int32 | IntPtr |
+
+# glTexEnvf
+ TextureEnvTarget | TextureEnvParameter | single |
+
+# glTexEnvfv
+ TextureEnvTarget | TextureEnvParameter | array of single |
+ TextureEnvTarget | TextureEnvParameter | var!single |
+ TextureEnvTarget | TextureEnvParameter | IntPtr |
+
+# glTexEnvi
+ TextureEnvTarget | TextureEnvParameter | Int32 |
+
+# glTexEnviv
+ TextureEnvTarget | TextureEnvParameter | array of Int32 |
+ TextureEnvTarget | TextureEnvParameter | var!Int32 |
+ TextureEnvTarget | TextureEnvParameter | IntPtr |
+
+# glTexGend
+ TextureCoordName | TextureGenParameter | real |
+
+# glTexGendv
+ TextureCoordName | TextureGenParameter | array of real |
+ TextureCoordName | TextureGenParameter | var!real |
+ TextureCoordName | TextureGenParameter | IntPtr |
+
+# glTexGenf
+ TextureCoordName | TextureGenParameter | single |
+
+# glTexGenfv
+ TextureCoordName | TextureGenParameter | array of single |
+ TextureCoordName | TextureGenParameter | var!single |
+ TextureCoordName | TextureGenParameter | IntPtr |
+
+# glTexGeni
+ TextureCoordName | TextureGenParameter | Int32 |
+
+# glTexGeniv
+ TextureCoordName | TextureGenParameter | array of Int32 |
+ TextureCoordName | TextureGenParameter | var!Int32 |
+ TextureCoordName | TextureGenParameter | IntPtr |
+
+# glTranslated
+ real | real | real |
+
+# glTranslatef
+ single | single | single |
+
+# glVertex2d
+ real | real |
+
+# glVertex2dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glVertex2f
+ single | single |
+
+# glVertex2fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glVertex2i
+ Int32 | Int32 |
+
+# glVertex2iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glVertex2s
+ Int16 | Int16 |
+
+# glVertex2sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glVertex3d
+ real | real | real |
+
+# glVertex3dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glVertex3f
+ single | single | single |
+
+# glVertex3fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glVertex3i
+ Int32 | Int32 | Int32 |
+
+# glVertex3iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glVertex3s
+ Int16 | Int16 | Int16 |
+
+# glVertex3sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glVertex4d
+ real | real | real | real |
+
+# glVertex4dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glVertex4f
+ single | single | single | single |
+
+# glVertex4fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glVertex4i
+ Int32 | Int32 | Int32 | Int32 |
+
+# glVertex4iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glVertex4s
+ Int16 | Int16 | Int16 | Int16 |
+
+# glVertex4sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glVertexPointer
+ Int32 | VertexPointerType | Int32 | IntPtr |
+
+# glWindowPos2d
+ real | real |
+
+# glWindowPos2dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glWindowPos2f
+ single | single |
+
+# glWindowPos2fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glWindowPos2i
+ Int32 | Int32 |
+
+# glWindowPos2iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glWindowPos2s
+ Int16 | Int16 |
+
+# glWindowPos2sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# glWindowPos3d
+ real | real | real |
+
+# glWindowPos3dv
+ array of real |
+ var!real |
+ IntPtr |
+
+# glWindowPos3f
+ single | single | single |
+
+# glWindowPos3fv
+ array of single |
+ var!single |
+ IntPtr |
+
+# glWindowPos3i
+ Int32 | Int32 | Int32 |
+
+# glWindowPos3iv
+ array of Int32 |
+ var!Int32 |
+ IntPtr |
+
+# glWindowPos3s
+ Int16 | Int16 | Int16 |
+
+# glWindowPos3sv
+ array of Int16 |
+ var!Int16 |
+ IntPtr |
+
+# ChoosePixelFormat
+ Int32 | GDI_DC | array of GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | var!GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | IntPtr |
+
+# DescribePixelFormat
+ Int32 | GDI_DC | Int32 | UInt32 | array of GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | Int32 | UInt32 | var!GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | Int32 | UInt32 | IntPtr |
+
+# GetEnhMetaFilePixelFormat
+ UInt32 | GDI_HENHMetafile | array of GDI_PixelFormatDescriptor |
+ UInt32 | GDI_HENHMetafile | var!GDI_PixelFormatDescriptor |
+ UInt32 | GDI_HENHMetafile | IntPtr |
+
+# GetPixelFormat
+ Int32 | GDI_DC |
+
+# SetPixelFormat
+ UInt32 | GDI_DC | Int32 | array of GDI_PixelFormatDescriptor |
+ UInt32 | GDI_DC | Int32 | var!GDI_PixelFormatDescriptor |
+ UInt32 | GDI_DC | Int32 | IntPtr |
+
+# SwapBuffers
+ UInt32 | GDI_DC |
+
+# wglCopyContext
+ UInt32 | GLContext | GLContext | UInt32 |
+
+# wglCreateContext
+ GLContext | GDI_DC |
+
+# wglCreateLayerContext
+ GLContext | GDI_DC | Int32 |
+
+# wglDeleteContext
+ UInt32 | GLContext |
+
+# wglDescribeLayerPlane
+ UInt32 | GDI_DC | Int32 | Int32 | UInt32 | array of GDI_LayerPlaneDescriptor |
+ UInt32 | GDI_DC | Int32 | Int32 | UInt32 | var!GDI_LayerPlaneDescriptor |
+ UInt32 | GDI_DC | Int32 | Int32 | UInt32 | IntPtr |
+
+# wglGetCurrentContext
+ GLContext |
+
+# wglGetCurrentDC
+ GDI_DC |
+
+# wglGetLayerPaletteEntries
+ Int32 | GDI_DC | Int32 | Int32 | Int32 | array of GDI_COLORREF |
+ Int32 | GDI_DC | Int32 | Int32 | Int32 | var!GDI_COLORREF |
+ Int32 | GDI_DC | Int32 | Int32 | Int32 | IntPtr |
+
+# wglGetProcAddress
+ IntPtr | string |
+ IntPtr | IntPtr |
+
+# wglMakeCurrent
+ UInt32 | GDI_DC | GLContext |
+
+# wglRealizeLayerPalette
+ UInt32 | GDI_DC | Int32 | UInt32 |
+
+# wglSetLayerPaletteEntries
+ Int32 | GDI_DC | Int32 | Int32 | Int32 | array of GDI_COLORREF |
+ Int32 | GDI_DC | Int32 | Int32 | Int32 | var!GDI_COLORREF |
+ Int32 | GDI_DC | Int32 | Int32 | Int32 | IntPtr |
+
+# wglShareLists
+ UInt32 | GLContext | GLContext |
+
+# wglSwapLayerBuffers
+ UInt32 | GDI_DC | UInt32 |
+
+# wglUseFontBitmaps
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 |
+
+# wglUseFontBitmapsA
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 |
+
+# wglUseFontBitmapsW
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 |
+
+# wglUseFontOutlines
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | array of GDI_GlyphmetricsFloat |
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | var!GDI_GlyphmetricsFloat |
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | IntPtr |
+
+# wglUseFontOutlinesA
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | array of GDI_GlyphmetricsFloat |
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | var!GDI_GlyphmetricsFloat |
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | IntPtr |
+
+# wglUseFontOutlinesW
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | array of GDI_GlyphmetricsFloat |
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | var!GDI_GlyphmetricsFloat |
+ UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | IntPtr |
+
+# glXChooseFBConfig
+ ^GLXFBConfig | PXDisplay | Int32 | array of Int32 | array of Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | array of Int32 | var!Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | array of Int32 | IntPtr |
+ ^GLXFBConfig | PXDisplay | Int32 | var!Int32 | array of Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | var!Int32 | var!Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | var!Int32 | IntPtr |
+ ^GLXFBConfig | PXDisplay | Int32 | IntPtr | array of Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | IntPtr | var!Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | IntPtr | IntPtr |
+
+# glXChooseVisual
+ PXVisualInfo | PXDisplay | Int32 | array of Int32 |
+ PXVisualInfo | PXDisplay | Int32 | var!Int32 |
+ PXVisualInfo | PXDisplay | Int32 | IntPtr |
+
+# glXCopyContext
+ PXDisplay | GLXContext | GLXContext | UInt64 |
+
+# glXCreateContext
+ GLXContext | PXDisplay | PXVisualInfo | GLXContext | UInt32 |
+
+# glXCreateGLXPixmap
+ GLXPixmap | PXDisplay | PXVisualInfo | XPixmap |
+
+# glXCreateNewContext
+ GLXContext | PXDisplay | GLXFBConfig | Int32 | GLXContext | UInt32 |
+
+# glXCreatePbuffer
+ GLXPbuffer | PXDisplay | GLXFBConfig | array of Int32 |
+ GLXPbuffer | PXDisplay | GLXFBConfig | var!Int32 |
+ GLXPbuffer | PXDisplay | GLXFBConfig | IntPtr |
+
+# glXCreatePixmap
+ GLXPixmap | PXDisplay | GLXFBConfig | XPixmap | array of Int32 |
+ GLXPixmap | PXDisplay | GLXFBConfig | XPixmap | var!Int32 |
+ GLXPixmap | PXDisplay | GLXFBConfig | XPixmap | IntPtr |
+
+# glXCreateWindow
+ GLXWindow | PXDisplay | GLXFBConfig | XWindow | array of Int32 |
+ GLXWindow | PXDisplay | GLXFBConfig | XWindow | var!Int32 |
+ GLXWindow | PXDisplay | GLXFBConfig | XWindow | IntPtr |
+
+# glXDestroyContext
+ PXDisplay | GLXContext |
+
+# glXDestroyGLXPixmap
+ PXDisplay | GLXPixmap |
+
+# glXDestroyPbuffer
+ PXDisplay | GLXPbuffer |
+
+# glXDestroyPixmap
+ PXDisplay | GLXPixmap |
+
+# glXDestroyWindow
+ PXDisplay | GLXWindow |
+
+# glXGetClientString
+ string | PXDisplay | Int32 |
+
+# glXGetConfig
+ Int32 | PXDisplay | PXVisualInfo | Int32 | array of Int32 |
+ Int32 | PXDisplay | PXVisualInfo | Int32 | var!Int32 |
+ Int32 | PXDisplay | PXVisualInfo | Int32 | IntPtr |
+
+# glXGetCurrentContext
+ GLXContext |
+
+# glXGetCurrentDisplay
+ PXDisplay |
+
+# glXGetCurrentDrawable
+ GLXDrawable |
+
+# glXGetCurrentReadDrawable
+ GLXDrawable |
+
+# glXGetFBConfigAttrib
+ Int32 | PXDisplay | GLXFBConfig | Int32 | array of Int32 |
+ Int32 | PXDisplay | GLXFBConfig | Int32 | var!Int32 |
+ Int32 | PXDisplay | GLXFBConfig | Int32 | IntPtr |
+
+# glXGetFBConfigs
+ ^GLXFBConfig | PXDisplay | Int32 | array of Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | var!Int32 |
+ ^GLXFBConfig | PXDisplay | Int32 | IntPtr |
+
+# glXGetProcAddress
+ IntPtr | array of Byte |
+ IntPtr | var!Byte |
+ IntPtr | IntPtr |
+
+# glXGetSelectedEvent
+ PXDisplay | GLXDrawable | array of UInt64 |
+ PXDisplay | GLXDrawable | var!UInt64 |
+ PXDisplay | GLXDrawable | IntPtr |
+
+# glXGetVisualFromFBConfig
+ PXVisualInfo | PXDisplay | GLXFBConfig |
+
+# glXIsDirect
+ UInt32 | PXDisplay | GLXContext |
+
+# glXMakeContextCurrent
+ UInt32 | PXDisplay | GLXDrawable | GLXDrawable | GLXContext |
+
+# glXMakeCurrent
+ UInt32 | PXDisplay | GLXDrawable | GLXContext |
+
+# glXQueryContext
+ Int32 | PXDisplay | GLXContext | Int32 | array of Int32 |
+ Int32 | PXDisplay | GLXContext | Int32 | var!Int32 |
+ Int32 | PXDisplay | GLXContext | Int32 | IntPtr |
+
+# glXQueryDrawable
+ PXDisplay | GLXDrawable | Int32 | array of UInt32 |
+ PXDisplay | GLXDrawable | Int32 | var!UInt32 |
+ PXDisplay | GLXDrawable | Int32 | IntPtr |
+
+# glXQueryExtension
+ UInt32 | PXDisplay | array of Int32 | array of Int32 |
+ UInt32 | PXDisplay | array of Int32 | var!Int32 |
+ UInt32 | PXDisplay | array of Int32 | IntPtr |
+ UInt32 | PXDisplay | var!Int32 | array of Int32 |
+ UInt32 | PXDisplay | var!Int32 | var!Int32 |
+ UInt32 | PXDisplay | var!Int32 | IntPtr |
+ UInt32 | PXDisplay | IntPtr | array of Int32 |
+ UInt32 | PXDisplay | IntPtr | var!Int32 |
+ UInt32 | PXDisplay | IntPtr | IntPtr |
+
+# glXQueryExtensionsString
+ string | PXDisplay | Int32 |
+
+# glXQueryServerString
+ string | PXDisplay | Int32 | Int32 |
+
+# glXQueryVersion
+ UInt32 | PXDisplay | array of Int32 | array of Int32 |
+ UInt32 | PXDisplay | array of Int32 | var!Int32 |
+ UInt32 | PXDisplay | array of Int32 | IntPtr |
+ UInt32 | PXDisplay | var!Int32 | array of Int32 |
+ UInt32 | PXDisplay | var!Int32 | var!Int32 |
+ UInt32 | PXDisplay | var!Int32 | IntPtr |
+ UInt32 | PXDisplay | IntPtr | array of Int32 |
+ UInt32 | PXDisplay | IntPtr | var!Int32 |
+ UInt32 | PXDisplay | IntPtr | IntPtr |
+
+# glXSelectEvent
+ PXDisplay | GLXDrawable | UInt64 |
+
+# glXSwapBuffers
+ PXDisplay | GLXDrawable |
+
+# glXUseXFont
+ XFont | Int32 | Int32 | Int32 |
+
+

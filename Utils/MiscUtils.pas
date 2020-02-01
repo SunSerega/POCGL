@@ -276,27 +276,31 @@ end;
 {$region Fixers}
 
 type
-  Fixer<T> = abstract class// where T: Fixer<T>; //ToDo #2191
+  INamed = interface
+    function GetName: string;
+  end;
+  
+  Fixer<TFixer,TFixable> = abstract class where TFixable: INamed, constructor;// where TFixer: Fixer<TFixer,TFixalbe>; //ToDo #2191
     protected name: string;
     protected used: boolean;
     
-    private static all := new Dictionary<string, T>;
-    public static adders := new List<T>;
-    protected static empty: T;
+    private static all := new Dictionary<string, TFixer>;
+    public static adders := new List<TFixer>;
+    protected static empty: TFixer;
     protected constructor(name: string);
     begin
       self.name := name;
       if name=nil then exit; // внутренний фиксер, то есть или empty, или содержащийся в контейнере
-      all.Add(name, T(self as object)); //ToDo #2191, но T() нужно
+      all.Add(name, TFixer(self as object)); //ToDo #2191, но T() нужно
     end;
     
-    private static function GetItem(name: string): T;
+    private static function GetItem(name: string): TFixer;
     begin
       if all.TryGetValue(name, Result) then
-        (Result as object as Fixer<T>).used := true else //ToDo #2191
+        (Result as object as Fixer<TFixer, TFixable>).used := true else //ToDo #2191
         Result := empty;
     end;
-    public static property Item[name: string]: T read GetItem; default;
+    public static property Item[name: string]: TFixer read GetItem; default;
     
     protected static function ReadBlocks(lines: sequence of string; power_sign: string): sequence of (string, array of string);
     begin
@@ -320,11 +324,39 @@ type
     end;
     protected static function ReadBlocks(fname: string) := ReadBlocks(ReadLines(fname), '#');
     
+    /// Return "True" if "o" is deleted
+    protected function Apply(o: TFixable): boolean; abstract;
+    public static procedure ApplyAll(lst: List<TFixable>);
+    begin
+      System.Runtime.CompilerServices.RuntimeHelpers.PrepareMethod(
+        typeof(TFixer)
+        .GetMethod('WarnUnused', System.Reflection.BindingFlags.NonPublic or System.Reflection.BindingFlags.Instance)
+        .MethodHandle
+      );
+      lst.Capacity := lst.Count + adders.Count;
+      
+      foreach var a in adders do
+      begin
+        var o := new TFixable;
+        (a as object as Fixer<TFixer, TFixable>).Apply(o); //ToDo #2191
+        lst += o;
+      end;
+      
+      for var i := lst.Count-1 downto 0 do
+      begin
+        var o := lst[i];
+        if (Item[o.GetName] as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
+          lst.RemoveAt(i);
+      end;
+      
+      lst.Capacity := lst.Count;
+    end;
+    
     protected procedure WarnUnused; abstract;
     public static procedure WarnAllUnused :=
     foreach var f in all.Values do
-      if ((f as object as Fixer<T>).name<>nil) and not (f as object as Fixer<T>).used then //ToDo #2191 //ToDo #2191
-        (f as object as Fixer<T>).WarnUnused; //ToDo #2191
+      if ((f as object as Fixer<TFixer, TFixable>).name<>nil) and not (f as object as Fixer<TFixer, TFixable>).used then //ToDo #2191 //ToDo #2191
+        (f as object as Fixer<TFixer, TFixable>).WarnUnused; //ToDo #2191
     
   end;
   

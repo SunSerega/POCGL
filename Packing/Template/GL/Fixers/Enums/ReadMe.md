@@ -1,7 +1,7 @@
 
 
 
-Genral syntax:
+Genral syntax of `Enums.dat`:
 ```
 
 # GroupName
@@ -12,22 +12,17 @@ Genral syntax:
 %change specific syntax%
 
 ```
-Change types:
-
 ---
-### !rename
+# Change types:
 
-Syntax:
-```
-# OldEnumName
-!rename
-NewEnumName
-```
+- `!add`
+- `!remove`
+- `!rename`
 
 ---
 ### !add
 
-Creates new group
+Creates new group.
 
 Syntax:
 ```
@@ -38,6 +33,25 @@ x=56
 y=0xAB
 ```
 First line specifies if group is bitmask
+
+---
+### !remove
+
+Syntax:
+```
+# RemovalbeGroup
+!remove
+```
+
+---
+### !rename
+
+Syntax:
+```
+# OldEnumName
+!rename
+NewEnumName
+```
 
 ---
 

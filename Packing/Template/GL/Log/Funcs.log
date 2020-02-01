@@ -1,0 +1,35 @@
+﻿Invalid ext name [1D], replaced with []
+Invalid ext name [2D], replaced with []
+Invalid ext name [3D], replaced with []
+Invalid ext name [DC], replaced with []
+Invalid ext name [GL], replaced with []
+Invalid ext name [64NV], replaced with [NV]
+Invalid ext name [64ARB], replaced with [ARB]
+Invalid ext name [3DARB], replaced with [ARB]
+Invalid ext name [2DARB], replaced with [ARB]
+Invalid ext name [1DARB], replaced with [ARB]
+Invalid ext name [1ATI], replaced with [ATI]
+Invalid ext name [2ATI], replaced with [ATI]
+Invalid ext name [3ATI], replaced with [ATI]
+Invalid ext name [1DEXT], replaced with [EXT]
+Invalid ext name [2DEXT], replaced with [EXT]
+Invalid ext name [3DEXT], replaced with [EXT]
+Invalid ext name [1EXT], replaced with [EXT]
+Invalid ext name [2EXT], replaced with [EXT]
+Invalid ext name [3EXT], replaced with [EXT]
+Invalid ext name [32EXT], replaced with [EXT]
+Invalid ext name [CMAAINTEL], replaced with [INTEL]
+Invalid ext name [2DINTEL], replaced with [INTEL]
+Invalid ext name [64NVX], replaced with [NVX]
+Invalid ext name [4DSGIS], replaced with [SGIS]
+Invalid ext name [GPUIDAMD], replaced with [AMD]
+Invalid ext name [DCARB], replaced with [ARB]
+Invalid ext name [DCEXT], replaced with [EXT]
+Invalid ext name [DCNV], replaced with [NV]
+Invalid ext name [IDEXT], replaced with [EXT]
+Func [ChoosePixelFormat] had api [wgl], which isn't start of it's name
+Func [DescribePixelFormat] had api [wgl], which isn't start of it's name
+Func [GetEnhMetaFilePixelFormat] had api [wgl], which isn't start of it's name
+Func [GetPixelFormat] had api [wgl], which isn't start of it's name
+Func [SetPixelFormat] had api [wgl], which isn't start of it's name
+Func [SwapBuffers] had api [wgl], which isn't start of it's name

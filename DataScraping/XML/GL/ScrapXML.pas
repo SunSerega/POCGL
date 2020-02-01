@@ -92,7 +92,6 @@ type
     end;
     
   end;
-  
   GroupBuilder = sealed class
     private static all := new Dictionary<string, GroupBuilder>;
     private enums := new List<(string,int64,boolean)>;
@@ -192,9 +191,14 @@ type
         
         if not is_enum then
         begin
-          on_used += ()->
-          if LogCache.invalid_type_for_group.Add(t) then
-            log.WriteLine($'Skipped group attrib for type [{t}]');
+          if gname='String' then
+          begin
+            if self.t <> 'GLubyte' then raise new MessageException($'Group [{gname}] was applied to type [{self.t}]');
+            self.t := 'GLchar';
+          end else
+            on_used += ()->
+            if LogCache.invalid_type_for_group.Add(t) then
+              log.WriteLine($'Skipped group attrib for type [{t}]');
         end else
         if not Group.All.TryGetValue(gname, self.gr) then
         begin
@@ -227,7 +231,6 @@ type
     end;
     
   end;
-  
   FuncData = sealed class
     // первая пара - имя функции и возвращаемое значение
     private pars := new List<ParData>;
@@ -272,14 +275,13 @@ type
   end;
   
   Feature = sealed class
-    private name, api: string;
+    private api: string;
     private num: array of integer;
     private add: List<FuncData>;
     private rem: List<FuncData>;
     
     public constructor(n: XmlNode);
     begin
-      name := n['name'];
       api := n['api'];
       num := n['number'].ToWords('.').ConvertAll(s->s.ToInteger);
       add := n.Nodes['require'].SelectMany(rn->rn.Nodes['command']).Select(c->FuncData[c['name']]).ToList;
@@ -288,10 +290,9 @@ type
     
     public procedure Save(bw: System.IO.BinaryWriter; fncs: array of FuncData);
     begin
-      bw.Write(name);
       bw.Write(api);
-      bw.Write(num.Length);
       
+      bw.Write(num.Length);
       foreach var n in num do
         bw.Write(n);
       
@@ -316,13 +317,23 @@ type
   end;
   Extension = sealed class
     private name: string;
-    private apis: array of string;
+    private api: string;
     private add := new List<FuncData>;
     
     public constructor(n: XmlNode);
     begin
       name := n['name'];
-      apis := n['supported'].ToWords('|');
+      
+      var apis := n['supported'].ToWords('|').Where(api->
+      begin
+        Result := api in allowed_api;
+        if not Result and LogCache.invalid_api.Add(api) then
+          log.WriteLine($'Invalid api: [{api}]');
+      end).ToList;
+      apis.Remove('glcore');
+      self.api := apis.DefaultIfEmpty('').SingleOrDefault;
+      if self.api=nil then raise new System.NotSupportedException($'Extension can''t have multiple API''s');
+      
       add := n.Nodes['require'].SelectMany(rn->rn.Nodes['command']).Select(c->FuncData[c['name']]).ToList;
       if n.Nodes['remove'].Any then Otp('WARNING: ext [{name}] had "remove" tag');
     end;
@@ -330,10 +341,7 @@ type
     public procedure Save(bw: System.IO.BinaryWriter; fncs: array of FuncData);
     begin
       bw.Write(name);
-      
-      bw.Write(apis.Length);
-      foreach var api in apis do
-        bw.Write(api);
+      bw.Write(api);
       
       bw.Write(add.Count);
       foreach var f in add do
@@ -407,20 +415,14 @@ begin
     if f.api in allowed_api then
       features += f else
     if LogCache.invalid_api.Add(f.api) then
-      log.WriteLine($'Invalid feature api: [{f.api}]');
+      log.WriteLine($'Invalid api: [{f.api}]');
   end;
   
   foreach var n in root.Nodes['extensions'].Single.Nodes['extension'] do
   begin
     var ext := new Extension(n);
-    
-    foreach var api in ext.apis do
-      if not allowed_api.Contains(api) and LogCache.invalid_api.Add(api) then
-        log.WriteLine($'Invalid feature api: [{api}]');
-    
-    if ext.apis.Any(api->api in allowed_api) then
-      extensions += ext;
-    
+    if ext.api='' then continue;
+    extensions += ext;
   end;
   
   foreach var gr in Group.All.Values do
