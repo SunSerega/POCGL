@@ -292,6 +292,15 @@ type
       
     end;
     
+    public static procedure WriteGetPtrFunc(sb: StringBuilder);
+    begin
+      sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
+      sb += '    external ''opengl32.dll'' name ''wglGetProcAddress'';'#10;
+      sb += '    public static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
+      sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
+      sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
+    end;
+    
     public procedure Write(sb: StringBuilder; api, version: string);
     begin
       InitOverloads;
@@ -692,11 +701,51 @@ type
       
     end;
     
-    public procedure Write(sb: StringBuilder);
+    public static procedure WriteAll(sb: StringBuilder) :=
+    foreach var api in Feature.ByApi.Keys do
     begin
+      // func - addition version
+      var all_funcs := new Dictionary<Func, string>;
+      // func - deprecation version
+      var deprecated := new Dictionary<Func, string>;
       
-      var ToDo := 0;
+      foreach var ftr in Feature.ByApi[api].AsEnumerable.Reverse do
+      begin
+        foreach var f in ftr.rem do
+          if not all_funcs.Remove(f) then // glGetPointerv было добавлено, убрано и ещё раз добавлено
+            deprecated.Add(f, ftr.version);
+        foreach var f in ftr.add do
+          if all_funcs.ContainsKey(f) then
+            Otp($'WARNING: Func [{f.name}] was added in versions [{all_funcs[f]}] and [{ftr.version}]') else
+            all_funcs[f] := ftr.version;
+      end;
       
+      sb += $'  {api} = sealed class'+#10;
+      if api='gl' then Func.WriteGetPtrFunc(sb);
+      sb += $'    '+#10;
+      
+      foreach var f in all_funcs.Keys.Where(f->not deprecated.ContainsKey(f)).OrderBy(f->f.name) do
+      begin
+        sb += $'    // added in {api}{all_funcs[f]}'+#10;
+        f.Write(sb, api, all_funcs[f]);
+      end;
+      
+      sb += $'  end;'+#10;
+      sb += $'  '+#10;
+      
+      if not deprecated.Any then continue;
+      sb += $'  {api}D = sealed class'+#10;
+      if api='gl' then Func.WriteGetPtrFunc(sb);
+      sb += $'    '+#10;
+      
+      foreach var f in all_funcs.Keys.Where(f->deprecated.ContainsKey(f)).OrderBy(f->f.name) do
+      begin
+        sb += $'    // added in {api}{all_funcs[f]}, deprecated in {api}{deprecated[f]}'+#10;
+        f.Write(sb, api, all_funcs[f]);
+      end;
+      
+      sb += $'  end;'+#10;
+      sb += $'  '+#10;
     end;
     
   end;
