@@ -1,7 +1,6 @@
 ﻿unit FuncData;
 
 interface
-//ToDo кодогенерация для генериков - нужна доп перегрузка
 //ToDo использовать Func<> и Action<>
 
 uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
@@ -343,7 +342,7 @@ type
         sb += '] ';
       end;
       
-      var WriteOvrT: procedure(ovr: array of (integer,string); name: string; marshals: boolean) := (ovr,name,marshals)->
+      var WriteOvrT: procedure(ovr: array of (integer,string); generic_names: List<string>; name: string; marshals: boolean) := (ovr,generic_names,name,marshals)->
       begin
         if marshals then WriteMarshalAs(ovr[0],true);
         sb += is_proc ? 'procedure' : 'function';
@@ -351,6 +350,17 @@ type
         begin
           sb += ' ';
           sb += name;
+          if (generic_names<>nil) and (generic_names.Count<>0) then
+          begin
+            sb += '<';
+            foreach var gn in generic_names do
+            begin
+              sb += gn;
+              sb += ',';
+            end;
+            sb.Length -= 1;
+            sb += '>';
+          end;
         end;
         
         if ovr.Length>1 then
@@ -388,12 +398,12 @@ type
           var ovr := all_overloads[ovr_i];
           
           sb += '    public static ';
-          WriteOvrT(ovr, $'z_{l_name}', true);
+          WriteOvrT(ovr,nil, $'z_{l_name}', true);
           sb += ';'#10;
           sb += $'    external ''opengl32.dll'' name ''{name}'';'+#10;
           
           sb += $'    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr, l_name, false);
+          WriteOvrT(ovr,nil, l_name, false);
           sb += $' := z_{l_name};'+#10;
           
         end;
@@ -407,8 +417,9 @@ type
         begin
           var ovr := all_overloads[ovr_i];
           
-          //ToDo для этого нужна отдельная перегрузка, принимающая "var a: T" и вызывающая "var a: byte"
-          var generic_inds := new List<integer>;
+          var generic_inds := new List<integer>; // индексы шаблонных параметров с шаблонным типом в temp перегрузке
+          var temp_generic_names := new List<string>; // шаблонные параметры temp перегрузки
+          var all_generic_names := new List<string>; // шаблонные параметры основной публичной перегрузки
           
           var init := new List<string>;
           var finl := new List<string>;
@@ -417,11 +428,6 @@ type
           var ntv_ovr := ovr.ConvertAll((par,par_i)->
           begin
             var res_t := par[1];
-            var generic := (res_t<>nil) and res_t.StartsWith('T') and res_t.Skip(1).All(ch->ch.IsDigit);
-            if generic then generic_inds += par_i;
-            
-            // шаблоны работают только для элементов массивов
-            if generic and (par[0]=0) then raise new System.NotSupportedException;
             
             if par_i=0 then
             begin
@@ -451,6 +457,22 @@ type
             end else
             begin
               var relevant_par_name := org_par[par_i].name;
+              
+              var sres_t := res_t.Split('!').Last;
+              var generic := (res_t<>nil) and sres_t.StartsWith('T') and sres_t.Skip(1).All(ch->ch.IsDigit);
+              if generic then
+                if par[0]=0 then
+                begin
+                  relevant_par_name := $'PByte(pointer(@{relevant_par_name}))^';
+                  res_t := 'var!Byte';
+                  all_generic_names += sres_t;
+                end else
+                begin
+                  generic_inds += par_i;
+                  temp_generic_names += sres_t;
+                  all_generic_names += sres_t;
+                  res_t := 'Byte';
+                end;
               
               if par[1]='string' then
               begin
@@ -538,7 +560,7 @@ type
             PrevNtvOvrs += ntv_ovr;
             
             sb += $'    public {z_ovr_name} := GetFuncOrNil&<';
-            WriteOvrT(ntv_ovr, nil, false);
+            WriteOvrT(ntv_ovr,nil, nil, false);
             sb += $'>(z_{l_name}_adr);'+#10;
             
           end else
@@ -547,8 +569,31 @@ type
             PrevNtvOvrs.Add(nil);
           end;
           
+          if generic_inds.Count<>0 then
+          begin
+            var temp_z_ovr_name := z_ovr_name+'_temp';
+            
+            sb += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
+            WriteOvrT(ntv_ovr.ConvertAll((par,par_i)->
+            begin
+              var g_ind := generic_inds.IndexOf(par_i);
+              Result := g_ind=-1 ? par : (par[0],'var!'+temp_generic_names[g_ind]);
+            end),temp_generic_names, temp_z_ovr_name, false);
+            sb += ' :='#10;
+            sb += $'    {z_ovr_name}(';
+            for var par_i := 1 to ntv_ovr.Length-1 do
+            begin
+              sb += par_i in generic_inds ? $'PByte(pointer(@{org_par[par_i].name}))^' : org_par[par_i].name ;
+              sb += ', ';
+            end;
+            sb.Length -= 2;
+            sb += ');'#10;
+            
+            z_ovr_name := temp_z_ovr_name;
+          end;
+          
           sb += '    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr, l_name, false);
+          WriteOvrT(ovr,all_generic_names, l_name, false);
           sb += ';'#10;
           sb += '    begin'#10;
           
