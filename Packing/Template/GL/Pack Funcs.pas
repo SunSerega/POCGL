@@ -43,7 +43,7 @@ begin
     log.Close;
     log_func_ovrs.Close;
     WriteAllText(GetFullPath('..\Funcs.template', GetEXEFileName), res.ToString);
-    if CommandLineArgs.Contains('SecondaryProc') then ReadString('done');
+    if not CommandLineArgs.Contains('SecondaryProc') then ReadString('done');
   except
     on e: Exception do ErrOtp(e);
   end;

@@ -1045,7 +1045,7 @@ type
       inherited Create(name);
       var s := data.Single(l->not string.IsNullOrWhiteSpace(l)).Split('|');
       var par_c := s.Length-1;
-      if not string.IsNullOrWhiteSpace(s[par_c]) then raise new System.FormatException;
+      if not string.IsNullOrWhiteSpace(s[par_c]) then raise new System.FormatException(s.JoinToString('|'));
       
       SetLength(add_ts, par_c);
       SetLength(rem_ts, par_c);
@@ -1060,7 +1060,7 @@ type
         var seal_t: ()->() := ()->
         begin
           var t := res.ToString.Trim;
-          if t<>'' then curr_lst += ToTName(t);
+          if (t<>'') and (t<>'*') then curr_lst += ToTName(t);
           res.Clear;
         end;
         
