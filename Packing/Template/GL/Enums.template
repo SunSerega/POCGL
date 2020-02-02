@@ -4639,8 +4639,8 @@
     private static _READ_PIXELS_TYPE                       := new InternalFormatPName($828E);
     private static _TEXTURE_IMAGE_FORMAT                   := new InternalFormatPName($828F);
     private static _TEXTURE_IMAGE_TYPE                     := new InternalFormatPName($8290);
-    private static _GET_TEXTURE_IMAGE_FORMAT               := new InternalFormatPName($8291);
-    private static _GET_TEXTURE_IMAGE_TYPE                 := new InternalFormatPName($8292);
+    private static _GET__TEXTURE_IMAGE_FORMAT              := new InternalFormatPName($8291);
+    private static _GET__TEXTURE_IMAGE_TYPE                := new InternalFormatPName($8292);
     private static _MIPMAP                                 := new InternalFormatPName($8293);
     private static _AUTO_GENERATE_MIPMAP                   := new InternalFormatPName($8295);
     private static _COLOR_ENCODING                         := new InternalFormatPName($8296);
@@ -4711,8 +4711,8 @@
     public static property READ_PIXELS_TYPE:                       InternalFormatPName read _READ_PIXELS_TYPE;
     public static property TEXTURE_IMAGE_FORMAT:                   InternalFormatPName read _TEXTURE_IMAGE_FORMAT;
     public static property TEXTURE_IMAGE_TYPE:                     InternalFormatPName read _TEXTURE_IMAGE_TYPE;
-    public static property GET_TEXTURE_IMAGE_FORMAT:               InternalFormatPName read _GET_TEXTURE_IMAGE_FORMAT;
-    public static property GET_TEXTURE_IMAGE_TYPE:                 InternalFormatPName read _GET_TEXTURE_IMAGE_TYPE;
+    public static property GET__TEXTURE_IMAGE_FORMAT:              InternalFormatPName read _GET__TEXTURE_IMAGE_FORMAT;
+    public static property GET__TEXTURE_IMAGE_TYPE:                InternalFormatPName read _GET__TEXTURE_IMAGE_TYPE;
     public static property MIPMAP:                                 InternalFormatPName read _MIPMAP;
     public static property AUTO_GENERATE_MIPMAP:                   InternalFormatPName read _AUTO_GENERATE_MIPMAP;
     public static property COLOR_ENCODING:                         InternalFormatPName read _COLOR_ENCODING;
@@ -10357,6 +10357,100 @@
   
   {$endregion ATI}
   
+  {$region GDI}
+  
+  PixelDataTypeGDI = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _RGBA       := new PixelDataTypeGDI($0000);
+    private static _COLORINDEX := new PixelDataTypeGDI($0001);
+    
+    public static property RGBA:       PixelDataTypeGDI read _RGBA;
+    public static property COLORINDEX: PixelDataTypeGDI read _COLORINDEX;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(PixelDataTypeGDI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'PixelDataTypeGDI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  PixelFormatFlagsGDI = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _DOUBLEBUFFER          := new PixelFormatFlagsGDI($0001);
+    private static _STEREO                := new PixelFormatFlagsGDI($0002);
+    private static _DRAW_TO_WINDOW        := new PixelFormatFlagsGDI($0004);
+    private static _DRAW_TO_BITMAP        := new PixelFormatFlagsGDI($0008);
+    private static _SUPPORT_GDI           := new PixelFormatFlagsGDI($000A);
+    private static _SUPPORT_OPENGL        := new PixelFormatFlagsGDI($0014);
+    private static _GENERIC_FORMAT        := new PixelFormatFlagsGDI($0028);
+    private static _NEED_PALETTE          := new PixelFormatFlagsGDI($0050);
+    private static _NEED_SYSTEM_PALETTE   := new PixelFormatFlagsGDI($0064);
+    private static _SWAP_EXCHANGE         := new PixelFormatFlagsGDI($00C8);
+    private static _SWAP_COPY             := new PixelFormatFlagsGDI($0190);
+    private static _SWAP_LAYER_BUFFERS    := new PixelFormatFlagsGDI($0320);
+    private static _GENERIC_ACCELERATED   := new PixelFormatFlagsGDI($03E8);
+    private static _SUPPORT_DIRECTDRAW    := new PixelFormatFlagsGDI($07D0);
+    private static _DEPTH_DONTCARE        := new PixelFormatFlagsGDI($1312D00);
+    private static _DOUBLEBUFFER_DONTCARE := new PixelFormatFlagsGDI($2625A00);
+    private static _STEREO_DONTCARE       := new PixelFormatFlagsGDI($4C4B400);
+    
+    public static property DOUBLEBUFFER:          PixelFormatFlagsGDI read _DOUBLEBUFFER;
+    public static property STEREO:                PixelFormatFlagsGDI read _STEREO;
+    public static property DRAW_TO_WINDOW:        PixelFormatFlagsGDI read _DRAW_TO_WINDOW;
+    public static property DRAW_TO_BITMAP:        PixelFormatFlagsGDI read _DRAW_TO_BITMAP;
+    public static property SUPPORT_GDI:           PixelFormatFlagsGDI read _SUPPORT_GDI;
+    public static property SUPPORT_OPENGL:        PixelFormatFlagsGDI read _SUPPORT_OPENGL;
+    public static property GENERIC_FORMAT:        PixelFormatFlagsGDI read _GENERIC_FORMAT;
+    public static property NEED_PALETTE:          PixelFormatFlagsGDI read _NEED_PALETTE;
+    public static property NEED_SYSTEM_PALETTE:   PixelFormatFlagsGDI read _NEED_SYSTEM_PALETTE;
+    public static property SWAP_EXCHANGE:         PixelFormatFlagsGDI read _SWAP_EXCHANGE;
+    public static property SWAP_COPY:             PixelFormatFlagsGDI read _SWAP_COPY;
+    public static property SWAP_LAYER_BUFFERS:    PixelFormatFlagsGDI read _SWAP_LAYER_BUFFERS;
+    public static property GENERIC_ACCELERATED:   PixelFormatFlagsGDI read _GENERIC_ACCELERATED;
+    public static property SUPPORT_DIRECTDRAW:    PixelFormatFlagsGDI read _SUPPORT_DIRECTDRAW;
+    public static property DEPTH_DONTCARE:        PixelFormatFlagsGDI read _DEPTH_DONTCARE;
+    public static property DOUBLEBUFFER_DONTCARE: PixelFormatFlagsGDI read _DOUBLEBUFFER_DONTCARE;
+    public static property STEREO_DONTCARE:       PixelFormatFlagsGDI read _STEREO_DONTCARE;
+    
+    public static function operator or(f1,f2: PixelFormatFlagsGDI) := new PixelFormatFlagsGDI(f1.val or f2.val);
+    
+    public property HAS_FLAG_DOUBLEBUFFER:          boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_STEREO:                boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_DRAW_TO_WINDOW:        boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_DRAW_TO_BITMAP:        boolean read self.val and $0008 <> 0;
+    public property HAS_FLAG_SUPPORT_GDI:           boolean read self.val and $000A <> 0;
+    public property HAS_FLAG_SUPPORT_OPENGL:        boolean read self.val and $0014 <> 0;
+    public property HAS_FLAG_GENERIC_FORMAT:        boolean read self.val and $0028 <> 0;
+    public property HAS_FLAG_NEED_PALETTE:          boolean read self.val and $0050 <> 0;
+    public property HAS_FLAG_NEED_SYSTEM_PALETTE:   boolean read self.val and $0064 <> 0;
+    public property HAS_FLAG_SWAP_EXCHANGE:         boolean read self.val and $00C8 <> 0;
+    public property HAS_FLAG_SWAP_COPY:             boolean read self.val and $0190 <> 0;
+    public property HAS_FLAG_SWAP_LAYER_BUFFERS:    boolean read self.val and $0320 <> 0;
+    public property HAS_FLAG_GENERIC_ACCELERATED:   boolean read self.val and $03E8 <> 0;
+    public property HAS_FLAG_SUPPORT_DIRECTDRAW:    boolean read self.val and $07D0 <> 0;
+    public property HAS_FLAG_DEPTH_DONTCARE:        boolean read self.val and $1312D00 <> 0;
+    public property HAS_FLAG_DOUBLEBUFFER_DONTCARE: boolean read self.val and $2625A00 <> 0;
+    public property HAS_FLAG_STEREO_DONTCARE:       boolean read self.val and $4C4B400 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(PixelFormatFlagsGDI).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'PixelFormatFlagsGDI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinIntoString('+');
+    end;
+    
+  end;
+  
+  {$endregion GDI}
+  
   {$region HP}
   
   ImageTransformPNameHP = record
@@ -10462,6 +10556,57 @@
   end;
   
   {$endregion IBM}
+  
+  {$region INTEL}
+  
+  PerfQueryCapFlagsINTEL = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PERFQUERY_SINGLE_CONTEXT_INTEL := new PerfQueryCapFlagsINTEL($0000);
+    private static _PERFQUERY_GLOBAL_CONTEXT_INTEL := new PerfQueryCapFlagsINTEL($0001);
+    
+    public static property PERFQUERY_SINGLE_CONTEXT_INTEL: PerfQueryCapFlagsINTEL read _PERFQUERY_SINGLE_CONTEXT_INTEL;
+    public static property PERFQUERY_GLOBAL_CONTEXT_INTEL: PerfQueryCapFlagsINTEL read _PERFQUERY_GLOBAL_CONTEXT_INTEL;
+    
+    public static function operator or(f1,f2: PerfQueryCapFlagsINTEL) := new PerfQueryCapFlagsINTEL(f1.val or f2.val);
+    
+    public property ANY_FLAGS: boolean read self.val<>0;
+    public property HAS_FLAG_PERFQUERY_GLOBAL_CONTEXT_INTEL: boolean read self.val and $0001 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(PerfQueryCapFlagsINTEL).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'PerfQueryCapFlagsINTEL[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinIntoString('+');
+    end;
+    
+  end;
+  
+  PerfQueryDataFlagsINTEL = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PERFQUERY_DONOT_FLUSH_INTEL := new PerfQueryDataFlagsINTEL($83F9);
+    private static _PERFQUERY_FLUSH_INTEL       := new PerfQueryDataFlagsINTEL($83FA);
+    private static _PERFQUERY_WAIT_INTEL        := new PerfQueryDataFlagsINTEL($83FB);
+    
+    public static property PERFQUERY_DONOT_FLUSH_INTEL: PerfQueryDataFlagsINTEL read _PERFQUERY_DONOT_FLUSH_INTEL;
+    public static property PERFQUERY_FLUSH_INTEL:       PerfQueryDataFlagsINTEL read _PERFQUERY_FLUSH_INTEL;
+    public static property PERFQUERY_WAIT_INTEL:        PerfQueryDataFlagsINTEL read _PERFQUERY_WAIT_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(PerfQueryDataFlagsINTEL).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'PerfQueryDataFlagsINTEL[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  {$endregion INTEL}
   
   {$region NV}
   

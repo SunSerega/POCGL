@@ -318,7 +318,7 @@ type
   Extension = sealed class
     private name: string;
     private api: string;
-    private add := new List<FuncData>;
+    private add := new HashSet<FuncData>;
     
     public constructor(n: XmlNode);
     begin
@@ -334,7 +334,12 @@ type
       self.api := apis.DefaultIfEmpty('').SingleOrDefault;
       if self.api=nil then raise new System.NotSupportedException($'Extension can''t have multiple API''s');
       
-      add := n.Nodes['require'].SelectMany(rn->rn.Nodes['command']).Select(c->FuncData[c['name']]).ToList;
+      add := new HashSet<FuncData>;
+      foreach var rn in n.Nodes['require'] do
+        if (rn['api']=nil) or (rn['api'] in allowed_api) then
+          foreach var c in rn.Nodes['command'] do
+            if not add.Add(FuncData[c['name']]) then
+              Otp($'WARNING: Func [{c[''name'']}] found 2 times in ext [{name}]');
       if n.Nodes['remove'].Any then Otp('WARNING: ext [{name}] had "remove" tag');
     end;
     

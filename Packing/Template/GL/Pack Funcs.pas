@@ -13,7 +13,7 @@ begin
     var br := new System.IO.BinaryReader(System.IO.File.OpenRead('DataScraping\XML\GL\funcs.bin'));
     var grs :=        ArrGen(br.ReadInt32, i->new Group(br)).ToList;
     var funcs :=      ArrGen(br.ReadInt32, i->new Func(br,grs)).ToList;
-    var features :=   ArrGen(br.ReadInt32, i->new Feature(br,funcs)).ToList;
+                      ArrGen(br.ReadInt32, i->new Feature(br,funcs)).ToList;
     var extensions := ArrGen(br.ReadInt32, i->new Extension(br,funcs)).ToList;
     if br.BaseStream.Position<>br.BaseStream.Length then raise new System.FormatException;
     

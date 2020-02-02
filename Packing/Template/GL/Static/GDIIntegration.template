@@ -25,16 +25,16 @@
       pfd.nVersion := 1;
       
       pfd.dwFlags :=
-        GDI_PixelFormatFlags.DRAW_TO_WINDOW or
-        GDI_PixelFormatFlags.SUPPORT_OPENGL or
-        GDI_PixelFormatFlags.DOUBLEBUFFER
+        PixelFormatFlagsGDI.DRAW_TO_WINDOW or
+        PixelFormatFlagsGDI.SUPPORT_OPENGL or
+        PixelFormatFlagsGDI.DOUBLEBUFFER
       ;
       pfd.cColorBits := 24;
       pfd.cDepthBits := 16;
       
-      if 1 <> gdi.SetPixelFormat(
+      if 1 <> wgl.z_SetPixelFormat(
         Result,
-        gdi.ChoosePixelFormat(Result, pfd),
+        wgl.z_ChoosePixelFormat(Result, pfd),
         pfd
       ) then raise new InvalidOperationException;
       
@@ -62,7 +62,7 @@
           
           var EndFrame: ()->();
           if vsync_fps<=0 then
-            EndFrame := ()->gdi.SwapBuffers(hdc) else
+            EndFrame := ()->wgl.z_SwapBuffers(hdc) else
           begin
             var LastRedr := DateTime.UtcNow;
             var FrameDuration := new TimeSpan(Trunc(TimeSpan.TicksPerSecond/vsync_fps));
@@ -70,7 +70,7 @@
             
             EndFrame := ()->
             begin
-              gdi.SwapBuffers(hdc);
+              wgl.z_SwapBuffers(hdc);
               
               LastRedr := LastRedr+FrameDuration;
               var time_left := LastRedr-DateTime.UtcNow;

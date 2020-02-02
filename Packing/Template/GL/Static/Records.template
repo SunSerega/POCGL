@@ -43,7 +43,7 @@
       if value.Length > 31 then raise new ArgumentException('Строка не может иметь больше 31 символа');
       var HStr := Marshal.StringToHGlobalAnsi(value);
       var l: UInt32 := value.Length+1;
-      Buffer.MemoryCopy(pointer(HStr), @self.DeviceName, l,l);
+      System.Buffer.MemoryCopy(pointer(HStr), @self.DeviceName, l,l);
       Marshal.FreeHGlobal(HStr);
     end;
     
@@ -54,7 +54,7 @@
       if value.Length > 127 then raise new ArgumentException('Строка не может иметь больше 127 символов');
       var HStr := Marshal.StringToHGlobalAnsi(value);
       var l: UInt32 := value.Length+1;
-      Buffer.MemoryCopy(pointer(HStr), @self.DeviceString, l,l);
+      System.Buffer.MemoryCopy(pointer(HStr), @self.DeviceString, l,l);
       Marshal.FreeHGlobal(HStr);
     end;
     
@@ -75,7 +75,7 @@
       if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
       var HStr := Marshal.StringToHGlobalAnsi(value);
       var l: UInt32 := value.Length+1;
-      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      System.Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
       Marshal.FreeHGlobal(HStr);
     end;
     
@@ -98,7 +98,7 @@
       if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
       var HStr := Marshal.StringToHGlobalAnsi(value);
       var l: UInt32 := value.Length+1;
-      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      System.Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
       Marshal.FreeHGlobal(HStr);
     end;
     
@@ -127,7 +127,7 @@
       if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
       var HStr := Marshal.StringToHGlobalAnsi(value);
       var l: UInt32 := value.Length+1;
-      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      System.Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
       Marshal.FreeHGlobal(HStr);
     end;
     
@@ -151,7 +151,7 @@
       if value.Length > 79 then raise new ArgumentException('Строка не может иметь больше 79 символов');
       var HStr := Marshal.StringToHGlobalAnsi(value);
       var l: UInt32 := value.Length+1;
-      Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
+      System.Buffer.MemoryCopy(pointer(HStr), @self.pipeName, l,l);
       Marshal.FreeHGlobal(HStr);
     end;
     
@@ -212,8 +212,8 @@
     nSize:            UInt16 := sizeof(GDI_PixelFormatDescriptor);
     nVersion:         UInt16 := 1;
     
-    dwFlags:          GDI_PixelFormatFlags;
-    iPixelType:       GDI_PixelDataType;
+    dwFlags:          PixelFormatFlagsGDI;
+    iPixelType:       PixelDataTypeGDI;
     
     cColorBits:       Byte; // кол-во битов для R+G+B
     
@@ -236,7 +236,7 @@
     cStencilBits:     Byte;
     cAuxBuffers:      Byte; // устарело
     
-    iLayerType:       GDI_LayerType; // устарело
+    iLayerType:       Byte; // устарело
     bLayersSize:      Byte; // разделено на 2 числа по 4 бита, и бесполезно без iLayerType, то есть оно тоже устарело
     
     // не смог найти нормального описания последних 3, но все присваивают им нолики

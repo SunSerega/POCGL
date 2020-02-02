@@ -26,7 +26,6 @@ int						=Int32
 INT						=Int32
 INT32					=Int32
 int32_t					=Int32
-GLclampx				=Int32
 GLuint					=UInt32
 UINT					=UInt32
 unsigned int			=UInt32
@@ -70,7 +69,6 @@ GLbitfield				=DummyFlags
 GLDEBUGPROC				=GLDEBUGPROC
 GLDEBUGPROCAMD			=GLDEBUGPROC
 GLDEBUGPROCARB			=GLDEBUGPROC
-GLDEBUGPROCKHR			=GLDEBUGPROC
 GLVULKANPROCNV			=GLVULKANPROCNV
 PROC					=IntPtr			=// unmannaged delegate
 __GLXextFuncPtr			=IntPtr			=// unmannaged delegate

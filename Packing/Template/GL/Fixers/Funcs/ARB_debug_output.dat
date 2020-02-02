@@ -3,7 +3,6 @@
 
 # glGetDebugMessageLog
 # glGetDebugMessageLogARB
-# glGetDebugMessageLogKHR
 !clear_ovrs
 !add_ovrs
  UInt32	| UInt32	| Int32	| var!DebugSource	| var!DebugType	| var!UInt32	| var!DebugSeverity	| var!Int32	| IntPtr	|

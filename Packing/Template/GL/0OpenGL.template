@@ -39,6 +39,12 @@ uses System.Runtime.CompilerServices;
   
 {$endregion Основные типы}
 
+{$region Записи-имена} type
+  
+  %NameRecords!Pack NameRecords.pas%
+  
+{$endregion Записи-имена}
+
 {$region Перечисления} type
   
   %Enums!Pack Enums.pas%

@@ -1,0 +1,274 @@
+﻿  
+  
+  
+  GLsync = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLeglImageOES = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  QueryName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  BufferName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  ShaderName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  ProgramName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  ProgramPipelineName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  TextureName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  SamplerName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  FramebufferName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  RenderbufferName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  VertexArrayName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  TransformFeedbackName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  
+  GLContext = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  GDI_DC = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  //	типы	для	совместимости	с	OpenCL
+  ///--
+  cl_context = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  ///--
+  cl_event = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  
+  
+  
+  
+  //	INTEL_performance_query
+  PerfQueryIdINTEL = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  PerfQueryHandleINTEL = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  
+  
+  //ToDo	переименовать	и	проверить	типы	всего	дальше:
+  
+  EGLsync = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  EGLDisplay = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  ShaderBinaryFormat = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  ProgramResourceIndex = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  ProgramBinaryFormat = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  
+  GLhandleARB = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  PBufferName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  HPVIDEODEV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  HVIDEOOUTPUTDEVICENV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  HVIDEOINPUTDEVICENV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  PGPU_DEVICE = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  HGPUNV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  HPBUFFER = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLeglClientBufferEXT = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  VideoOutputDeviceHandleNV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  VideoInputDeviceHandleNV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  VideoDeviceHandleNV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLvdpauSurfaceNV = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GPUAffinityHandle = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLXFBConfig = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLXContextID = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXPbuffer = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXWindow = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXPixmap = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXColormap = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXDrawable = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXContext = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXVideoCaptureDeviceNV = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXVideoSourceSGIX = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+  end;
+  GLXVideoDeviceNV = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+  end;
+  GLXFuncPtr = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  PDisplay = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  PXVisualInfo = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  
+  
+  //ToDo	эти	типы	вообще	угадывал,	перепроверить
+  
+  GLXDMparams = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLXDMbuffer = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLXVLServer = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLXVLPath = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLXVLNode = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLXStatus = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GLUnurbs = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  GDI_HENHMetafile = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  GDI_LayerPlaneDescriptor = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+  end;
+  
+  

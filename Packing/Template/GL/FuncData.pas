@@ -15,7 +15,7 @@ type
   end;
   
 var allowed_ext_names := HSet(
-  '','ARB','EXT',
+  '','ARB','EXT','GDI',
   'NV','AMD','ATI','APPLE','SGI','HP','IBM','PGI','SGIS','SGIX','SUN','GREMEDY','INTEL','MESA','NVX','OES','OVR','SUNX','OML','INGR','KHR','3DFX','3DL','I3D','WIN','MESAX','S3','REND'
 );
 function GetExt(s: string): string;
@@ -59,6 +59,7 @@ type
       begin
         var key := br.ReadString;
         if not key.ElementAt(3).IsDigit then key := key.Substring(3);
+        if key.ToLower.StartsWith('get_') then key := key.Insert(3,'_');
         var val := br.ReadInt64;
         enums.Add(key, val);
       end;
@@ -163,10 +164,7 @@ type
     public constructor(br: System.IO.BinaryReader; grs: List<Group>; proto: boolean);
     begin
       self.name := br.ReadString;
-      if not proto then
-      begin
-        if self.name.ToLower in unallowed_words then self.name := '&'+self.name;
-      end;
+      if not proto and (self.name.ToLower in unallowed_words) then self.name := '&'+self.name;
       
       var ntv_t := br.ReadString;
       if TypeTable.TryGetValue(ntv_t,self.t) then
@@ -210,7 +208,6 @@ type
     public constructor := exit;
     public constructor(br: System.IO.BinaryReader; grs: List<Group>);
     begin
-      var proto := true;
       org_par := ArrGen(br.ReadInt32, i->new FuncOrgParam(br, grs, i=0));
       BasicInit;
     end;
@@ -261,16 +258,24 @@ type
             exit;
           end;
           var res := new List<(integer,string)>( Max(3,par.ptr+1) );
+          var par_t := par.GetTName;
           
           if par.ptr=1 then
           begin
-            res += (0, 'IntPtr');
-            res += (0, 'var!'+par.GetTName);
+            res += (0,
+              par_t='IntPtr' ?
+                'pointer' :
+                'IntPtr'
+            );
+            res += (0, 'var!'+par_t);
           end else
           for var ptr := 0 to par.ptr-1 do
             res += (    ptr  , 'IntPtr');
           
-          res +=   (par.ptr  , par.GetTName);
+          res +=   (par.ptr,
+            (par_t='boolean') and (par.ptr>1) ?
+              'Byte' : par_t
+          );
           
           res.Reverse;
           Result := res;
@@ -318,6 +323,7 @@ type
       sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
     end;
     
+    public static prev_func_names := new HashSet<string>;
     public procedure Write(sb: StringBuilder; api, version: string);
     begin
       InitOverloads;
@@ -343,10 +349,16 @@ type
       end;
       if all_overloads.Count>15 then Otp($'WARNING: Too many ({all_overloads.Count}) overloads of func [{name}]');
       
+      for var par_i := 1 to org_par.Length-1 do
+        if all_overloads.Any(ovr->ovr[par_i][1].ToLower=org_par[par_i].name.ToLower) then
+          org_par[par_i].name := '_' + org_par[par_i].name;
+      
       var l_name := name;
-      if name.ToLower.StartsWith(api) then
-        l_name := name.Substring(api.Length) else
+      if l_name.ToLower.StartsWith(api) then
+        l_name := l_name.Substring(api.Length) else
         log.WriteLine($'Func [{name}] had api [{api}], which isn''t start of it''s name');
+      prev_func_names += l_name.ToLower;
+      if l_name.ToLower in unallowed_words then l_name := '&'+l_name;
       
       var WriteMarshalAs: (System.Tuple<integer,string>, boolean)->() := (par,res)->
       begin
@@ -367,15 +379,16 @@ type
         sb += '] ';
       end;
       
-      var WriteOvrT: procedure(ovr: array of (integer,string); generic_names: List<string>; name: string; marshals: boolean) := (ovr,generic_names,name,marshals)->
+      var WriteOvrT: procedure(ovr: array of (integer,string); generic_names: List<string>; name: string; marshals, is_static: boolean) := (ovr,generic_names,name,marshals,is_static)->
       begin
-        var use_standart_dt := (name=nil) and ovr.Skip(1).All(par->not par[1].StartsWith('var!'));
+        var use_standart_dt := (name=nil) and (org_par.Length<=16) and ovr.Skip(1).All(par->not par[1].StartsWith('var!') and (par[1]<>'pointer'));
         if use_standart_dt then
         begin
           sb += is_proc ? 'Action' : 'Func';
         end else
         begin
           if marshals then WriteMarshalAs(ovr[0],true);
+          if is_static and (name<>nil) then sb += 'static ';
           sb += is_proc ? 'procedure' : 'function';
         end;
         if name<>nil then
@@ -409,7 +422,9 @@ type
               sb += ': ';
             end;
             loop par[0] do sb += 'array of ';
-            sb += par[1].Split('!').Last;
+            var spar_name := par[1].Split('!').Last;
+            if spar_name.ToLower in prev_func_names then sb += 'OpenGL.';
+            sb += spar_name;
             sb += use_standart_dt ? ', ' : '; ';
           end;
           sb.Length -= 2; // лишнее '; '
@@ -419,8 +434,12 @@ type
         if not is_proc then
           if use_standart_dt then
           begin
-            sb.Length -= 1;
-            sb += ', ';
+            if ovr.Length>1 then
+            begin
+              sb.Length -= 1;
+              sb += ', ';
+            end else
+              sb += '<';
             loop ovr[0][0] do sb += 'array of ';
             sb += ovr[0][1];
             sb += '>';
@@ -440,14 +459,26 @@ type
         begin
           var ovr := all_overloads[ovr_i];
           
-          sb += '    public static ';
-          WriteOvrT(ovr,nil, $'z_{l_name}', true);
+          sb += '    public ';
+          WriteOvrT(ovr,nil, $'z_{l_name.TrimStart(''&'')}', true,true);
           sb += ';'#10;
           sb += $'    external ''opengl32.dll'' name ''{name}'';'+#10;
           
           sb += $'    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr,nil, l_name, false);
-          sb += $' := z_{l_name};'+#10;
+          WriteOvrT(ovr,nil, l_name, false,false);
+          sb += $' := z_{l_name.TrimStart(''&'')}';
+          if ovr.Length>1 then
+          begin
+            sb += '(';
+            for var par_i := 1 to ovr.Length-1 do
+            begin
+              sb += org_par[par_i].name;
+              sb += ', ';
+            end;
+            sb.Length -= 2;
+            sb += ')';
+          end;
+          sb += ';'#10;
           
         end;
         
@@ -496,6 +527,7 @@ type
                 res_t := 'IntPtr';
               end;
               
+              if relevant_par_name<>'Result' then relevant_par_name := 'var '+relevant_par_name;
               par_strs[par_i] := relevant_par_name;
             end else
             begin
@@ -603,7 +635,7 @@ type
             PrevNtvOvrs += ntv_ovr;
             
             sb += $'    public {z_ovr_name} := GetFuncOrNil&<';
-            WriteOvrT(ntv_ovr,nil, nil, false);
+            WriteOvrT(ntv_ovr,nil, nil, false,false);
             sb += $'>(z_{l_name}_adr);'+#10;
             
           end else
@@ -621,7 +653,7 @@ type
             begin
               var g_ind := generic_inds.IndexOf(par_i);
               Result := g_ind=-1 ? par : (par[0],'var!'+temp_generic_names[g_ind]);
-            end),temp_generic_names, temp_z_ovr_name, false);
+            end),temp_generic_names, temp_z_ovr_name, false,false);
             sb += ' :='#10;
             sb += $'    {z_ovr_name}(';
             for var par_i := 1 to ntv_ovr.Length-1 do
@@ -636,7 +668,7 @@ type
           end;
           
           sb += '    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr,all_generic_names, l_name, false);
+          WriteOvrT(ovr,all_generic_names, l_name, false,false);
           sb += ';'#10;
           sb += '    begin'#10;
           
@@ -749,6 +781,7 @@ type
         f.Write(sb, api, all_funcs[f]);
       end;
       
+      Func.prev_func_names.Clear;
       sb += $'  end;'+#10;
       sb += $'  '+#10;
       
@@ -763,6 +796,7 @@ type
         f.Write(sb, api, all_funcs[f]);
       end;
       
+      Func.prev_func_names.Clear;
       sb += $'  end;'+#10;
       sb += $'  '+#10;
     end;
@@ -813,6 +847,7 @@ type
         if f.ext_name<>'' then
           log.WriteLine($'Skipped func [{f.name}] from ext [{display_name}] because ext group isn''t [{self.ext_group}]');
       
+      Func.prev_func_names.Clear;
       sb += $'  end;'+#10;
       sb += $'  '+#10;
     end;
@@ -883,9 +918,11 @@ type
       while enmr.MoveNext do
       begin
         var t := enmr.Current.Split('=');
-        enums.Add(t[0], t[1].StartsWith('0x') ?
-          System.Convert.ToInt64(t[1], 16) :
-          System.Convert.ToInt64(t[1])
+        var key := t[0].Trim;
+        var val := t[1].Trim;
+        enums.Add(key, val.StartsWith('0x') ?
+          System.Convert.ToInt64(val, 16) :
+          System.Convert.ToInt64(val)
         );
       end;
       

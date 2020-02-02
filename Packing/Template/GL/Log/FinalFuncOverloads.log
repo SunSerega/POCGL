@@ -43,31 +43,31 @@
 # glBindBuffersRange
  BufferTargetARB | UInt32 | Int32 | array of UInt32 | array of IntPtr | array of IntPtr |
  BufferTargetARB | UInt32 | Int32 | array of UInt32 | array of IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | array of UInt32 | array of IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | array of IntPtr | pointer |
  BufferTargetARB | UInt32 | Int32 | array of UInt32 | var!IntPtr | array of IntPtr |
  BufferTargetARB | UInt32 | Int32 | array of UInt32 | var!IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | array of UInt32 | var!IntPtr | IntPtr |
- BufferTargetARB | UInt32 | Int32 | array of UInt32 | IntPtr | array of IntPtr |
- BufferTargetARB | UInt32 | Int32 | array of UInt32 | IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | array of UInt32 | IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | var!IntPtr | pointer |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | pointer | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | pointer | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | array of UInt32 | pointer | pointer |
  BufferTargetARB | UInt32 | Int32 | var!UInt32 | array of IntPtr | array of IntPtr |
  BufferTargetARB | UInt32 | Int32 | var!UInt32 | array of IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | var!UInt32 | array of IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | array of IntPtr | pointer |
  BufferTargetARB | UInt32 | Int32 | var!UInt32 | var!IntPtr | array of IntPtr |
  BufferTargetARB | UInt32 | Int32 | var!UInt32 | var!IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | var!UInt32 | var!IntPtr | IntPtr |
- BufferTargetARB | UInt32 | Int32 | var!UInt32 | IntPtr | array of IntPtr |
- BufferTargetARB | UInt32 | Int32 | var!UInt32 | IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | var!UInt32 | IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | var!IntPtr | pointer |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | pointer | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | pointer | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | var!UInt32 | pointer | pointer |
  BufferTargetARB | UInt32 | Int32 | IntPtr | array of IntPtr | array of IntPtr |
  BufferTargetARB | UInt32 | Int32 | IntPtr | array of IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | IntPtr | array of IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | array of IntPtr | pointer |
  BufferTargetARB | UInt32 | Int32 | IntPtr | var!IntPtr | array of IntPtr |
  BufferTargetARB | UInt32 | Int32 | IntPtr | var!IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | IntPtr | var!IntPtr | IntPtr |
- BufferTargetARB | UInt32 | Int32 | IntPtr | IntPtr | array of IntPtr |
- BufferTargetARB | UInt32 | Int32 | IntPtr | IntPtr | var!IntPtr |
- BufferTargetARB | UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | var!IntPtr | pointer |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | pointer | array of IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | pointer | var!IntPtr |
+ BufferTargetARB | UInt32 | Int32 | IntPtr | pointer | pointer |
 
 # glBindFragDataLocation
  ProgramName | UInt32 | string |
@@ -129,27 +129,27 @@
  UInt32 | Int32 | array of UInt32 | var!IntPtr | array of Int32 |
  UInt32 | Int32 | array of UInt32 | var!IntPtr | var!Int32 |
  UInt32 | Int32 | array of UInt32 | var!IntPtr | IntPtr |
- UInt32 | Int32 | array of UInt32 | IntPtr | array of Int32 |
- UInt32 | Int32 | array of UInt32 | IntPtr | var!Int32 |
- UInt32 | Int32 | array of UInt32 | IntPtr | IntPtr |
+ UInt32 | Int32 | array of UInt32 | pointer | array of Int32 |
+ UInt32 | Int32 | array of UInt32 | pointer | var!Int32 |
+ UInt32 | Int32 | array of UInt32 | pointer | IntPtr |
  UInt32 | Int32 | var!UInt32 | array of IntPtr | array of Int32 |
  UInt32 | Int32 | var!UInt32 | array of IntPtr | var!Int32 |
  UInt32 | Int32 | var!UInt32 | array of IntPtr | IntPtr |
  UInt32 | Int32 | var!UInt32 | var!IntPtr | array of Int32 |
  UInt32 | Int32 | var!UInt32 | var!IntPtr | var!Int32 |
  UInt32 | Int32 | var!UInt32 | var!IntPtr | IntPtr |
- UInt32 | Int32 | var!UInt32 | IntPtr | array of Int32 |
- UInt32 | Int32 | var!UInt32 | IntPtr | var!Int32 |
- UInt32 | Int32 | var!UInt32 | IntPtr | IntPtr |
+ UInt32 | Int32 | var!UInt32 | pointer | array of Int32 |
+ UInt32 | Int32 | var!UInt32 | pointer | var!Int32 |
+ UInt32 | Int32 | var!UInt32 | pointer | IntPtr |
  UInt32 | Int32 | IntPtr | array of IntPtr | array of Int32 |
  UInt32 | Int32 | IntPtr | array of IntPtr | var!Int32 |
  UInt32 | Int32 | IntPtr | array of IntPtr | IntPtr |
  UInt32 | Int32 | IntPtr | var!IntPtr | array of Int32 |
  UInt32 | Int32 | IntPtr | var!IntPtr | var!Int32 |
  UInt32 | Int32 | IntPtr | var!IntPtr | IntPtr |
- UInt32 | Int32 | IntPtr | IntPtr | array of Int32 |
- UInt32 | Int32 | IntPtr | IntPtr | var!Int32 |
- UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | Int32 | IntPtr | pointer | array of Int32 |
+ UInt32 | Int32 | IntPtr | pointer | var!Int32 |
+ UInt32 | Int32 | IntPtr | pointer | IntPtr |
 
 # glBlendColor
  single | single | single | single |
@@ -897,7 +897,7 @@
 # glGetBufferPointerv
  BufferTargetARB | BufferPointerNameARB | array of IntPtr |
  BufferTargetARB | BufferPointerNameARB | var!IntPtr |
- BufferTargetARB | BufferPointerNameARB | IntPtr |
+ BufferTargetARB | BufferPointerNameARB | pointer |
 
 # glGetBufferSubData
  BufferTargetARB | IntPtr | IntPtr | IntPtr |
@@ -1007,7 +1007,7 @@
 # glGetNamedBufferPointerv
  UInt32 | VertexBufferObjectParameter | array of IntPtr |
  UInt32 | VertexBufferObjectParameter | var!IntPtr |
- UInt32 | VertexBufferObjectParameter | IntPtr |
+ UInt32 | VertexBufferObjectParameter | pointer |
 
 # glGetNamedBufferSubData
  UInt32 | IntPtr | IntPtr | IntPtr |
@@ -1122,7 +1122,7 @@
 # glGetPointerv
  GetPointervPName | array of IntPtr |
  GetPointervPName | var!IntPtr |
- GetPointervPName | IntPtr |
+ GetPointervPName | pointer |
 
 # glGetProgramBinary
  UInt32 | Int32 | array of Int32 | array of DummyEnum | IntPtr |
@@ -1576,7 +1576,7 @@
 # glGetVertexAttribPointerv
  UInt32 | VertexAttribPointerPropertyARB | array of IntPtr |
  UInt32 | VertexAttribPointerPropertyARB | var!IntPtr |
- UInt32 | VertexAttribPointerPropertyARB | IntPtr |
+ UInt32 | VertexAttribPointerPropertyARB | pointer |
 
 # glHint
  HintTarget | HintMode |
@@ -1705,13 +1705,13 @@
 # glMultiDrawElements
  PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 |
  PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 |
- PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | pointer | Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 |
- PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | pointer | Int32 |
  PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 |
  PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 |
- PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | pointer | Int32 |
 
 # glMultiDrawElementsBaseVertex
  PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 | array of Int32 |
@@ -1720,27 +1720,27 @@
  PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | array of Int32 |
  PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | var!Int32 |
  PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | IntPtr |
- PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | array of Int32 |
- PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | var!Int32 |
- PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | IntPtr |
+ PrimitiveType | array of Int32 | DrawElementsType | pointer | Int32 | array of Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | pointer | Int32 | var!Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | pointer | Int32 | IntPtr |
  PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | array of Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | var!Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | IntPtr |
  PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | array of Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | var!Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | IntPtr |
- PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | array of Int32 |
- PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | var!Int32 |
- PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | IntPtr |
+ PrimitiveType | var!Int32 | DrawElementsType | pointer | Int32 | array of Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | pointer | Int32 | var!Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | pointer | Int32 | IntPtr |
  PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | array of Int32 |
  PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | var!Int32 |
  PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | IntPtr |
  PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | array of Int32 |
  PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | var!Int32 |
  PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | IntPtr |
- PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | array of Int32 |
- PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | var!Int32 |
- PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | IntPtr |
+ PrimitiveType | IntPtr | DrawElementsType | pointer | Int32 | array of Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | pointer | Int32 | var!Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | pointer | Int32 | IntPtr |
 
 # glMultiDrawElementsIndirect
  PrimitiveType | DrawElementsType | IntPtr | Int32 | Int32 |
@@ -2686,27 +2686,27 @@
  UInt32 | UInt32 | Int32 | array of UInt32 | var!IntPtr | array of Int32 |
  UInt32 | UInt32 | Int32 | array of UInt32 | var!IntPtr | var!Int32 |
  UInt32 | UInt32 | Int32 | array of UInt32 | var!IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of UInt32 | IntPtr | array of Int32 |
- UInt32 | UInt32 | Int32 | array of UInt32 | IntPtr | var!Int32 |
- UInt32 | UInt32 | Int32 | array of UInt32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | array of UInt32 | pointer | array of Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | pointer | var!Int32 |
+ UInt32 | UInt32 | Int32 | array of UInt32 | pointer | IntPtr |
  UInt32 | UInt32 | Int32 | var!UInt32 | array of IntPtr | array of Int32 |
  UInt32 | UInt32 | Int32 | var!UInt32 | array of IntPtr | var!Int32 |
  UInt32 | UInt32 | Int32 | var!UInt32 | array of IntPtr | IntPtr |
  UInt32 | UInt32 | Int32 | var!UInt32 | var!IntPtr | array of Int32 |
  UInt32 | UInt32 | Int32 | var!UInt32 | var!IntPtr | var!Int32 |
  UInt32 | UInt32 | Int32 | var!UInt32 | var!IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!UInt32 | IntPtr | array of Int32 |
- UInt32 | UInt32 | Int32 | var!UInt32 | IntPtr | var!Int32 |
- UInt32 | UInt32 | Int32 | var!UInt32 | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | var!UInt32 | pointer | array of Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | pointer | var!Int32 |
+ UInt32 | UInt32 | Int32 | var!UInt32 | pointer | IntPtr |
  UInt32 | UInt32 | Int32 | IntPtr | array of IntPtr | array of Int32 |
  UInt32 | UInt32 | Int32 | IntPtr | array of IntPtr | var!Int32 |
  UInt32 | UInt32 | Int32 | IntPtr | array of IntPtr | IntPtr |
  UInt32 | UInt32 | Int32 | IntPtr | var!IntPtr | array of Int32 |
  UInt32 | UInt32 | Int32 | IntPtr | var!IntPtr | var!Int32 |
  UInt32 | UInt32 | Int32 | IntPtr | var!IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of Int32 |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!Int32 |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
+ UInt32 | UInt32 | Int32 | IntPtr | pointer | array of Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | pointer | var!Int32 |
+ UInt32 | UInt32 | Int32 | IntPtr | pointer | IntPtr |
 
 # glVertexAttrib1d
  UInt32 | real |
@@ -4832,7 +4832,7 @@
 # glGetTexParameterPointervAPPLE
  DummyEnum | DummyEnum | array of IntPtr |
  DummyEnum | DummyEnum | var!IntPtr |
- DummyEnum | DummyEnum | IntPtr |
+ DummyEnum | DummyEnum | pointer |
 
 # glBindVertexArrayAPPLE
  UInt32 |
@@ -5981,7 +5981,7 @@
 # glGetBufferPointervARB
  BufferTargetARB | BufferPointerNameARB | array of IntPtr |
  BufferTargetARB | BufferPointerNameARB | var!IntPtr |
- BufferTargetARB | BufferPointerNameARB | IntPtr |
+ BufferTargetARB | BufferPointerNameARB | pointer |
 
 # glVertexAttrib1dARB
  UInt32 | real |
@@ -6240,7 +6240,7 @@
 # glGetVertexAttribPointervARB
  UInt32 | VertexAttribPointerPropertyARB | array of IntPtr |
  UInt32 | VertexAttribPointerPropertyARB | var!IntPtr |
- UInt32 | VertexAttribPointerPropertyARB | IntPtr |
+ UInt32 | VertexAttribPointerPropertyARB | pointer |
 
 # glIsProgramARB
  boolean | UInt32 |
@@ -6490,7 +6490,7 @@
 # glGetVertexAttribPointervARB
  UInt32 | VertexAttribPointerPropertyARB | array of IntPtr |
  UInt32 | VertexAttribPointerPropertyARB | var!IntPtr |
- UInt32 | VertexAttribPointerPropertyARB | IntPtr |
+ UInt32 | VertexAttribPointerPropertyARB | pointer |
 
 # glWindowPos2dARB
  real | real |
@@ -7398,7 +7398,7 @@
 # glGetPointerIndexedvEXT
  DummyEnum | UInt32 | array of IntPtr |
  DummyEnum | UInt32 | var!IntPtr |
- DummyEnum | UInt32 | IntPtr |
+ DummyEnum | UInt32 | pointer |
 
 # glEnableIndexedEXT
  EnableCap | UInt32 |
@@ -7501,7 +7501,7 @@
 # glGetNamedBufferPointervEXT
  UInt32 | VertexBufferObjectParameter | array of IntPtr |
  UInt32 | VertexBufferObjectParameter | var!IntPtr |
- UInt32 | VertexBufferObjectParameter | IntPtr |
+ UInt32 | VertexBufferObjectParameter | pointer |
 
 # glGetNamedBufferSubDataEXT
  UInt32 | IntPtr | IntPtr | IntPtr |
@@ -7753,7 +7753,7 @@
 # glGetPointeri_vEXT
  DummyEnum | UInt32 | array of IntPtr |
  DummyEnum | UInt32 | var!IntPtr |
- DummyEnum | UInt32 | IntPtr |
+ DummyEnum | UInt32 | pointer |
 
 # glNamedProgramStringEXT
  UInt32 | ProgramTarget | ProgramFormat | Int32 | IntPtr |
@@ -7919,7 +7919,7 @@
 # glGetVertexArrayPointervEXT
  UInt32 | VertexArrayPName | array of IntPtr |
  UInt32 | VertexArrayPName | var!IntPtr |
- UInt32 | VertexArrayPName | IntPtr |
+ UInt32 | VertexArrayPName | pointer |
 
 # glGetVertexArrayIntegeri_vEXT
  UInt32 | UInt32 | VertexArrayPName | array of Int32 |
@@ -7929,7 +7929,7 @@
 # glGetVertexArrayPointeri_vEXT
  UInt32 | UInt32 | VertexArrayPName | array of IntPtr |
  UInt32 | UInt32 | VertexArrayPName | var!IntPtr |
- UInt32 | UInt32 | VertexArrayPName | IntPtr |
+ UInt32 | UInt32 | VertexArrayPName | pointer |
 
 # glMapNamedBufferRangeEXT
  IntPtr | UInt32 | IntPtr | IntPtr | MapBufferAccessMask |
@@ -8404,13 +8404,13 @@
 # glMultiDrawElementsEXT
  PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 |
  PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 |
- PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | array of Int32 | DrawElementsType | pointer | Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 |
  PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 |
- PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | var!Int32 | DrawElementsType | pointer | Int32 |
  PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 |
  PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 |
- PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 |
+ PrimitiveType | IntPtr | DrawElementsType | pointer | Int32 |
 
 # glSampleMaskEXT
  single | boolean |
@@ -8657,198 +8657,6 @@
  UInt32 | ShaderType | string |
  UInt32 | ShaderType | IntPtr |
 
-# glActiveShaderProgramEXT
- UInt32 | UInt32 |
-
-# glBindProgramPipelineEXT
- UInt32 |
-
-# glCreateShaderProgramvEXT
- UInt32 | ShaderType | Int32 | array of string |
- UInt32 | ShaderType | Int32 | array of IntPtr |
- UInt32 | ShaderType | Int32 | IntPtr |
-
-# glDeleteProgramPipelinesEXT
- Int32 | array of UInt32 |
- Int32 | var!UInt32 |
- Int32 | IntPtr |
-
-# glGenProgramPipelinesEXT
- Int32 | array of UInt32 |
- Int32 | var!UInt32 |
- Int32 | IntPtr |
-
-# glGetProgramPipelineInfoLogEXT
- UInt32 | Int32 | array of Int32 | string |
- UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | Int32 | var!Int32 | string |
- UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | Int32 | IntPtr | string |
- UInt32 | Int32 | IntPtr | IntPtr |
-
-# glGetProgramPipelineivEXT
- UInt32 | PipelineParameterName | array of Int32 |
- UInt32 | PipelineParameterName | var!Int32 |
- UInt32 | PipelineParameterName | IntPtr |
-
-# glIsProgramPipelineEXT
- boolean | UInt32 |
-
-# glProgramParameteriEXT
- UInt32 | ProgramParameterPName | Int32 |
-
-# glProgramUniform1fEXT
- UInt32 | Int32 | single |
-
-# glProgramUniform1fvEXT
- UInt32 | Int32 | Int32 | array of single |
- UInt32 | Int32 | Int32 | var!single |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform1iEXT
- UInt32 | Int32 | Int32 |
-
-# glProgramUniform1ivEXT
- UInt32 | Int32 | Int32 | array of Int32 |
- UInt32 | Int32 | Int32 | var!Int32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform2fEXT
- UInt32 | Int32 | single | single |
-
-# glProgramUniform2fvEXT
- UInt32 | Int32 | Int32 | array of single |
- UInt32 | Int32 | Int32 | var!single |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform2iEXT
- UInt32 | Int32 | Int32 | Int32 |
-
-# glProgramUniform2ivEXT
- UInt32 | Int32 | Int32 | array of Int32 |
- UInt32 | Int32 | Int32 | var!Int32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform3fEXT
- UInt32 | Int32 | single | single | single |
-
-# glProgramUniform3fvEXT
- UInt32 | Int32 | Int32 | array of single |
- UInt32 | Int32 | Int32 | var!single |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform3iEXT
- UInt32 | Int32 | Int32 | Int32 | Int32 |
-
-# glProgramUniform3ivEXT
- UInt32 | Int32 | Int32 | array of Int32 |
- UInt32 | Int32 | Int32 | var!Int32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform4fEXT
- UInt32 | Int32 | single | single | single | single |
-
-# glProgramUniform4fvEXT
- UInt32 | Int32 | Int32 | array of single |
- UInt32 | Int32 | Int32 | var!single |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform4iEXT
- UInt32 | Int32 | Int32 | Int32 | Int32 | Int32 |
-
-# glProgramUniform4ivEXT
- UInt32 | Int32 | Int32 | array of Int32 |
- UInt32 | Int32 | Int32 | var!Int32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniformMatrix2fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix3fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix4fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glUseProgramStagesEXT
- UInt32 | UseProgramStageMask | UInt32 |
-
-# glValidateProgramPipelineEXT
- UInt32 |
-
-# glProgramUniform1uiEXT
- UInt32 | Int32 | UInt32 |
-
-# glProgramUniform2uiEXT
- UInt32 | Int32 | UInt32 | UInt32 |
-
-# glProgramUniform3uiEXT
- UInt32 | Int32 | UInt32 | UInt32 | UInt32 |
-
-# glProgramUniform4uiEXT
- UInt32 | Int32 | UInt32 | UInt32 | UInt32 | UInt32 |
-
-# glProgramUniform1uivEXT
- UInt32 | Int32 | Int32 | array of UInt32 |
- UInt32 | Int32 | Int32 | var!UInt32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform2uivEXT
- UInt32 | Int32 | Int32 | array of UInt32 |
- UInt32 | Int32 | Int32 | var!UInt32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform3uivEXT
- UInt32 | Int32 | Int32 | array of UInt32 |
- UInt32 | Int32 | Int32 | var!UInt32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniform4uivEXT
- UInt32 | Int32 | Int32 | array of UInt32 |
- UInt32 | Int32 | Int32 | var!UInt32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glProgramUniformMatrix4fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix2x3fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix3x2fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix2x4fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix4x2fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix3x4fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
-# glProgramUniformMatrix4x3fvEXT
- UInt32 | Int32 | Int32 | boolean | array of single |
- UInt32 | Int32 | Int32 | boolean | var!single |
- UInt32 | Int32 | Int32 | boolean | IntPtr |
-
 # glBindImageTextureEXT
  UInt32 | UInt32 | Int32 | boolean | Int32 | BufferAccessARB | Int32 |
 
@@ -9046,7 +8854,7 @@
 # glGetPointervEXT
  GetPointervPName | array of IntPtr |
  GetPointervPName | var!IntPtr |
- GetPointervPName | IntPtr |
+ GetPointervPName | pointer |
 
 # glIndexPointerEXT
  IndexPointerType | Int32 | Int32 | IntPtr |
@@ -9224,7 +9032,7 @@
 # glGetVariantPointervEXT
  UInt32 | GetVariantValueEXT | array of IntPtr |
  UInt32 | GetVariantValueEXT | var!IntPtr |
- UInt32 | GetVariantValueEXT | IntPtr |
+ UInt32 | GetVariantValueEXT | pointer |
 
 # glGetInvariantBooleanvEXT
  UInt32 | GetVariantValueEXT | array of boolean |
@@ -9342,31 +9150,31 @@
 # glMultiModeDrawElementsIBM
  array of PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 | Int32 |
  array of PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | Int32 |
- array of PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | Int32 |
+ array of PrimitiveType | array of Int32 | DrawElementsType | pointer | Int32 | Int32 |
  array of PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | Int32 |
  array of PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | Int32 |
- array of PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | Int32 |
+ array of PrimitiveType | var!Int32 | DrawElementsType | pointer | Int32 | Int32 |
  array of PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | Int32 |
  array of PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | Int32 |
- array of PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | Int32 |
+ array of PrimitiveType | IntPtr | DrawElementsType | pointer | Int32 | Int32 |
  var!PrimitiveType | array of Int32 | DrawElementsType | array of IntPtr | Int32 | Int32 |
  var!PrimitiveType | array of Int32 | DrawElementsType | var!IntPtr | Int32 | Int32 |
- var!PrimitiveType | array of Int32 | DrawElementsType | IntPtr | Int32 | Int32 |
+ var!PrimitiveType | array of Int32 | DrawElementsType | pointer | Int32 | Int32 |
  var!PrimitiveType | var!Int32 | DrawElementsType | array of IntPtr | Int32 | Int32 |
  var!PrimitiveType | var!Int32 | DrawElementsType | var!IntPtr | Int32 | Int32 |
- var!PrimitiveType | var!Int32 | DrawElementsType | IntPtr | Int32 | Int32 |
+ var!PrimitiveType | var!Int32 | DrawElementsType | pointer | Int32 | Int32 |
  var!PrimitiveType | IntPtr | DrawElementsType | array of IntPtr | Int32 | Int32 |
  var!PrimitiveType | IntPtr | DrawElementsType | var!IntPtr | Int32 | Int32 |
- var!PrimitiveType | IntPtr | DrawElementsType | IntPtr | Int32 | Int32 |
+ var!PrimitiveType | IntPtr | DrawElementsType | pointer | Int32 | Int32 |
  IntPtr | array of Int32 | DrawElementsType | array of IntPtr | Int32 | Int32 |
  IntPtr | array of Int32 | DrawElementsType | var!IntPtr | Int32 | Int32 |
- IntPtr | array of Int32 | DrawElementsType | IntPtr | Int32 | Int32 |
+ IntPtr | array of Int32 | DrawElementsType | pointer | Int32 | Int32 |
  IntPtr | var!Int32 | DrawElementsType | array of IntPtr | Int32 | Int32 |
  IntPtr | var!Int32 | DrawElementsType | var!IntPtr | Int32 | Int32 |
- IntPtr | var!Int32 | DrawElementsType | IntPtr | Int32 | Int32 |
+ IntPtr | var!Int32 | DrawElementsType | pointer | Int32 | Int32 |
  IntPtr | IntPtr | DrawElementsType | array of IntPtr | Int32 | Int32 |
  IntPtr | IntPtr | DrawElementsType | var!IntPtr | Int32 | Int32 |
- IntPtr | IntPtr | DrawElementsType | IntPtr | Int32 | Int32 |
+ IntPtr | IntPtr | DrawElementsType | pointer | Int32 | Int32 |
 
 # glFlushStaticDataIBM
  DummyEnum |
@@ -9374,42 +9182,42 @@
 # glColorPointerListIBM
  Int32 | ColorPointerType | Int32 | array of IntPtr | Int32 |
  Int32 | ColorPointerType | Int32 | var!IntPtr | Int32 |
- Int32 | ColorPointerType | Int32 | IntPtr | Int32 |
+ Int32 | ColorPointerType | Int32 | pointer | Int32 |
 
 # glSecondaryColorPointerListIBM
  Int32 | SecondaryColorPointerTypeIBM | Int32 | array of IntPtr | Int32 |
  Int32 | SecondaryColorPointerTypeIBM | Int32 | var!IntPtr | Int32 |
- Int32 | SecondaryColorPointerTypeIBM | Int32 | IntPtr | Int32 |
+ Int32 | SecondaryColorPointerTypeIBM | Int32 | pointer | Int32 |
 
 # glEdgeFlagPointerListIBM
- Int32 | array of array of boolean | Int32 |
+ Int32 | array of array of Byte | Int32 |
  Int32 | array of IntPtr | Int32 |
  Int32 | IntPtr | Int32 |
 
 # glFogCoordPointerListIBM
  FogPointerTypeIBM | Int32 | array of IntPtr | Int32 |
  FogPointerTypeIBM | Int32 | var!IntPtr | Int32 |
- FogPointerTypeIBM | Int32 | IntPtr | Int32 |
+ FogPointerTypeIBM | Int32 | pointer | Int32 |
 
 # glIndexPointerListIBM
  IndexPointerType | Int32 | array of IntPtr | Int32 |
  IndexPointerType | Int32 | var!IntPtr | Int32 |
- IndexPointerType | Int32 | IntPtr | Int32 |
+ IndexPointerType | Int32 | pointer | Int32 |
 
 # glNormalPointerListIBM
  NormalPointerType | Int32 | array of IntPtr | Int32 |
  NormalPointerType | Int32 | var!IntPtr | Int32 |
- NormalPointerType | Int32 | IntPtr | Int32 |
+ NormalPointerType | Int32 | pointer | Int32 |
 
 # glTexCoordPointerListIBM
  Int32 | TexCoordPointerType | Int32 | array of IntPtr | Int32 |
  Int32 | TexCoordPointerType | Int32 | var!IntPtr | Int32 |
- Int32 | TexCoordPointerType | Int32 | IntPtr | Int32 |
+ Int32 | TexCoordPointerType | Int32 | pointer | Int32 |
 
 # glVertexPointerListIBM
  Int32 | VertexPointerType | Int32 | array of IntPtr | Int32 |
  Int32 | VertexPointerType | Int32 | var!IntPtr | Int32 |
- Int32 | VertexPointerType | Int32 | IntPtr | Int32 |
+ Int32 | VertexPointerType | Int32 | pointer | Int32 |
 
 # glBlendFuncSeparateINGR
  BlendingFactor | BlendingFactor | BlendingFactor | BlendingFactor |
@@ -9434,22 +9242,22 @@
 # glVertexPointervINTEL
  Int32 | VertexPointerType | array of IntPtr |
  Int32 | VertexPointerType | var!IntPtr |
- Int32 | VertexPointerType | IntPtr |
+ Int32 | VertexPointerType | pointer |
 
 # glNormalPointervINTEL
  NormalPointerType | array of IntPtr |
  NormalPointerType | var!IntPtr |
- NormalPointerType | IntPtr |
+ NormalPointerType | pointer |
 
 # glColorPointervINTEL
  Int32 | VertexPointerType | array of IntPtr |
  Int32 | VertexPointerType | var!IntPtr |
- Int32 | VertexPointerType | IntPtr |
+ Int32 | VertexPointerType | pointer |
 
 # glTexCoordPointervINTEL
  Int32 | VertexPointerType | array of IntPtr |
  Int32 | VertexPointerType | var!IntPtr |
- Int32 | VertexPointerType | IntPtr |
+ Int32 | VertexPointerType | pointer |
 
 # glBeginPerfQueryINTEL
  PerfQueryHandleINTEL |
@@ -9489,76 +9297,6 @@
 # glGetPerfQueryInfoINTEL
  PerfQueryIdINTEL | UInt32 | IntPtr | var!UInt32 | var!UInt32 | var!UInt32 | var!PerfQueryCapFlagsINTEL |
  PerfQueryIdINTEL | UInt32 | IntPtr | IntPtr | IntPtr | IntPtr | var!PerfQueryCapFlagsINTEL |
-
-# glDebugMessageControlKHR
- DebugSource | DebugType | DebugSeverity | Int32 | array of UInt32 | boolean |
- DebugSource | DebugType | DebugSeverity | Int32 | var!UInt32 | boolean |
- DebugSource | DebugType | DebugSeverity | Int32 | IntPtr | boolean |
-
-# glDebugMessageInsertKHR
- DebugSource | DebugType | UInt32 | DebugSeverity | Int32 | string |
- DebugSource | DebugType | UInt32 | DebugSeverity | Int32 | IntPtr |
-
-# glDebugMessageCallbackKHR
- GLDEBUGPROC | IntPtr |
-
-# glGetDebugMessageLogKHR
- UInt32 | UInt32 | Int32 | var!DebugSource | var!DebugType | var!UInt32 | var!DebugSeverity | var!Int32 | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr | IntPtr | IntPtr |
-
-# glPushDebugGroupKHR
- DebugSource | UInt32 | Int32 | string |
- DebugSource | UInt32 | Int32 | IntPtr |
-
-# glObjectLabelKHR
- ObjectIdentifier | UInt32 | Int32 | string |
- ObjectIdentifier | UInt32 | Int32 | IntPtr |
-
-# glGetObjectLabelKHR
- DummyEnum | UInt32 | Int32 | array of Int32 | string |
- DummyEnum | UInt32 | Int32 | array of Int32 | IntPtr |
- DummyEnum | UInt32 | Int32 | var!Int32 | string |
- DummyEnum | UInt32 | Int32 | var!Int32 | IntPtr |
- DummyEnum | UInt32 | Int32 | IntPtr | string |
- DummyEnum | UInt32 | Int32 | IntPtr | IntPtr |
-
-# glObjectPtrLabelKHR
- IntPtr | Int32 | string |
- IntPtr | Int32 | IntPtr |
-
-# glGetObjectPtrLabelKHR
- IntPtr | Int32 | array of Int32 | string |
- IntPtr | Int32 | array of Int32 | IntPtr |
- IntPtr | Int32 | var!Int32 | string |
- IntPtr | Int32 | var!Int32 | IntPtr |
- IntPtr | Int32 | IntPtr | string |
- IntPtr | Int32 | IntPtr | IntPtr |
-
-# glGetPointervKHR
- DummyEnum | array of IntPtr |
- DummyEnum | var!IntPtr |
- DummyEnum | IntPtr |
-
-# glGetGraphicsResetStatusKHR
- GraphicsResetStatus |
-
-# glReadnPixelsKHR
- Int32 | Int32 | Int32 | Int32 | PixelFormat | PixelType | Int32 | IntPtr |
-
-# glGetnUniformfvKHR
- UInt32 | Int32 | Int32 | array of single |
- UInt32 | Int32 | Int32 | var!single |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glGetnUniformivKHR
- UInt32 | Int32 | Int32 | array of Int32 |
- UInt32 | Int32 | Int32 | var!Int32 |
- UInt32 | Int32 | Int32 | IntPtr |
-
-# glGetnUniformuivKHR
- UInt32 | Int32 | Int32 | array of UInt32 |
- UInt32 | Int32 | Int32 | var!UInt32 |
- UInt32 | Int32 | Int32 | IntPtr |
 
 # glMaxShaderCompilerThreadsKHR
  UInt32 |
@@ -9769,9 +9507,9 @@
  DummyEnum | UInt32 | var!IntPtr | array of Int32 | UInt32 |
  DummyEnum | UInt32 | var!IntPtr | var!Int32 | UInt32 |
  DummyEnum | UInt32 | var!IntPtr | IntPtr | UInt32 |
- DummyEnum | UInt32 | IntPtr | array of Int32 | UInt32 |
- DummyEnum | UInt32 | IntPtr | var!Int32 | UInt32 |
- DummyEnum | UInt32 | IntPtr | IntPtr | UInt32 |
+ DummyEnum | UInt32 | pointer | array of Int32 | UInt32 |
+ DummyEnum | UInt32 | pointer | var!Int32 | UInt32 |
+ DummyEnum | UInt32 | pointer | IntPtr | UInt32 |
 
 # glDrawCommandsAddressNV
  DummyEnum | array of UInt64 | array of Int32 | UInt32 |
@@ -9839,33 +9577,33 @@
  UInt32 | var!IntPtr | IntPtr | IntPtr | array of UInt32 | UInt32 |
  UInt32 | var!IntPtr | IntPtr | IntPtr | var!UInt32 | UInt32 |
  UInt32 | var!IntPtr | IntPtr | IntPtr | IntPtr | UInt32 |
- UInt32 | IntPtr | array of Int32 | array of UInt32 | array of UInt32 | UInt32 |
- UInt32 | IntPtr | array of Int32 | array of UInt32 | var!UInt32 | UInt32 |
- UInt32 | IntPtr | array of Int32 | array of UInt32 | IntPtr | UInt32 |
- UInt32 | IntPtr | array of Int32 | var!UInt32 | array of UInt32 | UInt32 |
- UInt32 | IntPtr | array of Int32 | var!UInt32 | var!UInt32 | UInt32 |
- UInt32 | IntPtr | array of Int32 | var!UInt32 | IntPtr | UInt32 |
- UInt32 | IntPtr | array of Int32 | IntPtr | array of UInt32 | UInt32 |
- UInt32 | IntPtr | array of Int32 | IntPtr | var!UInt32 | UInt32 |
- UInt32 | IntPtr | array of Int32 | IntPtr | IntPtr | UInt32 |
- UInt32 | IntPtr | var!Int32 | array of UInt32 | array of UInt32 | UInt32 |
- UInt32 | IntPtr | var!Int32 | array of UInt32 | var!UInt32 | UInt32 |
- UInt32 | IntPtr | var!Int32 | array of UInt32 | IntPtr | UInt32 |
- UInt32 | IntPtr | var!Int32 | var!UInt32 | array of UInt32 | UInt32 |
- UInt32 | IntPtr | var!Int32 | var!UInt32 | var!UInt32 | UInt32 |
- UInt32 | IntPtr | var!Int32 | var!UInt32 | IntPtr | UInt32 |
- UInt32 | IntPtr | var!Int32 | IntPtr | array of UInt32 | UInt32 |
- UInt32 | IntPtr | var!Int32 | IntPtr | var!UInt32 | UInt32 |
- UInt32 | IntPtr | var!Int32 | IntPtr | IntPtr | UInt32 |
- UInt32 | IntPtr | IntPtr | array of UInt32 | array of UInt32 | UInt32 |
- UInt32 | IntPtr | IntPtr | array of UInt32 | var!UInt32 | UInt32 |
- UInt32 | IntPtr | IntPtr | array of UInt32 | IntPtr | UInt32 |
- UInt32 | IntPtr | IntPtr | var!UInt32 | array of UInt32 | UInt32 |
- UInt32 | IntPtr | IntPtr | var!UInt32 | var!UInt32 | UInt32 |
- UInt32 | IntPtr | IntPtr | var!UInt32 | IntPtr | UInt32 |
- UInt32 | IntPtr | IntPtr | IntPtr | array of UInt32 | UInt32 |
- UInt32 | IntPtr | IntPtr | IntPtr | var!UInt32 | UInt32 |
- UInt32 | IntPtr | IntPtr | IntPtr | IntPtr | UInt32 |
+ UInt32 | pointer | array of Int32 | array of UInt32 | array of UInt32 | UInt32 |
+ UInt32 | pointer | array of Int32 | array of UInt32 | var!UInt32 | UInt32 |
+ UInt32 | pointer | array of Int32 | array of UInt32 | IntPtr | UInt32 |
+ UInt32 | pointer | array of Int32 | var!UInt32 | array of UInt32 | UInt32 |
+ UInt32 | pointer | array of Int32 | var!UInt32 | var!UInt32 | UInt32 |
+ UInt32 | pointer | array of Int32 | var!UInt32 | IntPtr | UInt32 |
+ UInt32 | pointer | array of Int32 | IntPtr | array of UInt32 | UInt32 |
+ UInt32 | pointer | array of Int32 | IntPtr | var!UInt32 | UInt32 |
+ UInt32 | pointer | array of Int32 | IntPtr | IntPtr | UInt32 |
+ UInt32 | pointer | var!Int32 | array of UInt32 | array of UInt32 | UInt32 |
+ UInt32 | pointer | var!Int32 | array of UInt32 | var!UInt32 | UInt32 |
+ UInt32 | pointer | var!Int32 | array of UInt32 | IntPtr | UInt32 |
+ UInt32 | pointer | var!Int32 | var!UInt32 | array of UInt32 | UInt32 |
+ UInt32 | pointer | var!Int32 | var!UInt32 | var!UInt32 | UInt32 |
+ UInt32 | pointer | var!Int32 | var!UInt32 | IntPtr | UInt32 |
+ UInt32 | pointer | var!Int32 | IntPtr | array of UInt32 | UInt32 |
+ UInt32 | pointer | var!Int32 | IntPtr | var!UInt32 | UInt32 |
+ UInt32 | pointer | var!Int32 | IntPtr | IntPtr | UInt32 |
+ UInt32 | pointer | IntPtr | array of UInt32 | array of UInt32 | UInt32 |
+ UInt32 | pointer | IntPtr | array of UInt32 | var!UInt32 | UInt32 |
+ UInt32 | pointer | IntPtr | array of UInt32 | IntPtr | UInt32 |
+ UInt32 | pointer | IntPtr | var!UInt32 | array of UInt32 | UInt32 |
+ UInt32 | pointer | IntPtr | var!UInt32 | var!UInt32 | UInt32 |
+ UInt32 | pointer | IntPtr | var!UInt32 | IntPtr | UInt32 |
+ UInt32 | pointer | IntPtr | IntPtr | array of UInt32 | UInt32 |
+ UInt32 | pointer | IntPtr | IntPtr | var!UInt32 | UInt32 |
+ UInt32 | pointer | IntPtr | IntPtr | IntPtr | UInt32 |
 
 # glDrawCommandsStatesAddressNV
  array of UInt64 | array of Int32 | array of UInt32 | array of UInt32 | UInt32 |
@@ -10018,33 +9756,33 @@
  UInt32 | UInt32 | var!IntPtr | IntPtr | IntPtr | array of UInt32 | UInt32 |
  UInt32 | UInt32 | var!IntPtr | IntPtr | IntPtr | var!UInt32 | UInt32 |
  UInt32 | UInt32 | var!IntPtr | IntPtr | IntPtr | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | array of UInt32 | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | array of UInt32 | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | array of UInt32 | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | var!UInt32 | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | var!UInt32 | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | var!UInt32 | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | IntPtr | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | IntPtr | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | array of Int32 | IntPtr | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | array of UInt32 | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | array of UInt32 | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | array of UInt32 | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | var!UInt32 | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | var!UInt32 | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | var!UInt32 | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | IntPtr | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | IntPtr | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | var!Int32 | IntPtr | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | array of UInt32 | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | array of UInt32 | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | array of UInt32 | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | var!UInt32 | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | var!UInt32 | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | var!UInt32 | IntPtr | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | IntPtr | array of UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | IntPtr | var!UInt32 | UInt32 |
- UInt32 | UInt32 | IntPtr | IntPtr | IntPtr | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | array of UInt32 | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | array of UInt32 | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | array of UInt32 | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | var!UInt32 | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | var!UInt32 | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | var!UInt32 | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | IntPtr | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | IntPtr | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | array of Int32 | IntPtr | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | array of UInt32 | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | array of UInt32 | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | array of UInt32 | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | var!UInt32 | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | var!UInt32 | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | var!UInt32 | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | IntPtr | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | IntPtr | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | var!Int32 | IntPtr | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | array of UInt32 | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | array of UInt32 | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | array of UInt32 | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | var!UInt32 | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | var!UInt32 | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | var!UInt32 | IntPtr | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | IntPtr | array of UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | IntPtr | var!UInt32 | UInt32 |
+ UInt32 | UInt32 | pointer | IntPtr | IntPtr | IntPtr | UInt32 |
 
 # glCommandListSegmentsNV
  UInt32 | UInt32 |
@@ -11580,9 +11318,6 @@
 # glShadingRateImageBarrierNV
  boolean |
 
-# glShadingRateImageBarrierNV
- boolean |
-
 # glShadingRateImagePaletteNV
  UInt32 | UInt32 | Int32 | array of DummyEnum |
  UInt32 | UInt32 | Int32 | var!DummyEnum |
@@ -11973,7 +11708,7 @@
 # glGetVertexAttribPointervNV
  UInt32 | VertexAttribEnumNV | array of IntPtr |
  UInt32 | VertexAttribEnumNV | var!IntPtr |
- UInt32 | VertexAttribEnumNV | IntPtr |
+ UInt32 | VertexAttribEnumNV | pointer |
 
 # glIsProgramNV
  boolean | UInt32 |
@@ -12470,22 +12205,6 @@
 
 # glTranslatexOES
  Fixed | Fixed | Fixed |
-
-# glGetLightxvOES
- LightName | LightParameter | array of Fixed |
- LightName | LightParameter | var!Fixed |
- LightName | LightParameter | IntPtr |
-
-# glGetMaterialxvOES
- DummyEnum | MaterialParameter | array of Fixed |
- DummyEnum | MaterialParameter | var!Fixed |
- DummyEnum | MaterialParameter | IntPtr |
-
-# glPointParameterxOES
- PointParameterNameARB | Fixed |
-
-# glSampleCoveragexOES
- Int32 | boolean |
 
 # glAccumxOES
  DummyEnum | Fixed |
@@ -13160,7 +12879,7 @@
 # glReplacementCodePointerSUN
  ReplacementCodeTypeSUN | Int32 | array of IntPtr |
  ReplacementCodeTypeSUN | Int32 | var!IntPtr |
- ReplacementCodeTypeSUN | Int32 | IntPtr |
+ ReplacementCodeTypeSUN | Int32 | pointer |
 
 # glColor4ubVertex2fSUN
  Byte | Byte | Byte | Byte | single | single |
@@ -13835,32 +13554,32 @@
  UInt32 | GDI_DC | array of IntPtr | var!IntPtr | array of UInt32 | UInt32 |
  UInt32 | GDI_DC | array of IntPtr | var!IntPtr | var!UInt32 | UInt32 |
  UInt32 | GDI_DC | array of IntPtr | var!IntPtr | IntPtr | UInt32 |
- UInt32 | GDI_DC | array of IntPtr | IntPtr | array of UInt32 | UInt32 |
- UInt32 | GDI_DC | array of IntPtr | IntPtr | var!UInt32 | UInt32 |
- UInt32 | GDI_DC | array of IntPtr | IntPtr | IntPtr | UInt32 |
+ UInt32 | GDI_DC | array of IntPtr | pointer | array of UInt32 | UInt32 |
+ UInt32 | GDI_DC | array of IntPtr | pointer | var!UInt32 | UInt32 |
+ UInt32 | GDI_DC | array of IntPtr | pointer | IntPtr | UInt32 |
  UInt32 | GDI_DC | var!IntPtr | array of IntPtr | array of UInt32 | UInt32 |
  UInt32 | GDI_DC | var!IntPtr | array of IntPtr | var!UInt32 | UInt32 |
  UInt32 | GDI_DC | var!IntPtr | array of IntPtr | IntPtr | UInt32 |
  UInt32 | GDI_DC | var!IntPtr | var!IntPtr | array of UInt32 | UInt32 |
  UInt32 | GDI_DC | var!IntPtr | var!IntPtr | var!UInt32 | UInt32 |
  UInt32 | GDI_DC | var!IntPtr | var!IntPtr | IntPtr | UInt32 |
- UInt32 | GDI_DC | var!IntPtr | IntPtr | array of UInt32 | UInt32 |
- UInt32 | GDI_DC | var!IntPtr | IntPtr | var!UInt32 | UInt32 |
- UInt32 | GDI_DC | var!IntPtr | IntPtr | IntPtr | UInt32 |
- UInt32 | GDI_DC | IntPtr | array of IntPtr | array of UInt32 | UInt32 |
- UInt32 | GDI_DC | IntPtr | array of IntPtr | var!UInt32 | UInt32 |
- UInt32 | GDI_DC | IntPtr | array of IntPtr | IntPtr | UInt32 |
- UInt32 | GDI_DC | IntPtr | var!IntPtr | array of UInt32 | UInt32 |
- UInt32 | GDI_DC | IntPtr | var!IntPtr | var!UInt32 | UInt32 |
- UInt32 | GDI_DC | IntPtr | var!IntPtr | IntPtr | UInt32 |
- UInt32 | GDI_DC | IntPtr | IntPtr | array of UInt32 | UInt32 |
- UInt32 | GDI_DC | IntPtr | IntPtr | var!UInt32 | UInt32 |
- UInt32 | GDI_DC | IntPtr | IntPtr | IntPtr | UInt32 |
+ UInt32 | GDI_DC | var!IntPtr | pointer | array of UInt32 | UInt32 |
+ UInt32 | GDI_DC | var!IntPtr | pointer | var!UInt32 | UInt32 |
+ UInt32 | GDI_DC | var!IntPtr | pointer | IntPtr | UInt32 |
+ UInt32 | GDI_DC | pointer | array of IntPtr | array of UInt32 | UInt32 |
+ UInt32 | GDI_DC | pointer | array of IntPtr | var!UInt32 | UInt32 |
+ UInt32 | GDI_DC | pointer | array of IntPtr | IntPtr | UInt32 |
+ UInt32 | GDI_DC | pointer | var!IntPtr | array of UInt32 | UInt32 |
+ UInt32 | GDI_DC | pointer | var!IntPtr | var!UInt32 | UInt32 |
+ UInt32 | GDI_DC | pointer | var!IntPtr | IntPtr | UInt32 |
+ UInt32 | GDI_DC | pointer | pointer | array of UInt32 | UInt32 |
+ UInt32 | GDI_DC | pointer | pointer | var!UInt32 | UInt32 |
+ UInt32 | GDI_DC | pointer | pointer | IntPtr | UInt32 |
 
 # wglReleaseImageBufferEventsI3D
  UInt32 | GDI_DC | array of IntPtr | UInt32 |
  UInt32 | GDI_DC | var!IntPtr | UInt32 |
- UInt32 | GDI_DC | IntPtr | UInt32 |
+ UInt32 | GDI_DC | pointer | UInt32 |
 
 # wglEnableFrameLockI3D
  UInt32 |
@@ -13945,12 +13664,12 @@
 # wglDXLockObjectsNV
  UInt32 | IntPtr | Int32 | array of IntPtr |
  UInt32 | IntPtr | Int32 | var!IntPtr |
- UInt32 | IntPtr | Int32 | IntPtr |
+ UInt32 | IntPtr | Int32 | pointer |
 
 # wglDXUnlockObjectsNV
  UInt32 | IntPtr | Int32 | array of IntPtr |
  UInt32 | IntPtr | Int32 | var!IntPtr |
- UInt32 | IntPtr | Int32 | IntPtr |
+ UInt32 | IntPtr | Int32 | pointer |
 
 # wglEnumGpusNV
  UInt32 | UInt32 | array of HGPUNV |
