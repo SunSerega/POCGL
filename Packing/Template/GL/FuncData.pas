@@ -20,6 +20,8 @@ var allowed_ext_names := HSet(
 );
 function GetExt(s: string): string;
 
+var unallowed_words: HashSet<string>;
+
 type
   
   {$region Group}
@@ -32,10 +34,17 @@ type
     public function GetName: string := name;
     
     public ext_name: string;
+    public screened_enums: Dictionary<string,string>;
     
     public procedure FinishInit;
     begin
+      
       ext_name := GetExt(name);
+      
+      screened_enums := new Dictionary<string, string>;
+      foreach var key in enums.Keys do
+        screened_enums.Add(key, key.ToLower in unallowed_words ? '&'+key : key);
+      
     end;
     
     public constructor := exit;
@@ -48,7 +57,8 @@ type
       enums := new Dictionary<string, int64>(enums_count);
       loop enums_count do
       begin
-        var key := br.ReadString.Substring(3);
+        var key := br.ReadString;
+        if not key.ElementAt(3).IsDigit then key := key.Substring(3);
         var val := br.ReadInt64;
         enums.Add(key, val);
       end;
@@ -61,7 +71,8 @@ type
     
     public procedure Write(sb: StringBuilder);
     begin
-      var max_w := enums.Keys.Max(ename->ename.Length);
+      var max_w := screened_enums.Keys.Max(ename->ename.Length);
+      var max_scr_w := screened_enums.Values.Max(ename->ename.Length);
       sb +=       $'  {name} = record' + #10;
       
       sb +=       $'    public val: UInt32;' + #10;
@@ -73,7 +84,7 @@ type
       sb +=       $'    ' + #10;
       
       foreach var ename in EnumrKeys do
-        sb +=     $'    public static property {ename}:{'' ''*(max_w-ename.Length)} {name} read _{ename};' + #10;
+        sb +=     $'    public static property {screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} {name} read _{ename};' + #10;
       sb +=       $'    ' + #10;
       
       if bitmask then
@@ -84,7 +95,7 @@ type
         
         foreach var ename in EnumrKeys do
           if enums[ename]<>0 then
-            sb += $'    public property HAS_FLAG_{ename}:{'' ''*(max_w-ename.Length)} boolean read self.val and {ValueStr[ename]} <> 0;' + #10 else
+            sb += $'    public property HAS_FLAG_{screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} boolean read self.val and {ValueStr[ename]} <> 0;' + #10 else
             sb += $'    public property ANY_FLAGS: boolean read self.val<>0;' + #10;
         sb +=     $'    ' + #10;
         
@@ -94,7 +105,7 @@ type
       sb +=       $'    begin' + #10;
       if bitmask then
       begin
-        sb +=     $'      var res := typeof({name}).GetProperties.Where(prop->prop.Name.StartsWith(''HAS_FLAG_'') and boolean(prop.GetValue(self))).Select(prop->prop.Name).ToList;' + #10;
+        sb +=     $'      var res := typeof({name}).GetProperties.Where(prop->prop.Name.StartsWith(''HAS_FLAG_'') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart(''&'')).ToList;' + #10;
         sb +=     $'      Result := res.Count=0?' + #10;
         sb +=     $'        $''{name}[{{ self.val=0 ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
         sb +=     $'        res.JoinIntoString(''+'');' + #10;
@@ -103,7 +114,7 @@ type
         sb +=     $'      var res := typeof({name}).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);' + #10;
         sb +=     $'      Result := res=nil?' + #10;
         sb +=     $'        $''{name}[{{ self.val=0 ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
-        sb +=     $'        res.Name;' + #10;
+        sb +=     $'        res.Name.TrimStart(''&'');' + #10;
       end;
       sb +=       $'    end;' + #10;
       sb +=       $'    ' + #10;
@@ -149,9 +160,13 @@ type
         Otp($'WARNING: TypeTable key [{ntv_t}] wasn''t used');
     
     public constructor := exit;
-    public constructor(br: System.IO.BinaryReader; grs: List<Group>; var proto: boolean);
+    public constructor(br: System.IO.BinaryReader; grs: List<Group>; proto: boolean);
     begin
       self.name := br.ReadString;
+      if not proto then
+      begin
+        if self.name.ToLower in unallowed_words then self.name := '&'+self.name;
+      end;
       
       var ntv_t := br.ReadString;
       if TypeTable.TryGetValue(ntv_t,self.t) then
@@ -171,7 +186,6 @@ type
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : grs[gr_ind];
       
-      proto := false;
     end;
     
     public function GetTName :=
@@ -197,7 +211,7 @@ type
     public constructor(br: System.IO.BinaryReader; grs: List<Group>);
     begin
       var proto := true;
-      org_par := ArrGen(br.ReadInt32, i->new FuncOrgParam(br, grs, proto));
+      org_par := ArrGen(br.ReadInt32, i->new FuncOrgParam(br, grs, i=0));
       BasicInit;
     end;
     
@@ -1236,4 +1250,18 @@ end;
 
 {$endregion FuncFixer}
 
+procedure Init;
+begin
+  
+  unallowed_words :=
+    ReadLines(GetFullPath('..\MiscInput\UnAllowedWords.dat',GetEXEFileName))
+    .Where(l->not string.IsNullOrWhiteSpace(l))
+    .Select(l->l.ToLower)
+    .ToHashSet
+  ;
+  
+end;
+
+begin
+  Init;
 end.
