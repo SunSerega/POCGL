@@ -44,7 +44,7 @@ First line specifies return type. Can be `void` for procedure.
 
 Syntax:
 ```
-# RemovalbeFunc
+# RemovableFunc
 !remove
 ```
 

@@ -38,16 +38,16 @@ Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\пр
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Enums.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
-Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackVecTypes.pas"
+Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack VecTypes.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[PackVecTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[PackVecTypes.pas]
+Template[OpenGL]: Runing TemplateCommand[Pack VecTypes.pas]
+Template[OpenGL]: Finished runing TemplateCommand[Pack VecTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
-Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackMtrTypes.pas"
+Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack MtrTypes.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[PackMtrTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[PackMtrTypes.pas]
+Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
+Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Records.template]
@@ -102,10 +102,10 @@ Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\пр
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Funcs.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
-Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\PackMtrExt.pas"
+Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack MtrExt.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[PackMtrExt.pas]
-Template[OpenGL]: Finished runing TemplateCommand[PackMtrExt.pas]
+Template[OpenGL]: Runing TemplateCommand[Pack MtrExt.pas]
+Template[OpenGL]: Finished runing TemplateCommand[Pack MtrExt.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
 Finished runing Template[OpenGL]

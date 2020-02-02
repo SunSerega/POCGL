@@ -39,7 +39,7 @@ First line specifies if group is bitmask
 
 Syntax:
 ```
-# RemovalbeGroup
+# RemovableGroup
 !remove
 ```
 
