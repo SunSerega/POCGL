@@ -164,33 +164,31 @@ begin
         TitleTask('Update Reps', '~')
         +
         
-        ExecTask('DataScraping\Reps\0BrokenSource\GL\GenerateCoreSource.pas', 'GL BrokenSource') *
+//        ExecTask('DataScraping\Reps\0BrokenSource\GL\GenerateCoreSource.pas', 'GL BrokenSource') *
         ExecTask('DataScraping\Reps\PullReps.pas',                            'GLRep Update')
         
       ;
       
       {$endregion UpdateReps}
       
-      {$region ParseSpec}
+      {$region CompForward}
       
-      var T_ParseSpec_GL_Core :=
-        TitleTask('Parse Spec | GL | Core', '~') +
-        
-        ExecTask('DataScraping\SpecFormating\GL\Get1.1 Funcs.pas',      'SpecFormater[GL,1.1]') *
-        ExecTask('DataScraping\SpecFormating\GL\GetPDF Funcs.pas',      'SpecFormater[GL]', AddTimeMarksStr) *
-        CompTask('DataScraping\SpecFormating\GL\DebugChapVerView.pas') *
-        CompTask('DataScraping\SpecFormating\GL\DebugVerDifView.pas')
+      var T_CompForward :=
+        TitleTask('CompForward', '~')
         +
-        ExecTask('DataScraping\SpecFormating\GL\DebugChapVerView.exe',  'DebugView[CoreSpecs]') *
-        ExecTask('DataScraping\SpecFormating\GL\DebugVerDifView.exe',   'DebugView[CoreSpecDifs]')
+        
+        CompTask('DataScraping\XML\GL\ScrapXML.pas')
         
       ;
       
-      var T_ParseSpec_GL_Ext :=
-        TitleTask('Parse Spec | GL | Ext', '~') +
+      {$endregion CompForward}
+      
+      {$region ParseSpec}
+      
+      var T_ParseXML_GL :=
+        TitleTask('Parse XML | GL', '~') +
         
-        ExecTask('DataScraping\SpecFormating\GLExt\Format ext spec text.pas', 'SpecReader[GLExt]') +
-        ExecTask('DataScraping\SpecFormating\GLExt\Format ext spec bin.pas',  'SpecFormater[GLExt]')
+        ExecTask('DataScraping\XML\GL\ScrapXML.exe',      'ScrapXML[GL]')
         
       ;
       
@@ -198,11 +196,10 @@ begin
       
       T_FirstPack :=
         TitleTask('First Pack') +
-        T_UpdateReps
+        T_UpdateReps * T_CompForward
         +
         
-        T_ParseSpec_GL_Ext *
-        T_ParseSpec_GL_Core
+        T_ParseXML_GL
         
         +
         EmptyTask

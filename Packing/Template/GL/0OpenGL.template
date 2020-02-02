@@ -59,9 +59,9 @@ uses System.Runtime.CompilerServices;
 
 {$region Записи} type
   
-  %VecTypes!PackVecTypes.pas%
+  %VecTypes!Pack VecTypes.pas%
   
-  %MtrTypes!PackMtrTypes.pas%
+  %MtrTypes!Pack MtrTypes.pas%
   
   {$region Misc}
   
@@ -79,7 +79,7 @@ type
   
 implementation
 
-%MtrExt!PackMtrExt.pas%
+%MtrExt!Pack MtrExt.pas%
 
 end.
 
