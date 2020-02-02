@@ -85,13 +85,13 @@ Syntax:
 
 ### !clear_ovrs
 
-Deletes all overloads. It only makes sense if there is `!add_ovr` next.
+Deletes all overloads. It only makes sense if there is `!add_ovrs` next.
 
 Syntax:
 ```
 # FuncName
 !clear_ovrs
-!add_ovr
+!add_ovrs
 ...
 ```
 
