@@ -381,7 +381,7 @@ type
       
       var WriteOvrT: procedure(ovr: array of (integer,string); generic_names: List<string>; name: string; marshals, is_static: boolean) := (ovr,generic_names,name,marshals,is_static)->
       begin
-        var use_standart_dt := (name=nil) and (org_par.Length<=16) and ovr.Skip(1).All(par->not par[1].StartsWith('var!') and (par[1]<>'pointer'));
+        var use_standart_dt := (name=nil) and (org_par.Length<=17) and ovr.Skip(1).All(par->not par[1].StartsWith('var!') and (par[1]<>'pointer'));
         if use_standart_dt then
         begin
           sb += is_proc ? 'Action' : 'Func';
