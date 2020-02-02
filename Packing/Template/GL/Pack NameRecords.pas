@@ -14,6 +14,7 @@ begin
         sw.WriteLine($'  {tname} = record');
         sw.WriteLine($'    public val: {tt};');
         sw.WriteLine($'    public constructor(val: {tt}) := self.val := val;');
+        sw.WriteLine($'    public static property Zero: {tname} read default({tname});');
         sw.WriteLine($'  end;');
       end;
     

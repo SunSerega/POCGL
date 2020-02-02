@@ -363,8 +363,8 @@
  TextureName | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 |
 
 # glCreateBuffers
- Int32 | array of UInt32 |
- Int32 | var!UInt32 |
+ Int32 | array of BufferName |
+ Int32 | var!BufferName |
  Int32 | IntPtr |
 
 # glCreateFramebuffers
@@ -639,8 +639,8 @@
  FrontFaceDirection |
 
 # glGenBuffers
- Int32 | array of UInt32 |
- Int32 | var!UInt32 |
+ Int32 | array of BufferName |
+ Int32 | var!BufferName |
  Int32 | IntPtr |
 
 # glGenerateMipmap
@@ -1136,12 +1136,8 @@
  UInt32 | Int32 | IntPtr | IntPtr | IntPtr |
 
 # glGetProgramInfoLog
- UInt32 | Int32 | array of Int32 | string |
- UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | Int32 | var!Int32 | string |
- UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | Int32 | IntPtr | string |
- UInt32 | Int32 | IntPtr | IntPtr |
+ ProgramName | Int32 | var!Int32 | IntPtr |
+ ProgramName | Int32 | IntPtr | IntPtr |
 
 # glGetProgramInterfaceiv
  ProgramName | ProgramInterface | ProgramInterfacePName | array of Int32 |
@@ -1288,12 +1284,8 @@
  UInt32 | SamplerParameterI | IntPtr |
 
 # glGetShaderInfoLog
- UInt32 | Int32 | array of Int32 | string |
- UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | Int32 | var!Int32 | string |
- UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | Int32 | IntPtr | string |
- UInt32 | Int32 | IntPtr | IntPtr |
+ ShaderName | Int32 | var!Int32 | IntPtr |
+ ShaderName | Int32 | IntPtr | IntPtr |
 
 # glGetShaderiv
  ShaderName | ShaderParameterName | array of Int32 |
@@ -1781,10 +1773,12 @@
  TextureUnit | TexCoordPointerType | IntPtr |
 
 # glNamedBufferData
- UInt32 | IntPtr | IntPtr | VertexBufferObjectUsage |
+ BufferName | IntPtr | array of T | VertexBufferObjectUsage |
+ BufferName | IntPtr | var!T | VertexBufferObjectUsage |
+ BufferName | IntPtr | IntPtr | VertexBufferObjectUsage |
 
 # glNamedBufferStorage
- UInt32 | IntPtr | IntPtr | BufferStorageMask |
+ BufferName | IntPtr | IntPtr | BufferStorageMask |
 
 # glNamedBufferSubData
  UInt32 | IntPtr | IntPtr | IntPtr |
@@ -2190,15 +2184,15 @@
  Int32 | IntPtr | DummyEnum | IntPtr | Int32 |
 
 # glShaderSource
- UInt32 | Int32 | array of string | array of Int32 |
- UInt32 | Int32 | array of string | var!Int32 |
- UInt32 | Int32 | array of string | IntPtr |
- UInt32 | Int32 | array of IntPtr | array of Int32 |
- UInt32 | Int32 | array of IntPtr | var!Int32 |
- UInt32 | Int32 | array of IntPtr | IntPtr |
- UInt32 | Int32 | IntPtr | array of Int32 |
- UInt32 | Int32 | IntPtr | var!Int32 |
- UInt32 | Int32 | IntPtr | IntPtr |
+ ShaderName | Int32 | array of string | array of Int32 |
+ ShaderName | Int32 | array of string | var!Int32 |
+ ShaderName | Int32 | array of string | IntPtr |
+ ShaderName | Int32 | array of IntPtr | array of Int32 |
+ ShaderName | Int32 | array of IntPtr | var!Int32 |
+ ShaderName | Int32 | array of IntPtr | IntPtr |
+ ShaderName | Int32 | IntPtr | array of Int32 |
+ ShaderName | Int32 | IntPtr | var!Int32 |
+ ShaderName | Int32 | IntPtr | IntPtr |
 
 # glShaderStorageBlockBinding
  ProgramName | UInt32 | UInt32 |
@@ -4458,32 +4452,6 @@
  var!Int16 |
  IntPtr |
 
-# ChoosePixelFormat
- Int32 | GDI_DC | array of GDI_PixelFormatDescriptor |
- Int32 | GDI_DC | var!GDI_PixelFormatDescriptor |
- Int32 | GDI_DC | IntPtr |
-
-# DescribePixelFormat
- Int32 | GDI_DC | Int32 | UInt32 | array of GDI_PixelFormatDescriptor |
- Int32 | GDI_DC | Int32 | UInt32 | var!GDI_PixelFormatDescriptor |
- Int32 | GDI_DC | Int32 | UInt32 | IntPtr |
-
-# GetEnhMetaFilePixelFormat
- UInt32 | GDI_HENHMetafile | array of GDI_PixelFormatDescriptor |
- UInt32 | GDI_HENHMetafile | var!GDI_PixelFormatDescriptor |
- UInt32 | GDI_HENHMetafile | IntPtr |
-
-# GetPixelFormat
- Int32 | GDI_DC |
-
-# SetPixelFormat
- UInt32 | GDI_DC | Int32 | array of GDI_PixelFormatDescriptor |
- UInt32 | GDI_DC | Int32 | var!GDI_PixelFormatDescriptor |
- UInt32 | GDI_DC | Int32 | IntPtr |
-
-# SwapBuffers
- UInt32 | GDI_DC |
-
 # wglCopyContext
  UInt32 | GLContext | GLContext | UInt32 |
 
@@ -4556,6 +4524,32 @@
  UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | array of GDI_GlyphmetricsFloat |
  UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | var!GDI_GlyphmetricsFloat |
  UInt32 | GDI_DC | UInt32 | UInt32 | UInt32 | single | single | Int32 | IntPtr |
+
+# ChoosePixelFormat
+ Int32 | GDI_DC | array of GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | var!GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | IntPtr |
+
+# DescribePixelFormat
+ Int32 | GDI_DC | Int32 | UInt32 | array of GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | Int32 | UInt32 | var!GDI_PixelFormatDescriptor |
+ Int32 | GDI_DC | Int32 | UInt32 | IntPtr |
+
+# GetEnhMetaFilePixelFormat
+ UInt32 | GDI_HENHMetafile | array of GDI_PixelFormatDescriptor |
+ UInt32 | GDI_HENHMetafile | var!GDI_PixelFormatDescriptor |
+ UInt32 | GDI_HENHMetafile | IntPtr |
+
+# GetPixelFormat
+ Int32 | GDI_DC |
+
+# SetPixelFormat
+ UInt32 | GDI_DC | Int32 | array of GDI_PixelFormatDescriptor |
+ UInt32 | GDI_DC | Int32 | var!GDI_PixelFormatDescriptor |
+ UInt32 | GDI_DC | Int32 | IntPtr |
+
+# SwapBuffers
+ UInt32 | GDI_DC |
 
 # glTbufferMask3DFX
  UInt32 |

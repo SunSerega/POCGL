@@ -131,8 +131,6 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_4#Вложенные очереди.md sample#0.pas"
-Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#2.pas"
@@ -156,7 +154,7 @@ Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\CLABC\ErrOtp.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\GL\Mtr.Rotate3D.pas"
@@ -171,8 +169,6 @@ Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [коман�
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
-Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_4#Вложенные очереди.md sample#0]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_4#Вложенные очереди.md sample#0]
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
 Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]

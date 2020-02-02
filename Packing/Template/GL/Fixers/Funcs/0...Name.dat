@@ -68,6 +68,24 @@ UInt32=BufferName
 !repl_par_t
 UInt32=BufferName
 
+# glGenBuffers
+!repl_par_t
+array of UInt32	= array of BufferName
+var!UInt32		= var!BufferName
+
+# glCreateBuffers
+!repl_par_t
+array of UInt32	= array of BufferName
+var!UInt32		= var!BufferName
+
+# glNamedBufferData
+!repl_par_t
+UInt32=BufferName
+
+# glNamedBufferStorage
+!repl_par_t
+UInt32=BufferName
+
 # glIsBuffer
 !repl_par_t
 UInt32=BufferName
@@ -231,6 +249,14 @@ UInt32=ProgramPipelineName
 
 
 
+
+# glShaderSource
+!repl_par_t
+UInt32=ShaderName
+
+# glGetShaderInfoLog
+!repl_par_t
+UInt32=ShaderName
 
 # glAttachShader
 !repl_par_t
@@ -400,6 +426,10 @@ UInt32= VertexArrayName | UInt32 | UInt32
 
 
 
+
+# glGetProgramInfoLog
+!repl_par_t
+UInt32=ProgramName
 
 # glBindAttribLocation
 !repl_par_t

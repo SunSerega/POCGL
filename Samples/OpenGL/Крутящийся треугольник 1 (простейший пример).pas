@@ -11,25 +11,9 @@ uses System.Drawing;
 uses System;
 uses OpenGL;
 
-{$apptype windows} // убираем консоль
+{$apptype windows} // убирает консоль
 
 var gl: OpenGL.gl;
-
-{$region Buffer}
-
-function InitBuffer(sz: integer; data: IntPtr): BufferName;
-begin
-  gl.CreateBuffers(1, Result);
-  
-  gl.NamedBufferData(Result, new UIntPtr(sz), data, BufferDataUsage.STATIC_DRAW);
-  
-end;
-
-function InitBuffer(sz: integer; data: pointer) := InitBuffer(sz, IntPtr(data));
-function InitBuffer<T>(sz: integer; var data: T) := InitBuffer(sz, @data);
-function InitBuffer<T>(data: array of T) := InitBuffer(data.Length*System.Runtime.InteropServices.Marshal.SizeOf&<T>, data[0]);
-
-{$endregion Buffer}
 
 {$region Shader}
 
@@ -39,40 +23,35 @@ begin
   
   var source := ReadAllText(fname);
   
-  // в данной версии модуля OpenGL параметры принимающие массив строк - не поддерживаются
-  // поэтому надо ручками преобразовывать управляемую строку в неуправляемую с кодировкой ANSI 
-  var source_strptr := System.Runtime.InteropServices.Marshal.StringToHGlobalAnsi(source);
-  var source_len := source.Length;
-  
-  gl.ShaderSource(Result, 1, source_strptr, source_len);
-  
-  // и обязательно освобождаем память, иначе снова утечка памяти
-  System.Runtime.InteropServices.Marshal.FreeHGlobal(source_strptr);
+  gl.ShaderSource(Result, 1,
+    new string[](source),
+    new integer[](source.Length)
+  );
   
   gl.CompileShader(Result);
   // получаем состояние успешности компиляции
   // 1=успешно
   // 0=ошибка
   var comp_ok: integer;
-  gl.GetShaderiv(Result, ShaderInfoType.COMPILE_STATUS, comp_ok);
-  if comp_ok <> 1 then
+  gl.GetShaderiv(Result, ShaderParameterName.COMPILE_STATUS, comp_ok);
+  if comp_ok = 0 then
   begin
     
     // узнаём нужную длинную строки
     var l: integer;
-    gl.GetShaderiv(Result, ShaderInfoType.INFO_LOG_LENGTH, l);
+    gl.GetShaderiv(Result, ShaderParameterName.INFO_LOG_LENGTH, l);
     
     // выделяем достаточно памяти чтоб сохранить строку
     var ptr := System.Runtime.InteropServices.Marshal.AllocHGlobal(l);
     
     // получаем строку логов
-    gl.GetShaderInfoLog(Result, l, nil, ptr);
+    gl.GetShaderInfoLog(Result, l, IntPtr.Zero, ptr);
     
     // преобразовываем в управляемую строку
     var log := System.Runtime.InteropServices.Marshal.PtrToStringAnsi(ptr);
-    writeln(log);
+    Writeln(log);
     
-    // и опять же, в конце обязательно освобождаем памяти, чтоб не было утечек памяти
+    // и в конце обязательно освобождаем памяти, чтобы не было утечек памяти
     System.Runtime.InteropServices.Marshal.FreeHGlobal(ptr);
   end;
   
@@ -87,26 +66,25 @@ begin
   Result := gl.CreateProgram;
   
   gl.AttachShader(Result, vertex_shader);
-  if fragment_shader<>0 then gl.AttachShader(Result, fragment_shader);
+  if fragment_shader<>ShaderName.Zero then gl.AttachShader(Result, fragment_shader);
   
   gl.LinkProgram(Result);
   // всё то же самое что и у шейдеров
   var link_ok: integer;
-  gl.GetProgramiv(Result, ProgramInfoType.LINK_STATUS, link_ok);
-  if link_ok <> 1 then
+  gl.GetProgramiv(Result, ProgramPropertyARB.LINK_STATUS, link_ok);
+  if link_ok = 0 then
   begin
     
     var l: integer;
-    gl.GetProgramiv(Result, ProgramInfoType.INFO_LOG_LENGTH, l);
+    gl.GetProgramiv(Result, ProgramPropertyARB.INFO_LOG_LENGTH, l);
     var ptr := System.Runtime.InteropServices.Marshal.AllocHGlobal(l);
     
-    gl.GetProgramInfoLog(Result, l, nil, ptr);
+    gl.GetProgramInfoLog(Result, l, IntPtr.Zero, ptr);
     var log := System.Runtime.InteropServices.Marshal.PtrToStringAnsi(ptr);
-    writeln(log);
+    Writeln(log);
     
     System.Runtime.InteropServices.Marshal.FreeHGlobal(ptr);
   end;
-  
   
 end;
 
@@ -133,38 +111,60 @@ begin
     
     {$region Настройка глобальных параметров OpenGL}
     
-    // при создании экземпляра OpenGL.gl инициализируются некоторые функции
-    // это необходимо для всех функций из OpenGL1.2 и выше, потому что они локальные для контекста OpenGL
+    // При создании экземпляра OpenGL.gl инициализируются некоторые функции
+    // Это необходимо для всех функций из OpenGL1.2 и выше, потому что они локальны для контекста OpenGL
     gl := new OpenGL.gl;
     
     {$endregion Настройка глобальных параметров OpenGL}
     
     {$region Инициализация переменных}
     
-    var vertex_pos_buffer := InitBuffer(ArrGen(3, i->
-    begin
-      var rot := i * Pi * 2 / 3;
-      
-      Result := new Vec2f(
-        Sin(rot),
-        Cos(rot) + dy
-      );
-      
-    end));
-    var vertex_clr_buffer := InitBuffer(new Vec3f[](
-      new Vec3f(1,0,0),
-      new Vec3f(0,1,0),
-      new Vec3f(0,0,1)
-    ));
+    var vertex_pos_buffer: BufferName;
+    gl.CreateBuffers(1, vertex_pos_buffer);
+    gl.NamedBufferData(
+      vertex_pos_buffer,
+      new IntPtr(3*sizeof(Vec2f)),
+      ArrGen(3, i->
+      begin
+        var rot := i * Pi * 2 / 3;
+        
+        Result := new Vec2f(
+          Sin(rot),
+          Cos(rot) + dy
+        );
+        
+      end),
+      VertexBufferObjectUsage.STATIC_DRAW
+    );
     
-    var element_buffer := InitBuffer(new byte[](
-      0,1,2
-    ));
+    var vertex_clr_buffer: BufferName;
+    gl.CreateBuffers(1, vertex_clr_buffer);
+    gl.NamedBufferData(
+      vertex_clr_buffer,
+      new IntPtr(3*sizeof(Vec3f)),
+      new Vec3f[](
+        new Vec3f(1,0,0),
+        new Vec3f(0,1,0),
+        new Vec3f(0,0,1)
+      ),
+      VertexBufferObjectUsage.STATIC_DRAW
+    );
+    
+    var element_buffer: BufferName;
+    gl.CreateBuffers(1, element_buffer);
+    gl.NamedBufferData(
+      element_buffer,
+      new IntPtr(3*sizeof(byte)),
+      new byte[](
+        0,1,2
+      ),
+      VertexBufferObjectUsage.STATIC_DRAW
+    );
     
     var vertex_shader := InitShader('Rot Triangle 1.vertex.glsl', ShaderType.VERTEX_SHADER);
 //    var fragment_shader := InitShader('fragment.glsl', ShaderType.FRAGMENT_SHADER);
     
-    var sprog := InitProgram(vertex_shader, 0 {fragment_shader});
+    var sprog := InitProgram(vertex_shader, ShaderName.Zero {fragment_shader});
     
     var uniform_rot_k :=     gl.GetUniformLocation(sprog, 'rot_k');
     
@@ -179,7 +179,7 @@ begin
     while true do
     begin
       // очищаем окно в начале перерисовки
-      gl.Clear(BufferTypeFlags.COLOR_BUFFER_BIT);
+      gl.Clear(ClearBufferMask.COLOR_BUFFER_BIT);
       
       
       
@@ -187,34 +187,34 @@ begin
       
       gl.Uniform1f(uniform_rot_k, Cos( t.Elapsed.Ticks * 0.0000002 ) );
       
-      gl.BindBuffer(BufferBindType.ARRAY_BUFFER, vertex_pos_buffer);
+      gl.BindBuffer(BufferTargetARB.ARRAY_BUFFER, vertex_pos_buffer);
       gl.VertexAttribPointer(
         attribute_position,
         2,
-        DataType.FLOAT,
+        VertexAttribPointerType.FLOAT,
         false,
         8,
-        nil
+        IntPtr.Zero
       );
       gl.EnableVertexAttribArray(attribute_position);
       
-      gl.BindBuffer(BufferBindType.ARRAY_BUFFER, vertex_clr_buffer);
+      gl.BindBuffer(BufferTargetARB.ARRAY_BUFFER, vertex_clr_buffer);
       gl.VertexAttribPointer(
         attribute_color,
         3,
-        DataType.FLOAT,
+        VertexAttribPointerType.FLOAT,
         false,
         12,
-        nil
+        IntPtr.Zero
       );
       gl.EnableVertexAttribArray(attribute_color);
       
-      gl.BindBuffer(BufferBindType.ELEMENT_ARRAY_BUFFER, element_buffer);
+      gl.BindBuffer(BufferTargetARB.ELEMENT_ARRAY_BUFFER, element_buffer);
       gl.DrawElements(
         PrimitiveType.TRIANGLES,
         3,
-        DataType.UNSIGNED_BYTE,
-        pointer(nil)
+        DrawElementsType.UNSIGNED_BYTE,
+        IntPtr.Zero
       );
       
       gl.DisableVertexAttribArray(attribute_position);
@@ -225,7 +225,7 @@ begin
       // получаем тип последней ошибки
       var err := gl.GetError;
       // и если ошибка есть - выводим её
-      if err.val<>ErrorCode.NO_ERROR then writeln(err);
+      if err<>ErrorCode.NO_ERROR then Writeln(err);
       
       gl.Finish;
       // EndFrame меняет местами буферы и ждёт vsync

@@ -27,12 +27,12 @@ Invalid ext name [DCARB], replaced with [ARB]
 Invalid ext name [DCEXT], replaced with [EXT]
 Invalid ext name [DCNV], replaced with [NV]
 Invalid ext name [IDEXT], replaced with [EXT]
-Func [ChoosePixelFormat] had api [wgl], which isn't start of it's name
-Func [DescribePixelFormat] had api [wgl], which isn't start of it's name
-Func [GetEnhMetaFilePixelFormat] had api [wgl], which isn't start of it's name
-Func [GetPixelFormat] had api [wgl], which isn't start of it's name
-Func [SetPixelFormat] had api [wgl], which isn't start of it's name
-Func [SwapBuffers] had api [wgl], which isn't start of it's name
+Func [ChoosePixelFormat] had api [gdi], which isn't start of it's name
+Func [DescribePixelFormat] had api [gdi], which isn't start of it's name
+Func [GetEnhMetaFilePixelFormat] had api [gdi], which isn't start of it's name
+Func [GetPixelFormat] had api [gdi], which isn't start of it's name
+Func [SetPixelFormat] had api [gdi], which isn't start of it's name
+Func [SwapBuffers] had api [gdi], which isn't start of it's name
 Skipped func [glUniform1i64NV] from ext [glGpuShaderInt64AMD] because ext group isn't [AMD]
 Skipped func [glUniform2i64NV] from ext [glGpuShaderInt64AMD] because ext group isn't [AMD]
 Skipped func [glUniform3i64NV] from ext [glGpuShaderInt64AMD] because ext group isn't [AMD]

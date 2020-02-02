@@ -20,6 +20,7 @@ begin
     Otp($'Fixing all');
     GroupFixer.ApplyAll(grs);
     FuncFixer.ApplyAll(funcs);
+    Feature.FixGDI;
     
     Otp($'Constructing new code');
     res += '  '#10;

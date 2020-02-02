@@ -32,9 +32,9 @@
       pfd.cColorBits := 24;
       pfd.cDepthBits := 16;
       
-      if 1 <> wgl.z_SetPixelFormat(
+      if 1 <> gdi.SetPixelFormat(
         Result,
-        wgl.z_ChoosePixelFormat(Result, pfd),
+        gdi.ChoosePixelFormat(Result, pfd),
         pfd
       ) then raise new InvalidOperationException;
       
@@ -62,7 +62,7 @@
           
           var EndFrame: ()->();
           if vsync_fps<=0 then
-            EndFrame := ()->wgl.z_SwapBuffers(hdc) else
+            EndFrame := ()->gdi.SwapBuffers(hdc) else
           begin
             var LastRedr := DateTime.UtcNow;
             var FrameDuration := new TimeSpan(Trunc(TimeSpan.TicksPerSecond/vsync_fps));
@@ -70,7 +70,7 @@
             
             EndFrame := ()->
             begin
-              wgl.z_SwapBuffers(hdc);
+              gdi.SwapBuffers(hdc);
               
               LastRedr := LastRedr+FrameDuration;
               var time_left := LastRedr-DateTime.UtcNow;

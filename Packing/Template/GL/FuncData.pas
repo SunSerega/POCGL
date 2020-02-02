@@ -314,6 +314,7 @@ type
     public static procedure WriteGetPtrFunc(sb: StringBuilder; api: string);
     begin
       if api='wgl' then exit;
+      if api='gdi' then exit;
       sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
       if api='glx' then
         sb += '    external ''opengl32.dll'' name ''glXGetProcAddress'';'#10 else
@@ -379,9 +380,9 @@ type
         sb += '] ';
       end;
       
-      var WriteOvrT: procedure(ovr: array of (integer,string); generic_names: List<string>; name: string; marshals, is_static: boolean) := (ovr,generic_names,name,marshals,is_static)->
+      var WriteOvrT: procedure(ovr: array of (integer,string); generic_names: List<string>; name: string; marshals, is_static: boolean) := (ovr,generic_names,name, marshals,is_static)->
       begin
-        var use_standart_dt := (name=nil) and (org_par.Length<=17) and ovr.Skip(1).All(par->not par[1].StartsWith('var!') and (par[1]<>'pointer'));
+        var use_standart_dt := false; // единственное применение - в "Marshal.GetDelegateForFunctionPointer". Но он их и не принимает
         if use_standart_dt then
         begin
           sb += is_proc ? 'Action' : 'Func';
@@ -452,14 +453,22 @@ type
         
       end;
       
-      if ((api='gl') and (version<>nil) and (version <= '1.1')) or (api='wgl') then // use_external
+      if ((api='gl') and (version<>nil) and (version <= '1.1')) or (api='wgl') or (api='gdi') then // use_external
       begin
         
         for var ovr_i := 0 to all_overloads.Count-1 do
         begin
           var ovr := all_overloads[ovr_i];
-          
           sb += '    public ';
+          
+          if api='gdi' then
+          begin
+            WriteOvrT(ovr,nil, $'{l_name.TrimStart(''&'')}', true,true);
+            sb += ';'#10;
+            sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10;
+            continue;
+          end;
+          
           WriteOvrT(ovr,nil, $'z_{l_name.TrimStart(''&'')}', true,true);
           sb += ';'#10;
           sb += $'    external ''opengl32.dll'' name ''{name}'';'+#10;
@@ -747,6 +756,24 @@ type
         ByApi[api] := lst;
       end;
       lst += self;
+      
+    end;
+    
+    public static procedure FixGDI;
+    begin
+      ByApi['gdi'] := new List<Feature>;
+      var gdi := new Feature;
+      gdi.version := '';
+      gdi.add := new List<Func>;
+      gdi.rem := new List<Func>;
+      ByApi['gdi'].Add(gdi);
+      
+      foreach var f in ByApi['wgl'] do
+        f.add.RemoveAll(fnc->
+        begin
+          Result := not fnc.name.StartsWith('wgl');
+          if Result then gdi.add += fnc;
+        end);
       
     end;
     
@@ -1146,7 +1173,7 @@ type
       begin
         foreach var t in rem_ts[i] do
           if not f.possible_par_types[i+ind_nudge].Remove(t) then
-            Otp($'ERROR: [FuncPPTFixer] of func [{f.name}] failed to remove type [{t}] of param #{i} {_ObjectToString(f.possible_par_types[i])}');
+            Otp($'ERROR: [FuncPPTFixer] of func [{f.name}] failed to remove type [{t}] of param #{i} {_ObjectToString(f.possible_par_types[i+ind_nudge])}');
         foreach var t in add_ts[i] do
           if f.possible_par_types[i+ind_nudge].Contains(t) then
             Otp($'ERROR: [FuncPPTFixer] of func [{f.name}] failed to add type [{t}] to param #{i}') else

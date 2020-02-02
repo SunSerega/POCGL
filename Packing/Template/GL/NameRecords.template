@@ -4,64 +4,79 @@
   GLsync = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLsync read default(GLsync);
   end;
   GLeglImageOES = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLeglImageOES read default(GLeglImageOES);
   end;
   
   QueryName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: QueryName read default(QueryName);
   end;
   BufferName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: BufferName read default(BufferName);
   end;
   ShaderName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: ShaderName read default(ShaderName);
   end;
   ProgramName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: ProgramName read default(ProgramName);
   end;
   ProgramPipelineName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: ProgramPipelineName read default(ProgramPipelineName);
   end;
   TextureName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: TextureName read default(TextureName);
   end;
   SamplerName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: SamplerName read default(SamplerName);
   end;
   FramebufferName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: FramebufferName read default(FramebufferName);
   end;
   RenderbufferName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: RenderbufferName read default(RenderbufferName);
   end;
   VertexArrayName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: VertexArrayName read default(VertexArrayName);
   end;
   TransformFeedbackName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: TransformFeedbackName read default(TransformFeedbackName);
   end;
   
   GLContext = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: GLContext read default(GLContext);
   end;
   GDI_DC = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GDI_DC read default(GDI_DC);
   end;
   
   //	типы	для	совместимости	с	OpenCL
@@ -69,11 +84,13 @@
   cl_context = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: cl_context read default(cl_context);
   end;
   ///--
   cl_event = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: cl_event read default(cl_event);
   end;
   
   
@@ -84,10 +101,12 @@
   PerfQueryIdINTEL = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: PerfQueryIdINTEL read default(PerfQueryIdINTEL);
   end;
   PerfQueryHandleINTEL = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: PerfQueryHandleINTEL read default(PerfQueryHandleINTEL);
   end;
   
   
@@ -96,137 +115,170 @@
   EGLsync = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: EGLsync read default(EGLsync);
   end;
   EGLDisplay = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: EGLDisplay read default(EGLDisplay);
   end;
   
   ShaderBinaryFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: ShaderBinaryFormat read default(ShaderBinaryFormat);
   end;
   ProgramResourceIndex = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: ProgramResourceIndex read default(ProgramResourceIndex);
   end;
   ProgramBinaryFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: ProgramBinaryFormat read default(ProgramBinaryFormat);
   end;
   
   GLhandleARB = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: GLhandleARB read default(GLhandleARB);
   end;
   PBufferName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: PBufferName read default(PBufferName);
   end;
   HPVIDEODEV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: HPVIDEODEV read default(HPVIDEODEV);
   end;
   HVIDEOOUTPUTDEVICENV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: HVIDEOOUTPUTDEVICENV read default(HVIDEOOUTPUTDEVICENV);
   end;
   HVIDEOINPUTDEVICENV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: HVIDEOINPUTDEVICENV read default(HVIDEOINPUTDEVICENV);
   end;
   PGPU_DEVICE = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: PGPU_DEVICE read default(PGPU_DEVICE);
   end;
   HGPUNV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: HGPUNV read default(HGPUNV);
   end;
   HPBUFFER = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: HPBUFFER read default(HPBUFFER);
   end;
   GLeglClientBufferEXT = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLeglClientBufferEXT read default(GLeglClientBufferEXT);
   end;
   VideoOutputDeviceHandleNV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: VideoOutputDeviceHandleNV read default(VideoOutputDeviceHandleNV);
   end;
   VideoInputDeviceHandleNV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: VideoInputDeviceHandleNV read default(VideoInputDeviceHandleNV);
   end;
   VideoDeviceHandleNV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: VideoDeviceHandleNV read default(VideoDeviceHandleNV);
   end;
   GLvdpauSurfaceNV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLvdpauSurfaceNV read default(GLvdpauSurfaceNV);
   end;
   GPUAffinityHandle = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GPUAffinityHandle read default(GPUAffinityHandle);
   end;
   GLXFBConfig = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXFBConfig read default(GLXFBConfig);
   end;
   GLXContextID = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXContextID read default(GLXContextID);
   end;
   GLXPbuffer = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXPbuffer read default(GLXPbuffer);
   end;
   GLXWindow = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXWindow read default(GLXWindow);
   end;
   GLXPixmap = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXPixmap read default(GLXPixmap);
   end;
   GLXColormap = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXColormap read default(GLXColormap);
   end;
   GLXDrawable = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXDrawable read default(GLXDrawable);
   end;
   GLXContext = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXContext read default(GLXContext);
   end;
   GLXVideoCaptureDeviceNV = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXVideoCaptureDeviceNV read default(GLXVideoCaptureDeviceNV);
   end;
   GLXVideoSourceSGIX = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
+    public static property Zero: GLXVideoSourceSGIX read default(GLXVideoSourceSGIX);
   end;
   GLXVideoDeviceNV = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
+    public static property Zero: GLXVideoDeviceNV read default(GLXVideoDeviceNV);
   end;
   GLXFuncPtr = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXFuncPtr read default(GLXFuncPtr);
   end;
   
   PDisplay = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: PDisplay read default(PDisplay);
   end;
   PXVisualInfo = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: PXVisualInfo read default(PXVisualInfo);
   end;
   
   
@@ -236,39 +288,48 @@
   GLXDMparams = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXDMparams read default(GLXDMparams);
   end;
   GLXDMbuffer = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXDMbuffer read default(GLXDMbuffer);
   end;
   GLXVLServer = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXVLServer read default(GLXVLServer);
   end;
   GLXVLPath = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXVLPath read default(GLXVLPath);
   end;
   GLXVLNode = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXVLNode read default(GLXVLNode);
   end;
   GLXStatus = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLXStatus read default(GLXStatus);
   end;
   GLUnurbs = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GLUnurbs read default(GLUnurbs);
   end;
   GDI_HENHMetafile = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GDI_HENHMetafile read default(GDI_HENHMetafile);
   end;
   
   GDI_LayerPlaneDescriptor = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: GDI_LayerPlaneDescriptor read default(GDI_LayerPlaneDescriptor);
   end;
   
   
