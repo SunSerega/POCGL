@@ -1,6 +1,7 @@
 
 
 
+# glGetDebugMessageLog
 # glGetDebugMessageLogARB
 # glGetDebugMessageLogKHR
 !clear_ovrs

@@ -707,6 +707,8 @@ type
     public static procedure WriteAll(sb: StringBuilder) :=
     foreach var api in Feature.ByApi.Keys do
     begin
+      if api='glx' then continue; //ToDo вроде glx из паскаля бесполезен, но это не точно. В расширениях тоже такое стоит
+      
       // func - addition version
       var all_funcs := new Dictionary<Func, string>;
       // func - deprecation version
@@ -780,6 +782,7 @@ type
     public procedure Write(sb: StringBuilder);
     begin
       if add.Count=0 then exit;
+      if api='glx' then exit;
       
       var display_name := api+name.Split('_').Select(w->
       begin
@@ -791,7 +794,10 @@ type
       sb += $'    '+#10;
       
       foreach var f in add do
-        f.Write(sb, api, nil);
+        if f.ext_name=self.ext_group then
+          f.Write(sb, api, nil) else
+        if f.ext_name<>'' then
+          log.WriteLine($'Skipped func [{f.name}] from ext [{display_name}] because ext group isn''t [{self.ext_group}]');
       
       sb += $'  end;'+#10;
       sb += $'  '+#10;
@@ -1081,18 +1087,19 @@ type
     begin
       f.InitPossibleParTypes;
       
-      if add_ts.Length<>f.org_par.Length-integer(f.is_proc) then
+      var ind_nudge := integer(f.is_proc);
+      if add_ts.Length<>f.org_par.Length-ind_nudge then
         raise new MessageException($'ERROR: [FuncPPTFixer] of func [{f.name}] had wrong param count');
       
       for var i := 0 to add_ts.Length-1 do
       begin
         foreach var t in rem_ts[i] do
-          if not f.possible_par_types[i].Remove(t) then
-            Otp($'ERROR: [FuncPPTFixer] of func [{f.name}] failed to remove type [{t}] of param #{i}');
+          if not f.possible_par_types[i+ind_nudge].Remove(t) then
+            Otp($'ERROR: [FuncPPTFixer] of func [{f.name}] failed to remove type [{t}] of param #{i} {_ObjectToString(f.possible_par_types[i])}');
         foreach var t in add_ts[i] do
-          if f.possible_par_types[i].Contains(t) then
+          if f.possible_par_types[i+ind_nudge].Contains(t) then
             Otp($'ERROR: [FuncPPTFixer] of func [{f.name}] failed to add type [{t}] to param #{i}') else
-            f.possible_par_types[i] += t;
+            f.possible_par_types[i+ind_nudge] += t;
       end;
       
       self.used := true;
