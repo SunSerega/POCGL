@@ -10,6 +10,10 @@ const  pointed_name_color = "#d1faff";
 
 var localStorageKey = "";
 
+const get_style = (el)=>el.currentStyle || window.getComputedStyle(el);
+
+var spl_resize_event = [];
+
 /* ============================== *\
 		     page load
 \* ============================== */
@@ -326,6 +330,9 @@ const fix_element = (page)=>{
 	if (page.fixed) return;
 	page.fixed = true;
 	
+	page.style.visibility = "hidden";
+	page.hidden = false;
+	
 	for (let spoiler of page.getElementsByClassName('spoiler'))
 	{
 		let get_spoiler_text = ()=> + ' ' + spoiler.getAttribute('summary');
@@ -408,7 +415,7 @@ const fix_element = (page)=>{
 				);
 		}
 		
-		// Подсветка скобок
+		// Выделение скобок
 		{
 			var br_types = {
 				op: ["(", "[", "{", "&lt;", "'"],
@@ -421,6 +428,22 @@ const fix_element = (page)=>{
 						`<span class=bracket ${ op=="op" ? "op=true" : "" } bt=${i}>${br_types[op][i]}</span>`
 					);
 			
+		}
+		
+		// Выделение первой строки
+		if (code.parentElement.tagName == "PRE")
+		{
+			let text = code.innerHTML;
+			let ind = text.indexOf('\n');
+			if (ind != text.length-1)
+			{
+				code.innerHTML = `<span class="code-first-line">${text.slice(0,ind)}</span>${text.slice(ind)}`;
+				code.firstLine = code.getElementsByClassName("code-first-line")[0];
+			}
+		}
+		
+		// Подсветка скобок
+		{
 			let br_st = [];
 			for (let obj2 of code.getElementsByClassName("bracket"))
 			{
@@ -478,11 +501,75 @@ const fix_element = (page)=>{
 			pre.replaceWith(wrap);
 			wrap.append(pre);
 			
+			if (code.firstLine)
+			{
+				let copy_button = document.createElement('div');
+				copy_button.className = "code-block-copier";
+				copy_button.innerText = "Копировать";
+				copy_button.style.visibility = "hidden";
+				pre.append(copy_button);
+				
+				copy_button.addEventListener("click", ()=>{
+					
+					if (document.selection) { // IE
+						var range = document.body.createTextRange();
+						range.moveToElementText(code);
+						range.select();
+					} else if (window.getSelection) { // other browsers
+						var range = document.createRange();
+						range.selectNode(code);
+						window.getSelection().removeAllRanges();
+						window.getSelection().addRange(range);
+					}
+					
+					var text = code.innerText;
+					navigator.clipboard.writeText(text.substring(0,text.length-1));
+				});
+				
+				copy_button.reset_right = ()=>{
+					pre_st = get_style(pre);
+					let x = pre.getBoundingClientRect().right - (window.innerWidth-7.5);
+					if (x<0) x = 0; else
+					{
+						let max_x = pre.getBoundingClientRect().width - copy_button.getBoundingClientRect().width;
+						if (x>max_x) x = max_x;
+					}
+					copy_button.style.right = x;
+				};
+				let try_reset_right = ()=>{
+					if (!copy_button.hidden)
+						copy_button.reset_right();
+				};
+				spl_resize_event.push(try_reset_right);
+				window.addEventListener("resize", try_reset_right);
+				
+				pre.addEventListener("mouseenter", ()=>{
+					copy_button.hidden = false;
+					copy_button.reset_right();
+				});
+				pre.addEventListener("mouseleave", ()=>copy_button.hidden = true);
+				
+				copy_button.addEventListener("mousedown",	()=>copy_button.style.background = "linear-gradient(180deg, rgb(240, 240, 240), white)");
+				copy_button.addEventListener("mouseup",		()=>copy_button.style.background = "linear-gradient(  0deg, rgb(240, 240, 240), white)");
+				copy_button.addEventListener("mouseleave",	()=>copy_button.style.background = "linear-gradient(  0deg, rgb(240, 240, 240), white)");
+				
+				pre.style.minWidth =
+					code.firstLine.getBoundingClientRect().width +
+					copy_button.getBoundingClientRect().width +
+					0
+				;
+				
+				copy_button.hidden = true;
+				copy_button.style.visibility = null;
+			}
+			
 		} else
 			code.className = "inline-code";
 		
 	}
 	
+	page.hidden = true;
+	page.style.visibility = null;
 }
 
 /* ============================== *\
@@ -491,11 +578,21 @@ const fix_element = (page)=>{
 
 {
 	if (document.location.hash)
-		define_broken_lnk(
-			decodeURIComponent(document.location.hash.substr(1)),
+	{
+		let get_hash = ()=>decodeURIComponent(document.location.hash.substr(1));
+		let define_hash_lnk = ()=>define_broken_lnk(
+			get_hash(),
 			"document.location.hash",
 			page=>select_page(page)
 		);
+		define_hash_lnk();
+		window.addEventListener("hashchange", ()=>{
+			let hash_page = page_by_path[get_hash()];
+			if (hash_page)
+				select_page(hash_page); else
+				define_hash_lnk();
+		});
+	}
 	
 	let page_select = document.getElementById("page-select");
 	let page_display = document.getElementById("page-display");
@@ -508,8 +605,8 @@ const fix_element = (page)=>{
 	{
 		let par = cont.parentElement;
 		par.update_cont = (w)=>{
-			cont.style.width = w-15 + "px";
-			cont.style.height = wh-15 + "px";
+			cont.style.width = w-15;
+			cont.style.height = wh-15;
 		};
 	}
 	
@@ -534,10 +631,13 @@ const fix_element = (page)=>{
 		
 		page_select.update_cont(spl_X);
 		page_display.update_cont(w2);
+		
+		for (let handler of spl_resize_event)
+			handler();
 	}
 	reset_spl();
 	
-	window.onresize = ()=>reset_spl();
+	window.addEventListener("resize", ()=>reset_spl());
 	
 	splitter.addEventListener("dblclick", ()=>{
 		let w = 0;
@@ -547,7 +647,7 @@ const fix_element = (page)=>{
 			if (n.clientWidth>w) w = n.clientWidth;
 		
 		let get_margin = (el)=>{
-			let style = el.currentStyle || window.getComputedStyle(el);
+			let style = get_style(el);
 			return parseFloat(style.marginLeft) + parseFloat(style.marginRight);
 		}
 		

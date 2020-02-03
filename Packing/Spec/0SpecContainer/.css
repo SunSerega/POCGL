@@ -8,6 +8,7 @@
 body {
 	background-color: #F0F0F0;
 	margin: 0px;
+	overflow: hidden;
 }
 
 .page-base {
@@ -100,6 +101,19 @@ body {
 	
 	margin: 0;
 	
+	position: relative;
+}
+.code-block-copier {
+	cursor: pointer;
+	padding: 2px;
+	
+	position: absolute;
+	top: 0;
+	
+	border: thin solid;
+	border-radius: 3.7px 0px 3.7px 3.7px;
+	box-shadow: -2px 2px 3px #0000004a;
+	background: linear-gradient(0deg, #f0f0f0, white);
 }
 .inline-code {
 	background: #F0F0F0;
