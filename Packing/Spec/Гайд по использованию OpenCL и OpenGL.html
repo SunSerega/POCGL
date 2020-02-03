@@ -9,7 +9,7 @@
 body {
 	background-color: #F0F0F0;
 	margin: 0px;
-    overflow: hidden;
+	overflow: hidden;
 }
 
 .page-base {
@@ -102,19 +102,19 @@ body {
 	
 	margin: 0;
 	
-    position: relative;
+	position: relative;
 }
 .code-block-copier {
 	cursor: pointer;
-    padding: 2px;
+	padding: 2px;
 	
-    position: absolute;
-    top: 0;
+	position: absolute;
+	top: 0;
 	
-    border: thin solid;
-    border-radius: 3.7px 0px 3.7px 3.7px;
-    box-shadow: -2px 2px 3px #0000004a;
-    background: linear-gradient(0deg, #f0f0f0, white);
+	border: thin solid;
+	border-radius: 3.7px 0px 3.7px 3.7px;
+	box-shadow: -2px 2px 3px #0000004a;
+	background: linear-gradient(0deg, #f0f0f0, white);
 }
 .inline-code {
 	background: #F0F0F0;
@@ -640,7 +640,6 @@ const fix_element = (page)=>{
 		
 		if (code.parentElement.tagName == "PRE")
 		{
-			
 			let pre = code.parentElement;
 			pre.className = 'code-block';
 			
@@ -675,7 +674,8 @@ const fix_element = (page)=>{
 				
 				copy_button.reset_right = ()=>{
 					pre_st = get_style(pre);
-					let x = pre.getBoundingClientRect().right - (window.innerWidth-7.5);
+					let container = document.getElementById("page-display-container");
+					let x = pre.getBoundingClientRect().right - (container.getBoundingClientRect().left+container.clientWidth);
 					if (x<0) x = 0; else
 					{
 						let max_x = pre.getBoundingClientRect().width - copy_button.getBoundingClientRect().width;

@@ -528,7 +528,8 @@ const fix_element = (page)=>{
 				
 				copy_button.reset_right = ()=>{
 					pre_st = get_style(pre);
-					let x = pre.getBoundingClientRect().right - (window.innerWidth-7.5);
+					let container = document.getElementById("page-display-container");
+					let x = pre.getBoundingClientRect().right - (container.getBoundingClientRect().left+container.clientWidth);
 					if (x<0) x = 0; else
 					{
 						let max_x = pre.getBoundingClientRect().width - copy_button.getBoundingClientRect().width;
