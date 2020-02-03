@@ -146,8 +146,6 @@ begin
         T_DocPacker *
         T_TemplatePacker
         
-        +
-        EmptyTask()
       ;
     end;
     {$endregion MiscInit}
