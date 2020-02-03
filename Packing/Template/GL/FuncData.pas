@@ -140,6 +140,7 @@ type
   
   FuncOrgParam = sealed class
     public name, t: string;
+    public readonly: boolean;
     public ptr: integer;
     public gr: Group;
     
@@ -172,6 +173,7 @@ type
         if LogCache.invalid_ntv_types.Add(ntv_t) then
           Otp($'ERROR: Nativ type [{ntv_t}] isn''t defined');
       
+      self.readonly := br.ReadBoolean;
       self.ptr := br.ReadInt32 + self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
       self.t := self.t.Remove('*','-').Trim;
       if self.ptr<0 then
@@ -240,11 +242,12 @@ type
             Result := Lst((par.ptr-1, 'string'));
             exit;
           end;
-          var res := new List<System.Tuple<integer,string>>(par.ptr+1);
+          var res := new List<System.Tuple<integer,string>>(par.ptr+integer(par.readonly));
           
           for var ptr := 0 to par.ptr-1 do
             res += (    ptr  , 'IntPtr');
-          res +=   (par.ptr-1, 'string');
+          if par.readonly then
+            res +=   (par.ptr-1, 'string');
           
           res.Reverse;
           Result := res;

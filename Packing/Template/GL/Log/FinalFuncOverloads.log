@@ -695,67 +695,37 @@
  UInt32 | UInt32 | AtomicCounterBufferPName | IntPtr |
 
 # glGetActiveAttrib
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of AttributeType | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!AttributeType | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!AttributeType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glGetActiveSubroutineName
- UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | string |
  UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | string |
  UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | ShaderType | UInt32 | Int32 | IntPtr | string |
  UInt32 | ShaderType | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetActiveSubroutineUniformiv
@@ -764,67 +734,37 @@
  ProgramName | ShaderType | UInt32 | SubroutineParameterName | IntPtr |
 
 # glGetActiveSubroutineUniformName
- UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | string |
  UInt32 | ShaderType | UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | string |
  UInt32 | ShaderType | UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | ShaderType | UInt32 | Int32 | IntPtr | string |
  UInt32 | ShaderType | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetActiveUniform
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of UniformType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!UniformType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of UniformType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!UniformType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of UniformType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!UniformType | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of UniformType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!UniformType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of UniformType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!UniformType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of UniformType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!UniformType | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of UniformType | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!UniformType | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of UniformType | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!UniformType | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UniformType | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UniformType | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!UniformType | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glGetActiveUniformBlockiv
@@ -833,19 +773,13 @@
  UInt32 | UInt32 | UniformBlockPName | IntPtr |
 
 # glGetActiveUniformBlockName
- UInt32 | UInt32 | Int32 | array of Int32 | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetActiveUniformName
- UInt32 | UInt32 | Int32 | array of Int32 | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetActiveUniformsiv
@@ -1104,19 +1038,13 @@
  ProgramName | Int32 | Int32 | IntPtr |
 
 # glGetObjectLabel
- ObjectIdentifier | UInt32 | Int32 | array of Int32 | string |
  ObjectIdentifier | UInt32 | Int32 | array of Int32 | IntPtr |
- ObjectIdentifier | UInt32 | Int32 | var!Int32 | string |
  ObjectIdentifier | UInt32 | Int32 | var!Int32 | IntPtr |
- ObjectIdentifier | UInt32 | Int32 | IntPtr | string |
  ObjectIdentifier | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetObjectPtrLabel
- IntPtr | Int32 | array of Int32 | string |
  IntPtr | Int32 | array of Int32 | IntPtr |
- IntPtr | Int32 | var!Int32 | string |
  IntPtr | Int32 | var!Int32 | IntPtr |
- IntPtr | Int32 | IntPtr | string |
  IntPtr | Int32 | IntPtr | IntPtr |
 
 # glGetPointerv
@@ -1150,11 +1078,8 @@
  ProgramName | ProgramPropertyARB | IntPtr |
 
 # glGetProgramPipelineInfoLog
- UInt32 | Int32 | array of Int32 | string |
  UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | Int32 | var!Int32 | string |
  UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | Int32 | IntPtr | string |
  UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetProgramPipelineiv
@@ -1204,11 +1129,8 @@
  Int32 | ProgramName | ProgramInterface | IntPtr |
 
 # glGetProgramResourceName
- UInt32 | ProgramInterface | UInt32 | Int32 | array of Int32 | string |
  UInt32 | ProgramInterface | UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | ProgramInterface | UInt32 | Int32 | var!Int32 | string |
  UInt32 | ProgramInterface | UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | string |
  UInt32 | ProgramInterface | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetProgramStageiv
@@ -1304,11 +1226,8 @@
  ShaderType | PrecisionType | IntPtr | IntPtr |
 
 # glGetShaderSource
- UInt32 | Int32 | array of Int32 | string |
  UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | Int32 | var!Int32 | string |
  UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | Int32 | IntPtr | string |
  UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetString
@@ -1421,59 +1340,32 @@
  UInt32 | TransformFeedbackPName | IntPtr |
 
 # glGetTransformFeedbackVarying
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glGetUniformBlockIndex
@@ -4481,7 +4373,6 @@
  Int32 | GDI_DC | Int32 | Int32 | Int32 | IntPtr |
 
 # wglGetProcAddress
- IntPtr | string |
  IntPtr | IntPtr |
 
 # wglMakeCurrent
@@ -4674,19 +4565,13 @@
  UInt32 | IntPtr | IntPtr | Int32 | IntPtr |
 
 # glGetPerfMonitorGroupStringAMD
- UInt32 | Int32 | array of Int32 | string |
  UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | Int32 | var!Int32 | string |
  UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | Int32 | IntPtr | string |
  UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetPerfMonitorCounterStringAMD
- UInt32 | UInt32 | Int32 | array of Int32 | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glGetPerfMonitorCounterInfoAMD
@@ -5694,11 +5579,8 @@
  GLhandleARB | DummyEnum | IntPtr |
 
 # glGetInfoLogARB
- GLhandleARB | Int32 | array of Int32 | string |
  GLhandleARB | Int32 | array of Int32 | IntPtr |
- GLhandleARB | Int32 | var!Int32 | string |
  GLhandleARB | Int32 | var!Int32 | IntPtr |
- GLhandleARB | Int32 | IntPtr | string |
  GLhandleARB | Int32 | IntPtr | IntPtr |
 
 # glGetAttachedObjectsARB
@@ -5717,59 +5599,32 @@
  Int32 | GLhandleARB | IntPtr |
 
 # glGetActiveUniformARB
- GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | array of UniformType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | array of UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | var!UniformType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | var!UniformType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glGetUniformfvARB
@@ -5783,11 +5638,8 @@
  GLhandleARB | Int32 | IntPtr |
 
 # glGetShaderSourceARB
- GLhandleARB | Int32 | array of Int32 | string |
  GLhandleARB | Int32 | array of Int32 | IntPtr |
- GLhandleARB | Int32 | var!Int32 | string |
  GLhandleARB | Int32 | var!Int32 | IntPtr |
- GLhandleARB | Int32 | IntPtr | string |
  GLhandleARB | Int32 | IntPtr | IntPtr |
 
 # glNamedStringARB
@@ -5816,17 +5668,11 @@
  boolean | Int32 | IntPtr |
 
 # glGetNamedStringARB
- Int32 | string | Int32 | array of Int32 | string |
  Int32 | string | Int32 | array of Int32 | IntPtr |
- Int32 | string | Int32 | var!Int32 | string |
  Int32 | string | Int32 | var!Int32 | IntPtr |
- Int32 | string | Int32 | IntPtr | string |
  Int32 | string | Int32 | IntPtr | IntPtr |
- Int32 | IntPtr | Int32 | array of Int32 | string |
  Int32 | IntPtr | Int32 | array of Int32 | IntPtr |
- Int32 | IntPtr | Int32 | var!Int32 | string |
  Int32 | IntPtr | Int32 | var!Int32 | IntPtr |
- Int32 | IntPtr | Int32 | IntPtr | string |
  Int32 | IntPtr | Int32 | IntPtr | IntPtr |
 
 # glGetNamedStringivARB
@@ -6407,59 +6253,32 @@
  GLhandleARB | UInt32 | IntPtr |
 
 # glGetActiveAttribARB
- GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | array of AttributeType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | array of AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | var!AttributeType | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | var!AttributeType | IntPtr |
- GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
  GLhandleARB | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glGetAttribLocationARB
@@ -7081,11 +6900,8 @@
  DummyEnum | UInt32 | Int32 | IntPtr |
 
 # glGetObjectLabelEXT
- DummyEnum | UInt32 | Int32 | array of Int32 | string |
  DummyEnum | UInt32 | Int32 | array of Int32 | IntPtr |
- DummyEnum | UInt32 | Int32 | var!Int32 | string |
  DummyEnum | UInt32 | Int32 | var!Int32 | IntPtr |
- DummyEnum | UInt32 | Int32 | IntPtr | string |
  DummyEnum | UInt32 | Int32 | IntPtr | IntPtr |
 
 # glInsertEventMarkerEXT
@@ -8776,59 +8592,32 @@
  UInt32 | Int32 | IntPtr | DummyEnum |
 
 # glGetTransformFeedbackVaryingEXT
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!GlslTypeToken | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!GlslTypeToken | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glArrayElementEXT
@@ -11374,59 +11163,32 @@
  Int32 | UInt32 | IntPtr |
 
 # glGetActiveVaryingNV
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | array of Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | var!Int32 | IntPtr | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | array of Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | var!Int32 | IntPtr | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of DummyEnum | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | array of DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!DummyEnum | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | var!DummyEnum | IntPtr |
- UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | string |
  UInt32 | UInt32 | Int32 | IntPtr | IntPtr | IntPtr | IntPtr |
 
 # glGetTransformFeedbackVaryingNV

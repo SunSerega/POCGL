@@ -161,6 +161,7 @@ type
   
   ParData = sealed class
     private name, t: string;
+    private readonly: boolean;
     private ptr: integer;
     private gr: Group := nil;
     
@@ -172,13 +173,12 @@ type
       self.name := n.Nodes['name'].Single.Text;
       if func_name=nil then func_name := self.name;
       
+      var text := n.Text;
       self.t := n.Nodes['ptype'].SingleOrDefault?.Text;
       if self.t=nil then
-      begin
-        var s := n.Text;
-        s := s.Remove(s.LastIndexOf(' '));
-        self.t := s.Remove('const').Trim;
-      end;
+        self.t := text.Remove(text.LastIndexOf(' ')).Remove('const').Trim;
+      
+      self.readonly := text.Contains('const');
       
       self.ptr := n.Text.Count(ch->ch='*');
       
@@ -214,7 +214,7 @@ type
 //            Otp(func_name);
 //            log.WriteLine($'Command [{func_name}] has enum parameter without group');
       
-      var ToDo := 0; // расскоментировать когда группы приведут в кое-какой порядк
+      var ToDo := 0; //ToDo расскоментировать когда группы приведут в кое-какой порядк
       
     end;
     
@@ -222,6 +222,7 @@ type
     begin
       bw.Write(name);
       bw.Write(t);
+      bw.Write(readonly);
       bw.Write(ptr);
       
       var ind := gr=nil ? -1 : grs.IndexOf(gr);

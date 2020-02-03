@@ -1,7 +1,7 @@
 
 
 # POCGL
-pascal wrappers of OpenCL and OpenGL
+Pascal Wrappers of OpenCL and OpenGL
 
 ---
 
