@@ -28,6 +28,9 @@ $'Vec{self[0][1]}{self[1]}';
 function GetColTName(self: t_descr); extensionmethod :=
 $'Vec{self[0][0]}{self[1]}';
 
+function GetTSize(self: t_descr); extensionmethod :=
+self[1]='f' ? 4 : 8;
+
 function GetMltResT(self: (t_descr,t_descr)): t_descr; extensionmethod :=
 ((self[0][0][0], self[1][0][1]), self[0][1], self[0][2]);
 

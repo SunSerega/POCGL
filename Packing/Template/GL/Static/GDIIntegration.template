@@ -57,8 +57,8 @@
         System.Threading.Thread.Create(()->
         begin
           
-          var context := wgl.z_CreateContext(hdc);
-          if 1 <> wgl.z_MakeCurrent(hdc, context) then raise new InvalidOperationException('Не удалось применить контекст');
+          var context := wgl.CreateContext(hdc);
+          if 1 <> wgl.MakeCurrent(hdc, context) then raise new InvalidOperationException('Не удалось применить контекст');
           
           var EndFrame: ()->();
           if vsync_fps<=0 then

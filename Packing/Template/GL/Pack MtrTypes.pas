@@ -14,7 +14,7 @@ begin
   for var y := 0 to t[0][1]-1 do
   begin
     res += $'    public ';
-    res += Range(0, t[0][0]-1).Select(x->$'val{x}{y}').JoinIntoString(', ');
+    res += Range(0, t[0][0]-1).Select(x->$'val{x}{y}').JoinToString(', ');
     res += $': {t[2]};' + #10;
   end;
   
@@ -29,7 +29,7 @@ begin
     Range(0,t[0][0]-1)
     .Cartesian(Range(0,t[0][1]-1))
     .Select(pos->$'val{pos[0]}{pos[1]}')
-    .JoinIntoString(', ');
+    .JoinToString(', ');
   res += $': {t[2]});'+#10;
   
   res += $'    begin'+#10;
@@ -46,25 +46,25 @@ begin
   
   {$region property val[y,x]}
   
-  res += $'    '+#10;
-  
-  res +=      $'    private function GetValAt(y,x: integer): {t[2]};'+#10;
-  res +=      $'    begin'+#10;
-  res +=      $'      if cardinal(x) > {t[0][1]-1} then raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
-  res +=      $'      if cardinal(y) > {t[0][0]-1} then raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
-  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0][0]} + y) * {t[1].Contains(''d'')?8:4} );'+#10;
-  res +=      $'      Result := ptr^;'+#10;
-  res +=      $'    end;'+#10;
-  
-  res +=      $'    private procedure SetValAt(y,x: integer; val: {t[2]});'+#10;
-  res +=      $'    begin'+#10;
-  res +=      $'      if cardinal(x) > {t[0][1]-1} then raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
-  res +=      $'      if cardinal(y) > {t[0][0]-1} then raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
-  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0][0]} + y) * {t[1].Contains(''d'')?8:4} );'+#10;
-  res +=      $'      ptr^ := val;'+#10;
-  res +=      $'    end;'+#10;
-  
-  res += $'    public property val[y,x: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
+//  res += $'    '+#10;
+//  
+//  res +=      $'    private function GetValAt(y,x: integer): {t[2]};'+#10;
+//  res +=      $'    begin'+#10;
+//  res +=      $'      if cardinal(x) > {t[0][1]-1} then raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
+//  res +=      $'      if cardinal(y) > {t[0][0]-1} then raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
+//  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0][0]} + y) * {t.GetTSize} );'+#10;
+//  res +=      $'      Result := ptr^;'+#10;
+//  res +=      $'    end;'+#10;
+//  
+//  res +=      $'    private procedure SetValAt(y,x: integer; val: {t[2]});'+#10;
+//  res +=      $'    begin'+#10;
+//  res +=      $'      if cardinal(x) > {t[0][1]-1} then raise new IndexOutOfRangeException(''Индекс "X" должен иметь значение 0..{t[0][1]-1}'');'+#10;
+//  res +=      $'      if cardinal(y) > {t[0][0]-1} then raise new IndexOutOfRangeException(''Индекс "Y" должен иметь значение 0..{t[0][0]-1}'');'+#10;
+//  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + (x*{t[0][0]} + y) * {t.GetTSize} );'+#10;
+//  res +=      $'      ptr^ := val;'+#10;
+//  res +=      $'    end;'+#10;
+//  
+//  res += $'    public property val[y,x: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
   
   {$endregion property val[y,x]}
   
@@ -77,7 +77,7 @@ begin
     Range(0,t[0][0]-1)
     .Cartesian(Range(0,t[0][1]-1))
     .Select(pos-> pos[0]=pos[1] ? '1.0' : '0.0' )
-    .JoinIntoString(', ');
+    .JoinToString(', ');
   res += $');'+#10;
   
   {$endregion static property Identity}
@@ -92,23 +92,23 @@ begin
     res +=
       Range(0,t[0][1]-1)
       .Select(x-> $'self.val{y}{x}' )
-      .JoinIntoString(', ');
+      .JoinToString(', ');
     res += $') write begin';
     for var x := 0 to t[0][1]-1 do
       res += $' self.val{y}{x} := value.val{x};';
     res += $' end;'+#10;
   end;
   
-  res += $'    public property Row[y: integer]: {t.GetRowTName} read ';
-  for var y := 0 to t[0][0]-1 do
-    res += $'y={y}?Row{y}:';
-  res += $'Arr&<{t.GetRowTName}>[y]';
-  res += $' write'+#10;
-  res += $'    case y of'+#10;
-  for var y := 0 to t[0][0]-1 do
-    res += $'      {y}: Row{y} := value;'+#10;
-  res += $'      else raise new IndexOutOfRangeException(''Номер строчки должен иметь значение 0..{t[0][0]-1}'');'+#10;
-  res += $'    end;'+#10;
+//  res += $'    public property Row[y: integer]: {t.GetRowTName} read ';
+//  for var y := 0 to t[0][0]-1 do
+//    res += $'y={y}?Row{y}:';
+//  res += $'Arr&<{t.GetRowTName}>[y]';
+//  res += $' write'+#10;
+//  res += $'    case y of'+#10;
+//  for var y := 0 to t[0][0]-1 do
+//    res += $'      {y}: Row{y} := value;'+#10;
+//  res += $'      else raise new IndexOutOfRangeException(''Номер строчки должен иметь значение 0..{t[0][0]-1}'');'+#10;
+//  res += $'    end;'+#10;
   
   {$endregion property's Row*}
   
@@ -122,23 +122,23 @@ begin
     res +=
       Range(0,t[0][0]-1)
       .Select(y-> $'self.val{y}{x}' )
-      .JoinIntoString(', ');
+      .JoinToString(', ');
     res += $') write begin';
     for var y := 0 to t[0][0]-1 do
       res += $' self.val{y}{x} := value.val{y};';
     res += $' end;'+#10;
   end;
   
-  res += $'    public property Col[x: integer]: {t.GetColTName} read ';
-  for var x := 0 to t[0][1]-1 do
-    res += $'x={x}?Col{x}:';
-  res += $'Arr&<{t.GetColTName}>[x]';
-  res += $' write'+#10;
-  res += $'    case x of'+#10;
-  for var x := 0 to t[0][1]-1 do
-    res += $'      {x}: Col{x} := value;'+#10;
-  res += $'      else raise new IndexOutOfRangeException(''Номер столбца должен иметь значение 0..{t[0][1]-1}'');'+#10;
-  res += $'    end;'+#10;
+//  res += $'    public property Col[x: integer]: {t.GetColTName} read ';
+//  for var x := 0 to t[0][1]-1 do
+//    res += $'x={x}?Col{x}:';
+//  res += $'Arr&<{t.GetColTName}>[x]';
+//  res += $' write'+#10;
+//  res += $'    case x of'+#10;
+//  for var x := 0 to t[0][1]-1 do
+//    res += $'      {x}: Col{x} := value;'+#10;
+//  res += $'      else raise new IndexOutOfRangeException(''Номер столбца должен иметь значение 0..{t[0][1]-1}'');'+#10;
+//  res += $'    end;'+#10;
   
   {$endregion property's Col*}
   
@@ -146,15 +146,43 @@ begin
   
   res += $'    '+#10;
   
-  for var x := 0 to t[0][0]-1 do
-    res += $'    public property ColPtr{x}: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + {x*t[0][0]*(t[1].Contains(''d'')?8:4)});'+#10;
-  res += $'    public property ColPtr[x: integer]: ^{t.GetRowTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][0]*(t[1].Contains(''d'')?8:4)});'+#10;
+  for var x := 0 to t[0][1]-1 do
+    res += $'    public property ColPtr{x}: ^{t.GetColTName} read pointer(@val0{x});'+#10;
+//  res += $'    public property ColPtr[x: integer]: ^{t.GetColTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][0]*t.GetTSize});'+#10;
   
   {$endregion property ColPtr[x]}
   
   {$endregion property's}
   
   {$region method's}
+  
+  {$region procedure/function UseColPtr}
+  
+  for var is_func := false to true do
+  begin
+    res += $'    '+#10;
+    
+    var T_def :=        is_func ? '<T>'                                 : nil;
+    var method_word :=  is_func ? 'function'                            : 'procedure';
+    var callback_t :=   is_func ? $'Use{t.GetColTName}PtrCallbackF<T>'  : $'Use{t.GetColTName}PtrCallbackP';
+    var res_def :=      is_func ? ': T'                                 : nil;
+    var set_res_def :=  is_func ? 'Result := '                          : nil;
+    
+    for var x := 0 to t[0][1]-1 do
+    begin
+      res +=  $'    public {method_word} UseColPtr{x}{T_def}(callback: {callback_t}){res_def};'+#10;
+      res +=  $'    type P{t.GetColTName} = ^{t.GetColTName};'+#10;
+      res +=  $'    begin {set_res_def}callback(P{t.GetColTName}(pointer(@val0{x}))^); end;'+#10;
+    end;
+    
+//    res +=    $'    public {method_word} UseColPtr{T_def}(x: integer; callback: {callback_t}){res_def};'+#10;
+//    res +=    $'    type P{t.GetColTName} = ^{t.GetColTName};'+#10;
+//    res +=    $'    begin {set_res_def}callback(P{t.GetColTName}(pointer(IntPtr(pointer(@self)) + x*{t[0][0]*t.GetTSize}))^); end;'+#10;
+    
+  end;
+  
+  
+  {$endregion procedure/function UseColPtr}
   
   {$region static function Scale}
   
@@ -165,7 +193,7 @@ begin
     Range(0,t[0][0]-1)
     .Cartesian(Range(0,t[0][1]-1))
     .Select(pos->pos[0]=pos[1]?'k':'0.0')
-    .JoinIntoString(', ');
+    .JoinToString(', ');
   res += ');'#10;
   
   {$endregion static function Scale}
@@ -178,7 +206,7 @@ begin
   res +=
     Range(0, t[0][0]=Max(t[0][0],t[0][1]) ? MinSize-2 : t[0][0]-1)
     .Select(n->ANT[n])
-    .JoinIntoString(', ');
+    .JoinToString(', ');
   res += $': {t[2]}): {t.GetName} := new {t.GetName}(';
   res +=
     Range(0,t[0][0]-1)
@@ -190,14 +218,14 @@ begin
       ANT[pos[0]] :
       '0.0'
     )
-    .JoinIntoString(', ');
+    .JoinToString(', ');
   res += ');'+#10;
   
   res += '    public static function TraslateTransposed(';
   res +=
     Range(0, t[0][1]=Max(t[0][0],t[0][1]) ? MinSize-2 : t[0][1]-1)
     .Select(n->ANT[n])
-    .JoinIntoString(', ');
+    .JoinToString(', ');
   res += $': {t[2]}): {t.GetName} := new {t.GetName}(';
   res +=
     Range(0,t[0][0]-1)
@@ -209,7 +237,7 @@ begin
       ANT[pos[1]] :
       '0.0'
     )
-    .JoinIntoString(', ');
+    .JoinToString(', ');
   res += ');'+#10;
   
   {$endregion static function Translate}
@@ -253,9 +281,9 @@ begin
               end else
                 Result := x=y ? '1.0' : '0.0';
             end)
-            .JoinIntoString(', ')
+            .JoinToString(', ')
           )
-          .JoinIntoString(','#10'        ') + #10;
+          .JoinToString(','#10'        ') + #10;
         res += $'      );'+#10;
         res += $'    end;'+#10;
         
@@ -378,10 +406,9 @@ begin
   res +=      $'      var res := new StringBuilder;'+#10;
   res +=      $'      '+#10;
   res +=      $'      var ElStrs := new string[{t[0][0]},{t[0][1]}];' + #10;
-  res +=      $'      for var y := 0 to {t[0][0]}-1 do' + #10;
-  res +=      $'        for var x := 0 to {t[0][1]}-1 do' + #10;
-  res +=      $'          ElStrs[y,x] := (Sign(val[y,x])=-1?''-'':''+'') + Abs(val[y,x]).ToString(''f2'');' + #10;
-  
+  for var y := 0 to t[0][0]-1 do
+    for var x := 0 to t[0][1]-1 do
+      res +=  $'      ElStrs[{y},{x}] := (Sign(val{y}{x})=-1?''-'':''+'') + Abs(val{y}{x}).ToString(''f2'');' + #10;
   res +=      $'      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);' + #10;
   res +=      $'      var PrintlnMtrW := MtrElTextW*{t[0][1]} + {2*t[0][1]}; // +2*(Width-1) + 2;' + #10;
   
@@ -397,7 +424,7 @@ begin
     res +=
       Range(0,t[0][1]-1)
       .Select(x->$'      res += ElStrs[{y},{x}].PadLeft(MtrElTextW);'+#10)
-      .JoinIntoString($'      res += '', '';'+#10);
+      .JoinToString($'      res += '', '';'+#10);
     res +=    $'      res += '' { char($2502) }''#10;'+#10;
   end;
   
@@ -439,8 +466,8 @@ begin
       Range(0,t[0][1]-1)
       .Select(x->
         $'m.val{y}{x}*v.val{x}'
-      ).JoinIntoString('+')
-    ).JoinIntoString(', ');
+      ).JoinToString('+')
+    ).JoinToString(', ');
   res += $');'+#10;
   
   res += $'    public static function operator*(v: {t.GetColTName}; m: {t.GetName}): {t.GetRowTName} := new {t.GetRowTName}(';
@@ -450,8 +477,8 @@ begin
       Range(0,t[0][0]-1)
       .Select(y->
         $'m.val{y}{x}*v.val{y}'
-      ).JoinIntoString('+')
-    ).JoinIntoString(', ');
+      ).JoinToString('+')
+    ).JoinToString(', ');
   res += $');'+#10;
   
   // умножение матрицы на матрицу - в расширениях
@@ -468,16 +495,16 @@ begin
     res +=
       Range(0,t[0][0]-1)
       .Cartesian(Range(0,t[0][1]-1))
-      .Select(pos-> (pos[0]<t2[0][0]) and (pos[1]<t2[0][1]) ? $'m.val{pos[0]}{pos[1]}' : '0.0' )
-      .JoinIntoString(', ');
+      .Select(pos-> (pos[0]<t2[0][0]) and (pos[1]<t2[0][1]) ? $'m.val{pos[0]}{pos[1]}' : pos[0]=pos[1] ? '1.0' : '0.0' )
+      .JoinToString(', ');
     res += $');'+#10;
     
     res += $'    public static function operator implicit(m: {t.GetName}): {t2.GetName} := new {t2.GetName}(';
     res +=
       Range(0,t2[0][0]-1)
       .Cartesian(Range(0,t2[0][1]-1))
-      .Select(pos-> (pos[0]<t[0][0]) and (pos[1]<t[0][1]) ? $'m.val{pos[0]}{pos[1]}' : '0.0' )
-      .JoinIntoString(', ');
+      .Select(pos-> (pos[0]<t[0][0]) and (pos[1]<t[0][1]) ? $'m.val{pos[0]}{pos[1]}' : pos[0]=pos[1] ? '1.0' : '0.0' )
+      .JoinToString(', ');
     res += $');'+#10;
     
   end;
@@ -489,6 +516,7 @@ begin
   res += $'    '+#10;
   
   res += $'  end;'+#10;
+  
   if t[0][0]=t[0][1] then
     res += $'  Mtr{t[0][0]}{t[1]} = {t.GetName};'+#10;
   

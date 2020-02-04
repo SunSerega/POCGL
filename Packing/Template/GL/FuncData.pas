@@ -247,7 +247,7 @@ type
           for var ptr := 0 to par.ptr-1 do
             res += (    ptr  , 'IntPtr');
           if par.readonly then
-            res +=   (par.ptr-1, 'string');
+            res += (par.ptr-1, 'string');
           
           res.Reverse;
           Result := res;
@@ -456,29 +456,34 @@ type
         
       end;
       
-      if ((api='gl') and (version<>nil) and (version <= '1.1')) or (api='wgl') or (api='gdi') then // use_external
+      var use_external := ((api='gl') and (version<>nil) and (version <= '1.1')) or (api='wgl') or (api='gdi');
+      if use_external and (
+        true
+      ) then
       begin
         
         for var ovr_i := 0 to all_overloads.Count-1 do
         begin
           var ovr := all_overloads[ovr_i];
-          sb += '    public ';
           
-          if api='gdi' then
-          begin
-            WriteOvrT(ovr,nil, $'{l_name.TrimStart(''&'')}', true,true);
-            sb += ';'#10;
-            sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10;
-            continue;
-          end;
-          
-          WriteOvrT(ovr,nil, $'z_{l_name.TrimStart(''&'')}', true,true);
+          sb += '    private ';
+          WriteOvrT(ovr,nil, $'_z_{l_name.TrimStart(''&'')}_ovr{ovr_i}', true,true);
           sb += ';'#10;
-          sb += $'    external ''opengl32.dll'' name ''{name}'';'+#10;
+          if api='gdi' then
+            sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
+            sb += $'    external ''opengl32.dll'' name ''{name}'';'+#10;
+          
+          sb += $'    public static z_{l_name.TrimStart(''&'')}_ovr{ovr_i}';
+          if (org_par.Length=1) and not is_proc then
+          begin
+            sb += ': ';
+            WriteOvrT(ovr,nil, nil, false,false);
+          end;
+          sb += $' := _z_{l_name.TrimStart(''&'')}_ovr{ovr_i};' + #10;
           
           sb += $'    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr,nil, l_name, false,false);
-          sb += $' := z_{l_name.TrimStart(''&'')}';
+          WriteOvrT(ovr,nil, l_name, false,api<>'gl');
+          sb += $' := z_{l_name.TrimStart(''&'')}_ovr{ovr_i}';
           if ovr.Length>1 then
           begin
             sb += '(';
@@ -801,13 +806,16 @@ type
             all_funcs[f] := ftr.version;
       end;
       
-      sb += $'  {api} = sealed class'+#10;
+      var class_type := api='gl' ? 'sealed' : 'static';
+      
+      sb += $'  {api} = {class_type} class'+#10;
       Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
       
       foreach var f in all_funcs.Keys.Where(f->not deprecated.ContainsKey(f)).OrderBy(f->f.name) do
       begin
-        sb += $'    // added in {api}{all_funcs[f]}'+#10;
+        if api<>'gdi' then
+          sb += $'    // added in {api}{all_funcs[f]}'+#10;
         f.Write(sb, api, all_funcs[f]);
       end;
       
@@ -816,13 +824,14 @@ type
       sb += $'  '+#10;
       
       if not deprecated.Any then continue;
-      sb += $'  {api}D = sealed class'+#10;
+      sb += $'  {api}D = {class_type} class'+#10;
       Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
       
       foreach var f in all_funcs.Keys.Where(f->deprecated.ContainsKey(f)).OrderBy(f->f.name) do
       begin
-        sb += $'    // added in {api}{all_funcs[f]}, deprecated in {api}{deprecated[f]}'+#10;
+        if api<>'gdi' then
+          sb += $'    // added in {api}{all_funcs[f]}, deprecated in {api}{deprecated[f]}'+#10;
         f.Write(sb, api, all_funcs[f]);
       end;
       
@@ -867,7 +876,10 @@ type
         if w.Length<>0 then w[1] := w[1].ToUpper;
         Result := w;
       end).JoinToString('') + ext_group;
-      sb += $'  {display_name} = sealed class'+#10;
+      
+      sb += $'  {display_name} = ';
+      sb += api='gl' ? 'sealed' : 'static';
+      sb += ' class'#10;
       Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
       

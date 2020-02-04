@@ -85,22 +85,22 @@ begin
   
   {$region property val[i]}
   
-  res +=      $'    private function GetValAt(i: integer): {t[2]};'+#10;
-  res +=      $'    begin'+#10;
-  res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
-  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + i*{t.GetElSize} );'+#10;
-  res +=      $'      Result := ptr^;'+#10;
-  res +=      $'    end;'+#10;
-  
-  res +=      $'    private procedure SetValAt(i: integer; val: {t[2]});'+#10;
-  res +=      $'    begin'+#10;
-  res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
-  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + i*{t.GetElSize} );'+#10;
-  res +=      $'      ptr^ := val;'+#10;
-  res +=      $'    end;'+#10;
-  
-  res += $'    public property val[i: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
-  res += $'    '+#10;
+//  res +=      $'    private function GetValAt(i: integer): {t[2]};'+#10;
+//  res +=      $'    begin'+#10;
+//  res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
+//  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + i*{t.GetElSize} );'+#10;
+//  res +=      $'      Result := ptr^;'+#10;
+//  res +=      $'    end;'+#10;
+//  
+//  res +=      $'    private procedure SetValAt(i: integer; val: {t[2]});'+#10;
+//  res +=      $'    begin'+#10;
+//  res +=      $'      if cardinal(i) > {t[0]-1} then raise new IndexOutOfRangeException(''Индекс должен иметь значение 0..{t[0]-1}'');'+#10;
+//  res +=      $'      var ptr: ^{t[2]} := pointer(new IntPtr(@self) + i*{t.GetElSize} );'+#10;
+//  res +=      $'      ptr^ := val;'+#10;
+//  res +=      $'    end;'+#10;
+//  
+//  res += $'    public property val[i: integer]: {t[2]} read GetValAt write SetValAt; default;'+#10;
+//  res += $'    '+#10;
   
   {$endregion property val[i]}
   
@@ -281,6 +281,13 @@ begin
   {$endregion method's}
   
   res += $'  end;'+#10;
+  
+  if t.IsFloat then
+  begin
+    res += $'  Use{t.GetName}PtrCallbackP = procedure(var ptr: {t.GetName});'+#10;
+    res += $'  Use{t.GetName}PtrCallbackF<T> = function(var ptr: {t.GetName}): T;'+#10;
+  end;
+  
 end;
 
 begin
@@ -310,6 +317,7 @@ begin
       if last_t<>nil then
         if last_t[0]<t[1][0] then
         begin
+          res += '  '#10;
           res += '  {$endregion Vec' + last_t[0] + '}'#10;
           res += '  '#10;
           res += '  {$region Vec' + t[1][0] + '}'#10;
