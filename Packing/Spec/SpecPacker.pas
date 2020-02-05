@@ -118,9 +118,9 @@ type
 begin
   try
     
-    HTML.Pack('Nativ Interop','Гайд по использованию OpenCL и OpenGL.html');
-    HTML.Pack('CL ABC','Справка OpenCLABC.html');
+    HTML.Pack('Nativ Interop','Гайд по использованию OpenGL и OpenCL.html');
     HTML.Pack('GL ABC','Справка OpenGLABC.html');
+    HTML.Pack('CL ABC','Справка OpenCLABC.html');
     
   except
     on e: Exception do ErrOtp(e);

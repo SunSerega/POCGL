@@ -86,8 +86,13 @@ body {
 	margin-left: 8px;
 }
 .spoiler-wrap {
-	border-left: thin solid;
+	border: solid;
+	border-width: 0px;
 	padding-left: 2px;
+}
+.spoiler-name {
+	border: solid;
+	border-width: 0px;
 }
 
 .code-block {

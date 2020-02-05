@@ -341,7 +341,7 @@ begin
           .ForEach(fname->
           begin
             Otp($'Packing sample "{fname}"');
-            var res_f_name := 'Release\InstallerSamples\OpenCL и OpenGL'+fname.Substring('Samples'.Length);
+            var res_f_name := 'Release\InstallerSamples\OpenGL и OpenCL'+fname.Substring('Samples'.Length);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_f_name));
             System.IO.File.Copy(fname, res_f_name);
             c += 1;
@@ -359,15 +359,15 @@ begin
         ProcTask(()->
         begin
           var c := 0;
-          System.IO.Directory.CreateDirectory('Release\InstallerSamples\OpenCL и OpenGL');
+          System.IO.Directory.CreateDirectory('Release\InstallerSamples\OpenGL и OpenCL');
           
-          foreach var spec in Arr('Справка OpenGLABC', 'Справка OpenCLABC', 'Гайд по использованию OpenCL и OpenGL') do
+          foreach var spec in Arr('Справка OpenGLABC', 'Справка OpenCLABC', 'Гайд по использованию OpenGL и OpenCL') do
           begin
             var fname := $'Packing\Spec\{spec}.html';
             if FileExists(fname) then
             begin
               Otp($'Packing spec "{fname}"');
-              System.IO.File.Copy( fname, $'Release\InstallerSamples\OpenCL и OpenGL\{spec}.html' );
+              System.IO.File.Copy( fname, $'Release\InstallerSamples\OpenGL и OpenCL\{spec}.html' );
               c += 1;
             end else
               Otp($'WARNING: spec file {fname} not found!');

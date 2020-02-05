@@ -23,6 +23,7 @@
     
     public property ColPtr0: ^Vec2f read pointer(@val00);
     public property ColPtr1: ^Vec2f read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
     public procedure UseColPtr0(callback: UseVec2fPtrCallbackP);
     type PVec2f = ^Vec2f;
@@ -140,6 +141,7 @@
     public property ColPtr0: ^Vec3f read pointer(@val00);
     public property ColPtr1: ^Vec3f read pointer(@val01);
     public property ColPtr2: ^Vec3f read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
     public procedure UseColPtr0(callback: UseVec3fPtrCallbackP);
     type PVec3f = ^Vec3f;
@@ -371,6 +373,7 @@
     public property ColPtr1: ^Vec4f read pointer(@val01);
     public property ColPtr2: ^Vec4f read pointer(@val02);
     public property ColPtr3: ^Vec4f read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
     public procedure UseColPtr0(callback: UseVec4fPtrCallbackP);
     type PVec4f = ^Vec4f;
@@ -626,6 +629,7 @@
     public property ColPtr0: ^Vec2f read pointer(@val00);
     public property ColPtr1: ^Vec2f read pointer(@val01);
     public property ColPtr2: ^Vec2f read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
     public procedure UseColPtr0(callback: UseVec2fPtrCallbackP);
     type PVec2f = ^Vec2f;
@@ -754,6 +758,7 @@
     
     public property ColPtr0: ^Vec3f read pointer(@val00);
     public property ColPtr1: ^Vec3f read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
     public procedure UseColPtr0(callback: UseVec3fPtrCallbackP);
     type PVec3f = ^Vec3f;
@@ -889,6 +894,7 @@
     public property ColPtr1: ^Vec2f read pointer(@val01);
     public property ColPtr2: ^Vec2f read pointer(@val02);
     public property ColPtr3: ^Vec2f read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
     
     public procedure UseColPtr0(callback: UseVec2fPtrCallbackP);
     type PVec2f = ^Vec2f;
@@ -1038,6 +1044,7 @@
     
     public property ColPtr0: ^Vec4f read pointer(@val00);
     public property ColPtr1: ^Vec4f read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
     public procedure UseColPtr0(callback: UseVec4fPtrCallbackP);
     type PVec4f = ^Vec4f;
@@ -1193,6 +1200,7 @@
     public property ColPtr1: ^Vec3f read pointer(@val01);
     public property ColPtr2: ^Vec3f read pointer(@val02);
     public property ColPtr3: ^Vec3f read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
     
     public procedure UseColPtr0(callback: UseVec3fPtrCallbackP);
     type PVec3f = ^Vec3f;
@@ -1446,6 +1454,7 @@
     public property ColPtr0: ^Vec4f read pointer(@val00);
     public property ColPtr1: ^Vec4f read pointer(@val01);
     public property ColPtr2: ^Vec4f read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
     
     public procedure UseColPtr0(callback: UseVec4fPtrCallbackP);
     type PVec4f = ^Vec4f;
@@ -1690,6 +1699,7 @@
     
     public property ColPtr0: ^Vec2d read pointer(@val00);
     public property ColPtr1: ^Vec2d read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
     public procedure UseColPtr0(callback: UseVec2dPtrCallbackP);
     type PVec2d = ^Vec2d;
@@ -1834,6 +1844,7 @@
     public property ColPtr0: ^Vec3d read pointer(@val00);
     public property ColPtr1: ^Vec3d read pointer(@val01);
     public property ColPtr2: ^Vec3d read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
     public procedure UseColPtr0(callback: UseVec3dPtrCallbackP);
     type PVec3d = ^Vec3d;
@@ -2092,6 +2103,7 @@
     public property ColPtr1: ^Vec4d read pointer(@val01);
     public property ColPtr2: ^Vec4d read pointer(@val02);
     public property ColPtr3: ^Vec4d read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
     public procedure UseColPtr0(callback: UseVec4dPtrCallbackP);
     type PVec4d = ^Vec4d;
@@ -2374,6 +2386,7 @@
     public property ColPtr0: ^Vec2d read pointer(@val00);
     public property ColPtr1: ^Vec2d read pointer(@val01);
     public property ColPtr2: ^Vec2d read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
     public procedure UseColPtr0(callback: UseVec2dPtrCallbackP);
     type PVec2d = ^Vec2d;
@@ -2529,6 +2542,7 @@
     
     public property ColPtr0: ^Vec3d read pointer(@val00);
     public property ColPtr1: ^Vec3d read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
     public procedure UseColPtr0(callback: UseVec3dPtrCallbackP);
     type PVec3d = ^Vec3d;
@@ -2691,6 +2705,7 @@
     public property ColPtr1: ^Vec2d read pointer(@val01);
     public property ColPtr2: ^Vec2d read pointer(@val02);
     public property ColPtr3: ^Vec2d read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
     
     public procedure UseColPtr0(callback: UseVec2dPtrCallbackP);
     type PVec2d = ^Vec2d;
@@ -2867,6 +2882,7 @@
     
     public property ColPtr0: ^Vec4d read pointer(@val00);
     public property ColPtr1: ^Vec4d read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
     public procedure UseColPtr0(callback: UseVec4dPtrCallbackP);
     type PVec4d = ^Vec4d;
@@ -3049,6 +3065,7 @@
     public property ColPtr1: ^Vec3d read pointer(@val01);
     public property ColPtr2: ^Vec3d read pointer(@val02);
     public property ColPtr3: ^Vec3d read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
     
     public procedure UseColPtr0(callback: UseVec3dPtrCallbackP);
     type PVec3d = ^Vec3d;
@@ -3329,6 +3346,7 @@
     public property ColPtr0: ^Vec4d read pointer(@val00);
     public property ColPtr1: ^Vec4d read pointer(@val01);
     public property ColPtr2: ^Vec4d read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
     
     public procedure UseColPtr0(callback: UseVec4dPtrCallbackP);
     type PVec4d = ^Vec4d;

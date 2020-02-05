@@ -148,7 +148,7 @@ begin
   
   for var x := 0 to t[0][1]-1 do
     res += $'    public property ColPtr{x}: ^{t.GetColTName} read pointer(@val0{x});'+#10;
-//  res += $'    public property ColPtr[x: integer]: ^{t.GetColTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][0]*t.GetTSize});'+#10;
+  res += $'    public property ColPtr[x: integer]: ^{t.GetColTName} read pointer(IntPtr(pointer(@self)) + x*{t[0][0]*t.GetTSize});'+#10;
   
   {$endregion property ColPtr[x]}
   

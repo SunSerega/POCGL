@@ -87,8 +87,13 @@ body {
 	margin-left: 8px;
 }
 .spoiler-wrap {
-	border-left: thin solid;
+	border: solid;
+	border-width: 0px;
 	padding-left: 2px;
+}
+.spoiler-name {
+	border: solid;
+	border-width: 0px;
 }
 
 .code-block {
@@ -386,19 +391,22 @@ const on_end_folder = ()=>{
 \* ============================== */
 
 var selected_page = null;
+var scroll_by_page = {};
 const is_selected = (name_span)=>(!selected_page || selected_page.name_span!==name_span);
 const select_page = (new_page)=>{
 	if (selected_page == new_page) return;
 	document.location.hash = new_page.tree_obj.path;
 	fix_element(new_page);
 	
-	if (selected_page) {
+	let container = document.getElementById("page-display-container");
+	
+	if (selected_page)
+	{
+		scroll_by_page[selected_page.tree_obj.path] = container.scrollTop;
 		selected_page.hidden = true;
 		let name_span = selected_page.name_span;
 		if (name_span) name_span.style.backgroundColor = "inherit";
 	}
-	
-	document.getElementById("page-display-container-body").scrollTop = 0;
 	
 	selected_page = new_page;
 	if (selected_page)
@@ -414,8 +422,8 @@ const select_page = (new_page)=>{
 			tree_obj = tree_obj.root;
 		}
 		
+		container.scrollTop = scroll_by_page[selected_page.tree_obj.path] || 0;
 	}
-	
 }
 
 const make_smart_link = (lnk, page)=>{
@@ -459,8 +467,18 @@ const fix_links = (page)=>{
 
 const code_words_color = {
 	"pas": {
-		"keyword": ["begin", "end", "var", "uses", "as", "new", "try", "except", "on", "do", "const", "procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external", "static", "array", "where"],
-		"build-in": ["nil", "string", "object", "shortint","byte", "smallint","word", "integer","longword","cardinal", "int64", "uint64", "single","real"],
+		"keyword": [
+			"begin","end", "var", "uses", "as", "new", "try", "except", "on", "do", "const",
+			"procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external",
+			"static", "array", "where", "or","and", "public","private", "property","constructor", "default",
+			"of", "if","then","else", "div","mod", "extensionmethod", "while",
+		],
+		"build-in": [
+			"nil", "self", "true", "false",
+			"string","char", "object", "pointer", "single","real",
+			"shortint",	"smallint",	"integer", 				"int64",
+			"byte",		"word", 	"longword", "cardinal",	"uint64",
+		],
 		"red": ["ToDo"],
 	},
 	"cl-c": {
@@ -476,9 +494,6 @@ const fix_element = (page)=>{
 	if (page.fixed) return;
 	page.fixed = true;
 	
-	page.style.visibility = "hidden";
-	page.hidden = false;
-	
 	for (let spoiler of page.getElementsByClassName('spoiler'))
 	{
 		let get_spoiler_text = ()=> + ' ' + spoiler.getAttribute('summary');
@@ -486,19 +501,21 @@ const fix_element = (page)=>{
 		let wrap = document.createElement('p');
 		wrap.className = "spoiler-wrap";
 		wrap.update = ()=>{
-			wrap.state_span.innerHTML = String.fromCharCode( 	spoiler.hidden ? 0x25BA : 0x25BC );
-			wrap.style.border = 								spoiler.hidden ? "none" : null;
-			wrap.style.marginLeft = 							spoiler.hidden ? "1px" 	: null;
+			wrap.state_span.innerHTML = String.fromCharCode( 	spoiler.hidden ? 0x25BA	: 0x25BC );
+			wrap.style.borderLeftWidth = 						spoiler.hidden ? 0 		: 1;
+			wrap.name_span.style.borderBottomWidth = 			spoiler.hidden ? 1 		: 0;
+			wrap.style.marginLeft = 							spoiler.hidden ? 1		: 0;
 		}
 		
 		wrap.state_span = document.createElement("span");
-		wrap.update();
 		wrap.append(wrap.state_span);
 		
 		wrap.name_span = document.createElement("span");
+		wrap.name_span.className = "spoiler-name";
 		wrap.name_span.innerHTML = spoiler.getAttribute("summary");
 		wrap.append(wrap.name_span);
 		
+		wrap.update();
 		wrap.reverse_state = ()=>{
 			spoiler.hidden = !spoiler.hidden;
 			wrap.update();
@@ -518,6 +535,8 @@ const fix_element = (page)=>{
 	{
 		let w_to_regex = (w)=>`(?<!\\w)${w}(?!\\w)`;
 		
+		let code_html = code.innerHTML;
+		
 		// Автоопределение языка кода
 		if (!code.className)
 		{
@@ -530,7 +549,7 @@ const fix_element = (page)=>{
 				for (let wordt in code_words_color[lang_name])
 					for (let w of code_words_color[lang_name][wordt])
 					{
-						var m = code.innerHTML.match(new RegExp( w_to_regex(w), "gi" ));
+						var m = code_html.match(new RegExp( w_to_regex(w), "gi" ));
 						if (m) c += m.length;
 					}
 				
@@ -555,7 +574,7 @@ const fix_element = (page)=>{
 			let curr_cw = code_words_color[lang];
 			if (!curr_cw) curr_cw = code_words_color["default"];
 			for (let wordt in curr_cw)
-				code.innerHTML = code.innerHTML.replace(
+				code_html = code_html.replace(
 					new RegExp(curr_cw[wordt].map(w_to_regex).join('|'),"gi"),
 					w=> `<span class="code-${wordt}">${w}</span>`
 				);
@@ -569,7 +588,7 @@ const fix_element = (page)=>{
 			}
 			for (let op in br_types)
 				for (let i=0; i<br_types[op].length; i++)
-					code.innerHTML = code.innerHTML.replace(
+					code_html = code_html.replace(
 						new RegExp('\\'+br_types[op][i], "g"),
 						`<span class=bracket ${ op=="op" ? "op=true" : "" } bt=${i}>${br_types[op][i]}</span>`
 					);
@@ -579,14 +598,14 @@ const fix_element = (page)=>{
 		// Выделение первой строки
 		if (code.parentElement.tagName == "PRE")
 		{
-			let text = code.innerHTML;
-			let ind = text.indexOf('\n');
-			if (ind != text.length-1)
-			{
-				code.innerHTML = `<span class="code-first-line">${text.slice(0,ind)}</span>${text.slice(ind)}`;
-				code.firstLine = code.getElementsByClassName("code-first-line")[0];
-			}
+			let ind = code_html.indexOf('\n');
+			if (ind != code_html.length-1)
+				code_html = `<span class="code-first-line">${code_html.slice(0,ind)}</span>${code_html.slice(ind)}`;
 		}
+		
+		code.innerHTML = code_html;
+		code.firstLine = code.children[0];
+		if (code.firstLine && code.firstLine.className != "code-first-line") delete code.firstLine;
 		
 		// Подсветка скобок
 		{
@@ -647,71 +666,80 @@ const fix_element = (page)=>{
 			pre.replaceWith(wrap);
 			wrap.append(pre);
 			
-			if (code.firstLine)
-			{
-				let copy_button = document.createElement('div');
-				copy_button.className = "code-block-copier";
-				copy_button.innerText = "Копировать";
-				copy_button.style.visibility = "hidden";
-				pre.append(copy_button);
-				
-				copy_button.addEventListener("click", ()=>{
-					
-					if (document.selection) { // IE
-						var range = document.body.createTextRange();
-						range.moveToElementText(code);
-						range.select();
-					} else if (window.getSelection) { // other browsers
-						var range = document.createRange();
-						range.selectNode(code);
-						window.getSelection().removeAllRanges();
-						window.getSelection().addRange(range);
-					}
-					
-					var text = code.innerText;
-					navigator.clipboard.writeText(text.substring(0,text.length-1));
-				});
-				
-				copy_button.reset_right = ()=>{
-					pre_st = get_style(pre);
-					let container = document.getElementById("page-display-container");
-					let x = pre.getBoundingClientRect().right - (container.getBoundingClientRect().left+container.clientWidth);
-					if (x<0) x = 0; else
-					{
-						let max_x = pre.getBoundingClientRect().width - copy_button.getBoundingClientRect().width;
-						if (x>max_x) x = max_x;
-					}
-					copy_button.style.right = x;
-				};
-				let try_reset_right = ()=>{
-					if (!copy_button.hidden)
-						copy_button.reset_right();
-				};
-				spl_resize_event.push(try_reset_right);
-				window.addEventListener("resize", try_reset_right);
-				
-				pre.addEventListener("mouseenter", ()=>{
-					copy_button.hidden = false;
-					copy_button.reset_right();
-				});
-				pre.addEventListener("mouseleave", ()=>copy_button.hidden = true);
-				
-				copy_button.addEventListener("mousedown",	()=>copy_button.style.background = "linear-gradient(180deg, rgb(240, 240, 240), white)");
-				copy_button.addEventListener("mouseup",		()=>copy_button.style.background = "linear-gradient(  0deg, rgb(240, 240, 240), white)");
-				copy_button.addEventListener("mouseleave",	()=>copy_button.style.background = "linear-gradient(  0deg, rgb(240, 240, 240), white)");
-				
-				pre.style.minWidth =
-					code.firstLine.getBoundingClientRect().width +
-					copy_button.getBoundingClientRect().width +
-					0
-				;
-				
-				copy_button.hidden = true;
-				copy_button.style.visibility = null;
-			}
-			
 		} else
 			code.className = "inline-code";
+		
+	}
+	
+	page.style.visibility = "hidden";
+	page.hidden = false;
+	
+	for (let code of page.getElementsByTagName('code'))
+	{
+		if (code.firstLine)
+		{
+			let pre = code.parentElement;
+			
+			let copy_button = document.createElement('div');
+			copy_button.className = "code-block-copier";
+			copy_button.innerText = "Копировать";
+			copy_button.style.visibility = "hidden";
+			pre.append(copy_button);
+			
+			copy_button.addEventListener("click", ()=>{
+				
+				if (document.selection) { // IE
+					var range = document.body.createTextRange();
+					range.moveToElementText(code);
+					range.select();
+				} else if (window.getSelection) { // other browsers
+					var range = document.createRange();
+					range.selectNode(code);
+					window.getSelection().removeAllRanges();
+					window.getSelection().addRange(range);
+				}
+				
+				var text = code.innerText;
+				navigator.clipboard.writeText(text.substring(0,text.length-1));
+			});
+			
+			copy_button.reset_right = ()=>{
+				pre_st = get_style(pre);
+				let container = document.getElementById("page-display-container");
+				let x = pre.getBoundingClientRect().right - (container.getBoundingClientRect().left+container.clientWidth);
+				if (x<0) x = 0; else
+				{
+					let max_x = pre.offsetWidth - copy_button.offsetWidth;
+					if (x>max_x) x = max_x;
+				}
+				copy_button.style.right = x;
+			};
+			let try_reset_right = ()=>{
+				if (!copy_button.hidden)
+					copy_button.reset_right();
+			};
+			spl_resize_event.push(try_reset_right);
+			window.addEventListener("resize", try_reset_right);
+			
+			pre.addEventListener("mouseenter", ()=>{
+				copy_button.hidden = false;
+				copy_button.reset_right();
+			});
+			pre.addEventListener("mouseleave", ()=>copy_button.hidden = true);
+			
+			copy_button.addEventListener("mousedown",	()=>copy_button.style.background = "linear-gradient(180deg, rgb(240, 240, 240), white)");
+			copy_button.addEventListener("mouseup",		()=>copy_button.style.background = "linear-gradient(  0deg, rgb(240, 240, 240), white)");
+			copy_button.addEventListener("mouseleave",	()=>copy_button.style.background = "linear-gradient(  0deg, rgb(240, 240, 240), white)");
+			
+			pre.style.minWidth =
+				code.firstLine.offsetWidth +
+				copy_button.offsetWidth +
+				0
+			;
+			
+			copy_button.hidden = true;
+			copy_button.style.visibility = null;
+		}
 		
 	}
 	
@@ -831,9 +859,9 @@ window.onload = ()=>{
 }
 </script>
 <div id="page-1" page_name="" hidden=true>
-<p><code>ToDo</code> модуля OpenGLABC пока что не существует. Когда то он появится, но пока что есть только это сообщение.</p>
+<p><code>ToDo</code> модуля <code>OpenGLABC</code> пока что не существует. Когда то он появится, но пока что есть только это сообщение.</p>
 <p>Если хотите понять, было ли это сообщение оставлено тут 10 лет назад и забыто - вот дата, когда автор сообщения последний раз прочитал его:<br />
-08.01.2020</p>
+03.02.2020</p>
 </div>
 <script>on_start_folder("GL ABC", document.getElementById("page-1"))</script>
 <script>on_end_folder()</script>

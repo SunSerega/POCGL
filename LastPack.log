@@ -4,12 +4,12 @@ Spec + CL + CLABC + GL + GLABC + Test + Release
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Spec\SpecPacker.pas"
 Finished compiling: OK
 Runing SpecPacker
-SpecPacker: Packing spec "Гайд по использованию OpenCL и OpenGL"
-SpecPacker: Done packing spec "Гайд по использованию OpenCL и OpenGL"
-SpecPacker: Packing spec "Справка OpenCLABC"
-SpecPacker: Done packing spec "Справка OpenCLABC"
+SpecPacker: Packing spec "Гайд по использованию OpenGL и OpenCL"
+SpecPacker: Done packing spec "Гайд по использованию OpenGL и OpenCL"
 SpecPacker: Packing spec "Справка OpenGLABC"
 SpecPacker: Done packing spec "Справка OpenGLABC"
+SpecPacker: Packing spec "Справка OpenCLABC"
+SpecPacker: Done packing spec "Справка OpenCLABC"
 Finished runing SpecPacker
 ===================================== OpenCL =====================================
 ==================================== OpenCLABC ===================================
@@ -64,20 +64,20 @@ Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Func [glBindBufferRa
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Func [glBindBufferBase] was added in versions [3.1] and [3.0]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (54) overloads of func [glGetActiveAttrib]
-Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (54) overloads of func [glGetActiveUniform]
+Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetActiveAttrib]
+Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetActiveUniform]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
-Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (54) overloads of func [glGetTransformFeedbackVarying]
+Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVarying]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (18) overloads of func [glSpecializeShader]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetPerfMonitorCountersAMD]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (18) overloads of func [glSpecializeShaderARB]
-Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (54) overloads of func [glGetActiveUniformARB]
-Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (54) overloads of func [glGetActiveAttribARB]
+Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetActiveUniformARB]
+Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetActiveAttribARB]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glWaitSemaphoreEXT]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glSignalSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (54) overloads of func [glGetTransformFeedbackVaryingEXT]
+Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVaryingEXT]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glMultiModeDrawArraysIBM]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glMultiModeDrawElementsIBM]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesNV]
@@ -87,7 +87,7 @@ Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (81) overlo
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (81) overloads of func [glAsyncCopyImageSubDataNVX]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (81) overloads of func [glPointAlongPathNV]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourcefvNV]
-Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (54) overloads of func [glGetActiveVaryingNV]
+Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [glGetActiveVaryingNV]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatARB]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatEXT]
 Template[OpenGL]: TemplateCommand[Pack Funcs.pas]: WARNING: Too many (27) overloads of func [wglGetGammaTableI3D]
@@ -206,6 +206,6 @@ Packing sample "Samples\OpenGL\Тетрис\Тетрис.pas"
 Packed 14 samples
 Packing spec "Packing\Spec\Справка OpenGLABC.html"
 Packing spec "Packing\Spec\Справка OpenCLABC.html"
-Packing spec "Packing\Spec\Гайд по использованию OpenCL и OpenGL.html"
+Packing spec "Packing\Spec\Гайд по использованию OpenGL и OpenCL.html"
 Packed 3 spec files
 done packing
