@@ -17,7 +17,6 @@ type
     
   end;
   
-type
   Group = sealed class
     private name, t: string;
     private bitmask: boolean;
