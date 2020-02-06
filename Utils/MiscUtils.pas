@@ -154,6 +154,13 @@ begin
   Result := $'{path}\{fname}';
 end;
 
+/// fname - путь относительно папки .exe файла
+function InitLog(fname: string) :=
+new System.IO.StreamWriter(
+  GetFullPath(fname, System.IO.Path.GetDirectoryName(GetEXEFileName)),
+  false, enc
+);
+
 {$endregion Misc}
 
 {$region Otp}
@@ -352,14 +359,6 @@ type
         .GetMethod('WarnUnused', System.Reflection.BindingFlags.NonPublic or System.Reflection.BindingFlags.Instance)
         .MethodHandle
       );
-      lst.Capacity := lst.Count + adders.Count;
-      
-      foreach var a in adders do
-      begin
-        var o := new TFixable;
-        (a as object as Fixer<TFixer, TFixable>).Apply(o); //ToDo #2191
-        lst += o;
-      end;
       
       for var i := lst.Count-1 downto 0 do
       begin
@@ -369,7 +368,14 @@ type
             lst.RemoveAt(i);
       end;
       
-      lst.Capacity := lst.Count;
+      lst.Capacity := lst.Count + adders.Count;
+      foreach var a in adders do
+      begin
+        var o := new TFixable;
+        (a as object as Fixer<TFixer, TFixable>).Apply(o); //ToDo #2191
+        lst += o;
+      end;
+      
     end;
     
     protected procedure WarnUnused; abstract;

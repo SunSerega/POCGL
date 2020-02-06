@@ -47,7 +47,7 @@ uses System.Runtime.CompilerServices;
 
 {$region Перечисления} type
   
-  %Enums!Pack Enums.pas%
+  %Enums!Pack Most.pas%
   
 {$endregion Перечисления}
 
@@ -73,7 +73,7 @@ uses System.Runtime.CompilerServices;
 
 type
   
-  %Funcs!Pack Funcs.pas%
+  %Funcs!Pack Most.pas%
   
   %Static\GDIIntegration%
   

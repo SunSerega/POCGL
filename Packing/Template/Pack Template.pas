@@ -41,23 +41,48 @@ type
     
   end;
   
+var prev_commands := new Dictionary<string, ManualResetEvent>;
+procedure WaitCommandExec(name: string; work: ()->());
+begin
+  var ev: ManualResetEvent;
+  var comm_otp: ThrProcOtp;
+  
+  lock prev_commands do
+    if not prev_commands.TryGetValue(name, ev) then
+    begin
+      ev := new ManualResetEvent(false);
+      prev_commands.Add(name, ev);
+      var T_Command := (
+        ProcTask(work) +
+        SetEvTask(ev)
+      );
+      T_Command.StartExec;
+      comm_otp := T_Command.own_otp;
+    end;
+  
+  if comm_otp=nil then
+    ev.WaitOne else
+  foreach var l in comm_otp.Enmr do
+    Otp(l);
+end;
+
 function ProcessCommand(comm: string; path: string): string;
 begin
   if comm='' then exit;
   
   var sind := comm.IndexOf('!');
-  if sind<>-1 then
+  if sind <> -1 then
   begin
     var fname := comm.Substring(sind+1);
-    ExecuteFile(GetFullPath(fname, path),$'TemplateCommand[{fname}]');
+    WaitCommandExec(fname, ()-> ExecuteFile(GetFullPath(fname, path), $'TemplateCommand[{fname}]') );
     comm := comm.Remove(sind);
   end;
   
   comm := GetFullPath(comm+'.template', path);
-  RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={comm}"');
+  WaitCommandExec(comm, ()-> RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={comm}"') );
   
   comm += 'res';
-  Result := ReadAllText(comm, new System.Text.UTF8Encoding(true));
+  Result := ReadAllText(comm);
   System.IO.File.Delete(comm);
   
 end;

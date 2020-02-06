@@ -28,11 +28,13 @@ Syntax:
 ```
 # AddableGroup
 !add
+UInt32
 true
 x=56
 y=0xAB
 ```
-First line specifies if group is bitmask
+First line specifies enum value type.\
+Second line specifies if group is bitmask.
 
 ---
 ### !remove

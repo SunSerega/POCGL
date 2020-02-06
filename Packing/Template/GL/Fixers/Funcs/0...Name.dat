@@ -71,12 +71,12 @@ UInt32=BufferName
 # glGenBuffers
 !repl_par_t
 array of UInt32	= array of BufferName
-var!UInt32		= var!BufferName
+var UInt32		= var BufferName
 
 # glCreateBuffers
 !repl_par_t
 array of UInt32	= array of BufferName
-var!UInt32		= var!BufferName
+var UInt32		= var BufferName
 
 # glNamedBufferData
 !repl_par_t

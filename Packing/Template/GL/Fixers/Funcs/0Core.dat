@@ -11,6 +11,6 @@
 
 # glNamedBufferData
 !possible_par_types
- *	| *	| -IntPtr +array of T +var!T +IntPtr	| *	|
+ *	| *	| -IntPtr +array of T +var T +IntPtr	| *	|
 
 

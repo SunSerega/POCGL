@@ -1,10 +1,6 @@
-﻿{$reference System.XML.dll}
-uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
+﻿uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
+uses XMLUtils in '..\XMLUtils.pas';
 
-var log := new System.IO.StreamWriter(
-  GetFullPath('..\xml.log', GetEXEFileName),
-  false, enc
-);
 var allowed_api := HSet(
   'gl','glcore', // gl есть всюду где glcore, glcore только чтоб не выводить лишнее сообщение в лог
   'wgl',
@@ -21,58 +17,9 @@ type
     
   end;
   
-var xmls := System.IO.Directory.EnumerateFiles(GetFullPath($'..\..\..\Reps\OpenGL-Registry\xml', GetEXEFileName), '*.xml').ToHashSet;
-
 type
-  XmlNode = sealed class
-    private t: string;
-    private atrbs := new Dictionary<string,string>;
-    private txt: string;
-    private nds: array of XmlNode;
-    
-    private procedure InitFrom(el: System.Xml.XmlNode);
-    begin
-      self.t := el.Name;
-      
-      if el.Attributes<>nil then
-        foreach var atrb: System.Xml.XmlAttribute in el.Attributes do
-          atrbs.Add(atrb.Name, atrb.Value);
-      
-      txt := el.InnerText;
-      
-      nds := new XmlNode[el.ChildNodes.Count];
-      for var i := 0 to nds.Length-1 do
-      begin
-        var n := new XmlNode;
-        n.InitFrom(el.ChildNodes[i]);
-        nds[i] := n;
-      end;
-      
-    end;
-    
-    public constructor(fname: string);
-    begin
-      if not xmls.Remove(fname) then Otp($'WARNING: file [{fname}] isn''t expected as input');
-      var d := new System.Xml.XmlDocument;
-      d.Load(fname);
-      InitFrom(d.DocumentElement);
-    end;
-    
-    public constructor;
-    begin
-      nds := new XmlNode[0];
-    end;
-    
-    public property Text: string read txt;
-    
-    public property Attribute[name: string]: string read atrbs.ContainsKey(name) ? atrbs[name] : nil; default;
-    
-    public property Nodes[t: string]: sequence of XmlNode read nds.Where(n->n.t=t);
-    
-  end;
-  
   Group = sealed class
-    private name: string;
+    private name, t: string;
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
     
@@ -82,6 +29,7 @@ type
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
       bw.Write(name);
+      bw.Write(t);
       bw.Write(bitmask);
       bw.Write(enums.Count);
       foreach var key in enums.Keys do
@@ -118,6 +66,7 @@ type
       begin
         var res := new Group;
         res.name := gname;
+        res.t := 'GLuint';
         
         var group_t: (gt_any, gt_enum, gt_bitmask, gt_error) := gt_any;
         foreach var enum in all[gname].enums do
@@ -474,6 +423,7 @@ end;
 
 begin
   try
+    xmls := System.IO.Directory.EnumerateFiles(GetFullPath($'..\..\..\Reps\OpenGL-Registry\xml', GetEXEFileName), '*.xml').ToHashSet;
     
     ScrapFile('gl');
     ScrapFile('wgl');

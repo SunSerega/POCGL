@@ -3,6 +3,7 @@
 
 # PixelFormatFlagsGDI
 !add
+UInt32
 true
 DOUBLEBUFFER			=00000001
 STEREO					=00000002
@@ -24,6 +25,7 @@ STEREO_DONTCARE			=80000000
 
 # PixelDataTypeGDI
 !add
+UInt32
 false
 RGBA		=0
 COLORINDEX	=1
