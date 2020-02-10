@@ -1,7 +1,7 @@
 
 
 
-Genral syntax of `Funcs.dat`:
+Genral syntax of `.dat` files:
 ```
 
 # FuncName

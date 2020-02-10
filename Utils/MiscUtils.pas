@@ -206,6 +206,8 @@ begin
   
   if otp_time_marks then line.s := $'{line.t.TimeToStr} | {line.s}';
   System.Console.WriteLine(line.s);
+  
+  System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
 end;
 
 /// Остановка других потоков и подпроцессов, довывод асинхронного вывода и вывод ошибки
@@ -360,14 +362,6 @@ type
         .MethodHandle
       );
       
-      for var i := lst.Count-1 downto 0 do
-      begin
-        var o := lst[i];
-        foreach var f in Item[o.GetName] do
-          if (f as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
-            lst.RemoveAt(i);
-      end;
-      
       lst.Capacity := lst.Count + adders.Count;
       foreach var a in adders do
       begin
@@ -376,6 +370,15 @@ type
         lst += o;
       end;
       
+      for var i := lst.Count-1 downto 0 do
+      begin
+        var o := lst[i];
+        foreach var f in Item[o.GetName] do
+          if (f as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
+            lst.RemoveAt(i);
+      end;
+      
+      lst.TrimExcess;
     end;
     
     protected procedure WarnUnused; abstract;

@@ -32,6 +32,7 @@ Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack Most.pas]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: Reading .bin
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: Fixing all
+Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing records code
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing enums code
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing funcs code
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glProgramParameteri] was added in versions [4.1] and [4.1]
@@ -78,8 +79,6 @@ Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloa
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglGetSyncValuesOML]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Group [PixelFormatFlagsGDI] wasn't used
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Group [PixelDataTypeGDI] wasn't used
 Template[OpenGL]: Finished runing TemplateCommand[Pack Most.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Enums.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Enums.template]
@@ -97,8 +96,8 @@ Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Records.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Records.template]
+Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Records.template]
+Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Records.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Funcs.template]
 Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Funcs.template]
 Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
@@ -202,9 +201,7 @@ Packing sample "Samples\OpenCLABC\Wait очереди\1.pas"
 Packing sample "Samples\OpenCLABC\Wait очереди\2.pas"
 Packing sample "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
 Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Packing sample "Samples\OpenGL\Тетрис\GraphEngine.pas"
-Packing sample "Samples\OpenGL\Тетрис\Тетрис.pas"
-Packed 14 samples
+Packed 12 samples
 Packing spec "Packing\Spec\Справка OpenGLABC.html"
 Packing spec "Packing\Spec\Справка OpenCLABC.html"
 Packing spec "Packing\Spec\Гайд по использованию OpenGL и OpenCL.html"

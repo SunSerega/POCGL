@@ -402,6 +402,8 @@ begin
     .ToHashSet.ToArray
   ;
   
+  bw.Write(0); // structs
+  
   bw.Write(grs.Length);
   foreach var gr in grs do
     gr.Save(bw);
@@ -433,8 +435,8 @@ begin
     
     SaveBin;
     
-    if not CommandLineArgs.Contains('SecondaryProc') then Otp($'done');
     log.Close;
+    if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString($'done');
   except
     on e: Exception do ErrOtp(e);
   end;

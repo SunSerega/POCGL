@@ -1,7 +1,7 @@
 
 
 
-Genral syntax of `Enums.dat`:
+Genral syntax of `.dat` files:
 ```
 
 # GroupName

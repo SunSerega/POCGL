@@ -12,8 +12,19 @@ begin
     ApplyFixers;
     Feature.FixGL_GDI;
     
-    Otp($'Constructing enums code');
     var res := new StringBuilder;
+    
+    Otp($'Constructing records code');
+    res += '  '#10;
+    res += '  '#10;
+    res += '  '#10;
+    Struct.WriteAll(res);
+    res += '  '#10;
+    res += '  ';
+    WriteAllText(GetFullPath('..\Records.template', GetEXEFileName), res.ToString);
+    res.Clear;
+    
+    Otp($'Constructing enums code');
     res += '  '#10;
     res += '  '#10;
     res += '  '#10;

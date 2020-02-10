@@ -1,0 +1,124 @@
+﻿  
+  
+  
+  Fixed = record
+    public val: UInt32;
+    
+    public constructor(val: UInt32);
+    begin
+      self.val := val;
+    end;
+    
+  end;
+  
+  Half = record
+    public val: UInt16;
+    
+    public constructor(val: UInt16);
+    begin
+      self.val := val;
+    end;
+    
+  end;
+  
+  GDI_COLORREF = record
+    private a: byte := 0;
+    public r: byte;
+    public g: byte;
+    public b: byte;
+    
+    public constructor(r: byte; g: byte; b: byte);
+    begin
+      self.r := r;
+      self.g := g;
+      self.b := b;
+    end;
+    
+  end;
+  
+  GDI_GlyphmetricsFloat = record
+    public gmfBlackBoxX: single;
+    public gmfBlackBoxY: single;
+    public gmfptGlyphOriginX: single;
+    public gmfptGlyphOriginY: single;
+    public gmfCellIncX: single;
+    public gmfCellIncY: single;
+    
+    public constructor(gmfBlackBoxX: single; gmfBlackBoxY: single; gmfptGlyphOriginX: single; gmfptGlyphOriginY: single; gmfCellIncX: single; gmfCellIncY: single);
+    begin
+      self.gmfBlackBoxX := gmfBlackBoxX;
+      self.gmfBlackBoxY := gmfBlackBoxY;
+      self.gmfptGlyphOriginX := gmfptGlyphOriginX;
+      self.gmfptGlyphOriginY := gmfptGlyphOriginY;
+      self.gmfCellIncX := gmfCellIncX;
+      self.gmfCellIncY := gmfCellIncY;
+    end;
+    
+  end;
+  
+  GDI_PixelFormatDescriptor = record
+    private nSize: UInt16 := sizeof(GDI_PixelFormatDescriptor);
+    public nVersion: UInt16 := 1;
+    
+    public dwFlags: PixelFormatFlagsGDI;
+    public iPixelType: PixelDataTypeGDI;
+    
+    public cColorBits: Byte; // Кол-во бит для R+G+B
+    public cRedBits: Byte; // Если оставить эти 6 нулями - их заполнит автоматически
+    public cRedShift: Byte;
+    public cGreenBits: Byte;
+    public cGreenShift: Byte;
+    public cBlueBits: Byte;
+    public cBlueShift: Byte;
+    public cAlphaBits: Byte; // Последние 2 не работают на Windows
+    public cAlphaShift: Byte;
+    
+    public cAccumBits: Byte;
+    public cAccumRedBits: Byte;
+    public cAccumGreenBits: Byte;
+    public cAccumBlueBits: Byte;
+    public cAccumAlphaBits: Byte;
+    
+    public cDepthBits: Byte;
+    public cStencilBits: Byte;
+    public cAuxBuffers: Byte; // Устарело
+    
+    public iLayerType: Byte; // Устарело
+    public bLayersSize: Byte; // Устарело
+    
+    public dwLayerMask: UInt32; // Не могу найти нормальное описание последних 3, но все оставляют их нулями
+    public dwVisibleMask: UInt32;
+    public dwDamageMask: UInt32;
+    
+    public constructor(dwFlags: PixelFormatFlagsGDI; iPixelType: PixelDataTypeGDI; cColorBits: Byte; cRedBits: Byte; cRedShift: Byte; cGreenBits: Byte; cGreenShift: Byte; cBlueBits: Byte; cBlueShift: Byte; cAlphaBits: Byte; cAlphaShift: Byte; cAccumBits: Byte; cAccumRedBits: Byte; cAccumGreenBits: Byte; cAccumBlueBits: Byte; cAccumAlphaBits: Byte; cDepthBits: Byte; cStencilBits: Byte; cAuxBuffers: Byte; iLayerType: Byte; bLayersSize: Byte; dwLayerMask: UInt32; dwVisibleMask: UInt32; dwDamageMask: UInt32);
+    begin
+      self.dwFlags := dwFlags;
+      self.iPixelType := iPixelType;
+      self.cColorBits := cColorBits;
+      self.cRedBits := cRedBits;
+      self.cRedShift := cRedShift;
+      self.cGreenBits := cGreenBits;
+      self.cGreenShift := cGreenShift;
+      self.cBlueBits := cBlueBits;
+      self.cBlueShift := cBlueShift;
+      self.cAlphaBits := cAlphaBits;
+      self.cAlphaShift := cAlphaShift;
+      self.cAccumBits := cAccumBits;
+      self.cAccumRedBits := cAccumRedBits;
+      self.cAccumGreenBits := cAccumGreenBits;
+      self.cAccumBlueBits := cAccumBlueBits;
+      self.cAccumAlphaBits := cAccumAlphaBits;
+      self.cDepthBits := cDepthBits;
+      self.cStencilBits := cStencilBits;
+      self.cAuxBuffers := cAuxBuffers;
+      self.iLayerType := iLayerType;
+      self.bLayersSize := bLayersSize;
+      self.dwLayerMask := dwLayerMask;
+      self.dwVisibleMask := dwVisibleMask;
+      self.dwDamageMask := dwDamageMask;
+    end;
+    
+  end;
+  
+  
+  

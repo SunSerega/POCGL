@@ -65,7 +65,7 @@ uses System.Runtime.CompilerServices;
   
   {$region Misc}
   
-  %Static\Records%
+  %Records!Pack Most.pas%
   
   {$endregion Misc}
   

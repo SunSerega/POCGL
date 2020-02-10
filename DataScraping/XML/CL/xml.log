@@ -1,0 +1,26 @@
+﻿Type [double] is referenced but not defined
+Type [float] is referenced but not defined
+Type [int16_t] is referenced but not defined
+Type [int32_t] is referenced but not defined
+Type [int64_t] is referenced but not defined
+Type [int8_t] is referenced but not defined
+Type [uint16_t] is referenced but not defined
+Type [uint32_t] is referenced but not defined
+Type [uint64_t] is referenced but not defined
+Type [unsigned int] is referenced but not defined
+Type-less group [Constants]
+Type-less group [MiscNumbers]
+Type-less group [cl_affinity_domain_ext]
+Type-less group [clCommandExecutionStatus]
+Type-less group [cl_compiler_mode_altera]
+Type-less group [cl_kernel_arg_type_qualifer]
+Type-less group [cl_intel_driver_diagnostics]
+Func [clLogMessagesToSystemLogAPPLE] had no err code return
+Func [clLogMessagesToStdoutAPPLE] had no err code return
+Func [clLogMessagesToStderrAPPLE] had no err code return
+Func [clSVMAllocARM] had no err code return
+Func [clSVMFreeARM] had no err code return
+Func [clSVMAlloc] had no err code return
+Func [clSVMFree] had no err code return
+Func [clGetExtensionFunctionAddressForPlatform] had no err code return
+Func [clGetExtensionFunctionAddress] had no err code return

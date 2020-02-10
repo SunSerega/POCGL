@@ -61,6 +61,126 @@ type
   
   {$endregion TypeTable}
   
+  {$region Struct}
+  
+  StructField = sealed class
+    public name: string;
+    public ptr: integer;
+    public t: string;
+    
+    public vis := 'public';
+    public def_val: string := nil;
+    public comment: string := nil;
+    
+    public constructor := exit;
+    public constructor(br: System.IO.BinaryReader);
+    begin
+      name := br.ReadString;
+      ptr := br.ReadInt32;
+      t := TypeTable.Convert(br.ReadString);
+    end;
+    
+    public function MakeDef: string;
+    begin
+      var res := new StringBuilder;
+      res += name;
+      res += ': ';
+      res.Append('^',ptr);
+      res += t;
+      Result := res.ToString;
+    end;
+    
+    public procedure Write(sb: StringBuilder);
+    begin
+      sb += '    ';
+      if name<>nil then
+      begin
+        LogCache.used_t_names += self.t;
+        sb += vis;
+        sb += ' ';
+        sb += self.MakeDef;
+        if def_val<>nil then
+        begin
+          sb += ' := ';
+          sb += def_val;
+        end;
+        sb += ';';
+        if comment<>nil then
+        begin
+          sb += ' // ';
+          sb += comment;
+        end;
+      end;
+      sb += #10;
+    end;
+    
+  end;
+  Struct = sealed class(INamed)
+    private name: string;
+    // (name, ptr, type)
+    private flds := new List<StructField>;
+    
+    public function GetName: string := name;
+    
+    public constructor := exit;
+    public constructor(br: System.IO.BinaryReader);
+    begin
+      self.name := br.ReadString;
+      flds.Capacity := br.ReadInt32;
+      loop flds.Capacity do
+        flds += new StructField(br);
+    end;
+    
+    private static All := new List<Struct>;
+    public static procedure LoadAll(br: System.IO.BinaryReader);
+    begin
+      All.Capacity := br.ReadInt32;
+      loop All.Capacity do All += new Struct(br);
+    end;
+    
+    public procedure Write(sb: StringBuilder);
+    begin
+      sb += $'  {name} = record' + #10;
+      
+      foreach var fld in flds do
+        fld.Write(sb);
+      sb += '    '#10;
+      
+      var constr_flds := flds.ToList;
+      constr_flds.RemoveAll(fld->fld.name=nil);
+      constr_flds.RemoveAll(fld->fld.def_val<>nil);
+      sb += '    public constructor(';
+      sb += constr_flds.Select(fld->fld.MakeDef).JoinToString('; ');
+      sb += ');'#10;
+      sb += '    begin'#10;
+      foreach var fld in constr_flds do
+        sb += $'      self.{fld.name} := {fld.name};'+#10;
+      sb += '    end;'#10;
+      sb += '    '#10;
+      
+      sb +=       '  end;'#10;
+      sb +=       '  '#10;
+    end;
+    public static procedure WriteAll(sb: StringBuilder) :=
+    foreach var s in All do s.Write(sb);
+    
+    public static procedure WarnAllUnused :=
+    foreach var s in All do
+      if not LogCache.used_t_names.Contains(s.name) then
+        Otp($'WARNING: Struct [{s.name}] wasn''t used');
+    
+  end;
+  StructFixer = abstract class(Fixer<StructFixer, Struct>)
+    
+    public static constructor;
+    
+    protected procedure WarnUnused; override :=
+    Otp($'WARNING: Fixer of struct [{self.name}] wasn''t used');
+    
+  end;
+  
+  {$endregion Struct}
+  
   {$region Group}
   
   Group = sealed class(INamed)
@@ -1092,6 +1212,7 @@ end;
 procedure LoadBin;
 begin
   var br := new System.IO.BinaryReader(System.IO.File.OpenRead('DataScraping\XML\GL\funcs.bin'));
+  Struct.LoadAll(br);
   Group.LoadAll(br);
   Func.LoadAll(br);
   Feature.LoadAll(br);
@@ -1101,6 +1222,7 @@ end;
 
 procedure ApplyFixers;
 begin
+  StructFixer.ApplyAll(Struct.All);
   GroupFixer.ApplyAll(Group.All);
   FuncFixer.ApplyAll(Func.All);
 end;
@@ -1109,9 +1231,11 @@ procedure FinishAll;
 begin
   
   TypeTable.WarnUnused;
+  StructFixer.WarnAllUnused;
   GroupFixer.WarnAllUnused;
   FuncFixer.WarnAllUnused;
   
+  Struct.WarnAllUnused;
   Group.WarnAllUnused;
   Func.WarnAllUnused;
   
@@ -1141,6 +1265,133 @@ begin
 end;
 
 {$endregion Misc}
+
+{$region StructFixer}
+
+type
+  StructAdder = sealed class(StructFixer)
+    private name: string;
+    private flds := new List<StructField>;
+    
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(nil);
+      self.name := name;
+      
+      foreach var l in data do
+        if not string.IsNullOrWhiteSpace(l) then
+        begin
+          var fld := new StructField;
+          
+          if l.Trim<>'*' then
+          begin
+            var s := l.Split(':');
+            fld.name := s[0].Trim;
+            fld.ptr := s[1].Count(ch->ch='*');
+            fld.t := s[1].Remove('*').Trim;
+          end else
+            fld.name := nil;
+          
+          flds += fld;
+        end;
+      
+      self.RegisterAsAdder;
+    end;
+    
+    public function Apply(s: Struct): boolean; override;
+    begin
+      s.name := self.name;
+      s.flds := self.flds;
+      Result := false;
+    end;
+    
+  end;
+  
+  StructFieldFixer = abstract class(StructFixer)
+    private fn, val: string;
+    
+    public constructor(name: string; data: string);
+    begin
+      inherited Create(name);
+      var s := data.Split('=');
+      fn := s[0].Trim;
+      val := s[1].Trim;
+    end;
+    
+    public procedure Apply(f: StructField); abstract;
+    
+    public function Apply(s: Struct): boolean; override;
+    begin
+      var f := s.flds.Find(f->f.name=fn);
+      if f<>nil then
+      begin
+        self.Apply(f);
+        used := true;
+      end else
+        Otp($'WARNING: Faild to apply [{self.GetType.Name}] to struct [{s.name}]');
+      Result := false;
+    end;
+    
+  end;
+  StructVisFixer = sealed class(StructFieldFixer)
+    
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new StructVisFixer(name, l);
+    
+    public procedure Apply(f: StructField); override :=
+    f.vis := self.val;
+    
+  end;
+  StructDefaultFixer = sealed class(StructFieldFixer)
+    
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new StructDefaultFixer(name, l);
+    
+    public procedure Apply(f: StructField); override :=
+    f.def_val := self.val;
+    
+  end;
+  StructCommentFixer = sealed class(StructFieldFixer)
+    
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new StructCommentFixer(name, l);
+    
+    public procedure Apply(f: StructField); override :=
+    f.comment := self.val;
+    
+  end;
+  
+static constructor StructFixer.Create;
+begin
+  
+  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat');
+  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
+    foreach var bl in ReadBlocks(gr[1],'!',false) do
+    case bl[0] of
+      
+      'add':      StructAdder       .Create(gr[0], bl[1]);
+      'vis':      StructVisFixer    .Create(gr[0], bl[1]);
+      'default':  StructDefaultFixer.Create(gr[0], bl[1]);
+      'comment':  StructCommentFixer.Create(gr[0], bl[1]);
+      
+      else raise new MessageException($'Invalid struct fixer type [!{bl[0]}] for struct [{gr[0]}]');
+    end;
+  
+end;
+
+{$endregion StructFixer}
 
 {$region GroupFixer}
 
@@ -1183,7 +1434,6 @@ type
       gr.bitmask  := self.bitmask;
       gr.enums    := self.enums;
       gr.FinishInit;
-      self.used := true;
       Result := false;
     end;
     
@@ -1282,7 +1532,6 @@ type
     begin
       f.org_par := self.org_par.ToArray;
       f.BasicInit;
-      self.used := true;
       Result := false;
     end;
     
