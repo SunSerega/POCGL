@@ -4,9 +4,10 @@ uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 begin
   try
     InitAll;
+    dll_name := 'opengl32.dll';
     
     Otp($'Reading .bin');
-    LoadBin;
+    LoadBin('DataScraping\XML\GL\funcs.bin');
     
     Otp($'Fixing all');
     ApplyFixers;

@@ -4,8 +4,9 @@ interface
 
 uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
-var log := InitLog('Log\Funcs.log');
-var log_func_ovrs := InitLog('Log\FinalFuncOverloads.log');
+var log :=            InitLog('Log\Funcs.log');
+var log_groups :=     InitLog('Log\FinalGroups.log');
+var log_func_ovrs :=  InitLog('Log\FinalFuncOverloads.log');
 
 type
   LogCache = static class
@@ -14,14 +15,14 @@ type
     static used_t_names       := new HashSet<string>;
   end;
   
-var allowed_ext_names := HSet(
-  '','ARB','EXT','GDI',
-  'NV','AMD','ATI','APPLE','SGI','HP','IBM','PGI','SGIS','SGIX','SUN','GREMEDY','INTEL','S3',
-  'NVX','OES','OVR','SUNX','OML','INGR','KHR','3DFX','3DL','I3D','WIN','MESA','MESAX','REND'
-);
+var dll_name: string;
+
+var allowed_ext_names: HashSet<string>;
 function GetExt(s: string): string;
 
 var unallowed_words: HashSet<string>;
+
+var allowed_api: HashSet<string>;
 
 type
   
@@ -52,7 +53,7 @@ type
       end;
     end;
     
-    public static procedure WarnUnused :=
+    public static procedure WarnAllUnused :=
     foreach var ntv_t in All.Keys do
       if not Used.Contains(ntv_t) then
         Otp($'WARNING: TypeTable key [{ntv_t}] wasn''t used');
@@ -129,6 +130,7 @@ type
       flds.Capacity := br.ReadInt32;
       loop flds.Capacity do
         flds += new StructField(br);
+      TypeTable.All.Add(self.name,self.name);
     end;
     
     private static All := new List<Struct>;
@@ -210,6 +212,8 @@ type
       
       name := br.ReadString;
       t := TypeTable.Convert(br.ReadString);
+      TypeTable.All.Add(name, name);
+      TypeTable.Used += name;
       bitmask := br.ReadBoolean;
       
       var enums_count := br.ReadInt32;
@@ -238,6 +242,11 @@ type
     
     public procedure Write(sb: StringBuilder);
     begin
+      log_groups.WriteLine($'# {name}');
+      foreach var ename in enums.Keys do
+        log_groups.WriteLine($'{#9}{ename} = {enums[ename]:X}');
+      log_groups.WriteLine;
+      
       var max_w := screened_enums.Keys.Max(ename->ename.Length);
       var max_scr_w := screened_enums.Values.Max(ename->ename.Length);
       sb +=       $'  {name} = record' + #10;
@@ -551,8 +560,7 @@ type
     
     public static procedure WriteGetPtrFunc(sb: StringBuilder; api: string);
     begin
-      if api='wgl' then exit;
-      if api='gdi' then exit;
+      if not (api in ['gl','glx']) then exit;
       sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
       if api='glx' then
         sb += '    external ''opengl32.dll'' name ''glXGetProcAddress'';'#10 else
@@ -704,7 +712,7 @@ type
         
       end;
       
-      var use_external := ((api='gl') and (version<>nil) and (version <= '1.1')) or (api='wgl') or (api='gdi');
+      var use_external := (api<>'gl') or ((version<>nil) and (version <= '1.1'));
       if use_external and (
         true
       ) then
@@ -719,7 +727,7 @@ type
           sb += ';'#10;
           if api='gdi' then
             sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
-            sb += $'    external ''opengl32.dll'' name ''{name}'';'+#10;
+            sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
           
           sb += $'    public static z_{l_name.TrimStart(''&'')}_ovr{ovr_i}';
           if (org_par.Length=1) and not is_proc then
@@ -1009,8 +1017,6 @@ type
       add := ArrGen(br.ReadInt32, i->Func.All[br.ReadInt32]).ToList;
       rem := ArrGen(br.ReadInt32, i->Func.All[br.ReadInt32]).ToList;
       
-      if not (api in ['gl','wgl','glx']) then raise new System.NotSupportedException;
-      
     end;
     
     public static ByApi := new Dictionary<string, List<Feature>>;
@@ -1129,7 +1135,7 @@ type
       name := name.Substring(api.Length+1);
       
       var ind := name.IndexOf('_');
-      ext_group := name.Remove(ind);
+      ext_group := name.Remove(ind).ToUpper;
       if ext_group in allowed_ext_names then
         name := name.Substring(ind+1) else
       if LogCache.invalid_ext_names.Add(ext_group) then
@@ -1187,7 +1193,7 @@ type
   {$endregion FuncContainers}
   
 procedure InitAll;
-procedure LoadBin;
+procedure LoadBin(fname: string);
 procedure ApplyFixers;
 procedure FinishAll;
 
@@ -1198,20 +1204,30 @@ implementation
 procedure InitAll;
 begin
   
-  unallowed_words :=
-    ReadLines(GetFullPath('..\MiscInput\UnAllowedWords.dat',GetEXEFileName))
+  allowed_ext_names :=
+    ReadLines(GetFullPath('..\MiscInput\AllowedExtNames.dat',GetEXEFileName))
     .Where(l->not string.IsNullOrWhiteSpace(l))
-    .Select(l->l.ToLower)
+    .Select(l->l.Trim)
+    .OrderByDescending(l->l.Length)
+    .Append('')
     .ToHashSet
   ;
   
+  unallowed_words :=
+    ReadLines(GetFullPath('..\MiscInput\UnAllowedWords.dat',GetEXEFileName))
+    .Where(l->not string.IsNullOrWhiteSpace(l))
+    .Select(l->l.Trim.ToLower)
+    .ToHashSet
+  ;
+  
+  loop 3 do log_groups.WriteLine;
   loop 3 do log_func_ovrs.WriteLine;
   
 end;
 
-procedure LoadBin;
+procedure LoadBin(fname: string);
 begin
-  var br := new System.IO.BinaryReader(System.IO.File.OpenRead('DataScraping\XML\GL\funcs.bin'));
+  var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
   Struct.LoadAll(br);
   Group.LoadAll(br);
   Func.LoadAll(br);
@@ -1230,7 +1246,7 @@ end;
 procedure FinishAll;
 begin
   
-  TypeTable.WarnUnused;
+  TypeTable.WarnAllUnused;
   StructFixer.WarnAllUnused;
   GroupFixer.WarnAllUnused;
   FuncFixer.WarnAllUnused;
@@ -1239,6 +1255,7 @@ begin
   Group.WarnAllUnused;
   Func.WarnAllUnused;
   
+  loop 1 do log_groups.WriteLine;
   loop 1 do log_func_ovrs.WriteLine;
   
   log.Close;
@@ -1255,8 +1272,7 @@ begin
   if allowed_ext_names.Contains(Result) then exit;
   
   var _Result := Result;
-  Result :=
-    allowed_ext_names.OrderByDescending(ext->ext.Length)
+  Result := allowed_ext_names
     .First(ext->_Result.EndsWith(ext))
   ;
   if LogCache.invalid_ext_names.Add(_Result) and (_Result.Length>1) then

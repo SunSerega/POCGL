@@ -1,0 +1,108 @@
+
+
+
+# clEnqueueMapImage
+!clear_ovrs
+!add_ovrs
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event		| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr			| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| IntPtr		| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event		| IntPtr		| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr			| IntPtr		| var ErrorCode	|
+ 
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32		| var UInt32		| var UInt32	| var UInt32	| UInt32	| array of cl_event	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32		| var UInt32		| var UInt32	| var UInt32	| UInt32	| var cl_event		| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32		| var UInt32		| var UInt32	| var UInt32	| UInt32	| IntPtr			| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32		| var UInt32		| var UInt32	| var UInt32	| UInt32	| array of cl_event	| IntPtr		| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32		| var UInt32		| var UInt32	| var UInt32	| UInt32	| var cl_event		| IntPtr		| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32		| var UInt32		| var UInt32	| var UInt32	| UInt32	| IntPtr			| IntPtr		| var ErrorCode	|
+
+
+# clCreateProgramWithBinary
+!clear_ovrs
+!add_ovrs
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| array of array of Byte	| var ErrorCode	| var ErrorCode	|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| array of array of Byte	| var ErrorCode	| IntPtr		|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| array of array of Byte	| IntPtr		| var ErrorCode	|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| array of IntPtr			| var ErrorCode	| var ErrorCode	|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| array of IntPtr			| var ErrorCode	| IntPtr		|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| array of IntPtr			| IntPtr		| var ErrorCode	|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| IntPtr					| var ErrorCode	| var ErrorCode	|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| IntPtr					| var ErrorCode	| IntPtr		|
+ cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| IntPtr					| IntPtr		| var ErrorCode	|
+
+# clEnqueueCopyBufferRect
+!clear_ovrs
+!add_ovrs
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr			| IntPtr		|
+ 
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr			| IntPtr		|
+
+# clEnqueueCopyImage
+!clear_ovrs
+!add_ovrs
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| IntPtr			| IntPtr		|
+ 
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| var UInt32		| var UInt32		| var UInt32		| UInt32	| IntPtr			| IntPtr		|
+
+# clEnqueueNDRangeKernel
+!clear_ovrs
+!add_ovrs
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| IntPtr			| IntPtr		|
+ 
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UInt32		| var UInt32		| var UInt32		| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UInt32		| var UInt32		| var UInt32		| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UInt32		| var UInt32		| var UInt32		| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UInt32		| var UInt32		| var UInt32		| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UInt32		| var UInt32		| var UInt32		| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UInt32		| var UInt32		| var UInt32		| UInt32	| IntPtr			| IntPtr		|
+
+# clEnqueue[Read,Write]BufferRect
+!clear_ovrs
+!add_ovrs
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr			| IntPtr		|
+ 
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event		| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr			| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event		| IntPtr		|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32		| var UInt32		| var UInt32		| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr			| IntPtr		|
+
+
+
+
+
+
+

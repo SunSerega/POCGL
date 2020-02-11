@@ -1,0 +1,12 @@
+﻿  
+  
+  
+  OpenCLException = sealed class(Exception)
+    
+    public constructor(text: string) :=
+    inherited Create($'Ошибка OpenCL: "{text}"');
+    
+  end;
+  
+  
+  

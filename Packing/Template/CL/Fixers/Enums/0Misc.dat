@@ -1,0 +1,64 @@
+
+
+
+# ChannelOrder
+!add
+UInt32
+false
+NONE=0
+
+# ChannelType
+!add
+UInt32
+false
+NONE=0
+
+# MemObjectType
+!add
+UInt32
+false
+NONE=0
+
+# CommandExecutionStatus
+!add
+UInt32
+false
+COMPLETE	= 0x0
+RUNNING		= 0x1
+SUBMITTED	= 0x2
+QUEUED		= 0x3
+
+
+
+# cl_bool
+!rename
+Bool
+
+# cl_command_queue_properties
+!rename
+CommandQueuePropertyFlags
+
+# cl_device_info
+!rename
+DeviceInfo
+
+# cl_device_type
+!rename
+DeviceTypeFlags
+
+# cl_map_flags
+!rename
+MapFlags
+
+# cl_mem_flags
+!rename
+MemFlags
+
+# cl_mem_migration_flags
+!rename
+MemMigrationFlags
+
+
+
+
+

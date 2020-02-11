@@ -166,7 +166,6 @@ type
     public constructor(n: XmlNode);
     begin
       self.name := n['name'];
-      if self.name.Contains('.') then exit;
       
       begin
         var t := n['type'];
@@ -250,15 +249,18 @@ type
       if self.name=nil then
         raise new MessageException($'ERROR: no name of func par [{text}]');
       
+      self.ptr := n.Text.Count(ch->ch='*');
+      
       self.t := n.Nodes['type'].SingleOrDefault?.Text;
       if self.t=nil then
         if text.Contains('CL_CALLBACK') then
-          self.t := 'CL_CALLBACK' else
+        begin
+          self.ptr := 0;
+          self.t := 'CL_CALLBACK';
+        end else
           raise new MessageException($'ERROR: unable to parse func par [{text}]');
       
       self.readonly := text.Contains('const');
-      
-      self.ptr := n.Text.Count(ch->ch='*');
       
       if (self.t<>'CL_CALLBACK') and not Group.All.TryGetValue(self.t, self.gr) then
       begin
@@ -434,6 +436,15 @@ begin
   
 end;
 
+procedure AddStructChain(name: string; hs: HashSet<StructDef>);
+begin
+  var s: StructDef;
+  if not StructDef.All.TryGetValue(name, s) then exit;
+  if not hs.Add(s) then exit;
+  foreach var f in s.flds do
+    AddStructChain(f[2], hs);
+end;
+
 procedure SaveBin;
 begin
   Otp($'Saving as binary');
@@ -451,17 +462,10 @@ begin
     .ToHashSet.ToArray
   ;
   
-  var structs := funcs
-    .SelectMany(f->f.pars)
-    .Select(par->
-    begin
-      var res: StructDef;
-      StructDef.All.TryGetValue(par.t, res);
-      Result := res;
-    end)
-    .Where(s->s<>nil)
-    .ToHashSet.ToArray
-  ;
+  var structs_hs := new HashSet<StructDef>;
+  foreach var par in funcs.SelectMany(f->f.pars) do
+    AddStructChain(par.t, structs_hs);
+  var structs := structs_hs.ToArray;
   
   bw.Write(structs.Length);
   foreach var struct in structs do
@@ -483,6 +487,7 @@ begin
   foreach var ext in Extension.All do
     ext.Save(bw, funcs);
   
+  bw.Close;
 end;
 
 begin

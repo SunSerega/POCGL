@@ -54,8 +54,6 @@ begin
     System.IO.File.Delete(log_file);
     System.IO.File.Delete(timed_log_file);
     
-    var enc := new System.Text.UTF8Encoding(true);
-    
     // ====================================================
     
     var stages: HashSet<string>;
@@ -131,7 +129,7 @@ begin
       
       {$region TemplatePacker}
       
-      var T_TemplatePacker := not Arr('GL').Any(st->stages.Contains(st)) ? EmptyTask :
+      var T_TemplatePacker := not Arr('CL','GL').Any(st->stages.Contains(st)) ? EmptyTask :
         CompTask('Packing\Template\Pack Template.pas') +
         SetEvTask(E_TemplatePacker)
       ;
@@ -218,7 +216,10 @@ begin
     
     var T_CL := not stages.Contains('CL') ? EmptyTask :
       TitleTask('OpenCL') +
-      EmptyTask // ToDo
+      EventTask(E_TemplatePacker) +
+      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenCL]', 'fname=Packing\Template\CL\0OpenCL.template', 'GenPas') +
+      ProcTask(()->WriteAllText('OpenCL.pas', ReadAllText('Packing\Template\CL\0OpenCL.pas').Replace(#10,#13#10))) +
+      ProcTask(()->System.IO.File.Delete('Packing\Template\CL\0OpenCL.pas'))
     ;
     
     var T_CLABC := not stages.Contains('CLABC') ? EmptyTask :
@@ -236,9 +237,8 @@ begin
       TitleTask('OpenGL') +
       EventTask(E_TemplatePacker) +
       ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
-      ProcTask(()->System.IO.File.Delete('OpenGL.pas')) +
-      ProcTask(()->System.IO.File.Move('Packing\Template\GL\0OpenGL.pas', 'OpenGL.pas')) +
-      ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('OpenGL.pas', enc).Replace(#10,#13#10), enc))
+      ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('Packing\Template\GL\0OpenGL.pas').Replace(#10,#13#10))) +
+      ProcTask(()->System.IO.File.Delete('Packing\Template\CL\0OpenGL.pas'))
     ;
     
     var T_GLABC := not stages.Contains('GLABC') ? EmptyTask :

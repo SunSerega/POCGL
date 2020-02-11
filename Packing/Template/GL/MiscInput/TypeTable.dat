@@ -2,7 +2,7 @@
 
 
 //--------------------------------------------------
-//                  basic type's
+//                  Basic type's
 //--------------------------------------------------
 
 GLboolean				=boolean
@@ -63,7 +63,7 @@ GLenum					=DummyEnum
 GLbitfield				=DummyFlags
 
 //--------------------------------------------------
-//                    delegate's
+//                    Delegate's
 //--------------------------------------------------
 
 GLDEBUGPROC				=GLDEBUGPROC
@@ -74,20 +74,20 @@ PROC					=IntPtr			=// unmannaged delegate
 __GLXextFuncPtr			=IntPtr			=// unmannaged delegate
 
 //--------------------------------------------------
-//                     struct's
+//                     Struct's
 //--------------------------------------------------
 
 PIXELFORMATDESCRIPTOR	=GDI_PixelFormatDescriptor
 HENHMETAFILE			=GDI_HENHMetafile
 LAYERPLANEDESCRIPTOR	=GDI_LayerPlaneDescriptor
 LPGLYPHMETRICSFLOAT		=GDI_GlyphmetricsFloat *
-COLORREF				=GDI_COLORREF				=// A,B,R,G: byte
+COLORREF				=GDI_COLORREF
 
 GLXHyperpipeNetworkSGIX	=GLXHyperpipeNetworkSGIX
 GLXHyperpipeConfigSGIX	=GLXHyperpipeConfigSGIX
 
 //--------------------------------------------------
-//                     IntPtr's
+//                      Name's
 //--------------------------------------------------
 
 // gl
@@ -122,7 +122,7 @@ GLXVideoCaptureDeviceNV	=GLXVideoCaptureDeviceNV
 GLXVideoDeviceNV		=GLXVideoDeviceNV
 GLXPbufferSGIX			=GLXPbufferSGIX
 GLXFBConfigSGIX			=GLXFBConfigSGIX
-GLXVideoSourceSGIX		=GLXHyperpipeConfigSGIX
+GLXVideoSourceSGIX		=GLXVideoSourceSGIX
 
 // nativ X connectors
 XVisualInfo				=PXVisualInfo -

@@ -1,0 +1,63 @@
+
+
+//--------------------------------------------------
+//                  Basic type's
+//--------------------------------------------------
+
+char						= SByte
+unsigned char				= Byte
+
+cl_int						= Int32
+int							= Int32
+cl_uint						= UInt32
+size_t						= UInt32
+UINT						= UInt32
+cl_GLuint					= UInt32
+
+cl_ulong					= UInt64
+
+void						= IntPtr -
+intptr_t					= IntPtr
+HANDLE						= IntPtr
+
+//--------------------------------------------------
+//                    Delegate's
+//--------------------------------------------------
+
+CL_CALLBACK					= CL_CALLBACK
+
+//--------------------------------------------------
+//                      Name's
+//--------------------------------------------------
+
+cl_mem						= cl_mem
+cl_platform_id				= cl_platform_id
+cl_device_id				= cl_device_id
+cl_context					= cl_context
+cl_command_queue			= cl_command_queue
+cl_sampler					= cl_sampler
+cl_program					= cl_program
+cl_kernel					= cl_kernel
+cl_event					= cl_event
+cl_accelerator_intel		= cl_accelerator_intel
+
+ID3D10Buffer				= IntPtr
+ID3D10Texture2D				= IntPtr
+ID3D10Texture3D				= IntPtr
+ID3D11Buffer				= IntPtr
+ID3D11Texture2D				= IntPtr
+ID3D11Texture3D				= IntPtr
+IDirect3DSurface9			= IntPtr
+VASurfaceID					= IntPtr
+cl_GLsync					= IntPtr
+cl_GLenum					= UInt32
+
+//--------------------------------------------------
+//                      Enum's
+//--------------------------------------------------
+
+cl_channel_order			= ChannelOrder
+cl_channel_type				= ChannelType
+cl_mem_object_type			= MemObjectType
+
+

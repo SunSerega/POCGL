@@ -420,6 +420,7 @@ begin
   foreach var ext in extensions do
     ext.Save(bw, funcs);
   
+  bw.Close;
 end;
 
 begin

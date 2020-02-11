@@ -78,12 +78,14 @@ begin
     comm := comm.Remove(sind);
   end;
   
-  comm := GetFullPath(comm+'.template', path);
-  WaitCommandExec(comm, ()-> RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={comm}"') );
+  var templ_fname := GetFullPath(comm+'.template', path);
+  WaitCommandExec(templ_fname, ()-> RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={templ_fname}"', $'"otp_dir={path}"') );
   
-  comm += 'res';
-  Result := ReadAllText(comm);
-  System.IO.File.Delete(comm);
+  if comm.Contains('\') then
+    comm := comm.Substring(comm.LastIndexOf('\')+1);
+  var tr_fname := $'{path}\{comm}.templateres';
+  Result := ReadAllText(tr_fname);
+  System.IO.File.Delete(tr_fname);
   
 end;
 
@@ -91,10 +93,14 @@ begin
   try
     if not CommandLineArgs.Contains('SecondaryProc') then CommandLineArgs := Arr('fname=Packing\Template\GL\0OpenGL.template');
     
-    var arg := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
-    if arg=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
-    arg := GetFullPath(arg.SubString('fname='.Length));
-    var curr_dir := System.IO.Path.GetDirectoryName(arg);
+    var inp_fname := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
+    if inp_fname=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
+    inp_fname := GetFullPath(inp_fname.SubString('fname='.Length));
+    var curr_dir := System.IO.Path.GetDirectoryName(inp_fname);
+    
+    var otp_dir := CommandLineArgs.Where(arg->arg.StartsWith('otp_dir=')).SingleOrDefault;
+    if otp_dir<>nil then
+      otp_dir := GetFullPath(otp_dir.SubString('otp_dir='.Length));
     
     var blocks := new Queue<TextBlock>;
     var read_done := false;
@@ -103,7 +109,7 @@ begin
     try
       var res := new StringBuilder;
       
-      foreach var l in ReadAllText(arg, new System.Text.UTF8Encoding(true)).Remove(#13).Trim(#10' '.ToArray).Split(#10) do
+      foreach var l in ReadAllText(inp_fname).Remove(#13).Trim(#10' '.ToArray).Split(#10) do
       begin
         var ind1 := l.IndexOf('%');
         
@@ -132,11 +138,15 @@ begin
       on e: Exception do ErrOtp(e);
     end).Start;
     
-    var fname := arg.Remove(arg.LastIndexOf('.'));
+    var fname := inp_fname.Remove(inp_fname.LastIndexOf('.'));
     if CommandLineArgs.Contains('GenPas') then
       fname += '.pas' else
       fname += '.templateres';
-    var sw := new System.IO.StreamWriter(System.IO.File.Create(fname), new System.Text.UTF8Encoding(true));
+    
+    if otp_dir<>nil then
+      fname := otp_dir + fname.Substring(fname.LastIndexOf('\'));
+    
+    var sw := new System.IO.StreamWriter(System.IO.File.Create(fname));
     
     while true do
     begin
