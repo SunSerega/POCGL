@@ -1739,23 +1739,6 @@ type
     
   end;
   
-  FuncClearOvrsFixer = sealed class(FuncFixer)
-    
-    public constructor(name: string; data: sequence of string);
-    begin
-      inherited Create(name);
-      if data.Any(l->not string.IsNullOrWhiteSpace(l)) then raise new System.FormatException;
-    end;
-    
-    public function Apply(f: Func): boolean; override;
-    begin
-      f.InitOverloads;
-      f.all_overloads.Clear;
-      self.used := true;
-      Result := false;
-    end;
-    
-  end;
   FuncOvrsFixerBase = abstract class(FuncFixer)
     public ovr: array of FuncParamT;
     
@@ -1768,6 +1751,47 @@ type
       
       SetLength(ovr, s.Length-1);
       ovr.Fill(i->new FuncParamT(s[i]));
+      
+    end;
+    public static function PrepareLns(data: sequence of string): sequence of string;
+    begin
+      var enmr := data.Where(l->not string.IsNullOrWhiteSpace(l)).GetEnumerator;
+      
+      var templates := new Dictionary<string, array of string>;
+      while true do
+      begin
+        if not enmr.MoveNext then raise new System.FormatException;
+        var l: string := enmr.Current;
+        if not l.Contains('=') then break;
+        var s := l.Split('=');
+        templates.Add(
+          $'%{s[0].Trim}%',
+          s[1].Split('|').ConvertAll(t->t.Trim)
+        );
+      end;
+      
+      Result := new string[0];
+      while true do
+      begin
+        var res: sequence of string := new string[](enmr.Current);
+        
+        foreach var id in templates.Keys do
+        begin
+          
+          res := res.SelectMany(l-> l.Contains(id) ?
+            templates[id].Select(t->l.Replace(id,t)) :
+            new string[](l)
+          );
+          
+//          res.PrintLines;
+//          Writeln('='*50);
+        end;
+        
+//        yield sequence res; //ToDo #2203
+        Result := Result+res;
+        
+        if not enmr.MoveNext then break;
+      end;
       
     end;
     
@@ -1788,14 +1812,13 @@ type
     lst.FindIndex(povr->povr.SequenceEqual(ovr));
     
   end;
-  FuncAddOvrsFixer = sealed class(FuncOvrsFixerBase)
+  FuncAddOvrsFixer = class(FuncOvrsFixerBase)
     
     public constructor(name: string; data: string) :=
     inherited Create(name, data);
     public static procedure Create(name: string; data: sequence of string) :=
-    foreach var l in data do
-      if not string.IsNullOrWhiteSpace(l) then
-        new FuncAddOvrsFixer(name, l);
+    foreach var l in PrepareLns(data) do
+      new FuncAddOvrsFixer(name, l);
     
     public function Apply(f: Func): boolean; override;
     begin
@@ -1819,9 +1842,8 @@ type
     public constructor(name: string; data: string) :=
     inherited Create(name, data);
     public static procedure Create(name: string; data: sequence of string) :=
-    foreach var l in data do
-      if not string.IsNullOrWhiteSpace(l) then
-        new FuncRemOvrsFixer(name, l);
+    foreach var l in PrepareLns(data) do
+      new FuncAddOvrsFixer(name, l);
     
     public function Apply(f: Func): boolean; override;
     begin
@@ -1841,6 +1863,28 @@ type
     end;
     
   end;
+  FuncReplOvrsFixer = sealed class(FuncAddOvrsFixer)
+    
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string);
+    begin
+      var enmr := PrepareLns(data).GetEnumerator;
+      if not enmr.MoveNext then raise new System.InvalidOperationException;
+      new FuncReplOvrsFixer(name, enmr.Current);
+      while enmr.MoveNext do
+        new FuncAddOvrsFixer(name, enmr.Current);
+    end;
+    
+    public function Apply(f: Func): boolean; override;
+    begin
+      f.InitOverloads;
+      f.all_overloads.Clear;
+      
+      Result := inherited Apply(f);
+    end;
+    
+  end;
   
 static constructor FuncFixer.Create;
 begin
@@ -1856,9 +1900,9 @@ begin
       'repl_par_t':         FuncReplParTFixer .Create(gr[0], bl[1]);
       'possible_par_types': FuncPPTFixer      .Create(gr[0], bl[1]);
       
-      'clear_ovrs':         FuncClearOvrsFixer.Create(gr[0], bl[1]);
       'add_ovrs':           FuncAddOvrsFixer  .Create(gr[0], bl[1]);
       'rem_ovrs':           FuncRemOvrsFixer  .Create(gr[0], bl[1]);
+      'repl_ovrs':          FuncReplOvrsFixer .Create(gr[0], bl[1]);
       
       else raise new MessageException($'Invalid func fixer type [!{bl[0]}] for func [{gr[0]}]');
     end;

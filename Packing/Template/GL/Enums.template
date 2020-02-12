@@ -23,7 +23,7 @@
     begin
       var res := typeof(AccumOp).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'AccumOp[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'AccumOp[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -55,7 +55,7 @@
     begin
       var res := typeof(AlphaFunction).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'AlphaFunction[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'AlphaFunction[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -91,7 +91,7 @@
     begin
       var res := typeof(AtomicCounterBufferPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'AtomicCounterBufferPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'AtomicCounterBufferPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -185,8 +185,8 @@
     begin
       var res := typeof(AttribMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'AttribMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'AttribMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -497,7 +497,7 @@
     begin
       var res := typeof(AttributeType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'AttributeType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'AttributeType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -515,7 +515,7 @@
     begin
       var res := typeof(BindTransformFeedbackTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BindTransformFeedbackTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BindTransformFeedbackTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -569,7 +569,7 @@
     begin
       var res := typeof(BlendingFactor).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BlendingFactor[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BlendingFactor[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -589,7 +589,7 @@
     begin
       var res := typeof(BlitFramebufferFilter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BlitFramebufferFilter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BlitFramebufferFilter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -611,7 +611,7 @@
     begin
       var res := typeof(Buffer).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'Buffer[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'Buffer[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -678,8 +678,8 @@
     begin
       var res := typeof(BufferStorageMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'BufferStorageMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'BufferStorageMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -722,7 +722,7 @@
     begin
       var res := typeof(BufferStorageTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BufferStorageTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BufferStorageTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -756,8 +756,8 @@
     begin
       var res := typeof(ClearBufferMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'ClearBufferMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'ClearBufferMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -784,8 +784,8 @@
     begin
       var res := typeof(ClientAttribMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'ClientAttribMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'ClientAttribMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -804,7 +804,7 @@
     begin
       var res := typeof(ClipControlDepth).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ClipControlDepth[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ClipControlDepth[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -824,7 +824,7 @@
     begin
       var res := typeof(ClipControlOrigin).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ClipControlOrigin[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ClipControlOrigin[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -868,7 +868,7 @@
     begin
       var res := typeof(ClipPlaneName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ClipPlaneName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ClipPlaneName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -968,7 +968,7 @@
     begin
       var res := typeof(ColorBuffer).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ColorBuffer[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ColorBuffer[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -994,7 +994,7 @@
     begin
       var res := typeof(ColorMaterialParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ColorMaterialParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ColorMaterialParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1018,7 +1018,7 @@
     begin
       var res := typeof(ColorPointerType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ColorPointerType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ColorPointerType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1040,7 +1040,7 @@
     begin
       var res := typeof(ColorTableTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ColorTableTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ColorTableTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1072,7 +1072,7 @@
     begin
       var res := typeof(ConditionalRenderMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ConditionalRenderMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ConditionalRenderMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1092,7 +1092,7 @@
     begin
       var res := typeof(ConvolutionTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ConvolutionTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ConvolutionTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1136,7 +1136,7 @@
     begin
       var res := typeof(CopyBufferSubDataTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CopyBufferSubDataTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CopyBufferSubDataTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1174,7 +1174,7 @@
     begin
       var res := typeof(CopyImageSubDataTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CopyImageSubDataTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CopyImageSubDataTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1196,7 +1196,7 @@
     begin
       var res := typeof(CullFaceMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CullFaceMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CullFaceMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1222,7 +1222,7 @@
     begin
       var res := typeof(DebugSeverity).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'DebugSeverity[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DebugSeverity[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1252,7 +1252,7 @@
     begin
       var res := typeof(DebugSource).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'DebugSource[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DebugSource[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1288,7 +1288,7 @@
     begin
       var res := typeof(DebugType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'DebugType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DebugType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1320,7 +1320,7 @@
     begin
       var res := typeof(DepthFunction).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'DepthFunction[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DepthFunction[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1430,7 +1430,7 @@
     begin
       var res := typeof(DrawBufferMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'DrawBufferMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DrawBufferMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1452,7 +1452,7 @@
     begin
       var res := typeof(DrawElementsType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'DrawElementsType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DrawElementsType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1726,7 +1726,7 @@
     begin
       var res := typeof(EnableCap).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'EnableCap[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'EnableCap[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1768,7 +1768,7 @@
     begin
       var res := typeof(ErrorCode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ErrorCode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ErrorCode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1800,7 +1800,7 @@
     begin
       var res := typeof(ExternalHandleType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ExternalHandleType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ExternalHandleType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1826,7 +1826,7 @@
     begin
       var res := typeof(FeedbackType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FeedbackType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FeedbackType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1846,7 +1846,7 @@
     begin
       var res := typeof(FogCoordinatePointerType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FogCoordinatePointerType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FogCoordinatePointerType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1876,7 +1876,7 @@
     begin
       var res := typeof(FogParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FogParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FogParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1904,7 +1904,7 @@
     begin
       var res := typeof(FogPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FogPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FogPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1986,7 +1986,7 @@
     begin
       var res := typeof(FramebufferAttachment).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FramebufferAttachment[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FramebufferAttachment[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -2070,7 +2070,7 @@
     begin
       var res := typeof(FramebufferAttachmentParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FramebufferAttachmentParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FramebufferAttachmentParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -2096,7 +2096,7 @@
     begin
       var res := typeof(FramebufferParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FramebufferParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FramebufferParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -2130,7 +2130,7 @@
     begin
       var res := typeof(FramebufferStatus).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FramebufferStatus[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FramebufferStatus[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -2154,7 +2154,7 @@
     begin
       var res := typeof(FramebufferTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FramebufferTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FramebufferTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -2174,7 +2174,7 @@
     begin
       var res := typeof(FrontFaceDirection).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FrontFaceDirection[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FrontFaceDirection[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -2212,7 +2212,7 @@
     begin
       var res := typeof(GetFramebufferParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetFramebufferParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetFramebufferParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -2234,7 +2234,7 @@
     begin
       var res := typeof(GetMapQuery).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetMapQuery[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetMapQuery[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3354,7 +3354,7 @@
     begin
       var res := typeof(GetPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3404,7 +3404,7 @@
     begin
       var res := typeof(GetPointervPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetPointervPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetPointervPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3528,7 +3528,7 @@
     begin
       var res := typeof(GetTextureParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetTextureParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetTextureParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3756,7 +3756,7 @@
     begin
       var res := typeof(GlslTypeToken).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GlslTypeToken[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GlslTypeToken[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3780,7 +3780,7 @@
     begin
       var res := typeof(GraphicsResetStatus).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GraphicsResetStatus[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GraphicsResetStatus[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3802,7 +3802,7 @@
     begin
       var res := typeof(HintMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'HintMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'HintMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3920,7 +3920,7 @@
     begin
       var res := typeof(HintTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'HintTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'HintTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3944,7 +3944,7 @@
     begin
       var res := typeof(IndexPointerType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'IndexPointerType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'IndexPointerType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -3988,7 +3988,7 @@
     begin
       var res := typeof(InterleavedArrayFormat).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'InterleavedArrayFormat[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'InterleavedArrayFormat[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -4596,7 +4596,7 @@
     begin
       var res := typeof(InternalFormat).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'InternalFormat[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'InternalFormat[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -4754,7 +4754,7 @@
     begin
       var res := typeof(InternalFormatPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'InternalFormatPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'InternalFormatPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -4918,7 +4918,7 @@
     begin
       var res := typeof(InvalidateFramebufferAttachment).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'InvalidateFramebufferAttachment[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'InvalidateFramebufferAttachment[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -4944,7 +4944,7 @@
     begin
       var res := typeof(LightModelParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'LightModelParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'LightModelParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -4992,7 +4992,7 @@
     begin
       var res := typeof(LightName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'LightName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'LightName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5022,7 +5022,7 @@
     begin
       var res := typeof(LightParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'LightParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'LightParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5042,7 +5042,7 @@
     begin
       var res := typeof(ListMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ListMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ListMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5078,7 +5078,7 @@
     begin
       var res := typeof(ListNameType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ListNameType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ListNameType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5096,7 +5096,7 @@
     begin
       var res := typeof(ListParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ListParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ListParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5144,7 +5144,7 @@
     begin
       var res := typeof(LogicOp).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'LogicOp[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'LogicOp[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5211,8 +5211,8 @@
     begin
       var res := typeof(MapBufferAccessMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'MapBufferAccessMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'MapBufferAccessMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -5233,7 +5233,7 @@
     begin
       var res := typeof(MapQuery).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MapQuery[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MapQuery[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5289,7 +5289,7 @@
     begin
       var res := typeof(MapTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MapTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MapTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5319,7 +5319,7 @@
     begin
       var res := typeof(MaterialParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MaterialParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MaterialParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5343,7 +5343,7 @@
     begin
       var res := typeof(MatrixMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MatrixMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MatrixMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5455,8 +5455,8 @@
     begin
       var res := typeof(MemoryBarrierMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'MemoryBarrierMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'MemoryBarrierMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -5475,7 +5475,7 @@
     begin
       var res := typeof(MemoryObjectParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MemoryObjectParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MemoryObjectParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5495,7 +5495,7 @@
     begin
       var res := typeof(MeshMode1).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MeshMode1[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MeshMode1[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5517,7 +5517,7 @@
     begin
       var res := typeof(MeshMode2).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MeshMode2[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MeshMode2[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5543,7 +5543,7 @@
     begin
       var res := typeof(NormalPointerType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'NormalPointerType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'NormalPointerType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5581,7 +5581,7 @@
     begin
       var res := typeof(ObjectIdentifier).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ObjectIdentifier[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ObjectIdentifier[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5603,7 +5603,7 @@
     begin
       var res := typeof(PatchParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PatchParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PatchParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5625,7 +5625,7 @@
     begin
       var res := typeof(PathColor).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathColor[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathColor[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5655,7 +5655,7 @@
     begin
       var res := typeof(PathColorFormat).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathColorFormat[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathColorFormat[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5761,7 +5761,7 @@
     begin
       var res := typeof(PathCoordType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathCoordType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathCoordType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5785,7 +5785,7 @@
     begin
       var res := typeof(PathCoverMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathCoverMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathCoverMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5805,7 +5805,7 @@
     begin
       var res := typeof(PathElementType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathElementType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathElementType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5829,7 +5829,7 @@
     begin
       var res := typeof(PathFillMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathFillMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathFillMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5857,8 +5857,8 @@
     begin
       var res := typeof(PathFontStyle).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'PathFontStyle[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'PathFontStyle[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -5879,7 +5879,7 @@
     begin
       var res := typeof(PathFontTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathFontTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathFontTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5905,7 +5905,7 @@
     begin
       var res := typeof(PathGenMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathGenMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathGenMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5925,7 +5925,7 @@
     begin
       var res := typeof(PathHandleMissingGlyphs).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathHandleMissingGlyphs[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathHandleMissingGlyphs[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -5947,7 +5947,7 @@
     begin
       var res := typeof(PathListMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathListMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathListMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6035,8 +6035,8 @@
     begin
       var res := typeof(PathMetricMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'PathMetricMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'PathMetricMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -6099,7 +6099,7 @@
     begin
       var res := typeof(PathParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6119,7 +6119,7 @@
     begin
       var res := typeof(PathStringFormat).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathStringFormat[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathStringFormat[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6153,7 +6153,7 @@
     begin
       var res := typeof(PathTransformType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PathTransformType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PathTransformType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6183,7 +6183,7 @@
     begin
       var res := typeof(PipelineParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PipelineParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PipelineParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6211,7 +6211,7 @@
     begin
       var res := typeof(PixelCopyType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelCopyType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelCopyType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6289,7 +6289,7 @@
     begin
       var res := typeof(PixelFormat).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelFormat[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelFormat[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6325,7 +6325,7 @@
     begin
       var res := typeof(PixelMap).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelMap[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelMap[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6419,7 +6419,7 @@
     begin
       var res := typeof(PixelStoreParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelStoreParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelStoreParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6527,7 +6527,7 @@
     begin
       var res := typeof(PixelTransferParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelTransferParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelTransferParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6579,7 +6579,7 @@
     begin
       var res := typeof(PixelType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6601,7 +6601,7 @@
     begin
       var res := typeof(PolygonMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PolygonMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PolygonMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6629,7 +6629,7 @@
     begin
       var res := typeof(PrecisionType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PrecisionType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PrecisionType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6695,7 +6695,7 @@
     begin
       var res := typeof(PrimitiveType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PrimitiveType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PrimitiveType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6713,7 +6713,7 @@
     begin
       var res := typeof(ProgramFormat).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramFormat[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramFormat[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6769,7 +6769,7 @@
     begin
       var res := typeof(ProgramInterface).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramInterface[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramInterface[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6793,7 +6793,7 @@
     begin
       var res := typeof(ProgramInterfacePName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramInterfacePName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramInterfacePName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6813,7 +6813,7 @@
     begin
       var res := typeof(ProgramParameterPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramParameterPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramParameterPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6889,7 +6889,7 @@
     begin
       var res := typeof(ProgramResourceProperty).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramResourceProperty[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramResourceProperty[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6915,7 +6915,7 @@
     begin
       var res := typeof(ProgramStagePName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramStagePName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramStagePName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6933,7 +6933,7 @@
     begin
       var res := typeof(ProgramStringProperty).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramStringProperty[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramStringProperty[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6963,7 +6963,7 @@
     begin
       var res := typeof(ProgramTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -6981,7 +6981,7 @@
     begin
       var res := typeof(QueryCounterTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'QueryCounterTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'QueryCounterTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7005,7 +7005,7 @@
     begin
       var res := typeof(QueryObjectParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'QueryObjectParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'QueryObjectParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7025,7 +7025,7 @@
     begin
       var res := typeof(QueryParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'QueryParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'QueryParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7061,7 +7061,7 @@
     begin
       var res := typeof(QueryTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'QueryTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'QueryTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7137,7 +7137,7 @@
     begin
       var res := typeof(ReadBufferMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ReadBufferMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ReadBufferMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7225,7 +7225,7 @@
     begin
       var res := typeof(RenderbufferParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'RenderbufferParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'RenderbufferParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7245,7 +7245,7 @@
     begin
       var res := typeof(RenderbufferTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'RenderbufferTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'RenderbufferTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7267,7 +7267,7 @@
     begin
       var res := typeof(RenderingMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'RenderingMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'RenderingMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7291,7 +7291,7 @@
     begin
       var res := typeof(SamplerParameterF).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SamplerParameterF[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SamplerParameterF[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7321,7 +7321,7 @@
     begin
       var res := typeof(SamplerParameterI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SamplerParameterI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SamplerParameterI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7343,7 +7343,7 @@
     begin
       var res := typeof(ScalarType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ScalarType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ScalarType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7361,7 +7361,7 @@
     begin
       var res := typeof(SemaphoreParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SemaphoreParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SemaphoreParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7387,7 +7387,7 @@
     begin
       var res := typeof(ShaderParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ShaderParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ShaderParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7419,7 +7419,7 @@
     begin
       var res := typeof(ShaderType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ShaderType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ShaderType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7439,7 +7439,7 @@
     begin
       var res := typeof(ShadingModel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ShadingModel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ShadingModel[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7461,7 +7461,7 @@
     begin
       var res := typeof(StencilFaceDirection).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'StencilFaceDirection[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'StencilFaceDirection[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7493,7 +7493,7 @@
     begin
       var res := typeof(StencilFunction).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'StencilFunction[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'StencilFunction[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7525,7 +7525,7 @@
     begin
       var res := typeof(StencilOp).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'StencilOp[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'StencilOp[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7551,7 +7551,7 @@
     begin
       var res := typeof(StringName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'StringName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'StringName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7575,7 +7575,7 @@
     begin
       var res := typeof(SubroutineParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SubroutineParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SubroutineParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7593,7 +7593,7 @@
     begin
       var res := typeof(SyncCondition).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SyncCondition[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SyncCondition[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7618,8 +7618,8 @@
     begin
       var res := typeof(SyncObjectMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'SyncObjectMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'SyncObjectMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -7642,7 +7642,7 @@
     begin
       var res := typeof(SyncParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SyncParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SyncParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7666,7 +7666,7 @@
     begin
       var res := typeof(SyncStatus).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SyncStatus[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SyncStatus[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7690,7 +7690,7 @@
     begin
       var res := typeof(TexCoordPointerType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TexCoordPointerType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TexCoordPointerType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7714,7 +7714,7 @@
     begin
       var res := typeof(TextureCoordName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureCoordName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureCoordName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7734,7 +7734,7 @@
     begin
       var res := typeof(TextureEnvParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureEnvParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureEnvParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7752,7 +7752,7 @@
     begin
       var res := typeof(TextureEnvTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureEnvTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureEnvTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7782,7 +7782,7 @@
     begin
       var res := typeof(TextureGenParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureGenParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureGenParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7816,7 +7816,7 @@
     begin
       var res := typeof(TextureLayout).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureLayout[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureLayout[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -7976,7 +7976,7 @@
     begin
       var res := typeof(TextureParameterName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureParameterName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureParameterName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8080,7 +8080,7 @@
     begin
       var res := typeof(TextureTarget).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureTarget[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureTarget[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8160,7 +8160,7 @@
     begin
       var res := typeof(TextureUnit).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureUnit[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureUnit[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8180,7 +8180,7 @@
     begin
       var res := typeof(TransformFeedbackBufferMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TransformFeedbackBufferMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TransformFeedbackBufferMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8206,7 +8206,7 @@
     begin
       var res := typeof(TransformFeedbackPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TransformFeedbackPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TransformFeedbackPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8244,7 +8244,7 @@
     begin
       var res := typeof(UniformBlockPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'UniformBlockPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'UniformBlockPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8278,7 +8278,7 @@
     begin
       var res := typeof(UniformPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'UniformPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'UniformPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8450,7 +8450,7 @@
     begin
       var res := typeof(UniformType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'UniformType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'UniformType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8523,8 +8523,8 @@
     begin
       var res := typeof(UseProgramStageMask).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'UseProgramStageMask[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'UseProgramStageMask[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -8557,7 +8557,7 @@
     begin
       var res := typeof(VertexArrayPName).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexArrayPName[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexArrayPName[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8591,7 +8591,7 @@
     begin
       var res := typeof(VertexAttribEnum).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribEnum[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribEnum[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8619,7 +8619,7 @@
     begin
       var res := typeof(VertexAttribIType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribIType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribIType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8637,7 +8637,7 @@
     begin
       var res := typeof(VertexAttribLType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribLType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribLType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8687,7 +8687,7 @@
     begin
       var res := typeof(VertexAttribPointerType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribPointerType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribPointerType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8729,7 +8729,7 @@
     begin
       var res := typeof(VertexAttribType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8763,7 +8763,7 @@
     begin
       var res := typeof(VertexBufferObjectParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexBufferObjectParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexBufferObjectParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8797,7 +8797,7 @@
     begin
       var res := typeof(VertexBufferObjectUsage).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexBufferObjectUsage[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexBufferObjectUsage[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8821,7 +8821,7 @@
     begin
       var res := typeof(VertexPointerType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexPointerType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexPointerType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8841,7 +8841,7 @@
     begin
       var res := typeof(VertexProvokingMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexProvokingMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexProvokingMode[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8861,7 +8861,7 @@
     begin
       var res := typeof(VertexShaderTextureUnitParameter).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexShaderTextureUnitParameter[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexShaderTextureUnitParameter[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8887,7 +8887,7 @@
     begin
       var res := typeof(BufferAccessARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BufferAccessARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BufferAccessARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8929,7 +8929,7 @@
     begin
       var res := typeof(BufferPNameARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BufferPNameARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BufferPNameARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8949,7 +8949,7 @@
     begin
       var res := typeof(BufferPointerNameARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BufferPointerNameARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BufferPointerNameARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -8995,7 +8995,7 @@
     begin
       var res := typeof(BufferTargetARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BufferTargetARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BufferTargetARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9029,7 +9029,7 @@
     begin
       var res := typeof(BufferUsageARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BufferUsageARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BufferUsageARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9053,7 +9053,7 @@
     begin
       var res := typeof(ClampColorModeARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ClampColorModeARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ClampColorModeARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9077,7 +9077,7 @@
     begin
       var res := typeof(ClampColorTargetARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ClampColorTargetARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ClampColorTargetARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9099,7 +9099,7 @@
     begin
       var res := typeof(MatrixIndexPointerTypeARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MatrixIndexPointerTypeARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MatrixIndexPointerTypeARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9123,7 +9123,7 @@
     begin
       var res := typeof(PointParameterNameARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PointParameterNameARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PointParameterNameARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9179,7 +9179,7 @@
     begin
       var res := typeof(ProgramPropertyARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ProgramPropertyARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ProgramPropertyARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9199,7 +9199,7 @@
     begin
       var res := typeof(VertexAttribPointerPropertyARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribPointerPropertyARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribPointerPropertyARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9241,7 +9241,7 @@
     begin
       var res := typeof(VertexAttribPropertyARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribPropertyARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribPropertyARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9273,7 +9273,7 @@
     begin
       var res := typeof(WeightPointerTypeARB).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'WeightPointerTypeARB[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'WeightPointerTypeARB[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9305,7 +9305,7 @@
     begin
       var res := typeof(BinormalPointerTypeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BinormalPointerTypeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BinormalPointerTypeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9345,7 +9345,7 @@
     begin
       var res := typeof(BlendEquationModeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'BlendEquationModeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BlendEquationModeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9373,7 +9373,7 @@
     begin
       var res := typeof(ConvolutionParameterEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ConvolutionParameterEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ConvolutionParameterEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9397,7 +9397,7 @@
     begin
       var res := typeof(ConvolutionTargetEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ConvolutionTargetEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ConvolutionTargetEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9417,7 +9417,7 @@
     begin
       var res := typeof(CullParameterEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CullParameterEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CullParameterEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9439,7 +9439,7 @@
     begin
       var res := typeof(DataTypeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'DataTypeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DataTypeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9459,7 +9459,7 @@
     begin
       var res := typeof(FogPointerTypeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FogPointerTypeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FogPointerTypeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9507,7 +9507,7 @@
     begin
       var res := typeof(GetHistogramParameterPNameEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetHistogramParameterPNameEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetHistogramParameterPNameEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9531,7 +9531,7 @@
     begin
       var res := typeof(GetMinmaxParameterPNameEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetMinmaxParameterPNameEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetMinmaxParameterPNameEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9555,7 +9555,7 @@
     begin
       var res := typeof(GetVariantValueEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetVariantValueEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetVariantValueEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9579,7 +9579,7 @@
     begin
       var res := typeof(HistogramTargetEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'HistogramTargetEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'HistogramTargetEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9611,7 +9611,7 @@
     begin
       var res := typeof(IndexFunctionEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'IndexFunctionEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'IndexFunctionEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9629,7 +9629,7 @@
     begin
       var res := typeof(IndexMaterialParameterEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'IndexMaterialParameterEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'IndexMaterialParameterEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9653,7 +9653,7 @@
     begin
       var res := typeof(LightTextureModeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'LightTextureModeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'LightTextureModeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9673,7 +9673,7 @@
     begin
       var res := typeof(LightTexturePNameEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'LightTexturePNameEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'LightTexturePNameEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9693,7 +9693,7 @@
     begin
       var res := typeof(MinmaxTargetEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MinmaxTargetEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MinmaxTargetEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9713,7 +9713,7 @@
     begin
       var res := typeof(ParameterRangeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ParameterRangeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ParameterRangeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9735,7 +9735,7 @@
     begin
       var res := typeof(PixelTransformPNameEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelTransformPNameEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelTransformPNameEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9753,7 +9753,7 @@
     begin
       var res := typeof(PixelTransformTargetEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelTransformTargetEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelTransformTargetEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9783,7 +9783,7 @@
     begin
       var res := typeof(SamplePatternEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SamplePatternEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SamplePatternEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9803,7 +9803,7 @@
     begin
       var res := typeof(SeparableTargetEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SeparableTargetEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SeparableTargetEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9831,7 +9831,7 @@
     begin
       var res := typeof(TangentPointerTypeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TangentPointerTypeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TangentPointerTypeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9849,7 +9849,7 @@
     begin
       var res := typeof(TextureNormalModeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureNormalModeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureNormalModeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9867,7 +9867,7 @@
     begin
       var res := typeof(VariantCapEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VariantCapEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VariantCapEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9905,7 +9905,7 @@
     begin
       var res := typeof(VertexShaderCoordOutEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexShaderCoordOutEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexShaderCoordOutEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9969,7 +9969,7 @@
     begin
       var res := typeof(VertexShaderOpEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexShaderOpEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexShaderOpEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -9989,7 +9989,7 @@
     begin
       var res := typeof(VertexShaderParameterEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexShaderParameterEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexShaderParameterEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10013,7 +10013,7 @@
     begin
       var res := typeof(VertexShaderStorageTypeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexShaderStorageTypeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexShaderStorageTypeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10033,7 +10033,7 @@
     begin
       var res := typeof(VertexShaderWriteMaskEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexShaderWriteMaskEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexShaderWriteMaskEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10051,7 +10051,7 @@
     begin
       var res := typeof(VertexWeightPointerTypeEXT).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexWeightPointerTypeEXT[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexWeightPointerTypeEXT[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10077,8 +10077,8 @@
     begin
       var res := typeof(TextureStorageMaskAMD).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'TextureStorageMaskAMD[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'TextureStorageMaskAMD[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -10101,7 +10101,7 @@
     begin
       var res := typeof(ObjectTypeAPPLE).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ObjectTypeAPPLE[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ObjectTypeAPPLE[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10123,7 +10123,7 @@
     begin
       var res := typeof(VertexArrayPNameAPPLE).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexArrayPNameAPPLE[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexArrayPNameAPPLE[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10147,7 +10147,7 @@
     begin
       var res := typeof(ArrayObjectPNameATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ArrayObjectPNameATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ArrayObjectPNameATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10167,7 +10167,7 @@
     begin
       var res := typeof(ArrayObjectUsageATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ArrayObjectUsageATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ArrayObjectUsageATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10189,7 +10189,7 @@
     begin
       var res := typeof(ElementPointerTypeATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ElementPointerTypeATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ElementPointerTypeATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10227,7 +10227,7 @@
     begin
       var res := typeof(FragmentOpATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FragmentOpATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FragmentOpATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10251,7 +10251,7 @@
     begin
       var res := typeof(GetTexBumpParameterATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetTexBumpParameterATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetTexBumpParameterATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10273,7 +10273,7 @@
     begin
       var res := typeof(PNTrianglesPNameATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PNTrianglesPNameATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PNTrianglesPNameATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10293,7 +10293,7 @@
     begin
       var res := typeof(PreserveModeATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PreserveModeATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PreserveModeATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10317,7 +10317,7 @@
     begin
       var res := typeof(SwizzleOpATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SwizzleOpATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SwizzleOpATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10349,7 +10349,7 @@
     begin
       var res := typeof(VertexStreamATI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexStreamATI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexStreamATI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10373,7 +10373,7 @@
     begin
       var res := typeof(PixelDataTypeGDI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelDataTypeGDI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelDataTypeGDI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10443,8 +10443,8 @@
     begin
       var res := typeof(PixelFormatFlagsGDI).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'PixelFormatFlagsGDI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'PixelFormatFlagsGDI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -10483,7 +10483,7 @@
     begin
       var res := typeof(ImageTransformPNameHP).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ImageTransformPNameHP[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ImageTransformPNameHP[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10501,7 +10501,7 @@
     begin
       var res := typeof(ImageTransformTargetHP).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ImageTransformTargetHP[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ImageTransformTargetHP[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10525,7 +10525,7 @@
     begin
       var res := typeof(FogPointerTypeIBM).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FogPointerTypeIBM[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FogPointerTypeIBM[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10549,7 +10549,7 @@
     begin
       var res := typeof(SecondaryColorPointerTypeIBM).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SecondaryColorPointerTypeIBM[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SecondaryColorPointerTypeIBM[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10578,8 +10578,8 @@
     begin
       var res := typeof(PerfQueryCapFlagsINTEL).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'PerfQueryCapFlagsINTEL[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinIntoString('+');
+        $'PerfQueryCapFlagsINTEL[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -10600,7 +10600,7 @@
     begin
       var res := typeof(PerfQueryDataFlagsINTEL).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PerfQueryDataFlagsINTEL[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PerfQueryDataFlagsINTEL[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10624,7 +10624,7 @@
     begin
       var res := typeof(CombinerBiasNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerBiasNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerBiasNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10646,7 +10646,7 @@
     begin
       var res := typeof(CombinerComponentUsageNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerComponentUsageNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerComponentUsageNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10678,7 +10678,7 @@
     begin
       var res := typeof(CombinerMappingNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerMappingNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerMappingNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10700,7 +10700,7 @@
     begin
       var res := typeof(CombinerParameterNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerParameterNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerParameterNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10720,7 +10720,7 @@
     begin
       var res := typeof(CombinerPortionNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerPortionNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerPortionNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10750,7 +10750,7 @@
     begin
       var res := typeof(CombinerRegisterNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerRegisterNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerRegisterNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10774,7 +10774,7 @@
     begin
       var res := typeof(CombinerScaleNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerScaleNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerScaleNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10806,7 +10806,7 @@
     begin
       var res := typeof(CombinerStageNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerStageNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerStageNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10836,7 +10836,7 @@
     begin
       var res := typeof(CombinerVariableNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'CombinerVariableNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CombinerVariableNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10854,7 +10854,7 @@
     begin
       var res := typeof(EvalMapsModeNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'EvalMapsModeNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'EvalMapsModeNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10874,7 +10874,7 @@
     begin
       var res := typeof(EvalTargetNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'EvalTargetNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'EvalTargetNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10892,7 +10892,7 @@
     begin
       var res := typeof(FenceConditionNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FenceConditionNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FenceConditionNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10912,7 +10912,7 @@
     begin
       var res := typeof(FenceParameterNameNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FenceParameterNameNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FenceParameterNameNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10934,7 +10934,7 @@
     begin
       var res := typeof(GetMultisamplePNameNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetMultisamplePNameNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetMultisamplePNameNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10954,7 +10954,7 @@
     begin
       var res := typeof(MapAttribParameterNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MapAttribParameterNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MapAttribParameterNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10972,7 +10972,7 @@
     begin
       var res := typeof(MapParameterNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MapParameterNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MapParameterNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -10992,7 +10992,7 @@
     begin
       var res := typeof(MapTypeNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MapTypeNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'MapTypeNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11012,7 +11012,7 @@
     begin
       var res := typeof(OcclusionQueryParameterNameNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'OcclusionQueryParameterNameNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'OcclusionQueryParameterNameNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11032,7 +11032,7 @@
     begin
       var res := typeof(PixelDataRangeTargetNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelDataRangeTargetNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelDataRangeTargetNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11050,7 +11050,7 @@
     begin
       var res := typeof(VertexAttribEnumNV).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'VertexAttribEnumNV[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'VertexAttribEnumNV[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11078,7 +11078,7 @@
     begin
       var res := typeof(HintTargetPGI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'HintTargetPGI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'HintTargetPGI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11126,7 +11126,7 @@
     begin
       var res := typeof(ColorTableTargetSGI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ColorTableTargetSGI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ColorTableTargetSGI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11182,7 +11182,7 @@
     begin
       var res := typeof(GetColorTableParameterPNameSGI).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'GetColorTableParameterPNameSGI[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'GetColorTableParameterPNameSGI[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11206,7 +11206,7 @@
     begin
       var res := typeof(PixelTexGenParameterNameSGIS).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelTexGenParameterNameSGIS[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelTexGenParameterNameSGIS[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11250,7 +11250,7 @@
     begin
       var res := typeof(SamplePatternSGIS).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SamplePatternSGIS[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SamplePatternSGIS[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11268,7 +11268,7 @@
     begin
       var res := typeof(TextureFilterSGIS).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'TextureFilterSGIS[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'TextureFilterSGIS[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11292,7 +11292,7 @@
     begin
       var res := typeof(FfdTargetSGIX).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FfdTargetSGIX[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FfdTargetSGIX[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11316,7 +11316,7 @@
     begin
       var res := typeof(FragmentLightModelParameterSGIX).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FragmentLightModelParameterSGIX[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FragmentLightModelParameterSGIX[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11348,7 +11348,7 @@
     begin
       var res := typeof(FragmentLightNameSGIX).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FragmentLightNameSGIX[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FragmentLightNameSGIX[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11384,7 +11384,7 @@
     begin
       var res := typeof(FragmentLightParameterSGIX).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'FragmentLightParameterSGIX[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'FragmentLightParameterSGIX[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11402,7 +11402,7 @@
     begin
       var res := typeof(LightEnvParameterSGIX).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'LightEnvParameterSGIX[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'LightEnvParameterSGIX[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11428,7 +11428,7 @@
     begin
       var res := typeof(PixelTexGenModeSGIX).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'PixelTexGenModeSGIX[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PixelTexGenModeSGIX[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11446,7 +11446,7 @@
     begin
       var res := typeof(SpriteParameterNameSGIX).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'SpriteParameterNameSGIX[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'SpriteParameterNameSGIX[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -11472,7 +11472,7 @@
     begin
       var res := typeof(ReplacementCodeTypeSUN).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ReplacementCodeTypeSUN[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ReplacementCodeTypeSUN[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     

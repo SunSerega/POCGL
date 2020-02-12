@@ -11,16 +11,6 @@
     
   end;
   
-  Half = record
-    public val: UInt16;
-    
-    public constructor(val: UInt16);
-    begin
-      self.val := val;
-    end;
-    
-  end;
-  
   GDI_COLORREF = record
     private a: byte := 0;
     public r: byte;
@@ -116,6 +106,16 @@
       self.dwLayerMask := dwLayerMask;
       self.dwVisibleMask := dwVisibleMask;
       self.dwDamageMask := dwDamageMask;
+    end;
+    
+  end;
+  
+  Half = record
+    public val: UInt16;
+    
+    public constructor(val: UInt16);
+    begin
+      self.val := val;
     end;
     
   end;

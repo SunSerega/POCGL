@@ -18,11 +18,13 @@ Genral syntax of `.dat` files:
 
 - `!add`
 - `!remove`
+
 - `!repl_par_t`
 - `!possible_par_types`
-- `!clear_ovrs`
+
 - `!add_ovrs`
 - `!rem_ovrs`
+- `!repl_ovrs`
 
 ---
 ### !add
@@ -69,7 +71,6 @@ Return type is always before parameters.\
 Same applies to other change types. 
 
 ---
-
 ### !possible_par_types
 
 Changes possible types of each parameter
@@ -82,45 +83,35 @@ Syntax:
 ```
 
 ---
+### !add_ovrs, !rem_ovrs, !repl_ovrs
 
-### !clear_ovrs
-
-Deletes all overloads. It only makes sense if there is `!add_ovrs` next.
-
-Syntax:
-```
-# FuncName
-!clear_ovrs
-!add_ovrs
-...
-```
-
----
-
-### !add_ovrs
-
-Adds overloads to overload list.
+- `!add_ovrs`: Adds overloads to overload list.
+- `!rem_ovrs`: Removes overloads to overload list.
+- `!repl_ovrs`: Clears overload list, then works like `!add_ovrs`
 
 Syntax:
 ```
 # FuncName
-!add_ovrs
+!repl_ovrs
  byte | word |
  byte | string |
 ```
-
----
-
-### !rem_ovrs
-
-Removes overloads to overload list.
-
-Syntax:
+Template syntax:
 ```
 # FuncName
-!rem_ovrs
- byte | word |
- byte | string |
+!repl_ovrs
+aaa = byte | word
+bbb = real | string
+ %aaa% | %aaa% | %bbb% |
+```
+Unwraps into:
+```
+# FuncName
+!repl_ovrs
+ byte | byte | real |
+ byte | byte | string |
+ word | word | real |
+ word | word | string |
 ```
 
 ---

@@ -9057,7 +9057,7 @@
 
 # glGetPerfQueryInfoINTEL
  PerfQueryIdINTEL	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var PerfQueryCapFlagsINTEL	|
- PerfQueryIdINTEL	| UInt32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| var PerfQueryCapFlagsINTEL	|
+ PerfQueryIdINTEL	| UInt32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glMaxShaderCompilerThreadsKHR
  UInt32	|

@@ -2,40 +2,33 @@
 
 
 # glGetFirstPerfQueryIdINTEL
-!clear_ovrs
-!add_ovrs
+!repl_ovrs
  var PerfQueryIdINTEL	|
  IntPtr					|
 
 # glGetNextPerfQueryIdINTEL
-!clear_ovrs
-!add_ovrs
+!repl_ovrs
  PerfQueryIdINTEL	| PerfQueryIdINTEL	|
- PerfQueryIdINTEL	| IntPtr				|
+ PerfQueryIdINTEL	| IntPtr			|
 
 # glGetPerfQueryIdByNameINTEL
-!clear_ovrs
-!add_ovrs
- string	| var PerfQueryIdINTEL	|
- string	| IntPtr				|
- IntPtr	| var PerfQueryIdINTEL	|
- IntPtr	| IntPtr				|
+!repl_ovrs
+name	= string | IntPtr
+res		= var PerfQueryIdINTEL | IntPtr
+ %name%	| %res%	|
 
 # glGetPerfQueryInfoINTEL
-!clear_ovrs
-!add_ovrs
+!repl_ovrs
  PerfQueryIdINTEL	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var PerfQueryCapFlagsINTEL	|
- PerfQueryIdINTEL	| UInt32	| IntPtr	| IntPtr		| IntPtr		| IntPtr		| var PerfQueryCapFlagsINTEL	|
+ PerfQueryIdINTEL	| UInt32	| IntPtr	| IntPtr		| IntPtr		| IntPtr		| IntPtr						|
 
 # glGetPerfCounterInfoINTEL
-!clear_ovrs
-!add_ovrs
+!repl_ovrs
  PerfQueryIdINTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| var UInt64	|
  PerfQueryIdINTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr		| IntPtr		| IntPtr		| IntPtr		| IntPtr		|
 
 # glCreatePerfQueryINTEL
-!clear_ovrs
-!add_ovrs
+!repl_ovrs
  PerfQueryIdINTEL	| var PerfQueryHandleINTEL	|
  PerfQueryIdINTEL	| IntPtr					|
 

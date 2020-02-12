@@ -34846,8 +34846,8 @@
     begin
       z_GetPerfQueryInfoINTEL_ovr_0(queryId, queryNameLength, queryName, dataSize, noCounters, noInstances, capsMask);
     end;
-    public z_GetPerfQueryInfoINTEL_ovr_1 := GetFuncOrNil&<procedure(queryId: PerfQueryIdINTEL; queryNameLength: UInt32; queryName: IntPtr; dataSize: IntPtr; noCounters: IntPtr; noInstances: IntPtr; var capsMask: PerfQueryCapFlagsINTEL)>(z_GetPerfQueryInfoINTEL_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPerfQueryInfoINTEL(queryId: PerfQueryIdINTEL; queryNameLength: UInt32; queryName: IntPtr; dataSize: IntPtr; noCounters: IntPtr; noInstances: IntPtr; var capsMask: PerfQueryCapFlagsINTEL);
+    public z_GetPerfQueryInfoINTEL_ovr_1 := GetFuncOrNil&<procedure(queryId: PerfQueryIdINTEL; queryNameLength: UInt32; queryName: IntPtr; dataSize: IntPtr; noCounters: IntPtr; noInstances: IntPtr; capsMask: IntPtr)>(z_GetPerfQueryInfoINTEL_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPerfQueryInfoINTEL(queryId: PerfQueryIdINTEL; queryNameLength: UInt32; queryName: IntPtr; dataSize: IntPtr; noCounters: IntPtr; noInstances: IntPtr; capsMask: IntPtr);
     begin
       z_GetPerfQueryInfoINTEL_ovr_1(queryId, queryNameLength, queryName, dataSize, noCounters, noInstances, capsMask);
     end;
