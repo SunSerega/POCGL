@@ -111,55 +111,55 @@
  cl_command_queue	| cl_context	| cl_device_id	| CommandQueuePropertyFlags	| IntPtr	|
 
 # clCreateCommandQueueWithProperties
- cl_command_queue	| cl_context	| cl_device_id	| array of UInt64	| array of ErrorCode	|
- cl_command_queue	| cl_context	| cl_device_id	| array of UInt64	| var ErrorCode	|
- cl_command_queue	| cl_context	| cl_device_id	| array of UInt64	| IntPtr	|
- cl_command_queue	| cl_context	| cl_device_id	| var UInt64	| array of ErrorCode	|
- cl_command_queue	| cl_context	| cl_device_id	| var UInt64	| var ErrorCode	|
- cl_command_queue	| cl_context	| cl_device_id	| var UInt64	| IntPtr	|
+ cl_command_queue	| cl_context	| cl_device_id	| array of cl_queue_properties	| array of ErrorCode	|
+ cl_command_queue	| cl_context	| cl_device_id	| array of cl_queue_properties	| var ErrorCode	|
+ cl_command_queue	| cl_context	| cl_device_id	| array of cl_queue_properties	| IntPtr	|
+ cl_command_queue	| cl_context	| cl_device_id	| var cl_queue_properties	| array of ErrorCode	|
+ cl_command_queue	| cl_context	| cl_device_id	| var cl_queue_properties	| var ErrorCode	|
+ cl_command_queue	| cl_context	| cl_device_id	| var cl_queue_properties	| IntPtr	|
  cl_command_queue	| cl_context	| cl_device_id	| IntPtr	| array of ErrorCode	|
  cl_command_queue	| cl_context	| cl_device_id	| IntPtr	| var ErrorCode	|
  cl_command_queue	| cl_context	| cl_device_id	| IntPtr	| IntPtr	|
 
 # clCreateContext
- cl_context	| array of IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| array of IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| array of IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| array of IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| array of IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| array of IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| array of IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| array of IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| array of IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| var IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| var IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| var IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| var IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| var IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| var IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| var IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| var IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| var IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| pointer	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| pointer	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| pointer	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| pointer	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| pointer	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| pointer	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| pointer	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| pointer	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| pointer	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| array of cl_context_properties	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| array of cl_context_properties	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| array of cl_context_properties	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| array of cl_context_properties	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| array of cl_context_properties	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| array of cl_context_properties	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| array of cl_context_properties	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| array of cl_context_properties	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| array of cl_context_properties	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| var cl_context_properties	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| var cl_context_properties	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| var cl_context_properties	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| var cl_context_properties	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| var cl_context_properties	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| var cl_context_properties	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| var cl_context_properties	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| var cl_context_properties	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| var cl_context_properties	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| IntPtr	| UInt32	| array of cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| IntPtr	| UInt32	| var cl_device_id	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| IntPtr	| UInt32	| IntPtr	| CreateContextCallback	| IntPtr	| IntPtr	|
 
 # clCreateContextFromType
- cl_context	| array of IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| array of IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| array of IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| var IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| var IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| var IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| IntPtr	|
- cl_context	| pointer	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
- cl_context	| pointer	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| var ErrorCode	|
- cl_context	| pointer	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| array of cl_context_properties	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| array of cl_context_properties	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| array of cl_context_properties	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| var cl_context_properties	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| var cl_context_properties	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| var cl_context_properties	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| IntPtr	|
+ cl_context	| IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| array of ErrorCode	|
+ cl_context	| IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| var ErrorCode	|
+ cl_context	| IntPtr	| DeviceTypeFlags	| CreateContextCallback	| IntPtr	| IntPtr	|
 
 # clCreateImage
  cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| array of ErrorCode	|
@@ -320,54 +320,54 @@
  cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| IntPtr	|
 
 # clCreateSampler
- cl_sampler	| cl_context	| Bool	| UInt32	| UInt32	| array of ErrorCode	|
- cl_sampler	| cl_context	| Bool	| UInt32	| UInt32	| var ErrorCode	|
- cl_sampler	| cl_context	| Bool	| UInt32	| UInt32	| IntPtr	|
+ cl_sampler	| cl_context	| Bool	| cl_addressing_mode	| cl_filter_mode	| array of ErrorCode	|
+ cl_sampler	| cl_context	| Bool	| cl_addressing_mode	| cl_filter_mode	| var ErrorCode	|
+ cl_sampler	| cl_context	| Bool	| cl_addressing_mode	| cl_filter_mode	| IntPtr	|
 
 # clCreateSamplerWithProperties
- cl_sampler	| cl_context	| array of UInt64	| array of ErrorCode	|
- cl_sampler	| cl_context	| array of UInt64	| var ErrorCode	|
- cl_sampler	| cl_context	| array of UInt64	| IntPtr	|
- cl_sampler	| cl_context	| var UInt64	| array of ErrorCode	|
- cl_sampler	| cl_context	| var UInt64	| var ErrorCode	|
- cl_sampler	| cl_context	| var UInt64	| IntPtr	|
+ cl_sampler	| cl_context	| array of cl_sampler_properties	| array of ErrorCode	|
+ cl_sampler	| cl_context	| array of cl_sampler_properties	| var ErrorCode	|
+ cl_sampler	| cl_context	| array of cl_sampler_properties	| IntPtr	|
+ cl_sampler	| cl_context	| var cl_sampler_properties	| array of ErrorCode	|
+ cl_sampler	| cl_context	| var cl_sampler_properties	| var ErrorCode	|
+ cl_sampler	| cl_context	| var cl_sampler_properties	| IntPtr	|
  cl_sampler	| cl_context	| IntPtr	| array of ErrorCode	|
  cl_sampler	| cl_context	| IntPtr	| var ErrorCode	|
  cl_sampler	| cl_context	| IntPtr	| IntPtr	|
 
 # clCreateSubBuffer
- cl_mem	| cl_mem	| MemFlags	| UInt32	| IntPtr	| array of ErrorCode	|
- cl_mem	| cl_mem	| MemFlags	| UInt32	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_mem	| MemFlags	| UInt32	| IntPtr	| IntPtr	|
+ cl_mem	| cl_mem	| MemFlags	| cl_buffer_create_type	| IntPtr	| array of ErrorCode	|
+ cl_mem	| cl_mem	| MemFlags	| cl_buffer_create_type	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_mem	| MemFlags	| cl_buffer_create_type	| IntPtr	| IntPtr	|
 
 # clCreateSubDevices
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_device_id	| array of IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_device_id	| var IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_device_id	| pointer	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_device_id	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateUserEvent
  cl_event	| cl_context	| array of ErrorCode	|
@@ -717,18 +717,18 @@
  IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| UInt32	| UInt32	| UInt32	| IntPtr	| IntPtr	| IntPtr	|
 
 # clEnqueueMapImage
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| var cl_event	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| var cl_event	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| var cl_event	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| IntPtr	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| IntPtr	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| IntPtr	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| var cl_event	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| var cl_event	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| var cl_event	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| IntPtr	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| IntPtr	| var ErrorCode	|
- IntPtr	| cl_command_queue	| cl_mem	| cl_bool	| cl_map_flags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| IntPtr	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| IntPtr	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| IntPtr	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| array of UInt32	| array of UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| IntPtr	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| var cl_event	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| array of cl_event	| IntPtr	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| var cl_event	| IntPtr	| var ErrorCode	|
+ IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| UInt32	| IntPtr	| IntPtr	| var ErrorCode	|
 
 # clEnqueueMarker
  ErrorCode	| cl_command_queue	| array of cl_event	|
@@ -884,18 +884,18 @@
  ErrorCode	| cl_command_queue	| cl_mem	| Bool	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueReadBufferRect
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueReadImage
  ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1157,18 +1157,18 @@
  ErrorCode	| cl_command_queue	| cl_mem	| Bool	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueWriteBufferRect
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| cl_mem	| cl_bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| Bool	| var UInt32	| var UInt32	| var UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueWriteImage
  ErrorCode	| cl_command_queue	| cl_mem	| Bool	| array of UInt32	| array of UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1260,14 +1260,14 @@
  ErrorCode	| cl_command_queue	|
 
 # clGetCommandQueueInfo
- ErrorCode	| cl_command_queue	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_command_queue	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_command_queue	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_command_queue_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_command_queue	| cl_command_queue_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_command_queue	| cl_command_queue_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetContextInfo
- ErrorCode	| cl_context	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_context	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_context	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_context	| cl_context_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_context	| cl_context_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_context	| cl_context_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetDeviceAndHostTimer
  ErrorCode	| cl_device_id	| array of UInt64	| array of UInt64	|
@@ -1297,14 +1297,14 @@
  ErrorCode	| cl_device_id	| DeviceInfo	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetEventInfo
- ErrorCode	| cl_event	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_event	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_event	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_event	| cl_event_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_event	| cl_event_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_event	| cl_event_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetEventProfilingInfo
- ErrorCode	| cl_event	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_event	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_event	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_event	| cl_profiling_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_event	| cl_profiling_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_event	| cl_profiling_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetExtensionFunctionAddress
  IntPtr	| array of SByte	|
@@ -1322,39 +1322,39 @@
  ErrorCode	| cl_device_id	| IntPtr	|
 
 # clGetImageInfo
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_mem	| cl_image_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_mem	| cl_image_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_mem	| cl_image_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetKernelArgInfo
- ErrorCode	| cl_kernel	| UInt32	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_kernel	| UInt32	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_kernel	| UInt32	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| cl_kernel_arg_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_kernel	| UInt32	| cl_kernel_arg_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_kernel	| UInt32	| cl_kernel_arg_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetKernelInfo
- ErrorCode	| cl_kernel	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_kernel	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_kernel	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_kernel_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_kernel	| cl_kernel_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_kernel	| cl_kernel_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetKernelSubGroupInfo
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_sub_group_info	| UInt32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_sub_group_info	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_sub_group_info	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetKernelWorkGroupInfo
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_work_group_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_work_group_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_work_group_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetMemObjectInfo
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_mem	| cl_mem_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_mem	| cl_mem_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_mem	| cl_mem_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetPipeInfo
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_mem	| cl_pipe_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_mem	| cl_pipe_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_mem	| cl_pipe_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetPlatformIDs
  ErrorCode	| UInt32	| array of cl_platform_id	| array of UInt32	|
@@ -1368,35 +1368,35 @@
  ErrorCode	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetPlatformInfo
- ErrorCode	| cl_platform_id	| cl_platform_info	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_platform_id	| cl_platform_info	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_platform_id	| cl_platform_info	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_platform_id	| PlatformInfo	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| PlatformInfo	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_platform_id	| PlatformInfo	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetProgramBuildInfo
- ErrorCode	| cl_program	| cl_device_id	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_program	| cl_device_id	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_program	| cl_device_id	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| cl_program_build_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_program	| cl_device_id	| cl_program_build_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_program	| cl_device_id	| cl_program_build_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetProgramInfo
- ErrorCode	| cl_program	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_program	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_program	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_program	| cl_program_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_program	| cl_program_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_program	| cl_program_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetSamplerInfo
- ErrorCode	| cl_sampler	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_sampler	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_sampler	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_sampler	| cl_sampler_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_sampler	| cl_sampler_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_sampler	| cl_sampler_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetSupportedImageFormats
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| array of cl_image_format	| array of UInt32	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| array of cl_image_format	| var UInt32	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| array of cl_image_format	| IntPtr	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| var cl_image_format	| array of UInt32	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| var cl_image_format	| var UInt32	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| var cl_image_format	| IntPtr	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_context	| MemFlags	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| array of cl_image_format	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| array of cl_image_format	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| array of cl_image_format	| IntPtr	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| var cl_image_format	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| var cl_image_format	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| var cl_image_format	| IntPtr	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| cl_mem_object_type	| UInt32	| IntPtr	| IntPtr	|
 
 # clLinkProgram
  cl_program	| cl_context	| UInt32	| array of cl_device_id	| array of SByte	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
@@ -1547,7 +1547,7 @@
  ErrorCode	| cl_kernel	| UInt32	| IntPtr	|
 
 # clSetKernelExecInfo
- ErrorCode	| cl_kernel	| UInt32	| UInt32	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_kernel_exec_info	| UInt32	| IntPtr	|
 
 # clSetMemObjectDestructorCallback
  ErrorCode	| cl_mem	| MemObjectDestructorCallback	| IntPtr	|
@@ -1559,7 +1559,7 @@
  ErrorCode	| cl_program	| UInt32	| UInt32	| IntPtr	|
 
 # clSetUserEventStatus
- ErrorCode	| cl_event	| Int32	|
+ ErrorCode	| cl_event	| CommandExecutionStatus	|
 
 # clSVMAlloc
  IntPtr	| cl_context	| UInt64	| UInt32	| UInt32	|
@@ -1875,15 +1875,15 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromEGLImageKHR
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of IntPtr	| array of ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of IntPtr	| IntPtr	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var IntPtr	| array of ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var IntPtr	| IntPtr	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| pointer	| array of ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| pointer	| var ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| pointer	| IntPtr	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of cl_egl_image_properties_khr	| array of ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of cl_egl_image_properties_khr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of cl_egl_image_properties_khr	| IntPtr	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var cl_egl_image_properties_khr	| array of ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var cl_egl_image_properties_khr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var cl_egl_image_properties_khr	| IntPtr	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| IntPtr	| array of ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| IntPtr	| IntPtr	|
 
 # clEnqueueAcquireEGLObjectsKHR
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -2003,24 +2003,24 @@
  ErrorCode	| cl_device_id	|
 
 # clCreateSubDevicesEXT
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_device_id	| array of UInt64	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_device_id	| var UInt64	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_device_id	| array of cl_device_partition_property_ext	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_device_id	| var cl_device_partition_property_ext	| UInt32	| IntPtr	| IntPtr	|
  ErrorCode	| cl_device_id	| IntPtr	| UInt32	| array of cl_device_id	| array of UInt32	|
  ErrorCode	| cl_device_id	| IntPtr	| UInt32	| array of cl_device_id	| var UInt32	|
  ErrorCode	| cl_device_id	| IntPtr	| UInt32	| array of cl_device_id	| IntPtr	|
@@ -2032,33 +2032,33 @@
  ErrorCode	| cl_device_id	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueMigrateMemObjectEXT
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt64	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| UInt64	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt64	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var cl_mem	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| cl_mem_migration_flags_ext	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetDeviceImageInfoQCOM
  ErrorCode	| cl_device_id	| UInt32	| UInt32	| array of cl_image_format	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
@@ -2130,9 +2130,9 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetKernelSubGroupInfoKHR
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_kernel	| cl_device_id	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_sub_group_info	| UInt32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_sub_group_info	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_kernel	| cl_device_id	| cl_kernel_sub_group_info	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clImportMemoryARM
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UInt32	| array of ErrorCode	|
@@ -2218,9 +2218,9 @@
  cl_accelerator_intel	| cl_context	| cl_accelerator_type_intel	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetAcceleratorInfoINTEL
- ErrorCode	| cl_accelerator_intel	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_accelerator_intel	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_accelerator_intel	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_accelerator_intel	| cl_accelerator_info_intel	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_accelerator_intel	| cl_accelerator_info_intel	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_accelerator_intel	| cl_accelerator_info_intel	| UInt32	| IntPtr	| IntPtr	|
 
 # clRetainAcceleratorINTEL
  ErrorCode	| cl_accelerator_intel	|
@@ -2234,15 +2234,15 @@
  cl_event	| cl_context	| IntPtr	| IntPtr	|
 
 # clGetDeviceIDsFromVA_APIMediaAdapterINTEL
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_platform_id	| cl_va_api_device_source_intel	| IntPtr	| cl_va_api_device_set_intel	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromVA_APIMediaSurfaceINTEL
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| array of ErrorCode	|
@@ -2314,15 +2314,15 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetDeviceIDsFromDX9INTEL
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_platform_id	| cl_dx9_device_source_intel	| IntPtr	| cl_dx9_device_set_intel	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromDX9MediaSurfaceINTEL
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UInt32	| array of ErrorCode	|
@@ -2394,15 +2394,15 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetGLContextInfoKHR
- ErrorCode	| array of IntPtr	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| array of IntPtr	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| array of IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| var IntPtr	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| var IntPtr	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| var IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| pointer	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| pointer	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| pointer	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| array of cl_context_properties	| cl_gl_context_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| array of cl_context_properties	| cl_gl_context_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| array of cl_context_properties	| cl_gl_context_info	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| var cl_context_properties	| cl_gl_context_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| var cl_context_properties	| cl_gl_context_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| var cl_context_properties	| cl_gl_context_info	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| IntPtr	| cl_gl_context_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| IntPtr	| cl_gl_context_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| IntPtr	| cl_gl_context_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromGLBuffer
  cl_mem	| cl_context	| MemFlags	| UInt32	| array of ErrorCode	|
@@ -2430,20 +2430,20 @@
  cl_mem	| cl_context	| MemFlags	| UInt32	| IntPtr	|
 
 # clGetGLObjectInfo
- ErrorCode	| cl_mem	| array of UInt32	| array of UInt32	|
- ErrorCode	| cl_mem	| array of UInt32	| var UInt32	|
- ErrorCode	| cl_mem	| array of UInt32	| IntPtr	|
- ErrorCode	| cl_mem	| var UInt32	| array of UInt32	|
- ErrorCode	| cl_mem	| var UInt32	| var UInt32	|
- ErrorCode	| cl_mem	| var UInt32	| IntPtr	|
+ ErrorCode	| cl_mem	| array of cl_gl_object_type	| array of UInt32	|
+ ErrorCode	| cl_mem	| array of cl_gl_object_type	| var UInt32	|
+ ErrorCode	| cl_mem	| array of cl_gl_object_type	| IntPtr	|
+ ErrorCode	| cl_mem	| var cl_gl_object_type	| array of UInt32	|
+ ErrorCode	| cl_mem	| var cl_gl_object_type	| var UInt32	|
+ ErrorCode	| cl_mem	| var cl_gl_object_type	| IntPtr	|
  ErrorCode	| cl_mem	| IntPtr	| array of UInt32	|
  ErrorCode	| cl_mem	| IntPtr	| var UInt32	|
  ErrorCode	| cl_mem	| IntPtr	| IntPtr	|
 
 # clGetGLTextureInfo
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_mem	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_mem	| cl_gl_texture_info	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_mem	| cl_gl_texture_info	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_mem	| cl_gl_texture_info	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueAcquireGLObjects
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -2504,34 +2504,34 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clHostMemAllocINTEL
- IntPtr	| cl_context	| array of UInt64	| UInt32	| UInt32	| array of ErrorCode	|
- IntPtr	| cl_context	| array of UInt64	| UInt32	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| array of UInt64	| UInt32	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| var UInt64	| UInt32	| UInt32	| array of ErrorCode	|
- IntPtr	| cl_context	| var UInt64	| UInt32	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| var UInt64	| UInt32	| UInt32	| IntPtr	|
+ IntPtr	| cl_context	| array of cl_mem_properties_intel	| UInt32	| UInt32	| array of ErrorCode	|
+ IntPtr	| cl_context	| array of cl_mem_properties_intel	| UInt32	| UInt32	| var ErrorCode	|
+ IntPtr	| cl_context	| array of cl_mem_properties_intel	| UInt32	| UInt32	| IntPtr	|
+ IntPtr	| cl_context	| var cl_mem_properties_intel	| UInt32	| UInt32	| array of ErrorCode	|
+ IntPtr	| cl_context	| var cl_mem_properties_intel	| UInt32	| UInt32	| var ErrorCode	|
+ IntPtr	| cl_context	| var cl_mem_properties_intel	| UInt32	| UInt32	| IntPtr	|
  IntPtr	| cl_context	| IntPtr	| UInt32	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| IntPtr	| UInt32	| UInt32	| var ErrorCode	|
  IntPtr	| cl_context	| IntPtr	| UInt32	| UInt32	| IntPtr	|
 
 # clDeviceMemAllocINTEL
- IntPtr	| cl_context	| cl_device_id	| array of UInt64	| UInt32	| UInt32	| array of ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| array of UInt64	| UInt32	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| array of UInt64	| UInt32	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| cl_device_id	| var UInt64	| UInt32	| UInt32	| array of ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| var UInt64	| UInt32	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| var UInt64	| UInt32	| UInt32	| IntPtr	|
+ IntPtr	| cl_context	| cl_device_id	| array of cl_mem_properties_intel	| UInt32	| UInt32	| array of ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| array of cl_mem_properties_intel	| UInt32	| UInt32	| var ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| array of cl_mem_properties_intel	| UInt32	| UInt32	| IntPtr	|
+ IntPtr	| cl_context	| cl_device_id	| var cl_mem_properties_intel	| UInt32	| UInt32	| array of ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| var cl_mem_properties_intel	| UInt32	| UInt32	| var ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| var cl_mem_properties_intel	| UInt32	| UInt32	| IntPtr	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UInt32	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UInt32	| UInt32	| var ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UInt32	| UInt32	| IntPtr	|
 
 # clSharedMemAllocINTEL
- IntPtr	| cl_context	| cl_device_id	| array of UInt64	| UInt32	| UInt32	| array of ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| array of UInt64	| UInt32	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| array of UInt64	| UInt32	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| cl_device_id	| var UInt64	| UInt32	| UInt32	| array of ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| var UInt64	| UInt32	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| var UInt64	| UInt32	| UInt32	| IntPtr	|
+ IntPtr	| cl_context	| cl_device_id	| array of cl_mem_properties_intel	| UInt32	| UInt32	| array of ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| array of cl_mem_properties_intel	| UInt32	| UInt32	| var ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| array of cl_mem_properties_intel	| UInt32	| UInt32	| IntPtr	|
+ IntPtr	| cl_context	| cl_device_id	| var cl_mem_properties_intel	| UInt32	| UInt32	| array of ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| var cl_mem_properties_intel	| UInt32	| UInt32	| var ErrorCode	|
+ IntPtr	| cl_context	| cl_device_id	| var cl_mem_properties_intel	| UInt32	| UInt32	| IntPtr	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UInt32	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UInt32	| UInt32	| var ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UInt32	| UInt32	| IntPtr	|

@@ -27,37 +27,25 @@
     
   end;
   
-  ChannelOrder = record
+  cl_accelerator_info_intel = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _NONE := new ChannelOrder($0000);
+    private static _ACCELERATOR_DESCRIPTOR_INTEL      := new cl_accelerator_info_intel($4090);
+    private static _ACCELERATOR_REFERENCE_COUNT_INTEL := new cl_accelerator_info_intel($4091);
+    private static _ACCELERATOR_CONTEXT_INTEL         := new cl_accelerator_info_intel($4092);
+    private static _ACCELERATOR_TYPE_INTEL            := new cl_accelerator_info_intel($4093);
     
-    public static property NONE: ChannelOrder read _NONE;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(ChannelOrder).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'ChannelOrder[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  ChannelType = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _NONE := new ChannelType($0000);
-    
-    public static property NONE: ChannelType read _NONE;
+    public static property ACCELERATOR_DESCRIPTOR_INTEL:      cl_accelerator_info_intel read _ACCELERATOR_DESCRIPTOR_INTEL;
+    public static property ACCELERATOR_REFERENCE_COUNT_INTEL: cl_accelerator_info_intel read _ACCELERATOR_REFERENCE_COUNT_INTEL;
+    public static property ACCELERATOR_CONTEXT_INTEL:         cl_accelerator_info_intel read _ACCELERATOR_CONTEXT_INTEL;
+    public static property ACCELERATOR_TYPE_INTEL:            cl_accelerator_info_intel read _ACCELERATOR_TYPE_INTEL;
     
     public function ToString: string; override;
     begin
-      var res := typeof(ChannelType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      var res := typeof(cl_accelerator_info_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'ChannelType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'cl_accelerator_info_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -81,39 +69,1039 @@
     
   end;
   
-  cl_platform_info = record
+  cl_addressing_mode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _PLATFORM_PROFILE               := new cl_platform_info($0900);
-    private static _PLATFORM_VERSION               := new cl_platform_info($0901);
-    private static _PLATFORM_NAME                  := new cl_platform_info($0902);
-    private static _PLATFORM_VENDOR                := new cl_platform_info($0903);
-    private static _PLATFORM_EXTENSIONS            := new cl_platform_info($0904);
-    private static _PLATFORM_HOST_TIMER_RESOLUTION := new cl_platform_info($0905);
-    private static _PLATFORM_ICD_SUFFIX_KHR        := new cl_platform_info($0920);
+    private static _ADDRESS_NONE            := new cl_addressing_mode($1130);
+    private static _ADDRESS_CLAMP_TO_EDGE   := new cl_addressing_mode($1131);
+    private static _ADDRESS_CLAMP           := new cl_addressing_mode($1132);
+    private static _ADDRESS_REPEAT          := new cl_addressing_mode($1133);
+    private static _ADDRESS_MIRRORED_REPEAT := new cl_addressing_mode($1134);
     
-    public static property PLATFORM_PROFILE:               cl_platform_info read _PLATFORM_PROFILE;
-    public static property PLATFORM_VERSION:               cl_platform_info read _PLATFORM_VERSION;
-    public static property PLATFORM_NAME:                  cl_platform_info read _PLATFORM_NAME;
-    public static property PLATFORM_VENDOR:                cl_platform_info read _PLATFORM_VENDOR;
-    public static property PLATFORM_EXTENSIONS:            cl_platform_info read _PLATFORM_EXTENSIONS;
-    public static property PLATFORM_HOST_TIMER_RESOLUTION: cl_platform_info read _PLATFORM_HOST_TIMER_RESOLUTION;
-    public static property PLATFORM_ICD_SUFFIX_KHR:        cl_platform_info read _PLATFORM_ICD_SUFFIX_KHR;
+    public static property ADDRESS_NONE:            cl_addressing_mode read _ADDRESS_NONE;
+    public static property ADDRESS_CLAMP_TO_EDGE:   cl_addressing_mode read _ADDRESS_CLAMP_TO_EDGE;
+    public static property ADDRESS_CLAMP:           cl_addressing_mode read _ADDRESS_CLAMP;
+    public static property ADDRESS_REPEAT:          cl_addressing_mode read _ADDRESS_REPEAT;
+    public static property ADDRESS_MIRRORED_REPEAT: cl_addressing_mode read _ADDRESS_MIRRORED_REPEAT;
     
     public function ToString: string; override;
     begin
-      var res := typeof(cl_platform_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      var res := typeof(cl_addressing_mode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'cl_platform_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'cl_addressing_mode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_buffer_create_type = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _BUFFER_CREATE_TYPE_REGION := new cl_buffer_create_type($1220);
+    
+    public static property BUFFER_CREATE_TYPE_REGION: cl_buffer_create_type read _BUFFER_CREATE_TYPE_REGION;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_buffer_create_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_buffer_create_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_channel_order = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _R             := new cl_channel_order($10B0);
+    private static _A             := new cl_channel_order($10B1);
+    private static _RG            := new cl_channel_order($10B2);
+    private static _RA            := new cl_channel_order($10B3);
+    private static _RGB           := new cl_channel_order($10B4);
+    private static _RGBA          := new cl_channel_order($10B5);
+    private static _BGRA          := new cl_channel_order($10B6);
+    private static _ARGB          := new cl_channel_order($10B7);
+    private static _INTENSITY     := new cl_channel_order($10B8);
+    private static _LUMINANCE     := new cl_channel_order($10B9);
+    private static _Rx            := new cl_channel_order($10BA);
+    private static _RGx           := new cl_channel_order($10BB);
+    private static _RGBx          := new cl_channel_order($10BC);
+    private static _DEPTH         := new cl_channel_order($10BD);
+    private static _DEPTH_STENCIL := new cl_channel_order($10BE);
+    private static _sRGB          := new cl_channel_order($10BF);
+    private static _sRGBx         := new cl_channel_order($10C0);
+    private static _sRGBA         := new cl_channel_order($10C1);
+    private static _sBGRA         := new cl_channel_order($10C2);
+    private static _ABGR          := new cl_channel_order($10C3);
+    private static _YUYV_INTEL    := new cl_channel_order($4076);
+    private static _UYVY_INTEL    := new cl_channel_order($4077);
+    private static _YVYU_INTEL    := new cl_channel_order($4078);
+    private static _VYUY_INTEL    := new cl_channel_order($4079);
+    private static _NV21_IMG      := new cl_channel_order($40D0);
+    private static _YV12_IMG      := new cl_channel_order($40D1);
+    private static _NV12_INTEL    := new cl_channel_order($410E);
+    
+    public static property R:             cl_channel_order read _R;
+    public static property A:             cl_channel_order read _A;
+    public static property RG:            cl_channel_order read _RG;
+    public static property RA:            cl_channel_order read _RA;
+    public static property RGB:           cl_channel_order read _RGB;
+    public static property RGBA:          cl_channel_order read _RGBA;
+    public static property BGRA:          cl_channel_order read _BGRA;
+    public static property ARGB:          cl_channel_order read _ARGB;
+    public static property INTENSITY:     cl_channel_order read _INTENSITY;
+    public static property LUMINANCE:     cl_channel_order read _LUMINANCE;
+    public static property Rx:            cl_channel_order read _Rx;
+    public static property RGx:           cl_channel_order read _RGx;
+    public static property RGBx:          cl_channel_order read _RGBx;
+    public static property DEPTH:         cl_channel_order read _DEPTH;
+    public static property DEPTH_STENCIL: cl_channel_order read _DEPTH_STENCIL;
+    public static property sRGB:          cl_channel_order read _sRGB;
+    public static property sRGBx:         cl_channel_order read _sRGBx;
+    public static property sRGBA:         cl_channel_order read _sRGBA;
+    public static property sBGRA:         cl_channel_order read _sBGRA;
+    public static property ABGR:          cl_channel_order read _ABGR;
+    public static property YUYV_INTEL:    cl_channel_order read _YUYV_INTEL;
+    public static property UYVY_INTEL:    cl_channel_order read _UYVY_INTEL;
+    public static property YVYU_INTEL:    cl_channel_order read _YVYU_INTEL;
+    public static property VYUY_INTEL:    cl_channel_order read _VYUY_INTEL;
+    public static property NV21_IMG:      cl_channel_order read _NV21_IMG;
+    public static property YV12_IMG:      cl_channel_order read _YV12_IMG;
+    public static property NV12_INTEL:    cl_channel_order read _NV12_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_channel_order).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_channel_order[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_channel_type = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _SNORM_INT8         := new cl_channel_type($10D0);
+    private static _SNORM_INT16        := new cl_channel_type($10D1);
+    private static _UNORM_INT8         := new cl_channel_type($10D2);
+    private static _UNORM_INT16        := new cl_channel_type($10D3);
+    private static _UNORM_SHORT_565    := new cl_channel_type($10D4);
+    private static _UNORM_SHORT_555    := new cl_channel_type($10D5);
+    private static _UNORM_INT_101010   := new cl_channel_type($10D6);
+    private static _SIGNED_INT8        := new cl_channel_type($10D7);
+    private static _SIGNED_INT16       := new cl_channel_type($10D8);
+    private static _SIGNED_INT32       := new cl_channel_type($10D9);
+    private static _UNSIGNED_INT8      := new cl_channel_type($10DA);
+    private static _UNSIGNED_INT16     := new cl_channel_type($10DB);
+    private static _UNSIGNED_INT32     := new cl_channel_type($10DC);
+    private static _HALF_FLOAT         := new cl_channel_type($10DD);
+    private static _FLOAT              := new cl_channel_type($10DE);
+    private static _UNORM_INT24        := new cl_channel_type($10DF);
+    private static _UNORM_INT_101010_2 := new cl_channel_type($10E0);
+    
+    public static property SNORM_INT8:         cl_channel_type read _SNORM_INT8;
+    public static property SNORM_INT16:        cl_channel_type read _SNORM_INT16;
+    public static property UNORM_INT8:         cl_channel_type read _UNORM_INT8;
+    public static property UNORM_INT16:        cl_channel_type read _UNORM_INT16;
+    public static property UNORM_SHORT_565:    cl_channel_type read _UNORM_SHORT_565;
+    public static property UNORM_SHORT_555:    cl_channel_type read _UNORM_SHORT_555;
+    public static property UNORM_INT_101010:   cl_channel_type read _UNORM_INT_101010;
+    public static property SIGNED_INT8:        cl_channel_type read _SIGNED_INT8;
+    public static property SIGNED_INT16:       cl_channel_type read _SIGNED_INT16;
+    public static property SIGNED_INT32:       cl_channel_type read _SIGNED_INT32;
+    public static property UNSIGNED_INT8:      cl_channel_type read _UNSIGNED_INT8;
+    public static property UNSIGNED_INT16:     cl_channel_type read _UNSIGNED_INT16;
+    public static property UNSIGNED_INT32:     cl_channel_type read _UNSIGNED_INT32;
+    public static property HALF_FLOAT:         cl_channel_type read _HALF_FLOAT;
+    public static property FLOAT:              cl_channel_type read _FLOAT;
+    public static property UNORM_INT24:        cl_channel_type read _UNORM_INT24;
+    public static property UNORM_INT_101010_2: cl_channel_type read _UNORM_INT_101010_2;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_channel_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_channel_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_command_queue_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _QUEUE_CONTEXT         := new cl_command_queue_info($1090);
+    private static _QUEUE_DEVICE          := new cl_command_queue_info($1091);
+    private static _QUEUE_REFERENCE_COUNT := new cl_command_queue_info($1092);
+    private static _QUEUE_PROPERTIES      := new cl_command_queue_info($1093);
+    private static _QUEUE_SIZE            := new cl_command_queue_info($1094);
+    private static _QUEUE_DEVICE_DEFAULT  := new cl_command_queue_info($1095);
+    
+    public static property QUEUE_CONTEXT:         cl_command_queue_info read _QUEUE_CONTEXT;
+    public static property QUEUE_DEVICE:          cl_command_queue_info read _QUEUE_DEVICE;
+    public static property QUEUE_REFERENCE_COUNT: cl_command_queue_info read _QUEUE_REFERENCE_COUNT;
+    public static property QUEUE_PROPERTIES:      cl_command_queue_info read _QUEUE_PROPERTIES;
+    public static property QUEUE_SIZE:            cl_command_queue_info read _QUEUE_SIZE;
+    public static property QUEUE_DEVICE_DEFAULT:  cl_command_queue_info read _QUEUE_DEVICE_DEFAULT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_command_queue_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_command_queue_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_context_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _CONTEXT_REFERENCE_COUNT                   := new cl_context_info($1080);
+    private static _CONTEXT_DEVICES                           := new cl_context_info($1081);
+    private static _CONTEXT_PROPERTIES                        := new cl_context_info($1082);
+    private static _CONTEXT_NUM_DEVICES                       := new cl_context_info($1083);
+    private static _CONTEXT_ADAPTER_D3D9_KHR                  := new cl_context_info($2025);
+    private static _CONTEXT_ADAPTER_D3D9EX_KHR                := new cl_context_info($2026);
+    private static _CONTEXT_ADAPTER_DXVA_KHR                  := new cl_context_info($2027);
+    private static _CONTEXT_D3D10_DEVICE_KHR                  := new cl_context_info($4014);
+    private static _CONTEXT_D3D11_DEVICE_KHR                  := new cl_context_info($401D);
+    private static _CONTEXT_D3D9_DEVICE_INTEL                 := new cl_context_info($4026);
+    private static _CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR := new cl_context_info($402C);
+    private static _CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR := new cl_context_info($402D);
+    private static _CONTEXT_D3D9EX_DEVICE_INTEL               := new cl_context_info($4072);
+    private static _CONTEXT_DXVA_DEVICE_INTEL                 := new cl_context_info($4073);
+    private static _CONTEXT_VA_API_DISPLAY_INTEL              := new cl_context_info($4097);
+    
+    public static property CONTEXT_REFERENCE_COUNT:                   cl_context_info read _CONTEXT_REFERENCE_COUNT;
+    public static property CONTEXT_DEVICES:                           cl_context_info read _CONTEXT_DEVICES;
+    public static property CONTEXT_PROPERTIES:                        cl_context_info read _CONTEXT_PROPERTIES;
+    public static property CONTEXT_NUM_DEVICES:                       cl_context_info read _CONTEXT_NUM_DEVICES;
+    public static property CONTEXT_ADAPTER_D3D9_KHR:                  cl_context_info read _CONTEXT_ADAPTER_D3D9_KHR;
+    public static property CONTEXT_ADAPTER_D3D9EX_KHR:                cl_context_info read _CONTEXT_ADAPTER_D3D9EX_KHR;
+    public static property CONTEXT_ADAPTER_DXVA_KHR:                  cl_context_info read _CONTEXT_ADAPTER_DXVA_KHR;
+    public static property CONTEXT_D3D10_DEVICE_KHR:                  cl_context_info read _CONTEXT_D3D10_DEVICE_KHR;
+    public static property CONTEXT_D3D11_DEVICE_KHR:                  cl_context_info read _CONTEXT_D3D11_DEVICE_KHR;
+    public static property CONTEXT_D3D9_DEVICE_INTEL:                 cl_context_info read _CONTEXT_D3D9_DEVICE_INTEL;
+    public static property CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR: cl_context_info read _CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR;
+    public static property CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR: cl_context_info read _CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR;
+    public static property CONTEXT_D3D9EX_DEVICE_INTEL:               cl_context_info read _CONTEXT_D3D9EX_DEVICE_INTEL;
+    public static property CONTEXT_DXVA_DEVICE_INTEL:                 cl_context_info read _CONTEXT_DXVA_DEVICE_INTEL;
+    public static property CONTEXT_VA_API_DISPLAY_INTEL:              cl_context_info read _CONTEXT_VA_API_DISPLAY_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_context_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_context_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_context_properties = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    
+    private static _CONTEXT_PLATFORM          := new cl_context_properties($1084);
+    private static _CONTEXT_INTEROP_USER_SYNC := new cl_context_properties($1085);
+    private static _CONTEXT_TERMINATE_KHR     := new cl_context_properties($2032);
+    private static _PRINTF_CALLBACK_ARM       := new cl_context_properties($40B0);
+    private static _PRINTF_BUFFERSIZE_ARM     := new cl_context_properties($40B1);
+    
+    public static property CONTEXT_PLATFORM:          cl_context_properties read _CONTEXT_PLATFORM;
+    public static property CONTEXT_INTEROP_USER_SYNC: cl_context_properties read _CONTEXT_INTEROP_USER_SYNC;
+    public static property CONTEXT_TERMINATE_KHR:     cl_context_properties read _CONTEXT_TERMINATE_KHR;
+    public static property PRINTF_CALLBACK_ARM:       cl_context_properties read _PRINTF_CALLBACK_ARM;
+    public static property PRINTF_BUFFERSIZE_ARM:     cl_context_properties read _PRINTF_BUFFERSIZE_ARM;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_context_properties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_context_properties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_device_partition_property = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    
+    private static _DEVICE_PARTITION_BY_COUNTS_LIST_END := new cl_device_partition_property($0000);
+    private static _DEVICE_PARTITION_EQUALLY            := new cl_device_partition_property($1086);
+    private static _DEVICE_PARTITION_BY_COUNTS          := new cl_device_partition_property($1087);
+    private static _DEVICE_PARTITION_BY_AFFINITY_DOMAIN := new cl_device_partition_property($1088);
+    
+    public static property DEVICE_PARTITION_BY_COUNTS_LIST_END: cl_device_partition_property read _DEVICE_PARTITION_BY_COUNTS_LIST_END;
+    public static property DEVICE_PARTITION_EQUALLY:            cl_device_partition_property read _DEVICE_PARTITION_EQUALLY;
+    public static property DEVICE_PARTITION_BY_COUNTS:          cl_device_partition_property read _DEVICE_PARTITION_BY_COUNTS;
+    public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN: cl_device_partition_property read _DEVICE_PARTITION_BY_AFFINITY_DOMAIN;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_device_partition_property).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_device_partition_property[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_device_partition_property_ext = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _PARTITION_BY_NAMES_LIST_END_EXT         := new cl_device_partition_property_ext($FFFFFFFFFFFFFFFF);
+    private static _PARTITION_BY_COUNTS_LIST_END_EXT        := new cl_device_partition_property_ext($0000);
+    private static _PROPERTIES_LIST_END_EXT                 := new cl_device_partition_property_ext($0000);
+    private static _DEVICE_PARTITION_EQUALLY_EXT            := new cl_device_partition_property_ext($4050);
+    private static _DEVICE_PARTITION_BY_COUNTS_EXT          := new cl_device_partition_property_ext($4051);
+    private static _DEVICE_PARTITION_BY_NAMES_EXT           := new cl_device_partition_property_ext($4052);
+    private static _DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT := new cl_device_partition_property_ext($4053);
+    
+    public static property PARTITION_BY_NAMES_LIST_END_EXT:         cl_device_partition_property_ext read _PARTITION_BY_NAMES_LIST_END_EXT;
+    public static property PARTITION_BY_COUNTS_LIST_END_EXT:        cl_device_partition_property_ext read _PARTITION_BY_COUNTS_LIST_END_EXT;
+    public static property PROPERTIES_LIST_END_EXT:                 cl_device_partition_property_ext read _PROPERTIES_LIST_END_EXT;
+    public static property DEVICE_PARTITION_EQUALLY_EXT:            cl_device_partition_property_ext read _DEVICE_PARTITION_EQUALLY_EXT;
+    public static property DEVICE_PARTITION_BY_COUNTS_EXT:          cl_device_partition_property_ext read _DEVICE_PARTITION_BY_COUNTS_EXT;
+    public static property DEVICE_PARTITION_BY_NAMES_EXT:           cl_device_partition_property_ext read _DEVICE_PARTITION_BY_NAMES_EXT;
+    public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT: cl_device_partition_property_ext read _DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_device_partition_property_ext).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_device_partition_property_ext[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_dx9_device_set_intel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PREFERRED_DEVICES_FOR_DX9_INTEL := new cl_dx9_device_set_intel($4024);
+    private static _ALL_DEVICES_FOR_DX9_INTEL       := new cl_dx9_device_set_intel($4025);
+    
+    public static property PREFERRED_DEVICES_FOR_DX9_INTEL: cl_dx9_device_set_intel read _PREFERRED_DEVICES_FOR_DX9_INTEL;
+    public static property ALL_DEVICES_FOR_DX9_INTEL:       cl_dx9_device_set_intel read _ALL_DEVICES_FOR_DX9_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_dx9_device_set_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_dx9_device_set_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_dx9_device_source_intel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _D3D9_DEVICE_INTEL   := new cl_dx9_device_source_intel($4022);
+    private static _D3D9EX_DEVICE_INTEL := new cl_dx9_device_source_intel($4070);
+    private static _DXVA_DEVICE_INTEL   := new cl_dx9_device_source_intel($4071);
+    
+    public static property D3D9_DEVICE_INTEL:   cl_dx9_device_source_intel read _D3D9_DEVICE_INTEL;
+    public static property D3D9EX_DEVICE_INTEL: cl_dx9_device_source_intel read _D3D9EX_DEVICE_INTEL;
+    public static property DXVA_DEVICE_INTEL:   cl_dx9_device_source_intel read _DXVA_DEVICE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_dx9_device_source_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_dx9_device_source_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_egl_image_properties_khr = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    
+    private static _EGL_YUV_PLANE_INTEL := new cl_egl_image_properties_khr($4107);
+    
+    public static property EGL_YUV_PLANE_INTEL: cl_egl_image_properties_khr read _EGL_YUV_PLANE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_egl_image_properties_khr).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_egl_image_properties_khr[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_event_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _EVENT_COMMAND_QUEUE            := new cl_event_info($11D0);
+    private static _EVENT_COMMAND_TYPE             := new cl_event_info($11D1);
+    private static _EVENT_REFERENCE_COUNT          := new cl_event_info($11D2);
+    private static _EVENT_COMMAND_EXECUTION_STATUS := new cl_event_info($11D3);
+    private static _EVENT_CONTEXT                  := new cl_event_info($11D4);
+    
+    public static property EVENT_COMMAND_QUEUE:            cl_event_info read _EVENT_COMMAND_QUEUE;
+    public static property EVENT_COMMAND_TYPE:             cl_event_info read _EVENT_COMMAND_TYPE;
+    public static property EVENT_REFERENCE_COUNT:          cl_event_info read _EVENT_REFERENCE_COUNT;
+    public static property EVENT_COMMAND_EXECUTION_STATUS: cl_event_info read _EVENT_COMMAND_EXECUTION_STATUS;
+    public static property EVENT_CONTEXT:                  cl_event_info read _EVENT_CONTEXT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_event_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_event_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_filter_mode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _FILTER_NEAREST := new cl_filter_mode($1140);
+    private static _FILTER_LINEAR  := new cl_filter_mode($1141);
+    
+    public static property FILTER_NEAREST: cl_filter_mode read _FILTER_NEAREST;
+    public static property FILTER_LINEAR:  cl_filter_mode read _FILTER_LINEAR;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_filter_mode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_filter_mode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_gl_context_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _CURRENT_DEVICE_FOR_GL_CONTEXT_KHR := new cl_gl_context_info($2006);
+    private static _DEVICES_FOR_GL_CONTEXT_KHR        := new cl_gl_context_info($2007);
+    
+    public static property CURRENT_DEVICE_FOR_GL_CONTEXT_KHR: cl_gl_context_info read _CURRENT_DEVICE_FOR_GL_CONTEXT_KHR;
+    public static property DEVICES_FOR_GL_CONTEXT_KHR:        cl_gl_context_info read _DEVICES_FOR_GL_CONTEXT_KHR;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_gl_context_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_gl_context_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_gl_object_type = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _GL_OBJECT_BUFFER          := new cl_gl_object_type($2000);
+    private static _GL_OBJECT_TEXTURE2D       := new cl_gl_object_type($2001);
+    private static _GL_OBJECT_TEXTURE3D       := new cl_gl_object_type($2002);
+    private static _GL_OBJECT_RENDERBUFFER    := new cl_gl_object_type($2003);
+    private static _GL_OBJECT_TEXTURE2D_ARRAY := new cl_gl_object_type($200E);
+    private static _GL_OBJECT_TEXTURE1D       := new cl_gl_object_type($200F);
+    private static _GL_OBJECT_TEXTURE1D_ARRAY := new cl_gl_object_type($2010);
+    private static _GL_OBJECT_TEXTURE_BUFFER  := new cl_gl_object_type($2011);
+    
+    public static property GL_OBJECT_BUFFER:          cl_gl_object_type read _GL_OBJECT_BUFFER;
+    public static property GL_OBJECT_TEXTURE2D:       cl_gl_object_type read _GL_OBJECT_TEXTURE2D;
+    public static property GL_OBJECT_TEXTURE3D:       cl_gl_object_type read _GL_OBJECT_TEXTURE3D;
+    public static property GL_OBJECT_RENDERBUFFER:    cl_gl_object_type read _GL_OBJECT_RENDERBUFFER;
+    public static property GL_OBJECT_TEXTURE2D_ARRAY: cl_gl_object_type read _GL_OBJECT_TEXTURE2D_ARRAY;
+    public static property GL_OBJECT_TEXTURE1D:       cl_gl_object_type read _GL_OBJECT_TEXTURE1D;
+    public static property GL_OBJECT_TEXTURE1D_ARRAY: cl_gl_object_type read _GL_OBJECT_TEXTURE1D_ARRAY;
+    public static property GL_OBJECT_TEXTURE_BUFFER:  cl_gl_object_type read _GL_OBJECT_TEXTURE_BUFFER;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_gl_object_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_gl_object_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_gl_texture_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _GL_TEXTURE_TARGET := new cl_gl_texture_info($2004);
+    private static _GL_MIPMAP_LEVEL   := new cl_gl_texture_info($2005);
+    private static _GL_NUM_SAMPLES    := new cl_gl_texture_info($2012);
+    
+    public static property GL_TEXTURE_TARGET: cl_gl_texture_info read _GL_TEXTURE_TARGET;
+    public static property GL_MIPMAP_LEVEL:   cl_gl_texture_info read _GL_MIPMAP_LEVEL;
+    public static property GL_NUM_SAMPLES:    cl_gl_texture_info read _GL_NUM_SAMPLES;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_gl_texture_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_gl_texture_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_image_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _IMAGE_FORMAT                := new cl_image_info($1110);
+    private static _IMAGE_ELEMENT_SIZE          := new cl_image_info($1111);
+    private static _IMAGE_ROW_PITCH             := new cl_image_info($1112);
+    private static _IMAGE_SLICE_PITCH           := new cl_image_info($1113);
+    private static _IMAGE_WIDTH                 := new cl_image_info($1114);
+    private static _IMAGE_HEIGHT                := new cl_image_info($1115);
+    private static _IMAGE_DEPTH                 := new cl_image_info($1116);
+    private static _IMAGE_ARRAY_SIZE            := new cl_image_info($1117);
+    private static _IMAGE_NUM_MIP_LEVELS        := new cl_image_info($1119);
+    private static _IMAGE_NUM_SAMPLES           := new cl_image_info($111A);
+    private static _IMAGE_DX9_MEDIA_PLANE_KHR   := new cl_image_info($202A);
+    private static _IMAGE_D3D10_SUBRESOURCE_KHR := new cl_image_info($4016);
+    private static _IMAGE_D3D11_SUBRESOURCE_KHR := new cl_image_info($401F);
+    private static _IMAGE_DX9_PLANE_INTEL       := new cl_image_info($4075);
+    private static _IMAGE_VA_API_PLANE_INTEL    := new cl_image_info($4099);
+    
+    public static property IMAGE_FORMAT:                cl_image_info read _IMAGE_FORMAT;
+    public static property IMAGE_ELEMENT_SIZE:          cl_image_info read _IMAGE_ELEMENT_SIZE;
+    public static property IMAGE_ROW_PITCH:             cl_image_info read _IMAGE_ROW_PITCH;
+    public static property IMAGE_SLICE_PITCH:           cl_image_info read _IMAGE_SLICE_PITCH;
+    public static property IMAGE_WIDTH:                 cl_image_info read _IMAGE_WIDTH;
+    public static property IMAGE_HEIGHT:                cl_image_info read _IMAGE_HEIGHT;
+    public static property IMAGE_DEPTH:                 cl_image_info read _IMAGE_DEPTH;
+    public static property IMAGE_ARRAY_SIZE:            cl_image_info read _IMAGE_ARRAY_SIZE;
+    public static property IMAGE_NUM_MIP_LEVELS:        cl_image_info read _IMAGE_NUM_MIP_LEVELS;
+    public static property IMAGE_NUM_SAMPLES:           cl_image_info read _IMAGE_NUM_SAMPLES;
+    public static property IMAGE_DX9_MEDIA_PLANE_KHR:   cl_image_info read _IMAGE_DX9_MEDIA_PLANE_KHR;
+    public static property IMAGE_D3D10_SUBRESOURCE_KHR: cl_image_info read _IMAGE_D3D10_SUBRESOURCE_KHR;
+    public static property IMAGE_D3D11_SUBRESOURCE_KHR: cl_image_info read _IMAGE_D3D11_SUBRESOURCE_KHR;
+    public static property IMAGE_DX9_PLANE_INTEL:       cl_image_info read _IMAGE_DX9_PLANE_INTEL;
+    public static property IMAGE_VA_API_PLANE_INTEL:    cl_image_info read _IMAGE_VA_API_PLANE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_image_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_image_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_kernel_arg_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_ARG_ADDRESS_QUALIFIER := new cl_kernel_arg_info($1196);
+    private static _KERNEL_ARG_ACCESS_QUALIFIER  := new cl_kernel_arg_info($1197);
+    private static _KERNEL_ARG_TYPE_NAME         := new cl_kernel_arg_info($1198);
+    private static _KERNEL_ARG_TYPE_QUALIFIER    := new cl_kernel_arg_info($1199);
+    private static _KERNEL_ARG_NAME              := new cl_kernel_arg_info($119A);
+    
+    public static property KERNEL_ARG_ADDRESS_QUALIFIER: cl_kernel_arg_info read _KERNEL_ARG_ADDRESS_QUALIFIER;
+    public static property KERNEL_ARG_ACCESS_QUALIFIER:  cl_kernel_arg_info read _KERNEL_ARG_ACCESS_QUALIFIER;
+    public static property KERNEL_ARG_TYPE_NAME:         cl_kernel_arg_info read _KERNEL_ARG_TYPE_NAME;
+    public static property KERNEL_ARG_TYPE_QUALIFIER:    cl_kernel_arg_info read _KERNEL_ARG_TYPE_QUALIFIER;
+    public static property KERNEL_ARG_NAME:              cl_kernel_arg_info read _KERNEL_ARG_NAME;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_kernel_arg_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_kernel_arg_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_kernel_exec_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_EXEC_INFO_SVM_PTRS                     := new cl_kernel_exec_info($11B6);
+    private static _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM        := new cl_kernel_exec_info($11B7);
+    private static _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL   := new cl_kernel_exec_info($4200);
+    private static _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL := new cl_kernel_exec_info($4201);
+    private static _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL := new cl_kernel_exec_info($4202);
+    private static _KERNEL_EXEC_INFO_USM_PTRS_INTEL               := new cl_kernel_exec_info($4203);
+    
+    public static property KERNEL_EXEC_INFO_SVM_PTRS:                     cl_kernel_exec_info read _KERNEL_EXEC_INFO_SVM_PTRS;
+    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:        cl_kernel_exec_info read _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM;
+    public static property KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL:   cl_kernel_exec_info read _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL: cl_kernel_exec_info read _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL: cl_kernel_exec_info read _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_USM_PTRS_INTEL:               cl_kernel_exec_info read _KERNEL_EXEC_INFO_USM_PTRS_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_kernel_exec_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_kernel_exec_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_kernel_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_FUNCTION_NAME          := new cl_kernel_info($1190);
+    private static _KERNEL_NUM_ARGS               := new cl_kernel_info($1191);
+    private static _KERNEL_REFERENCE_COUNT        := new cl_kernel_info($1192);
+    private static _KERNEL_CONTEXT                := new cl_kernel_info($1193);
+    private static _KERNEL_PROGRAM                := new cl_kernel_info($1194);
+    private static _KERNEL_ATTRIBUTES             := new cl_kernel_info($1195);
+    private static _KERNEL_MAX_NUM_SUB_GROUPS     := new cl_kernel_info($11B9);
+    private static _KERNEL_COMPILE_NUM_SUB_GROUPS := new cl_kernel_info($11BA);
+    
+    public static property KERNEL_FUNCTION_NAME:          cl_kernel_info read _KERNEL_FUNCTION_NAME;
+    public static property KERNEL_NUM_ARGS:               cl_kernel_info read _KERNEL_NUM_ARGS;
+    public static property KERNEL_REFERENCE_COUNT:        cl_kernel_info read _KERNEL_REFERENCE_COUNT;
+    public static property KERNEL_CONTEXT:                cl_kernel_info read _KERNEL_CONTEXT;
+    public static property KERNEL_PROGRAM:                cl_kernel_info read _KERNEL_PROGRAM;
+    public static property KERNEL_ATTRIBUTES:             cl_kernel_info read _KERNEL_ATTRIBUTES;
+    public static property KERNEL_MAX_NUM_SUB_GROUPS:     cl_kernel_info read _KERNEL_MAX_NUM_SUB_GROUPS;
+    public static property KERNEL_COMPILE_NUM_SUB_GROUPS: cl_kernel_info read _KERNEL_COMPILE_NUM_SUB_GROUPS;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_kernel_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_kernel_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_kernel_sub_group_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT     := new cl_kernel_sub_group_info($11B8);
+    private static _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE     := new cl_kernel_sub_group_info($2033);
+    private static _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR := new cl_kernel_sub_group_info($2033);
+    private static _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE        := new cl_kernel_sub_group_info($2034);
+    private static _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR    := new cl_kernel_sub_group_info($2034);
+    private static _KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL       := new cl_kernel_sub_group_info($410A);
+    
+    public static property KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT:     cl_kernel_sub_group_info read _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT;
+    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE:     cl_kernel_sub_group_info read _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE;
+    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR: cl_kernel_sub_group_info read _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR;
+    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE:        cl_kernel_sub_group_info read _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE;
+    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR:    cl_kernel_sub_group_info read _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR;
+    public static property KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL:       cl_kernel_sub_group_info read _KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_kernel_sub_group_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_kernel_sub_group_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_kernel_work_group_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_WORK_GROUP_SIZE                    := new cl_kernel_work_group_info($11B0);
+    private static _KERNEL_COMPILE_WORK_GROUP_SIZE            := new cl_kernel_work_group_info($11B1);
+    private static _KERNEL_LOCAL_MEM_SIZE                     := new cl_kernel_work_group_info($11B2);
+    private static _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE := new cl_kernel_work_group_info($11B3);
+    private static _KERNEL_PRIVATE_MEM_SIZE                   := new cl_kernel_work_group_info($11B4);
+    private static _KERNEL_GLOBAL_WORK_SIZE                   := new cl_kernel_work_group_info($11B5);
+    private static _KERNEL_SPILL_MEM_SIZE_INTEL               := new cl_kernel_work_group_info($4109);
+    
+    public static property KERNEL_WORK_GROUP_SIZE:                    cl_kernel_work_group_info read _KERNEL_WORK_GROUP_SIZE;
+    public static property KERNEL_COMPILE_WORK_GROUP_SIZE:            cl_kernel_work_group_info read _KERNEL_COMPILE_WORK_GROUP_SIZE;
+    public static property KERNEL_LOCAL_MEM_SIZE:                     cl_kernel_work_group_info read _KERNEL_LOCAL_MEM_SIZE;
+    public static property KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE: cl_kernel_work_group_info read _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE;
+    public static property KERNEL_PRIVATE_MEM_SIZE:                   cl_kernel_work_group_info read _KERNEL_PRIVATE_MEM_SIZE;
+    public static property KERNEL_GLOBAL_WORK_SIZE:                   cl_kernel_work_group_info read _KERNEL_GLOBAL_WORK_SIZE;
+    public static property KERNEL_SPILL_MEM_SIZE_INTEL:               cl_kernel_work_group_info read _KERNEL_SPILL_MEM_SIZE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_kernel_work_group_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_kernel_work_group_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_mem_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _MEM_TYPE                       := new cl_mem_info($1100);
+    private static _MEM_FLAGS                      := new cl_mem_info($1101);
+    private static _MEM_SIZE                       := new cl_mem_info($1102);
+    private static _MEM_HOST_PTR                   := new cl_mem_info($1103);
+    private static _MEM_MAP_COUNT                  := new cl_mem_info($1104);
+    private static _MEM_REFERENCE_COUNT            := new cl_mem_info($1105);
+    private static _MEM_CONTEXT                    := new cl_mem_info($1106);
+    private static _MEM_ASSOCIATED_MEMOBJECT       := new cl_mem_info($1107);
+    private static _MEM_OFFSET                     := new cl_mem_info($1108);
+    private static _MEM_USES_SVM_POINTER           := new cl_mem_info($1109);
+    private static _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR := new cl_mem_info($2028);
+    private static _MEM_DX9_MEDIA_SURFACE_INFO_KHR := new cl_mem_info($2029);
+    private static _MEM_D3D10_RESOURCE_KHR         := new cl_mem_info($4015);
+    private static _MEM_D3D11_RESOURCE_KHR         := new cl_mem_info($401E);
+    private static _MEM_DX9_RESOURCE_INTEL         := new cl_mem_info($4027);
+    private static _MEM_DX9_SHARED_HANDLE_INTEL    := new cl_mem_info($4074);
+    private static _MEM_VA_API_MEDIA_SURFACE_INTEL := new cl_mem_info($4098);
+    
+    public static property MEM_TYPE:                       cl_mem_info read _MEM_TYPE;
+    public static property MEM_FLAGS:                      cl_mem_info read _MEM_FLAGS;
+    public static property MEM_SIZE:                       cl_mem_info read _MEM_SIZE;
+    public static property MEM_HOST_PTR:                   cl_mem_info read _MEM_HOST_PTR;
+    public static property MEM_MAP_COUNT:                  cl_mem_info read _MEM_MAP_COUNT;
+    public static property MEM_REFERENCE_COUNT:            cl_mem_info read _MEM_REFERENCE_COUNT;
+    public static property MEM_CONTEXT:                    cl_mem_info read _MEM_CONTEXT;
+    public static property MEM_ASSOCIATED_MEMOBJECT:       cl_mem_info read _MEM_ASSOCIATED_MEMOBJECT;
+    public static property MEM_OFFSET:                     cl_mem_info read _MEM_OFFSET;
+    public static property MEM_USES_SVM_POINTER:           cl_mem_info read _MEM_USES_SVM_POINTER;
+    public static property MEM_DX9_MEDIA_ADAPTER_TYPE_KHR: cl_mem_info read _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR;
+    public static property MEM_DX9_MEDIA_SURFACE_INFO_KHR: cl_mem_info read _MEM_DX9_MEDIA_SURFACE_INFO_KHR;
+    public static property MEM_D3D10_RESOURCE_KHR:         cl_mem_info read _MEM_D3D10_RESOURCE_KHR;
+    public static property MEM_D3D11_RESOURCE_KHR:         cl_mem_info read _MEM_D3D11_RESOURCE_KHR;
+    public static property MEM_DX9_RESOURCE_INTEL:         cl_mem_info read _MEM_DX9_RESOURCE_INTEL;
+    public static property MEM_DX9_SHARED_HANDLE_INTEL:    cl_mem_info read _MEM_DX9_SHARED_HANDLE_INTEL;
+    public static property MEM_VA_API_MEDIA_SURFACE_INTEL: cl_mem_info read _MEM_VA_API_MEDIA_SURFACE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_mem_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_mem_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_mem_migration_flags_ext = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MIGRATE_MEM_OBJECT_HOST_EXT := new cl_mem_migration_flags_ext($0001);
+    
+    public static property MIGRATE_MEM_OBJECT_HOST_EXT: cl_mem_migration_flags_ext read _MIGRATE_MEM_OBJECT_HOST_EXT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_mem_migration_flags_ext).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_mem_migration_flags_ext[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_mem_object_type = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _MEM_OBJECT_BUFFER         := new cl_mem_object_type($10F0);
+    private static _MEM_OBJECT_IMAGE2D        := new cl_mem_object_type($10F1);
+    private static _MEM_OBJECT_IMAGE3D        := new cl_mem_object_type($10F2);
+    private static _MEM_OBJECT_IMAGE2D_ARRAY  := new cl_mem_object_type($10F3);
+    private static _MEM_OBJECT_IMAGE1D        := new cl_mem_object_type($10F4);
+    private static _MEM_OBJECT_IMAGE1D_ARRAY  := new cl_mem_object_type($10F5);
+    private static _MEM_OBJECT_IMAGE1D_BUFFER := new cl_mem_object_type($10F6);
+    private static _MEM_OBJECT_PIPE           := new cl_mem_object_type($10F7);
+    
+    public static property MEM_OBJECT_BUFFER:         cl_mem_object_type read _MEM_OBJECT_BUFFER;
+    public static property MEM_OBJECT_IMAGE2D:        cl_mem_object_type read _MEM_OBJECT_IMAGE2D;
+    public static property MEM_OBJECT_IMAGE3D:        cl_mem_object_type read _MEM_OBJECT_IMAGE3D;
+    public static property MEM_OBJECT_IMAGE2D_ARRAY:  cl_mem_object_type read _MEM_OBJECT_IMAGE2D_ARRAY;
+    public static property MEM_OBJECT_IMAGE1D:        cl_mem_object_type read _MEM_OBJECT_IMAGE1D;
+    public static property MEM_OBJECT_IMAGE1D_ARRAY:  cl_mem_object_type read _MEM_OBJECT_IMAGE1D_ARRAY;
+    public static property MEM_OBJECT_IMAGE1D_BUFFER: cl_mem_object_type read _MEM_OBJECT_IMAGE1D_BUFFER;
+    public static property MEM_OBJECT_PIPE:           cl_mem_object_type read _MEM_OBJECT_PIPE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_mem_object_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_mem_object_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_mem_properties_intel = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MEM_ALLOC_FLAGS_INTEL := new cl_mem_properties_intel($4195);
+    
+    public static property MEM_ALLOC_FLAGS_INTEL: cl_mem_properties_intel read _MEM_ALLOC_FLAGS_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_mem_properties_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_mem_properties_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_pipe_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PIPE_PACKET_SIZE := new cl_pipe_info($1120);
+    private static _PIPE_MAX_PACKETS := new cl_pipe_info($1121);
+    
+    public static property PIPE_PACKET_SIZE: cl_pipe_info read _PIPE_PACKET_SIZE;
+    public static property PIPE_MAX_PACKETS: cl_pipe_info read _PIPE_MAX_PACKETS;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_pipe_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_pipe_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_profiling_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PROFILING_COMMAND_QUEUED   := new cl_profiling_info($1280);
+    private static _PROFILING_COMMAND_SUBMIT   := new cl_profiling_info($1281);
+    private static _PROFILING_COMMAND_START    := new cl_profiling_info($1282);
+    private static _PROFILING_COMMAND_END      := new cl_profiling_info($1283);
+    private static _PROFILING_COMMAND_COMPLETE := new cl_profiling_info($1284);
+    
+    public static property PROFILING_COMMAND_QUEUED:   cl_profiling_info read _PROFILING_COMMAND_QUEUED;
+    public static property PROFILING_COMMAND_SUBMIT:   cl_profiling_info read _PROFILING_COMMAND_SUBMIT;
+    public static property PROFILING_COMMAND_START:    cl_profiling_info read _PROFILING_COMMAND_START;
+    public static property PROFILING_COMMAND_END:      cl_profiling_info read _PROFILING_COMMAND_END;
+    public static property PROFILING_COMMAND_COMPLETE: cl_profiling_info read _PROFILING_COMMAND_COMPLETE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_profiling_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_profiling_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_program_build_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PROGRAM_BUILD_STATUS                     := new cl_program_build_info($1181);
+    private static _PROGRAM_BUILD_OPTIONS                    := new cl_program_build_info($1182);
+    private static _PROGRAM_BUILD_LOG                        := new cl_program_build_info($1183);
+    private static _PROGRAM_BINARY_TYPE                      := new cl_program_build_info($1184);
+    private static _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE := new cl_program_build_info($1185);
+    
+    public static property PROGRAM_BUILD_STATUS:                     cl_program_build_info read _PROGRAM_BUILD_STATUS;
+    public static property PROGRAM_BUILD_OPTIONS:                    cl_program_build_info read _PROGRAM_BUILD_OPTIONS;
+    public static property PROGRAM_BUILD_LOG:                        cl_program_build_info read _PROGRAM_BUILD_LOG;
+    public static property PROGRAM_BINARY_TYPE:                      cl_program_build_info read _PROGRAM_BINARY_TYPE;
+    public static property PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE: cl_program_build_info read _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_program_build_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_program_build_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_program_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PROGRAM_REFERENCE_COUNT            := new cl_program_info($1160);
+    private static _PROGRAM_CONTEXT                    := new cl_program_info($1161);
+    private static _PROGRAM_NUM_DEVICES                := new cl_program_info($1162);
+    private static _PROGRAM_DEVICES                    := new cl_program_info($1163);
+    private static _PROGRAM_SOURCE                     := new cl_program_info($1164);
+    private static _PROGRAM_BINARY_SIZES               := new cl_program_info($1165);
+    private static _PROGRAM_BINARIES                   := new cl_program_info($1166);
+    private static _PROGRAM_NUM_KERNELS                := new cl_program_info($1167);
+    private static _PROGRAM_KERNEL_NAMES               := new cl_program_info($1168);
+    private static _PROGRAM_IL                         := new cl_program_info($1169);
+    private static _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT := new cl_program_info($116A);
+    private static _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT := new cl_program_info($116B);
+    
+    public static property PROGRAM_REFERENCE_COUNT:            cl_program_info read _PROGRAM_REFERENCE_COUNT;
+    public static property PROGRAM_CONTEXT:                    cl_program_info read _PROGRAM_CONTEXT;
+    public static property PROGRAM_NUM_DEVICES:                cl_program_info read _PROGRAM_NUM_DEVICES;
+    public static property PROGRAM_DEVICES:                    cl_program_info read _PROGRAM_DEVICES;
+    public static property PROGRAM_SOURCE:                     cl_program_info read _PROGRAM_SOURCE;
+    public static property PROGRAM_BINARY_SIZES:               cl_program_info read _PROGRAM_BINARY_SIZES;
+    public static property PROGRAM_BINARIES:                   cl_program_info read _PROGRAM_BINARIES;
+    public static property PROGRAM_NUM_KERNELS:                cl_program_info read _PROGRAM_NUM_KERNELS;
+    public static property PROGRAM_KERNEL_NAMES:               cl_program_info read _PROGRAM_KERNEL_NAMES;
+    public static property PROGRAM_IL:                         cl_program_info read _PROGRAM_IL;
+    public static property PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT: cl_program_info read _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT;
+    public static property PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT: cl_program_info read _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_program_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_program_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_queue_properties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _QUEUE_PRIORITY_KHR := new cl_queue_properties($1096);
+    private static _QUEUE_THROTTLE_KHR := new cl_queue_properties($1097);
+    
+    public static property QUEUE_PRIORITY_KHR: cl_queue_properties read _QUEUE_PRIORITY_KHR;
+    public static property QUEUE_THROTTLE_KHR: cl_queue_properties read _QUEUE_THROTTLE_KHR;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_queue_properties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_queue_properties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_sampler_info = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _SAMPLER_REFERENCE_COUNT   := new cl_sampler_info($1150);
+    private static _SAMPLER_CONTEXT           := new cl_sampler_info($1151);
+    private static _SAMPLER_NORMALIZED_COORDS := new cl_sampler_info($1152);
+    private static _SAMPLER_ADDRESSING_MODE   := new cl_sampler_info($1153);
+    private static _SAMPLER_FILTER_MODE       := new cl_sampler_info($1154);
+    private static _SAMPLER_MIP_FILTER_MODE   := new cl_sampler_info($1155);
+    private static _SAMPLER_LOD_MIN           := new cl_sampler_info($1156);
+    private static _SAMPLER_LOD_MAX           := new cl_sampler_info($1157);
+    
+    public static property SAMPLER_REFERENCE_COUNT:   cl_sampler_info read _SAMPLER_REFERENCE_COUNT;
+    public static property SAMPLER_CONTEXT:           cl_sampler_info read _SAMPLER_CONTEXT;
+    public static property SAMPLER_NORMALIZED_COORDS: cl_sampler_info read _SAMPLER_NORMALIZED_COORDS;
+    public static property SAMPLER_ADDRESSING_MODE:   cl_sampler_info read _SAMPLER_ADDRESSING_MODE;
+    public static property SAMPLER_FILTER_MODE:       cl_sampler_info read _SAMPLER_FILTER_MODE;
+    public static property SAMPLER_MIP_FILTER_MODE:   cl_sampler_info read _SAMPLER_MIP_FILTER_MODE;
+    public static property SAMPLER_LOD_MIN:           cl_sampler_info read _SAMPLER_LOD_MIN;
+    public static property SAMPLER_LOD_MAX:           cl_sampler_info read _SAMPLER_LOD_MAX;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_sampler_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_sampler_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_sampler_properties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _SAMPLER_MIP_FILTER_MODE := new cl_sampler_properties($1155);
+    private static _SAMPLER_LOD_MIN         := new cl_sampler_properties($1156);
+    private static _SAMPLER_LOD_MAX         := new cl_sampler_properties($1157);
+    
+    public static property SAMPLER_MIP_FILTER_MODE: cl_sampler_properties read _SAMPLER_MIP_FILTER_MODE;
+    public static property SAMPLER_LOD_MIN:         cl_sampler_properties read _SAMPLER_LOD_MIN;
+    public static property SAMPLER_LOD_MAX:         cl_sampler_properties read _SAMPLER_LOD_MAX;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_sampler_properties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_sampler_properties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_va_api_device_set_intel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PREFERRED_DEVICES_FOR_VA_API_INTEL := new cl_va_api_device_set_intel($4095);
+    private static _ALL_DEVICES_FOR_VA_API_INTEL       := new cl_va_api_device_set_intel($4096);
+    
+    public static property PREFERRED_DEVICES_FOR_VA_API_INTEL: cl_va_api_device_set_intel read _PREFERRED_DEVICES_FOR_VA_API_INTEL;
+    public static property ALL_DEVICES_FOR_VA_API_INTEL:       cl_va_api_device_set_intel read _ALL_DEVICES_FOR_VA_API_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_va_api_device_set_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_va_api_device_set_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  cl_va_api_device_source_intel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _VA_API_DISPLAY_INTEL := new cl_va_api_device_source_intel($4094);
+    
+    public static property VA_API_DISPLAY_INTEL: cl_va_api_device_source_intel read _VA_API_DISPLAY_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(cl_va_api_device_source_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'cl_va_api_device_source_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
   end;
   
   CommandExecutionStatus = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
     
     private static _COMPLETE  := new CommandExecutionStatus($0000);
     private static _RUNNING   := new CommandExecutionStatus($0001);
@@ -132,6 +1120,8 @@
         $'CommandExecutionStatus[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
+    
+    public function IS_ERROR := val < 0;
     
   end;
   
@@ -176,577 +1166,265 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _DEVICE_TYPE                                   := new DeviceInfo($1000);
-    private static _DEVICE_VENDOR_ID                              := new DeviceInfo($1001);
-    private static _DEVICE_MAX_COMPUTE_UNITS                      := new DeviceInfo($1002);
-    private static _DEVICE_MAX_WORK_ITEM_DIMENSIONS               := new DeviceInfo($1003);
-    private static _DEVICE_MAX_WORK_GROUP_SIZE                    := new DeviceInfo($1004);
-    private static _DEVICE_MAX_WORK_ITEM_SIZES                    := new DeviceInfo($1005);
-    private static _DEVICE_PREFERRED_VECTOR_WIDTH_CHAR            := new DeviceInfo($1006);
-    private static _DEVICE_PREFERRED_VECTOR_WIDTH_SHORT           := new DeviceInfo($1007);
-    private static _DEVICE_PREFERRED_VECTOR_WIDTH_INT             := new DeviceInfo($1008);
-    private static _DEVICE_PREFERRED_VECTOR_WIDTH_LONG            := new DeviceInfo($1009);
-    private static _DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT           := new DeviceInfo($100A);
-    private static _DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE          := new DeviceInfo($100B);
-    private static _DEVICE_MAX_CLOCK_FREQUENCY                    := new DeviceInfo($100C);
-    private static _DEVICE_ADDRESS_BITS                           := new DeviceInfo($100D);
-    private static _DEVICE_MAX_READ_IMAGE_ARGS                    := new DeviceInfo($100E);
-    private static _DEVICE_MAX_WRITE_IMAGE_ARGS                   := new DeviceInfo($100F);
-    private static _DEVICE_MAX_MEM_ALLOC_SIZE                     := new DeviceInfo($1010);
-    private static _DEVICE_IMAGE2D_MAX_WIDTH                      := new DeviceInfo($1011);
-    private static _DEVICE_IMAGE2D_MAX_HEIGHT                     := new DeviceInfo($1012);
-    private static _DEVICE_IMAGE3D_MAX_WIDTH                      := new DeviceInfo($1013);
-    private static _DEVICE_IMAGE3D_MAX_HEIGHT                     := new DeviceInfo($1014);
-    private static _DEVICE_IMAGE3D_MAX_DEPTH                      := new DeviceInfo($1015);
-    private static _DEVICE_IMAGE_SUPPORT                          := new DeviceInfo($1016);
-    private static _DEVICE_MAX_PARAMETER_SIZE                     := new DeviceInfo($1017);
-    private static _DEVICE_MAX_SAMPLERS                           := new DeviceInfo($1018);
-    private static _DEVICE_MEM_BASE_ADDR_ALIGN                    := new DeviceInfo($1019);
-    private static _DEVICE_MIN_DATA_TYPE_ALIGN_SIZE               := new DeviceInfo($101A);
-    private static _DEVICE_SINGLE_FP_CONFIG                       := new DeviceInfo($101B);
-    private static _DEVICE_GLOBAL_MEM_CACHE_TYPE                  := new DeviceInfo($101C);
-    private static _DEVICE_GLOBAL_MEM_CACHELINE_SIZE              := new DeviceInfo($101D);
-    private static _DEVICE_GLOBAL_MEM_CACHE_SIZE                  := new DeviceInfo($101E);
-    private static _DEVICE_GLOBAL_MEM_SIZE                        := new DeviceInfo($101F);
-    private static _DEVICE_MAX_CONSTANT_BUFFER_SIZE               := new DeviceInfo($1020);
-    private static _DEVICE_MAX_CONSTANT_ARGS                      := new DeviceInfo($1021);
-    private static _DEVICE_LOCAL_MEM_TYPE                         := new DeviceInfo($1022);
-    private static _DEVICE_LOCAL_MEM_SIZE                         := new DeviceInfo($1023);
-    private static _DEVICE_ERROR_CORRECTION_SUPPORT               := new DeviceInfo($1024);
-    private static _DEVICE_PROFILING_TIMER_RESOLUTION             := new DeviceInfo($1025);
-    private static _DEVICE_ENDIAN_LITTLE                          := new DeviceInfo($1026);
-    private static _DEVICE_AVAILABLE                              := new DeviceInfo($1027);
-    private static _DEVICE_COMPILER_AVAILABLE                     := new DeviceInfo($1028);
-    private static _DEVICE_EXECUTION_CAPABILITIES                 := new DeviceInfo($1029);
-    private static _DEVICE_QUEUE_ON_HOST_PROPERTIES               := new DeviceInfo($102A);
-    private static _DEVICE_QUEUE_PROPERTIES                       := new DeviceInfo($102A);
-    private static _DEVICE_NAME                                   := new DeviceInfo($102B);
-    private static _DEVICE_VENDOR                                 := new DeviceInfo($102C);
-    private static _DRIVER_VERSION                                := new DeviceInfo($102D);
-    private static _DEVICE_PROFILE                                := new DeviceInfo($102E);
-    private static _DEVICE_VERSION                                := new DeviceInfo($102F);
-    private static _DEVICE_EXTENSIONS                             := new DeviceInfo($1030);
-    private static _DEVICE_PLATFORM                               := new DeviceInfo($1031);
-    private static _DEVICE_DOUBLE_FP_CONFIG                       := new DeviceInfo($1032);
-    private static _DEVICE_HALF_FP_CONFIG                         := new DeviceInfo($1033);
-    private static _DEVICE_PREFERRED_VECTOR_WIDTH_HALF            := new DeviceInfo($1034);
-    private static _DEVICE_HOST_UNIFIED_MEMORY                    := new DeviceInfo($1035);
-    private static _DEVICE_NATIVE_VECTOR_WIDTH_CHAR               := new DeviceInfo($1036);
-    private static _DEVICE_NATIVE_VECTOR_WIDTH_SHORT              := new DeviceInfo($1037);
-    private static _DEVICE_NATIVE_VECTOR_WIDTH_INT                := new DeviceInfo($1038);
-    private static _DEVICE_NATIVE_VECTOR_WIDTH_LONG               := new DeviceInfo($1039);
-    private static _DEVICE_NATIVE_VECTOR_WIDTH_FLOAT              := new DeviceInfo($103A);
-    private static _DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE             := new DeviceInfo($103B);
-    private static _DEVICE_NATIVE_VECTOR_WIDTH_HALF               := new DeviceInfo($103C);
-    private static _DEVICE_OPENCL_C_VERSION                       := new DeviceInfo($103D);
-    private static _DEVICE_LINKER_AVAILABLE                       := new DeviceInfo($103E);
-    private static _DEVICE_BUILT_IN_KERNELS                       := new DeviceInfo($103F);
-    private static _DEVICE_IMAGE_MAX_BUFFER_SIZE                  := new DeviceInfo($1040);
-    private static _DEVICE_IMAGE_MAX_ARRAY_SIZE                   := new DeviceInfo($1041);
-    private static _DEVICE_PARENT_DEVICE                          := new DeviceInfo($1042);
-    private static _DEVICE_PARTITION_MAX_SUB_DEVICES              := new DeviceInfo($1043);
-    private static _DEVICE_PARTITION_PROPERTIES                   := new DeviceInfo($1044);
-    private static _DEVICE_PARTITION_AFFINITY_DOMAIN              := new DeviceInfo($1045);
-    private static _DEVICE_PARTITION_TYPE                         := new DeviceInfo($1046);
-    private static _DEVICE_REFERENCE_COUNT                        := new DeviceInfo($1047);
-    private static _DEVICE_PREFERRED_INTEROP_USER_SYNC            := new DeviceInfo($1048);
-    private static _DEVICE_PRINTF_BUFFER_SIZE                     := new DeviceInfo($1049);
-    private static _DEVICE_IMAGE_PITCH_ALIGNMENT                  := new DeviceInfo($104A);
-    private static _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT           := new DeviceInfo($104B);
-    private static _DEVICE_MAX_READ_WRITE_IMAGE_ARGS              := new DeviceInfo($104C);
-    private static _DEVICE_MAX_GLOBAL_VARIABLE_SIZE               := new DeviceInfo($104D);
-    private static _DEVICE_QUEUE_ON_DEVICE_PROPERTIES             := new DeviceInfo($104E);
-    private static _DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE         := new DeviceInfo($104F);
-    private static _DEVICE_QUEUE_ON_DEVICE_MAX_SIZE               := new DeviceInfo($1050);
-    private static _DEVICE_MAX_ON_DEVICE_QUEUES                   := new DeviceInfo($1051);
-    private static _DEVICE_MAX_ON_DEVICE_EVENTS                   := new DeviceInfo($1052);
-    private static _DEVICE_SVM_CAPABILITIES                       := new DeviceInfo($1053);
-    private static _DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE   := new DeviceInfo($1054);
-    private static _DEVICE_MAX_PIPE_ARGS                          := new DeviceInfo($1055);
-    private static _DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS           := new DeviceInfo($1056);
-    private static _DEVICE_PIPE_MAX_PACKET_SIZE                   := new DeviceInfo($1057);
-    private static _DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT    := new DeviceInfo($1058);
-    private static _DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT      := new DeviceInfo($1059);
-    private static _DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT       := new DeviceInfo($105A);
-    private static _DEVICE_IL_VERSION                             := new DeviceInfo($105B);
-    private static _DEVICE_IL_VERSION_KHR                         := new DeviceInfo($105B);
-    private static _DEVICE_MAX_NUM_SUB_GROUPS                     := new DeviceInfo($105C);
-    private static _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS := new DeviceInfo($105D);
-    private static _CONTEXT_REFERENCE_COUNT                       := new DeviceInfo($1080);
-    private static _CONTEXT_DEVICES                               := new DeviceInfo($1081);
-    private static _CONTEXT_PROPERTIES                            := new DeviceInfo($1082);
-    private static _CONTEXT_NUM_DEVICES                           := new DeviceInfo($1083);
-    private static _CONTEXT_PLATFORM                              := new DeviceInfo($1084);
-    private static _CONTEXT_INTEROP_USER_SYNC                     := new DeviceInfo($1085);
-    private static _DEVICE_PARTITION_EQUALLY                      := new DeviceInfo($1086);
-    private static _DEVICE_PARTITION_BY_COUNTS                    := new DeviceInfo($1087);
-    private static _DEVICE_PARTITION_BY_AFFINITY_DOMAIN           := new DeviceInfo($1088);
-    private static _QUEUE_CONTEXT                                 := new DeviceInfo($1090);
-    private static _QUEUE_DEVICE                                  := new DeviceInfo($1091);
-    private static _QUEUE_REFERENCE_COUNT                         := new DeviceInfo($1092);
-    private static _QUEUE_PROPERTIES                              := new DeviceInfo($1093);
-    private static _QUEUE_SIZE                                    := new DeviceInfo($1094);
-    private static _QUEUE_DEVICE_DEFAULT                          := new DeviceInfo($1095);
-    private static _QUEUE_PRIORITY_KHR                            := new DeviceInfo($1096);
-    private static _QUEUE_THROTTLE_KHR                            := new DeviceInfo($1097);
-    private static _R                                             := new DeviceInfo($10B0);
-    private static _A                                             := new DeviceInfo($10B1);
-    private static _RG                                            := new DeviceInfo($10B2);
-    private static _RA                                            := new DeviceInfo($10B3);
-    private static _RGB                                           := new DeviceInfo($10B4);
-    private static _RGBA                                          := new DeviceInfo($10B5);
-    private static _BGRA                                          := new DeviceInfo($10B6);
-    private static _ARGB                                          := new DeviceInfo($10B7);
-    private static _INTENSITY                                     := new DeviceInfo($10B8);
-    private static _LUMINANCE                                     := new DeviceInfo($10B9);
-    private static _Rx                                            := new DeviceInfo($10BA);
-    private static _RGx                                           := new DeviceInfo($10BB);
-    private static _RGBx                                          := new DeviceInfo($10BC);
-    private static _DEPTH                                         := new DeviceInfo($10BD);
-    private static _DEPTH_STENCIL                                 := new DeviceInfo($10BE);
-    private static _sRGB                                          := new DeviceInfo($10BF);
-    private static _sRGBx                                         := new DeviceInfo($10C0);
-    private static _sRGBA                                         := new DeviceInfo($10C1);
-    private static _sBGRA                                         := new DeviceInfo($10C2);
-    private static _ABGR                                          := new DeviceInfo($10C3);
-    private static _SNORM_INT8                                    := new DeviceInfo($10D0);
-    private static _SNORM_INT16                                   := new DeviceInfo($10D1);
-    private static _UNORM_INT8                                    := new DeviceInfo($10D2);
-    private static _UNORM_INT16                                   := new DeviceInfo($10D3);
-    private static _UNORM_SHORT_565                               := new DeviceInfo($10D4);
-    private static _UNORM_SHORT_555                               := new DeviceInfo($10D5);
-    private static _UNORM_INT_101010                              := new DeviceInfo($10D6);
-    private static _SIGNED_INT8                                   := new DeviceInfo($10D7);
-    private static _SIGNED_INT16                                  := new DeviceInfo($10D8);
-    private static _SIGNED_INT32                                  := new DeviceInfo($10D9);
-    private static _UNSIGNED_INT8                                 := new DeviceInfo($10DA);
-    private static _UNSIGNED_INT16                                := new DeviceInfo($10DB);
-    private static _UNSIGNED_INT32                                := new DeviceInfo($10DC);
-    private static _HALF_FLOAT                                    := new DeviceInfo($10DD);
-    private static _FLOAT                                         := new DeviceInfo($10DE);
-    private static _UNORM_INT24                                   := new DeviceInfo($10DF);
-    private static _UNORM_INT_101010_2                            := new DeviceInfo($10E0);
-    private static _MEM_OBJECT_BUFFER                             := new DeviceInfo($10F0);
-    private static _MEM_OBJECT_IMAGE2D                            := new DeviceInfo($10F1);
-    private static _MEM_OBJECT_IMAGE3D                            := new DeviceInfo($10F2);
-    private static _MEM_OBJECT_IMAGE2D_ARRAY                      := new DeviceInfo($10F3);
-    private static _MEM_OBJECT_IMAGE1D                            := new DeviceInfo($10F4);
-    private static _MEM_OBJECT_IMAGE1D_ARRAY                      := new DeviceInfo($10F5);
-    private static _MEM_OBJECT_IMAGE1D_BUFFER                     := new DeviceInfo($10F6);
-    private static _MEM_OBJECT_PIPE                               := new DeviceInfo($10F7);
-    private static _MEM_TYPE                                      := new DeviceInfo($1100);
-    private static _MEM_FLAGS                                     := new DeviceInfo($1101);
-    private static _MEM_SIZE                                      := new DeviceInfo($1102);
-    private static _MEM_HOST_PTR                                  := new DeviceInfo($1103);
-    private static _MEM_MAP_COUNT                                 := new DeviceInfo($1104);
-    private static _MEM_REFERENCE_COUNT                           := new DeviceInfo($1105);
-    private static _MEM_CONTEXT                                   := new DeviceInfo($1106);
-    private static _MEM_ASSOCIATED_MEMOBJECT                      := new DeviceInfo($1107);
-    private static _MEM_OFFSET                                    := new DeviceInfo($1108);
-    private static _MEM_USES_SVM_POINTER                          := new DeviceInfo($1109);
-    private static _IMAGE_FORMAT                                  := new DeviceInfo($1110);
-    private static _IMAGE_ELEMENT_SIZE                            := new DeviceInfo($1111);
-    private static _IMAGE_ROW_PITCH                               := new DeviceInfo($1112);
-    private static _IMAGE_SLICE_PITCH                             := new DeviceInfo($1113);
-    private static _IMAGE_WIDTH                                   := new DeviceInfo($1114);
-    private static _IMAGE_HEIGHT                                  := new DeviceInfo($1115);
-    private static _IMAGE_DEPTH                                   := new DeviceInfo($1116);
-    private static _IMAGE_ARRAY_SIZE                              := new DeviceInfo($1117);
-    private static _IMAGE_BUFFER                                  := new DeviceInfo($1118);
-    private static _IMAGE_NUM_MIP_LEVELS                          := new DeviceInfo($1119);
-    private static _IMAGE_NUM_SAMPLES                             := new DeviceInfo($111A);
-    private static _PIPE_PACKET_SIZE                              := new DeviceInfo($1120);
-    private static _PIPE_MAX_PACKETS                              := new DeviceInfo($1121);
-    private static _ADDRESS_NONE                                  := new DeviceInfo($1130);
-    private static _ADDRESS_CLAMP_TO_EDGE                         := new DeviceInfo($1131);
-    private static _ADDRESS_CLAMP                                 := new DeviceInfo($1132);
-    private static _ADDRESS_REPEAT                                := new DeviceInfo($1133);
-    private static _ADDRESS_MIRRORED_REPEAT                       := new DeviceInfo($1134);
-    private static _FILTER_NEAREST                                := new DeviceInfo($1140);
-    private static _FILTER_LINEAR                                 := new DeviceInfo($1141);
-    private static _SAMPLER_REFERENCE_COUNT                       := new DeviceInfo($1150);
-    private static _SAMPLER_CONTEXT                               := new DeviceInfo($1151);
-    private static _SAMPLER_NORMALIZED_COORDS                     := new DeviceInfo($1152);
-    private static _SAMPLER_ADDRESSING_MODE                       := new DeviceInfo($1153);
-    private static _SAMPLER_FILTER_MODE                           := new DeviceInfo($1154);
-    private static _SAMPLER_MIP_FILTER_MODE                       := new DeviceInfo($1155);
-    private static _SAMPLER_LOD_MIN                               := new DeviceInfo($1156);
-    private static _SAMPLER_LOD_MAX                               := new DeviceInfo($1157);
-    private static _PROGRAM_REFERENCE_COUNT                       := new DeviceInfo($1160);
-    private static _PROGRAM_CONTEXT                               := new DeviceInfo($1161);
-    private static _PROGRAM_NUM_DEVICES                           := new DeviceInfo($1162);
-    private static _PROGRAM_DEVICES                               := new DeviceInfo($1163);
-    private static _PROGRAM_SOURCE                                := new DeviceInfo($1164);
-    private static _PROGRAM_BINARY_SIZES                          := new DeviceInfo($1165);
-    private static _PROGRAM_BINARIES                              := new DeviceInfo($1166);
-    private static _PROGRAM_NUM_KERNELS                           := new DeviceInfo($1167);
-    private static _PROGRAM_KERNEL_NAMES                          := new DeviceInfo($1168);
-    private static _PROGRAM_IL                                    := new DeviceInfo($1169);
-    private static _PROGRAM_IL_KHR                                := new DeviceInfo($1169);
-    private static _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT            := new DeviceInfo($116A);
-    private static _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT            := new DeviceInfo($116B);
-    private static _PROGRAM_BUILD_STATUS                          := new DeviceInfo($1181);
-    private static _PROGRAM_BUILD_OPTIONS                         := new DeviceInfo($1182);
-    private static _PROGRAM_BUILD_LOG                             := new DeviceInfo($1183);
-    private static _PROGRAM_BINARY_TYPE                           := new DeviceInfo($1184);
-    private static _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE      := new DeviceInfo($1185);
-    private static _KERNEL_FUNCTION_NAME                          := new DeviceInfo($1190);
-    private static _KERNEL_NUM_ARGS                               := new DeviceInfo($1191);
-    private static _KERNEL_REFERENCE_COUNT                        := new DeviceInfo($1192);
-    private static _KERNEL_CONTEXT                                := new DeviceInfo($1193);
-    private static _KERNEL_PROGRAM                                := new DeviceInfo($1194);
-    private static _KERNEL_ATTRIBUTES                             := new DeviceInfo($1195);
-    private static _KERNEL_ARG_ADDRESS_QUALIFIER                  := new DeviceInfo($1196);
-    private static _KERNEL_ARG_ACCESS_QUALIFIER                   := new DeviceInfo($1197);
-    private static _KERNEL_ARG_TYPE_NAME                          := new DeviceInfo($1198);
-    private static _KERNEL_ARG_TYPE_QUALIFIER                     := new DeviceInfo($1199);
-    private static _KERNEL_ARG_NAME                               := new DeviceInfo($119A);
-    private static _KERNEL_ARG_ADDRESS_GLOBAL                     := new DeviceInfo($119B);
-    private static _KERNEL_ARG_ADDRESS_LOCAL                      := new DeviceInfo($119C);
-    private static _KERNEL_ARG_ADDRESS_CONSTANT                   := new DeviceInfo($119D);
-    private static _KERNEL_ARG_ADDRESS_PRIVATE                    := new DeviceInfo($119E);
-    private static _KERNEL_ARG_ACCESS_READ_ONLY                   := new DeviceInfo($11A0);
-    private static _KERNEL_ARG_ACCESS_WRITE_ONLY                  := new DeviceInfo($11A1);
-    private static _KERNEL_ARG_ACCESS_READ_WRITE                  := new DeviceInfo($11A2);
-    private static _KERNEL_ARG_ACCESS_NONE                        := new DeviceInfo($11A3);
-    private static _KERNEL_WORK_GROUP_SIZE                        := new DeviceInfo($11B0);
-    private static _KERNEL_COMPILE_WORK_GROUP_SIZE                := new DeviceInfo($11B1);
-    private static _KERNEL_LOCAL_MEM_SIZE                         := new DeviceInfo($11B2);
-    private static _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE     := new DeviceInfo($11B3);
-    private static _KERNEL_PRIVATE_MEM_SIZE                       := new DeviceInfo($11B4);
-    private static _KERNEL_GLOBAL_WORK_SIZE                       := new DeviceInfo($11B5);
-    private static _KERNEL_EXEC_INFO_SVM_PTRS                     := new DeviceInfo($11B6);
-    private static _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM        := new DeviceInfo($11B7);
-    private static _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT         := new DeviceInfo($11B8);
-    private static _KERNEL_MAX_NUM_SUB_GROUPS                     := new DeviceInfo($11B9);
-    private static _KERNEL_COMPILE_NUM_SUB_GROUPS                 := new DeviceInfo($11BA);
-    private static _EVENT_COMMAND_QUEUE                           := new DeviceInfo($11D0);
-    private static _EVENT_COMMAND_TYPE                            := new DeviceInfo($11D1);
-    private static _EVENT_REFERENCE_COUNT                         := new DeviceInfo($11D2);
-    private static _EVENT_COMMAND_EXECUTION_STATUS                := new DeviceInfo($11D3);
-    private static _EVENT_CONTEXT                                 := new DeviceInfo($11D4);
-    private static _COMMAND_NDRANGE_KERNEL                        := new DeviceInfo($11F0);
-    private static _COMMAND_TASK                                  := new DeviceInfo($11F1);
-    private static _COMMAND_NATIVE_KERNEL                         := new DeviceInfo($11F2);
-    private static _COMMAND_READ_BUFFER                           := new DeviceInfo($11F3);
-    private static _COMMAND_WRITE_BUFFER                          := new DeviceInfo($11F4);
-    private static _COMMAND_COPY_BUFFER                           := new DeviceInfo($11F5);
-    private static _COMMAND_READ_IMAGE                            := new DeviceInfo($11F6);
-    private static _COMMAND_WRITE_IMAGE                           := new DeviceInfo($11F7);
-    private static _COMMAND_COPY_IMAGE                            := new DeviceInfo($11F8);
-    private static _COMMAND_COPY_IMAGE_TO_BUFFER                  := new DeviceInfo($11F9);
-    private static _COMMAND_COPY_BUFFER_TO_IMAGE                  := new DeviceInfo($11FA);
-    private static _COMMAND_MAP_BUFFER                            := new DeviceInfo($11FB);
-    private static _COMMAND_MAP_IMAGE                             := new DeviceInfo($11FC);
-    private static _COMMAND_UNMAP_MEM_OBJECT                      := new DeviceInfo($11FD);
-    private static _COMMAND_MARKER                                := new DeviceInfo($11FE);
-    private static _COMMAND_ACQUIRE_GL_OBJECTS                    := new DeviceInfo($11FF);
-    private static _COMMAND_RELEASE_GL_OBJECTS                    := new DeviceInfo($1200);
-    private static _COMMAND_READ_BUFFER_RECT                      := new DeviceInfo($1201);
-    private static _COMMAND_WRITE_BUFFER_RECT                     := new DeviceInfo($1202);
-    private static _COMMAND_COPY_BUFFER_RECT                      := new DeviceInfo($1203);
-    private static _COMMAND_USER                                  := new DeviceInfo($1204);
-    private static _COMMAND_BARRIER                               := new DeviceInfo($1205);
-    private static _COMMAND_MIGRATE_MEM_OBJECTS                   := new DeviceInfo($1206);
-    private static _COMMAND_FILL_BUFFER                           := new DeviceInfo($1207);
-    private static _COMMAND_FILL_IMAGE                            := new DeviceInfo($1208);
-    private static _COMMAND_SVM_FREE                              := new DeviceInfo($1209);
-    private static _COMMAND_SVM_MEMCPY                            := new DeviceInfo($120A);
-    private static _COMMAND_SVM_MEMFILL                           := new DeviceInfo($120B);
-    private static _COMMAND_SVM_MAP                               := new DeviceInfo($120C);
-    private static _COMMAND_SVM_UNMAP                             := new DeviceInfo($120D);
-    private static _BUFFER_CREATE_TYPE_REGION                     := new DeviceInfo($1220);
-    private static _PROFILING_COMMAND_QUEUED                      := new DeviceInfo($1280);
-    private static _PROFILING_COMMAND_SUBMIT                      := new DeviceInfo($1281);
-    private static _PROFILING_COMMAND_START                       := new DeviceInfo($1282);
-    private static _PROFILING_COMMAND_END                         := new DeviceInfo($1283);
-    private static _PROFILING_COMMAND_COMPLETE                    := new DeviceInfo($1284);
+    private static _DEVICE_TYPE                                        := new DeviceInfo($1000);
+    private static _DEVICE_VENDOR_ID                                   := new DeviceInfo($1001);
+    private static _DEVICE_MAX_COMPUTE_UNITS                           := new DeviceInfo($1002);
+    private static _DEVICE_MAX_WORK_ITEM_DIMENSIONS                    := new DeviceInfo($1003);
+    private static _DEVICE_MAX_WORK_GROUP_SIZE                         := new DeviceInfo($1004);
+    private static _DEVICE_MAX_WORK_ITEM_SIZES                         := new DeviceInfo($1005);
+    private static _DEVICE_PREFERRED_VECTOR_WIDTH_CHAR                 := new DeviceInfo($1006);
+    private static _DEVICE_PREFERRED_VECTOR_WIDTH_SHORT                := new DeviceInfo($1007);
+    private static _DEVICE_PREFERRED_VECTOR_WIDTH_INT                  := new DeviceInfo($1008);
+    private static _DEVICE_PREFERRED_VECTOR_WIDTH_LONG                 := new DeviceInfo($1009);
+    private static _DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT                := new DeviceInfo($100A);
+    private static _DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE               := new DeviceInfo($100B);
+    private static _DEVICE_MAX_CLOCK_FREQUENCY                         := new DeviceInfo($100C);
+    private static _DEVICE_ADDRESS_BITS                                := new DeviceInfo($100D);
+    private static _DEVICE_MAX_READ_IMAGE_ARGS                         := new DeviceInfo($100E);
+    private static _DEVICE_MAX_WRITE_IMAGE_ARGS                        := new DeviceInfo($100F);
+    private static _DEVICE_MAX_MEM_ALLOC_SIZE                          := new DeviceInfo($1010);
+    private static _DEVICE_IMAGE2D_MAX_WIDTH                           := new DeviceInfo($1011);
+    private static _DEVICE_IMAGE2D_MAX_HEIGHT                          := new DeviceInfo($1012);
+    private static _DEVICE_IMAGE3D_MAX_WIDTH                           := new DeviceInfo($1013);
+    private static _DEVICE_IMAGE3D_MAX_HEIGHT                          := new DeviceInfo($1014);
+    private static _DEVICE_IMAGE3D_MAX_DEPTH                           := new DeviceInfo($1015);
+    private static _DEVICE_IMAGE_SUPPORT                               := new DeviceInfo($1016);
+    private static _DEVICE_MAX_PARAMETER_SIZE                          := new DeviceInfo($1017);
+    private static _DEVICE_MAX_SAMPLERS                                := new DeviceInfo($1018);
+    private static _DEVICE_MEM_BASE_ADDR_ALIGN                         := new DeviceInfo($1019);
+    private static _DEVICE_MIN_DATA_TYPE_ALIGN_SIZE                    := new DeviceInfo($101A);
+    private static _DEVICE_SINGLE_FP_CONFIG                            := new DeviceInfo($101B);
+    private static _DEVICE_GLOBAL_MEM_CACHE_TYPE                       := new DeviceInfo($101C);
+    private static _DEVICE_GLOBAL_MEM_CACHELINE_SIZE                   := new DeviceInfo($101D);
+    private static _DEVICE_GLOBAL_MEM_CACHE_SIZE                       := new DeviceInfo($101E);
+    private static _DEVICE_GLOBAL_MEM_SIZE                             := new DeviceInfo($101F);
+    private static _DEVICE_MAX_CONSTANT_BUFFER_SIZE                    := new DeviceInfo($1020);
+    private static _DEVICE_MAX_CONSTANT_ARGS                           := new DeviceInfo($1021);
+    private static _DEVICE_LOCAL_MEM_TYPE                              := new DeviceInfo($1022);
+    private static _DEVICE_LOCAL_MEM_SIZE                              := new DeviceInfo($1023);
+    private static _DEVICE_ERROR_CORRECTION_SUPPORT                    := new DeviceInfo($1024);
+    private static _DEVICE_PROFILING_TIMER_RESOLUTION                  := new DeviceInfo($1025);
+    private static _DEVICE_ENDIAN_LITTLE                               := new DeviceInfo($1026);
+    private static _DEVICE_AVAILABLE                                   := new DeviceInfo($1027);
+    private static _DEVICE_COMPILER_AVAILABLE                          := new DeviceInfo($1028);
+    private static _DEVICE_EXECUTION_CAPABILITIES                      := new DeviceInfo($1029);
+    private static _DEVICE_QUEUE_ON_HOST_PROPERTIES                    := new DeviceInfo($102A);
+    private static _DEVICE_QUEUE_PROPERTIES                            := new DeviceInfo($102A);
+    private static _DEVICE_NAME                                        := new DeviceInfo($102B);
+    private static _DEVICE_VENDOR                                      := new DeviceInfo($102C);
+    private static _DRIVER_VERSION                                     := new DeviceInfo($102D);
+    private static _DEVICE_PROFILE                                     := new DeviceInfo($102E);
+    private static _DEVICE_VERSION                                     := new DeviceInfo($102F);
+    private static _DEVICE_EXTENSIONS                                  := new DeviceInfo($1030);
+    private static _DEVICE_PLATFORM                                    := new DeviceInfo($1031);
+    private static _DEVICE_DOUBLE_FP_CONFIG                            := new DeviceInfo($1032);
+    private static _DEVICE_HALF_FP_CONFIG                              := new DeviceInfo($1033);
+    private static _DEVICE_PREFERRED_VECTOR_WIDTH_HALF                 := new DeviceInfo($1034);
+    private static _DEVICE_HOST_UNIFIED_MEMORY                         := new DeviceInfo($1035);
+    private static _DEVICE_NATIVE_VECTOR_WIDTH_CHAR                    := new DeviceInfo($1036);
+    private static _DEVICE_NATIVE_VECTOR_WIDTH_SHORT                   := new DeviceInfo($1037);
+    private static _DEVICE_NATIVE_VECTOR_WIDTH_INT                     := new DeviceInfo($1038);
+    private static _DEVICE_NATIVE_VECTOR_WIDTH_LONG                    := new DeviceInfo($1039);
+    private static _DEVICE_NATIVE_VECTOR_WIDTH_FLOAT                   := new DeviceInfo($103A);
+    private static _DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE                  := new DeviceInfo($103B);
+    private static _DEVICE_NATIVE_VECTOR_WIDTH_HALF                    := new DeviceInfo($103C);
+    private static _DEVICE_OPENCL_C_VERSION                            := new DeviceInfo($103D);
+    private static _DEVICE_LINKER_AVAILABLE                            := new DeviceInfo($103E);
+    private static _DEVICE_BUILT_IN_KERNELS                            := new DeviceInfo($103F);
+    private static _DEVICE_IMAGE_MAX_BUFFER_SIZE                       := new DeviceInfo($1040);
+    private static _DEVICE_IMAGE_MAX_ARRAY_SIZE                        := new DeviceInfo($1041);
+    private static _DEVICE_PARENT_DEVICE                               := new DeviceInfo($1042);
+    private static _DEVICE_PARTITION_MAX_SUB_DEVICES                   := new DeviceInfo($1043);
+    private static _DEVICE_PARTITION_PROPERTIES                        := new DeviceInfo($1044);
+    private static _DEVICE_PARTITION_AFFINITY_DOMAIN                   := new DeviceInfo($1045);
+    private static _DEVICE_PARTITION_TYPE                              := new DeviceInfo($1046);
+    private static _DEVICE_REFERENCE_COUNT                             := new DeviceInfo($1047);
+    private static _DEVICE_PREFERRED_INTEROP_USER_SYNC                 := new DeviceInfo($1048);
+    private static _DEVICE_PRINTF_BUFFER_SIZE                          := new DeviceInfo($1049);
+    private static _DEVICE_IMAGE_PITCH_ALIGNMENT                       := new DeviceInfo($104A);
+    private static _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT                := new DeviceInfo($104B);
+    private static _DEVICE_MAX_READ_WRITE_IMAGE_ARGS                   := new DeviceInfo($104C);
+    private static _DEVICE_MAX_GLOBAL_VARIABLE_SIZE                    := new DeviceInfo($104D);
+    private static _DEVICE_QUEUE_ON_DEVICE_PROPERTIES                  := new DeviceInfo($104E);
+    private static _DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE              := new DeviceInfo($104F);
+    private static _DEVICE_QUEUE_ON_DEVICE_MAX_SIZE                    := new DeviceInfo($1050);
+    private static _DEVICE_MAX_ON_DEVICE_QUEUES                        := new DeviceInfo($1051);
+    private static _DEVICE_MAX_ON_DEVICE_EVENTS                        := new DeviceInfo($1052);
+    private static _DEVICE_SVM_CAPABILITIES                            := new DeviceInfo($1053);
+    private static _DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE        := new DeviceInfo($1054);
+    private static _DEVICE_MAX_PIPE_ARGS                               := new DeviceInfo($1055);
+    private static _DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS                := new DeviceInfo($1056);
+    private static _DEVICE_PIPE_MAX_PACKET_SIZE                        := new DeviceInfo($1057);
+    private static _DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT         := new DeviceInfo($1058);
+    private static _DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT           := new DeviceInfo($1059);
+    private static _DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT            := new DeviceInfo($105A);
+    private static _DEVICE_IL_VERSION                                  := new DeviceInfo($105B);
+    private static _DEVICE_IL_VERSION_KHR                              := new DeviceInfo($105B);
+    private static _DEVICE_MAX_NUM_SUB_GROUPS                          := new DeviceInfo($105C);
+    private static _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS      := new DeviceInfo($105D);
+    private static _IMAGE_BUFFER                                       := new DeviceInfo($1118);
+    private static _PROGRAM_IL_KHR                                     := new DeviceInfo($1169);
+    private static _DEVICE_TERMINATE_CAPABILITY_KHR                    := new DeviceInfo($2031);
+    private static _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR                 := new DeviceInfo($2035);
+    private static _DEVICE_COMPUTE_CAPABILITY_MAJOR_NV                 := new DeviceInfo($4000);
+    private static _DEVICE_COMPUTE_CAPABILITY_MINOR_NV                 := new DeviceInfo($4001);
+    private static _DEVICE_REGISTERS_PER_BLOCK_NV                      := new DeviceInfo($4002);
+    private static _DEVICE_WARP_SIZE_NV                                := new DeviceInfo($4003);
+    private static _DEVICE_GPU_OVERLAP_NV                              := new DeviceInfo($4004);
+    private static _DEVICE_KERNEL_EXEC_TIMEOUT_NV                      := new DeviceInfo($4005);
+    private static _DEVICE_INTEGRATED_MEMORY_NV                        := new DeviceInfo($4006);
+    private static _DEVICE_PROFILING_TIMER_OFFSET_AMD                  := new DeviceInfo($4036);
+    private static _DEVICE_PARENT_DEVICE_EXT                           := new DeviceInfo($4054);
+    private static _DEVICE_PARTITION_TYPES_EXT                         := new DeviceInfo($4055);
+    private static _DEVICE_AFFINITY_DOMAINS_EXT                        := new DeviceInfo($4056);
+    private static _DEVICE_REFERENCE_COUNT_EXT                         := new DeviceInfo($4057);
+    private static _DEVICE_PARTITION_STYLE_EXT                         := new DeviceInfo($4058);
+    private static _DEVICE_ME_VERSION_INTEL                            := new DeviceInfo($407E);
+    private static _DEVICE_COMPUTE_UNITS_BITFIELD_ARM                  := new DeviceInfo($40BF);
+    private static _DEVICE_SPIR_VERSIONS                               := new DeviceInfo($40E0);
+    private static _DEVICE_SIMULTANEOUS_INTEROPS_INTEL                 := new DeviceInfo($4104);
+    private static _DEVICE_NUM_SIMULTANEOUS_INTEROPS_INTEL             := new DeviceInfo($4105);
+    private static _DEVICE_SUB_GROUP_SIZES_INTEL                       := new DeviceInfo($4108);
+    private static _DEVICE_AVC_ME_VERSION_INTEL                        := new DeviceInfo($410B);
+    private static _DEVICE_AVC_ME_SUPPORTS_TEXTURE_SAMPLER_USE_INTEL   := new DeviceInfo($410C);
+    private static _DEVICE_AVC_ME_SUPPORTS_PREEMPTION_INTEL            := new DeviceInfo($410D);
+    private static _DEVICE_PLANAR_YUV_MAX_WIDTH_INTEL                  := new DeviceInfo($417E);
+    private static _DEVICE_PLANAR_YUV_MAX_HEIGHT_INTEL                 := new DeviceInfo($417F);
+    private static _DEVICE_HOST_MEM_CAPABILITIES_INTEL                 := new DeviceInfo($4190);
+    private static _DEVICE_DEVICE_MEM_CAPABILITIES_INTEL               := new DeviceInfo($4191);
+    private static _DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL := new DeviceInfo($4192);
+    private static _DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL  := new DeviceInfo($4193);
+    private static _DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL        := new DeviceInfo($4194);
     
-    public static property DEVICE_TYPE:                                   DeviceInfo read _DEVICE_TYPE;
-    public static property DEVICE_VENDOR_ID:                              DeviceInfo read _DEVICE_VENDOR_ID;
-    public static property DEVICE_MAX_COMPUTE_UNITS:                      DeviceInfo read _DEVICE_MAX_COMPUTE_UNITS;
-    public static property DEVICE_MAX_WORK_ITEM_DIMENSIONS:               DeviceInfo read _DEVICE_MAX_WORK_ITEM_DIMENSIONS;
-    public static property DEVICE_MAX_WORK_GROUP_SIZE:                    DeviceInfo read _DEVICE_MAX_WORK_GROUP_SIZE;
-    public static property DEVICE_MAX_WORK_ITEM_SIZES:                    DeviceInfo read _DEVICE_MAX_WORK_ITEM_SIZES;
-    public static property DEVICE_PREFERRED_VECTOR_WIDTH_CHAR:            DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_CHAR;
-    public static property DEVICE_PREFERRED_VECTOR_WIDTH_SHORT:           DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_SHORT;
-    public static property DEVICE_PREFERRED_VECTOR_WIDTH_INT:             DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_INT;
-    public static property DEVICE_PREFERRED_VECTOR_WIDTH_LONG:            DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_LONG;
-    public static property DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT:           DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT;
-    public static property DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE:          DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE;
-    public static property DEVICE_MAX_CLOCK_FREQUENCY:                    DeviceInfo read _DEVICE_MAX_CLOCK_FREQUENCY;
-    public static property DEVICE_ADDRESS_BITS:                           DeviceInfo read _DEVICE_ADDRESS_BITS;
-    public static property DEVICE_MAX_READ_IMAGE_ARGS:                    DeviceInfo read _DEVICE_MAX_READ_IMAGE_ARGS;
-    public static property DEVICE_MAX_WRITE_IMAGE_ARGS:                   DeviceInfo read _DEVICE_MAX_WRITE_IMAGE_ARGS;
-    public static property DEVICE_MAX_MEM_ALLOC_SIZE:                     DeviceInfo read _DEVICE_MAX_MEM_ALLOC_SIZE;
-    public static property DEVICE_IMAGE2D_MAX_WIDTH:                      DeviceInfo read _DEVICE_IMAGE2D_MAX_WIDTH;
-    public static property DEVICE_IMAGE2D_MAX_HEIGHT:                     DeviceInfo read _DEVICE_IMAGE2D_MAX_HEIGHT;
-    public static property DEVICE_IMAGE3D_MAX_WIDTH:                      DeviceInfo read _DEVICE_IMAGE3D_MAX_WIDTH;
-    public static property DEVICE_IMAGE3D_MAX_HEIGHT:                     DeviceInfo read _DEVICE_IMAGE3D_MAX_HEIGHT;
-    public static property DEVICE_IMAGE3D_MAX_DEPTH:                      DeviceInfo read _DEVICE_IMAGE3D_MAX_DEPTH;
-    public static property DEVICE_IMAGE_SUPPORT:                          DeviceInfo read _DEVICE_IMAGE_SUPPORT;
-    public static property DEVICE_MAX_PARAMETER_SIZE:                     DeviceInfo read _DEVICE_MAX_PARAMETER_SIZE;
-    public static property DEVICE_MAX_SAMPLERS:                           DeviceInfo read _DEVICE_MAX_SAMPLERS;
-    public static property DEVICE_MEM_BASE_ADDR_ALIGN:                    DeviceInfo read _DEVICE_MEM_BASE_ADDR_ALIGN;
-    public static property DEVICE_MIN_DATA_TYPE_ALIGN_SIZE:               DeviceInfo read _DEVICE_MIN_DATA_TYPE_ALIGN_SIZE;
-    public static property DEVICE_SINGLE_FP_CONFIG:                       DeviceInfo read _DEVICE_SINGLE_FP_CONFIG;
-    public static property DEVICE_GLOBAL_MEM_CACHE_TYPE:                  DeviceInfo read _DEVICE_GLOBAL_MEM_CACHE_TYPE;
-    public static property DEVICE_GLOBAL_MEM_CACHELINE_SIZE:              DeviceInfo read _DEVICE_GLOBAL_MEM_CACHELINE_SIZE;
-    public static property DEVICE_GLOBAL_MEM_CACHE_SIZE:                  DeviceInfo read _DEVICE_GLOBAL_MEM_CACHE_SIZE;
-    public static property DEVICE_GLOBAL_MEM_SIZE:                        DeviceInfo read _DEVICE_GLOBAL_MEM_SIZE;
-    public static property DEVICE_MAX_CONSTANT_BUFFER_SIZE:               DeviceInfo read _DEVICE_MAX_CONSTANT_BUFFER_SIZE;
-    public static property DEVICE_MAX_CONSTANT_ARGS:                      DeviceInfo read _DEVICE_MAX_CONSTANT_ARGS;
-    public static property DEVICE_LOCAL_MEM_TYPE:                         DeviceInfo read _DEVICE_LOCAL_MEM_TYPE;
-    public static property DEVICE_LOCAL_MEM_SIZE:                         DeviceInfo read _DEVICE_LOCAL_MEM_SIZE;
-    public static property DEVICE_ERROR_CORRECTION_SUPPORT:               DeviceInfo read _DEVICE_ERROR_CORRECTION_SUPPORT;
-    public static property DEVICE_PROFILING_TIMER_RESOLUTION:             DeviceInfo read _DEVICE_PROFILING_TIMER_RESOLUTION;
-    public static property DEVICE_ENDIAN_LITTLE:                          DeviceInfo read _DEVICE_ENDIAN_LITTLE;
-    public static property DEVICE_AVAILABLE:                              DeviceInfo read _DEVICE_AVAILABLE;
-    public static property DEVICE_COMPILER_AVAILABLE:                     DeviceInfo read _DEVICE_COMPILER_AVAILABLE;
-    public static property DEVICE_EXECUTION_CAPABILITIES:                 DeviceInfo read _DEVICE_EXECUTION_CAPABILITIES;
-    public static property DEVICE_QUEUE_ON_HOST_PROPERTIES:               DeviceInfo read _DEVICE_QUEUE_ON_HOST_PROPERTIES;
-    public static property DEVICE_QUEUE_PROPERTIES:                       DeviceInfo read _DEVICE_QUEUE_PROPERTIES;
-    public static property DEVICE_NAME:                                   DeviceInfo read _DEVICE_NAME;
-    public static property DEVICE_VENDOR:                                 DeviceInfo read _DEVICE_VENDOR;
-    public static property DRIVER_VERSION:                                DeviceInfo read _DRIVER_VERSION;
-    public static property DEVICE_PROFILE:                                DeviceInfo read _DEVICE_PROFILE;
-    public static property DEVICE_VERSION:                                DeviceInfo read _DEVICE_VERSION;
-    public static property DEVICE_EXTENSIONS:                             DeviceInfo read _DEVICE_EXTENSIONS;
-    public static property DEVICE_PLATFORM:                               DeviceInfo read _DEVICE_PLATFORM;
-    public static property DEVICE_DOUBLE_FP_CONFIG:                       DeviceInfo read _DEVICE_DOUBLE_FP_CONFIG;
-    public static property DEVICE_HALF_FP_CONFIG:                         DeviceInfo read _DEVICE_HALF_FP_CONFIG;
-    public static property DEVICE_PREFERRED_VECTOR_WIDTH_HALF:            DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_HALF;
-    public static property DEVICE_HOST_UNIFIED_MEMORY:                    DeviceInfo read _DEVICE_HOST_UNIFIED_MEMORY;
-    public static property DEVICE_NATIVE_VECTOR_WIDTH_CHAR:               DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_CHAR;
-    public static property DEVICE_NATIVE_VECTOR_WIDTH_SHORT:              DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_SHORT;
-    public static property DEVICE_NATIVE_VECTOR_WIDTH_INT:                DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_INT;
-    public static property DEVICE_NATIVE_VECTOR_WIDTH_LONG:               DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_LONG;
-    public static property DEVICE_NATIVE_VECTOR_WIDTH_FLOAT:              DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_FLOAT;
-    public static property DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE:             DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE;
-    public static property DEVICE_NATIVE_VECTOR_WIDTH_HALF:               DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_HALF;
-    public static property DEVICE_OPENCL_C_VERSION:                       DeviceInfo read _DEVICE_OPENCL_C_VERSION;
-    public static property DEVICE_LINKER_AVAILABLE:                       DeviceInfo read _DEVICE_LINKER_AVAILABLE;
-    public static property DEVICE_BUILT_IN_KERNELS:                       DeviceInfo read _DEVICE_BUILT_IN_KERNELS;
-    public static property DEVICE_IMAGE_MAX_BUFFER_SIZE:                  DeviceInfo read _DEVICE_IMAGE_MAX_BUFFER_SIZE;
-    public static property DEVICE_IMAGE_MAX_ARRAY_SIZE:                   DeviceInfo read _DEVICE_IMAGE_MAX_ARRAY_SIZE;
-    public static property DEVICE_PARENT_DEVICE:                          DeviceInfo read _DEVICE_PARENT_DEVICE;
-    public static property DEVICE_PARTITION_MAX_SUB_DEVICES:              DeviceInfo read _DEVICE_PARTITION_MAX_SUB_DEVICES;
-    public static property DEVICE_PARTITION_PROPERTIES:                   DeviceInfo read _DEVICE_PARTITION_PROPERTIES;
-    public static property DEVICE_PARTITION_AFFINITY_DOMAIN:              DeviceInfo read _DEVICE_PARTITION_AFFINITY_DOMAIN;
-    public static property DEVICE_PARTITION_TYPE:                         DeviceInfo read _DEVICE_PARTITION_TYPE;
-    public static property DEVICE_REFERENCE_COUNT:                        DeviceInfo read _DEVICE_REFERENCE_COUNT;
-    public static property DEVICE_PREFERRED_INTEROP_USER_SYNC:            DeviceInfo read _DEVICE_PREFERRED_INTEROP_USER_SYNC;
-    public static property DEVICE_PRINTF_BUFFER_SIZE:                     DeviceInfo read _DEVICE_PRINTF_BUFFER_SIZE;
-    public static property DEVICE_IMAGE_PITCH_ALIGNMENT:                  DeviceInfo read _DEVICE_IMAGE_PITCH_ALIGNMENT;
-    public static property DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT:           DeviceInfo read _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT;
-    public static property DEVICE_MAX_READ_WRITE_IMAGE_ARGS:              DeviceInfo read _DEVICE_MAX_READ_WRITE_IMAGE_ARGS;
-    public static property DEVICE_MAX_GLOBAL_VARIABLE_SIZE:               DeviceInfo read _DEVICE_MAX_GLOBAL_VARIABLE_SIZE;
-    public static property DEVICE_QUEUE_ON_DEVICE_PROPERTIES:             DeviceInfo read _DEVICE_QUEUE_ON_DEVICE_PROPERTIES;
-    public static property DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE:         DeviceInfo read _DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE;
-    public static property DEVICE_QUEUE_ON_DEVICE_MAX_SIZE:               DeviceInfo read _DEVICE_QUEUE_ON_DEVICE_MAX_SIZE;
-    public static property DEVICE_MAX_ON_DEVICE_QUEUES:                   DeviceInfo read _DEVICE_MAX_ON_DEVICE_QUEUES;
-    public static property DEVICE_MAX_ON_DEVICE_EVENTS:                   DeviceInfo read _DEVICE_MAX_ON_DEVICE_EVENTS;
-    public static property DEVICE_SVM_CAPABILITIES:                       DeviceInfo read _DEVICE_SVM_CAPABILITIES;
-    public static property DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE:   DeviceInfo read _DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE;
-    public static property DEVICE_MAX_PIPE_ARGS:                          DeviceInfo read _DEVICE_MAX_PIPE_ARGS;
-    public static property DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS:           DeviceInfo read _DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS;
-    public static property DEVICE_PIPE_MAX_PACKET_SIZE:                   DeviceInfo read _DEVICE_PIPE_MAX_PACKET_SIZE;
-    public static property DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT:    DeviceInfo read _DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT;
-    public static property DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT:      DeviceInfo read _DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT;
-    public static property DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT:       DeviceInfo read _DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT;
-    public static property DEVICE_IL_VERSION:                             DeviceInfo read _DEVICE_IL_VERSION;
-    public static property DEVICE_IL_VERSION_KHR:                         DeviceInfo read _DEVICE_IL_VERSION_KHR;
-    public static property DEVICE_MAX_NUM_SUB_GROUPS:                     DeviceInfo read _DEVICE_MAX_NUM_SUB_GROUPS;
-    public static property DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS: DeviceInfo read _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS;
-    public static property CONTEXT_REFERENCE_COUNT:                       DeviceInfo read _CONTEXT_REFERENCE_COUNT;
-    public static property CONTEXT_DEVICES:                               DeviceInfo read _CONTEXT_DEVICES;
-    public static property CONTEXT_PROPERTIES:                            DeviceInfo read _CONTEXT_PROPERTIES;
-    public static property CONTEXT_NUM_DEVICES:                           DeviceInfo read _CONTEXT_NUM_DEVICES;
-    public static property CONTEXT_PLATFORM:                              DeviceInfo read _CONTEXT_PLATFORM;
-    public static property CONTEXT_INTEROP_USER_SYNC:                     DeviceInfo read _CONTEXT_INTEROP_USER_SYNC;
-    public static property DEVICE_PARTITION_EQUALLY:                      DeviceInfo read _DEVICE_PARTITION_EQUALLY;
-    public static property DEVICE_PARTITION_BY_COUNTS:                    DeviceInfo read _DEVICE_PARTITION_BY_COUNTS;
-    public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN:           DeviceInfo read _DEVICE_PARTITION_BY_AFFINITY_DOMAIN;
-    public static property QUEUE_CONTEXT:                                 DeviceInfo read _QUEUE_CONTEXT;
-    public static property QUEUE_DEVICE:                                  DeviceInfo read _QUEUE_DEVICE;
-    public static property QUEUE_REFERENCE_COUNT:                         DeviceInfo read _QUEUE_REFERENCE_COUNT;
-    public static property QUEUE_PROPERTIES:                              DeviceInfo read _QUEUE_PROPERTIES;
-    public static property QUEUE_SIZE:                                    DeviceInfo read _QUEUE_SIZE;
-    public static property QUEUE_DEVICE_DEFAULT:                          DeviceInfo read _QUEUE_DEVICE_DEFAULT;
-    public static property QUEUE_PRIORITY_KHR:                            DeviceInfo read _QUEUE_PRIORITY_KHR;
-    public static property QUEUE_THROTTLE_KHR:                            DeviceInfo read _QUEUE_THROTTLE_KHR;
-    public static property R:                                             DeviceInfo read _R;
-    public static property A:                                             DeviceInfo read _A;
-    public static property RG:                                            DeviceInfo read _RG;
-    public static property RA:                                            DeviceInfo read _RA;
-    public static property RGB:                                           DeviceInfo read _RGB;
-    public static property RGBA:                                          DeviceInfo read _RGBA;
-    public static property BGRA:                                          DeviceInfo read _BGRA;
-    public static property ARGB:                                          DeviceInfo read _ARGB;
-    public static property INTENSITY:                                     DeviceInfo read _INTENSITY;
-    public static property LUMINANCE:                                     DeviceInfo read _LUMINANCE;
-    public static property Rx:                                            DeviceInfo read _Rx;
-    public static property RGx:                                           DeviceInfo read _RGx;
-    public static property RGBx:                                          DeviceInfo read _RGBx;
-    public static property DEPTH:                                         DeviceInfo read _DEPTH;
-    public static property DEPTH_STENCIL:                                 DeviceInfo read _DEPTH_STENCIL;
-    public static property sRGB:                                          DeviceInfo read _sRGB;
-    public static property sRGBx:                                         DeviceInfo read _sRGBx;
-    public static property sRGBA:                                         DeviceInfo read _sRGBA;
-    public static property sBGRA:                                         DeviceInfo read _sBGRA;
-    public static property ABGR:                                          DeviceInfo read _ABGR;
-    public static property SNORM_INT8:                                    DeviceInfo read _SNORM_INT8;
-    public static property SNORM_INT16:                                   DeviceInfo read _SNORM_INT16;
-    public static property UNORM_INT8:                                    DeviceInfo read _UNORM_INT8;
-    public static property UNORM_INT16:                                   DeviceInfo read _UNORM_INT16;
-    public static property UNORM_SHORT_565:                               DeviceInfo read _UNORM_SHORT_565;
-    public static property UNORM_SHORT_555:                               DeviceInfo read _UNORM_SHORT_555;
-    public static property UNORM_INT_101010:                              DeviceInfo read _UNORM_INT_101010;
-    public static property SIGNED_INT8:                                   DeviceInfo read _SIGNED_INT8;
-    public static property SIGNED_INT16:                                  DeviceInfo read _SIGNED_INT16;
-    public static property SIGNED_INT32:                                  DeviceInfo read _SIGNED_INT32;
-    public static property UNSIGNED_INT8:                                 DeviceInfo read _UNSIGNED_INT8;
-    public static property UNSIGNED_INT16:                                DeviceInfo read _UNSIGNED_INT16;
-    public static property UNSIGNED_INT32:                                DeviceInfo read _UNSIGNED_INT32;
-    public static property HALF_FLOAT:                                    DeviceInfo read _HALF_FLOAT;
-    public static property FLOAT:                                         DeviceInfo read _FLOAT;
-    public static property UNORM_INT24:                                   DeviceInfo read _UNORM_INT24;
-    public static property UNORM_INT_101010_2:                            DeviceInfo read _UNORM_INT_101010_2;
-    public static property MEM_OBJECT_BUFFER:                             DeviceInfo read _MEM_OBJECT_BUFFER;
-    public static property MEM_OBJECT_IMAGE2D:                            DeviceInfo read _MEM_OBJECT_IMAGE2D;
-    public static property MEM_OBJECT_IMAGE3D:                            DeviceInfo read _MEM_OBJECT_IMAGE3D;
-    public static property MEM_OBJECT_IMAGE2D_ARRAY:                      DeviceInfo read _MEM_OBJECT_IMAGE2D_ARRAY;
-    public static property MEM_OBJECT_IMAGE1D:                            DeviceInfo read _MEM_OBJECT_IMAGE1D;
-    public static property MEM_OBJECT_IMAGE1D_ARRAY:                      DeviceInfo read _MEM_OBJECT_IMAGE1D_ARRAY;
-    public static property MEM_OBJECT_IMAGE1D_BUFFER:                     DeviceInfo read _MEM_OBJECT_IMAGE1D_BUFFER;
-    public static property MEM_OBJECT_PIPE:                               DeviceInfo read _MEM_OBJECT_PIPE;
-    public static property MEM_TYPE:                                      DeviceInfo read _MEM_TYPE;
-    public static property MEM_FLAGS:                                     DeviceInfo read _MEM_FLAGS;
-    public static property MEM_SIZE:                                      DeviceInfo read _MEM_SIZE;
-    public static property MEM_HOST_PTR:                                  DeviceInfo read _MEM_HOST_PTR;
-    public static property MEM_MAP_COUNT:                                 DeviceInfo read _MEM_MAP_COUNT;
-    public static property MEM_REFERENCE_COUNT:                           DeviceInfo read _MEM_REFERENCE_COUNT;
-    public static property MEM_CONTEXT:                                   DeviceInfo read _MEM_CONTEXT;
-    public static property MEM_ASSOCIATED_MEMOBJECT:                      DeviceInfo read _MEM_ASSOCIATED_MEMOBJECT;
-    public static property MEM_OFFSET:                                    DeviceInfo read _MEM_OFFSET;
-    public static property MEM_USES_SVM_POINTER:                          DeviceInfo read _MEM_USES_SVM_POINTER;
-    public static property IMAGE_FORMAT:                                  DeviceInfo read _IMAGE_FORMAT;
-    public static property IMAGE_ELEMENT_SIZE:                            DeviceInfo read _IMAGE_ELEMENT_SIZE;
-    public static property IMAGE_ROW_PITCH:                               DeviceInfo read _IMAGE_ROW_PITCH;
-    public static property IMAGE_SLICE_PITCH:                             DeviceInfo read _IMAGE_SLICE_PITCH;
-    public static property IMAGE_WIDTH:                                   DeviceInfo read _IMAGE_WIDTH;
-    public static property IMAGE_HEIGHT:                                  DeviceInfo read _IMAGE_HEIGHT;
-    public static property IMAGE_DEPTH:                                   DeviceInfo read _IMAGE_DEPTH;
-    public static property IMAGE_ARRAY_SIZE:                              DeviceInfo read _IMAGE_ARRAY_SIZE;
-    public static property IMAGE_BUFFER:                                  DeviceInfo read _IMAGE_BUFFER;
-    public static property IMAGE_NUM_MIP_LEVELS:                          DeviceInfo read _IMAGE_NUM_MIP_LEVELS;
-    public static property IMAGE_NUM_SAMPLES:                             DeviceInfo read _IMAGE_NUM_SAMPLES;
-    public static property PIPE_PACKET_SIZE:                              DeviceInfo read _PIPE_PACKET_SIZE;
-    public static property PIPE_MAX_PACKETS:                              DeviceInfo read _PIPE_MAX_PACKETS;
-    public static property ADDRESS_NONE:                                  DeviceInfo read _ADDRESS_NONE;
-    public static property ADDRESS_CLAMP_TO_EDGE:                         DeviceInfo read _ADDRESS_CLAMP_TO_EDGE;
-    public static property ADDRESS_CLAMP:                                 DeviceInfo read _ADDRESS_CLAMP;
-    public static property ADDRESS_REPEAT:                                DeviceInfo read _ADDRESS_REPEAT;
-    public static property ADDRESS_MIRRORED_REPEAT:                       DeviceInfo read _ADDRESS_MIRRORED_REPEAT;
-    public static property FILTER_NEAREST:                                DeviceInfo read _FILTER_NEAREST;
-    public static property FILTER_LINEAR:                                 DeviceInfo read _FILTER_LINEAR;
-    public static property SAMPLER_REFERENCE_COUNT:                       DeviceInfo read _SAMPLER_REFERENCE_COUNT;
-    public static property SAMPLER_CONTEXT:                               DeviceInfo read _SAMPLER_CONTEXT;
-    public static property SAMPLER_NORMALIZED_COORDS:                     DeviceInfo read _SAMPLER_NORMALIZED_COORDS;
-    public static property SAMPLER_ADDRESSING_MODE:                       DeviceInfo read _SAMPLER_ADDRESSING_MODE;
-    public static property SAMPLER_FILTER_MODE:                           DeviceInfo read _SAMPLER_FILTER_MODE;
-    public static property SAMPLER_MIP_FILTER_MODE:                       DeviceInfo read _SAMPLER_MIP_FILTER_MODE;
-    public static property SAMPLER_LOD_MIN:                               DeviceInfo read _SAMPLER_LOD_MIN;
-    public static property SAMPLER_LOD_MAX:                               DeviceInfo read _SAMPLER_LOD_MAX;
-    public static property PROGRAM_REFERENCE_COUNT:                       DeviceInfo read _PROGRAM_REFERENCE_COUNT;
-    public static property PROGRAM_CONTEXT:                               DeviceInfo read _PROGRAM_CONTEXT;
-    public static property PROGRAM_NUM_DEVICES:                           DeviceInfo read _PROGRAM_NUM_DEVICES;
-    public static property PROGRAM_DEVICES:                               DeviceInfo read _PROGRAM_DEVICES;
-    public static property PROGRAM_SOURCE:                                DeviceInfo read _PROGRAM_SOURCE;
-    public static property PROGRAM_BINARY_SIZES:                          DeviceInfo read _PROGRAM_BINARY_SIZES;
-    public static property PROGRAM_BINARIES:                              DeviceInfo read _PROGRAM_BINARIES;
-    public static property PROGRAM_NUM_KERNELS:                           DeviceInfo read _PROGRAM_NUM_KERNELS;
-    public static property PROGRAM_KERNEL_NAMES:                          DeviceInfo read _PROGRAM_KERNEL_NAMES;
-    public static property PROGRAM_IL:                                    DeviceInfo read _PROGRAM_IL;
-    public static property PROGRAM_IL_KHR:                                DeviceInfo read _PROGRAM_IL_KHR;
-    public static property PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT:            DeviceInfo read _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT;
-    public static property PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT:            DeviceInfo read _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT;
-    public static property PROGRAM_BUILD_STATUS:                          DeviceInfo read _PROGRAM_BUILD_STATUS;
-    public static property PROGRAM_BUILD_OPTIONS:                         DeviceInfo read _PROGRAM_BUILD_OPTIONS;
-    public static property PROGRAM_BUILD_LOG:                             DeviceInfo read _PROGRAM_BUILD_LOG;
-    public static property PROGRAM_BINARY_TYPE:                           DeviceInfo read _PROGRAM_BINARY_TYPE;
-    public static property PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE:      DeviceInfo read _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE;
-    public static property KERNEL_FUNCTION_NAME:                          DeviceInfo read _KERNEL_FUNCTION_NAME;
-    public static property KERNEL_NUM_ARGS:                               DeviceInfo read _KERNEL_NUM_ARGS;
-    public static property KERNEL_REFERENCE_COUNT:                        DeviceInfo read _KERNEL_REFERENCE_COUNT;
-    public static property KERNEL_CONTEXT:                                DeviceInfo read _KERNEL_CONTEXT;
-    public static property KERNEL_PROGRAM:                                DeviceInfo read _KERNEL_PROGRAM;
-    public static property KERNEL_ATTRIBUTES:                             DeviceInfo read _KERNEL_ATTRIBUTES;
-    public static property KERNEL_ARG_ADDRESS_QUALIFIER:                  DeviceInfo read _KERNEL_ARG_ADDRESS_QUALIFIER;
-    public static property KERNEL_ARG_ACCESS_QUALIFIER:                   DeviceInfo read _KERNEL_ARG_ACCESS_QUALIFIER;
-    public static property KERNEL_ARG_TYPE_NAME:                          DeviceInfo read _KERNEL_ARG_TYPE_NAME;
-    public static property KERNEL_ARG_TYPE_QUALIFIER:                     DeviceInfo read _KERNEL_ARG_TYPE_QUALIFIER;
-    public static property KERNEL_ARG_NAME:                               DeviceInfo read _KERNEL_ARG_NAME;
-    public static property KERNEL_ARG_ADDRESS_GLOBAL:                     DeviceInfo read _KERNEL_ARG_ADDRESS_GLOBAL;
-    public static property KERNEL_ARG_ADDRESS_LOCAL:                      DeviceInfo read _KERNEL_ARG_ADDRESS_LOCAL;
-    public static property KERNEL_ARG_ADDRESS_CONSTANT:                   DeviceInfo read _KERNEL_ARG_ADDRESS_CONSTANT;
-    public static property KERNEL_ARG_ADDRESS_PRIVATE:                    DeviceInfo read _KERNEL_ARG_ADDRESS_PRIVATE;
-    public static property KERNEL_ARG_ACCESS_READ_ONLY:                   DeviceInfo read _KERNEL_ARG_ACCESS_READ_ONLY;
-    public static property KERNEL_ARG_ACCESS_WRITE_ONLY:                  DeviceInfo read _KERNEL_ARG_ACCESS_WRITE_ONLY;
-    public static property KERNEL_ARG_ACCESS_READ_WRITE:                  DeviceInfo read _KERNEL_ARG_ACCESS_READ_WRITE;
-    public static property KERNEL_ARG_ACCESS_NONE:                        DeviceInfo read _KERNEL_ARG_ACCESS_NONE;
-    public static property KERNEL_WORK_GROUP_SIZE:                        DeviceInfo read _KERNEL_WORK_GROUP_SIZE;
-    public static property KERNEL_COMPILE_WORK_GROUP_SIZE:                DeviceInfo read _KERNEL_COMPILE_WORK_GROUP_SIZE;
-    public static property KERNEL_LOCAL_MEM_SIZE:                         DeviceInfo read _KERNEL_LOCAL_MEM_SIZE;
-    public static property KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE:     DeviceInfo read _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE;
-    public static property KERNEL_PRIVATE_MEM_SIZE:                       DeviceInfo read _KERNEL_PRIVATE_MEM_SIZE;
-    public static property KERNEL_GLOBAL_WORK_SIZE:                       DeviceInfo read _KERNEL_GLOBAL_WORK_SIZE;
-    public static property KERNEL_EXEC_INFO_SVM_PTRS:                     DeviceInfo read _KERNEL_EXEC_INFO_SVM_PTRS;
-    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:        DeviceInfo read _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM;
-    public static property KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT:         DeviceInfo read _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT;
-    public static property KERNEL_MAX_NUM_SUB_GROUPS:                     DeviceInfo read _KERNEL_MAX_NUM_SUB_GROUPS;
-    public static property KERNEL_COMPILE_NUM_SUB_GROUPS:                 DeviceInfo read _KERNEL_COMPILE_NUM_SUB_GROUPS;
-    public static property EVENT_COMMAND_QUEUE:                           DeviceInfo read _EVENT_COMMAND_QUEUE;
-    public static property EVENT_COMMAND_TYPE:                            DeviceInfo read _EVENT_COMMAND_TYPE;
-    public static property EVENT_REFERENCE_COUNT:                         DeviceInfo read _EVENT_REFERENCE_COUNT;
-    public static property EVENT_COMMAND_EXECUTION_STATUS:                DeviceInfo read _EVENT_COMMAND_EXECUTION_STATUS;
-    public static property EVENT_CONTEXT:                                 DeviceInfo read _EVENT_CONTEXT;
-    public static property COMMAND_NDRANGE_KERNEL:                        DeviceInfo read _COMMAND_NDRANGE_KERNEL;
-    public static property COMMAND_TASK:                                  DeviceInfo read _COMMAND_TASK;
-    public static property COMMAND_NATIVE_KERNEL:                         DeviceInfo read _COMMAND_NATIVE_KERNEL;
-    public static property COMMAND_READ_BUFFER:                           DeviceInfo read _COMMAND_READ_BUFFER;
-    public static property COMMAND_WRITE_BUFFER:                          DeviceInfo read _COMMAND_WRITE_BUFFER;
-    public static property COMMAND_COPY_BUFFER:                           DeviceInfo read _COMMAND_COPY_BUFFER;
-    public static property COMMAND_READ_IMAGE:                            DeviceInfo read _COMMAND_READ_IMAGE;
-    public static property COMMAND_WRITE_IMAGE:                           DeviceInfo read _COMMAND_WRITE_IMAGE;
-    public static property COMMAND_COPY_IMAGE:                            DeviceInfo read _COMMAND_COPY_IMAGE;
-    public static property COMMAND_COPY_IMAGE_TO_BUFFER:                  DeviceInfo read _COMMAND_COPY_IMAGE_TO_BUFFER;
-    public static property COMMAND_COPY_BUFFER_TO_IMAGE:                  DeviceInfo read _COMMAND_COPY_BUFFER_TO_IMAGE;
-    public static property COMMAND_MAP_BUFFER:                            DeviceInfo read _COMMAND_MAP_BUFFER;
-    public static property COMMAND_MAP_IMAGE:                             DeviceInfo read _COMMAND_MAP_IMAGE;
-    public static property COMMAND_UNMAP_MEM_OBJECT:                      DeviceInfo read _COMMAND_UNMAP_MEM_OBJECT;
-    public static property COMMAND_MARKER:                                DeviceInfo read _COMMAND_MARKER;
-    public static property COMMAND_ACQUIRE_GL_OBJECTS:                    DeviceInfo read _COMMAND_ACQUIRE_GL_OBJECTS;
-    public static property COMMAND_RELEASE_GL_OBJECTS:                    DeviceInfo read _COMMAND_RELEASE_GL_OBJECTS;
-    public static property COMMAND_READ_BUFFER_RECT:                      DeviceInfo read _COMMAND_READ_BUFFER_RECT;
-    public static property COMMAND_WRITE_BUFFER_RECT:                     DeviceInfo read _COMMAND_WRITE_BUFFER_RECT;
-    public static property COMMAND_COPY_BUFFER_RECT:                      DeviceInfo read _COMMAND_COPY_BUFFER_RECT;
-    public static property COMMAND_USER:                                  DeviceInfo read _COMMAND_USER;
-    public static property COMMAND_BARRIER:                               DeviceInfo read _COMMAND_BARRIER;
-    public static property COMMAND_MIGRATE_MEM_OBJECTS:                   DeviceInfo read _COMMAND_MIGRATE_MEM_OBJECTS;
-    public static property COMMAND_FILL_BUFFER:                           DeviceInfo read _COMMAND_FILL_BUFFER;
-    public static property COMMAND_FILL_IMAGE:                            DeviceInfo read _COMMAND_FILL_IMAGE;
-    public static property COMMAND_SVM_FREE:                              DeviceInfo read _COMMAND_SVM_FREE;
-    public static property COMMAND_SVM_MEMCPY:                            DeviceInfo read _COMMAND_SVM_MEMCPY;
-    public static property COMMAND_SVM_MEMFILL:                           DeviceInfo read _COMMAND_SVM_MEMFILL;
-    public static property COMMAND_SVM_MAP:                               DeviceInfo read _COMMAND_SVM_MAP;
-    public static property COMMAND_SVM_UNMAP:                             DeviceInfo read _COMMAND_SVM_UNMAP;
-    public static property BUFFER_CREATE_TYPE_REGION:                     DeviceInfo read _BUFFER_CREATE_TYPE_REGION;
-    public static property PROFILING_COMMAND_QUEUED:                      DeviceInfo read _PROFILING_COMMAND_QUEUED;
-    public static property PROFILING_COMMAND_SUBMIT:                      DeviceInfo read _PROFILING_COMMAND_SUBMIT;
-    public static property PROFILING_COMMAND_START:                       DeviceInfo read _PROFILING_COMMAND_START;
-    public static property PROFILING_COMMAND_END:                         DeviceInfo read _PROFILING_COMMAND_END;
-    public static property PROFILING_COMMAND_COMPLETE:                    DeviceInfo read _PROFILING_COMMAND_COMPLETE;
+    public static property DEVICE_TYPE:                                        DeviceInfo read _DEVICE_TYPE;
+    public static property DEVICE_VENDOR_ID:                                   DeviceInfo read _DEVICE_VENDOR_ID;
+    public static property DEVICE_MAX_COMPUTE_UNITS:                           DeviceInfo read _DEVICE_MAX_COMPUTE_UNITS;
+    public static property DEVICE_MAX_WORK_ITEM_DIMENSIONS:                    DeviceInfo read _DEVICE_MAX_WORK_ITEM_DIMENSIONS;
+    public static property DEVICE_MAX_WORK_GROUP_SIZE:                         DeviceInfo read _DEVICE_MAX_WORK_GROUP_SIZE;
+    public static property DEVICE_MAX_WORK_ITEM_SIZES:                         DeviceInfo read _DEVICE_MAX_WORK_ITEM_SIZES;
+    public static property DEVICE_PREFERRED_VECTOR_WIDTH_CHAR:                 DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_CHAR;
+    public static property DEVICE_PREFERRED_VECTOR_WIDTH_SHORT:                DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_SHORT;
+    public static property DEVICE_PREFERRED_VECTOR_WIDTH_INT:                  DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_INT;
+    public static property DEVICE_PREFERRED_VECTOR_WIDTH_LONG:                 DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_LONG;
+    public static property DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT:                DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT;
+    public static property DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE:               DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE;
+    public static property DEVICE_MAX_CLOCK_FREQUENCY:                         DeviceInfo read _DEVICE_MAX_CLOCK_FREQUENCY;
+    public static property DEVICE_ADDRESS_BITS:                                DeviceInfo read _DEVICE_ADDRESS_BITS;
+    public static property DEVICE_MAX_READ_IMAGE_ARGS:                         DeviceInfo read _DEVICE_MAX_READ_IMAGE_ARGS;
+    public static property DEVICE_MAX_WRITE_IMAGE_ARGS:                        DeviceInfo read _DEVICE_MAX_WRITE_IMAGE_ARGS;
+    public static property DEVICE_MAX_MEM_ALLOC_SIZE:                          DeviceInfo read _DEVICE_MAX_MEM_ALLOC_SIZE;
+    public static property DEVICE_IMAGE2D_MAX_WIDTH:                           DeviceInfo read _DEVICE_IMAGE2D_MAX_WIDTH;
+    public static property DEVICE_IMAGE2D_MAX_HEIGHT:                          DeviceInfo read _DEVICE_IMAGE2D_MAX_HEIGHT;
+    public static property DEVICE_IMAGE3D_MAX_WIDTH:                           DeviceInfo read _DEVICE_IMAGE3D_MAX_WIDTH;
+    public static property DEVICE_IMAGE3D_MAX_HEIGHT:                          DeviceInfo read _DEVICE_IMAGE3D_MAX_HEIGHT;
+    public static property DEVICE_IMAGE3D_MAX_DEPTH:                           DeviceInfo read _DEVICE_IMAGE3D_MAX_DEPTH;
+    public static property DEVICE_IMAGE_SUPPORT:                               DeviceInfo read _DEVICE_IMAGE_SUPPORT;
+    public static property DEVICE_MAX_PARAMETER_SIZE:                          DeviceInfo read _DEVICE_MAX_PARAMETER_SIZE;
+    public static property DEVICE_MAX_SAMPLERS:                                DeviceInfo read _DEVICE_MAX_SAMPLERS;
+    public static property DEVICE_MEM_BASE_ADDR_ALIGN:                         DeviceInfo read _DEVICE_MEM_BASE_ADDR_ALIGN;
+    public static property DEVICE_MIN_DATA_TYPE_ALIGN_SIZE:                    DeviceInfo read _DEVICE_MIN_DATA_TYPE_ALIGN_SIZE;
+    public static property DEVICE_SINGLE_FP_CONFIG:                            DeviceInfo read _DEVICE_SINGLE_FP_CONFIG;
+    public static property DEVICE_GLOBAL_MEM_CACHE_TYPE:                       DeviceInfo read _DEVICE_GLOBAL_MEM_CACHE_TYPE;
+    public static property DEVICE_GLOBAL_MEM_CACHELINE_SIZE:                   DeviceInfo read _DEVICE_GLOBAL_MEM_CACHELINE_SIZE;
+    public static property DEVICE_GLOBAL_MEM_CACHE_SIZE:                       DeviceInfo read _DEVICE_GLOBAL_MEM_CACHE_SIZE;
+    public static property DEVICE_GLOBAL_MEM_SIZE:                             DeviceInfo read _DEVICE_GLOBAL_MEM_SIZE;
+    public static property DEVICE_MAX_CONSTANT_BUFFER_SIZE:                    DeviceInfo read _DEVICE_MAX_CONSTANT_BUFFER_SIZE;
+    public static property DEVICE_MAX_CONSTANT_ARGS:                           DeviceInfo read _DEVICE_MAX_CONSTANT_ARGS;
+    public static property DEVICE_LOCAL_MEM_TYPE:                              DeviceInfo read _DEVICE_LOCAL_MEM_TYPE;
+    public static property DEVICE_LOCAL_MEM_SIZE:                              DeviceInfo read _DEVICE_LOCAL_MEM_SIZE;
+    public static property DEVICE_ERROR_CORRECTION_SUPPORT:                    DeviceInfo read _DEVICE_ERROR_CORRECTION_SUPPORT;
+    public static property DEVICE_PROFILING_TIMER_RESOLUTION:                  DeviceInfo read _DEVICE_PROFILING_TIMER_RESOLUTION;
+    public static property DEVICE_ENDIAN_LITTLE:                               DeviceInfo read _DEVICE_ENDIAN_LITTLE;
+    public static property DEVICE_AVAILABLE:                                   DeviceInfo read _DEVICE_AVAILABLE;
+    public static property DEVICE_COMPILER_AVAILABLE:                          DeviceInfo read _DEVICE_COMPILER_AVAILABLE;
+    public static property DEVICE_EXECUTION_CAPABILITIES:                      DeviceInfo read _DEVICE_EXECUTION_CAPABILITIES;
+    public static property DEVICE_QUEUE_ON_HOST_PROPERTIES:                    DeviceInfo read _DEVICE_QUEUE_ON_HOST_PROPERTIES;
+    public static property DEVICE_QUEUE_PROPERTIES:                            DeviceInfo read _DEVICE_QUEUE_PROPERTIES;
+    public static property DEVICE_NAME:                                        DeviceInfo read _DEVICE_NAME;
+    public static property DEVICE_VENDOR:                                      DeviceInfo read _DEVICE_VENDOR;
+    public static property DRIVER_VERSION:                                     DeviceInfo read _DRIVER_VERSION;
+    public static property DEVICE_PROFILE:                                     DeviceInfo read _DEVICE_PROFILE;
+    public static property DEVICE_VERSION:                                     DeviceInfo read _DEVICE_VERSION;
+    public static property DEVICE_EXTENSIONS:                                  DeviceInfo read _DEVICE_EXTENSIONS;
+    public static property DEVICE_PLATFORM:                                    DeviceInfo read _DEVICE_PLATFORM;
+    public static property DEVICE_DOUBLE_FP_CONFIG:                            DeviceInfo read _DEVICE_DOUBLE_FP_CONFIG;
+    public static property DEVICE_HALF_FP_CONFIG:                              DeviceInfo read _DEVICE_HALF_FP_CONFIG;
+    public static property DEVICE_PREFERRED_VECTOR_WIDTH_HALF:                 DeviceInfo read _DEVICE_PREFERRED_VECTOR_WIDTH_HALF;
+    public static property DEVICE_HOST_UNIFIED_MEMORY:                         DeviceInfo read _DEVICE_HOST_UNIFIED_MEMORY;
+    public static property DEVICE_NATIVE_VECTOR_WIDTH_CHAR:                    DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_CHAR;
+    public static property DEVICE_NATIVE_VECTOR_WIDTH_SHORT:                   DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_SHORT;
+    public static property DEVICE_NATIVE_VECTOR_WIDTH_INT:                     DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_INT;
+    public static property DEVICE_NATIVE_VECTOR_WIDTH_LONG:                    DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_LONG;
+    public static property DEVICE_NATIVE_VECTOR_WIDTH_FLOAT:                   DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_FLOAT;
+    public static property DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE:                  DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE;
+    public static property DEVICE_NATIVE_VECTOR_WIDTH_HALF:                    DeviceInfo read _DEVICE_NATIVE_VECTOR_WIDTH_HALF;
+    public static property DEVICE_OPENCL_C_VERSION:                            DeviceInfo read _DEVICE_OPENCL_C_VERSION;
+    public static property DEVICE_LINKER_AVAILABLE:                            DeviceInfo read _DEVICE_LINKER_AVAILABLE;
+    public static property DEVICE_BUILT_IN_KERNELS:                            DeviceInfo read _DEVICE_BUILT_IN_KERNELS;
+    public static property DEVICE_IMAGE_MAX_BUFFER_SIZE:                       DeviceInfo read _DEVICE_IMAGE_MAX_BUFFER_SIZE;
+    public static property DEVICE_IMAGE_MAX_ARRAY_SIZE:                        DeviceInfo read _DEVICE_IMAGE_MAX_ARRAY_SIZE;
+    public static property DEVICE_PARENT_DEVICE:                               DeviceInfo read _DEVICE_PARENT_DEVICE;
+    public static property DEVICE_PARTITION_MAX_SUB_DEVICES:                   DeviceInfo read _DEVICE_PARTITION_MAX_SUB_DEVICES;
+    public static property DEVICE_PARTITION_PROPERTIES:                        DeviceInfo read _DEVICE_PARTITION_PROPERTIES;
+    public static property DEVICE_PARTITION_AFFINITY_DOMAIN:                   DeviceInfo read _DEVICE_PARTITION_AFFINITY_DOMAIN;
+    public static property DEVICE_PARTITION_TYPE:                              DeviceInfo read _DEVICE_PARTITION_TYPE;
+    public static property DEVICE_REFERENCE_COUNT:                             DeviceInfo read _DEVICE_REFERENCE_COUNT;
+    public static property DEVICE_PREFERRED_INTEROP_USER_SYNC:                 DeviceInfo read _DEVICE_PREFERRED_INTEROP_USER_SYNC;
+    public static property DEVICE_PRINTF_BUFFER_SIZE:                          DeviceInfo read _DEVICE_PRINTF_BUFFER_SIZE;
+    public static property DEVICE_IMAGE_PITCH_ALIGNMENT:                       DeviceInfo read _DEVICE_IMAGE_PITCH_ALIGNMENT;
+    public static property DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT:                DeviceInfo read _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT;
+    public static property DEVICE_MAX_READ_WRITE_IMAGE_ARGS:                   DeviceInfo read _DEVICE_MAX_READ_WRITE_IMAGE_ARGS;
+    public static property DEVICE_MAX_GLOBAL_VARIABLE_SIZE:                    DeviceInfo read _DEVICE_MAX_GLOBAL_VARIABLE_SIZE;
+    public static property DEVICE_QUEUE_ON_DEVICE_PROPERTIES:                  DeviceInfo read _DEVICE_QUEUE_ON_DEVICE_PROPERTIES;
+    public static property DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE:              DeviceInfo read _DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE;
+    public static property DEVICE_QUEUE_ON_DEVICE_MAX_SIZE:                    DeviceInfo read _DEVICE_QUEUE_ON_DEVICE_MAX_SIZE;
+    public static property DEVICE_MAX_ON_DEVICE_QUEUES:                        DeviceInfo read _DEVICE_MAX_ON_DEVICE_QUEUES;
+    public static property DEVICE_MAX_ON_DEVICE_EVENTS:                        DeviceInfo read _DEVICE_MAX_ON_DEVICE_EVENTS;
+    public static property DEVICE_SVM_CAPABILITIES:                            DeviceInfo read _DEVICE_SVM_CAPABILITIES;
+    public static property DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE:        DeviceInfo read _DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE;
+    public static property DEVICE_MAX_PIPE_ARGS:                               DeviceInfo read _DEVICE_MAX_PIPE_ARGS;
+    public static property DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS:                DeviceInfo read _DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS;
+    public static property DEVICE_PIPE_MAX_PACKET_SIZE:                        DeviceInfo read _DEVICE_PIPE_MAX_PACKET_SIZE;
+    public static property DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT:         DeviceInfo read _DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT;
+    public static property DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT:           DeviceInfo read _DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT;
+    public static property DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT:            DeviceInfo read _DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT;
+    public static property DEVICE_IL_VERSION:                                  DeviceInfo read _DEVICE_IL_VERSION;
+    public static property DEVICE_IL_VERSION_KHR:                              DeviceInfo read _DEVICE_IL_VERSION_KHR;
+    public static property DEVICE_MAX_NUM_SUB_GROUPS:                          DeviceInfo read _DEVICE_MAX_NUM_SUB_GROUPS;
+    public static property DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS:      DeviceInfo read _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS;
+    public static property IMAGE_BUFFER:                                       DeviceInfo read _IMAGE_BUFFER;
+    public static property PROGRAM_IL_KHR:                                     DeviceInfo read _PROGRAM_IL_KHR;
+    public static property DEVICE_TERMINATE_CAPABILITY_KHR:                    DeviceInfo read _DEVICE_TERMINATE_CAPABILITY_KHR;
+    public static property DEVICE_MAX_NAMED_BARRIER_COUNT_KHR:                 DeviceInfo read _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR;
+    public static property DEVICE_COMPUTE_CAPABILITY_MAJOR_NV:                 DeviceInfo read _DEVICE_COMPUTE_CAPABILITY_MAJOR_NV;
+    public static property DEVICE_COMPUTE_CAPABILITY_MINOR_NV:                 DeviceInfo read _DEVICE_COMPUTE_CAPABILITY_MINOR_NV;
+    public static property DEVICE_REGISTERS_PER_BLOCK_NV:                      DeviceInfo read _DEVICE_REGISTERS_PER_BLOCK_NV;
+    public static property DEVICE_WARP_SIZE_NV:                                DeviceInfo read _DEVICE_WARP_SIZE_NV;
+    public static property DEVICE_GPU_OVERLAP_NV:                              DeviceInfo read _DEVICE_GPU_OVERLAP_NV;
+    public static property DEVICE_KERNEL_EXEC_TIMEOUT_NV:                      DeviceInfo read _DEVICE_KERNEL_EXEC_TIMEOUT_NV;
+    public static property DEVICE_INTEGRATED_MEMORY_NV:                        DeviceInfo read _DEVICE_INTEGRATED_MEMORY_NV;
+    public static property DEVICE_PROFILING_TIMER_OFFSET_AMD:                  DeviceInfo read _DEVICE_PROFILING_TIMER_OFFSET_AMD;
+    public static property DEVICE_PARENT_DEVICE_EXT:                           DeviceInfo read _DEVICE_PARENT_DEVICE_EXT;
+    public static property DEVICE_PARTITION_TYPES_EXT:                         DeviceInfo read _DEVICE_PARTITION_TYPES_EXT;
+    public static property DEVICE_AFFINITY_DOMAINS_EXT:                        DeviceInfo read _DEVICE_AFFINITY_DOMAINS_EXT;
+    public static property DEVICE_REFERENCE_COUNT_EXT:                         DeviceInfo read _DEVICE_REFERENCE_COUNT_EXT;
+    public static property DEVICE_PARTITION_STYLE_EXT:                         DeviceInfo read _DEVICE_PARTITION_STYLE_EXT;
+    public static property DEVICE_ME_VERSION_INTEL:                            DeviceInfo read _DEVICE_ME_VERSION_INTEL;
+    public static property DEVICE_COMPUTE_UNITS_BITFIELD_ARM:                  DeviceInfo read _DEVICE_COMPUTE_UNITS_BITFIELD_ARM;
+    public static property DEVICE_SPIR_VERSIONS:                               DeviceInfo read _DEVICE_SPIR_VERSIONS;
+    public static property DEVICE_SIMULTANEOUS_INTEROPS_INTEL:                 DeviceInfo read _DEVICE_SIMULTANEOUS_INTEROPS_INTEL;
+    public static property DEVICE_NUM_SIMULTANEOUS_INTEROPS_INTEL:             DeviceInfo read _DEVICE_NUM_SIMULTANEOUS_INTEROPS_INTEL;
+    public static property DEVICE_SUB_GROUP_SIZES_INTEL:                       DeviceInfo read _DEVICE_SUB_GROUP_SIZES_INTEL;
+    public static property DEVICE_AVC_ME_VERSION_INTEL:                        DeviceInfo read _DEVICE_AVC_ME_VERSION_INTEL;
+    public static property DEVICE_AVC_ME_SUPPORTS_TEXTURE_SAMPLER_USE_INTEL:   DeviceInfo read _DEVICE_AVC_ME_SUPPORTS_TEXTURE_SAMPLER_USE_INTEL;
+    public static property DEVICE_AVC_ME_SUPPORTS_PREEMPTION_INTEL:            DeviceInfo read _DEVICE_AVC_ME_SUPPORTS_PREEMPTION_INTEL;
+    public static property DEVICE_PLANAR_YUV_MAX_WIDTH_INTEL:                  DeviceInfo read _DEVICE_PLANAR_YUV_MAX_WIDTH_INTEL;
+    public static property DEVICE_PLANAR_YUV_MAX_HEIGHT_INTEL:                 DeviceInfo read _DEVICE_PLANAR_YUV_MAX_HEIGHT_INTEL;
+    public static property DEVICE_HOST_MEM_CAPABILITIES_INTEL:                 DeviceInfo read _DEVICE_HOST_MEM_CAPABILITIES_INTEL;
+    public static property DEVICE_DEVICE_MEM_CAPABILITIES_INTEL:               DeviceInfo read _DEVICE_DEVICE_MEM_CAPABILITIES_INTEL;
+    public static property DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL: DeviceInfo read _DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL;
+    public static property DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL:  DeviceInfo read _DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL;
+    public static property DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL:        DeviceInfo read _DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL;
     
     public function ToString: string; override;
     begin
@@ -1001,6 +1679,13 @@
         res.Name.TrimStart('&');
     end;
     
+    public function IS_ERROR := val<>0;
+    
+    public procedure RaiseIfError :=
+    if IS_ERROR then raise new OpenCLException(self.ToString);
+    
+    public constructor(st: CommandExecutionStatus) := self.val := st.val;
+    
   end;
   
   MapFlags = record
@@ -1124,17 +1809,14 @@
     public constructor(val: UInt64) := self.val := val;
     
     private static _MIGRATE_MEM_OBJECT_HOST              := new MemMigrationFlags($0001);
-    private static _MIGRATE_MEM_OBJECT_HOST_EXT          := new MemMigrationFlags($0001);
     private static _MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED := new MemMigrationFlags($0002);
     
     public static property MIGRATE_MEM_OBJECT_HOST:              MemMigrationFlags read _MIGRATE_MEM_OBJECT_HOST;
-    public static property MIGRATE_MEM_OBJECT_HOST_EXT:          MemMigrationFlags read _MIGRATE_MEM_OBJECT_HOST_EXT;
     public static property MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED: MemMigrationFlags read _MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED;
     
     public static function operator or(f1,f2: MemMigrationFlags) := new MemMigrationFlags(f1.val or f2.val);
     
     public property HAS_FLAG_MIGRATE_MEM_OBJECT_HOST:              boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_MIGRATE_MEM_OBJECT_HOST_EXT:          boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED: boolean read self.val and $0002 <> 0;
     
     public function ToString: string; override;
@@ -1147,19 +1829,31 @@
     
   end;
   
-  MemObjectType = record
+  PlatformInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _NONE := new MemObjectType($0000);
+    private static _PLATFORM_PROFILE               := new PlatformInfo($0900);
+    private static _PLATFORM_VERSION               := new PlatformInfo($0901);
+    private static _PLATFORM_NAME                  := new PlatformInfo($0902);
+    private static _PLATFORM_VENDOR                := new PlatformInfo($0903);
+    private static _PLATFORM_EXTENSIONS            := new PlatformInfo($0904);
+    private static _PLATFORM_HOST_TIMER_RESOLUTION := new PlatformInfo($0905);
+    private static _PLATFORM_ICD_SUFFIX_KHR        := new PlatformInfo($0920);
     
-    public static property NONE: MemObjectType read _NONE;
+    public static property PLATFORM_PROFILE:               PlatformInfo read _PLATFORM_PROFILE;
+    public static property PLATFORM_VERSION:               PlatformInfo read _PLATFORM_VERSION;
+    public static property PLATFORM_NAME:                  PlatformInfo read _PLATFORM_NAME;
+    public static property PLATFORM_VENDOR:                PlatformInfo read _PLATFORM_VENDOR;
+    public static property PLATFORM_EXTENSIONS:            PlatformInfo read _PLATFORM_EXTENSIONS;
+    public static property PLATFORM_HOST_TIMER_RESOLUTION: PlatformInfo read _PLATFORM_HOST_TIMER_RESOLUTION;
+    public static property PLATFORM_ICD_SUFFIX_KHR:        PlatformInfo read _PLATFORM_ICD_SUFFIX_KHR;
     
     public function ToString: string; override;
     begin
-      var res := typeof(MemObjectType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      var res := typeof(PlatformInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'MemObjectType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'PlatformInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     

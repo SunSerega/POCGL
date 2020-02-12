@@ -153,6 +153,8 @@ type
     private enums := new Dictionary<string, int64>;
     //
     public static All := new Dictionary<string, Group>;
+    private static AllEnums := new Dictionary<string, int64>;
+    private static GroupByEname := new Dictionary<string, Group>;
     
     static constructor;
     begin
@@ -166,6 +168,8 @@ type
     public constructor(n: XmlNode);
     begin
       self.name := n['name'];
+      if self.name in ['Constants'] then exit;
+      var valid := true;
       
       begin
         var t := n['type'];
@@ -185,10 +189,12 @@ type
         if not TypeDef.All.TryGetValue(self.name, td) then
         begin
           log.WriteLine($'Type-less group [{self.name}]');
-          exit;
+          valid := false;
+        end else
+        begin
+          if td.ptr<>0 then raise new MessageException($'Enum [{self.name}] has type with ptr');
+          self.t := td.name;
         end;
-        if td.ptr<>0 then raise new MessageException($'Enum [{self.name}] has type with ptr');
-        self.t := td.name;
       end;
       
       foreach var e in n.Nodes['enum'] do
@@ -199,16 +205,35 @@ type
         var val: int64;
         if val_str<>nil then
         try
+          var val_shl := 0;
+          if val_str.Contains('<<') then
+          begin
+            var s := val_str.Trim('(',')').ToWords('<');
+            val_str := s[0].Trim;
+            val_shl := s[1].ToInteger;
+          end;
+          
           if val_str.StartsWith('0x') then
             val := System.Convert.ToInt64(val_str, 16) else
             val := System.Convert.ToInt64(val_str);
+          
+          val := val shl val_shl;
         except
+          if val_str='((cl_device_partition_property_ext)0)' then
+            val := 0 else
+          if val_str='((cl_device_partition_property_ext)0 - 1)' then
+            val := -1 else
           if not enums.TryGetValue(val_str, val) then
-            Otp($'ERROR parsing enum val [{val_str}] of group [{self.name}]');
+          begin
+            Otp($'ERROR parsing enum [{ename}] val [{val_str}] of group [{self.name}]');
+            continue;
+          end;
         end else
           val := 1 shl e['bitpos'].ToInteger;
         
         enums.Add(ename, val);
+        AllEnums.Add(ename, val);
+        GroupByEname.Add(ename, self);
       end;
       
       if self.name.StartsWith('ErrorCode') then
@@ -217,7 +242,45 @@ type
         foreach var ename in enums.Keys do
           ec.enums.Add(ename, self.enums[ename]);
       end else
+      if valid then
         All.Add(self.name, self);
+    end;
+    
+    public static procedure FixBy(n: XmlNode);
+    begin
+      var gname := n['comment'];
+      if gname=nil then exit;
+      
+      var gr: Group;
+      if not All.TryGetValue(gname, gr) then
+      begin
+        var t: TypeDef;
+        if TypeDef.All.TryGetValue(gname, t) then
+        begin
+          gr := new Group;
+          gr.name := gname;
+          gr.t := t.name;
+          t.name := gname;
+          gr.bitmask := false;
+          All.Add(gname, gr);
+        end else
+          exit;
+      end;
+      
+      foreach var en in n.Nodes['enum'] do
+      begin
+        var ename := en['name'];
+        if gr.enums.ContainsKey(ename) then continue;
+        var pgr: Group;
+        if GroupByEname.TryGetValue(ename, pgr) then
+          pgr.enums.Remove(ename);
+        
+        var val: int64;
+        if AllEnums.TryGetValue(ename, val) then
+          gr.enums.Add(ename, val) else
+          Otp($'ERROR: Enum [{ename}] of group [{gname}] wasn''t defined');
+      end;
+      
     end;
     
     public procedure Save(bw: System.IO.BinaryWriter);
@@ -424,6 +487,9 @@ begin
   
   foreach var n in root.Nodes['enums'] do
     new Group(n);
+  foreach var fn in root.Nodes['feature'] + root.Nodes['extensions'].Single.Nodes['extension'] do
+    foreach var rn in fn.Nodes['require'] do
+      Group.FixBy(rn);
   
   foreach var n in root.Nodes['commands'].Single.Nodes['command'] do
     new FuncData(n);
@@ -455,25 +521,34 @@ begin
     Extension.All.SelectMany(ext->ext.add)
   ).ToHashSet.ToArray;
   
-  var grs := funcs
-    .SelectMany(f->f.pars)
-    .Select(par->par.gr)
-    .Where(gr->gr<>nil)
-    .ToHashSet.ToArray
-  ;
   
   var structs_hs := new HashSet<StructDef>;
   foreach var par in funcs.SelectMany(f->f.pars) do
     AddStructChain(par.t, structs_hs);
   var structs := structs_hs.ToArray;
   
-  bw.Write(structs.Length);
+  var grs_hs := funcs
+    .SelectMany(f->f.pars)
+    .Select(par->par.gr)
+    .Where(gr->gr<>nil)
+    .ToHashSet
+  ;
   foreach var struct in structs do
-    struct.Save(bw);
+    foreach var fld in struct.flds do
+    begin
+      var gr: Group;
+      if Group.All.TryGetValue(fld[2], gr) then
+        grs_hs += gr;
+    end;
+  var grs := grs_hs.ToArray;
   
   bw.Write(grs.Length);
   foreach var gr in grs do
     gr.Save(bw);
+  
+  bw.Write(structs.Length);
+  foreach var struct in structs do
+    struct.Save(bw);
   
   bw.Write(funcs.Length);
   foreach var func in funcs do

@@ -146,10 +146,11 @@ type
   
   __NativUtils = static class
     
-    static function CopyToUnm<TRecord>(a: TRecord): ^TRecord; where TRecord: record;
+    static function CopyToUnm<TRecord>(a: TRecord): IntPtr; where TRecord: record;
     begin
-      Result := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
-      Result^ := a;
+      Result := Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>);
+      var res: ^TRecord := pointer(Result);
+      res^ := a;
     end;
     
     static function AsPtr<T>(p: pointer): ^T := p;
@@ -157,10 +158,10 @@ type
     static function GCHndAlloc(o: object) :=
     CopyToUnm(GCHandle.Alloc(o));
     
-    static procedure GCHndFree(gc_hnd_ptr: pointer);
+    static procedure GCHndFree(gc_hnd_ptr: IntPtr);
     begin
-      AsPtr&<GCHandle>(gc_hnd_ptr)^.Free;
-      Marshal.FreeHGlobal(IntPtr(gc_hnd_ptr));
+      AsPtr&<GCHandle>(pointer(gc_hnd_ptr))^.Free;
+      Marshal.FreeHGlobal(gc_hnd_ptr);
     end;
     
   end;
@@ -232,12 +233,12 @@ type
     for var i := 0 to count-1 do
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     
-    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback);
-    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase);
+    public static procedure AttachCallback(ev: cl_event; cb: EventCallback);
+    public static procedure AttachCallback(ev: cl_event; cb: EventCallback; tsk: CLTaskBase);
     
     ///cb должен иметь глобальный try и вызывать "state.RaiseIfError" и "__NativUtils.GCHndFree(data)",
     ///А "cl.ReleaseEvent" если и вызывать - то только на результате вызова AttachCallback
-    public function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
+    public function AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): cl_event;
     
   end;
   
@@ -256,7 +257,7 @@ type
     
     function WaitAndGetBase: object;
     
-    function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes;
+    function AttachCallbackBase(cb: EventCallback; c: Context; var cq: cl_command_queue): __IQueueRes;
     
   end;
   __QueueRes<T> = record(__IQueueRes)
@@ -307,13 +308,13 @@ type
       
     end;
     
-    function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): __QueueRes<T>;
+    function AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): __QueueRes<T>;
     begin
       Result.res    := self.res;
       Result.res_f  := self.res_f;
       Result.ev     := self.ev.AttachCallback(cb, c, cq);
     end;
-    function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes := AttachCallback(cb, c, cq);
+    function AttachCallbackBase(cb: EventCallback; c: Context; var cq: cl_command_queue): __IQueueRes := AttachCallback(cb, c, cq);
     
   end;
   
@@ -514,7 +515,7 @@ type
     if err.IS_ERROR then AddErr(new OpenCLException(err.ToString));
     
     protected procedure AddErr(st: CommandExecutionStatus) :=
-    if st.IS_ERROR then AddErr(new OpenCLException(st.GetError.ToString));
+    if st.IS_ERROR then AddErr(new OpenCLException(ErrorCode.Create(st).ToString));
     
     /// Возвращает True если очередь уже завершилась
     protected function AddEventHandler<T>(var ev: T; cb: T): boolean; where T: Delegate;
@@ -1467,24 +1468,24 @@ type
       _def_cont := new Context;
     except
       try
-        _def_cont := new Context(DeviceTypeFlags.All); // если нету GPU - попытаться хотя бы для чего то инициализировать
+        _def_cont := new Context(DeviceTypeFlags.DEVICE_TYPE_ALL); // если нету GPU - попытаться хотя бы для чего то инициализировать
       except
         _def_cont := nil;
       end;
     end;
     
-    public constructor := Create(DeviceTypeFlags.GPU);
+    public constructor := Create(DeviceTypeFlags.DEVICE_TYPE_GPU);
     
     public constructor(dt: DeviceTypeFlags);
     begin
       var ec: ErrorCode;
       
       var _platform: cl_platform_id;
-      cl.GetPlatformIDs(1, @_platform, nil).RaiseIfError;
+      cl.GetPlatformIDs(1, _platform, IntPtr.Zero).RaiseIfError;
       
-      cl.GetDeviceIDs(_platform, dt, 1, @_device, nil).RaiseIfError;
+      cl.GetDeviceIDs(_platform, dt, 1, _device, IntPtr.Zero).RaiseIfError;
       
-      _context := cl.CreateContext(nil, 1, @_device, nil, nil, @ec);
+      _context := cl.CreateContext(IntPtr.Zero, 1, _device, nil, IntPtr.Zero, ec);
       ec.RaiseIfError;
       
       need_finnalize := true;
@@ -1493,7 +1494,7 @@ type
     public constructor(context: cl_context);
     begin
       
-      cl.GetContextInfo(context, ContextInfoType.CL_CONTEXT_DEVICES, new UIntPtr(IntPtr.Size), @_device, nil).RaiseIfError;
+      cl.GetContextInfo(context, ContextInfo.CL_CONTEXT_DEVICES, new UIntPtr(IntPtr.Size), @_device, nil).RaiseIfError;
       
       _context := context;
     end;
@@ -1834,12 +1835,12 @@ end;
 
 {$endregion CommandQueue}
 
-static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback) :=
+static procedure __EventList.AttachCallback(ev: cl_event; cb: EventCallback) :=
 cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
-static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase) :=
+static procedure __EventList.AttachCallback(ev: cl_event; cb: EventCallback; tsk: CLTaskBase) :=
 tsk.AddErr( cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)) );
 
-function __EventList.AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
+function __EventList.AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): cl_event;
 begin
   
   var ev: cl_event;
@@ -2891,7 +2892,7 @@ type
           end).Start else
         begin
           
-          var set_complete: Event_Callback := (ev,st,data)->
+          var set_complete: EventCallback := (ev,st,data)->
           begin
             tsk.AddErr( st );
             

@@ -52,12 +52,4 @@ VASurfaceID					= IntPtr
 cl_GLsync					= IntPtr
 cl_GLenum					= UInt32
 
-//--------------------------------------------------
-//                      Enum's
-//--------------------------------------------------
-
-cl_channel_order			= ChannelOrder
-cl_channel_type				= ChannelType
-cl_mem_object_type			= MemObjectType
-
 

@@ -195,6 +195,8 @@ type
     public ext_name: string;
     public screened_enums: Dictionary<string,string>;
     
+    public custom_members := new List<array of string>;
+    
     public procedure FinishInit;
     begin
       
@@ -212,7 +214,9 @@ type
       
       name := br.ReadString;
       t := TypeTable.Convert(br.ReadString);
-      TypeTable.All.Add(name, name);
+      if TypeTable.All.ContainsKey(name) then
+        Otp($'ERROR: Record name [{name}] in TypeTable') else
+        TypeTable.All.Add(name, name);
       TypeTable.Used += name;
       bitmask := br.ReadBoolean;
       
@@ -294,6 +298,13 @@ type
       end;
       sb +=       $'    end;' + #10;
       sb +=       $'    ' + #10;
+      
+      foreach var m in custom_members do
+      begin
+        foreach var l in m do
+          sb +=   $'    {l}' + #10;
+        sb +=     $'    ' + #10;
+      end;
       
       sb +=       $'  end;'+#10;
       sb +=       $'  ' + #10;
@@ -1228,8 +1239,8 @@ end;
 procedure LoadBin(fname: string);
 begin
   var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
-  Struct.LoadAll(br);
   Group.LoadAll(br);
+  Struct.LoadAll(br);
   Func.LoadAll(br);
   Feature.LoadAll(br);
   Extension.LoadAll(br);
@@ -1259,6 +1270,7 @@ begin
   loop 1 do log_func_ovrs.WriteLine;
   
   log.Close;
+  log_groups.Close;
   log_func_ovrs.Close;
   
 end;
@@ -1487,6 +1499,37 @@ type
     end;
     
   end;
+  GroupCustopMemberFixer = sealed class(GroupFixer)
+    public member_lns: array of string;
+    
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(name);
+      
+      var res := new List<string>;
+      var skiped := new List<string>;
+      
+      foreach var l in data do
+        if not string.IsNullOrWhiteSpace(l) then
+        begin
+          res.AddRange(skiped);
+          skiped.Clear;
+          res += l;
+        end else
+        if res.Count<>0 then
+          skiped += l;
+      
+      member_lns := res.ToArray;
+    end;
+    
+    public function Apply(gr: Group): boolean; override;
+    begin
+      gr.custom_members += member_lns;
+      self.used := true;
+      Result := false;
+    end;
+    
+  end;
   
 static constructor GroupFixer.Create;
 begin
@@ -1496,10 +1539,11 @@ begin
     foreach var bl in ReadBlocks(gr[1],'!',false) do
     case bl[0] of
       
-      'add':    GroupAdder    .Create(gr[0], bl[1]);
-      'remove': GroupRemover  .Create(gr[0], bl[1]);
+      'add':        GroupAdder            .Create(gr[0], bl[1]);
+      'remove':     GroupRemover          .Create(gr[0], bl[1]);
       
-      'rename': GroupNameFixer.Create(gr[0], bl[1]);
+      'rename':     GroupNameFixer        .Create(gr[0], bl[1]);
+      'cust_memb':  GroupCustopMemberFixer.Create(gr[0], bl[1]);
       
       else raise new MessageException($'Invalid group fixer type [!{bl[0]}] for group [{gr[0]}]');
     end;

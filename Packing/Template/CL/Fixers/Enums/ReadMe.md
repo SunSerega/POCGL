@@ -18,6 +18,7 @@ Genral syntax of `.dat` files:
 - `!add`
 - `!remove`
 - `!rename`
+- `!cust_memb`
 
 ---
 ### !add
@@ -56,5 +57,19 @@ NewEnumName
 ```
 
 ---
+### !cust_memb
 
+Syntax:
+```
+# ErrorCode
+!cust_memb
+
+public procedure RaiseIfError;
+begin
+  //ToDo ...
+end;
+
+```
+
+---
 

@@ -402,11 +402,11 @@ begin
     .ToHashSet.ToArray
   ;
   
-  bw.Write(0); // structs
-  
   bw.Write(grs.Length);
   foreach var gr in grs do
     gr.Save(bw);
+  
+  bw.Write(0); // structs
   
   bw.Write(funcs.Length);
   foreach var func in funcs do

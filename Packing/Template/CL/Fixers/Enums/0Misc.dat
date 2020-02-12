@@ -1,32 +1,27 @@
 
 
 
-# ChannelOrder
-!add
-UInt32
-false
-NONE=0
+# ErrorCode
+!cust_memb
+public function IS_ERROR := val<>0;
+!cust_memb
+public procedure RaiseIfError :=
+if IS_ERROR then raise new OpenCLException(self.ToString);
+!cust_memb
+public constructor(st: CommandExecutionStatus) := self.val := st.val;
 
-# ChannelType
-!add
-UInt32
-false
-NONE=0
 
-# MemObjectType
-!add
-UInt32
-false
-NONE=0
 
 # CommandExecutionStatus
 !add
-UInt32
+Int32
 false
 COMPLETE	= 0x0
 RUNNING		= 0x1
 SUBMITTED	= 0x2
 QUEUED		= 0x3
+!cust_memb
+public function IS_ERROR := val < 0;
 
 
 
@@ -58,6 +53,9 @@ MemFlags
 !rename
 MemMigrationFlags
 
+# cl_platform_info
+!rename
+PlatformInfo
 
 
 
