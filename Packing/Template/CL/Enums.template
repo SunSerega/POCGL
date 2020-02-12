@@ -3,6 +3,74 @@
   
   {$region Core}
   
+  AcceleratorInfoIntel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _ACCELERATOR_DESCRIPTOR_INTEL      := new AcceleratorInfoIntel($4090);
+    private static _ACCELERATOR_REFERENCE_COUNT_INTEL := new AcceleratorInfoIntel($4091);
+    private static _ACCELERATOR_CONTEXT_INTEL         := new AcceleratorInfoIntel($4092);
+    private static _ACCELERATOR_TYPE_INTEL            := new AcceleratorInfoIntel($4093);
+    
+    public static property ACCELERATOR_DESCRIPTOR_INTEL:      AcceleratorInfoIntel read _ACCELERATOR_DESCRIPTOR_INTEL;
+    public static property ACCELERATOR_REFERENCE_COUNT_INTEL: AcceleratorInfoIntel read _ACCELERATOR_REFERENCE_COUNT_INTEL;
+    public static property ACCELERATOR_CONTEXT_INTEL:         AcceleratorInfoIntel read _ACCELERATOR_CONTEXT_INTEL;
+    public static property ACCELERATOR_TYPE_INTEL:            AcceleratorInfoIntel read _ACCELERATOR_TYPE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(AcceleratorInfoIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'AcceleratorInfoIntel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  AcceleratorTypeIntel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL := new AcceleratorTypeIntel($0000);
+    
+    public static property ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL: AcceleratorTypeIntel read _ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(AcceleratorTypeIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'AcceleratorTypeIntel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  AddressingMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _ADDRESS_NONE            := new AddressingMode($1130);
+    private static _ADDRESS_CLAMP_TO_EDGE   := new AddressingMode($1131);
+    private static _ADDRESS_CLAMP           := new AddressingMode($1132);
+    private static _ADDRESS_REPEAT          := new AddressingMode($1133);
+    private static _ADDRESS_MIRRORED_REPEAT := new AddressingMode($1134);
+    
+    public static property ADDRESS_NONE:            AddressingMode read _ADDRESS_NONE;
+    public static property ADDRESS_CLAMP_TO_EDGE:   AddressingMode read _ADDRESS_CLAMP_TO_EDGE;
+    public static property ADDRESS_CLAMP:           AddressingMode read _ADDRESS_CLAMP;
+    public static property ADDRESS_REPEAT:          AddressingMode read _ADDRESS_REPEAT;
+    public static property ADDRESS_MIRRORED_REPEAT: AddressingMode read _ADDRESS_MIRRORED_REPEAT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(AddressingMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'AddressingMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
   Bool = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -27,1073 +95,139 @@
     
   end;
   
-  cl_accelerator_info_intel = record
+  BufferCreateType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _ACCELERATOR_DESCRIPTOR_INTEL      := new cl_accelerator_info_intel($4090);
-    private static _ACCELERATOR_REFERENCE_COUNT_INTEL := new cl_accelerator_info_intel($4091);
-    private static _ACCELERATOR_CONTEXT_INTEL         := new cl_accelerator_info_intel($4092);
-    private static _ACCELERATOR_TYPE_INTEL            := new cl_accelerator_info_intel($4093);
+    private static _BUFFER_CREATE_TYPE_REGION := new BufferCreateType($1220);
     
-    public static property ACCELERATOR_DESCRIPTOR_INTEL:      cl_accelerator_info_intel read _ACCELERATOR_DESCRIPTOR_INTEL;
-    public static property ACCELERATOR_REFERENCE_COUNT_INTEL: cl_accelerator_info_intel read _ACCELERATOR_REFERENCE_COUNT_INTEL;
-    public static property ACCELERATOR_CONTEXT_INTEL:         cl_accelerator_info_intel read _ACCELERATOR_CONTEXT_INTEL;
-    public static property ACCELERATOR_TYPE_INTEL:            cl_accelerator_info_intel read _ACCELERATOR_TYPE_INTEL;
+    public static property BUFFER_CREATE_TYPE_REGION: BufferCreateType read _BUFFER_CREATE_TYPE_REGION;
     
     public function ToString: string; override;
     begin
-      var res := typeof(cl_accelerator_info_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      var res := typeof(BufferCreateType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'cl_accelerator_info_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'BufferCreateType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
   end;
   
-  cl_accelerator_type_intel = record
+  ChannelOrder = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL := new cl_accelerator_type_intel($0000);
+    private static _R             := new ChannelOrder($10B0);
+    private static _A             := new ChannelOrder($10B1);
+    private static _RG            := new ChannelOrder($10B2);
+    private static _RA            := new ChannelOrder($10B3);
+    private static _RGB           := new ChannelOrder($10B4);
+    private static _RGBA          := new ChannelOrder($10B5);
+    private static _BGRA          := new ChannelOrder($10B6);
+    private static _ARGB          := new ChannelOrder($10B7);
+    private static _INTENSITY     := new ChannelOrder($10B8);
+    private static _LUMINANCE     := new ChannelOrder($10B9);
+    private static _Rx            := new ChannelOrder($10BA);
+    private static _RGx           := new ChannelOrder($10BB);
+    private static _RGBx          := new ChannelOrder($10BC);
+    private static _DEPTH         := new ChannelOrder($10BD);
+    private static _DEPTH_STENCIL := new ChannelOrder($10BE);
+    private static _sRGB          := new ChannelOrder($10BF);
+    private static _sRGBx         := new ChannelOrder($10C0);
+    private static _sRGBA         := new ChannelOrder($10C1);
+    private static _sBGRA         := new ChannelOrder($10C2);
+    private static _ABGR          := new ChannelOrder($10C3);
+    private static _YUYV_INTEL    := new ChannelOrder($4076);
+    private static _UYVY_INTEL    := new ChannelOrder($4077);
+    private static _YVYU_INTEL    := new ChannelOrder($4078);
+    private static _VYUY_INTEL    := new ChannelOrder($4079);
+    private static _NV21_IMG      := new ChannelOrder($40D0);
+    private static _YV12_IMG      := new ChannelOrder($40D1);
+    private static _NV12_INTEL    := new ChannelOrder($410E);
     
-    public static property ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL: cl_accelerator_type_intel read _ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL;
+    public static property R:             ChannelOrder read _R;
+    public static property A:             ChannelOrder read _A;
+    public static property RG:            ChannelOrder read _RG;
+    public static property RA:            ChannelOrder read _RA;
+    public static property RGB:           ChannelOrder read _RGB;
+    public static property RGBA:          ChannelOrder read _RGBA;
+    public static property BGRA:          ChannelOrder read _BGRA;
+    public static property ARGB:          ChannelOrder read _ARGB;
+    public static property INTENSITY:     ChannelOrder read _INTENSITY;
+    public static property LUMINANCE:     ChannelOrder read _LUMINANCE;
+    public static property Rx:            ChannelOrder read _Rx;
+    public static property RGx:           ChannelOrder read _RGx;
+    public static property RGBx:          ChannelOrder read _RGBx;
+    public static property DEPTH:         ChannelOrder read _DEPTH;
+    public static property DEPTH_STENCIL: ChannelOrder read _DEPTH_STENCIL;
+    public static property sRGB:          ChannelOrder read _sRGB;
+    public static property sRGBx:         ChannelOrder read _sRGBx;
+    public static property sRGBA:         ChannelOrder read _sRGBA;
+    public static property sBGRA:         ChannelOrder read _sBGRA;
+    public static property ABGR:          ChannelOrder read _ABGR;
+    public static property YUYV_INTEL:    ChannelOrder read _YUYV_INTEL;
+    public static property UYVY_INTEL:    ChannelOrder read _UYVY_INTEL;
+    public static property YVYU_INTEL:    ChannelOrder read _YVYU_INTEL;
+    public static property VYUY_INTEL:    ChannelOrder read _VYUY_INTEL;
+    public static property NV21_IMG:      ChannelOrder read _NV21_IMG;
+    public static property YV12_IMG:      ChannelOrder read _YV12_IMG;
+    public static property NV12_INTEL:    ChannelOrder read _NV12_INTEL;
     
     public function ToString: string; override;
     begin
-      var res := typeof(cl_accelerator_type_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      var res := typeof(ChannelOrder).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'cl_accelerator_type_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ChannelOrder[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
   end;
   
-  cl_addressing_mode = record
+  ChannelType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _ADDRESS_NONE            := new cl_addressing_mode($1130);
-    private static _ADDRESS_CLAMP_TO_EDGE   := new cl_addressing_mode($1131);
-    private static _ADDRESS_CLAMP           := new cl_addressing_mode($1132);
-    private static _ADDRESS_REPEAT          := new cl_addressing_mode($1133);
-    private static _ADDRESS_MIRRORED_REPEAT := new cl_addressing_mode($1134);
+    private static _SNORM_INT8         := new ChannelType($10D0);
+    private static _SNORM_INT16        := new ChannelType($10D1);
+    private static _UNORM_INT8         := new ChannelType($10D2);
+    private static _UNORM_INT16        := new ChannelType($10D3);
+    private static _UNORM_SHORT_565    := new ChannelType($10D4);
+    private static _UNORM_SHORT_555    := new ChannelType($10D5);
+    private static _UNORM_INT_101010   := new ChannelType($10D6);
+    private static _SIGNED_INT8        := new ChannelType($10D7);
+    private static _SIGNED_INT16       := new ChannelType($10D8);
+    private static _SIGNED_INT32       := new ChannelType($10D9);
+    private static _UNSIGNED_INT8      := new ChannelType($10DA);
+    private static _UNSIGNED_INT16     := new ChannelType($10DB);
+    private static _UNSIGNED_INT32     := new ChannelType($10DC);
+    private static _HALF_FLOAT         := new ChannelType($10DD);
+    private static _FLOAT              := new ChannelType($10DE);
+    private static _UNORM_INT24        := new ChannelType($10DF);
+    private static _UNORM_INT_101010_2 := new ChannelType($10E0);
     
-    public static property ADDRESS_NONE:            cl_addressing_mode read _ADDRESS_NONE;
-    public static property ADDRESS_CLAMP_TO_EDGE:   cl_addressing_mode read _ADDRESS_CLAMP_TO_EDGE;
-    public static property ADDRESS_CLAMP:           cl_addressing_mode read _ADDRESS_CLAMP;
-    public static property ADDRESS_REPEAT:          cl_addressing_mode read _ADDRESS_REPEAT;
-    public static property ADDRESS_MIRRORED_REPEAT: cl_addressing_mode read _ADDRESS_MIRRORED_REPEAT;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_addressing_mode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_addressing_mode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_buffer_create_type = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _BUFFER_CREATE_TYPE_REGION := new cl_buffer_create_type($1220);
-    
-    public static property BUFFER_CREATE_TYPE_REGION: cl_buffer_create_type read _BUFFER_CREATE_TYPE_REGION;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_buffer_create_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_buffer_create_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_channel_order = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _R             := new cl_channel_order($10B0);
-    private static _A             := new cl_channel_order($10B1);
-    private static _RG            := new cl_channel_order($10B2);
-    private static _RA            := new cl_channel_order($10B3);
-    private static _RGB           := new cl_channel_order($10B4);
-    private static _RGBA          := new cl_channel_order($10B5);
-    private static _BGRA          := new cl_channel_order($10B6);
-    private static _ARGB          := new cl_channel_order($10B7);
-    private static _INTENSITY     := new cl_channel_order($10B8);
-    private static _LUMINANCE     := new cl_channel_order($10B9);
-    private static _Rx            := new cl_channel_order($10BA);
-    private static _RGx           := new cl_channel_order($10BB);
-    private static _RGBx          := new cl_channel_order($10BC);
-    private static _DEPTH         := new cl_channel_order($10BD);
-    private static _DEPTH_STENCIL := new cl_channel_order($10BE);
-    private static _sRGB          := new cl_channel_order($10BF);
-    private static _sRGBx         := new cl_channel_order($10C0);
-    private static _sRGBA         := new cl_channel_order($10C1);
-    private static _sBGRA         := new cl_channel_order($10C2);
-    private static _ABGR          := new cl_channel_order($10C3);
-    private static _YUYV_INTEL    := new cl_channel_order($4076);
-    private static _UYVY_INTEL    := new cl_channel_order($4077);
-    private static _YVYU_INTEL    := new cl_channel_order($4078);
-    private static _VYUY_INTEL    := new cl_channel_order($4079);
-    private static _NV21_IMG      := new cl_channel_order($40D0);
-    private static _YV12_IMG      := new cl_channel_order($40D1);
-    private static _NV12_INTEL    := new cl_channel_order($410E);
-    
-    public static property R:             cl_channel_order read _R;
-    public static property A:             cl_channel_order read _A;
-    public static property RG:            cl_channel_order read _RG;
-    public static property RA:            cl_channel_order read _RA;
-    public static property RGB:           cl_channel_order read _RGB;
-    public static property RGBA:          cl_channel_order read _RGBA;
-    public static property BGRA:          cl_channel_order read _BGRA;
-    public static property ARGB:          cl_channel_order read _ARGB;
-    public static property INTENSITY:     cl_channel_order read _INTENSITY;
-    public static property LUMINANCE:     cl_channel_order read _LUMINANCE;
-    public static property Rx:            cl_channel_order read _Rx;
-    public static property RGx:           cl_channel_order read _RGx;
-    public static property RGBx:          cl_channel_order read _RGBx;
-    public static property DEPTH:         cl_channel_order read _DEPTH;
-    public static property DEPTH_STENCIL: cl_channel_order read _DEPTH_STENCIL;
-    public static property sRGB:          cl_channel_order read _sRGB;
-    public static property sRGBx:         cl_channel_order read _sRGBx;
-    public static property sRGBA:         cl_channel_order read _sRGBA;
-    public static property sBGRA:         cl_channel_order read _sBGRA;
-    public static property ABGR:          cl_channel_order read _ABGR;
-    public static property YUYV_INTEL:    cl_channel_order read _YUYV_INTEL;
-    public static property UYVY_INTEL:    cl_channel_order read _UYVY_INTEL;
-    public static property YVYU_INTEL:    cl_channel_order read _YVYU_INTEL;
-    public static property VYUY_INTEL:    cl_channel_order read _VYUY_INTEL;
-    public static property NV21_IMG:      cl_channel_order read _NV21_IMG;
-    public static property YV12_IMG:      cl_channel_order read _YV12_IMG;
-    public static property NV12_INTEL:    cl_channel_order read _NV12_INTEL;
+    public static property SNORM_INT8:         ChannelType read _SNORM_INT8;
+    public static property SNORM_INT16:        ChannelType read _SNORM_INT16;
+    public static property UNORM_INT8:         ChannelType read _UNORM_INT8;
+    public static property UNORM_INT16:        ChannelType read _UNORM_INT16;
+    public static property UNORM_SHORT_565:    ChannelType read _UNORM_SHORT_565;
+    public static property UNORM_SHORT_555:    ChannelType read _UNORM_SHORT_555;
+    public static property UNORM_INT_101010:   ChannelType read _UNORM_INT_101010;
+    public static property SIGNED_INT8:        ChannelType read _SIGNED_INT8;
+    public static property SIGNED_INT16:       ChannelType read _SIGNED_INT16;
+    public static property SIGNED_INT32:       ChannelType read _SIGNED_INT32;
+    public static property UNSIGNED_INT8:      ChannelType read _UNSIGNED_INT8;
+    public static property UNSIGNED_INT16:     ChannelType read _UNSIGNED_INT16;
+    public static property UNSIGNED_INT32:     ChannelType read _UNSIGNED_INT32;
+    public static property HALF_FLOAT:         ChannelType read _HALF_FLOAT;
+    public static property FLOAT:              ChannelType read _FLOAT;
+    public static property UNORM_INT24:        ChannelType read _UNORM_INT24;
+    public static property UNORM_INT_101010_2: ChannelType read _UNORM_INT_101010_2;
     
     public function ToString: string; override;
     begin
-      var res := typeof(cl_channel_order).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      var res := typeof(ChannelType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
-        $'cl_channel_order[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_channel_type = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _SNORM_INT8         := new cl_channel_type($10D0);
-    private static _SNORM_INT16        := new cl_channel_type($10D1);
-    private static _UNORM_INT8         := new cl_channel_type($10D2);
-    private static _UNORM_INT16        := new cl_channel_type($10D3);
-    private static _UNORM_SHORT_565    := new cl_channel_type($10D4);
-    private static _UNORM_SHORT_555    := new cl_channel_type($10D5);
-    private static _UNORM_INT_101010   := new cl_channel_type($10D6);
-    private static _SIGNED_INT8        := new cl_channel_type($10D7);
-    private static _SIGNED_INT16       := new cl_channel_type($10D8);
-    private static _SIGNED_INT32       := new cl_channel_type($10D9);
-    private static _UNSIGNED_INT8      := new cl_channel_type($10DA);
-    private static _UNSIGNED_INT16     := new cl_channel_type($10DB);
-    private static _UNSIGNED_INT32     := new cl_channel_type($10DC);
-    private static _HALF_FLOAT         := new cl_channel_type($10DD);
-    private static _FLOAT              := new cl_channel_type($10DE);
-    private static _UNORM_INT24        := new cl_channel_type($10DF);
-    private static _UNORM_INT_101010_2 := new cl_channel_type($10E0);
-    
-    public static property SNORM_INT8:         cl_channel_type read _SNORM_INT8;
-    public static property SNORM_INT16:        cl_channel_type read _SNORM_INT16;
-    public static property UNORM_INT8:         cl_channel_type read _UNORM_INT8;
-    public static property UNORM_INT16:        cl_channel_type read _UNORM_INT16;
-    public static property UNORM_SHORT_565:    cl_channel_type read _UNORM_SHORT_565;
-    public static property UNORM_SHORT_555:    cl_channel_type read _UNORM_SHORT_555;
-    public static property UNORM_INT_101010:   cl_channel_type read _UNORM_INT_101010;
-    public static property SIGNED_INT8:        cl_channel_type read _SIGNED_INT8;
-    public static property SIGNED_INT16:       cl_channel_type read _SIGNED_INT16;
-    public static property SIGNED_INT32:       cl_channel_type read _SIGNED_INT32;
-    public static property UNSIGNED_INT8:      cl_channel_type read _UNSIGNED_INT8;
-    public static property UNSIGNED_INT16:     cl_channel_type read _UNSIGNED_INT16;
-    public static property UNSIGNED_INT32:     cl_channel_type read _UNSIGNED_INT32;
-    public static property HALF_FLOAT:         cl_channel_type read _HALF_FLOAT;
-    public static property FLOAT:              cl_channel_type read _FLOAT;
-    public static property UNORM_INT24:        cl_channel_type read _UNORM_INT24;
-    public static property UNORM_INT_101010_2: cl_channel_type read _UNORM_INT_101010_2;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_channel_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_channel_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_command_queue_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _QUEUE_CONTEXT         := new cl_command_queue_info($1090);
-    private static _QUEUE_DEVICE          := new cl_command_queue_info($1091);
-    private static _QUEUE_REFERENCE_COUNT := new cl_command_queue_info($1092);
-    private static _QUEUE_PROPERTIES      := new cl_command_queue_info($1093);
-    private static _QUEUE_SIZE            := new cl_command_queue_info($1094);
-    private static _QUEUE_DEVICE_DEFAULT  := new cl_command_queue_info($1095);
-    
-    public static property QUEUE_CONTEXT:         cl_command_queue_info read _QUEUE_CONTEXT;
-    public static property QUEUE_DEVICE:          cl_command_queue_info read _QUEUE_DEVICE;
-    public static property QUEUE_REFERENCE_COUNT: cl_command_queue_info read _QUEUE_REFERENCE_COUNT;
-    public static property QUEUE_PROPERTIES:      cl_command_queue_info read _QUEUE_PROPERTIES;
-    public static property QUEUE_SIZE:            cl_command_queue_info read _QUEUE_SIZE;
-    public static property QUEUE_DEVICE_DEFAULT:  cl_command_queue_info read _QUEUE_DEVICE_DEFAULT;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_command_queue_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_command_queue_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_context_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _CONTEXT_REFERENCE_COUNT                   := new cl_context_info($1080);
-    private static _CONTEXT_DEVICES                           := new cl_context_info($1081);
-    private static _CONTEXT_PROPERTIES                        := new cl_context_info($1082);
-    private static _CONTEXT_NUM_DEVICES                       := new cl_context_info($1083);
-    private static _CONTEXT_ADAPTER_D3D9_KHR                  := new cl_context_info($2025);
-    private static _CONTEXT_ADAPTER_D3D9EX_KHR                := new cl_context_info($2026);
-    private static _CONTEXT_ADAPTER_DXVA_KHR                  := new cl_context_info($2027);
-    private static _CONTEXT_D3D10_DEVICE_KHR                  := new cl_context_info($4014);
-    private static _CONTEXT_D3D11_DEVICE_KHR                  := new cl_context_info($401D);
-    private static _CONTEXT_D3D9_DEVICE_INTEL                 := new cl_context_info($4026);
-    private static _CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR := new cl_context_info($402C);
-    private static _CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR := new cl_context_info($402D);
-    private static _CONTEXT_D3D9EX_DEVICE_INTEL               := new cl_context_info($4072);
-    private static _CONTEXT_DXVA_DEVICE_INTEL                 := new cl_context_info($4073);
-    private static _CONTEXT_VA_API_DISPLAY_INTEL              := new cl_context_info($4097);
-    
-    public static property CONTEXT_REFERENCE_COUNT:                   cl_context_info read _CONTEXT_REFERENCE_COUNT;
-    public static property CONTEXT_DEVICES:                           cl_context_info read _CONTEXT_DEVICES;
-    public static property CONTEXT_PROPERTIES:                        cl_context_info read _CONTEXT_PROPERTIES;
-    public static property CONTEXT_NUM_DEVICES:                       cl_context_info read _CONTEXT_NUM_DEVICES;
-    public static property CONTEXT_ADAPTER_D3D9_KHR:                  cl_context_info read _CONTEXT_ADAPTER_D3D9_KHR;
-    public static property CONTEXT_ADAPTER_D3D9EX_KHR:                cl_context_info read _CONTEXT_ADAPTER_D3D9EX_KHR;
-    public static property CONTEXT_ADAPTER_DXVA_KHR:                  cl_context_info read _CONTEXT_ADAPTER_DXVA_KHR;
-    public static property CONTEXT_D3D10_DEVICE_KHR:                  cl_context_info read _CONTEXT_D3D10_DEVICE_KHR;
-    public static property CONTEXT_D3D11_DEVICE_KHR:                  cl_context_info read _CONTEXT_D3D11_DEVICE_KHR;
-    public static property CONTEXT_D3D9_DEVICE_INTEL:                 cl_context_info read _CONTEXT_D3D9_DEVICE_INTEL;
-    public static property CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR: cl_context_info read _CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR;
-    public static property CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR: cl_context_info read _CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR;
-    public static property CONTEXT_D3D9EX_DEVICE_INTEL:               cl_context_info read _CONTEXT_D3D9EX_DEVICE_INTEL;
-    public static property CONTEXT_DXVA_DEVICE_INTEL:                 cl_context_info read _CONTEXT_DXVA_DEVICE_INTEL;
-    public static property CONTEXT_VA_API_DISPLAY_INTEL:              cl_context_info read _CONTEXT_VA_API_DISPLAY_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_context_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_context_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_context_properties = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    
-    private static _CONTEXT_PLATFORM          := new cl_context_properties($1084);
-    private static _CONTEXT_INTEROP_USER_SYNC := new cl_context_properties($1085);
-    private static _CONTEXT_TERMINATE_KHR     := new cl_context_properties($2032);
-    private static _PRINTF_CALLBACK_ARM       := new cl_context_properties($40B0);
-    private static _PRINTF_BUFFERSIZE_ARM     := new cl_context_properties($40B1);
-    
-    public static property CONTEXT_PLATFORM:          cl_context_properties read _CONTEXT_PLATFORM;
-    public static property CONTEXT_INTEROP_USER_SYNC: cl_context_properties read _CONTEXT_INTEROP_USER_SYNC;
-    public static property CONTEXT_TERMINATE_KHR:     cl_context_properties read _CONTEXT_TERMINATE_KHR;
-    public static property PRINTF_CALLBACK_ARM:       cl_context_properties read _PRINTF_CALLBACK_ARM;
-    public static property PRINTF_BUFFERSIZE_ARM:     cl_context_properties read _PRINTF_BUFFERSIZE_ARM;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_context_properties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_context_properties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_device_partition_property = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    
-    private static _DEVICE_PARTITION_BY_COUNTS_LIST_END := new cl_device_partition_property($0000);
-    private static _DEVICE_PARTITION_EQUALLY            := new cl_device_partition_property($1086);
-    private static _DEVICE_PARTITION_BY_COUNTS          := new cl_device_partition_property($1087);
-    private static _DEVICE_PARTITION_BY_AFFINITY_DOMAIN := new cl_device_partition_property($1088);
-    
-    public static property DEVICE_PARTITION_BY_COUNTS_LIST_END: cl_device_partition_property read _DEVICE_PARTITION_BY_COUNTS_LIST_END;
-    public static property DEVICE_PARTITION_EQUALLY:            cl_device_partition_property read _DEVICE_PARTITION_EQUALLY;
-    public static property DEVICE_PARTITION_BY_COUNTS:          cl_device_partition_property read _DEVICE_PARTITION_BY_COUNTS;
-    public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN: cl_device_partition_property read _DEVICE_PARTITION_BY_AFFINITY_DOMAIN;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_device_partition_property).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_device_partition_property[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_device_partition_property_ext = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _PARTITION_BY_NAMES_LIST_END_EXT         := new cl_device_partition_property_ext($FFFFFFFFFFFFFFFF);
-    private static _PARTITION_BY_COUNTS_LIST_END_EXT        := new cl_device_partition_property_ext($0000);
-    private static _PROPERTIES_LIST_END_EXT                 := new cl_device_partition_property_ext($0000);
-    private static _DEVICE_PARTITION_EQUALLY_EXT            := new cl_device_partition_property_ext($4050);
-    private static _DEVICE_PARTITION_BY_COUNTS_EXT          := new cl_device_partition_property_ext($4051);
-    private static _DEVICE_PARTITION_BY_NAMES_EXT           := new cl_device_partition_property_ext($4052);
-    private static _DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT := new cl_device_partition_property_ext($4053);
-    
-    public static property PARTITION_BY_NAMES_LIST_END_EXT:         cl_device_partition_property_ext read _PARTITION_BY_NAMES_LIST_END_EXT;
-    public static property PARTITION_BY_COUNTS_LIST_END_EXT:        cl_device_partition_property_ext read _PARTITION_BY_COUNTS_LIST_END_EXT;
-    public static property PROPERTIES_LIST_END_EXT:                 cl_device_partition_property_ext read _PROPERTIES_LIST_END_EXT;
-    public static property DEVICE_PARTITION_EQUALLY_EXT:            cl_device_partition_property_ext read _DEVICE_PARTITION_EQUALLY_EXT;
-    public static property DEVICE_PARTITION_BY_COUNTS_EXT:          cl_device_partition_property_ext read _DEVICE_PARTITION_BY_COUNTS_EXT;
-    public static property DEVICE_PARTITION_BY_NAMES_EXT:           cl_device_partition_property_ext read _DEVICE_PARTITION_BY_NAMES_EXT;
-    public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT: cl_device_partition_property_ext read _DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_device_partition_property_ext).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_device_partition_property_ext[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_dx9_device_set_intel = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _PREFERRED_DEVICES_FOR_DX9_INTEL := new cl_dx9_device_set_intel($4024);
-    private static _ALL_DEVICES_FOR_DX9_INTEL       := new cl_dx9_device_set_intel($4025);
-    
-    public static property PREFERRED_DEVICES_FOR_DX9_INTEL: cl_dx9_device_set_intel read _PREFERRED_DEVICES_FOR_DX9_INTEL;
-    public static property ALL_DEVICES_FOR_DX9_INTEL:       cl_dx9_device_set_intel read _ALL_DEVICES_FOR_DX9_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_dx9_device_set_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_dx9_device_set_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_dx9_device_source_intel = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _D3D9_DEVICE_INTEL   := new cl_dx9_device_source_intel($4022);
-    private static _D3D9EX_DEVICE_INTEL := new cl_dx9_device_source_intel($4070);
-    private static _DXVA_DEVICE_INTEL   := new cl_dx9_device_source_intel($4071);
-    
-    public static property D3D9_DEVICE_INTEL:   cl_dx9_device_source_intel read _D3D9_DEVICE_INTEL;
-    public static property D3D9EX_DEVICE_INTEL: cl_dx9_device_source_intel read _D3D9EX_DEVICE_INTEL;
-    public static property DXVA_DEVICE_INTEL:   cl_dx9_device_source_intel read _DXVA_DEVICE_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_dx9_device_source_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_dx9_device_source_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_egl_image_properties_khr = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    
-    private static _EGL_YUV_PLANE_INTEL := new cl_egl_image_properties_khr($4107);
-    
-    public static property EGL_YUV_PLANE_INTEL: cl_egl_image_properties_khr read _EGL_YUV_PLANE_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_egl_image_properties_khr).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_egl_image_properties_khr[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_event_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _EVENT_COMMAND_QUEUE            := new cl_event_info($11D0);
-    private static _EVENT_COMMAND_TYPE             := new cl_event_info($11D1);
-    private static _EVENT_REFERENCE_COUNT          := new cl_event_info($11D2);
-    private static _EVENT_COMMAND_EXECUTION_STATUS := new cl_event_info($11D3);
-    private static _EVENT_CONTEXT                  := new cl_event_info($11D4);
-    
-    public static property EVENT_COMMAND_QUEUE:            cl_event_info read _EVENT_COMMAND_QUEUE;
-    public static property EVENT_COMMAND_TYPE:             cl_event_info read _EVENT_COMMAND_TYPE;
-    public static property EVENT_REFERENCE_COUNT:          cl_event_info read _EVENT_REFERENCE_COUNT;
-    public static property EVENT_COMMAND_EXECUTION_STATUS: cl_event_info read _EVENT_COMMAND_EXECUTION_STATUS;
-    public static property EVENT_CONTEXT:                  cl_event_info read _EVENT_CONTEXT;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_event_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_event_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_filter_mode = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _FILTER_NEAREST := new cl_filter_mode($1140);
-    private static _FILTER_LINEAR  := new cl_filter_mode($1141);
-    
-    public static property FILTER_NEAREST: cl_filter_mode read _FILTER_NEAREST;
-    public static property FILTER_LINEAR:  cl_filter_mode read _FILTER_LINEAR;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_filter_mode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_filter_mode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_gl_context_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _CURRENT_DEVICE_FOR_GL_CONTEXT_KHR := new cl_gl_context_info($2006);
-    private static _DEVICES_FOR_GL_CONTEXT_KHR        := new cl_gl_context_info($2007);
-    
-    public static property CURRENT_DEVICE_FOR_GL_CONTEXT_KHR: cl_gl_context_info read _CURRENT_DEVICE_FOR_GL_CONTEXT_KHR;
-    public static property DEVICES_FOR_GL_CONTEXT_KHR:        cl_gl_context_info read _DEVICES_FOR_GL_CONTEXT_KHR;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_gl_context_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_gl_context_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_gl_object_type = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _GL_OBJECT_BUFFER          := new cl_gl_object_type($2000);
-    private static _GL_OBJECT_TEXTURE2D       := new cl_gl_object_type($2001);
-    private static _GL_OBJECT_TEXTURE3D       := new cl_gl_object_type($2002);
-    private static _GL_OBJECT_RENDERBUFFER    := new cl_gl_object_type($2003);
-    private static _GL_OBJECT_TEXTURE2D_ARRAY := new cl_gl_object_type($200E);
-    private static _GL_OBJECT_TEXTURE1D       := new cl_gl_object_type($200F);
-    private static _GL_OBJECT_TEXTURE1D_ARRAY := new cl_gl_object_type($2010);
-    private static _GL_OBJECT_TEXTURE_BUFFER  := new cl_gl_object_type($2011);
-    
-    public static property GL_OBJECT_BUFFER:          cl_gl_object_type read _GL_OBJECT_BUFFER;
-    public static property GL_OBJECT_TEXTURE2D:       cl_gl_object_type read _GL_OBJECT_TEXTURE2D;
-    public static property GL_OBJECT_TEXTURE3D:       cl_gl_object_type read _GL_OBJECT_TEXTURE3D;
-    public static property GL_OBJECT_RENDERBUFFER:    cl_gl_object_type read _GL_OBJECT_RENDERBUFFER;
-    public static property GL_OBJECT_TEXTURE2D_ARRAY: cl_gl_object_type read _GL_OBJECT_TEXTURE2D_ARRAY;
-    public static property GL_OBJECT_TEXTURE1D:       cl_gl_object_type read _GL_OBJECT_TEXTURE1D;
-    public static property GL_OBJECT_TEXTURE1D_ARRAY: cl_gl_object_type read _GL_OBJECT_TEXTURE1D_ARRAY;
-    public static property GL_OBJECT_TEXTURE_BUFFER:  cl_gl_object_type read _GL_OBJECT_TEXTURE_BUFFER;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_gl_object_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_gl_object_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_gl_texture_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _GL_TEXTURE_TARGET := new cl_gl_texture_info($2004);
-    private static _GL_MIPMAP_LEVEL   := new cl_gl_texture_info($2005);
-    private static _GL_NUM_SAMPLES    := new cl_gl_texture_info($2012);
-    
-    public static property GL_TEXTURE_TARGET: cl_gl_texture_info read _GL_TEXTURE_TARGET;
-    public static property GL_MIPMAP_LEVEL:   cl_gl_texture_info read _GL_MIPMAP_LEVEL;
-    public static property GL_NUM_SAMPLES:    cl_gl_texture_info read _GL_NUM_SAMPLES;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_gl_texture_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_gl_texture_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_image_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _IMAGE_FORMAT                := new cl_image_info($1110);
-    private static _IMAGE_ELEMENT_SIZE          := new cl_image_info($1111);
-    private static _IMAGE_ROW_PITCH             := new cl_image_info($1112);
-    private static _IMAGE_SLICE_PITCH           := new cl_image_info($1113);
-    private static _IMAGE_WIDTH                 := new cl_image_info($1114);
-    private static _IMAGE_HEIGHT                := new cl_image_info($1115);
-    private static _IMAGE_DEPTH                 := new cl_image_info($1116);
-    private static _IMAGE_ARRAY_SIZE            := new cl_image_info($1117);
-    private static _IMAGE_NUM_MIP_LEVELS        := new cl_image_info($1119);
-    private static _IMAGE_NUM_SAMPLES           := new cl_image_info($111A);
-    private static _IMAGE_DX9_MEDIA_PLANE_KHR   := new cl_image_info($202A);
-    private static _IMAGE_D3D10_SUBRESOURCE_KHR := new cl_image_info($4016);
-    private static _IMAGE_D3D11_SUBRESOURCE_KHR := new cl_image_info($401F);
-    private static _IMAGE_DX9_PLANE_INTEL       := new cl_image_info($4075);
-    private static _IMAGE_VA_API_PLANE_INTEL    := new cl_image_info($4099);
-    
-    public static property IMAGE_FORMAT:                cl_image_info read _IMAGE_FORMAT;
-    public static property IMAGE_ELEMENT_SIZE:          cl_image_info read _IMAGE_ELEMENT_SIZE;
-    public static property IMAGE_ROW_PITCH:             cl_image_info read _IMAGE_ROW_PITCH;
-    public static property IMAGE_SLICE_PITCH:           cl_image_info read _IMAGE_SLICE_PITCH;
-    public static property IMAGE_WIDTH:                 cl_image_info read _IMAGE_WIDTH;
-    public static property IMAGE_HEIGHT:                cl_image_info read _IMAGE_HEIGHT;
-    public static property IMAGE_DEPTH:                 cl_image_info read _IMAGE_DEPTH;
-    public static property IMAGE_ARRAY_SIZE:            cl_image_info read _IMAGE_ARRAY_SIZE;
-    public static property IMAGE_NUM_MIP_LEVELS:        cl_image_info read _IMAGE_NUM_MIP_LEVELS;
-    public static property IMAGE_NUM_SAMPLES:           cl_image_info read _IMAGE_NUM_SAMPLES;
-    public static property IMAGE_DX9_MEDIA_PLANE_KHR:   cl_image_info read _IMAGE_DX9_MEDIA_PLANE_KHR;
-    public static property IMAGE_D3D10_SUBRESOURCE_KHR: cl_image_info read _IMAGE_D3D10_SUBRESOURCE_KHR;
-    public static property IMAGE_D3D11_SUBRESOURCE_KHR: cl_image_info read _IMAGE_D3D11_SUBRESOURCE_KHR;
-    public static property IMAGE_DX9_PLANE_INTEL:       cl_image_info read _IMAGE_DX9_PLANE_INTEL;
-    public static property IMAGE_VA_API_PLANE_INTEL:    cl_image_info read _IMAGE_VA_API_PLANE_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_image_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_image_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_kernel_arg_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _KERNEL_ARG_ADDRESS_QUALIFIER := new cl_kernel_arg_info($1196);
-    private static _KERNEL_ARG_ACCESS_QUALIFIER  := new cl_kernel_arg_info($1197);
-    private static _KERNEL_ARG_TYPE_NAME         := new cl_kernel_arg_info($1198);
-    private static _KERNEL_ARG_TYPE_QUALIFIER    := new cl_kernel_arg_info($1199);
-    private static _KERNEL_ARG_NAME              := new cl_kernel_arg_info($119A);
-    
-    public static property KERNEL_ARG_ADDRESS_QUALIFIER: cl_kernel_arg_info read _KERNEL_ARG_ADDRESS_QUALIFIER;
-    public static property KERNEL_ARG_ACCESS_QUALIFIER:  cl_kernel_arg_info read _KERNEL_ARG_ACCESS_QUALIFIER;
-    public static property KERNEL_ARG_TYPE_NAME:         cl_kernel_arg_info read _KERNEL_ARG_TYPE_NAME;
-    public static property KERNEL_ARG_TYPE_QUALIFIER:    cl_kernel_arg_info read _KERNEL_ARG_TYPE_QUALIFIER;
-    public static property KERNEL_ARG_NAME:              cl_kernel_arg_info read _KERNEL_ARG_NAME;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_kernel_arg_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_kernel_arg_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_kernel_exec_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _KERNEL_EXEC_INFO_SVM_PTRS                     := new cl_kernel_exec_info($11B6);
-    private static _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM        := new cl_kernel_exec_info($11B7);
-    private static _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL   := new cl_kernel_exec_info($4200);
-    private static _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL := new cl_kernel_exec_info($4201);
-    private static _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL := new cl_kernel_exec_info($4202);
-    private static _KERNEL_EXEC_INFO_USM_PTRS_INTEL               := new cl_kernel_exec_info($4203);
-    
-    public static property KERNEL_EXEC_INFO_SVM_PTRS:                     cl_kernel_exec_info read _KERNEL_EXEC_INFO_SVM_PTRS;
-    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:        cl_kernel_exec_info read _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM;
-    public static property KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL:   cl_kernel_exec_info read _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL;
-    public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL: cl_kernel_exec_info read _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL;
-    public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL: cl_kernel_exec_info read _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL;
-    public static property KERNEL_EXEC_INFO_USM_PTRS_INTEL:               cl_kernel_exec_info read _KERNEL_EXEC_INFO_USM_PTRS_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_kernel_exec_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_kernel_exec_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_kernel_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _KERNEL_FUNCTION_NAME          := new cl_kernel_info($1190);
-    private static _KERNEL_NUM_ARGS               := new cl_kernel_info($1191);
-    private static _KERNEL_REFERENCE_COUNT        := new cl_kernel_info($1192);
-    private static _KERNEL_CONTEXT                := new cl_kernel_info($1193);
-    private static _KERNEL_PROGRAM                := new cl_kernel_info($1194);
-    private static _KERNEL_ATTRIBUTES             := new cl_kernel_info($1195);
-    private static _KERNEL_MAX_NUM_SUB_GROUPS     := new cl_kernel_info($11B9);
-    private static _KERNEL_COMPILE_NUM_SUB_GROUPS := new cl_kernel_info($11BA);
-    
-    public static property KERNEL_FUNCTION_NAME:          cl_kernel_info read _KERNEL_FUNCTION_NAME;
-    public static property KERNEL_NUM_ARGS:               cl_kernel_info read _KERNEL_NUM_ARGS;
-    public static property KERNEL_REFERENCE_COUNT:        cl_kernel_info read _KERNEL_REFERENCE_COUNT;
-    public static property KERNEL_CONTEXT:                cl_kernel_info read _KERNEL_CONTEXT;
-    public static property KERNEL_PROGRAM:                cl_kernel_info read _KERNEL_PROGRAM;
-    public static property KERNEL_ATTRIBUTES:             cl_kernel_info read _KERNEL_ATTRIBUTES;
-    public static property KERNEL_MAX_NUM_SUB_GROUPS:     cl_kernel_info read _KERNEL_MAX_NUM_SUB_GROUPS;
-    public static property KERNEL_COMPILE_NUM_SUB_GROUPS: cl_kernel_info read _KERNEL_COMPILE_NUM_SUB_GROUPS;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_kernel_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_kernel_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_kernel_sub_group_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT     := new cl_kernel_sub_group_info($11B8);
-    private static _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE     := new cl_kernel_sub_group_info($2033);
-    private static _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR := new cl_kernel_sub_group_info($2033);
-    private static _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE        := new cl_kernel_sub_group_info($2034);
-    private static _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR    := new cl_kernel_sub_group_info($2034);
-    private static _KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL       := new cl_kernel_sub_group_info($410A);
-    
-    public static property KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT:     cl_kernel_sub_group_info read _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT;
-    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE:     cl_kernel_sub_group_info read _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE;
-    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR: cl_kernel_sub_group_info read _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR;
-    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE:        cl_kernel_sub_group_info read _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE;
-    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR:    cl_kernel_sub_group_info read _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR;
-    public static property KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL:       cl_kernel_sub_group_info read _KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_kernel_sub_group_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_kernel_sub_group_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_kernel_work_group_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _KERNEL_WORK_GROUP_SIZE                    := new cl_kernel_work_group_info($11B0);
-    private static _KERNEL_COMPILE_WORK_GROUP_SIZE            := new cl_kernel_work_group_info($11B1);
-    private static _KERNEL_LOCAL_MEM_SIZE                     := new cl_kernel_work_group_info($11B2);
-    private static _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE := new cl_kernel_work_group_info($11B3);
-    private static _KERNEL_PRIVATE_MEM_SIZE                   := new cl_kernel_work_group_info($11B4);
-    private static _KERNEL_GLOBAL_WORK_SIZE                   := new cl_kernel_work_group_info($11B5);
-    private static _KERNEL_SPILL_MEM_SIZE_INTEL               := new cl_kernel_work_group_info($4109);
-    
-    public static property KERNEL_WORK_GROUP_SIZE:                    cl_kernel_work_group_info read _KERNEL_WORK_GROUP_SIZE;
-    public static property KERNEL_COMPILE_WORK_GROUP_SIZE:            cl_kernel_work_group_info read _KERNEL_COMPILE_WORK_GROUP_SIZE;
-    public static property KERNEL_LOCAL_MEM_SIZE:                     cl_kernel_work_group_info read _KERNEL_LOCAL_MEM_SIZE;
-    public static property KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE: cl_kernel_work_group_info read _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE;
-    public static property KERNEL_PRIVATE_MEM_SIZE:                   cl_kernel_work_group_info read _KERNEL_PRIVATE_MEM_SIZE;
-    public static property KERNEL_GLOBAL_WORK_SIZE:                   cl_kernel_work_group_info read _KERNEL_GLOBAL_WORK_SIZE;
-    public static property KERNEL_SPILL_MEM_SIZE_INTEL:               cl_kernel_work_group_info read _KERNEL_SPILL_MEM_SIZE_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_kernel_work_group_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_kernel_work_group_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_mem_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _MEM_TYPE                       := new cl_mem_info($1100);
-    private static _MEM_FLAGS                      := new cl_mem_info($1101);
-    private static _MEM_SIZE                       := new cl_mem_info($1102);
-    private static _MEM_HOST_PTR                   := new cl_mem_info($1103);
-    private static _MEM_MAP_COUNT                  := new cl_mem_info($1104);
-    private static _MEM_REFERENCE_COUNT            := new cl_mem_info($1105);
-    private static _MEM_CONTEXT                    := new cl_mem_info($1106);
-    private static _MEM_ASSOCIATED_MEMOBJECT       := new cl_mem_info($1107);
-    private static _MEM_OFFSET                     := new cl_mem_info($1108);
-    private static _MEM_USES_SVM_POINTER           := new cl_mem_info($1109);
-    private static _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR := new cl_mem_info($2028);
-    private static _MEM_DX9_MEDIA_SURFACE_INFO_KHR := new cl_mem_info($2029);
-    private static _MEM_D3D10_RESOURCE_KHR         := new cl_mem_info($4015);
-    private static _MEM_D3D11_RESOURCE_KHR         := new cl_mem_info($401E);
-    private static _MEM_DX9_RESOURCE_INTEL         := new cl_mem_info($4027);
-    private static _MEM_DX9_SHARED_HANDLE_INTEL    := new cl_mem_info($4074);
-    private static _MEM_VA_API_MEDIA_SURFACE_INTEL := new cl_mem_info($4098);
-    
-    public static property MEM_TYPE:                       cl_mem_info read _MEM_TYPE;
-    public static property MEM_FLAGS:                      cl_mem_info read _MEM_FLAGS;
-    public static property MEM_SIZE:                       cl_mem_info read _MEM_SIZE;
-    public static property MEM_HOST_PTR:                   cl_mem_info read _MEM_HOST_PTR;
-    public static property MEM_MAP_COUNT:                  cl_mem_info read _MEM_MAP_COUNT;
-    public static property MEM_REFERENCE_COUNT:            cl_mem_info read _MEM_REFERENCE_COUNT;
-    public static property MEM_CONTEXT:                    cl_mem_info read _MEM_CONTEXT;
-    public static property MEM_ASSOCIATED_MEMOBJECT:       cl_mem_info read _MEM_ASSOCIATED_MEMOBJECT;
-    public static property MEM_OFFSET:                     cl_mem_info read _MEM_OFFSET;
-    public static property MEM_USES_SVM_POINTER:           cl_mem_info read _MEM_USES_SVM_POINTER;
-    public static property MEM_DX9_MEDIA_ADAPTER_TYPE_KHR: cl_mem_info read _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR;
-    public static property MEM_DX9_MEDIA_SURFACE_INFO_KHR: cl_mem_info read _MEM_DX9_MEDIA_SURFACE_INFO_KHR;
-    public static property MEM_D3D10_RESOURCE_KHR:         cl_mem_info read _MEM_D3D10_RESOURCE_KHR;
-    public static property MEM_D3D11_RESOURCE_KHR:         cl_mem_info read _MEM_D3D11_RESOURCE_KHR;
-    public static property MEM_DX9_RESOURCE_INTEL:         cl_mem_info read _MEM_DX9_RESOURCE_INTEL;
-    public static property MEM_DX9_SHARED_HANDLE_INTEL:    cl_mem_info read _MEM_DX9_SHARED_HANDLE_INTEL;
-    public static property MEM_VA_API_MEDIA_SURFACE_INTEL: cl_mem_info read _MEM_VA_API_MEDIA_SURFACE_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_mem_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_mem_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_mem_migration_flags_ext = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _MIGRATE_MEM_OBJECT_HOST_EXT := new cl_mem_migration_flags_ext($0001);
-    
-    public static property MIGRATE_MEM_OBJECT_HOST_EXT: cl_mem_migration_flags_ext read _MIGRATE_MEM_OBJECT_HOST_EXT;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_mem_migration_flags_ext).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_mem_migration_flags_ext[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_mem_object_type = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _MEM_OBJECT_BUFFER         := new cl_mem_object_type($10F0);
-    private static _MEM_OBJECT_IMAGE2D        := new cl_mem_object_type($10F1);
-    private static _MEM_OBJECT_IMAGE3D        := new cl_mem_object_type($10F2);
-    private static _MEM_OBJECT_IMAGE2D_ARRAY  := new cl_mem_object_type($10F3);
-    private static _MEM_OBJECT_IMAGE1D        := new cl_mem_object_type($10F4);
-    private static _MEM_OBJECT_IMAGE1D_ARRAY  := new cl_mem_object_type($10F5);
-    private static _MEM_OBJECT_IMAGE1D_BUFFER := new cl_mem_object_type($10F6);
-    private static _MEM_OBJECT_PIPE           := new cl_mem_object_type($10F7);
-    
-    public static property MEM_OBJECT_BUFFER:         cl_mem_object_type read _MEM_OBJECT_BUFFER;
-    public static property MEM_OBJECT_IMAGE2D:        cl_mem_object_type read _MEM_OBJECT_IMAGE2D;
-    public static property MEM_OBJECT_IMAGE3D:        cl_mem_object_type read _MEM_OBJECT_IMAGE3D;
-    public static property MEM_OBJECT_IMAGE2D_ARRAY:  cl_mem_object_type read _MEM_OBJECT_IMAGE2D_ARRAY;
-    public static property MEM_OBJECT_IMAGE1D:        cl_mem_object_type read _MEM_OBJECT_IMAGE1D;
-    public static property MEM_OBJECT_IMAGE1D_ARRAY:  cl_mem_object_type read _MEM_OBJECT_IMAGE1D_ARRAY;
-    public static property MEM_OBJECT_IMAGE1D_BUFFER: cl_mem_object_type read _MEM_OBJECT_IMAGE1D_BUFFER;
-    public static property MEM_OBJECT_PIPE:           cl_mem_object_type read _MEM_OBJECT_PIPE;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_mem_object_type).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_mem_object_type[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_mem_properties_intel = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _MEM_ALLOC_FLAGS_INTEL := new cl_mem_properties_intel($4195);
-    
-    public static property MEM_ALLOC_FLAGS_INTEL: cl_mem_properties_intel read _MEM_ALLOC_FLAGS_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_mem_properties_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_mem_properties_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_pipe_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _PIPE_PACKET_SIZE := new cl_pipe_info($1120);
-    private static _PIPE_MAX_PACKETS := new cl_pipe_info($1121);
-    
-    public static property PIPE_PACKET_SIZE: cl_pipe_info read _PIPE_PACKET_SIZE;
-    public static property PIPE_MAX_PACKETS: cl_pipe_info read _PIPE_MAX_PACKETS;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_pipe_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_pipe_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_profiling_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _PROFILING_COMMAND_QUEUED   := new cl_profiling_info($1280);
-    private static _PROFILING_COMMAND_SUBMIT   := new cl_profiling_info($1281);
-    private static _PROFILING_COMMAND_START    := new cl_profiling_info($1282);
-    private static _PROFILING_COMMAND_END      := new cl_profiling_info($1283);
-    private static _PROFILING_COMMAND_COMPLETE := new cl_profiling_info($1284);
-    
-    public static property PROFILING_COMMAND_QUEUED:   cl_profiling_info read _PROFILING_COMMAND_QUEUED;
-    public static property PROFILING_COMMAND_SUBMIT:   cl_profiling_info read _PROFILING_COMMAND_SUBMIT;
-    public static property PROFILING_COMMAND_START:    cl_profiling_info read _PROFILING_COMMAND_START;
-    public static property PROFILING_COMMAND_END:      cl_profiling_info read _PROFILING_COMMAND_END;
-    public static property PROFILING_COMMAND_COMPLETE: cl_profiling_info read _PROFILING_COMMAND_COMPLETE;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_profiling_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_profiling_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_program_build_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _PROGRAM_BUILD_STATUS                     := new cl_program_build_info($1181);
-    private static _PROGRAM_BUILD_OPTIONS                    := new cl_program_build_info($1182);
-    private static _PROGRAM_BUILD_LOG                        := new cl_program_build_info($1183);
-    private static _PROGRAM_BINARY_TYPE                      := new cl_program_build_info($1184);
-    private static _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE := new cl_program_build_info($1185);
-    
-    public static property PROGRAM_BUILD_STATUS:                     cl_program_build_info read _PROGRAM_BUILD_STATUS;
-    public static property PROGRAM_BUILD_OPTIONS:                    cl_program_build_info read _PROGRAM_BUILD_OPTIONS;
-    public static property PROGRAM_BUILD_LOG:                        cl_program_build_info read _PROGRAM_BUILD_LOG;
-    public static property PROGRAM_BINARY_TYPE:                      cl_program_build_info read _PROGRAM_BINARY_TYPE;
-    public static property PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE: cl_program_build_info read _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_program_build_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_program_build_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_program_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _PROGRAM_REFERENCE_COUNT            := new cl_program_info($1160);
-    private static _PROGRAM_CONTEXT                    := new cl_program_info($1161);
-    private static _PROGRAM_NUM_DEVICES                := new cl_program_info($1162);
-    private static _PROGRAM_DEVICES                    := new cl_program_info($1163);
-    private static _PROGRAM_SOURCE                     := new cl_program_info($1164);
-    private static _PROGRAM_BINARY_SIZES               := new cl_program_info($1165);
-    private static _PROGRAM_BINARIES                   := new cl_program_info($1166);
-    private static _PROGRAM_NUM_KERNELS                := new cl_program_info($1167);
-    private static _PROGRAM_KERNEL_NAMES               := new cl_program_info($1168);
-    private static _PROGRAM_IL                         := new cl_program_info($1169);
-    private static _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT := new cl_program_info($116A);
-    private static _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT := new cl_program_info($116B);
-    
-    public static property PROGRAM_REFERENCE_COUNT:            cl_program_info read _PROGRAM_REFERENCE_COUNT;
-    public static property PROGRAM_CONTEXT:                    cl_program_info read _PROGRAM_CONTEXT;
-    public static property PROGRAM_NUM_DEVICES:                cl_program_info read _PROGRAM_NUM_DEVICES;
-    public static property PROGRAM_DEVICES:                    cl_program_info read _PROGRAM_DEVICES;
-    public static property PROGRAM_SOURCE:                     cl_program_info read _PROGRAM_SOURCE;
-    public static property PROGRAM_BINARY_SIZES:               cl_program_info read _PROGRAM_BINARY_SIZES;
-    public static property PROGRAM_BINARIES:                   cl_program_info read _PROGRAM_BINARIES;
-    public static property PROGRAM_NUM_KERNELS:                cl_program_info read _PROGRAM_NUM_KERNELS;
-    public static property PROGRAM_KERNEL_NAMES:               cl_program_info read _PROGRAM_KERNEL_NAMES;
-    public static property PROGRAM_IL:                         cl_program_info read _PROGRAM_IL;
-    public static property PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT: cl_program_info read _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT;
-    public static property PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT: cl_program_info read _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_program_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_program_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_queue_properties = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _QUEUE_PRIORITY_KHR := new cl_queue_properties($1096);
-    private static _QUEUE_THROTTLE_KHR := new cl_queue_properties($1097);
-    
-    public static property QUEUE_PRIORITY_KHR: cl_queue_properties read _QUEUE_PRIORITY_KHR;
-    public static property QUEUE_THROTTLE_KHR: cl_queue_properties read _QUEUE_THROTTLE_KHR;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_queue_properties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_queue_properties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_sampler_info = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _SAMPLER_REFERENCE_COUNT   := new cl_sampler_info($1150);
-    private static _SAMPLER_CONTEXT           := new cl_sampler_info($1151);
-    private static _SAMPLER_NORMALIZED_COORDS := new cl_sampler_info($1152);
-    private static _SAMPLER_ADDRESSING_MODE   := new cl_sampler_info($1153);
-    private static _SAMPLER_FILTER_MODE       := new cl_sampler_info($1154);
-    private static _SAMPLER_MIP_FILTER_MODE   := new cl_sampler_info($1155);
-    private static _SAMPLER_LOD_MIN           := new cl_sampler_info($1156);
-    private static _SAMPLER_LOD_MAX           := new cl_sampler_info($1157);
-    
-    public static property SAMPLER_REFERENCE_COUNT:   cl_sampler_info read _SAMPLER_REFERENCE_COUNT;
-    public static property SAMPLER_CONTEXT:           cl_sampler_info read _SAMPLER_CONTEXT;
-    public static property SAMPLER_NORMALIZED_COORDS: cl_sampler_info read _SAMPLER_NORMALIZED_COORDS;
-    public static property SAMPLER_ADDRESSING_MODE:   cl_sampler_info read _SAMPLER_ADDRESSING_MODE;
-    public static property SAMPLER_FILTER_MODE:       cl_sampler_info read _SAMPLER_FILTER_MODE;
-    public static property SAMPLER_MIP_FILTER_MODE:   cl_sampler_info read _SAMPLER_MIP_FILTER_MODE;
-    public static property SAMPLER_LOD_MIN:           cl_sampler_info read _SAMPLER_LOD_MIN;
-    public static property SAMPLER_LOD_MAX:           cl_sampler_info read _SAMPLER_LOD_MAX;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_sampler_info).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_sampler_info[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_sampler_properties = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _SAMPLER_MIP_FILTER_MODE := new cl_sampler_properties($1155);
-    private static _SAMPLER_LOD_MIN         := new cl_sampler_properties($1156);
-    private static _SAMPLER_LOD_MAX         := new cl_sampler_properties($1157);
-    
-    public static property SAMPLER_MIP_FILTER_MODE: cl_sampler_properties read _SAMPLER_MIP_FILTER_MODE;
-    public static property SAMPLER_LOD_MIN:         cl_sampler_properties read _SAMPLER_LOD_MIN;
-    public static property SAMPLER_LOD_MAX:         cl_sampler_properties read _SAMPLER_LOD_MAX;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_sampler_properties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_sampler_properties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_va_api_device_set_intel = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _PREFERRED_DEVICES_FOR_VA_API_INTEL := new cl_va_api_device_set_intel($4095);
-    private static _ALL_DEVICES_FOR_VA_API_INTEL       := new cl_va_api_device_set_intel($4096);
-    
-    public static property PREFERRED_DEVICES_FOR_VA_API_INTEL: cl_va_api_device_set_intel read _PREFERRED_DEVICES_FOR_VA_API_INTEL;
-    public static property ALL_DEVICES_FOR_VA_API_INTEL:       cl_va_api_device_set_intel read _ALL_DEVICES_FOR_VA_API_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_va_api_device_set_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_va_api_device_set_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  cl_va_api_device_source_intel = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _VA_API_DISPLAY_INTEL := new cl_va_api_device_source_intel($4094);
-    
-    public static property VA_API_DISPLAY_INTEL: cl_va_api_device_source_intel read _VA_API_DISPLAY_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(cl_va_api_device_source_intel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'cl_va_api_device_source_intel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'ChannelType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1125,25 +259,53 @@
     
   end;
   
-  CommandQueuePropertyFlags = record
+  CommandQueueInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _QUEUE_CONTEXT         := new CommandQueueInfo($1090);
+    private static _QUEUE_DEVICE          := new CommandQueueInfo($1091);
+    private static _QUEUE_REFERENCE_COUNT := new CommandQueueInfo($1092);
+    private static _QUEUE_PROPERTIES      := new CommandQueueInfo($1093);
+    private static _QUEUE_SIZE            := new CommandQueueInfo($1094);
+    private static _QUEUE_DEVICE_DEFAULT  := new CommandQueueInfo($1095);
+    
+    public static property QUEUE_CONTEXT:         CommandQueueInfo read _QUEUE_CONTEXT;
+    public static property QUEUE_DEVICE:          CommandQueueInfo read _QUEUE_DEVICE;
+    public static property QUEUE_REFERENCE_COUNT: CommandQueueInfo read _QUEUE_REFERENCE_COUNT;
+    public static property QUEUE_PROPERTIES:      CommandQueueInfo read _QUEUE_PROPERTIES;
+    public static property QUEUE_SIZE:            CommandQueueInfo read _QUEUE_SIZE;
+    public static property QUEUE_DEVICE_DEFAULT:  CommandQueueInfo read _QUEUE_DEVICE_DEFAULT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(CommandQueueInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'CommandQueueInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  CommandQueueProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    private static _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL := new CommandQueuePropertyFlags($FFFFFFFF80000000);
-    private static _QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE  := new CommandQueuePropertyFlags($0001);
-    private static _QUEUE_PROFILING_ENABLE               := new CommandQueuePropertyFlags($0002);
-    private static _QUEUE_ON_DEVICE                      := new CommandQueuePropertyFlags($0004);
-    private static _QUEUE_ON_DEVICE_DEFAULT              := new CommandQueuePropertyFlags($0008);
-    private static _QUEUE_RESERVED_QCOM                  := new CommandQueuePropertyFlags($40000000);
+    private static _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL := new CommandQueueProperties($FFFFFFFF80000000);
+    private static _QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE  := new CommandQueueProperties($0001);
+    private static _QUEUE_PROFILING_ENABLE               := new CommandQueueProperties($0002);
+    private static _QUEUE_ON_DEVICE                      := new CommandQueueProperties($0004);
+    private static _QUEUE_ON_DEVICE_DEFAULT              := new CommandQueueProperties($0008);
+    private static _QUEUE_RESERVED_QCOM                  := new CommandQueueProperties($40000000);
     
-    public static property QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL: CommandQueuePropertyFlags read _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL;
-    public static property QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE:  CommandQueuePropertyFlags read _QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-    public static property QUEUE_PROFILING_ENABLE:               CommandQueuePropertyFlags read _QUEUE_PROFILING_ENABLE;
-    public static property QUEUE_ON_DEVICE:                      CommandQueuePropertyFlags read _QUEUE_ON_DEVICE;
-    public static property QUEUE_ON_DEVICE_DEFAULT:              CommandQueuePropertyFlags read _QUEUE_ON_DEVICE_DEFAULT;
-    public static property QUEUE_RESERVED_QCOM:                  CommandQueuePropertyFlags read _QUEUE_RESERVED_QCOM;
+    public static property QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL: CommandQueueProperties read _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL;
+    public static property QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE:  CommandQueueProperties read _QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+    public static property QUEUE_PROFILING_ENABLE:               CommandQueueProperties read _QUEUE_PROFILING_ENABLE;
+    public static property QUEUE_ON_DEVICE:                      CommandQueueProperties read _QUEUE_ON_DEVICE;
+    public static property QUEUE_ON_DEVICE_DEFAULT:              CommandQueueProperties read _QUEUE_ON_DEVICE_DEFAULT;
+    public static property QUEUE_RESERVED_QCOM:                  CommandQueueProperties read _QUEUE_RESERVED_QCOM;
     
-    public static function operator or(f1,f2: CommandQueuePropertyFlags) := new CommandQueuePropertyFlags(f1.val or f2.val);
+    public static function operator or(f1,f2: CommandQueueProperties) := new CommandQueueProperties(f1.val or f2.val);
     
     public property HAS_FLAG_QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL: boolean read self.val and $FFFFFFFF80000000 <> 0;
     public property HAS_FLAG_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE:  boolean read self.val and $0001 <> 0;
@@ -1154,10 +316,82 @@
     
     public function ToString: string; override;
     begin
-      var res := typeof(CommandQueuePropertyFlags).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      var res := typeof(CommandQueueProperties).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'CommandQueuePropertyFlags[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'CommandQueueProperties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.JoinIntoString('+');
+    end;
+    
+  end;
+  
+  ContextInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _CONTEXT_REFERENCE_COUNT                   := new ContextInfo($1080);
+    private static _CONTEXT_DEVICES                           := new ContextInfo($1081);
+    private static _CONTEXT_PROPERTIES                        := new ContextInfo($1082);
+    private static _CONTEXT_NUM_DEVICES                       := new ContextInfo($1083);
+    private static _CONTEXT_ADAPTER_D3D9_KHR                  := new ContextInfo($2025);
+    private static _CONTEXT_ADAPTER_D3D9EX_KHR                := new ContextInfo($2026);
+    private static _CONTEXT_ADAPTER_DXVA_KHR                  := new ContextInfo($2027);
+    private static _CONTEXT_D3D10_DEVICE_KHR                  := new ContextInfo($4014);
+    private static _CONTEXT_D3D11_DEVICE_KHR                  := new ContextInfo($401D);
+    private static _CONTEXT_D3D9_DEVICE_INTEL                 := new ContextInfo($4026);
+    private static _CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR := new ContextInfo($402C);
+    private static _CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR := new ContextInfo($402D);
+    private static _CONTEXT_D3D9EX_DEVICE_INTEL               := new ContextInfo($4072);
+    private static _CONTEXT_DXVA_DEVICE_INTEL                 := new ContextInfo($4073);
+    private static _CONTEXT_VA_API_DISPLAY_INTEL              := new ContextInfo($4097);
+    
+    public static property CONTEXT_REFERENCE_COUNT:                   ContextInfo read _CONTEXT_REFERENCE_COUNT;
+    public static property CONTEXT_DEVICES:                           ContextInfo read _CONTEXT_DEVICES;
+    public static property CONTEXT_PROPERTIES:                        ContextInfo read _CONTEXT_PROPERTIES;
+    public static property CONTEXT_NUM_DEVICES:                       ContextInfo read _CONTEXT_NUM_DEVICES;
+    public static property CONTEXT_ADAPTER_D3D9_KHR:                  ContextInfo read _CONTEXT_ADAPTER_D3D9_KHR;
+    public static property CONTEXT_ADAPTER_D3D9EX_KHR:                ContextInfo read _CONTEXT_ADAPTER_D3D9EX_KHR;
+    public static property CONTEXT_ADAPTER_DXVA_KHR:                  ContextInfo read _CONTEXT_ADAPTER_DXVA_KHR;
+    public static property CONTEXT_D3D10_DEVICE_KHR:                  ContextInfo read _CONTEXT_D3D10_DEVICE_KHR;
+    public static property CONTEXT_D3D11_DEVICE_KHR:                  ContextInfo read _CONTEXT_D3D11_DEVICE_KHR;
+    public static property CONTEXT_D3D9_DEVICE_INTEL:                 ContextInfo read _CONTEXT_D3D9_DEVICE_INTEL;
+    public static property CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR: ContextInfo read _CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR;
+    public static property CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR: ContextInfo read _CONTEXT_D3D11_PREFER_SHARED_RESOURCES_KHR;
+    public static property CONTEXT_D3D9EX_DEVICE_INTEL:               ContextInfo read _CONTEXT_D3D9EX_DEVICE_INTEL;
+    public static property CONTEXT_DXVA_DEVICE_INTEL:                 ContextInfo read _CONTEXT_DXVA_DEVICE_INTEL;
+    public static property CONTEXT_VA_API_DISPLAY_INTEL:              ContextInfo read _CONTEXT_VA_API_DISPLAY_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ContextInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'ContextInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  ContextProperties = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    
+    private static _CONTEXT_PLATFORM          := new ContextProperties($1084);
+    private static _CONTEXT_INTEROP_USER_SYNC := new ContextProperties($1085);
+    private static _CONTEXT_TERMINATE_KHR     := new ContextProperties($2032);
+    private static _PRINTF_CALLBACK_ARM       := new ContextProperties($40B0);
+    private static _PRINTF_BUFFERSIZE_ARM     := new ContextProperties($40B1);
+    
+    public static property CONTEXT_PLATFORM:          ContextProperties read _CONTEXT_PLATFORM;
+    public static property CONTEXT_INTEROP_USER_SYNC: ContextProperties read _CONTEXT_INTEROP_USER_SYNC;
+    public static property CONTEXT_TERMINATE_KHR:     ContextProperties read _CONTEXT_TERMINATE_KHR;
+    public static property PRINTF_CALLBACK_ARM:       ContextProperties read _PRINTF_CALLBACK_ARM;
+    public static property PRINTF_BUFFERSIZE_ARM:     ContextProperties read _PRINTF_BUFFERSIZE_ARM;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ContextProperties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'ContextProperties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
     end;
     
   end;
@@ -1436,25 +670,79 @@
     
   end;
   
-  DeviceTypeFlags = record
+  DevicePartitionProperty = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    
+    private static _DEVICE_PARTITION_BY_COUNTS_LIST_END := new DevicePartitionProperty($0000);
+    private static _DEVICE_PARTITION_EQUALLY            := new DevicePartitionProperty($1086);
+    private static _DEVICE_PARTITION_BY_COUNTS          := new DevicePartitionProperty($1087);
+    private static _DEVICE_PARTITION_BY_AFFINITY_DOMAIN := new DevicePartitionProperty($1088);
+    
+    public static property DEVICE_PARTITION_BY_COUNTS_LIST_END: DevicePartitionProperty read _DEVICE_PARTITION_BY_COUNTS_LIST_END;
+    public static property DEVICE_PARTITION_EQUALLY:            DevicePartitionProperty read _DEVICE_PARTITION_EQUALLY;
+    public static property DEVICE_PARTITION_BY_COUNTS:          DevicePartitionProperty read _DEVICE_PARTITION_BY_COUNTS;
+    public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN: DevicePartitionProperty read _DEVICE_PARTITION_BY_AFFINITY_DOMAIN;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DevicePartitionProperty).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'DevicePartitionProperty[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  DevicePartitionPropertyExt = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    private static _DEVICE_TYPE_DEFAULT     := new DeviceTypeFlags($0001);
-    private static _DEVICE_TYPE_CPU         := new DeviceTypeFlags($0002);
-    private static _DEVICE_TYPE_GPU         := new DeviceTypeFlags($0004);
-    private static _DEVICE_TYPE_ACCELERATOR := new DeviceTypeFlags($0008);
-    private static _DEVICE_TYPE_CUSTOM      := new DeviceTypeFlags($0010);
-    private static _DEVICE_TYPE_ALL         := new DeviceTypeFlags($FFFFFFFF);
+    private static _PARTITION_BY_NAMES_LIST_END_EXT         := new DevicePartitionPropertyExt($FFFFFFFFFFFFFFFF);
+    private static _PARTITION_BY_COUNTS_LIST_END_EXT        := new DevicePartitionPropertyExt($0000);
+    private static _PROPERTIES_LIST_END_EXT                 := new DevicePartitionPropertyExt($0000);
+    private static _DEVICE_PARTITION_EQUALLY_EXT            := new DevicePartitionPropertyExt($4050);
+    private static _DEVICE_PARTITION_BY_COUNTS_EXT          := new DevicePartitionPropertyExt($4051);
+    private static _DEVICE_PARTITION_BY_NAMES_EXT           := new DevicePartitionPropertyExt($4052);
+    private static _DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT := new DevicePartitionPropertyExt($4053);
     
-    public static property DEVICE_TYPE_DEFAULT:     DeviceTypeFlags read _DEVICE_TYPE_DEFAULT;
-    public static property DEVICE_TYPE_CPU:         DeviceTypeFlags read _DEVICE_TYPE_CPU;
-    public static property DEVICE_TYPE_GPU:         DeviceTypeFlags read _DEVICE_TYPE_GPU;
-    public static property DEVICE_TYPE_ACCELERATOR: DeviceTypeFlags read _DEVICE_TYPE_ACCELERATOR;
-    public static property DEVICE_TYPE_CUSTOM:      DeviceTypeFlags read _DEVICE_TYPE_CUSTOM;
-    public static property DEVICE_TYPE_ALL:         DeviceTypeFlags read _DEVICE_TYPE_ALL;
+    public static property PARTITION_BY_NAMES_LIST_END_EXT:         DevicePartitionPropertyExt read _PARTITION_BY_NAMES_LIST_END_EXT;
+    public static property PARTITION_BY_COUNTS_LIST_END_EXT:        DevicePartitionPropertyExt read _PARTITION_BY_COUNTS_LIST_END_EXT;
+    public static property PROPERTIES_LIST_END_EXT:                 DevicePartitionPropertyExt read _PROPERTIES_LIST_END_EXT;
+    public static property DEVICE_PARTITION_EQUALLY_EXT:            DevicePartitionPropertyExt read _DEVICE_PARTITION_EQUALLY_EXT;
+    public static property DEVICE_PARTITION_BY_COUNTS_EXT:          DevicePartitionPropertyExt read _DEVICE_PARTITION_BY_COUNTS_EXT;
+    public static property DEVICE_PARTITION_BY_NAMES_EXT:           DevicePartitionPropertyExt read _DEVICE_PARTITION_BY_NAMES_EXT;
+    public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT: DevicePartitionPropertyExt read _DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT;
     
-    public static function operator or(f1,f2: DeviceTypeFlags) := new DeviceTypeFlags(f1.val or f2.val);
+    public function ToString: string; override;
+    begin
+      var res := typeof(DevicePartitionPropertyExt).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'DevicePartitionPropertyExt[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  DeviceType = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _DEVICE_TYPE_DEFAULT     := new DeviceType($0001);
+    private static _DEVICE_TYPE_CPU         := new DeviceType($0002);
+    private static _DEVICE_TYPE_GPU         := new DeviceType($0004);
+    private static _DEVICE_TYPE_ACCELERATOR := new DeviceType($0008);
+    private static _DEVICE_TYPE_CUSTOM      := new DeviceType($0010);
+    private static _DEVICE_TYPE_ALL         := new DeviceType($FFFFFFFF);
+    
+    public static property DEVICE_TYPE_DEFAULT:     DeviceType read _DEVICE_TYPE_DEFAULT;
+    public static property DEVICE_TYPE_CPU:         DeviceType read _DEVICE_TYPE_CPU;
+    public static property DEVICE_TYPE_GPU:         DeviceType read _DEVICE_TYPE_GPU;
+    public static property DEVICE_TYPE_ACCELERATOR: DeviceType read _DEVICE_TYPE_ACCELERATOR;
+    public static property DEVICE_TYPE_CUSTOM:      DeviceType read _DEVICE_TYPE_CUSTOM;
+    public static property DEVICE_TYPE_ALL:         DeviceType read _DEVICE_TYPE_ALL;
+    
+    public static function operator or(f1,f2: DeviceType) := new DeviceType(f1.val or f2.val);
     
     public property HAS_FLAG_DEVICE_TYPE_DEFAULT:     boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_DEVICE_TYPE_CPU:         boolean read self.val and $0002 <> 0;
@@ -1465,10 +753,70 @@
     
     public function ToString: string; override;
     begin
-      var res := typeof(DeviceTypeFlags).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      var res := typeof(DeviceType).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'DeviceTypeFlags[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DeviceType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.JoinIntoString('+');
+    end;
+    
+  end;
+  
+  Dx9DeviceSetIntel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PREFERRED_DEVICES_FOR_DX9_INTEL := new Dx9DeviceSetIntel($4024);
+    private static _ALL_DEVICES_FOR_DX9_INTEL       := new Dx9DeviceSetIntel($4025);
+    
+    public static property PREFERRED_DEVICES_FOR_DX9_INTEL: Dx9DeviceSetIntel read _PREFERRED_DEVICES_FOR_DX9_INTEL;
+    public static property ALL_DEVICES_FOR_DX9_INTEL:       Dx9DeviceSetIntel read _ALL_DEVICES_FOR_DX9_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(Dx9DeviceSetIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'Dx9DeviceSetIntel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  Dx9DeviceSourceIntel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _D3D9_DEVICE_INTEL   := new Dx9DeviceSourceIntel($4022);
+    private static _D3D9EX_DEVICE_INTEL := new Dx9DeviceSourceIntel($4070);
+    private static _DXVA_DEVICE_INTEL   := new Dx9DeviceSourceIntel($4071);
+    
+    public static property D3D9_DEVICE_INTEL:   Dx9DeviceSourceIntel read _D3D9_DEVICE_INTEL;
+    public static property D3D9EX_DEVICE_INTEL: Dx9DeviceSourceIntel read _D3D9EX_DEVICE_INTEL;
+    public static property DXVA_DEVICE_INTEL:   Dx9DeviceSourceIntel read _DXVA_DEVICE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(Dx9DeviceSourceIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'Dx9DeviceSourceIntel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  EglImagePropertiesKhr = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    
+    private static _EGL_YUV_PLANE_INTEL := new EglImagePropertiesKhr($4107);
+    
+    public static property EGL_YUV_PLANE_INTEL: EglImagePropertiesKhr read _EGL_YUV_PLANE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(EglImagePropertiesKhr).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'EglImagePropertiesKhr[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
     end;
     
   end;
@@ -1688,6 +1036,316 @@
     
   end;
   
+  EventInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _EVENT_COMMAND_QUEUE            := new EventInfo($11D0);
+    private static _EVENT_COMMAND_TYPE             := new EventInfo($11D1);
+    private static _EVENT_REFERENCE_COUNT          := new EventInfo($11D2);
+    private static _EVENT_COMMAND_EXECUTION_STATUS := new EventInfo($11D3);
+    private static _EVENT_CONTEXT                  := new EventInfo($11D4);
+    
+    public static property EVENT_COMMAND_QUEUE:            EventInfo read _EVENT_COMMAND_QUEUE;
+    public static property EVENT_COMMAND_TYPE:             EventInfo read _EVENT_COMMAND_TYPE;
+    public static property EVENT_REFERENCE_COUNT:          EventInfo read _EVENT_REFERENCE_COUNT;
+    public static property EVENT_COMMAND_EXECUTION_STATUS: EventInfo read _EVENT_COMMAND_EXECUTION_STATUS;
+    public static property EVENT_CONTEXT:                  EventInfo read _EVENT_CONTEXT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(EventInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'EventInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  FilterMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _FILTER_NEAREST := new FilterMode($1140);
+    private static _FILTER_LINEAR  := new FilterMode($1141);
+    
+    public static property FILTER_NEAREST: FilterMode read _FILTER_NEAREST;
+    public static property FILTER_LINEAR:  FilterMode read _FILTER_LINEAR;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(FilterMode).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'FilterMode[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  GlContextInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _CURRENT_DEVICE_FOR_GL_CONTEXT_KHR := new GlContextInfo($2006);
+    private static _DEVICES_FOR_GL_CONTEXT_KHR        := new GlContextInfo($2007);
+    
+    public static property CURRENT_DEVICE_FOR_GL_CONTEXT_KHR: GlContextInfo read _CURRENT_DEVICE_FOR_GL_CONTEXT_KHR;
+    public static property DEVICES_FOR_GL_CONTEXT_KHR:        GlContextInfo read _DEVICES_FOR_GL_CONTEXT_KHR;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(GlContextInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'GlContextInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  GlObjectType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _GL_OBJECT_BUFFER          := new GlObjectType($2000);
+    private static _GL_OBJECT_TEXTURE2D       := new GlObjectType($2001);
+    private static _GL_OBJECT_TEXTURE3D       := new GlObjectType($2002);
+    private static _GL_OBJECT_RENDERBUFFER    := new GlObjectType($2003);
+    private static _GL_OBJECT_TEXTURE2D_ARRAY := new GlObjectType($200E);
+    private static _GL_OBJECT_TEXTURE1D       := new GlObjectType($200F);
+    private static _GL_OBJECT_TEXTURE1D_ARRAY := new GlObjectType($2010);
+    private static _GL_OBJECT_TEXTURE_BUFFER  := new GlObjectType($2011);
+    
+    public static property GL_OBJECT_BUFFER:          GlObjectType read _GL_OBJECT_BUFFER;
+    public static property GL_OBJECT_TEXTURE2D:       GlObjectType read _GL_OBJECT_TEXTURE2D;
+    public static property GL_OBJECT_TEXTURE3D:       GlObjectType read _GL_OBJECT_TEXTURE3D;
+    public static property GL_OBJECT_RENDERBUFFER:    GlObjectType read _GL_OBJECT_RENDERBUFFER;
+    public static property GL_OBJECT_TEXTURE2D_ARRAY: GlObjectType read _GL_OBJECT_TEXTURE2D_ARRAY;
+    public static property GL_OBJECT_TEXTURE1D:       GlObjectType read _GL_OBJECT_TEXTURE1D;
+    public static property GL_OBJECT_TEXTURE1D_ARRAY: GlObjectType read _GL_OBJECT_TEXTURE1D_ARRAY;
+    public static property GL_OBJECT_TEXTURE_BUFFER:  GlObjectType read _GL_OBJECT_TEXTURE_BUFFER;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(GlObjectType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'GlObjectType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  GlTextureInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _GL_TEXTURE_TARGET := new GlTextureInfo($2004);
+    private static _GL_MIPMAP_LEVEL   := new GlTextureInfo($2005);
+    private static _GL_NUM_SAMPLES    := new GlTextureInfo($2012);
+    
+    public static property GL_TEXTURE_TARGET: GlTextureInfo read _GL_TEXTURE_TARGET;
+    public static property GL_MIPMAP_LEVEL:   GlTextureInfo read _GL_MIPMAP_LEVEL;
+    public static property GL_NUM_SAMPLES:    GlTextureInfo read _GL_NUM_SAMPLES;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(GlTextureInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'GlTextureInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  ImageInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _IMAGE_FORMAT                := new ImageInfo($1110);
+    private static _IMAGE_ELEMENT_SIZE          := new ImageInfo($1111);
+    private static _IMAGE_ROW_PITCH             := new ImageInfo($1112);
+    private static _IMAGE_SLICE_PITCH           := new ImageInfo($1113);
+    private static _IMAGE_WIDTH                 := new ImageInfo($1114);
+    private static _IMAGE_HEIGHT                := new ImageInfo($1115);
+    private static _IMAGE_DEPTH                 := new ImageInfo($1116);
+    private static _IMAGE_ARRAY_SIZE            := new ImageInfo($1117);
+    private static _IMAGE_NUM_MIP_LEVELS        := new ImageInfo($1119);
+    private static _IMAGE_NUM_SAMPLES           := new ImageInfo($111A);
+    private static _IMAGE_DX9_MEDIA_PLANE_KHR   := new ImageInfo($202A);
+    private static _IMAGE_D3D10_SUBRESOURCE_KHR := new ImageInfo($4016);
+    private static _IMAGE_D3D11_SUBRESOURCE_KHR := new ImageInfo($401F);
+    private static _IMAGE_DX9_PLANE_INTEL       := new ImageInfo($4075);
+    private static _IMAGE_VA_API_PLANE_INTEL    := new ImageInfo($4099);
+    
+    public static property IMAGE_FORMAT:                ImageInfo read _IMAGE_FORMAT;
+    public static property IMAGE_ELEMENT_SIZE:          ImageInfo read _IMAGE_ELEMENT_SIZE;
+    public static property IMAGE_ROW_PITCH:             ImageInfo read _IMAGE_ROW_PITCH;
+    public static property IMAGE_SLICE_PITCH:           ImageInfo read _IMAGE_SLICE_PITCH;
+    public static property IMAGE_WIDTH:                 ImageInfo read _IMAGE_WIDTH;
+    public static property IMAGE_HEIGHT:                ImageInfo read _IMAGE_HEIGHT;
+    public static property IMAGE_DEPTH:                 ImageInfo read _IMAGE_DEPTH;
+    public static property IMAGE_ARRAY_SIZE:            ImageInfo read _IMAGE_ARRAY_SIZE;
+    public static property IMAGE_NUM_MIP_LEVELS:        ImageInfo read _IMAGE_NUM_MIP_LEVELS;
+    public static property IMAGE_NUM_SAMPLES:           ImageInfo read _IMAGE_NUM_SAMPLES;
+    public static property IMAGE_DX9_MEDIA_PLANE_KHR:   ImageInfo read _IMAGE_DX9_MEDIA_PLANE_KHR;
+    public static property IMAGE_D3D10_SUBRESOURCE_KHR: ImageInfo read _IMAGE_D3D10_SUBRESOURCE_KHR;
+    public static property IMAGE_D3D11_SUBRESOURCE_KHR: ImageInfo read _IMAGE_D3D11_SUBRESOURCE_KHR;
+    public static property IMAGE_DX9_PLANE_INTEL:       ImageInfo read _IMAGE_DX9_PLANE_INTEL;
+    public static property IMAGE_VA_API_PLANE_INTEL:    ImageInfo read _IMAGE_VA_API_PLANE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ImageInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'ImageInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelArgInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_ARG_ADDRESS_QUALIFIER := new KernelArgInfo($1196);
+    private static _KERNEL_ARG_ACCESS_QUALIFIER  := new KernelArgInfo($1197);
+    private static _KERNEL_ARG_TYPE_NAME         := new KernelArgInfo($1198);
+    private static _KERNEL_ARG_TYPE_QUALIFIER    := new KernelArgInfo($1199);
+    private static _KERNEL_ARG_NAME              := new KernelArgInfo($119A);
+    
+    public static property KERNEL_ARG_ADDRESS_QUALIFIER: KernelArgInfo read _KERNEL_ARG_ADDRESS_QUALIFIER;
+    public static property KERNEL_ARG_ACCESS_QUALIFIER:  KernelArgInfo read _KERNEL_ARG_ACCESS_QUALIFIER;
+    public static property KERNEL_ARG_TYPE_NAME:         KernelArgInfo read _KERNEL_ARG_TYPE_NAME;
+    public static property KERNEL_ARG_TYPE_QUALIFIER:    KernelArgInfo read _KERNEL_ARG_TYPE_QUALIFIER;
+    public static property KERNEL_ARG_NAME:              KernelArgInfo read _KERNEL_ARG_NAME;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelArgInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelArgInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelExecInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_EXEC_INFO_SVM_PTRS                     := new KernelExecInfo($11B6);
+    private static _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM        := new KernelExecInfo($11B7);
+    private static _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL   := new KernelExecInfo($4200);
+    private static _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL := new KernelExecInfo($4201);
+    private static _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL := new KernelExecInfo($4202);
+    private static _KERNEL_EXEC_INFO_USM_PTRS_INTEL               := new KernelExecInfo($4203);
+    
+    public static property KERNEL_EXEC_INFO_SVM_PTRS:                     KernelExecInfo read _KERNEL_EXEC_INFO_SVM_PTRS;
+    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:        KernelExecInfo read _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM;
+    public static property KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL:   KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL: KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL: KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_USM_PTRS_INTEL:               KernelExecInfo read _KERNEL_EXEC_INFO_USM_PTRS_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelExecInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelExecInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_FUNCTION_NAME          := new KernelInfo($1190);
+    private static _KERNEL_NUM_ARGS               := new KernelInfo($1191);
+    private static _KERNEL_REFERENCE_COUNT        := new KernelInfo($1192);
+    private static _KERNEL_CONTEXT                := new KernelInfo($1193);
+    private static _KERNEL_PROGRAM                := new KernelInfo($1194);
+    private static _KERNEL_ATTRIBUTES             := new KernelInfo($1195);
+    private static _KERNEL_MAX_NUM_SUB_GROUPS     := new KernelInfo($11B9);
+    private static _KERNEL_COMPILE_NUM_SUB_GROUPS := new KernelInfo($11BA);
+    
+    public static property KERNEL_FUNCTION_NAME:          KernelInfo read _KERNEL_FUNCTION_NAME;
+    public static property KERNEL_NUM_ARGS:               KernelInfo read _KERNEL_NUM_ARGS;
+    public static property KERNEL_REFERENCE_COUNT:        KernelInfo read _KERNEL_REFERENCE_COUNT;
+    public static property KERNEL_CONTEXT:                KernelInfo read _KERNEL_CONTEXT;
+    public static property KERNEL_PROGRAM:                KernelInfo read _KERNEL_PROGRAM;
+    public static property KERNEL_ATTRIBUTES:             KernelInfo read _KERNEL_ATTRIBUTES;
+    public static property KERNEL_MAX_NUM_SUB_GROUPS:     KernelInfo read _KERNEL_MAX_NUM_SUB_GROUPS;
+    public static property KERNEL_COMPILE_NUM_SUB_GROUPS: KernelInfo read _KERNEL_COMPILE_NUM_SUB_GROUPS;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelSubGroupInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT     := new KernelSubGroupInfo($11B8);
+    private static _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE     := new KernelSubGroupInfo($2033);
+    private static _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR := new KernelSubGroupInfo($2033);
+    private static _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE        := new KernelSubGroupInfo($2034);
+    private static _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR    := new KernelSubGroupInfo($2034);
+    private static _KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL       := new KernelSubGroupInfo($410A);
+    
+    public static property KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT:     KernelSubGroupInfo read _KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT;
+    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE:     KernelSubGroupInfo read _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE;
+    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR: KernelSubGroupInfo read _KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR;
+    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE:        KernelSubGroupInfo read _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE;
+    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR:    KernelSubGroupInfo read _KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR;
+    public static property KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL:       KernelSubGroupInfo read _KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelSubGroupInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelSubGroupInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelWorkGroupInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_WORK_GROUP_SIZE                    := new KernelWorkGroupInfo($11B0);
+    private static _KERNEL_COMPILE_WORK_GROUP_SIZE            := new KernelWorkGroupInfo($11B1);
+    private static _KERNEL_LOCAL_MEM_SIZE                     := new KernelWorkGroupInfo($11B2);
+    private static _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE := new KernelWorkGroupInfo($11B3);
+    private static _KERNEL_PRIVATE_MEM_SIZE                   := new KernelWorkGroupInfo($11B4);
+    private static _KERNEL_GLOBAL_WORK_SIZE                   := new KernelWorkGroupInfo($11B5);
+    private static _KERNEL_SPILL_MEM_SIZE_INTEL               := new KernelWorkGroupInfo($4109);
+    
+    public static property KERNEL_WORK_GROUP_SIZE:                    KernelWorkGroupInfo read _KERNEL_WORK_GROUP_SIZE;
+    public static property KERNEL_COMPILE_WORK_GROUP_SIZE:            KernelWorkGroupInfo read _KERNEL_COMPILE_WORK_GROUP_SIZE;
+    public static property KERNEL_LOCAL_MEM_SIZE:                     KernelWorkGroupInfo read _KERNEL_LOCAL_MEM_SIZE;
+    public static property KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE: KernelWorkGroupInfo read _KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE;
+    public static property KERNEL_PRIVATE_MEM_SIZE:                   KernelWorkGroupInfo read _KERNEL_PRIVATE_MEM_SIZE;
+    public static property KERNEL_GLOBAL_WORK_SIZE:                   KernelWorkGroupInfo read _KERNEL_GLOBAL_WORK_SIZE;
+    public static property KERNEL_SPILL_MEM_SIZE_INTEL:               KernelWorkGroupInfo read _KERNEL_SPILL_MEM_SIZE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelWorkGroupInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelWorkGroupInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
   MapFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1804,6 +1462,56 @@
     
   end;
   
+  MemInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _MEM_TYPE                       := new MemInfo($1100);
+    private static _MEM_FLAGS                      := new MemInfo($1101);
+    private static _MEM_SIZE                       := new MemInfo($1102);
+    private static _MEM_HOST_PTR                   := new MemInfo($1103);
+    private static _MEM_MAP_COUNT                  := new MemInfo($1104);
+    private static _MEM_REFERENCE_COUNT            := new MemInfo($1105);
+    private static _MEM_CONTEXT                    := new MemInfo($1106);
+    private static _MEM_ASSOCIATED_MEMOBJECT       := new MemInfo($1107);
+    private static _MEM_OFFSET                     := new MemInfo($1108);
+    private static _MEM_USES_SVM_POINTER           := new MemInfo($1109);
+    private static _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR := new MemInfo($2028);
+    private static _MEM_DX9_MEDIA_SURFACE_INFO_KHR := new MemInfo($2029);
+    private static _MEM_D3D10_RESOURCE_KHR         := new MemInfo($4015);
+    private static _MEM_D3D11_RESOURCE_KHR         := new MemInfo($401E);
+    private static _MEM_DX9_RESOURCE_INTEL         := new MemInfo($4027);
+    private static _MEM_DX9_SHARED_HANDLE_INTEL    := new MemInfo($4074);
+    private static _MEM_VA_API_MEDIA_SURFACE_INTEL := new MemInfo($4098);
+    
+    public static property MEM_TYPE:                       MemInfo read _MEM_TYPE;
+    public static property MEM_FLAGS:                      MemInfo read _MEM_FLAGS;
+    public static property MEM_SIZE:                       MemInfo read _MEM_SIZE;
+    public static property MEM_HOST_PTR:                   MemInfo read _MEM_HOST_PTR;
+    public static property MEM_MAP_COUNT:                  MemInfo read _MEM_MAP_COUNT;
+    public static property MEM_REFERENCE_COUNT:            MemInfo read _MEM_REFERENCE_COUNT;
+    public static property MEM_CONTEXT:                    MemInfo read _MEM_CONTEXT;
+    public static property MEM_ASSOCIATED_MEMOBJECT:       MemInfo read _MEM_ASSOCIATED_MEMOBJECT;
+    public static property MEM_OFFSET:                     MemInfo read _MEM_OFFSET;
+    public static property MEM_USES_SVM_POINTER:           MemInfo read _MEM_USES_SVM_POINTER;
+    public static property MEM_DX9_MEDIA_ADAPTER_TYPE_KHR: MemInfo read _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR;
+    public static property MEM_DX9_MEDIA_SURFACE_INFO_KHR: MemInfo read _MEM_DX9_MEDIA_SURFACE_INFO_KHR;
+    public static property MEM_D3D10_RESOURCE_KHR:         MemInfo read _MEM_D3D10_RESOURCE_KHR;
+    public static property MEM_D3D11_RESOURCE_KHR:         MemInfo read _MEM_D3D11_RESOURCE_KHR;
+    public static property MEM_DX9_RESOURCE_INTEL:         MemInfo read _MEM_DX9_RESOURCE_INTEL;
+    public static property MEM_DX9_SHARED_HANDLE_INTEL:    MemInfo read _MEM_DX9_SHARED_HANDLE_INTEL;
+    public static property MEM_VA_API_MEDIA_SURFACE_INTEL: MemInfo read _MEM_VA_API_MEDIA_SURFACE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(MemInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'MemInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
   MemMigrationFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1825,6 +1533,94 @@
       Result := res.Count=0?
         $'MemMigrationFlags[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.JoinIntoString('+');
+    end;
+    
+  end;
+  
+  MemMigrationFlagsExt = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MIGRATE_MEM_OBJECT_HOST_EXT := new MemMigrationFlagsExt($0001);
+    
+    public static property MIGRATE_MEM_OBJECT_HOST_EXT: MemMigrationFlagsExt read _MIGRATE_MEM_OBJECT_HOST_EXT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(MemMigrationFlagsExt).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'MemMigrationFlagsExt[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  MemObjectType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _MEM_OBJECT_BUFFER         := new MemObjectType($10F0);
+    private static _MEM_OBJECT_IMAGE2D        := new MemObjectType($10F1);
+    private static _MEM_OBJECT_IMAGE3D        := new MemObjectType($10F2);
+    private static _MEM_OBJECT_IMAGE2D_ARRAY  := new MemObjectType($10F3);
+    private static _MEM_OBJECT_IMAGE1D        := new MemObjectType($10F4);
+    private static _MEM_OBJECT_IMAGE1D_ARRAY  := new MemObjectType($10F5);
+    private static _MEM_OBJECT_IMAGE1D_BUFFER := new MemObjectType($10F6);
+    private static _MEM_OBJECT_PIPE           := new MemObjectType($10F7);
+    
+    public static property MEM_OBJECT_BUFFER:         MemObjectType read _MEM_OBJECT_BUFFER;
+    public static property MEM_OBJECT_IMAGE2D:        MemObjectType read _MEM_OBJECT_IMAGE2D;
+    public static property MEM_OBJECT_IMAGE3D:        MemObjectType read _MEM_OBJECT_IMAGE3D;
+    public static property MEM_OBJECT_IMAGE2D_ARRAY:  MemObjectType read _MEM_OBJECT_IMAGE2D_ARRAY;
+    public static property MEM_OBJECT_IMAGE1D:        MemObjectType read _MEM_OBJECT_IMAGE1D;
+    public static property MEM_OBJECT_IMAGE1D_ARRAY:  MemObjectType read _MEM_OBJECT_IMAGE1D_ARRAY;
+    public static property MEM_OBJECT_IMAGE1D_BUFFER: MemObjectType read _MEM_OBJECT_IMAGE1D_BUFFER;
+    public static property MEM_OBJECT_PIPE:           MemObjectType read _MEM_OBJECT_PIPE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(MemObjectType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'MemObjectType[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  MemPropertiesIntel = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MEM_ALLOC_FLAGS_INTEL := new MemPropertiesIntel($4195);
+    
+    public static property MEM_ALLOC_FLAGS_INTEL: MemPropertiesIntel read _MEM_ALLOC_FLAGS_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(MemPropertiesIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'MemPropertiesIntel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  PipeInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PIPE_PACKET_SIZE := new PipeInfo($1120);
+    private static _PIPE_MAX_PACKETS := new PipeInfo($1121);
+    
+    public static property PIPE_PACKET_SIZE: PipeInfo read _PIPE_PACKET_SIZE;
+    public static property PIPE_MAX_PACKETS: PipeInfo read _PIPE_MAX_PACKETS;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(PipeInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'PipeInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
     end;
     
   end;
@@ -1854,6 +1650,210 @@
       var res := typeof(PlatformInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
         $'PlatformInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  ProfilingInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PROFILING_COMMAND_QUEUED   := new ProfilingInfo($1280);
+    private static _PROFILING_COMMAND_SUBMIT   := new ProfilingInfo($1281);
+    private static _PROFILING_COMMAND_START    := new ProfilingInfo($1282);
+    private static _PROFILING_COMMAND_END      := new ProfilingInfo($1283);
+    private static _PROFILING_COMMAND_COMPLETE := new ProfilingInfo($1284);
+    
+    public static property PROFILING_COMMAND_QUEUED:   ProfilingInfo read _PROFILING_COMMAND_QUEUED;
+    public static property PROFILING_COMMAND_SUBMIT:   ProfilingInfo read _PROFILING_COMMAND_SUBMIT;
+    public static property PROFILING_COMMAND_START:    ProfilingInfo read _PROFILING_COMMAND_START;
+    public static property PROFILING_COMMAND_END:      ProfilingInfo read _PROFILING_COMMAND_END;
+    public static property PROFILING_COMMAND_COMPLETE: ProfilingInfo read _PROFILING_COMMAND_COMPLETE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ProfilingInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'ProfilingInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  ProgramBuildInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PROGRAM_BUILD_STATUS                     := new ProgramBuildInfo($1181);
+    private static _PROGRAM_BUILD_OPTIONS                    := new ProgramBuildInfo($1182);
+    private static _PROGRAM_BUILD_LOG                        := new ProgramBuildInfo($1183);
+    private static _PROGRAM_BINARY_TYPE                      := new ProgramBuildInfo($1184);
+    private static _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE := new ProgramBuildInfo($1185);
+    
+    public static property PROGRAM_BUILD_STATUS:                     ProgramBuildInfo read _PROGRAM_BUILD_STATUS;
+    public static property PROGRAM_BUILD_OPTIONS:                    ProgramBuildInfo read _PROGRAM_BUILD_OPTIONS;
+    public static property PROGRAM_BUILD_LOG:                        ProgramBuildInfo read _PROGRAM_BUILD_LOG;
+    public static property PROGRAM_BINARY_TYPE:                      ProgramBuildInfo read _PROGRAM_BINARY_TYPE;
+    public static property PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE: ProgramBuildInfo read _PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ProgramBuildInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'ProgramBuildInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  ProgramInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PROGRAM_REFERENCE_COUNT            := new ProgramInfo($1160);
+    private static _PROGRAM_CONTEXT                    := new ProgramInfo($1161);
+    private static _PROGRAM_NUM_DEVICES                := new ProgramInfo($1162);
+    private static _PROGRAM_DEVICES                    := new ProgramInfo($1163);
+    private static _PROGRAM_SOURCE                     := new ProgramInfo($1164);
+    private static _PROGRAM_BINARY_SIZES               := new ProgramInfo($1165);
+    private static _PROGRAM_BINARIES                   := new ProgramInfo($1166);
+    private static _PROGRAM_NUM_KERNELS                := new ProgramInfo($1167);
+    private static _PROGRAM_KERNEL_NAMES               := new ProgramInfo($1168);
+    private static _PROGRAM_IL                         := new ProgramInfo($1169);
+    private static _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT := new ProgramInfo($116A);
+    private static _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT := new ProgramInfo($116B);
+    
+    public static property PROGRAM_REFERENCE_COUNT:            ProgramInfo read _PROGRAM_REFERENCE_COUNT;
+    public static property PROGRAM_CONTEXT:                    ProgramInfo read _PROGRAM_CONTEXT;
+    public static property PROGRAM_NUM_DEVICES:                ProgramInfo read _PROGRAM_NUM_DEVICES;
+    public static property PROGRAM_DEVICES:                    ProgramInfo read _PROGRAM_DEVICES;
+    public static property PROGRAM_SOURCE:                     ProgramInfo read _PROGRAM_SOURCE;
+    public static property PROGRAM_BINARY_SIZES:               ProgramInfo read _PROGRAM_BINARY_SIZES;
+    public static property PROGRAM_BINARIES:                   ProgramInfo read _PROGRAM_BINARIES;
+    public static property PROGRAM_NUM_KERNELS:                ProgramInfo read _PROGRAM_NUM_KERNELS;
+    public static property PROGRAM_KERNEL_NAMES:               ProgramInfo read _PROGRAM_KERNEL_NAMES;
+    public static property PROGRAM_IL:                         ProgramInfo read _PROGRAM_IL;
+    public static property PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT: ProgramInfo read _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT;
+    public static property PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT: ProgramInfo read _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ProgramInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'ProgramInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  QueueProperties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _QUEUE_PRIORITY_KHR := new QueueProperties($1096);
+    private static _QUEUE_THROTTLE_KHR := new QueueProperties($1097);
+    
+    public static property QUEUE_PRIORITY_KHR: QueueProperties read _QUEUE_PRIORITY_KHR;
+    public static property QUEUE_THROTTLE_KHR: QueueProperties read _QUEUE_THROTTLE_KHR;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(QueueProperties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'QueueProperties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  SamplerInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _SAMPLER_REFERENCE_COUNT   := new SamplerInfo($1150);
+    private static _SAMPLER_CONTEXT           := new SamplerInfo($1151);
+    private static _SAMPLER_NORMALIZED_COORDS := new SamplerInfo($1152);
+    private static _SAMPLER_ADDRESSING_MODE   := new SamplerInfo($1153);
+    private static _SAMPLER_FILTER_MODE       := new SamplerInfo($1154);
+    private static _SAMPLER_MIP_FILTER_MODE   := new SamplerInfo($1155);
+    private static _SAMPLER_LOD_MIN           := new SamplerInfo($1156);
+    private static _SAMPLER_LOD_MAX           := new SamplerInfo($1157);
+    
+    public static property SAMPLER_REFERENCE_COUNT:   SamplerInfo read _SAMPLER_REFERENCE_COUNT;
+    public static property SAMPLER_CONTEXT:           SamplerInfo read _SAMPLER_CONTEXT;
+    public static property SAMPLER_NORMALIZED_COORDS: SamplerInfo read _SAMPLER_NORMALIZED_COORDS;
+    public static property SAMPLER_ADDRESSING_MODE:   SamplerInfo read _SAMPLER_ADDRESSING_MODE;
+    public static property SAMPLER_FILTER_MODE:       SamplerInfo read _SAMPLER_FILTER_MODE;
+    public static property SAMPLER_MIP_FILTER_MODE:   SamplerInfo read _SAMPLER_MIP_FILTER_MODE;
+    public static property SAMPLER_LOD_MIN:           SamplerInfo read _SAMPLER_LOD_MIN;
+    public static property SAMPLER_LOD_MAX:           SamplerInfo read _SAMPLER_LOD_MAX;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(SamplerInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'SamplerInfo[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  SamplerProperties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _SAMPLER_MIP_FILTER_MODE := new SamplerProperties($1155);
+    private static _SAMPLER_LOD_MIN         := new SamplerProperties($1156);
+    private static _SAMPLER_LOD_MAX         := new SamplerProperties($1157);
+    
+    public static property SAMPLER_MIP_FILTER_MODE: SamplerProperties read _SAMPLER_MIP_FILTER_MODE;
+    public static property SAMPLER_LOD_MIN:         SamplerProperties read _SAMPLER_LOD_MIN;
+    public static property SAMPLER_LOD_MAX:         SamplerProperties read _SAMPLER_LOD_MAX;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(SamplerProperties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'SamplerProperties[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  VaApiDeviceSetIntel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PREFERRED_DEVICES_FOR_VA_API_INTEL := new VaApiDeviceSetIntel($4095);
+    private static _ALL_DEVICES_FOR_VA_API_INTEL       := new VaApiDeviceSetIntel($4096);
+    
+    public static property PREFERRED_DEVICES_FOR_VA_API_INTEL: VaApiDeviceSetIntel read _PREFERRED_DEVICES_FOR_VA_API_INTEL;
+    public static property ALL_DEVICES_FOR_VA_API_INTEL:       VaApiDeviceSetIntel read _ALL_DEVICES_FOR_VA_API_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(VaApiDeviceSetIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'VaApiDeviceSetIntel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  VaApiDeviceSourceIntel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _VA_API_DISPLAY_INTEL := new VaApiDeviceSourceIntel($4094);
+    
+    public static property VA_API_DISPLAY_INTEL: VaApiDeviceSourceIntel read _VA_API_DISPLAY_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(VaApiDeviceSourceIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'VaApiDeviceSourceIntel[{ self.val=0 ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     

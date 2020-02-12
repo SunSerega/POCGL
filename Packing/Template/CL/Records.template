@@ -1,20 +1,8 @@
 ﻿  
   
   
-  cl_image_format = record
-    public image_channel_order: cl_channel_order;
-    public image_channel_data_type: cl_channel_type;
-    
-    public constructor(image_channel_order: cl_channel_order; image_channel_data_type: cl_channel_type);
-    begin
-      self.image_channel_order := image_channel_order;
-      self.image_channel_data_type := image_channel_data_type;
-    end;
-    
-  end;
-  
   cl_image_desc = record
-    public image_type: cl_mem_object_type;
+    public image_type: MemObjectType;
     public image_width: UInt32;
     public image_height: UInt32;
     public image_depth: UInt32;
@@ -25,7 +13,7 @@
     public num_samples: UInt32;
     public mem_object: cl_mem;
     
-    public constructor(image_type: cl_mem_object_type; image_width: UInt32; image_height: UInt32; image_depth: UInt32; image_array_size: UInt32; image_row_pitch: UInt32; image_slice_pitch: UInt32; num_mip_levels: UInt32; num_samples: UInt32; mem_object: cl_mem);
+    public constructor(image_type: MemObjectType; image_width: UInt32; image_height: UInt32; image_depth: UInt32; image_array_size: UInt32; image_row_pitch: UInt32; image_slice_pitch: UInt32; num_mip_levels: UInt32; num_samples: UInt32; mem_object: cl_mem);
     begin
       self.image_type := image_type;
       self.image_width := image_width;
@@ -37,6 +25,18 @@
       self.num_mip_levels := num_mip_levels;
       self.num_samples := num_samples;
       self.mem_object := mem_object;
+    end;
+    
+  end;
+  
+  cl_image_format = record
+    public image_channel_order: ChannelOrder;
+    public image_channel_data_type: ChannelType;
+    
+    public constructor(image_channel_order: ChannelOrder; image_channel_data_type: ChannelType);
+    begin
+      self.image_channel_order := image_channel_order;
+      self.image_channel_data_type := image_channel_data_type;
     end;
     
   end;

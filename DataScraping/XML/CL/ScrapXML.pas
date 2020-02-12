@@ -13,8 +13,60 @@ type
     private name := default(string);
     
     private static All := new Dictionary<string, TypeDef>;
+    public static struct_nodes := new List<XmlNode>;
     
     public constructor(n: XmlNode);
+    begin
+      var category := n['category'];
+      
+      case category of
+        
+        'include':
+        begin
+          if n.Text.Contains('#include') then exit;
+          self.name := n['name'];
+        end;
+        
+        'basetype':
+        begin
+          self.name := n['name'];
+        end;
+        
+        'define':
+        begin
+          self.name := n.Nodes['name'].Single.Text;
+          self.ptr  := n.Text.Count(ch->ch='*');
+          
+          var enmr := n.Nodes['type'].GetEnumerator;
+          if enmr.MoveNext then
+          begin
+            
+            self.def := enmr.Current.Text;
+            if enmr.MoveNext then
+              Otp($'ERROR: Wrong definition of type [{name}]');
+            
+          end else
+          begin
+            if n.Text.Contains('struct _') and (ptr=1) then
+            begin
+              self.ptr := 0;
+            end else
+              Otp($'ERROR: Wrong definition of type [{name}]');
+          end;
+          
+        end;
+        
+        'struct':
+        begin
+          self.name := n['name'];
+          struct_nodes += n;
+        end;
+        
+        else Otp($'ERROR: Invalid TypeDef category: [{category}]');
+      end;
+      
+      All.Add(self.name, self);
+    end;
     
     public procedure UnRollDef;
     begin
@@ -39,114 +91,6 @@ type
     
   end;
   
-  StructDef = sealed class
-    private name: string;
-    // (name, ptr, type)
-    private flds := new List<(string,integer,string)>;
-    //
-    private static All := new Dictionary<string, StructDef>;
-    
-    public constructor(n: XmlNode);
-    
-    public procedure Save(bw: System.IO.BinaryWriter);
-    begin
-      bw.Write(name);
-      bw.Write(flds.Count);
-      foreach var t in flds do
-      begin
-        bw.Write(t[0]);
-        bw.Write(t[1]);
-        bw.Write(t[2]);
-      end;
-    end;
-    
-  end;
-  
-{$region constructor's}
-
-constructor TypeDef.Create(n: XmlNode);
-begin
-  var category := n['category'];
-  
-  case category of
-    
-    'include':
-    begin
-      if n.Text.Contains('#include') then exit;
-      self.name := n['name'];
-    end;
-    
-    'basetype':
-    begin
-      self.name := n['name'];
-    end;
-    
-    'define':
-    begin
-      self.name := n.Nodes['name'].Single.Text;
-      self.ptr  := n.Text.Count(ch->ch='*');
-      
-      var enmr := n.Nodes['type'].GetEnumerator;
-      if enmr.MoveNext then
-      begin
-        
-        self.def := enmr.Current.Text;
-        if enmr.MoveNext then
-          Otp($'ERROR: Wrong definition of type [{name}]');
-        
-      end else
-      begin
-        if n.Text.Contains('struct _') and (ptr=1) then
-        begin
-          self.ptr := 0;
-        end else
-          Otp($'ERROR: Wrong definition of type [{name}]');
-      end;
-      
-    end;
-    
-    'struct':
-    begin
-      self.name := n['name'];
-      new StructDef(n);
-    end;
-    
-    else Otp($'ERROR: Invalid TypeDef category: [{category}]');
-  end;
-  
-  All.Add(self.name, self);
-end;
-
-constructor StructDef.Create(n: XmlNode);
-begin
-  self.name := n['name'];
-  
-  foreach var m in n.Nodes['member'] do
-  begin
-    var nn := m.Nodes['name'].SingleOrDefault;
-    
-    if nn=nil then
-    begin
-      
-      // костыль, но этот юнион безсмыслен, ибо буфер это подвид mem_object-а
-      if m.Text.Contains('union') and m.Text.Contains('cl_mem buffer') and m.Text.Contains('cl_mem mem_object') then
-      begin
-        self.flds += ('mem_object', 0, 'cl_mem');
-      end else
-        raise new MessageException($'ERROR parsing struct member: [{m.Text}]');
-      
-      continue;
-    end;
-    
-    self.flds += (nn.Text, m.Text.Count(ch->ch='*'), m.Nodes['type'].Single.Text);
-  end;
-  
-  All.Add(self.name, self);
-end;
-
-{$endregion constructor's}
-
-type
   Group = sealed class
     private name, t: string;
     private bitmask: boolean;
@@ -350,6 +294,52 @@ type
     end;
     
   end;
+  StructDef = sealed class
+    private name: string;
+    // (name, ptr, type)
+    private flds := new List<ParData>;
+    //
+    private static All := new Dictionary<string, StructDef>;
+    
+    public constructor(n: XmlNode);
+    begin
+      self.name := n['name'];
+      
+      foreach var m in n.Nodes['member'] do
+      begin
+        
+        if not m.Nodes['name'].Any then
+        begin
+          
+          // костыль, но этот юнион безсмыслен, ибо буфер это подвид mem_object-а
+          if m.Text.Contains('union') and m.Text.Contains('cl_mem buffer') and m.Text.Contains('cl_mem mem_object') then
+          begin
+            var fld := new ParData;
+            fld.name := 'mem_object';
+            fld.t := 'cl_mem';
+            self.flds += fld;
+          end else
+            raise new MessageException($'ERROR parsing struct member: [{m.Text}]');
+          
+          continue;
+        end;
+        
+        var fld := new ParData(m);
+        self.flds += fld;
+      end;
+      
+      All.Add(self.name, self);
+    end;
+    
+    public procedure Save(bw: System.IO.BinaryWriter; grs: array of Group);
+    begin
+      bw.Write(name);
+      bw.Write(flds.Count);
+      foreach var fld in flds do
+        fld.Save(bw, grs);
+    end;
+    
+  end;
   FuncData = sealed class
     // первая пара - имя функции и возвращаемое значение
     private pars := new List<ParData>;
@@ -491,6 +481,10 @@ begin
     foreach var rn in fn.Nodes['require'] do
       Group.FixBy(rn);
   
+  foreach var n in TypeDef.struct_nodes do
+    new StructDef(n);
+  TypeDef.struct_nodes := nil;
+  
   foreach var n in root.Nodes['commands'].Single.Nodes['command'] do
     new FuncData(n);
   
@@ -508,7 +502,7 @@ begin
   if not StructDef.All.TryGetValue(name, s) then exit;
   if not hs.Add(s) then exit;
   foreach var f in s.flds do
-    AddStructChain(f[2], hs);
+    AddStructChain(f.t, hs);
 end;
 
 procedure SaveBin;
@@ -521,25 +515,20 @@ begin
     Extension.All.SelectMany(ext->ext.add)
   ).ToHashSet.ToArray;
   
-  
   var structs_hs := new HashSet<StructDef>;
   foreach var par in funcs.SelectMany(f->f.pars) do
     AddStructChain(par.t, structs_hs);
   var structs := structs_hs.ToArray;
   
-  var grs_hs := funcs
-    .SelectMany(f->f.pars)
-    .Select(par->par.gr)
-    .Where(gr->gr<>nil)
-    .ToHashSet
-  ;
+  var grs_hs := new HashSet<Group>;
+  foreach var f in funcs do
+    foreach var par in f.pars do
+      if par.gr <> nil then
+        grs_hs += par.gr;
   foreach var struct in structs do
     foreach var fld in struct.flds do
-    begin
-      var gr: Group;
-      if Group.All.TryGetValue(fld[2], gr) then
-        grs_hs += gr;
-    end;
+      if fld.gr<>nil then
+        grs_hs += fld.gr;
   var grs := grs_hs.ToArray;
   
   bw.Write(grs.Length);
@@ -548,7 +537,7 @@ begin
   
   bw.Write(structs.Length);
   foreach var struct in structs do
-    struct.Save(bw);
+    struct.Save(bw, grs);
   
   bw.Write(funcs.Length);
   foreach var func in funcs do

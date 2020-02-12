@@ -10,6 +10,7 @@ begin
     LoadBin('DataScraping\XML\CL\funcs.bin');
     
     Otp($'Fixing all');
+    Group.FixCLNames;
     ApplyFixers;
     
     var res := new StringBuilder;

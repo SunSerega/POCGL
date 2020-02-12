@@ -24,39 +24,3 @@ QUEUED		= 0x3
 public function IS_ERROR := val < 0;
 
 
-
-# cl_bool
-!rename
-Bool
-
-# cl_command_queue_properties
-!rename
-CommandQueuePropertyFlags
-
-# cl_device_info
-!rename
-DeviceInfo
-
-# cl_device_type
-!rename
-DeviceTypeFlags
-
-# cl_map_flags
-!rename
-MapFlags
-
-# cl_mem_flags
-!rename
-MemFlags
-
-# cl_mem_migration_flags
-!rename
-MemMigrationFlags
-
-# cl_platform_info
-!rename
-PlatformInfo
-
-
-
-
