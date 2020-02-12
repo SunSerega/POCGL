@@ -234,12 +234,12 @@ type
     for var i := 0 to count-1 do
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     
-    public static procedure AttachCallback(ev: cl_event; cb: EventCallback);
-    public static procedure AttachCallback(ev: cl_event; cb: EventCallback; tsk: CLTaskBase);
+    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback);
+    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase);
     
     ///cb должен иметь глобальный try и вызывать "state.RaiseIfError" и "__NativUtils.GCHndFree(data)",
     ///А "cl.ReleaseEvent" если и вызывать - то только на результате вызова AttachCallback
-    public function AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): cl_event;
+    public function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
     
   end;
   
@@ -259,7 +259,7 @@ type
     
     function WaitAndGetBase: object;
     
-    function AttachCallbackBase(cb: EventCallback; c: Context; var cq: cl_command_queue): __IQueueRes;
+    function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes;
     
   end;
   ///--
@@ -311,13 +311,13 @@ type
       
     end;
     
-    function AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): __QueueRes<T>;
+    function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): __QueueRes<T>;
     begin
       Result.res    := self.res;
       Result.res_f  := self.res_f;
       Result.ev     := self.ev.AttachCallback(cb, c, cq);
     end;
-    function AttachCallbackBase(cb: EventCallback; c: Context; var cq: cl_command_queue): __IQueueRes := AttachCallback(cb, c, cq);
+    function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes := AttachCallback(cb, c, cq);
     
   end;
   
@@ -2397,12 +2397,12 @@ end;
 
 {$endregion CommandQueue}
 
-static procedure __EventList.AttachCallback(ev: cl_event; cb: EventCallback) :=
+static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback) :=
 cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
-static procedure __EventList.AttachCallback(ev: cl_event; cb: EventCallback; tsk: CLTaskBase) :=
+static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase) :=
 tsk.AddErr( cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)) );
 
-function __EventList.AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): cl_event;
+function __EventList.AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
 begin
   
   var ev: cl_event;
@@ -3454,7 +3454,7 @@ type
           end).Start else
         begin
           
-          var set_complete: EventCallback := (ev,st,data)->
+          var set_complete: Event_Callback := (ev,st,data)->
           begin
             tsk.AddErr( st );
             

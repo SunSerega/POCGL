@@ -3,17 +3,17 @@
   
   cl_image_desc = record
     public image_type: MemObjectType;
-    public image_width: UInt32;
-    public image_height: UInt32;
-    public image_depth: UInt32;
-    public image_array_size: UInt32;
-    public image_row_pitch: UInt32;
-    public image_slice_pitch: UInt32;
+    public image_width: UIntPtr;
+    public image_height: UIntPtr;
+    public image_depth: UIntPtr;
+    public image_array_size: UIntPtr;
+    public image_row_pitch: UIntPtr;
+    public image_slice_pitch: UIntPtr;
     public num_mip_levels: UInt32;
     public num_samples: UInt32;
     public mem_object: cl_mem;
     
-    public constructor(image_type: MemObjectType; image_width: UInt32; image_height: UInt32; image_depth: UInt32; image_array_size: UInt32; image_row_pitch: UInt32; image_slice_pitch: UInt32; num_mip_levels: UInt32; num_samples: UInt32; mem_object: cl_mem);
+    public constructor(image_type: MemObjectType; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_array_size: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; num_mip_levels: UInt32; num_samples: UInt32; mem_object: cl_mem);
     begin
       self.image_type := image_type;
       self.image_width := image_width;

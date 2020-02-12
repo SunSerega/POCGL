@@ -147,6 +147,8 @@ type
       
       sb +=       $'    public val: {t};' + #10;
       sb +=       $'    public constructor(val: {t}) := self.val := val;' + #10;
+      if t = 'IntPtr' then
+        sb +=     $'    public constructor(val: Int32) := self.val := new {t}(val);' + #10;
       sb +=       $'    ' + #10;
       
       foreach var ename in EnumrKeys do
@@ -177,13 +179,13 @@ type
       begin
         sb +=     $'      var res := typeof({name}).GetProperties.Where(prop->prop.Name.StartsWith(''HAS_FLAG_'') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart(''&'')).ToList;' + #10;
         sb +=     $'      Result := res.Count=0?' + #10;
-        sb +=     $'        $''{name}[{{ self.val=0 ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
-        sb +=     $'        res.JoinIntoString(''+'');' + #10;
+        sb +=     $'        $''{name}[{{ self.val=default({t}) ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
+        sb +=     $'        res.JoinToString(''+'');' + #10;
       end else
       begin
-        sb +=     $'      var res := typeof({name}).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);' + #10;
+        sb +=     $'      var res := typeof({name}).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->{t}(prop.GetValue(self))=self.val);' + #10;
         sb +=     $'      Result := res=nil?' + #10;
-        sb +=     $'        $''{name}[{{ self.val=0 ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
+        sb +=     $'        $''{name}[{{ self.val=default({t}) ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
         sb +=     $'        res.Name.TrimStart(''&'');' + #10;
       end;
       sb +=       $'    end;' + #10;
@@ -1309,133 +1311,6 @@ end;
 
 {$endregion Misc}
 
-{$region StructFixer}
-
-type
-  StructAdder = sealed class(StructFixer)
-    private name: string;
-    private flds := new List<StructField>;
-    
-    public constructor(name: string; data: sequence of string);
-    begin
-      inherited Create(nil);
-      self.name := name;
-      
-      foreach var l in data do
-        if not string.IsNullOrWhiteSpace(l) then
-        begin
-          var fld := new StructField;
-          
-          if l.Trim<>'*' then
-          begin
-            var s := l.Split(':');
-            fld.name := s[0].Trim;
-            fld.ptr := s[1].Count(ch->ch='*');
-            fld.t := s[1].Remove('*').Trim;
-          end else
-            fld.name := nil;
-          
-          flds += fld;
-        end;
-      
-      self.RegisterAsAdder;
-    end;
-    
-    public function Apply(s: Struct): boolean; override;
-    begin
-      s.name := self.name;
-      s.flds := self.flds;
-      Result := false;
-    end;
-    
-  end;
-  
-  StructFieldFixer = abstract class(StructFixer)
-    private fn, val: string;
-    
-    public constructor(name: string; data: string);
-    begin
-      inherited Create(name);
-      var s := data.Split('=');
-      fn := s[0].Trim;
-      val := s[1].Trim;
-    end;
-    
-    public procedure Apply(f: StructField); abstract;
-    
-    public function Apply(s: Struct): boolean; override;
-    begin
-      var f := s.flds.Find(f->f.name=fn);
-      if f<>nil then
-      begin
-        self.Apply(f);
-        used := true;
-      end else
-        Otp($'WARNING: Faild to apply [{self.GetType.Name}] to struct [{s.name}]');
-      Result := false;
-    end;
-    
-  end;
-  StructVisFixer = sealed class(StructFieldFixer)
-    
-    public constructor(name: string; data: string) :=
-    inherited Create(name, data);
-    public static procedure Create(name: string; data: sequence of string) :=
-    foreach var l in data do
-      if not string.IsNullOrWhiteSpace(l) then
-        new StructVisFixer(name, l);
-    
-    public procedure Apply(f: StructField); override :=
-    f.vis := self.val;
-    
-  end;
-  StructDefaultFixer = sealed class(StructFieldFixer)
-    
-    public constructor(name: string; data: string) :=
-    inherited Create(name, data);
-    public static procedure Create(name: string; data: sequence of string) :=
-    foreach var l in data do
-      if not string.IsNullOrWhiteSpace(l) then
-        new StructDefaultFixer(name, l);
-    
-    public procedure Apply(f: StructField); override :=
-    f.def_val := self.val;
-    
-  end;
-  StructCommentFixer = sealed class(StructFieldFixer)
-    
-    public constructor(name: string; data: string) :=
-    inherited Create(name, data);
-    public static procedure Create(name: string; data: sequence of string) :=
-    foreach var l in data do
-      if not string.IsNullOrWhiteSpace(l) then
-        new StructCommentFixer(name, l);
-    
-    public procedure Apply(f: StructField); override :=
-    f.comment := self.val;
-    
-  end;
-  
-static constructor StructFixer.Create;
-begin
-  
-  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat');
-  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
-    foreach var bl in ReadBlocks(gr[1],'!',false) do
-    case bl[0] of
-      
-      'add':      StructAdder       .Create(gr[0], bl[1]);
-      'vis':      StructVisFixer    .Create(gr[0], bl[1]);
-      'default':  StructDefaultFixer.Create(gr[0], bl[1]);
-      'comment':  StructCommentFixer.Create(gr[0], bl[1]);
-      
-      else raise new MessageException($'Invalid struct fixer type [!{bl[0]}] for struct [{gr[0]}]');
-    end;
-  
-end;
-
-{$endregion StructFixer}
-
 {$region GroupFixer}
 
 type
@@ -1566,6 +1441,133 @@ begin
 end;
 
 {$endregion GroupFixer}
+
+{$region StructFixer}
+
+type
+  StructAdder = sealed class(StructFixer)
+    private name: string;
+    private flds := new List<StructField>;
+    
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(nil);
+      self.name := name;
+      
+      foreach var l in data do
+        if not string.IsNullOrWhiteSpace(l) then
+        begin
+          var fld := new StructField;
+          
+          if l.Trim<>'*' then
+          begin
+            var s := l.Split(':');
+            fld.name := s[0].Trim;
+            fld.ptr := s[1].Count(ch->ch='*');
+            fld.t := s[1].Remove('*').Trim;
+          end else
+            fld.name := nil;
+          
+          flds += fld;
+        end;
+      
+      self.RegisterAsAdder;
+    end;
+    
+    public function Apply(s: Struct): boolean; override;
+    begin
+      s.name := self.name;
+      s.flds := self.flds;
+      Result := false;
+    end;
+    
+  end;
+  
+  StructFieldFixer = abstract class(StructFixer)
+    private fn, val: string;
+    
+    public constructor(name: string; data: string);
+    begin
+      inherited Create(name);
+      var s := data.Split('=');
+      fn := s[0].Trim;
+      val := s[1].Trim;
+    end;
+    
+    public procedure Apply(f: StructField); abstract;
+    
+    public function Apply(s: Struct): boolean; override;
+    begin
+      var f := s.flds.Find(f->f.name=fn);
+      if f<>nil then
+      begin
+        self.Apply(f);
+        used := true;
+      end else
+        Otp($'WARNING: Faild to apply [{self.GetType.Name}] to struct [{s.name}]');
+      Result := false;
+    end;
+    
+  end;
+  StructVisFixer = sealed class(StructFieldFixer)
+    
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new StructVisFixer(name, l);
+    
+    public procedure Apply(f: StructField); override :=
+    f.vis := self.val;
+    
+  end;
+  StructDefaultFixer = sealed class(StructFieldFixer)
+    
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new StructDefaultFixer(name, l);
+    
+    public procedure Apply(f: StructField); override :=
+    f.def_val := self.val;
+    
+  end;
+  StructCommentFixer = sealed class(StructFieldFixer)
+    
+    public constructor(name: string; data: string) :=
+    inherited Create(name, data);
+    public static procedure Create(name: string; data: sequence of string) :=
+    foreach var l in data do
+      if not string.IsNullOrWhiteSpace(l) then
+        new StructCommentFixer(name, l);
+    
+    public procedure Apply(f: StructField); override :=
+    f.comment := self.val;
+    
+  end;
+  
+static constructor StructFixer.Create;
+begin
+  
+  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat');
+  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
+    foreach var bl in ReadBlocks(gr[1],'!',false) do
+    case bl[0] of
+      
+      'add':      StructAdder       .Create(gr[0], bl[1]);
+      'vis':      StructVisFixer    .Create(gr[0], bl[1]);
+      'default':  StructDefaultFixer.Create(gr[0], bl[1]);
+      'comment':  StructCommentFixer.Create(gr[0], bl[1]);
+      
+      else raise new MessageException($'Invalid struct fixer type [!{bl[0]}] for struct [{gr[0]}]');
+    end;
+  
+end;
+
+{$endregion StructFixer}
 
 {$region FuncFixer}
 

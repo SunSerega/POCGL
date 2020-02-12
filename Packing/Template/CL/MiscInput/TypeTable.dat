@@ -4,13 +4,12 @@
 //                  Basic type's
 //--------------------------------------------------
 
-char						= SByte
+char						= ntv_char
 unsigned char				= Byte
 
 cl_int						= Int32
 int							= Int32
 cl_uint						= UInt32
-size_t						= UInt32
 UINT						= UInt32
 cl_GLuint					= UInt32
 
@@ -19,6 +18,7 @@ cl_ulong					= UInt64
 void						= IntPtr -
 intptr_t					= IntPtr
 HANDLE						= IntPtr
+size_t						= UIntPtr
 
 //--------------------------------------------------
 //                    Delegate's

@@ -138,7 +138,7 @@ type
   
   ProgramCode = class;
   
-  DeviceTypeFlags = OpenCL.DeviceTypeFlags;
+  DeviceType = OpenCL.DeviceType;
   
   {$endregion pre def}
   
@@ -1468,15 +1468,15 @@ type
       _def_cont := new Context;
     except
       try
-        _def_cont := new Context(DeviceTypeFlags.DEVICE_TYPE_ALL); // если нету GPU - попытаться хотя бы для чего то инициализировать
+        _def_cont := new Context(DeviceType.DEVICE_TYPE_ALL); // если нету GPU - попытаться хотя бы для чего то инициализировать
       except
         _def_cont := nil;
       end;
     end;
     
-    public constructor := Create(DeviceTypeFlags.DEVICE_TYPE_GPU);
+    public constructor := Create(DeviceType.DEVICE_TYPE_GPU);
     
-    public constructor(dt: DeviceTypeFlags);
+    public constructor(dt: DeviceType);
     begin
       var ec: ErrorCode;
       
@@ -1494,7 +1494,7 @@ type
     public constructor(context: cl_context);
     begin
       
-      cl.GetContextInfo(context, ContextInfo.CL_CONTEXT_DEVICES, new UIntPtr(IntPtr.Size), @_device, nil).RaiseIfError;
+      cl.GetContextInfo(context, ContextInfo.CONTEXT_DEVICES, new UIntPtr(IntPtr.Size), _device, IntPtr.Zero).RaiseIfError;
       
       _context := context;
     end;
@@ -1535,7 +1535,7 @@ type
       self._program := cl.CreateProgramWithSource(c._context, files_texts.Length, files_texts, files_texts.ConvertAll(s->new UIntPtr(s.Length)), ec);
       ec.RaiseIfError;
       
-      cl.BuildProgram(self._program, 1, @c._device, nil,nil,nil).RaiseIfError;
+      cl.BuildProgram(self._program, 1,c._device, nil, nil,IntPtr.Zero).RaiseIfError;
       
     end;
     
@@ -1552,7 +1552,7 @@ type
     begin
       
       var names_char_len: UIntPtr;
-      cl.GetProgramInfo(_program, ProgramInfoType.NUM_KERNELS, new UIntPtr(UIntPtr.Size), @names_char_len, nil).RaiseIfError;
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_NUM_KERNELS, new UIntPtr(UIntPtr.Size), @names_char_len, nil).RaiseIfError;
       
       var names_ptr := Marshal.AllocHGlobal(IntPtr(pointer(names_char_len))+1);
       cl.GetProgramInfo(_program, ProgramInfoType.KERNEL_NAMES, names_char_len, pointer(names_ptr), nil).RaiseIfError;
