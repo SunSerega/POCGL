@@ -818,290 +818,287 @@ type
         'gl': use_external := version <= '1.1';
       end;
       
-      var ToDo := 0; //ToDo remove this begin-end;
+      if not use_external then
+        sb += $'    public z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
+      
+      var PrevNtvOvrs := new Dictionary<array of FuncParamT, integer>(all_overloads.Count);
+      var PrevTempOvrGInds := new Dictionary<integer, Dictionary<List<integer>,integer> >;
+      
+      for var ovr_i := 0 to all_overloads.Count-1 do
       begin
-        if not use_external then
-          sb += $'    public z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
+        var ovr := all_overloads[ovr_i];
         
-        var PrevNtvOvrs := new Dictionary<array of FuncParamT, integer>(all_overloads.Count);
-        var PrevTempOvrGInds := new Dictionary<integer, Dictionary<List<integer>,integer> >;
+        var generic_inds := new List<integer>; // индексы шаблонных параметров с шаблонным типом в temp перегрузке
+        var temp_generic_names := new List<string>; // шаблонные параметры temp перегрузки
+        var all_generic_names := new List<string>; // шаблонные параметры основной публичной перегрузки
         
-        for var ovr_i := 0 to all_overloads.Count-1 do
+        var init := new List<string>;
+        var finl := new List<string>;
+        var par_strs := new string[ovr.Length];
+        
+        {$region Constructing ntv/temp ovrs}
+        
+        var ntv_ovr := ovr.ConvertAll((par,par_i)->
         begin
-          var ovr := all_overloads[ovr_i];
+          var res_var_arg := par.var_arg;
+          var res_t := par.tname;
           
-          var generic_inds := new List<integer>; // индексы шаблонных параметров с шаблонным типом в temp перегрузке
-          var temp_generic_names := new List<string>; // шаблонные параметры temp перегрузки
-          var all_generic_names := new List<string>; // шаблонные параметры основной публичной перегрузки
-          
-          var init := new List<string>;
-          var finl := new List<string>;
-          var par_strs := new string[ovr.Length];
-          
-          {$region Constructing ntv/temp ovrs}
-          
-          var ntv_ovr := ovr.ConvertAll((par,par_i)->
+          if par_i=0 then
           begin
-            var res_var_arg := par.var_arg;
-            var res_t := par.tname;
+            if is_proc then
+            begin
+              Result := new FuncParamT(false,0,nil);
+              exit;
+            end;
             
-            if par_i=0 then
+            // нельзя определить размер массива в результате
+            if par.arr_lvl<>0 then raise new System.NotSupportedException;
+            var relevant_par_name := 'Result';
+            
+            if par.tname='string' then
             begin
-              if is_proc then
+              var str_ptr_name := $'par_{par_i}_str_ptr';
+              
+              finl += $'{relevant_par_name} := Marshal.PtrToStringAnsi({str_ptr_name});';
+              // Marshal.FreeHGlobal не нужно, потому что строка в возвращаемом значении - всегда статичная строка
+              
+              par_strs[par_i] := str_ptr_name;
+              relevant_par_name := str_ptr_name;
+              res_t := 'IntPtr';
+            end;
+            
+            if relevant_par_name<>'Result' then relevant_par_name := 'var '+relevant_par_name;
+            par_strs[par_i] := relevant_par_name;
+          end else
+          begin
+            var relevant_par_name := org_par[par_i].name;
+            
+            var sres_t := res_t;
+            var generic := (res_t<>nil) and sres_t.StartsWith('T') and sres_t.Skip(1).All(ch->ch.IsDigit);
+            if generic then
+              if par.arr_lvl=0 then
               begin
-                Result := new FuncParamT(false,0,nil);
-                exit;
-              end;
-              
-              // нельзя определить размер массива в результате
-              if par.arr_lvl<>0 then raise new System.NotSupportedException;
-              var relevant_par_name := 'Result';
-              
-              if par.tname='string' then
-              begin
-                var str_ptr_name := $'par_{par_i}_str_ptr';
-                
-                finl += $'{relevant_par_name} := Marshal.PtrToStringAnsi({str_ptr_name});';
-                // Marshal.FreeHGlobal не нужно, потому что строка в возвращаемом значении - всегда статичная строка
-                
-                par_strs[par_i] := str_ptr_name;
-                relevant_par_name := str_ptr_name;
-                res_t := 'IntPtr';
-              end;
-              
-              if relevant_par_name<>'Result' then relevant_par_name := 'var '+relevant_par_name;
-              par_strs[par_i] := relevant_par_name;
-            end else
-            begin
-              var relevant_par_name := org_par[par_i].name;
-              
-              var sres_t := res_t;
-              var generic := (res_t<>nil) and sres_t.StartsWith('T') and sres_t.Skip(1).All(ch->ch.IsDigit);
-              if generic then
-                if par.arr_lvl=0 then
-                begin
-                  relevant_par_name := $'PByte(pointer(@{relevant_par_name}))^';
-                  res_var_arg := true;
-                  res_t := 'Byte';
-                  all_generic_names += sres_t;
-                end else
-                begin
-                  generic_inds += par_i;
-                  temp_generic_names += sres_t;
-                  all_generic_names += sres_t;
-                  res_t := 'Byte';
-                end;
-              
-              if par.tname='string' then
-              begin
-                var str_ptr_arr_name := $'par_{par_i}_str_ptr';
-                
-                var str_ptr_arr_init := new StringBuilder;
-                str_ptr_arr_init += $'var {str_ptr_arr_name} := ';
-                var prev_arr_name := relevant_par_name;
-                for var i := 1 to par.arr_lvl do
-                begin
-                  var new_arr_name := $'arr_el{i}';
-                  str_ptr_arr_init += $'{prev_arr_name}.ConvertAll({new_arr_name}->';
-                  prev_arr_name := new_arr_name;
-                end;
-                str_ptr_arr_init += $'Marshal.StringToHGlobalAnsi({prev_arr_name})';
-                str_ptr_arr_init.Append(')',par.arr_lvl);
-                str_ptr_arr_init += ';';
-                init += str_ptr_arr_init.ToString;
-                
-                var str_ptr_arr_finl := new StringBuilder;
-                prev_arr_name := str_ptr_arr_name;
-                for var i := 1 to par.arr_lvl do
-                begin
-                  var new_arr_name := $'arr_el{i}';
-                  str_ptr_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
-                  prev_arr_name := new_arr_name;
-                end;
-                str_ptr_arr_finl += $'Marshal.FreeHGlobal({prev_arr_name});';
-                finl += str_ptr_arr_finl.ToString;
-                
-                relevant_par_name := str_ptr_arr_name;
-                res_t := 'IntPtr';
-              end;
-              
-              if par.arr_lvl>1 then
-                for var temp_arr_i := par.arr_lvl-1 downto 1 do
-                begin
-                  var temp_arr_name := $'par_{par_i}_temp_arr{temp_arr_i}';
-                  
-                  var temp_arr_init := new StringBuilder;
-                  temp_arr_init += $'var {temp_arr_name} := {relevant_par_name}';
-                  for var i := 1 to temp_arr_i-1 do
-                    temp_arr_init += $'.ConvertAll(arr_el{i}->arr_el{i}';
-                  temp_arr_init += $'.ConvertAll(arr_el{temp_arr_i}->begin{#10}';
-                  temp_arr_init += $'        var l := sizeof({res_t})*arr_el{temp_arr_i}.Length;{#10}';
-                  temp_arr_init += $'        Result := Marshal.AllocHGlobal(l);{#10}';
-                  temp_arr_init += $'        Marshal.Copy(arr_el{temp_arr_i},0,Result,l);{#10}';
-                  temp_arr_init += $'      end)';
-                  temp_arr_init.Append(')',temp_arr_i-1);
-                  temp_arr_init += ';';
-                  init += temp_arr_init.ToString;
-                  
-                  var temp_arr_finl := new StringBuilder;
-                  var prev_arr_name := temp_arr_name;
-                  for var i := 1 to temp_arr_i do
-                  begin
-                    var new_arr_name := $'arr_el{i}';
-                    temp_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
-                    prev_arr_name := new_arr_name;
-                  end;
-                  temp_arr_finl += $'Marshal.FreeHGlobal(arr_el{temp_arr_i});';
-                  finl += temp_arr_finl.ToString;
-                  
-                  relevant_par_name := temp_arr_name;
-                  res_t := 'IntPtr'; // внутри цикла, чтоб в следующей итерации "sizeof({res_t})" было правильным
-                end;
-              
-              if par.arr_lvl<>0 then
-              begin
+                relevant_par_name := $'PByte(pointer(@{relevant_par_name}))^';
                 res_var_arg := true;
-                par_strs[par_i] := $'{relevant_par_name}[0]';
+                res_t := 'Byte';
+                all_generic_names += sres_t;
               end else
-                par_strs[par_i] := relevant_par_name;
+              begin
+                generic_inds += par_i;
+                temp_generic_names += sres_t;
+                all_generic_names += sres_t;
+                res_t := 'Byte';
+              end;
+            
+            if par.tname='string' then
+            begin
+              var str_ptr_arr_name := $'par_{par_i}_str_ptr';
               
+              var str_ptr_arr_init := new StringBuilder;
+              str_ptr_arr_init += $'var {str_ptr_arr_name} := ';
+              var prev_arr_name := relevant_par_name;
+              for var i := 1 to par.arr_lvl do
+              begin
+                var new_arr_name := $'arr_el{i}';
+                str_ptr_arr_init += $'{prev_arr_name}.ConvertAll({new_arr_name}->';
+                prev_arr_name := new_arr_name;
+              end;
+              str_ptr_arr_init += $'Marshal.StringToHGlobalAnsi({prev_arr_name})';
+              str_ptr_arr_init.Append(')',par.arr_lvl);
+              str_ptr_arr_init += ';';
+              init += str_ptr_arr_init.ToString;
+              
+              var str_ptr_arr_finl := new StringBuilder;
+              prev_arr_name := str_ptr_arr_name;
+              for var i := 1 to par.arr_lvl do
+              begin
+                var new_arr_name := $'arr_el{i}';
+                str_ptr_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
+                prev_arr_name := new_arr_name;
+              end;
+              str_ptr_arr_finl += $'Marshal.FreeHGlobal({prev_arr_name});';
+              finl += str_ptr_arr_finl.ToString;
+              
+              relevant_par_name := str_ptr_arr_name;
+              res_t := 'IntPtr';
             end;
             
-            Result := new FuncParamT(res_var_arg, 0, res_t);
-          end);
-          
-          {$endregion Constructing ntv/temp ovrs}
-          
-          {$region ntv/temp ovrs codegeneration}
-          var relevant_ovr_name: string;
-          begin
-            
-            var same_ntv_ovr_ind := PrevNtvOvrs.Where(kvp->ntv_ovr.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
-            if same_ntv_ovr_ind <> -1 then
-            begin
-              relevant_ovr_name := $'z_{l_name}_ovr_{same_ntv_ovr_ind}';
-              if generic_inds.Count<>0 then
+            if par.arr_lvl>1 then
+              for var temp_arr_i := par.arr_lvl-1 downto 1 do
               begin
-                var PrevTempOvrs := PrevTempOvrGInds[same_ntv_ovr_ind];
-                var same_temp_ovr_ind := PrevTempOvrs.Where(kvp->generic_inds.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
-                if same_temp_ovr_ind <> -1 then
+                var temp_arr_name := $'par_{par_i}_temp_arr{temp_arr_i}';
+                
+                var temp_arr_init := new StringBuilder;
+                temp_arr_init += $'var {temp_arr_name} := {relevant_par_name}';
+                for var i := 1 to temp_arr_i-1 do
+                  temp_arr_init += $'.ConvertAll(arr_el{i}->arr_el{i}';
+                temp_arr_init += $'.ConvertAll(arr_el{temp_arr_i}->begin{#10}';
+                temp_arr_init += $'        var l := sizeof({res_t})*arr_el{temp_arr_i}.Length;{#10}';
+                temp_arr_init += $'        Result := Marshal.AllocHGlobal(l);{#10}';
+                temp_arr_init += $'        Marshal.Copy(arr_el{temp_arr_i},0,Result,l);{#10}';
+                temp_arr_init += $'      end)';
+                temp_arr_init.Append(')',temp_arr_i-1);
+                temp_arr_init += ';';
+                init += temp_arr_init.ToString;
+                
+                var temp_arr_finl := new StringBuilder;
+                var prev_arr_name := temp_arr_name;
+                for var i := 1 to temp_arr_i do
                 begin
-                  relevant_ovr_name := $'temp_{l_name}_ovr_{same_temp_ovr_ind}';
-                  generic_inds.Clear;
+                  var new_arr_name := $'arr_el{i}';
+                  temp_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
+                  prev_arr_name := new_arr_name;
                 end;
+                temp_arr_finl += $'Marshal.FreeHGlobal(arr_el{temp_arr_i});';
+                finl += temp_arr_finl.ToString;
+                
+                relevant_par_name := temp_arr_name;
+                res_t := 'IntPtr'; // внутри цикла, чтоб в следующей итерации "sizeof({res_t})" было правильным
               end;
+            
+            if par.arr_lvl<>0 then
+            begin
+              res_var_arg := true;
+              par_strs[par_i] := $'{relevant_par_name}[0]';
             end else
-            begin
-              PrevNtvOvrs[ntv_ovr] := ovr_i;
-              relevant_ovr_name := $'z_{l_name}_ovr_{ovr_i}';
-              
-              {$region ntv}
-              
-              if use_external then
-              begin
-                var temp_ovr_name := '_'+relevant_ovr_name;
-                
-                sb += '    private ';
-                WriteOvrT(ntv_ovr,nil, temp_ovr_name, true);
-                sb += ';'#10;
-                if api='gdi' then
-                  sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
-                  sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
-                
-                sb += $'    public static {relevant_ovr_name}';
-                if (org_par.Length=1) and not is_proc then
-                begin
-                  sb += ': ';
-                  WriteOvrT(ntv_ovr,nil, nil, false);
-                end;
-                sb += $' := {temp_ovr_name};' + #10;
-                
-              end else
-              begin
-                
-                sb += $'    public {relevant_ovr_name} := GetFuncOrNil&<';
-                WriteOvrT(ntv_ovr,nil, nil, false);
-                sb += $'>(z_{l_name}_adr);'+#10;
-                
-              end;
-              
-              {$endregion ntv}
-              
-            end;
+              par_strs[par_i] := relevant_par_name;
             
-            {$region temp}
-            
+          end;
+          
+          Result := new FuncParamT(res_var_arg, 0, res_t);
+        end);
+        
+        {$endregion Constructing ntv/temp ovrs}
+        
+        {$region ntv/temp ovrs codegeneration}
+        var relevant_ovr_name: string;
+        begin
+          
+          var same_ntv_ovr_ind := PrevNtvOvrs.Where(kvp->ntv_ovr.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
+          if same_ntv_ovr_ind <> -1 then
+          begin
+            relevant_ovr_name := $'z_{l_name}_ovr_{same_ntv_ovr_ind}';
             if generic_inds.Count<>0 then
             begin
-              var relevant_ntv_ovr_ind := same_ntv_ovr_ind=-1 ? ovr_i : same_ntv_ovr_ind;
-              if not PrevTempOvrGInds.ContainsKey(relevant_ntv_ovr_ind) then PrevTempOvrGInds[relevant_ntv_ovr_ind] := new Dictionary<List<integer>, integer>;
-              PrevTempOvrGInds[relevant_ntv_ovr_ind].Add(generic_inds, ovr_i);
-              
-              var temp_z_ovr_name := $'temp_{l_name}_ovr_{ovr_i}';
-              
-              sb += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-              WriteOvrT(ntv_ovr.ConvertAll((par,par_i)->
+              var PrevTempOvrs := PrevTempOvrGInds[same_ntv_ovr_ind];
+              var same_temp_ovr_ind := PrevTempOvrs.Where(kvp->generic_inds.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
+              if same_temp_ovr_ind <> -1 then
               begin
-                var g_ind := generic_inds.IndexOf(par_i);
-                Result := g_ind=-1 ? par : new FuncParamT(true, par.arr_lvl, temp_generic_names[g_ind]);
-              end),temp_generic_names, temp_z_ovr_name, use_external);
-              sb += ' :='#10;
-              sb += $'    {relevant_ovr_name}(';
-              for var par_i := 1 to ntv_ovr.Length-1 do
-              begin
-                sb += par_i in generic_inds ? $'PByte(pointer(@{org_par[par_i].name}))^' : org_par[par_i].name ;
-                sb += ', ';
+                relevant_ovr_name := $'temp_{l_name}_ovr_{same_temp_ovr_ind}';
+                generic_inds.Clear;
               end;
-              sb.Length -= 2;
-              sb += ');'#10;
+            end;
+          end else
+          begin
+            PrevNtvOvrs[ntv_ovr] := ovr_i;
+            relevant_ovr_name := $'z_{l_name}_ovr_{ovr_i}';
+            
+            {$region ntv}
+            
+            if use_external then
+            begin
+              var temp_ovr_name := '_'+relevant_ovr_name;
               
-              relevant_ovr_name := temp_z_ovr_name;
+              sb += '    private ';
+              WriteOvrT(ntv_ovr,nil, temp_ovr_name, true);
+              sb += ';'#10;
+              if api='gdi' then
+                sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
+                sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
+              
+              sb += $'    public static {relevant_ovr_name}';
+              if (org_par.Length=1) and not is_proc then
+              begin
+                sb += ': ';
+                WriteOvrT(ntv_ovr,nil, nil, false);
+              end;
+              sb += $' := {temp_ovr_name};' + #10;
+              
+            end else
+            begin
+              
+              sb += $'    public {relevant_ovr_name} := GetFuncOrNil&<';
+              WriteOvrT(ntv_ovr,nil, nil, false);
+              sb += $'>(z_{l_name}_adr);'+#10;
+              
             end;
             
-            {$endregion temp}
+            {$endregion ntv}
             
           end;
-          {$endregion ntv/temp ovrs codegeneration}
           
-          sb += '    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr,all_generic_names, l_name_esc, static_container);
-          sb += ';'#10;
-          sb += '    begin'#10;
+          {$region temp}
           
-          foreach var l in init do
+          if generic_inds.Count<>0 then
           begin
-            sb += '      ';
-            sb += l;
-            sb += #10;
-          end;
-          
-          sb += '      ';
-          if not is_proc then sb += $'{par_strs[0]} := ';
-          sb += relevant_ovr_name;
-          if ovr.Length>1 then
-          begin
-            sb += '(';
-            foreach var par_str in par_strs.Skip(1) do
+            var relevant_ntv_ovr_ind := same_ntv_ovr_ind=-1 ? ovr_i : same_ntv_ovr_ind;
+            if not PrevTempOvrGInds.ContainsKey(relevant_ntv_ovr_ind) then PrevTempOvrGInds[relevant_ntv_ovr_ind] := new Dictionary<List<integer>, integer>;
+            PrevTempOvrGInds[relevant_ntv_ovr_ind].Add(generic_inds, ovr_i);
+            
+            var temp_z_ovr_name := $'temp_{l_name}_ovr_{ovr_i}';
+            
+            sb += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
+            WriteOvrT(ntv_ovr.ConvertAll((par,par_i)->
             begin
-              sb += par_str;
+              var g_ind := generic_inds.IndexOf(par_i);
+              Result := g_ind=-1 ? par : new FuncParamT(true, par.arr_lvl, temp_generic_names[g_ind]);
+            end),temp_generic_names, temp_z_ovr_name, use_external);
+            sb += ' :='#10;
+            sb += $'    {relevant_ovr_name}(';
+            for var par_i := 1 to ntv_ovr.Length-1 do
+            begin
+              sb += par_i in generic_inds ? $'PByte(pointer(@{org_par[par_i].name}))^' : org_par[par_i].name ;
               sb += ', ';
             end;
             sb.Length -= 2;
-            sb += ')';
-          end;
-          sb += ';'#10;
-          
-          foreach var l in finl do
-          begin
-            sb += '      ';
-            sb += l;
-            sb += #10;
+            sb += ');'#10;
+            
+            relevant_ovr_name := temp_z_ovr_name;
           end;
           
-          sb += '    end;'#10;
+          {$endregion temp}
+          
+        end;
+        {$endregion ntv/temp ovrs codegeneration}
+        
+        sb += '    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
+        WriteOvrT(ovr,all_generic_names, l_name_esc, static_container);
+        sb += ';'#10;
+        sb += '    begin'#10;
+        
+        foreach var l in init do
+        begin
+          sb += '      ';
+          sb += l;
+          sb += #10;
         end;
         
+        sb += '      ';
+        if not is_proc then sb += $'{par_strs[0]} := ';
+        sb += relevant_ovr_name;
+        if ovr.Length>1 then
+        begin
+          sb += '(';
+          foreach var par_str in par_strs.Skip(1) do
+          begin
+            sb += par_str;
+            sb += ', ';
+          end;
+          sb.Length -= 2;
+          sb += ')';
+        end;
+        sb += ';'#10;
+        
+        foreach var l in finl do
+        begin
+          sb += '      ';
+          sb += l;
+          sb += #10;
+        end;
+        
+        sb += '    end;'#10;
       end;
+      
       
       sb += '    '#10;
     end;
