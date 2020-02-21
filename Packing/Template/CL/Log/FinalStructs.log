@@ -1,0 +1,47 @@
+﻿
+
+
+# cl_buffer_region
+	origin: UIntPtr
+	size: UIntPtr
+
+# cl_dx9_surface_info_khr
+	resource: ^IntPtr
+	shared_handle: IntPtr
+
+# cl_image_desc
+	image_type: MemObjectType
+	image_width: UIntPtr
+	image_height: UIntPtr
+	image_depth: UIntPtr
+	image_array_size: UIntPtr
+	image_row_pitch: UIntPtr
+	image_slice_pitch: UIntPtr
+	num_mip_levels: UInt32
+	num_samples: UInt32
+	mem_object: cl_mem
+
+# cl_image_format
+	image_channel_order: ChannelOrder
+	image_channel_data_type: ChannelType
+
+# cl_mem_ext_host_ptr
+	allocation_type: UInt32
+	host_cache_policy: UInt32
+
+# cl_mem_android_native_buffer_host_ptr
+	ext_host_ptr: cl_mem_ext_host_ptr
+	anb_ptr: IntPtr
+
+# cl_mem_ion_host_ptr
+	ext_host_ptr: cl_mem_ext_host_ptr
+	ion_filedesc: Int32
+	ion_hostptr: IntPtr
+
+# cl_motion_estimation_desc_intel
+	mb_block_type: UInt32
+	subpixel_mode: UInt32
+	sad_adjust_mode: UInt32
+	search_path_type: UInt32
+
+

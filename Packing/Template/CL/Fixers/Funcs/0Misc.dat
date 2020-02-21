@@ -1,33 +1,11 @@
 
 
 
-# clEnqueueMapImage
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| %coords%	| %coords%	| var UInt32	| var UInt32	| UInt32	| %ev_lst%	| %ev%	| var ErrorCode	|
+# clSetUserEventStatus
+!repl_par_t
+Int32 = CommandExecutionStatus
 
-# clCreateProgramWithBinary
-!repl_ovrs
-bin		= array of array of Byte | array of IntPtr | IntPtr
- cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| %bin%	| var ErrorCode	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| %bin%	| var ErrorCode	| IntPtr		|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| %bin%	| IntPtr		| var ErrorCode	|
 
-# clEnqueueCopyBufferRect
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| %coords%	| %coords%	| %coords%	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| %ev_lst%	| %ev%	|
-
-# clEnqueueCopyImage
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| %coords%	| %coords%	| %coords%	| UInt32	| %ev_lst%	| %ev%	|
 
 # clEnqueueNDRangeKernel
 !repl_ovrs
@@ -35,18 +13,5 @@ coords	= array of UInt32 | var UInt32
 ev_lst	= array of cl_event | var cl_event | IntPtr
 ev		= var cl_event | IntPtr
  ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| %coords%	| %coords%	| %coords%	| UInt32	| %ev_lst%	| %ev%	|
-
-# clEnqueue[Read,Write]BufferRect
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| Bool	| %coords%	| %coords%	| %coords%	| UInt32	| UInt32	| UInt32	| UInt32	| IntPtr	| UInt32	| %ev_lst%	| %ev%	|
-
-
-
-# clSetUserEventStatus
-!repl_par_t
-Int32 = CommandExecutionStatus
 
 

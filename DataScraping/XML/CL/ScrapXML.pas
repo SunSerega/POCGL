@@ -136,7 +136,7 @@ type
           valid := false;
         end else
         begin
-          if td.ptr<>0 then raise new MessageException($'Enum [{self.name}] has type with ptr');
+          if td.ptr<>0 then raise new MessageException($'Group [{self.name}] has type with ptr');
           self.t := td.name;
         end;
       end;
@@ -192,37 +192,44 @@ type
     
     public static procedure FixBy(n: XmlNode);
     begin
-      var gname := n['comment'];
-      if gname=nil then exit;
+      if not n.Nodes['enum'].Any then exit;
+      var comment := n['comment'];
+      if comment=nil then exit;
       
-      var gr: Group;
-      if not All.TryGetValue(gname, gr) then
+      foreach var gname in comment.ToWords do
       begin
-        var t: TypeDef;
-        if TypeDef.All.TryGetValue(gname, t) then
-        begin
-          gr := new Group;
-          gr.name := gname;
-          gr.t := t.name;
-          t.name := gname;
-          gr.bitmask := false;
-          All.Add(gname, gr);
-        end else
-          exit;
-      end;
-      
-      foreach var en in n.Nodes['enum'] do
-      begin
-        var ename := en['name'];
-        if gr.enums.ContainsKey(ename) then continue;
-        var pgr: Group;
-        if GroupByEname.TryGetValue(ename, pgr) then
-          pgr.enums.Remove(ename);
         
-        var val: int64;
-        if AllEnums.TryGetValue(ename, val) then
-          gr.enums.Add(ename, val) else
-          Otp($'ERROR: Enum [{ename}] of group [{gname}] wasn''t defined');
+        var gr: Group;
+        if not All.TryGetValue(gname, gr) then
+        begin
+          var t: TypeDef;
+          if TypeDef.All.TryGetValue(gname, t) then
+          begin
+            if t.ptr<>0 then raise new MessageException($'Group [{gname}] has type with ptr');
+            gr := new Group;
+            gr.name := gname;
+            gr.t := t.name;
+            t.name := gname;
+            gr.bitmask := false;
+            All.Add(gname, gr);
+          end else
+            continue;
+        end;
+        
+        foreach var en in n.Nodes['enum'] do
+        begin
+          var ename := en['name'];
+          if gr.enums.ContainsKey(ename) then continue;
+          var pgr: Group;
+          if GroupByEname.TryGetValue(ename, pgr) then
+            pgr.enums.Remove(ename);
+          
+          var val: int64;
+          if AllEnums.TryGetValue(ename, val) then
+            gr.enums.Add(ename, val) else
+            Otp($'ERROR: Enum [{ename}] of group [{gname}] wasn''t defined');
+        end;
+        
       end;
       
     end;
@@ -496,40 +503,17 @@ begin
   
 end;
 
-procedure AddStructChain(name: string; hs: HashSet<StructDef>);
-begin
-  var s: StructDef;
-  if not StructDef.All.TryGetValue(name, s) then exit;
-  if not hs.Add(s) then exit;
-  foreach var f in s.flds do
-    AddStructChain(f.t, hs);
-end;
-
 procedure SaveBin;
 begin
   Otp($'Saving as binary');
   var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath($'..\funcs.bin', GetEXEFileName)));
   
+  var grs := Group.All.Values.ToArray;
+  var structs := StructDef.All.Values.ToArray;
   var funcs := (
     Feature.All.SelectMany(f->f.add.Concat(f.rem)) +
     Extension.All.SelectMany(ext->ext.add)
   ).ToHashSet.ToArray;
-  
-  var structs_hs := new HashSet<StructDef>;
-  foreach var par in funcs.SelectMany(f->f.pars) do
-    AddStructChain(par.t, structs_hs);
-  var structs := structs_hs.ToArray;
-  
-  var grs_hs := new HashSet<Group>;
-  foreach var f in funcs do
-    foreach var par in f.pars do
-      if par.gr <> nil then
-        grs_hs += par.gr;
-  foreach var struct in structs do
-    foreach var fld in struct.flds do
-      if fld.gr<>nil then
-        grs_hs += fld.gr;
-  var grs := grs_hs.ToArray;
   
   bw.Write(grs.Length);
   foreach var gr in grs do

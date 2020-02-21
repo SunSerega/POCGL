@@ -22,8 +22,8 @@ type
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
     
-    public static All: Dictionary<string, Group>;
-    public static Used: HashSet<string>;
+    public static All := new Dictionary<string, Group>;
+    public static Used := new HashSet<string>;
     
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
@@ -58,8 +58,6 @@ type
     
     public static procedure SealAll(api_name: string);
     begin
-      Group.All := new Dictionary<string, Group>;
-      Group.Used := new HashSet<string>;
       
       foreach var gname in all.Keys do
       begin
@@ -390,17 +388,11 @@ begin
   Otp($'Saving as binary');
   var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath($'..\funcs.bin', GetEXEFileName)));
   
+  var grs := Group.All.Values.ToArray;
   var funcs := (
     features.SelectMany(f->f.add.Concat(f.rem)) +
     extensions.SelectMany(ext->ext.add)
   ).ToHashSet.ToArray;
-  
-  var grs := funcs
-    .SelectMany(f->f.pars)
-    .Select(par->par.gr)
-    .Where(gr->gr<>nil)
-    .ToHashSet.ToArray
-  ;
   
   bw.Write(grs.Length);
   foreach var gr in grs do

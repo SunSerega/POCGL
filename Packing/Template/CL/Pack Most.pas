@@ -12,6 +12,7 @@ begin
     Otp($'Fixing all');
     Group.FixCLNames;
     ApplyFixers;
+    MarkUsed;
     
     var res := new StringBuilder;
     

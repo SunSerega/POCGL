@@ -6,13 +6,14 @@ uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 var log :=            InitLog('Log\Funcs.log');
 var log_groups :=     InitLog('Log\FinalGroups.log');
+var log_structs :=    InitLog('Log\FinalStructs.log');
 var log_func_ovrs :=  InitLog('Log\FinalFuncOverloads.log');
 
 type
   LogCache = static class
     static invalid_ext_names  := new HashSet<string>;
     static invalid_ntv_types  := new HashSet<string>;
-    static used_t_names       := new HashSet<string>;
+    static loged_ffo          := new HashSet<string>; // final func ovrs
   end;
   
 var dll_name: string;
@@ -114,6 +115,7 @@ type
     end;
     
     private static All := new List<Group>;
+    private static ByName: Dictionary<string, Group> := nil;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
@@ -131,8 +133,30 @@ type
           end).JoinToString('');
     end;
     
+    public used := false;
+    public explicit_existence := false;
+    public procedure MarkUsed;
+    begin
+      if used then exit;
+      used := true;
+    end;
+    public static procedure MarkUsed(name: string);
+    begin
+      if ByName=nil then ByName := All.ToDictionary(gr->gr.name);
+      var res: Group;
+      if ByName.TryGetValue(name, res) then
+        res.MarkUsed;
+    end;
+    
     private function EnumrKeys := enums.Keys.OrderBy(ename->enums[ename]).ThenBy(ename->ename);
     private property ValueStr[ename: string]: string read '$'+enums[ename].ToString('X4');
+    
+    public static procedure WarnAllUnused :=
+    foreach var gr in All do
+      if not gr.used then
+        if gr.explicit_existence then
+          Otp($'WARNING: Group [{gr.name}] was explicitly added, but wasn''t used') else
+          log.WriteLine($'Group [{gr.name}] was skipped');
     
     public procedure Write(sb: StringBuilder);
     begin
@@ -140,9 +164,11 @@ type
       foreach var ename in enums.Keys do
         log_groups.WriteLine($'{#9}{ename} = {enums[ename]:X}');
       log_groups.WriteLine;
+      log_groups.Flush;
       
-      var max_w := screened_enums.Keys.Max(ename->ename.Length);
-      var max_scr_w := screened_enums.Values.Max(ename->ename.Length);
+      if enums.Count=0 then Otp($'WARNING: Group [{name}] had 0 enums');
+      var max_w := screened_enums.Keys.DefaultIfEmpty('').Max(ename->ename.Length);
+      var max_scr_w := screened_enums.Values.DefaultIfEmpty('').Max(ename->ename.Length);
       sb +=       $'  {name} = record' + #10;
       
       sb +=       $'    public val: {t};' + #10;
@@ -225,11 +251,6 @@ type
       sb += $'  '+#10;
     end;
     
-    public static procedure WarnAllUnused :=
-    foreach var gr in All do
-      if not LogCache.used_t_names.Contains(gr.name) then
-        Otp($'WARNING: Group [{gr.name}] wasn''t used');
-    
   end;
   GroupFixer = abstract class(Fixer<GroupFixer, Group>)
     
@@ -259,9 +280,17 @@ type
       self.name := br.ReadString;
       self.t := TypeTable.Convert(br.ReadString);
       if br.ReadBoolean then raise new System.NotSupportedException; // readonly
-      self.ptr := br.ReadInt32;
+      self.ptr := br.ReadInt32 - self.t.Count(ch->ch='-');
+      self.t := self.t.Remove('-').Trim;
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
+    end;
+    
+    public procedure FixT :=
+    if gr<>nil then
+    begin
+      self.t := gr.name;
+      self.gr := nil;
     end;
     
     public function MakeDef: string;
@@ -276,11 +305,9 @@ type
     
     public procedure Write(sb: StringBuilder);
     begin
-      if gr<>nil then self.t := gr.name;
       sb += '    ';
       if name<>nil then
       begin
-        LogCache.used_t_names += self.t;
         sb += vis;
         sb += ' ';
         sb += self.MakeDef;
@@ -315,17 +342,53 @@ type
       loop flds.Capacity do
         flds += new StructField(br);
       TypeTable.All.Add(self.name,self.name);
+      TypeTable.Used += self.name;
     end;
     
     private static All := new List<Struct>;
+    private static ByName: Dictionary<string, Struct> := nil;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
       loop All.Capacity do All += new Struct(br);
     end;
     
+    public used := false;
+    public explicit_existence := false;
+    public procedure MarkUsed;
+    begin
+      if used then exit;
+      used := true;
+      foreach var fld in flds do
+      begin
+        fld.FixT;
+        Group.MarkUsed(fld.t);
+        Struct.MarkUsed(fld.t);
+      end;
+    end;
+    public static procedure MarkUsed(name: string);
+    begin
+      if ByName=nil then ByName := All.ToDictionary(s->s.name);
+      var res: Struct;
+      if ByName.TryGetValue(name, res) then
+        res.MarkUsed;
+    end;
+    
+    public static procedure WarnAllUnused :=
+    foreach var s in All do
+      if not s.used then
+        if s.explicit_existence then
+          Otp($'WARNING: Struct [{s.name}] was explicitly added, but wasn''t used') else
+          log.WriteLine($'Struct [{s.name}] was skipped');
+    
     public procedure Write(sb: StringBuilder);
     begin
+      log_structs.WriteLine($'# {name}');
+      foreach var fld in flds do
+        log_structs.WriteLine($'{#9}{fld.MakeDef}');
+      log_structs.WriteLine;
+      log_structs.Flush;
+      
       sb += $'  {name} = record' + #10;
       
       foreach var fld in flds do
@@ -347,13 +410,18 @@ type
       sb +=       '  end;'#10;
       sb +=       '  '#10;
     end;
-    public static procedure WriteAll(sb: StringBuilder) :=
-    foreach var s in All.OrderBy(s->s.name) do s.Write(sb);
-    
-    public static procedure WarnAllUnused :=
-    foreach var s in All do
-      if not LogCache.used_t_names.Contains(s.name) then
-        Otp($'WARNING: Struct [{s.name}] wasn''t used');
+    public static procedure WriteAll(sb: StringBuilder);
+    begin
+      var sorted := new List<Struct>;
+      foreach var s in All.OrderBy(s->s.name) do
+      begin
+        var ind := sorted.FindIndex(ps->ps.flds.Any(fld->fld.t=s.name));
+        if ind=-1 then
+          sorted += s else
+          sorted.Insert(ind, s);
+      end;
+      foreach var s in sorted do s.Write(sb);
+    end;
     
   end;
   StructFixer = abstract class(Fixer<StructFixer, Struct>)
@@ -476,7 +544,7 @@ type
     end;
     
     private static All := new List<Func>;
-    private static Used := new HashSet<Func>;
+    private static ByName: Dictionary<string, Struct> := nil;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
@@ -598,22 +666,39 @@ type
       sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
     end;
     
-    public function MarkUsed: boolean;
+    public used := false;
+    public procedure MarkUsed;
     begin
+      if used then exit;
+      used := true;
       InitOverloads;
-      Result := Used.Add(self);
-      if not Result then exit;
       foreach var ovr in all_overloads do
         foreach var par in is_proc ? ovr.Skip(1) : ovr do
-          LogCache.used_t_names += par.tname;
+        begin
+          Group.MarkUsed(par.tname);
+          Struct.MarkUsed(par.tname);
+        end;
+    end;
+    //ToDo для glx, в будущем убрать
+    public procedure MarkSemiUsed;
+    begin
+      if used then exit;
+      used := true;
     end;
     
+    public static procedure WarnAllUnused :=
+    foreach var f in All do
+      if not f.used then
+        Otp($'ERROR: Func [{f.name}] wasn''t used');
+    
     public static prev_func_names := new HashSet<string>;
-    public procedure Write(sb: StringBuilder; api, version: string);
+    public procedure Write(sb: StringBuilder; api, version: string; static_container: boolean);
     begin
       InitOverloads;
       
-      if MarkUsed then
+      {$region MiscInit}
+      
+      if LogCache.loged_ffo.Add(self.name) then
       begin
         
         if not is_proc or (org_par.Length>1) then
@@ -626,6 +711,7 @@ type
             log_func_ovrs.WriteLine;
           end;
           log_func_ovrs.WriteLine;
+          log_func_ovrs.Flush;
         end;
         
       end;
@@ -649,36 +735,22 @@ type
       if api<>'gdi' then
         log.WriteLine($'Func [{name}] had api [{api}], which isn''t start of it''s name');
       prev_func_names += l_name.ToLower;
-      if l_name.ToLower in unallowed_words then l_name := '&'+l_name;
+      var l_name_esc := l_name;
+      if l_name.ToLower in unallowed_words then l_name_esc := '&'+l_name_esc;
       
-      var WriteMarshalAs: (FuncParamT, boolean)->() := (par,res)->
-      begin
-        if (par.arr_lvl=0) and (par.tname<>'string') then exit;
-        sb += '[';
-        if res then sb += 'Result: ';
-        if par.arr_lvl>0 then
-        begin
-          sb += 'MarshalAs(UnmanagedType.LPArray';
-          if par.arr_lvl>1 then
-            sb += ', ArraySubType=UnmanagedType.LPArray' else
-          if par.tname='string' then
-            sb += ', ArraySubType=UnmanagedType.LPStr';
-          sb += ')';
-        end else
-        if par.tname='string' then
-          sb += 'MarshalAs(UnmanagedType.LPStr)';
-        sb += '] ';
-      end;
+      {$endregion MiscInit}
       
-      var WriteOvrT: procedure(ovr: array of FuncParamT; generic_names: List<string>; name: string; marshals, is_static: boolean) := (ovr,generic_names,name, marshals,is_static)->
+      {$region WriteOvrT}
+      
+      var WriteOvrT: procedure(ovr: array of FuncParamT; generic_names: List<string>; name: string; is_static: boolean) := (ovr,generic_names,name, is_static)->
       begin
+        
         var use_standart_dt := false; // единственное применение - в "Marshal.GetDelegateForFunctionPointer". Но он их и не принимает
         if use_standart_dt then
         begin
           sb += is_proc ? 'Action' : 'Func';
         end else
         begin
-          if marshals then WriteMarshalAs(ovr[0],true);
           if is_static and (name<>nil) then sb += 'static ';
           sb += is_proc ? 'procedure' : 'function';
         end;
@@ -707,7 +779,6 @@ type
             var par := ovr[par_i];
             if not use_standart_dt then
             begin
-              if marshals then WriteMarshalAs(par,false);
               if par.var_arg then sb += 'var ';
               sb += org_par[par_i].name;
               sb += ': ';
@@ -740,53 +811,20 @@ type
         
       end;
       
-      var use_external := (api<>'gl') or ((version<>nil) and (version <= '1.1'));
-      if use_external and (
-        true
-      ) then
+      {$endregion WriteOvrT}
+      
+      var use_external := true;
+      case api of
+        'gl': use_external := version <= '1.1';
+      end;
+      
+      var ToDo := 0; //ToDo remove this begin-end;
       begin
+        if not use_external then
+          sb += $'    public z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
         
-        for var ovr_i := 0 to all_overloads.Count-1 do
-        begin
-          var ovr := all_overloads[ovr_i];
-          
-          sb += '    private ';
-          WriteOvrT(ovr,nil, $'_z_{l_name.TrimStart(''&'')}_ovr{ovr_i}', true,true);
-          sb += ';'#10;
-          if api='gdi' then
-            sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
-            sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
-          
-          sb += $'    public static z_{l_name.TrimStart(''&'')}_ovr{ovr_i}';
-          if (org_par.Length=1) and not is_proc then
-          begin
-            sb += ': ';
-            WriteOvrT(ovr,nil, nil, false,false);
-          end;
-          sb += $' := _z_{l_name.TrimStart(''&'')}_ovr{ovr_i};' + #10;
-          
-          sb += $'    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr,nil, l_name, false,api<>'gl');
-          sb += $' := z_{l_name.TrimStart(''&'')}_ovr{ovr_i}';
-          if ovr.Length>1 then
-          begin
-            sb += '(';
-            for var par_i := 1 to ovr.Length-1 do
-            begin
-              sb += org_par[par_i].name;
-              sb += ', ';
-            end;
-            sb.Length -= 2;
-            sb += ')';
-          end;
-          sb += ';'#10;
-          
-        end;
-        
-      end else
-      begin
-        sb += $'    public z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
-        var PrevNtvOvrs := new List<array of FuncParamT>(all_overloads.Count);
+        var PrevNtvOvrs := new Dictionary<array of FuncParamT, integer>(all_overloads.Count);
+        var PrevTempOvrGInds := new Dictionary<integer, Dictionary<List<integer>,integer> >;
         
         for var ovr_i := 0 to all_overloads.Count-1 do
         begin
@@ -799,6 +837,8 @@ type
           var init := new List<string>;
           var finl := new List<string>;
           var par_strs := new string[ovr.Length];
+          
+          {$region Constructing ntv/temp ovrs}
           
           var ntv_ovr := ovr.ConvertAll((par,par_i)->
           begin
@@ -930,48 +970,101 @@ type
             Result := new FuncParamT(res_var_arg, 0, res_t);
           end);
           
-          var same_ntv_ovr_ind := PrevNtvOvrs.FindIndex(pntv_ovr->(pntv_ovr<>nil) and pntv_ovr.SequenceEqual(ntv_ovr));
-          var z_ovr_name: string;
-          if same_ntv_ovr_ind=-1 then
-          begin
-            z_ovr_name := $'z_{l_name}_ovr_{ovr_i}';
-            PrevNtvOvrs += ntv_ovr;
-            
-            sb += $'    public {z_ovr_name} := GetFuncOrNil&<';
-            WriteOvrT(ntv_ovr,nil, nil, false,false);
-            sb += $'>(z_{l_name}_adr);'+#10;
-            
-          end else
-          begin
-            z_ovr_name := $'z_{l_name}_ovr_{same_ntv_ovr_ind}';
-            PrevNtvOvrs.Add(nil);
-          end;
+          {$endregion Constructing ntv/temp ovrs}
           
-          if generic_inds.Count<>0 then
+          {$region ntv/temp ovrs codegeneration}
+          var relevant_ovr_name: string;
           begin
-            var temp_z_ovr_name := z_ovr_name+'_temp';
             
-            sb += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-            WriteOvrT(ntv_ovr.ConvertAll((par,par_i)->
+            var same_ntv_ovr_ind := PrevNtvOvrs.Where(kvp->ntv_ovr.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
+            if same_ntv_ovr_ind <> -1 then
             begin
-              var g_ind := generic_inds.IndexOf(par_i);
-              Result := g_ind=-1 ? par : new FuncParamT(true, par.arr_lvl, temp_generic_names[g_ind]);
-            end),temp_generic_names, temp_z_ovr_name, false,false);
-            sb += ' :='#10;
-            sb += $'    {z_ovr_name}(';
-            for var par_i := 1 to ntv_ovr.Length-1 do
+              relevant_ovr_name := $'z_{l_name}_ovr_{same_ntv_ovr_ind}';
+              if generic_inds.Count<>0 then
+              begin
+                var PrevTempOvrs := PrevTempOvrGInds[same_ntv_ovr_ind];
+                var same_temp_ovr_ind := PrevTempOvrs.Where(kvp->generic_inds.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
+                if same_temp_ovr_ind <> -1 then
+                begin
+                  relevant_ovr_name := $'temp_{l_name}_ovr_{same_temp_ovr_ind}';
+                  generic_inds.Clear;
+                end;
+              end;
+            end else
             begin
-              sb += par_i in generic_inds ? $'PByte(pointer(@{org_par[par_i].name}))^' : org_par[par_i].name ;
-              sb += ', ';
+              PrevNtvOvrs[ntv_ovr] := ovr_i;
+              relevant_ovr_name := $'z_{l_name}_ovr_{ovr_i}';
+              
+              {$region ntv}
+              
+              if use_external then
+              begin
+                var temp_ovr_name := '_'+relevant_ovr_name;
+                
+                sb += '    private ';
+                WriteOvrT(ntv_ovr,nil, temp_ovr_name, true);
+                sb += ';'#10;
+                if api='gdi' then
+                  sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
+                  sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
+                
+                sb += $'    public static {relevant_ovr_name}';
+                if (org_par.Length=1) and not is_proc then
+                begin
+                  sb += ': ';
+                  WriteOvrT(ntv_ovr,nil, nil, false);
+                end;
+                sb += $' := {temp_ovr_name};' + #10;
+                
+              end else
+              begin
+                
+                sb += $'    public {relevant_ovr_name} := GetFuncOrNil&<';
+                WriteOvrT(ntv_ovr,nil, nil, false);
+                sb += $'>(z_{l_name}_adr);'+#10;
+                
+              end;
+              
+              {$endregion ntv}
+              
             end;
-            sb.Length -= 2;
-            sb += ');'#10;
             
-            z_ovr_name := temp_z_ovr_name;
+            {$region temp}
+            
+            if generic_inds.Count<>0 then
+            begin
+              var relevant_ntv_ovr_ind := same_ntv_ovr_ind=-1 ? ovr_i : same_ntv_ovr_ind;
+              if not PrevTempOvrGInds.ContainsKey(relevant_ntv_ovr_ind) then PrevTempOvrGInds[relevant_ntv_ovr_ind] := new Dictionary<List<integer>, integer>;
+              PrevTempOvrGInds[relevant_ntv_ovr_ind].Add(generic_inds, ovr_i);
+              
+              var temp_z_ovr_name := $'temp_{l_name}_ovr_{ovr_i}';
+              
+              sb += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
+              WriteOvrT(ntv_ovr.ConvertAll((par,par_i)->
+              begin
+                var g_ind := generic_inds.IndexOf(par_i);
+                Result := g_ind=-1 ? par : new FuncParamT(true, par.arr_lvl, temp_generic_names[g_ind]);
+              end),temp_generic_names, temp_z_ovr_name, use_external);
+              sb += ' :='#10;
+              sb += $'    {relevant_ovr_name}(';
+              for var par_i := 1 to ntv_ovr.Length-1 do
+              begin
+                sb += par_i in generic_inds ? $'PByte(pointer(@{org_par[par_i].name}))^' : org_par[par_i].name ;
+                sb += ', ';
+              end;
+              sb.Length -= 2;
+              sb += ');'#10;
+              
+              relevant_ovr_name := temp_z_ovr_name;
+            end;
+            
+            {$endregion temp}
+            
           end;
+          {$endregion ntv/temp ovrs codegeneration}
           
           sb += '    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(ovr,all_generic_names, l_name, false,false);
+          WriteOvrT(ovr,all_generic_names, l_name_esc, static_container);
           sb += ';'#10;
           sb += '    begin'#10;
           
@@ -984,7 +1077,7 @@ type
           
           sb += '      ';
           if not is_proc then sb += $'{par_strs[0]} := ';
-          sb += z_ovr_name;
+          sb += relevant_ovr_name;
           if ovr.Length>1 then
           begin
             sb += '(';
@@ -1012,11 +1105,6 @@ type
       
       sb += '    '#10;
     end;
-    
-    public static procedure WarnAllUnused :=
-    foreach var f in All do
-      if not Used.Contains(f) then
-        Otp($'WARNING: Func [{f.name}] wasn''t used');
     
   end;
   FuncFixer = abstract class(Fixer<FuncFixer, Func>)
@@ -1060,7 +1148,13 @@ type
           lst := new List<Feature>;
           ByApi[f.api] := lst;
         end;
-        lst += f;
+        
+        if f.api='glx' then //ToDo Требует бОльшего тестирования
+        begin
+          foreach var fnc in f.add do fnc.MarkSemiUsed;
+          foreach var fnc in f.rem do fnc.MarkSemiUsed;
+        end else
+          lst += f;
         
       end;
     end;
@@ -1083,16 +1177,19 @@ type
       
     end;
     
+    private procedure MarkUsed;
+    begin
+      foreach var fnc in add do fnc.MarkUsed;
+      foreach var fnc in rem do fnc.MarkUsed;
+    end;
+    public static procedure MarkAllUsed :=
+    foreach var lst in Feature.ByApi.Values do
+      foreach var f in lst do
+        f.MarkUsed;
+    
     public static procedure WriteAll(sb: StringBuilder) :=
     foreach var api in Feature.ByApi.Keys do
     begin
-      if api='glx' then
-      begin
-        foreach var ftr in Feature.ByApi[api] do
-          foreach var f in ftr.add do
-            f.MarkUsed;
-        continue; //ToDo Требует бОльшего тестирования. В расширениях тоже такое стоит
-      end;
       
       // func - addition version
       var all_funcs := new Dictionary<Func, string>;
@@ -1110,7 +1207,8 @@ type
             all_funcs[f] := ftr.version;
       end;
       
-      var class_type := api='gl' ? 'sealed' : 'static';
+      var is_static := not (api in ['gl']);
+      var class_type := is_static ? 'static' : 'sealed';
       
       sb += $'  {api} = {class_type} class'+#10;
       Func.WriteGetPtrFunc(sb, api);
@@ -1121,7 +1219,7 @@ type
         begin
           if api<>'gdi' then
             sb += $'    // added in {api}{all_funcs[f]}'+#10;
-          f.Write(sb, api, all_funcs[f]);
+          f.Write(sb, api,all_funcs[f], class_type='static');
         end;
       
       Func.prev_func_names.Clear;
@@ -1137,7 +1235,7 @@ type
       begin
         if api<>'gdi' then
           sb += $'    // added in {api}{all_funcs[f]}, deprecated in {api}{deprecated[f]}'+#10;
-        f.Write(sb, api, all_funcs[f]);
+        f.Write(sb, api,all_funcs[f], class_type='static');
       end;
       
       Func.prev_func_names.Clear;
@@ -1176,17 +1274,20 @@ type
     begin
       All.Capacity := br.ReadInt32;
       loop All.Capacity do All += new Extension(br);
+      All.RemoveAll(ext->ext.api='glx'); //ToDo Требует бОльшего тестирования
     end;
+    
+    private procedure MarkUsed;
+    begin
+      foreach var fnc in add do fnc.MarkUsed;
+    end;
+    public static procedure MarkAllUsed :=
+    foreach var ext in All do
+      ext.MarkUsed;
     
     public procedure Write(sb: StringBuilder);
     begin
       if add.Count=0 then exit;
-      if api='glx' then
-      begin
-        foreach var f in add do
-          f.MarkUsed;
-        exit; //ToDo Требует бОльшего тестирования. В фичах ядра тоже такое стоит
-      end;
       
       var display_name := api+name.Split('_').Select(w->
       begin
@@ -1195,24 +1296,24 @@ type
       end).JoinToString('') + ext_group;
       
       sb += $'  {display_name} = ';
-      sb += api='gl' ? 'sealed' : 'static';
+      var is_static := not (api in ['gl']);
+      sb += is_static ? 'static' : 'sealed';
       sb += ' class'#10;
       Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
       
       foreach var f in add do
-        f.Write(sb, api, nil);
+        f.Write(sb, api,nil, is_static);
       Func.prev_func_names.Clear;
       sb += $'  end;'+#10;
       sb += $'  '+#10;
     end;
-    
     public static procedure WriteAll(sb: StringBuilder);
     begin
-      sb += '  {region Extensions}'#10;
+      sb += '  {$region Extensions}'#10;
       sb += '  '#10;
       foreach var ext in All do ext.Write(sb);
-      sb += '  {endregion Extensions}'#10;
+      sb += '  {$endregion Extensions}'#10;
       sb += '  '#10;
     end;
     
@@ -1223,6 +1324,7 @@ type
 procedure InitAll;
 procedure LoadBin(fname: string);
 procedure ApplyFixers;
+procedure MarkUsed;
 procedure FinishAll;
 
 implementation
@@ -1249,6 +1351,7 @@ begin
   ;
   
   loop 3 do log_groups.WriteLine;
+  loop 3 do log_structs.WriteLine;
   loop 3 do log_func_ovrs.WriteLine;
   
 end;
@@ -1271,6 +1374,12 @@ begin
   FuncFixer.ApplyAll(Func.All);
 end;
 
+procedure MarkUsed;
+begin
+  Feature.MarkAllUsed;
+  Extension.MarkAllUsed;
+end;
+
 procedure FinishAll;
 begin
   
@@ -1284,10 +1393,12 @@ begin
   Func.WarnAllUnused;
   
   loop 1 do log_groups.WriteLine;
+  loop 1 do log_structs.WriteLine;
   loop 1 do log_func_ovrs.WriteLine;
   
   log.Close;
   log_groups.Close;
+  log_structs.Close;
   log_func_ovrs.Close;
   
 end;
@@ -1352,6 +1463,7 @@ type
       gr.bitmask  := self.bitmask;
       gr.enums    := self.enums;
       gr.FinishInit;
+      gr.explicit_existence := true;
       Result := false;
     end;
     
@@ -1478,6 +1590,7 @@ type
     begin
       s.name := self.name;
       s.flds := self.flds;
+      s.explicit_existence := true;
       Result := false;
     end;
     
@@ -1610,6 +1723,7 @@ type
       f.org_par := self.org_par.ToArray;
       f.BasicInit;
       Result := false;
+      raise new System.NotSupportedException('Func addition is unexpected');
     end;
     
   end;
@@ -1625,6 +1739,7 @@ type
     begin
       self.used := true;
       Result := true;
+      raise new System.NotSupportedException('Func removal is unexpected');
     end;
     
   end;
@@ -1664,7 +1779,7 @@ type
           end;
       if tn_id<>new_tnames.Length then
       begin
-        Otp($'ERROR: Only {tn_id}/{new_tnames.Length} [new_tnames] of [FuncReplParTFixer] of func [{f.name}] were used');
+        Otp($'ERROR: Only {tn_id}/{new_tnames.Length} {_ObjectToString(new_tnames)} of [FuncReplParTFixer] of func [{f.name}] were used');
         exit;
       end;
       
@@ -1697,7 +1812,10 @@ type
         var seal_t: ()->() := ()->
         begin
           var t := res.ToString.Trim;
-          if (t<>'') and (t<>'*') then curr_lst += new FuncParamT(t);
+          if (t<>'') and (t<>'*') then
+            if curr_lst=nil then
+              raise new MessageException($'Syntax ERROR of [{self.GetType}] for func [{name}] in [{s[i]}]') else
+              curr_lst += new FuncParamT(t);
           res.Clear;
         end;
         

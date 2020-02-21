@@ -23,7 +23,7 @@ Genral syntax of `.dat` files:
 ---
 ### !add
 
-Creates new group.
+Creates new struct (record).
 
 Syntax:
 ```

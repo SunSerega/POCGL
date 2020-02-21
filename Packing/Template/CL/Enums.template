@@ -113,6 +113,30 @@
     
   end;
   
+  BuildStatus = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    private static _BUILD_IN_PROGRESS := new BuildStatus($FFFFFFFFFFFFFFFD);
+    private static _BUILD_ERROR       := new BuildStatus($FFFFFFFFFFFFFFFE);
+    private static _BUILD_NONE        := new BuildStatus($FFFFFFFFFFFFFFFF);
+    private static _BUILD_SUCCESS     := new BuildStatus($0000);
+    
+    public static property BUILD_IN_PROGRESS: BuildStatus read _BUILD_IN_PROGRESS;
+    public static property BUILD_ERROR:       BuildStatus read _BUILD_ERROR;
+    public static property BUILD_NONE:        BuildStatus read _BUILD_NONE;
+    public static property BUILD_SUCCESS:     BuildStatus read _BUILD_SUCCESS;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(BuildStatus).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->Int32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'BuildStatus[{ self.val=default(Int32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
   ChannelOrder = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -324,6 +348,114 @@
     
   end;
   
+  CommandType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _COMMAND_NDRANGE_KERNEL                      := new CommandType($11F0);
+    private static _COMMAND_TASK                                := new CommandType($11F1);
+    private static _COMMAND_NATIVE_KERNEL                       := new CommandType($11F2);
+    private static _COMMAND_READ_BUFFER                         := new CommandType($11F3);
+    private static _COMMAND_WRITE_BUFFER                        := new CommandType($11F4);
+    private static _COMMAND_COPY_BUFFER                         := new CommandType($11F5);
+    private static _COMMAND_READ_IMAGE                          := new CommandType($11F6);
+    private static _COMMAND_WRITE_IMAGE                         := new CommandType($11F7);
+    private static _COMMAND_COPY_IMAGE                          := new CommandType($11F8);
+    private static _COMMAND_COPY_IMAGE_TO_BUFFER                := new CommandType($11F9);
+    private static _COMMAND_COPY_BUFFER_TO_IMAGE                := new CommandType($11FA);
+    private static _COMMAND_MAP_BUFFER                          := new CommandType($11FB);
+    private static _COMMAND_MAP_IMAGE                           := new CommandType($11FC);
+    private static _COMMAND_UNMAP_MEM_OBJECT                    := new CommandType($11FD);
+    private static _COMMAND_MARKER                              := new CommandType($11FE);
+    private static _COMMAND_ACQUIRE_GL_OBJECTS                  := new CommandType($11FF);
+    private static _COMMAND_RELEASE_GL_OBJECTS                  := new CommandType($1200);
+    private static _COMMAND_READ_BUFFER_RECT                    := new CommandType($1201);
+    private static _COMMAND_WRITE_BUFFER_RECT                   := new CommandType($1202);
+    private static _COMMAND_COPY_BUFFER_RECT                    := new CommandType($1203);
+    private static _COMMAND_USER                                := new CommandType($1204);
+    private static _COMMAND_BARRIER                             := new CommandType($1205);
+    private static _COMMAND_MIGRATE_MEM_OBJECTS                 := new CommandType($1206);
+    private static _COMMAND_FILL_BUFFER                         := new CommandType($1207);
+    private static _COMMAND_FILL_IMAGE                          := new CommandType($1208);
+    private static _COMMAND_SVM_FREE                            := new CommandType($1209);
+    private static _COMMAND_SVM_MEMCPY                          := new CommandType($120A);
+    private static _COMMAND_SVM_MEMFILL                         := new CommandType($120B);
+    private static _COMMAND_SVM_MAP                             := new CommandType($120C);
+    private static _COMMAND_SVM_UNMAP                           := new CommandType($120D);
+    private static _COMMAND_GL_FENCE_SYNC_OBJECT_KHR            := new CommandType($200D);
+    private static _COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR      := new CommandType($202B);
+    private static _COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR      := new CommandType($202C);
+    private static _COMMAND_ACQUIRE_D3D10_OBJECTS_KHR           := new CommandType($4017);
+    private static _COMMAND_RELEASE_D3D10_OBJECTS_KHR           := new CommandType($4018);
+    private static _COMMAND_ACQUIRE_D3D11_OBJECTS_KHR           := new CommandType($4020);
+    private static _COMMAND_RELEASE_D3D11_OBJECTS_KHR           := new CommandType($4021);
+    private static _COMMAND_ACQUIRE_DX9_OBJECTS_INTEL           := new CommandType($402A);
+    private static _COMMAND_RELEASE_DX9_OBJECTS_INTEL           := new CommandType($402B);
+    private static _COMMAND_MIGRATE_MEM_OBJECT_EXT              := new CommandType($4040);
+    private static _COMMAND_ACQUIRE_VA_API_MEDIA_SURFACES_INTEL := new CommandType($409A);
+    private static _COMMAND_RELEASE_VA_API_MEDIA_SURFACES_INTEL := new CommandType($409B);
+    private static _COMMAND_MEMFILL_INTEL                       := new CommandType($4204);
+    private static _COMMAND_MEMCPY_INTEL                        := new CommandType($4205);
+    private static _COMMAND_MIGRATEMEM_INTEL                    := new CommandType($4206);
+    private static _COMMAND_MEMADVISE_INTEL                     := new CommandType($4207);
+    
+    public static property COMMAND_NDRANGE_KERNEL:                      CommandType read _COMMAND_NDRANGE_KERNEL;
+    public static property COMMAND_TASK:                                CommandType read _COMMAND_TASK;
+    public static property COMMAND_NATIVE_KERNEL:                       CommandType read _COMMAND_NATIVE_KERNEL;
+    public static property COMMAND_READ_BUFFER:                         CommandType read _COMMAND_READ_BUFFER;
+    public static property COMMAND_WRITE_BUFFER:                        CommandType read _COMMAND_WRITE_BUFFER;
+    public static property COMMAND_COPY_BUFFER:                         CommandType read _COMMAND_COPY_BUFFER;
+    public static property COMMAND_READ_IMAGE:                          CommandType read _COMMAND_READ_IMAGE;
+    public static property COMMAND_WRITE_IMAGE:                         CommandType read _COMMAND_WRITE_IMAGE;
+    public static property COMMAND_COPY_IMAGE:                          CommandType read _COMMAND_COPY_IMAGE;
+    public static property COMMAND_COPY_IMAGE_TO_BUFFER:                CommandType read _COMMAND_COPY_IMAGE_TO_BUFFER;
+    public static property COMMAND_COPY_BUFFER_TO_IMAGE:                CommandType read _COMMAND_COPY_BUFFER_TO_IMAGE;
+    public static property COMMAND_MAP_BUFFER:                          CommandType read _COMMAND_MAP_BUFFER;
+    public static property COMMAND_MAP_IMAGE:                           CommandType read _COMMAND_MAP_IMAGE;
+    public static property COMMAND_UNMAP_MEM_OBJECT:                    CommandType read _COMMAND_UNMAP_MEM_OBJECT;
+    public static property COMMAND_MARKER:                              CommandType read _COMMAND_MARKER;
+    public static property COMMAND_ACQUIRE_GL_OBJECTS:                  CommandType read _COMMAND_ACQUIRE_GL_OBJECTS;
+    public static property COMMAND_RELEASE_GL_OBJECTS:                  CommandType read _COMMAND_RELEASE_GL_OBJECTS;
+    public static property COMMAND_READ_BUFFER_RECT:                    CommandType read _COMMAND_READ_BUFFER_RECT;
+    public static property COMMAND_WRITE_BUFFER_RECT:                   CommandType read _COMMAND_WRITE_BUFFER_RECT;
+    public static property COMMAND_COPY_BUFFER_RECT:                    CommandType read _COMMAND_COPY_BUFFER_RECT;
+    public static property COMMAND_USER:                                CommandType read _COMMAND_USER;
+    public static property COMMAND_BARRIER:                             CommandType read _COMMAND_BARRIER;
+    public static property COMMAND_MIGRATE_MEM_OBJECTS:                 CommandType read _COMMAND_MIGRATE_MEM_OBJECTS;
+    public static property COMMAND_FILL_BUFFER:                         CommandType read _COMMAND_FILL_BUFFER;
+    public static property COMMAND_FILL_IMAGE:                          CommandType read _COMMAND_FILL_IMAGE;
+    public static property COMMAND_SVM_FREE:                            CommandType read _COMMAND_SVM_FREE;
+    public static property COMMAND_SVM_MEMCPY:                          CommandType read _COMMAND_SVM_MEMCPY;
+    public static property COMMAND_SVM_MEMFILL:                         CommandType read _COMMAND_SVM_MEMFILL;
+    public static property COMMAND_SVM_MAP:                             CommandType read _COMMAND_SVM_MAP;
+    public static property COMMAND_SVM_UNMAP:                           CommandType read _COMMAND_SVM_UNMAP;
+    public static property COMMAND_GL_FENCE_SYNC_OBJECT_KHR:            CommandType read _COMMAND_GL_FENCE_SYNC_OBJECT_KHR;
+    public static property COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR:      CommandType read _COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR;
+    public static property COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR:      CommandType read _COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR;
+    public static property COMMAND_ACQUIRE_D3D10_OBJECTS_KHR:           CommandType read _COMMAND_ACQUIRE_D3D10_OBJECTS_KHR;
+    public static property COMMAND_RELEASE_D3D10_OBJECTS_KHR:           CommandType read _COMMAND_RELEASE_D3D10_OBJECTS_KHR;
+    public static property COMMAND_ACQUIRE_D3D11_OBJECTS_KHR:           CommandType read _COMMAND_ACQUIRE_D3D11_OBJECTS_KHR;
+    public static property COMMAND_RELEASE_D3D11_OBJECTS_KHR:           CommandType read _COMMAND_RELEASE_D3D11_OBJECTS_KHR;
+    public static property COMMAND_ACQUIRE_DX9_OBJECTS_INTEL:           CommandType read _COMMAND_ACQUIRE_DX9_OBJECTS_INTEL;
+    public static property COMMAND_RELEASE_DX9_OBJECTS_INTEL:           CommandType read _COMMAND_RELEASE_DX9_OBJECTS_INTEL;
+    public static property COMMAND_MIGRATE_MEM_OBJECT_EXT:              CommandType read _COMMAND_MIGRATE_MEM_OBJECT_EXT;
+    public static property COMMAND_ACQUIRE_VA_API_MEDIA_SURFACES_INTEL: CommandType read _COMMAND_ACQUIRE_VA_API_MEDIA_SURFACES_INTEL;
+    public static property COMMAND_RELEASE_VA_API_MEDIA_SURFACES_INTEL: CommandType read _COMMAND_RELEASE_VA_API_MEDIA_SURFACES_INTEL;
+    public static property COMMAND_MEMFILL_INTEL:                       CommandType read _COMMAND_MEMFILL_INTEL;
+    public static property COMMAND_MEMCPY_INTEL:                        CommandType read _COMMAND_MEMCPY_INTEL;
+    public static property COMMAND_MIGRATEMEM_INTEL:                    CommandType read _COMMAND_MIGRATEMEM_INTEL;
+    public static property COMMAND_MEMADVISE_INTEL:                     CommandType read _COMMAND_MEMADVISE_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(CommandType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'CommandType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
   ContextInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -377,12 +509,22 @@
     
     private static _CONTEXT_PLATFORM          := new ContextProperties($1084);
     private static _CONTEXT_INTEROP_USER_SYNC := new ContextProperties($1085);
+    private static _GL_CONTEXT_KHR            := new ContextProperties($2008);
+    private static _EGL_DISPLAY_KHR           := new ContextProperties($2009);
+    private static _GLX_DISPLAY_KHR           := new ContextProperties($200A);
+    private static _WGL_HDC_KHR               := new ContextProperties($200B);
+    private static _CGL_SHAREGROUP_KHR        := new ContextProperties($200C);
     private static _CONTEXT_TERMINATE_KHR     := new ContextProperties($2032);
     private static _PRINTF_CALLBACK_ARM       := new ContextProperties($40B0);
     private static _PRINTF_BUFFERSIZE_ARM     := new ContextProperties($40B1);
     
     public static property CONTEXT_PLATFORM:          ContextProperties read _CONTEXT_PLATFORM;
     public static property CONTEXT_INTEROP_USER_SYNC: ContextProperties read _CONTEXT_INTEROP_USER_SYNC;
+    public static property GL_CONTEXT_KHR:            ContextProperties read _GL_CONTEXT_KHR;
+    public static property EGL_DISPLAY_KHR:           ContextProperties read _EGL_DISPLAY_KHR;
+    public static property GLX_DISPLAY_KHR:           ContextProperties read _GLX_DISPLAY_KHR;
+    public static property WGL_HDC_KHR:               ContextProperties read _WGL_HDC_KHR;
+    public static property CGL_SHAREGROUP_KHR:        ContextProperties read _CGL_SHAREGROUP_KHR;
     public static property CONTEXT_TERMINATE_KHR:     ContextProperties read _CONTEXT_TERMINATE_KHR;
     public static property PRINTF_CALLBACK_ARM:       ContextProperties read _PRINTF_CALLBACK_ARM;
     public static property PRINTF_BUFFERSIZE_ARM:     ContextProperties read _PRINTF_BUFFERSIZE_ARM;
@@ -393,6 +535,111 @@
       Result := res=nil?
         $'ContextProperties[{ self.val=default(IntPtr) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  DeviceAffinityDomain = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _DEVICE_AFFINITY_DOMAIN_NUMA               := new DeviceAffinityDomain($0001);
+    private static _DEVICE_AFFINITY_DOMAIN_L4_CACHE           := new DeviceAffinityDomain($0002);
+    private static _DEVICE_AFFINITY_DOMAIN_L3_CACHE           := new DeviceAffinityDomain($0004);
+    private static _DEVICE_AFFINITY_DOMAIN_L2_CACHE           := new DeviceAffinityDomain($0008);
+    private static _DEVICE_AFFINITY_DOMAIN_L1_CACHE           := new DeviceAffinityDomain($0010);
+    private static _DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE := new DeviceAffinityDomain($0020);
+    
+    public static property DEVICE_AFFINITY_DOMAIN_NUMA:               DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_NUMA;
+    public static property DEVICE_AFFINITY_DOMAIN_L4_CACHE:           DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_L4_CACHE;
+    public static property DEVICE_AFFINITY_DOMAIN_L3_CACHE:           DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_L3_CACHE;
+    public static property DEVICE_AFFINITY_DOMAIN_L2_CACHE:           DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_L2_CACHE;
+    public static property DEVICE_AFFINITY_DOMAIN_L1_CACHE:           DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_L1_CACHE;
+    public static property DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE: DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE;
+    
+    public static function operator or(f1,f2: DeviceAffinityDomain) := new DeviceAffinityDomain(f1.val or f2.val);
+    
+    public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_NUMA:               boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_L4_CACHE:           boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_L3_CACHE:           boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_L2_CACHE:           boolean read self.val and $0008 <> 0;
+    public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_L1_CACHE:           boolean read self.val and $0010 <> 0;
+    public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE: boolean read self.val and $0020 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DeviceAffinityDomain).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'DeviceAffinityDomain[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
+    end;
+    
+  end;
+  
+  DeviceExecCapabilities = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _EXEC_KERNEL        := new DeviceExecCapabilities($0001);
+    private static _EXEC_NATIVE_KERNEL := new DeviceExecCapabilities($0002);
+    
+    public static property EXEC_KERNEL:        DeviceExecCapabilities read _EXEC_KERNEL;
+    public static property EXEC_NATIVE_KERNEL: DeviceExecCapabilities read _EXEC_NATIVE_KERNEL;
+    
+    public static function operator or(f1,f2: DeviceExecCapabilities) := new DeviceExecCapabilities(f1.val or f2.val);
+    
+    public property HAS_FLAG_EXEC_KERNEL:        boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_EXEC_NATIVE_KERNEL: boolean read self.val and $0002 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DeviceExecCapabilities).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'DeviceExecCapabilities[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
+    end;
+    
+  end;
+  
+  DeviceFpConfig = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _FP_DENORM                        := new DeviceFpConfig($0001);
+    private static _FP_INF_NAN                       := new DeviceFpConfig($0002);
+    private static _FP_ROUND_TO_NEAREST              := new DeviceFpConfig($0004);
+    private static _FP_ROUND_TO_ZERO                 := new DeviceFpConfig($0008);
+    private static _FP_ROUND_TO_INF                  := new DeviceFpConfig($0010);
+    private static _FP_FMA                           := new DeviceFpConfig($0020);
+    private static _FP_SOFT_FLOAT                    := new DeviceFpConfig($0040);
+    private static _FP_CORRECTLY_ROUNDED_DIVIDE_SQRT := new DeviceFpConfig($0080);
+    
+    public static property FP_DENORM:                        DeviceFpConfig read _FP_DENORM;
+    public static property FP_INF_NAN:                       DeviceFpConfig read _FP_INF_NAN;
+    public static property FP_ROUND_TO_NEAREST:              DeviceFpConfig read _FP_ROUND_TO_NEAREST;
+    public static property FP_ROUND_TO_ZERO:                 DeviceFpConfig read _FP_ROUND_TO_ZERO;
+    public static property FP_ROUND_TO_INF:                  DeviceFpConfig read _FP_ROUND_TO_INF;
+    public static property FP_FMA:                           DeviceFpConfig read _FP_FMA;
+    public static property FP_SOFT_FLOAT:                    DeviceFpConfig read _FP_SOFT_FLOAT;
+    public static property FP_CORRECTLY_ROUNDED_DIVIDE_SQRT: DeviceFpConfig read _FP_CORRECTLY_ROUNDED_DIVIDE_SQRT;
+    
+    public static function operator or(f1,f2: DeviceFpConfig) := new DeviceFpConfig(f1.val or f2.val);
+    
+    public property HAS_FLAG_FP_DENORM:                        boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_FP_INF_NAN:                       boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_FP_ROUND_TO_NEAREST:              boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_FP_ROUND_TO_ZERO:                 boolean read self.val and $0008 <> 0;
+    public property HAS_FLAG_FP_ROUND_TO_INF:                  boolean read self.val and $0010 <> 0;
+    public property HAS_FLAG_FP_FMA:                           boolean read self.val and $0020 <> 0;
+    public property HAS_FLAG_FP_SOFT_FLOAT:                    boolean read self.val and $0040 <> 0;
+    public property HAS_FLAG_FP_CORRECTLY_ROUNDED_DIVIDE_SQRT: boolean read self.val and $0080 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DeviceFpConfig).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'DeviceFpConfig[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -497,7 +744,6 @@
     private static _DEVICE_IL_VERSION_KHR                              := new DeviceInfo($105B);
     private static _DEVICE_MAX_NUM_SUB_GROUPS                          := new DeviceInfo($105C);
     private static _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS      := new DeviceInfo($105D);
-    private static _IMAGE_BUFFER                                       := new DeviceInfo($1118);
     private static _PROGRAM_IL_KHR                                     := new DeviceInfo($1169);
     private static _DEVICE_TERMINATE_CAPABILITY_KHR                    := new DeviceInfo($2031);
     private static _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR                 := new DeviceInfo($2035);
@@ -627,7 +873,6 @@
     public static property DEVICE_IL_VERSION_KHR:                              DeviceInfo read _DEVICE_IL_VERSION_KHR;
     public static property DEVICE_MAX_NUM_SUB_GROUPS:                          DeviceInfo read _DEVICE_MAX_NUM_SUB_GROUPS;
     public static property DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS:      DeviceInfo read _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS;
-    public static property IMAGE_BUFFER:                                       DeviceInfo read _IMAGE_BUFFER;
     public static property PROGRAM_IL_KHR:                                     DeviceInfo read _PROGRAM_IL_KHR;
     public static property DEVICE_TERMINATE_CAPABILITY_KHR:                    DeviceInfo read _DEVICE_TERMINATE_CAPABILITY_KHR;
     public static property DEVICE_MAX_NAMED_BARRIER_COUNT_KHR:                 DeviceInfo read _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR;
@@ -666,6 +911,48 @@
       var res := typeof(DeviceInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
         $'DeviceInfo[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  DeviceLocalMemType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _LOCAL  := new DeviceLocalMemType($0001);
+    private static _GLOBAL := new DeviceLocalMemType($0002);
+    
+    public static property LOCAL:  DeviceLocalMemType read _LOCAL;
+    public static property GLOBAL: DeviceLocalMemType read _GLOBAL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DeviceLocalMemType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'DeviceLocalMemType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  DeviceMemCacheType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _NONE             := new DeviceMemCacheType($0000);
+    private static _READ_ONLY_CACHE  := new DeviceMemCacheType($0001);
+    private static _READ_WRITE_CACHE := new DeviceMemCacheType($0002);
+    
+    public static property NONE:             DeviceMemCacheType read _NONE;
+    public static property READ_ONLY_CACHE:  DeviceMemCacheType read _READ_ONLY_CACHE;
+    public static property READ_WRITE_CACHE: DeviceMemCacheType read _READ_WRITE_CACHE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DeviceMemCacheType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'DeviceMemCacheType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -726,6 +1013,37 @@
     
   end;
   
+  DeviceSvmCapabilities = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _DEVICE_SVM_COARSE_GRAIN_BUFFER := new DeviceSvmCapabilities($0001);
+    private static _DEVICE_SVM_FINE_GRAIN_BUFFER   := new DeviceSvmCapabilities($0002);
+    private static _DEVICE_SVM_FINE_GRAIN_SYSTEM   := new DeviceSvmCapabilities($0004);
+    private static _DEVICE_SVM_ATOMICS             := new DeviceSvmCapabilities($0008);
+    
+    public static property DEVICE_SVM_COARSE_GRAIN_BUFFER: DeviceSvmCapabilities read _DEVICE_SVM_COARSE_GRAIN_BUFFER;
+    public static property DEVICE_SVM_FINE_GRAIN_BUFFER:   DeviceSvmCapabilities read _DEVICE_SVM_FINE_GRAIN_BUFFER;
+    public static property DEVICE_SVM_FINE_GRAIN_SYSTEM:   DeviceSvmCapabilities read _DEVICE_SVM_FINE_GRAIN_SYSTEM;
+    public static property DEVICE_SVM_ATOMICS:             DeviceSvmCapabilities read _DEVICE_SVM_ATOMICS;
+    
+    public static function operator or(f1,f2: DeviceSvmCapabilities) := new DeviceSvmCapabilities(f1.val or f2.val);
+    
+    public property HAS_FLAG_DEVICE_SVM_COARSE_GRAIN_BUFFER: boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_DEVICE_SVM_FINE_GRAIN_BUFFER:   boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_DEVICE_SVM_FINE_GRAIN_SYSTEM:   boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_DEVICE_SVM_ATOMICS:             boolean read self.val and $0008 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DeviceSvmCapabilities).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'DeviceSvmCapabilities[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
+    end;
+    
+  end;
+  
   DeviceType = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -758,6 +1076,37 @@
       var res := typeof(DeviceType).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
         $'DeviceType[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
+    end;
+    
+  end;
+  
+  DeviceUnifiedSharedMemoryCapabilitiesIntel = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _UNIFIED_SHARED_MEMORY_ACCESS_INTEL                   := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0001);
+    private static _UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL            := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0002);
+    private static _UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL        := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0004);
+    private static _UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0008);
+    
+    public static property UNIFIED_SHARED_MEMORY_ACCESS_INTEL:                   DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_ACCESS_INTEL;
+    public static property UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL:            DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL;
+    public static property UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL:        DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL;
+    public static property UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL: DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL;
+    
+    public static function operator or(f1,f2: DeviceUnifiedSharedMemoryCapabilitiesIntel) := new DeviceUnifiedSharedMemoryCapabilitiesIntel(f1.val or f2.val);
+    
+    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_ACCESS_INTEL:                   boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL:            boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL:        boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL: boolean read self.val and $0008 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(DeviceUnifiedSharedMemoryCapabilitiesIntel).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'DeviceUnifiedSharedMemoryCapabilitiesIntel[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.JoinToString('+');
     end;
     
@@ -1171,6 +1520,7 @@
     private static _IMAGE_HEIGHT                := new ImageInfo($1115);
     private static _IMAGE_DEPTH                 := new ImageInfo($1116);
     private static _IMAGE_ARRAY_SIZE            := new ImageInfo($1117);
+    private static _IMAGE_BUFFER                := new ImageInfo($1118);
     private static _IMAGE_NUM_MIP_LEVELS        := new ImageInfo($1119);
     private static _IMAGE_NUM_SAMPLES           := new ImageInfo($111A);
     private static _IMAGE_DX9_MEDIA_PLANE_KHR   := new ImageInfo($202A);
@@ -1187,6 +1537,7 @@
     public static property IMAGE_HEIGHT:                ImageInfo read _IMAGE_HEIGHT;
     public static property IMAGE_DEPTH:                 ImageInfo read _IMAGE_DEPTH;
     public static property IMAGE_ARRAY_SIZE:            ImageInfo read _IMAGE_ARRAY_SIZE;
+    public static property IMAGE_BUFFER:                ImageInfo read _IMAGE_BUFFER;
     public static property IMAGE_NUM_MIP_LEVELS:        ImageInfo read _IMAGE_NUM_MIP_LEVELS;
     public static property IMAGE_NUM_SAMPLES:           ImageInfo read _IMAGE_NUM_SAMPLES;
     public static property IMAGE_DX9_MEDIA_PLANE_KHR:   ImageInfo read _IMAGE_DX9_MEDIA_PLANE_KHR;
@@ -1200,6 +1551,54 @@
       var res := typeof(ImageInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
         $'ImageInfo[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelArgAccessQualifier = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_ARG_ACCESS_READ_ONLY  := new KernelArgAccessQualifier($11A0);
+    private static _KERNEL_ARG_ACCESS_WRITE_ONLY := new KernelArgAccessQualifier($11A1);
+    private static _KERNEL_ARG_ACCESS_READ_WRITE := new KernelArgAccessQualifier($11A2);
+    private static _KERNEL_ARG_ACCESS_NONE       := new KernelArgAccessQualifier($11A3);
+    
+    public static property KERNEL_ARG_ACCESS_READ_ONLY:  KernelArgAccessQualifier read _KERNEL_ARG_ACCESS_READ_ONLY;
+    public static property KERNEL_ARG_ACCESS_WRITE_ONLY: KernelArgAccessQualifier read _KERNEL_ARG_ACCESS_WRITE_ONLY;
+    public static property KERNEL_ARG_ACCESS_READ_WRITE: KernelArgAccessQualifier read _KERNEL_ARG_ACCESS_READ_WRITE;
+    public static property KERNEL_ARG_ACCESS_NONE:       KernelArgAccessQualifier read _KERNEL_ARG_ACCESS_NONE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelArgAccessQualifier).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelArgAccessQualifier[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelArgAddressQualifier = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_ARG_ADDRESS_GLOBAL   := new KernelArgAddressQualifier($119B);
+    private static _KERNEL_ARG_ADDRESS_LOCAL    := new KernelArgAddressQualifier($119C);
+    private static _KERNEL_ARG_ADDRESS_CONSTANT := new KernelArgAddressQualifier($119D);
+    private static _KERNEL_ARG_ADDRESS_PRIVATE  := new KernelArgAddressQualifier($119E);
+    
+    public static property KERNEL_ARG_ADDRESS_GLOBAL:   KernelArgAddressQualifier read _KERNEL_ARG_ADDRESS_GLOBAL;
+    public static property KERNEL_ARG_ADDRESS_LOCAL:    KernelArgAddressQualifier read _KERNEL_ARG_ADDRESS_LOCAL;
+    public static property KERNEL_ARG_ADDRESS_CONSTANT: KernelArgAddressQualifier read _KERNEL_ARG_ADDRESS_CONSTANT;
+    public static property KERNEL_ARG_ADDRESS_PRIVATE:  KernelArgAddressQualifier read _KERNEL_ARG_ADDRESS_PRIVATE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelArgAddressQualifier).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelArgAddressQualifier[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1226,6 +1625,32 @@
       var res := typeof(KernelArgInfo).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
       Result := res=nil?
         $'KernelArgInfo[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  KernelArgTypeQualifier = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _KERNEL_ARG_TYPE_NONE     := new KernelArgTypeQualifier($0000);
+    private static _KERNEL_ARG_TYPE_CONST    := new KernelArgTypeQualifier($0001);
+    private static _KERNEL_ARG_TYPE_RESTRICT := new KernelArgTypeQualifier($0002);
+    private static _KERNEL_ARG_TYPE_VOLATILE := new KernelArgTypeQualifier($0004);
+    private static _KERNEL_ARG_TYPE_PIPE     := new KernelArgTypeQualifier($0008);
+    
+    public static property KERNEL_ARG_TYPE_NONE:     KernelArgTypeQualifier read _KERNEL_ARG_TYPE_NONE;
+    public static property KERNEL_ARG_TYPE_CONST:    KernelArgTypeQualifier read _KERNEL_ARG_TYPE_CONST;
+    public static property KERNEL_ARG_TYPE_RESTRICT: KernelArgTypeQualifier read _KERNEL_ARG_TYPE_RESTRICT;
+    public static property KERNEL_ARG_TYPE_VOLATILE: KernelArgTypeQualifier read _KERNEL_ARG_TYPE_VOLATILE;
+    public static property KERNEL_ARG_TYPE_PIPE:     KernelArgTypeQualifier read _KERNEL_ARG_TYPE_PIPE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(KernelArgTypeQualifier).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt64(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'KernelArgTypeQualifier[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1377,27 +1802,37 @@
     
   end;
   
+  MemAllocFlagsIntel = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MEM_ALLOC_WRITE_COMBINED_INTEL := new MemAllocFlagsIntel($0001);
+    
+    public static property MEM_ALLOC_WRITE_COMBINED_INTEL: MemAllocFlagsIntel read _MEM_ALLOC_WRITE_COMBINED_INTEL;
+    
+    public static function operator or(f1,f2: MemAllocFlagsIntel) := new MemAllocFlagsIntel(f1.val or f2.val);
+    
+    public property HAS_FLAG_MEM_ALLOC_WRITE_COMBINED_INTEL: boolean read self.val and $0001 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(MemAllocFlagsIntel).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'MemAllocFlagsIntel[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
+    end;
+    
+  end;
+  
   MemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    private static _MEM_READ_WRITE                      := new MemFlags($0001);
     private static _MEM_RESERVED0_ARM                   := new MemFlags($0001);
     private static _MEM_RESERVED1_ARM                   := new MemFlags($0002);
-    private static _MEM_WRITE_ONLY                      := new MemFlags($0002);
-    private static _MEM_READ_ONLY                       := new MemFlags($0004);
     private static _MEM_RESERVED2_ARM                   := new MemFlags($0004);
     private static _MEM_RESERVED3_ARM                   := new MemFlags($0008);
-    private static _MEM_USE_HOST_PTR                    := new MemFlags($0008);
-    private static _MEM_ALLOC_HOST_PTR                  := new MemFlags($0010);
     private static _MEM_RESERVED4_ARM                   := new MemFlags($0010);
-    private static _MEM_COPY_HOST_PTR                   := new MemFlags($0020);
-    private static _MEM_HOST_WRITE_ONLY                 := new MemFlags($0080);
-    private static _MEM_HOST_READ_ONLY                  := new MemFlags($0100);
-    private static _MEM_HOST_NO_ACCESS                  := new MemFlags($0200);
-    private static _MEM_SVM_FINE_GRAIN_BUFFER           := new MemFlags($0400);
-    private static _MEM_SVM_ATOMICS                     := new MemFlags($0800);
-    private static _MEM_KERNEL_READ_AND_WRITE           := new MemFlags($1000);
     private static _MEM_NO_ACCESS_INTEL                 := new MemFlags($1000000);
     private static _MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL := new MemFlags($2000000);
     private static _MEM_USE_UNCACHED_CPU_MEMORY_IMG     := new MemFlags($4000000);
@@ -1405,23 +1840,11 @@
     private static _MEM_USE_GRALLOC_PTR_IMG             := new MemFlags($10000000);
     private static _MEM_EXT_HOST_PTR_QCOM               := new MemFlags($20000000);
     
-    public static property MEM_READ_WRITE:                      MemFlags read _MEM_READ_WRITE;
     public static property MEM_RESERVED0_ARM:                   MemFlags read _MEM_RESERVED0_ARM;
     public static property MEM_RESERVED1_ARM:                   MemFlags read _MEM_RESERVED1_ARM;
-    public static property MEM_WRITE_ONLY:                      MemFlags read _MEM_WRITE_ONLY;
-    public static property MEM_READ_ONLY:                       MemFlags read _MEM_READ_ONLY;
     public static property MEM_RESERVED2_ARM:                   MemFlags read _MEM_RESERVED2_ARM;
     public static property MEM_RESERVED3_ARM:                   MemFlags read _MEM_RESERVED3_ARM;
-    public static property MEM_USE_HOST_PTR:                    MemFlags read _MEM_USE_HOST_PTR;
-    public static property MEM_ALLOC_HOST_PTR:                  MemFlags read _MEM_ALLOC_HOST_PTR;
     public static property MEM_RESERVED4_ARM:                   MemFlags read _MEM_RESERVED4_ARM;
-    public static property MEM_COPY_HOST_PTR:                   MemFlags read _MEM_COPY_HOST_PTR;
-    public static property MEM_HOST_WRITE_ONLY:                 MemFlags read _MEM_HOST_WRITE_ONLY;
-    public static property MEM_HOST_READ_ONLY:                  MemFlags read _MEM_HOST_READ_ONLY;
-    public static property MEM_HOST_NO_ACCESS:                  MemFlags read _MEM_HOST_NO_ACCESS;
-    public static property MEM_SVM_FINE_GRAIN_BUFFER:           MemFlags read _MEM_SVM_FINE_GRAIN_BUFFER;
-    public static property MEM_SVM_ATOMICS:                     MemFlags read _MEM_SVM_ATOMICS;
-    public static property MEM_KERNEL_READ_AND_WRITE:           MemFlags read _MEM_KERNEL_READ_AND_WRITE;
     public static property MEM_NO_ACCESS_INTEL:                 MemFlags read _MEM_NO_ACCESS_INTEL;
     public static property MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL: MemFlags read _MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL;
     public static property MEM_USE_UNCACHED_CPU_MEMORY_IMG:     MemFlags read _MEM_USE_UNCACHED_CPU_MEMORY_IMG;
@@ -1431,23 +1854,11 @@
     
     public static function operator or(f1,f2: MemFlags) := new MemFlags(f1.val or f2.val);
     
-    public property HAS_FLAG_MEM_READ_WRITE:                      boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MEM_RESERVED0_ARM:                   boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MEM_RESERVED1_ARM:                   boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_MEM_WRITE_ONLY:                      boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_MEM_READ_ONLY:                       boolean read self.val and $0004 <> 0;
     public property HAS_FLAG_MEM_RESERVED2_ARM:                   boolean read self.val and $0004 <> 0;
     public property HAS_FLAG_MEM_RESERVED3_ARM:                   boolean read self.val and $0008 <> 0;
-    public property HAS_FLAG_MEM_USE_HOST_PTR:                    boolean read self.val and $0008 <> 0;
-    public property HAS_FLAG_MEM_ALLOC_HOST_PTR:                  boolean read self.val and $0010 <> 0;
     public property HAS_FLAG_MEM_RESERVED4_ARM:                   boolean read self.val and $0010 <> 0;
-    public property HAS_FLAG_MEM_COPY_HOST_PTR:                   boolean read self.val and $0020 <> 0;
-    public property HAS_FLAG_MEM_HOST_WRITE_ONLY:                 boolean read self.val and $0080 <> 0;
-    public property HAS_FLAG_MEM_HOST_READ_ONLY:                  boolean read self.val and $0100 <> 0;
-    public property HAS_FLAG_MEM_HOST_NO_ACCESS:                  boolean read self.val and $0200 <> 0;
-    public property HAS_FLAG_MEM_SVM_FINE_GRAIN_BUFFER:           boolean read self.val and $0400 <> 0;
-    public property HAS_FLAG_MEM_SVM_ATOMICS:                     boolean read self.val and $0800 <> 0;
-    public property HAS_FLAG_MEM_KERNEL_READ_AND_WRITE:           boolean read self.val and $1000 <> 0;
     public property HAS_FLAG_MEM_NO_ACCESS_INTEL:                 boolean read self.val and $1000000 <> 0;
     public property HAS_FLAG_MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL: boolean read self.val and $2000000 <> 0;
     public property HAS_FLAG_MEM_USE_UNCACHED_CPU_MEMORY_IMG:     boolean read self.val and $4000000 <> 0;
@@ -1553,6 +1964,22 @@
       var res := typeof(MemMigrationFlagsExt).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt64(prop.GetValue(self))=self.val);
       Result := res=nil?
         $'MemMigrationFlagsExt[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  MemMigrationFlagsIntel = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(MemMigrationFlagsIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt64(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'MemMigrationFlagsIntel[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     
@@ -1684,6 +2111,32 @@
     
   end;
   
+  ProgramBinaryType = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PROGRAM_BINARY_TYPE_NONE            := new ProgramBinaryType($0000);
+    private static _PROGRAM_BINARY_TYPE_COMPILED_OBJECT := new ProgramBinaryType($0001);
+    private static _PROGRAM_BINARY_TYPE_LIBRARY         := new ProgramBinaryType($0002);
+    private static _PROGRAM_BINARY_TYPE_EXECUTABLE      := new ProgramBinaryType($0004);
+    private static _PROGRAM_BINARY_TYPE_INTERMEDIATE    := new ProgramBinaryType($40E1);
+    
+    public static property PROGRAM_BINARY_TYPE_NONE:            ProgramBinaryType read _PROGRAM_BINARY_TYPE_NONE;
+    public static property PROGRAM_BINARY_TYPE_COMPILED_OBJECT: ProgramBinaryType read _PROGRAM_BINARY_TYPE_COMPILED_OBJECT;
+    public static property PROGRAM_BINARY_TYPE_LIBRARY:         ProgramBinaryType read _PROGRAM_BINARY_TYPE_LIBRARY;
+    public static property PROGRAM_BINARY_TYPE_EXECUTABLE:      ProgramBinaryType read _PROGRAM_BINARY_TYPE_EXECUTABLE;
+    public static property PROGRAM_BINARY_TYPE_INTERMEDIATE:    ProgramBinaryType read _PROGRAM_BINARY_TYPE_INTERMEDIATE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(ProgramBinaryType).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'ProgramBinaryType[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
   ProgramBuildInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1750,6 +2203,34 @@
     
   end;
   
+  QueuePriorityKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _QUEUE_PRIORITY_HIGH_KHR := new QueuePriorityKhr($0001);
+    private static _QUEUE_PRIORITY_MED_KHR  := new QueuePriorityKhr($0002);
+    private static _QUEUE_PRIORITY_LOW_KHR  := new QueuePriorityKhr($0004);
+    
+    public static property QUEUE_PRIORITY_HIGH_KHR: QueuePriorityKhr read _QUEUE_PRIORITY_HIGH_KHR;
+    public static property QUEUE_PRIORITY_MED_KHR:  QueuePriorityKhr read _QUEUE_PRIORITY_MED_KHR;
+    public static property QUEUE_PRIORITY_LOW_KHR:  QueuePriorityKhr read _QUEUE_PRIORITY_LOW_KHR;
+    
+    public static function operator or(f1,f2: QueuePriorityKhr) := new QueuePriorityKhr(f1.val or f2.val);
+    
+    public property HAS_FLAG_QUEUE_PRIORITY_HIGH_KHR: boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_QUEUE_PRIORITY_MED_KHR:  boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_QUEUE_PRIORITY_LOW_KHR:  boolean read self.val and $0004 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(QueuePriorityKhr).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'QueuePriorityKhr[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
+    end;
+    
+  end;
+  
   QueueProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1766,6 +2247,34 @@
       Result := res=nil?
         $'QueueProperties[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  QueueThrottleKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _QUEUE_THROTTLE_HIGH_KHR := new QueueThrottleKhr($0001);
+    private static _QUEUE_THROTTLE_MED_KHR  := new QueueThrottleKhr($0002);
+    private static _QUEUE_THROTTLE_LOW_KHR  := new QueueThrottleKhr($0004);
+    
+    public static property QUEUE_THROTTLE_HIGH_KHR: QueueThrottleKhr read _QUEUE_THROTTLE_HIGH_KHR;
+    public static property QUEUE_THROTTLE_MED_KHR:  QueueThrottleKhr read _QUEUE_THROTTLE_MED_KHR;
+    public static property QUEUE_THROTTLE_LOW_KHR:  QueueThrottleKhr read _QUEUE_THROTTLE_LOW_KHR;
+    
+    public static function operator or(f1,f2: QueueThrottleKhr) := new QueueThrottleKhr(f1.val or f2.val);
+    
+    public property HAS_FLAG_QUEUE_THROTTLE_HIGH_KHR: boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_QUEUE_THROTTLE_MED_KHR:  boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_QUEUE_THROTTLE_LOW_KHR:  boolean read self.val and $0004 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(QueueThrottleKhr).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      Result := res.Count=0?
+        $'QueueThrottleKhr[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.JoinToString('+');
     end;
     
   end;
@@ -1819,6 +2328,70 @@
       var res := typeof(SamplerProperties).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt64(prop.GetValue(self))=self.val);
       Result := res=nil?
         $'SamplerProperties[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  SvmMemFlags = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MEM_READ_WRITE            := new SvmMemFlags($0001);
+    private static _MEM_WRITE_ONLY            := new SvmMemFlags($0002);
+    private static _MEM_READ_ONLY             := new SvmMemFlags($0004);
+    private static _MEM_USE_HOST_PTR          := new SvmMemFlags($0008);
+    private static _MEM_ALLOC_HOST_PTR        := new SvmMemFlags($0010);
+    private static _MEM_COPY_HOST_PTR         := new SvmMemFlags($0020);
+    private static _MEM_HOST_WRITE_ONLY       := new SvmMemFlags($0080);
+    private static _MEM_HOST_READ_ONLY        := new SvmMemFlags($0100);
+    private static _MEM_HOST_NO_ACCESS        := new SvmMemFlags($0200);
+    private static _MEM_SVM_FINE_GRAIN_BUFFER := new SvmMemFlags($0400);
+    private static _MEM_SVM_ATOMICS           := new SvmMemFlags($0800);
+    private static _MEM_KERNEL_READ_AND_WRITE := new SvmMemFlags($1000);
+    
+    public static property MEM_READ_WRITE:            SvmMemFlags read _MEM_READ_WRITE;
+    public static property MEM_WRITE_ONLY:            SvmMemFlags read _MEM_WRITE_ONLY;
+    public static property MEM_READ_ONLY:             SvmMemFlags read _MEM_READ_ONLY;
+    public static property MEM_USE_HOST_PTR:          SvmMemFlags read _MEM_USE_HOST_PTR;
+    public static property MEM_ALLOC_HOST_PTR:        SvmMemFlags read _MEM_ALLOC_HOST_PTR;
+    public static property MEM_COPY_HOST_PTR:         SvmMemFlags read _MEM_COPY_HOST_PTR;
+    public static property MEM_HOST_WRITE_ONLY:       SvmMemFlags read _MEM_HOST_WRITE_ONLY;
+    public static property MEM_HOST_READ_ONLY:        SvmMemFlags read _MEM_HOST_READ_ONLY;
+    public static property MEM_HOST_NO_ACCESS:        SvmMemFlags read _MEM_HOST_NO_ACCESS;
+    public static property MEM_SVM_FINE_GRAIN_BUFFER: SvmMemFlags read _MEM_SVM_FINE_GRAIN_BUFFER;
+    public static property MEM_SVM_ATOMICS:           SvmMemFlags read _MEM_SVM_ATOMICS;
+    public static property MEM_KERNEL_READ_AND_WRITE: SvmMemFlags read _MEM_KERNEL_READ_AND_WRITE;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(SvmMemFlags).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt64(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'SvmMemFlags[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        res.Name.TrimStart('&');
+    end;
+    
+  end;
+  
+  UnifiedSharedMemoryTypeIntel = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _MEM_TYPE_UNKNOWN_INTEL := new UnifiedSharedMemoryTypeIntel($4196);
+    private static _MEM_TYPE_HOST_INTEL    := new UnifiedSharedMemoryTypeIntel($4197);
+    private static _MEM_TYPE_DEVICE_INTEL  := new UnifiedSharedMemoryTypeIntel($4198);
+    private static _MEM_TYPE_SHARED_INTEL  := new UnifiedSharedMemoryTypeIntel($4199);
+    
+    public static property MEM_TYPE_UNKNOWN_INTEL: UnifiedSharedMemoryTypeIntel read _MEM_TYPE_UNKNOWN_INTEL;
+    public static property MEM_TYPE_HOST_INTEL:    UnifiedSharedMemoryTypeIntel read _MEM_TYPE_HOST_INTEL;
+    public static property MEM_TYPE_DEVICE_INTEL:  UnifiedSharedMemoryTypeIntel read _MEM_TYPE_DEVICE_INTEL;
+    public static property MEM_TYPE_SHARED_INTEL:  UnifiedSharedMemoryTypeIntel read _MEM_TYPE_SHARED_INTEL;
+    
+    public function ToString: string; override;
+    begin
+      var res := typeof(UnifiedSharedMemoryTypeIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
+      Result := res=nil?
+        $'UnifiedSharedMemoryTypeIntel[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
     end;
     

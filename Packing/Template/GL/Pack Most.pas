@@ -12,6 +12,7 @@ begin
     Otp($'Fixing all');
     ApplyFixers;
     Feature.FixGL_GDI;
+    MarkUsed;
     
     var res := new StringBuilder;
     
