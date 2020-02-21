@@ -734,10 +734,10 @@
     end;
     
     // added in cl1.0
-    private static function _z_CreateProgramWithBinary_ovr_0(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; var binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
+    private static function _z_CreateProgramWithBinary_ovr_0(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; var binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public static z_CreateProgramWithBinary_ovr_0 := _z_CreateProgramWithBinary_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: array of array of Byte; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_5_temp_arr1 := binaries.ConvertAll(arr_el1->begin
         var l := sizeof(Byte)*arr_el1.Length;
@@ -747,62 +747,62 @@
       Result := z_CreateProgramWithBinary_ovr_0(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret);
       foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: array of IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
+    private static function _z_CreateProgramWithBinary_ovr_1(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; var binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
+    external 'opencl.dll' name 'clCreateProgramWithBinary';
+    public static z_CreateProgramWithBinary_ovr_1 := _z_CreateProgramWithBinary_ovr_1;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
+    begin
+      var par_5_temp_arr1 := binaries.ConvertAll(arr_el1->begin
+        var l := sizeof(Byte)*arr_el1.Length;
+        Result := Marshal.AllocHGlobal(l);
+        Marshal.Copy(arr_el1,0,Result,l);
+      end);
+      Result := z_CreateProgramWithBinary_ovr_1(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret);
+      foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+    end;
+    private static function _z_CreateProgramWithBinary_ovr_2(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; var binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    external 'opencl.dll' name 'clCreateProgramWithBinary';
+    public static z_CreateProgramWithBinary_ovr_2 := _z_CreateProgramWithBinary_ovr_2;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    begin
+      var par_5_temp_arr1 := binaries.ConvertAll(arr_el1->begin
+        var l := sizeof(Byte)*arr_el1.Length;
+        Result := Marshal.AllocHGlobal(l);
+        Marshal.Copy(arr_el1,0,Result,l);
+      end);
+      Result := z_CreateProgramWithBinary_ovr_2(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret);
+      foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     begin
       Result := z_CreateProgramWithBinary_ovr_0(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret);
     end;
-    private static function _z_CreateProgramWithBinary_ovr_2(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
-    external 'opencl.dll' name 'clCreateProgramWithBinary';
-    public static z_CreateProgramWithBinary_ovr_2 := _z_CreateProgramWithBinary_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
     begin
-      Result := z_CreateProgramWithBinary_ovr_2(context, num_devices, device_list, lengths, binaries, binary_status, errcode_ret);
+      Result := z_CreateProgramWithBinary_ovr_1(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret);
     end;
-    private static function _z_CreateProgramWithBinary_ovr_3(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; var binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
-    external 'opencl.dll' name 'clCreateProgramWithBinary';
-    public static z_CreateProgramWithBinary_ovr_3 := _z_CreateProgramWithBinary_ovr_3;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: array of array of Byte; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_5_temp_arr1 := binaries.ConvertAll(arr_el1->begin
-        var l := sizeof(Byte)*arr_el1.Length;
-        Result := Marshal.AllocHGlobal(l);
-        Marshal.Copy(arr_el1,0,Result,l);
-      end);
-      Result := z_CreateProgramWithBinary_ovr_3(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret);
-      foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      Result := z_CreateProgramWithBinary_ovr_2(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: array of IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
-    begin
-      Result := z_CreateProgramWithBinary_ovr_3(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret);
-    end;
-    private static function _z_CreateProgramWithBinary_ovr_5(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
-    external 'opencl.dll' name 'clCreateProgramWithBinary';
-    public static z_CreateProgramWithBinary_ovr_5 := _z_CreateProgramWithBinary_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
-    begin
-      Result := z_CreateProgramWithBinary_ovr_5(context, num_devices, device_list, lengths, binaries, binary_status, errcode_ret);
-    end;
-    private static function _z_CreateProgramWithBinary_ovr_6(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; var binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    private static function _z_CreateProgramWithBinary_ovr_6(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public static z_CreateProgramWithBinary_ovr_6 := _z_CreateProgramWithBinary_ovr_6;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: array of array of Byte; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_5_temp_arr1 := binaries.ConvertAll(arr_el1->begin
-        var l := sizeof(Byte)*arr_el1.Length;
-        Result := Marshal.AllocHGlobal(l);
-        Marshal.Copy(arr_el1,0,Result,l);
-      end);
-      Result := z_CreateProgramWithBinary_ovr_6(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret);
-      foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      Result := z_CreateProgramWithBinary_ovr_6(context, num_devices, device_list, lengths, binaries, binary_status, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: array of IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    private static function _z_CreateProgramWithBinary_ovr_7(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
+    external 'opencl.dll' name 'clCreateProgramWithBinary';
+    public static z_CreateProgramWithBinary_ovr_7 := _z_CreateProgramWithBinary_ovr_7;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
     begin
-      Result := z_CreateProgramWithBinary_ovr_6(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret);
+      Result := z_CreateProgramWithBinary_ovr_7(context, num_devices, device_list, lengths, binaries, binary_status, errcode_ret);
     end;
-    private static function _z_CreateProgramWithBinary_ovr_8(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    private static function _z_CreateProgramWithBinary_ovr_8(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public static z_CreateProgramWithBinary_ovr_8 := _z_CreateProgramWithBinary_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UInt32; binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       Result := z_CreateProgramWithBinary_ovr_8(context, num_devices, device_list, lengths, binaries, binary_status, errcode_ret);
     end;
@@ -1128,249 +1128,249 @@
     end;
     
     // added in cl1.1
-    private static function _z_EnqueueCopyBufferRect_ovr_0(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyBufferRect_ovr_0(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public static z_EnqueueCopyBufferRect_ovr_0 := _z_EnqueueCopyBufferRect_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_0(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    private static function _z_EnqueueCopyBufferRect_ovr_1(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyBufferRect_ovr_1(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public static z_EnqueueCopyBufferRect_ovr_1 := _z_EnqueueCopyBufferRect_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_1(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_0(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_1(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyBufferRect_ovr_4(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyBufferRect_ovr_4(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public static z_EnqueueCopyBufferRect_ovr_4 := _z_EnqueueCopyBufferRect_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_4(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyBufferRect_ovr_5(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyBufferRect_ovr_5(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public static z_EnqueueCopyBufferRect_ovr_5 := _z_EnqueueCopyBufferRect_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_5(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_0(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_1(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_0(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_1(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_4(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; src_row_pitch: UInt32; src_slice_pitch: UInt32; dst_row_pitch: UInt32; dst_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferRect_ovr_5(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     end;
     
     // added in cl1.0
-    private static function _z_EnqueueCopyBufferToImage_ovr_0(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyBufferToImage_ovr_0(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public static z_EnqueueCopyBufferToImage_ovr_0 := _z_EnqueueCopyBufferToImage_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_0(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    private static function _z_EnqueueCopyBufferToImage_ovr_1(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyBufferToImage_ovr_1(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public static z_EnqueueCopyBufferToImage_ovr_1 := _z_EnqueueCopyBufferToImage_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_1(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_0(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_1(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyBufferToImage_ovr_4(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyBufferToImage_ovr_4(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public static z_EnqueueCopyBufferToImage_ovr_4 := _z_EnqueueCopyBufferToImage_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_4(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyBufferToImage_ovr_5(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyBufferToImage_ovr_5(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public static z_EnqueueCopyBufferToImage_ovr_5 := _z_EnqueueCopyBufferToImage_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_5(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_0(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_1(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_0(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_1(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_4(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyBufferToImage_ovr_5(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
     
     // added in cl1.0
-    private static function _z_EnqueueCopyImage_ovr_0(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyImage_ovr_0(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public static z_EnqueueCopyImage_ovr_0 := _z_EnqueueCopyImage_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_0(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    private static function _z_EnqueueCopyImage_ovr_1(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyImage_ovr_1(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public static z_EnqueueCopyImage_ovr_1 := _z_EnqueueCopyImage_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_1(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_0(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_1(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyImage_ovr_4(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyImage_ovr_4(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public static z_EnqueueCopyImage_ovr_4 := _z_EnqueueCopyImage_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_4(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyImage_ovr_5(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyImage_ovr_5(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public static z_EnqueueCopyImage_ovr_5 := _z_EnqueueCopyImage_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UInt32; dst_origin: array of UInt32; region: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_5(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_0(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_1(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_0(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_1(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_4(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UInt32; var dst_origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImage_ovr_5(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
     
     // added in cl1.0
-    private static function _z_EnqueueCopyImageToBuffer_ovr_0(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyImageToBuffer_ovr_0(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public static z_EnqueueCopyImageToBuffer_ovr_0 := _z_EnqueueCopyImageToBuffer_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; region: array of UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_0(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    private static function _z_EnqueueCopyImageToBuffer_ovr_1(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyImageToBuffer_ovr_1(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public static z_EnqueueCopyImageToBuffer_ovr_1 := _z_EnqueueCopyImageToBuffer_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; region: array of UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_1(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; region: array of UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_0(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; region: array of UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_1(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyImageToBuffer_ovr_4(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueCopyImageToBuffer_ovr_4(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public static z_EnqueueCopyImageToBuffer_ovr_4 := _z_EnqueueCopyImageToBuffer_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; region: array of UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_4(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueCopyImageToBuffer_ovr_5(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueCopyImageToBuffer_ovr_5(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public static z_EnqueueCopyImageToBuffer_ovr_5 := _z_EnqueueCopyImageToBuffer_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UInt32; region: array of UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_5(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_0(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_1(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_0(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_1(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_4(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UInt32; var region: UInt32; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueCopyImageToBuffer_ovr_5(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -1482,59 +1482,59 @@
     end;
     
     // added in cl1.2
-    private static function _z_EnqueueFillImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_0 := _z_EnqueueFillImage_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_0(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueFillImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_1 := _z_EnqueueFillImage_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_1(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueFillImage_ovr_2(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_2(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_2 := _z_EnqueueFillImage_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_2(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueFillImage_ovr_3(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_3(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_3 := _z_EnqueueFillImage_ovr_3;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_3(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueFillImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_4 := _z_EnqueueFillImage_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_4(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueFillImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_5 := _z_EnqueueFillImage_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_5(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueFillImage_ovr_6(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_6(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_6 := _z_EnqueueFillImage_ovr_6;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_6(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueFillImage_ovr_7(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueFillImage_ovr_7(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillImage';
     public static z_EnqueueFillImage_ovr_7 := _z_EnqueueFillImage_ovr_7;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UInt32; var region: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueFillImage_ovr_7(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -1578,63 +1578,63 @@
     end;
     
     // added in cl1.0
-    private static function _z_EnqueueMapImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    private static function _z_EnqueueMapImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public static z_EnqueueMapImage_ovr_0 := _z_EnqueueMapImage_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UInt32; region: array of UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_0(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret);
     end;
-    private static function _z_EnqueueMapImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    private static function _z_EnqueueMapImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public static z_EnqueueMapImage_ovr_1 := _z_EnqueueMapImage_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UInt32; region: array of UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_1(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UInt32; region: array of UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_0(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UInt32; region: array of UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_1(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
-    private static function _z_EnqueueMapImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    private static function _z_EnqueueMapImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public static z_EnqueueMapImage_ovr_4 := _z_EnqueueMapImage_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UInt32; region: array of UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_4(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
-    private static function _z_EnqueueMapImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    private static function _z_EnqueueMapImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public static z_EnqueueMapImage_ovr_5 := _z_EnqueueMapImage_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UInt32; region: array of UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_5(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_0(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_1(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_0(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_1(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_4(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UInt32; var region: UInt32; var image_row_pitch: UInt32; var image_slice_pitch: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     begin
       Result := z_EnqueueMapImage_ovr_5(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     end;
@@ -2182,63 +2182,63 @@
     end;
     
     // added in cl1.0
-    private static function _z_EnqueueNDRangeKernel_ovr_0(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueNDRangeKernel_ovr_0(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public static z_EnqueueNDRangeKernel_ovr_0 := _z_EnqueueNDRangeKernel_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UInt32; global_work_size: array of UInt32; local_work_size: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_0(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    private static function _z_EnqueueNDRangeKernel_ovr_1(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueNDRangeKernel_ovr_1(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public static z_EnqueueNDRangeKernel_ovr_1 := _z_EnqueueNDRangeKernel_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UInt32; global_work_size: array of UInt32; local_work_size: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_1(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UInt32; global_work_size: array of UInt32; local_work_size: array of UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_0(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UInt32; global_work_size: array of UInt32; local_work_size: array of UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_1(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueNDRangeKernel_ovr_4(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueNDRangeKernel_ovr_4(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public static z_EnqueueNDRangeKernel_ovr_4 := _z_EnqueueNDRangeKernel_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UInt32; global_work_size: array of UInt32; local_work_size: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_4(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueNDRangeKernel_ovr_5(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueNDRangeKernel_ovr_5(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public static z_EnqueueNDRangeKernel_ovr_5 := _z_EnqueueNDRangeKernel_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UInt32; global_work_size: array of UInt32; local_work_size: array of UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_5(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_0(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_1(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list[0], &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_0(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_1(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_4(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UInt32; var global_work_size: UInt32; var local_work_size: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueNDRangeKernel_ovr_5(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -2350,117 +2350,117 @@
     end;
     
     // added in cl1.1
-    private static function _z_EnqueueReadBufferRect_ovr_0(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_0(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_0 := _z_EnqueueReadBufferRect_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_0(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadBufferRect_ovr_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_1 := _z_EnqueueReadBufferRect_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_1(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadBufferRect_ovr_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_2 := _z_EnqueueReadBufferRect_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_2(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadBufferRect_ovr_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_3 := _z_EnqueueReadBufferRect_ovr_3;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_3(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadBufferRect_ovr_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_4 := _z_EnqueueReadBufferRect_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_4(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadBufferRect_ovr_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_5 := _z_EnqueueReadBufferRect_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_5(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadBufferRect_ovr_6(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_6(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_6 := _z_EnqueueReadBufferRect_ovr_6;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_6(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadBufferRect_ovr_7(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadBufferRect_ovr_7(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBufferRect';
     public static z_EnqueueReadBufferRect_ovr_7 := _z_EnqueueReadBufferRect_ovr_7;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadBufferRect_ovr_7(command_queue, buffer, blocking_read, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
     
     // added in cl1.0
-    private static function _z_EnqueueReadImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_0 := _z_EnqueueReadImage_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_0(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_1 := _z_EnqueueReadImage_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_1(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadImage_ovr_2(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_2(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_2 := _z_EnqueueReadImage_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_2(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadImage_ovr_3(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_3(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_3 := _z_EnqueueReadImage_ovr_3;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_3(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_4 := _z_EnqueueReadImage_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_4(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_5 := _z_EnqueueReadImage_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_5(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadImage_ovr_6(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_6(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_6 := _z_EnqueueReadImage_ovr_6;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_6(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueReadImage_ovr_7(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueReadImage_ovr_7(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadImage';
     public static z_EnqueueReadImage_ovr_7 := _z_EnqueueReadImage_ovr_7;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UInt32; var region: UInt32; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueReadImage_ovr_7(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -3096,117 +3096,117 @@
     end;
     
     // added in cl1.1
-    private static function _z_EnqueueWriteBufferRect_ovr_0(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_0(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_0 := _z_EnqueueWriteBufferRect_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_0(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteBufferRect_ovr_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_1 := _z_EnqueueWriteBufferRect_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_1(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteBufferRect_ovr_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_2 := _z_EnqueueWriteBufferRect_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_2(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteBufferRect_ovr_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_3 := _z_EnqueueWriteBufferRect_ovr_3;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_3(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteBufferRect_ovr_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_4 := _z_EnqueueWriteBufferRect_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_4(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteBufferRect_ovr_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_5 := _z_EnqueueWriteBufferRect_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_5(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteBufferRect_ovr_6(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_6(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_6 := _z_EnqueueWriteBufferRect_ovr_6;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_6(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteBufferRect_ovr_7(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteBufferRect_ovr_7(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBufferRect';
     public static z_EnqueueWriteBufferRect_ovr_7 := _z_EnqueueWriteBufferRect_ovr_7;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UInt32; var host_offset: UInt32; var region: UInt32; buffer_row_pitch: UInt32; buffer_slice_pitch: UInt32; host_row_pitch: UInt32; host_slice_pitch: UInt32; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_offset: UIntPtr; var host_offset: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteBufferRect_ovr_7(command_queue, buffer, blocking_write, buffer_offset, host_offset, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
     
     // added in cl1.0
-    private static function _z_EnqueueWriteImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_0(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_0 := _z_EnqueueWriteImage_ovr_0;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_0(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_1 := _z_EnqueueWriteImage_ovr_1;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_1(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteImage_ovr_2(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_2(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_2 := _z_EnqueueWriteImage_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_2(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteImage_ovr_3(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_3(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_3 := _z_EnqueueWriteImage_ovr_3;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_3(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_4 := _z_EnqueueWriteImage_ovr_4;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_4(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_5 := _z_EnqueueWriteImage_ovr_5;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_5(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteImage_ovr_6(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_6(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_6 := _z_EnqueueWriteImage_ovr_6;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_6(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;
-    private static function _z_EnqueueWriteImage_ovr_7(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function _z_EnqueueWriteImage_ovr_7(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteImage';
     public static z_EnqueueWriteImage_ovr_7 := _z_EnqueueWriteImage_ovr_7;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UInt32; var region: UInt32; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     begin
       Result := z_EnqueueWriteImage_ovr_7(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     end;

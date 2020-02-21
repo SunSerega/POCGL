@@ -65,23 +65,21 @@
  *	| *	| *	| *	| *	| *	| -IntPtr +array of T +var T +IntPtr	| *	| *	| -array of cl_event	|
 
 # clEnqueue[Read,Write]BufferRect
-!repl_ovrs
-coords	= var UInt32				=// array of UInt32
-data	= var T | IntPtr			=// array of T
-ev_lst	= var cl_event | IntPtr		=// array of cl_event
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| Bool	| %coords%	| %coords%	| %coords%	| UInt32	| UInt32	| UInt32	| UInt32	| %data%	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| *	| *				| *				| *				| *	| *	| *	| *	| -IntPtr +var T +IntPtr	| *	| -array of cl_event	| -array of cl_event	|
+!limit_ovrs
+ *	| *	| *	| *	| var UIntPtr	| var UIntPtr	| var UIntPtr	| *	| *	| *	| *	| *							| *	| *						| *						|
 
 # clEnqueueCopyBuffer
 !possible_par_types
  *	| *	| *	| *	| *	| *	| *	| *	| *	| -array of cl_event	|
 
 # clEnqueueCopyBufferRect
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| %coords%	| %coords%	| %coords%	| UInt32	| UInt32	| UInt32	| UInt32	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| *	| *					| *					| *					| *	| *	| *	| *	| *	| *	| -array of cl_event	|
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	| *	| *	| *	| *						|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *	| *	| *	| *	| *						|
 
 # clEnqueueFillBuffer
 !possible_par_types
@@ -96,48 +94,42 @@ ev		= var cl_event | IntPtr
  *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| -IntPtr +array of T +var T +IntPtr	| -array of ErrorCode -IntPtr	|
 
 # clEnqueue[Read,Write]Image
-!repl_ovrs
-coords	= var UInt32				=// array of UInt32
-data	= var T | IntPtr			=// array of T
-ev_lst	= var cl_event | IntPtr		=// array of cl_event
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| Bool	| %coords%	| %coords%	| UIntPtr	| UIntPtr	| %data%	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| *	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| -IntPtr +var T +IntPtr	| *	| -array of cl_event	| -array of cl_event	|
 
 # clEnqueueCopyImage
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| %coords%	| %coords%	| %coords%	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| *	| *					| *					| *					| *	| *	| -array of cl_event	|
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *						|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *						|
 
 # clEnqueueFillImage
-!repl_ovrs
-data	= var T | IntPtr			=// array of T
-coords	= var UInt32				=// array of UInt32
-ev_lst	= var cl_event | IntPtr		=// array of cl_event
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| %data%	| %coords%	| %coords%	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| -IntPtr +var T +IntPtr	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| -array of cl_event	| -array of cl_event	|
 
 # clEnqueueCopyImageToBuffer
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| %coords%	| %coords%	| UIntPtr	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| *	| *					| *					| *	| *	| *	| -array of cl_event	|
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	| *						|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *	| *	| *	| *						|
 
 # clEnqueueCopyBufferToImage
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| UIntPtr	| %coords%	| %coords%	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| *	| *	| *					| *					| *	| *	| -array of cl_event	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *	| *	| *						|
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *	| *	| *						|
 
 # clEnqueueMapImage
-!repl_ovrs
-coords	= array of UInt32 | var UInt32
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- IntPtr	| cl_command_queue	| cl_mem	| Bool	| MapFlags	| %coords%	| %coords%	| var UInt32	| var UInt32	| UInt32	| %ev_lst%	| %ev%	| var ErrorCode	|
+!possible_par_types
+ *	| *	| *	| *	| *	| *					| *					| * 			| *				| *	| *	| -array of cl_event	| *				|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *					| *					| var UIntPtr	| var UIntPtr	| *	| *	| *						| var ErrorCode	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| * 			| * 			| *	| *	| *						| * 			|
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| * 			| * 			| *	| *	| *						| * 			|
 
 # clGetImageInfo
 !possible_par_types
@@ -184,12 +176,12 @@ ev		= var cl_event | IntPtr
  *	| *	| *	| *	| *	| -array of cl_event	|
 
 # clEnqueueSVMMigrateMem
-!repl_ovrs
-ev_lst	= array of cl_event | var cl_event | IntPtr
-ev		= var cl_event | IntPtr
- ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| array of UIntPtr	| MemMigrationFlags	| UInt32	| %ev_lst%	| %ev%	|
- ErrorCode	| cl_command_queue	| UInt32	| var IntPtr		| var UIntPtr		| MemMigrationFlags	| UInt32	| %ev_lst%	| %ev%	|
- ErrorCode	| cl_command_queue	| UInt32	| pointer			| IntPtr			| MemMigrationFlags	| UInt32	| %ev_lst%	| %ev%	|
+!possible_par_types
+ *	| *	| *	| *					| *					| *	| *	| *	| -array of cl_event	|
+!limit_ovrs
+ *	| *	| *	| array of IntPtr	| array of UIntPtr	| *	| *	| *	| *						|
+ *	| *	| *	| var IntPtr		| var UIntPtr		| *	| *	| *	| *						|
+ *	| *	| *	| pointer			| IntPtr			| *	| *	| *	| *						|
 
 # clCreateSampler
 !possible_par_types
@@ -204,22 +196,29 @@ ev		= var cl_event | IntPtr
  *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var Bool +var AddressingMode +var FilterMode +pointer	| -array of UIntPtr	|
 
 # clCreateProgramWithSource
-!repl_ovrs
- cl_program	| cl_context	| UInt32	| array of string	| array of UIntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| array of IntPtr	| array of UIntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var IntPtr		| var UIntPtr		| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| pointer			| IntPtr			| var ErrorCode	|
+!possible_par_types
+ *	| *	| *	| -IntPtr +var IntPtr +pointer	| *					| *				|
+!limit_ovrs
+ *	| *	| *	| *								| *					| var ErrorCode	|
+!limit_ovrs
+ *	| *	| *	| array of string				| array of UIntPtr	| *				|
+ *	| *	| *	| array of IntPtr				| array of UIntPtr	| *				|
+ *	| *	| *	| var IntPtr					| var UIntPtr		| *				|
+ *	| *	| *	| pointer						| IntPtr			| *				|
 
 # clCreateProgramWithILKHR
 !possible_par_types
  *	| *	| -IntPtr +array of byte +var byte +IntPtr	| *	| -array of ErrorCode -IntPtr	|
 
 # clCreateProgramWithBinary
-!repl_ovrs
-bin	= array of array of Byte | array of IntPtr | IntPtr
- cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| %bin%	| var ErrorCode	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| %bin%	| var ErrorCode	| IntPtr		|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| var UInt32	| %bin%	| IntPtr		| var ErrorCode	|
+!repl_par_t
+var Int32 = var ErrorCode
+!limit_ovrs
+ *	| *	| *	| var cl_device_id	| var UIntPtr	| *	| *				| *				|
+!limit_ovrs
+ *	| *	| *	| *					| *				| *	| var ErrorCode	| var ErrorCode	|
+ *	| *	| *	| *					| *				| *	| var ErrorCode	| IntPtr		|
+ *	| *	| *	| *					| *				| *	| IntPtr		| var ErrorCode	|
 
 # clCreateProgramWithBuiltInKernels
 !possible_par_types
@@ -236,7 +235,6 @@ bin	= array of array of Byte | array of IntPtr | IntPtr
 
 
 
-//ToDo связь параметров в !possible_par_types
 
 
 

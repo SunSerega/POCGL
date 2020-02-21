@@ -352,6 +352,7 @@ type
     end;
     protected static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
+    protected function ApplyOrder; virtual := 0;
     /// Return "True" if "o" is deleted
     protected function Apply(o: TFixable): boolean; abstract;
     public static procedure ApplyAll(lst: List<TFixable>);
@@ -373,7 +374,7 @@ type
       for var i := lst.Count-1 downto 0 do
       begin
         var o := lst[i];
-        foreach var f in Item[o.GetName] do
+        foreach var f in Item[o.GetName].OrderBy(f->(f as object as Fixer<TFixer, TFixable>).ApplyOrder) do //ToDo #2191
           if (f as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
             lst.RemoveAt(i);
       end;

@@ -1682,65 +1682,6 @@ end;
 {$region FuncFixer}
 
 type
-  FuncAdder = sealed class(FuncFixer)
-    public org_par := new List<FuncOrgParam>;
-    
-    public constructor(name: string; data: sequence of string);
-    begin
-      inherited Create(nil);
-      var enmr := data.Where(l->not string.IsNullOrWhiteSpace(l)).GetEnumerator;
-      
-      if not enmr.MoveNext then raise new System.FormatException;
-      var proto := new FuncOrgParam;
-      proto.name := name;
-      proto.t := enmr.Current;
-      if proto.t.Trim='void' then
-        proto.t := nil else
-      begin
-        proto.ptr := proto.t.Count(ch->ch='*');
-        proto.t := proto.t.Remove('*').Trim;
-      end;
-      org_par += proto;
-      
-      while enmr.MoveNext do
-      begin
-        var param := new FuncOrgParam;
-        var s := enmr.Current.Split(':');
-        param.name := s[0].Trim;
-        param.t := s[1].Remove('*').Trim;
-        param.ptr := s[1].Count(ch->ch='*');
-        org_par += param;
-      end;
-      
-      self.RegisterAsAdder;
-    end;
-    
-    public function Apply(f: Func): boolean; override;
-    begin
-      f.org_par := self.org_par.ToArray;
-      f.BasicInit;
-      Result := false;
-      raise new System.NotSupportedException('Func addition is unexpected');
-    end;
-    
-  end;
-  FuncRemover = sealed class(FuncFixer)
-    
-    public constructor(name: string; data: sequence of string);
-    begin
-      inherited Create(name);
-      if data.Any(l->not string.IsNullOrWhiteSpace(l)) then raise new System.FormatException;
-    end;
-    
-    public function Apply(f: Func): boolean; override;
-    begin
-      self.used := true;
-      Result := true;
-      raise new System.NotSupportedException('Func removal is unexpected');
-    end;
-    
-  end;
-  
   FuncReplParTFixer = sealed class(FuncFixer)
     public old_tname: FuncParamT;
     public new_tnames: array of FuncParamT;
@@ -1757,6 +1698,7 @@ type
       if not string.IsNullOrWhiteSpace(l) then
         new FuncReplParTFixer(name, l);
     
+    protected function ApplyOrder: integer; override := 1;
     public function Apply(f: Func): boolean; override;
     begin
       f.InitPossibleParTypes;
@@ -1785,6 +1727,7 @@ type
     end;
     
   end;
+  
   FuncPPTFixer = sealed class(FuncFixer)
     public add_ts: array of List<FuncParamT>;
     public rem_ts: array of List<FuncParamT>;
@@ -1829,6 +1772,7 @@ type
       
     end;
     
+    protected function ApplyOrder: integer; override := 2;
     public function Apply(f: Func): boolean; override;
     begin
       f.InitPossibleParTypes;
@@ -1855,67 +1799,34 @@ type
   end;
   
   FuncOvrsFixerBase = abstract class(FuncFixer)
-    public ovr: array of FuncParamT;
+    public ovrs := new List<array of FuncParamT>;
     
-    public constructor(name: string; data: string);
+    public constructor(name: string; data: sequence of string);
     begin
       inherited Create(name);
       
-      var s := data.Split('|');
-      if not string.IsNullOrWhiteSpace(s[s.Length-1]) then raise new System.FormatException(data);
-      
-      SetLength(ovr, s.Length-1);
-      ovr.Fill(i->new FuncParamT(s[i]));
-      
-    end;
-    public static function PrepareLns(data: sequence of string): sequence of string;
-    begin
-      var enmr := data.Where(l->not string.IsNullOrWhiteSpace(l)).GetEnumerator;
-      
-      var templates := new Dictionary<string, array of string>;
-      while true do
+      foreach var l in data do
       begin
-        if not enmr.MoveNext then raise new System.FormatException;
-        var l: string := enmr.Current;
-        if not l.Contains('=') then break;
-        var s := l.Split('=');
-        templates.Add(
-          $'%{s[0].Trim}%',
-          s[1].Split('|').ConvertAll(t->t.Trim)
-        );
-      end;
-      
-      Result := new string[0];
-      while true do
-      begin
-        var res: sequence of string := new string[](enmr.Current);
+        var s := l.Split('|');
+        if s.Length=1 then continue; // коммент
         
-        foreach var id in templates.Keys do
-        begin
-          
-          res := res.SelectMany(l-> l.Contains(id) ?
-            templates[id].Select(t->l.Replace(id,t)) :
-            new string[](l)
-          );
-          
-//          res.PrintLines;
-//          Writeln('='*50);
-        end;
+        if not string.IsNullOrWhiteSpace(s[s.Length-1]) then raise new System.FormatException(l);
         
-//        yield sequence res; //ToDo #2203
-        Result := Result+res;
-        
-        if not enmr.MoveNext then break;
+        ovrs += ArrGen(s.Length-1, i->new FuncParamT(s[i]) );
       end;
       
     end;
+    
+    protected function ApplyOrder: integer; override := 3;
+    
+  end;
+  FuncReplOvrsFixer = sealed class(FuncOvrsFixerBase)
     
     public static function PrepareOvr(add_void: boolean; ovr: array of FuncParamT): array of FuncParamT;
     begin
       if add_void then
       begin
-        var res: array of FuncParamT;
-        SetLength(res, ovr.Length+1);
+        var res := new FuncParamT[ovr.Length+1];
         res[0] := new FuncParamT(false,0,nil);
         ovr.CopyTo(res,1);
         Result := res;
@@ -1923,80 +1834,58 @@ type
         Result := ovr;
     end;
     
-    public function OvrInd(lst: List<array of FuncParamT>; ovr: array of FuncParamT) :=
-    lst.FindIndex(povr->povr.SequenceEqual(ovr));
-    
-  end;
-  FuncAddOvrsFixer = class(FuncOvrsFixerBase)
-    
-    public constructor(name: string; data: string) :=
-    inherited Create(name, data);
-    public static procedure Create(name: string; data: sequence of string) :=
-    foreach var l in PrepareLns(data) do
-      new FuncAddOvrsFixer(name, l);
-    
-    public function Apply(f: Func): boolean; override;
-    begin
-      f.InitOverloads;
-      
-      var povr := PrepareOvr(f.is_proc, ovr);
-      if f.org_par.Length<>povr.Length then
-        raise new MessageException($'ERROR: [FuncAddOvrsFixer] of func [{self.name}] had wrong param count: {f.org_par.Length} org vs {povr.Length} custom');
-      
-      if OvrInd(f.all_overloads, povr)<>-1 then
-        Otp($'ERROR: [FuncAddOvrsFixer] of func [{f.name}] failed to add overload [{povr.JoinToString}]') else
-        f.all_overloads += povr;
-        
-      self.used := true;
-      Result := false;
-    end;
-    
-  end;
-  FuncRemOvrsFixer = sealed class(FuncOvrsFixerBase)
-    
-    public constructor(name: string; data: string) :=
-    inherited Create(name, data);
-    public static procedure Create(name: string; data: sequence of string) :=
-    foreach var l in PrepareLns(data) do
-      new FuncAddOvrsFixer(name, l);
-    
-    public function Apply(f: Func): boolean; override;
-    begin
-      f.InitOverloads;
-      
-      var povr := PrepareOvr(f.is_proc, ovr);
-      if f.org_par.Length<>povr.Length then
-        raise new MessageException($'ERROR: [FuncRemOvrsFixer] of func [{self.name}] had wrong param count: {f.org_par.Length} org vs {povr.Length} custom');
-      
-      var ind := OvrInd(f.all_overloads, povr);
-      if ind=-1 then
-        Otp($'ERROR: [FuncRemOvrsFixer] of func [{f.name}] failed to remove overload [{povr.JoinToString}]') else
-        f.all_overloads.RemoveAt(ind);
-      
-      self.used := true;
-      Result := false;
-    end;
-    
-  end;
-  FuncReplOvrsFixer = sealed class(FuncAddOvrsFixer)
-    
-    public constructor(name: string; data: string) :=
-    inherited Create(name, data);
-    public static procedure Create(name: string; data: sequence of string);
-    begin
-      var enmr := PrepareLns(data).GetEnumerator;
-      if not enmr.MoveNext then raise new System.InvalidOperationException;
-      new FuncReplOvrsFixer(name, enmr.Current);
-      while enmr.MoveNext do
-        new FuncAddOvrsFixer(name, enmr.Current);
-    end;
+    public static function ContainsOvr(lst: List<array of FuncParamT>; ovr: array of FuncParamT) :=
+    lst.Any(povr->povr.SequenceEqual(ovr));
     
     public function Apply(f: Func): boolean; override;
     begin
       f.InitOverloads;
       f.all_overloads.Clear;
       
-      Result := inherited Apply(f);
+      foreach var ovr in ovrs do
+      begin
+        var povr := PrepareOvr(f.is_proc, ovr);
+        if f.org_par.Length<>povr.Length then
+          raise new MessageException($'ERROR: [FuncReplOvrsFixer] of func [{self.name}] had wrong param count: {f.org_par.Length} org vs {povr.Length} custom');
+        
+        if ContainsOvr(f.all_overloads, povr) then
+          Otp($'ERROR: [FuncReplOvrsFixer] of func [{f.name}] failed to add overload [{povr.JoinToString}]') else
+          f.all_overloads += povr;
+        
+      end;
+        
+      self.used := true;
+      Result := false;
+    end;
+    
+  end;
+  FuncLimitOvrsFixer = sealed class(FuncOvrsFixerBase)
+    
+    public function Apply(f: Func): boolean; override;
+    begin
+      f.InitOverloads;
+      
+      var expected_ovr_l := f.org_par.Length - integer(f.is_proc);
+      foreach var ovr in ovrs do
+        if ovr.Length<>expected_ovr_l then
+          raise new MessageException($'ERROR: [FuncLimitOvrsFixer] of func [{f.name}] had wrong param count: {f.org_par.Length} org vs {ovr.Length+integer(f.is_proc)} custom');
+      
+      var unused_t_ovrs := self.ovrs.ToList;
+      f.all_overloads.RemoveAll(fovr->
+        not self.ovrs.Any(tovr->
+        begin
+          Result := tovr.Zip(fovr,
+            (tp,fp)-> (tp.tname='*') or (tp=fp)
+          ).All(b->b);
+          if Result then unused_t_ovrs.Remove(tovr);
+        end)
+      );
+      
+      foreach var ovr in unused_t_ovrs do
+        Otp($'WARNING: [FuncLimitOvrsFixer] of func [{f.name}] hasn''t used mask {_ObjectToString(ovr)}');
+      
+      self.used := true;
+      Result := false;
     end;
     
   end;
@@ -2009,15 +1898,12 @@ begin
     foreach var bl in ReadBlocks(gr[1],'!',false) do
     case bl[0] of
       
-      'add':                FuncAdder         .Create(gr[0], bl[1]);
-      'remove':             FuncRemover       .Create(gr[0], bl[1]);
-      
       'repl_par_t':         FuncReplParTFixer .Create(gr[0], bl[1]);
+      
       'possible_par_types': FuncPPTFixer      .Create(gr[0], bl[1]);
       
-      'add_ovrs':           FuncAddOvrsFixer  .Create(gr[0], bl[1]);
-      'rem_ovrs':           FuncRemOvrsFixer  .Create(gr[0], bl[1]);
       'repl_ovrs':          FuncReplOvrsFixer .Create(gr[0], bl[1]);
+      'limit_ovrs':         FuncLimitOvrsFixer.Create(gr[0], bl[1]);
       
       else raise new MessageException($'Invalid func fixer type [!{bl[0]}] for func [{gr[0]}]');
     end;
