@@ -13,18 +13,6 @@
     
   end;
   
-  cl_dx9_surface_info_khr = record
-    public resource: ^IntPtr;
-    public shared_handle: IntPtr;
-    
-    public constructor(resource: ^IntPtr; shared_handle: IntPtr);
-    begin
-      self.resource := resource;
-      self.shared_handle := shared_handle;
-    end;
-    
-  end;
-  
   cl_image_desc = record
     public image_type: MemObjectType;
     public image_width: UIntPtr;
@@ -61,60 +49,6 @@
     begin
       self.image_channel_order := image_channel_order;
       self.image_channel_data_type := image_channel_data_type;
-    end;
-    
-  end;
-  
-  cl_mem_ext_host_ptr = record
-    public allocation_type: UInt32;
-    public host_cache_policy: UInt32;
-    
-    public constructor(allocation_type: UInt32; host_cache_policy: UInt32);
-    begin
-      self.allocation_type := allocation_type;
-      self.host_cache_policy := host_cache_policy;
-    end;
-    
-  end;
-  
-  cl_mem_android_native_buffer_host_ptr = record
-    public ext_host_ptr: cl_mem_ext_host_ptr;
-    public anb_ptr: IntPtr;
-    
-    public constructor(ext_host_ptr: cl_mem_ext_host_ptr; anb_ptr: IntPtr);
-    begin
-      self.ext_host_ptr := ext_host_ptr;
-      self.anb_ptr := anb_ptr;
-    end;
-    
-  end;
-  
-  cl_mem_ion_host_ptr = record
-    public ext_host_ptr: cl_mem_ext_host_ptr;
-    public ion_filedesc: Int32;
-    public ion_hostptr: IntPtr;
-    
-    public constructor(ext_host_ptr: cl_mem_ext_host_ptr; ion_filedesc: Int32; ion_hostptr: IntPtr);
-    begin
-      self.ext_host_ptr := ext_host_ptr;
-      self.ion_filedesc := ion_filedesc;
-      self.ion_hostptr := ion_hostptr;
-    end;
-    
-  end;
-  
-  cl_motion_estimation_desc_intel = record
-    public mb_block_type: UInt32;
-    public subpixel_mode: UInt32;
-    public sad_adjust_mode: UInt32;
-    public search_path_type: UInt32;
-    
-    public constructor(mb_block_type: UInt32; subpixel_mode: UInt32; sad_adjust_mode: UInt32; search_path_type: UInt32);
-    begin
-      self.mb_block_type := mb_block_type;
-      self.subpixel_mode := subpixel_mode;
-      self.sad_adjust_mode := sad_adjust_mode;
-      self.search_path_type := search_path_type;
     end;
     
   end;

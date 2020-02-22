@@ -716,29 +716,29 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-  DeviceFpConfig = record
+  DeviceFPConfig = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    private static _FP_DENORM                        := new DeviceFpConfig($0001);
-    private static _FP_INF_NAN                       := new DeviceFpConfig($0002);
-    private static _FP_ROUND_TO_NEAREST              := new DeviceFpConfig($0004);
-    private static _FP_ROUND_TO_ZERO                 := new DeviceFpConfig($0008);
-    private static _FP_ROUND_TO_INF                  := new DeviceFpConfig($0010);
-    private static _FP_FMA                           := new DeviceFpConfig($0020);
-    private static _FP_SOFT_FLOAT                    := new DeviceFpConfig($0040);
-    private static _FP_CORRECTLY_ROUNDED_DIVIDE_SQRT := new DeviceFpConfig($0080);
+    private static _FP_DENORM                        := new DeviceFPConfig($0001);
+    private static _FP_INF_NAN                       := new DeviceFPConfig($0002);
+    private static _FP_ROUND_TO_NEAREST              := new DeviceFPConfig($0004);
+    private static _FP_ROUND_TO_ZERO                 := new DeviceFPConfig($0008);
+    private static _FP_ROUND_TO_INF                  := new DeviceFPConfig($0010);
+    private static _FP_FMA                           := new DeviceFPConfig($0020);
+    private static _FP_SOFT_FLOAT                    := new DeviceFPConfig($0040);
+    private static _FP_CORRECTLY_ROUNDED_DIVIDE_SQRT := new DeviceFPConfig($0080);
     
-    public static property FP_DENORM:                        DeviceFpConfig read _FP_DENORM;
-    public static property FP_INF_NAN:                       DeviceFpConfig read _FP_INF_NAN;
-    public static property FP_ROUND_TO_NEAREST:              DeviceFpConfig read _FP_ROUND_TO_NEAREST;
-    public static property FP_ROUND_TO_ZERO:                 DeviceFpConfig read _FP_ROUND_TO_ZERO;
-    public static property FP_ROUND_TO_INF:                  DeviceFpConfig read _FP_ROUND_TO_INF;
-    public static property FP_FMA:                           DeviceFpConfig read _FP_FMA;
-    public static property FP_SOFT_FLOAT:                    DeviceFpConfig read _FP_SOFT_FLOAT;
-    public static property FP_CORRECTLY_ROUNDED_DIVIDE_SQRT: DeviceFpConfig read _FP_CORRECTLY_ROUNDED_DIVIDE_SQRT;
+    public static property FP_DENORM:                        DeviceFPConfig read _FP_DENORM;
+    public static property FP_INF_NAN:                       DeviceFPConfig read _FP_INF_NAN;
+    public static property FP_ROUND_TO_NEAREST:              DeviceFPConfig read _FP_ROUND_TO_NEAREST;
+    public static property FP_ROUND_TO_ZERO:                 DeviceFPConfig read _FP_ROUND_TO_ZERO;
+    public static property FP_ROUND_TO_INF:                  DeviceFPConfig read _FP_ROUND_TO_INF;
+    public static property FP_FMA:                           DeviceFPConfig read _FP_FMA;
+    public static property FP_SOFT_FLOAT:                    DeviceFPConfig read _FP_SOFT_FLOAT;
+    public static property FP_CORRECTLY_ROUNDED_DIVIDE_SQRT: DeviceFPConfig read _FP_CORRECTLY_ROUNDED_DIVIDE_SQRT;
     
-    public static function operator or(f1,f2: DeviceFpConfig) := new DeviceFpConfig(f1.val or f2.val);
+    public static function operator or(f1,f2: DeviceFPConfig) := new DeviceFPConfig(f1.val or f2.val);
     
     public property HAS_FLAG_FP_DENORM:                        boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_FP_INF_NAN:                       boolean read self.val and $0002 <> 0;
@@ -751,9 +751,9 @@ uses System.Runtime.CompilerServices;
     
     public function ToString: string; override;
     begin
-      var res := typeof(DeviceFpConfig).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      var res := typeof(DeviceFPConfig).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'DeviceFpConfig[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DeviceFPConfig[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.JoinToString('+');
     end;
     
@@ -1128,21 +1128,21 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-  DeviceSvmCapabilities = record
+  DeviceSVMCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    private static _DEVICE_SVM_COARSE_GRAIN_BUFFER := new DeviceSvmCapabilities($0001);
-    private static _DEVICE_SVM_FINE_GRAIN_BUFFER   := new DeviceSvmCapabilities($0002);
-    private static _DEVICE_SVM_FINE_GRAIN_SYSTEM   := new DeviceSvmCapabilities($0004);
-    private static _DEVICE_SVM_ATOMICS             := new DeviceSvmCapabilities($0008);
+    private static _DEVICE_SVM_COARSE_GRAIN_BUFFER := new DeviceSVMCapabilities($0001);
+    private static _DEVICE_SVM_FINE_GRAIN_BUFFER   := new DeviceSVMCapabilities($0002);
+    private static _DEVICE_SVM_FINE_GRAIN_SYSTEM   := new DeviceSVMCapabilities($0004);
+    private static _DEVICE_SVM_ATOMICS             := new DeviceSVMCapabilities($0008);
     
-    public static property DEVICE_SVM_COARSE_GRAIN_BUFFER: DeviceSvmCapabilities read _DEVICE_SVM_COARSE_GRAIN_BUFFER;
-    public static property DEVICE_SVM_FINE_GRAIN_BUFFER:   DeviceSvmCapabilities read _DEVICE_SVM_FINE_GRAIN_BUFFER;
-    public static property DEVICE_SVM_FINE_GRAIN_SYSTEM:   DeviceSvmCapabilities read _DEVICE_SVM_FINE_GRAIN_SYSTEM;
-    public static property DEVICE_SVM_ATOMICS:             DeviceSvmCapabilities read _DEVICE_SVM_ATOMICS;
+    public static property DEVICE_SVM_COARSE_GRAIN_BUFFER: DeviceSVMCapabilities read _DEVICE_SVM_COARSE_GRAIN_BUFFER;
+    public static property DEVICE_SVM_FINE_GRAIN_BUFFER:   DeviceSVMCapabilities read _DEVICE_SVM_FINE_GRAIN_BUFFER;
+    public static property DEVICE_SVM_FINE_GRAIN_SYSTEM:   DeviceSVMCapabilities read _DEVICE_SVM_FINE_GRAIN_SYSTEM;
+    public static property DEVICE_SVM_ATOMICS:             DeviceSVMCapabilities read _DEVICE_SVM_ATOMICS;
     
-    public static function operator or(f1,f2: DeviceSvmCapabilities) := new DeviceSvmCapabilities(f1.val or f2.val);
+    public static function operator or(f1,f2: DeviceSVMCapabilities) := new DeviceSVMCapabilities(f1.val or f2.val);
     
     public property HAS_FLAG_DEVICE_SVM_COARSE_GRAIN_BUFFER: boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_DEVICE_SVM_FINE_GRAIN_BUFFER:   boolean read self.val and $0002 <> 0;
@@ -1151,9 +1151,9 @@ uses System.Runtime.CompilerServices;
     
     public function ToString: string; override;
     begin
-      var res := typeof(DeviceSvmCapabilities).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
+      var res := typeof(DeviceSVMCapabilities).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
-        $'DeviceSvmCapabilities[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
+        $'DeviceSVMCapabilities[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.JoinToString('+');
     end;
     
@@ -1191,37 +1191,6 @@ uses System.Runtime.CompilerServices;
       var res := typeof(DeviceType).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
       Result := res.Count=0?
         $'DeviceType[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinToString('+');
-    end;
-    
-  end;
-  
-  DeviceUnifiedSharedMemoryCapabilitiesIntel = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _UNIFIED_SHARED_MEMORY_ACCESS_INTEL                   := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0001);
-    private static _UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL            := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0002);
-    private static _UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL        := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0004);
-    private static _UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL := new DeviceUnifiedSharedMemoryCapabilitiesIntel($0008);
-    
-    public static property UNIFIED_SHARED_MEMORY_ACCESS_INTEL:                   DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_ACCESS_INTEL;
-    public static property UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL:            DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL;
-    public static property UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL:        DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL;
-    public static property UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL: DeviceUnifiedSharedMemoryCapabilitiesIntel read _UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL;
-    
-    public static function operator or(f1,f2: DeviceUnifiedSharedMemoryCapabilitiesIntel) := new DeviceUnifiedSharedMemoryCapabilitiesIntel(f1.val or f2.val);
-    
-    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_ACCESS_INTEL:                   boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_ATOMIC_ACCESS_INTEL:            boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_CONCURRENT_ACCESS_INTEL:        boolean read self.val and $0004 <> 0;
-    public property HAS_FLAG_UNIFIED_SHARED_MEMORY_CONCURRENT_ATOMIC_ACCESS_INTEL: boolean read self.val and $0008 <> 0;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(DeviceUnifiedSharedMemoryCapabilitiesIntel).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
-      Result := res.Count=0?
-        $'DeviceUnifiedSharedMemoryCapabilitiesIntel[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.JoinToString('+');
     end;
     
@@ -1917,28 +1886,6 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-  MemAllocFlagsIntel = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _MEM_ALLOC_WRITE_COMBINED_INTEL := new MemAllocFlagsIntel($0001);
-    
-    public static property MEM_ALLOC_WRITE_COMBINED_INTEL: MemAllocFlagsIntel read _MEM_ALLOC_WRITE_COMBINED_INTEL;
-    
-    public static function operator or(f1,f2: MemAllocFlagsIntel) := new MemAllocFlagsIntel(f1.val or f2.val);
-    
-    public property HAS_FLAG_MEM_ALLOC_WRITE_COMBINED_INTEL: boolean read self.val and $0001 <> 0;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(MemAllocFlagsIntel).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
-      Result := res.Count=0?
-        $'MemAllocFlagsIntel[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinToString('+');
-    end;
-    
-  end;
-  
   MemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2318,34 +2265,6 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-  QueuePriorityKhr = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _QUEUE_PRIORITY_HIGH_KHR := new QueuePriorityKhr($0001);
-    private static _QUEUE_PRIORITY_MED_KHR  := new QueuePriorityKhr($0002);
-    private static _QUEUE_PRIORITY_LOW_KHR  := new QueuePriorityKhr($0004);
-    
-    public static property QUEUE_PRIORITY_HIGH_KHR: QueuePriorityKhr read _QUEUE_PRIORITY_HIGH_KHR;
-    public static property QUEUE_PRIORITY_MED_KHR:  QueuePriorityKhr read _QUEUE_PRIORITY_MED_KHR;
-    public static property QUEUE_PRIORITY_LOW_KHR:  QueuePriorityKhr read _QUEUE_PRIORITY_LOW_KHR;
-    
-    public static function operator or(f1,f2: QueuePriorityKhr) := new QueuePriorityKhr(f1.val or f2.val);
-    
-    public property HAS_FLAG_QUEUE_PRIORITY_HIGH_KHR: boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_QUEUE_PRIORITY_MED_KHR:  boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_QUEUE_PRIORITY_LOW_KHR:  boolean read self.val and $0004 <> 0;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(QueuePriorityKhr).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
-      Result := res.Count=0?
-        $'QueuePriorityKhr[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinToString('+');
-    end;
-    
-  end;
-  
   QueueProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2362,34 +2281,6 @@ uses System.Runtime.CompilerServices;
       Result := res=nil?
         $'QueueProperties[{ self.val=default(UInt64) ? ''NONE'' : self.val.ToString(''X'') }]':
         res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
-  QueueThrottleKhr = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _QUEUE_THROTTLE_HIGH_KHR := new QueueThrottleKhr($0001);
-    private static _QUEUE_THROTTLE_MED_KHR  := new QueueThrottleKhr($0002);
-    private static _QUEUE_THROTTLE_LOW_KHR  := new QueueThrottleKhr($0004);
-    
-    public static property QUEUE_THROTTLE_HIGH_KHR: QueueThrottleKhr read _QUEUE_THROTTLE_HIGH_KHR;
-    public static property QUEUE_THROTTLE_MED_KHR:  QueueThrottleKhr read _QUEUE_THROTTLE_MED_KHR;
-    public static property QUEUE_THROTTLE_LOW_KHR:  QueueThrottleKhr read _QUEUE_THROTTLE_LOW_KHR;
-    
-    public static function operator or(f1,f2: QueueThrottleKhr) := new QueueThrottleKhr(f1.val or f2.val);
-    
-    public property HAS_FLAG_QUEUE_THROTTLE_HIGH_KHR: boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_QUEUE_THROTTLE_MED_KHR:  boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_QUEUE_THROTTLE_LOW_KHR:  boolean read self.val and $0004 <> 0;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(QueueThrottleKhr).GetProperties.Where(prop->prop.Name.StartsWith('HAS_FLAG_') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart('&')).ToList;
-      Result := res.Count=0?
-        $'QueueThrottleKhr[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.JoinToString('+');
     end;
     
   end;
@@ -2488,30 +2379,6 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-  UnifiedSharedMemoryTypeIntel = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _MEM_TYPE_UNKNOWN_INTEL := new UnifiedSharedMemoryTypeIntel($4196);
-    private static _MEM_TYPE_HOST_INTEL    := new UnifiedSharedMemoryTypeIntel($4197);
-    private static _MEM_TYPE_DEVICE_INTEL  := new UnifiedSharedMemoryTypeIntel($4198);
-    private static _MEM_TYPE_SHARED_INTEL  := new UnifiedSharedMemoryTypeIntel($4199);
-    
-    public static property MEM_TYPE_UNKNOWN_INTEL: UnifiedSharedMemoryTypeIntel read _MEM_TYPE_UNKNOWN_INTEL;
-    public static property MEM_TYPE_HOST_INTEL:    UnifiedSharedMemoryTypeIntel read _MEM_TYPE_HOST_INTEL;
-    public static property MEM_TYPE_DEVICE_INTEL:  UnifiedSharedMemoryTypeIntel read _MEM_TYPE_DEVICE_INTEL;
-    public static property MEM_TYPE_SHARED_INTEL:  UnifiedSharedMemoryTypeIntel read _MEM_TYPE_SHARED_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      var res := typeof(UnifiedSharedMemoryTypeIntel).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->UInt32(prop.GetValue(self))=self.val);
-      Result := res=nil?
-        $'UnifiedSharedMemoryTypeIntel[{ self.val=default(UInt32) ? ''NONE'' : self.val.ToString(''X'') }]':
-        res.Name.TrimStart('&');
-    end;
-    
-  end;
-  
   VaApiDeviceSetIntel = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2590,18 +2457,6 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-  cl_dx9_surface_info_khr = record
-    public resource: ^IntPtr;
-    public shared_handle: IntPtr;
-    
-    public constructor(resource: ^IntPtr; shared_handle: IntPtr);
-    begin
-      self.resource := resource;
-      self.shared_handle := shared_handle;
-    end;
-    
-  end;
-  
   cl_image_desc = record
     public image_type: MemObjectType;
     public image_width: UIntPtr;
@@ -2638,60 +2493,6 @@ uses System.Runtime.CompilerServices;
     begin
       self.image_channel_order := image_channel_order;
       self.image_channel_data_type := image_channel_data_type;
-    end;
-    
-  end;
-  
-  cl_mem_ext_host_ptr = record
-    public allocation_type: UInt32;
-    public host_cache_policy: UInt32;
-    
-    public constructor(allocation_type: UInt32; host_cache_policy: UInt32);
-    begin
-      self.allocation_type := allocation_type;
-      self.host_cache_policy := host_cache_policy;
-    end;
-    
-  end;
-  
-  cl_mem_android_native_buffer_host_ptr = record
-    public ext_host_ptr: cl_mem_ext_host_ptr;
-    public anb_ptr: IntPtr;
-    
-    public constructor(ext_host_ptr: cl_mem_ext_host_ptr; anb_ptr: IntPtr);
-    begin
-      self.ext_host_ptr := ext_host_ptr;
-      self.anb_ptr := anb_ptr;
-    end;
-    
-  end;
-  
-  cl_mem_ion_host_ptr = record
-    public ext_host_ptr: cl_mem_ext_host_ptr;
-    public ion_filedesc: Int32;
-    public ion_hostptr: IntPtr;
-    
-    public constructor(ext_host_ptr: cl_mem_ext_host_ptr; ion_filedesc: Int32; ion_hostptr: IntPtr);
-    begin
-      self.ext_host_ptr := ext_host_ptr;
-      self.ion_filedesc := ion_filedesc;
-      self.ion_hostptr := ion_hostptr;
-    end;
-    
-  end;
-  
-  cl_motion_estimation_desc_intel = record
-    public mb_block_type: UInt32;
-    public subpixel_mode: UInt32;
-    public sad_adjust_mode: UInt32;
-    public search_path_type: UInt32;
-    
-    public constructor(mb_block_type: UInt32; subpixel_mode: UInt32; sad_adjust_mode: UInt32; search_path_type: UInt32);
-    begin
-      self.mb_block_type := mb_block_type;
-      self.subpixel_mode := subpixel_mode;
-      self.sad_adjust_mode := sad_adjust_mode;
-      self.search_path_type := search_path_type;
     end;
     
   end;
