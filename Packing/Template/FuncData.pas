@@ -160,11 +160,13 @@ type
     
     public procedure Write(sb: StringBuilder);
     begin
-      log_groups.WriteLine($'# {name}');
+      log_groups.WriteLine($'# {name}[{t}]');
       foreach var ename in enums.Keys do
         log_groups.WriteLine($'{#9}{ename} = {enums[ename]:X}');
       log_groups.WriteLine;
       log_groups.Flush;
+      
+      if not used then exit;
       
       if enums.Count=0 then Otp($'WARNING: Group [{name}] had 0 enums');
       var max_w := screened_enums.Keys.DefaultIfEmpty('').Max(ename->ename.Length);
@@ -240,6 +242,7 @@ type
     begin
       var gn := g.Key;
       if gn='' then gn := 'Core';
+      if not g.Any(gr->gr.used) then continue;
       
       sb += $'  {{$region {gn}}}'+#10;
       sb += $'  '+#10;
@@ -388,6 +391,8 @@ type
         log_structs.WriteLine($'{#9}{fld.MakeDef}');
       log_structs.WriteLine;
       log_structs.Flush;
+      
+      if not used then exit;
       
       sb += $'  {name} = record' + #10;
       
@@ -1270,8 +1275,21 @@ type
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
-      loop All.Capacity do All += new Extension(br);
-      All.RemoveAll(ext->ext.api='glx'); //ToDo Требует бОльшего тестирования
+      
+      loop All.Capacity do
+      begin
+        var ext := new Extension(br);
+        
+        if ext.api='glx' then //ToDo Требует бОльшего тестирования
+        begin
+          foreach var f in ext.add do
+            f.MarkSemiUsed;
+          continue;
+        end;
+        
+        All += ext;
+      end;
+      
     end;
     
     private procedure MarkUsed;

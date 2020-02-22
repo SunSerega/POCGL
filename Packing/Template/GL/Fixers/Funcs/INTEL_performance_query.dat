@@ -12,10 +12,10 @@
  PerfQueryIdINTEL	| IntPtr			|
 
 # glGetPerfQueryIdByNameINTEL
-!repl_ovrs
-name	= string | IntPtr
-res		= var PerfQueryIdINTEL | IntPtr
- %name%	| %res%	|
+!possible_par_types
+ -IntPtr +string +IntPtr	| -array of UInt32	|
+!repl_par_t
+var UInt32 = var PerfQueryIdINTEL
 
 # glGetPerfQueryInfoINTEL
 !repl_ovrs

@@ -27,3 +27,33 @@ Invalid ext name [DCARB], replaced with [ARB]
 Invalid ext name [DCEXT], replaced with [EXT]
 Invalid ext name [DCNV], replaced with [NV]
 Invalid ext name [IDEXT], replaced with [EXT]
+Group [ContextFlagMask] was skipped
+Group [ContextProfileMask] was skipped
+Group [OcclusionQueryEventMaskAMD] was skipped
+Group [SubgroupSupportedFeatures] was skipped
+Group [BufferBitQCOM] was skipped
+Group [MapTextureFormatINTEL] was skipped
+Group [Boolean] was skipped
+Group [TextureSwizzle] was skipped
+Group [TextureCompareMode] was skipped
+Group [PixelTexGenMode] was skipped
+Group [TextureEnvMode] was skipped
+Group [LightEnvModeSGIX] was skipped
+Group [ColorMaterialFace] was skipped
+Group [FeedBackToken] was skipped
+Group [FogMode] was skipped
+Group [GetPixelMap] was skipped
+Group [TextureGenMode] was skipped
+Group [TextureMagFilter] was skipped
+Group [TextureMinFilter] was skipped
+Group [TextureWrapMode] was skipped
+Group [GetConvolutionParameter] was skipped
+Group [ConvolutionBorderModeEXT] was skipped
+Group [PointParameterNameSGIS] was skipped
+Group [TextureFilterFuncSGIS] was skipped
+Group [LightModelColorControl] was skipped
+Group [PixelStoreResampleMode] was skipped
+Group [PixelStoreSubsampleRate] was skipped
+Group [CheckFramebufferStatusTarget] was skipped
+Group [DrawBufferModeATI] was skipped
+Group [FramebufferFetchNoncoherent] was skipped
