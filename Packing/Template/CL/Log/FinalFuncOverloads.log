@@ -10,65 +10,17 @@
  ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| ProgramCallback	| IntPtr	|
 
 # clCloneKernel
- cl_kernel	| cl_kernel	| array of ErrorCode	|
  cl_kernel	| cl_kernel	| var ErrorCode	|
- cl_kernel	| cl_kernel	| IntPtr	|
 
 # clCompileProgram
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| array of cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| array of cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| array of cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| var cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| var cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| var cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| IntPtr	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| IntPtr	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| string	| UInt32	| IntPtr	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| array of cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| array of cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| array of cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| var cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| var cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| var cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| IntPtr	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| IntPtr	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| IntPtr	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| array of cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| array of cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| array of cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
  ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| var cl_program	| array of string	| ProgramCallback	| IntPtr	|
  ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| var cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| var cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| IntPtr	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| IntPtr	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| IntPtr	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| array of cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| array of cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| array of cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
+ ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| var cl_program	| var IntPtr	| ProgramCallback	| IntPtr	|
+ ErrorCode	| cl_program	| UInt32	| var cl_device_id	| string	| UInt32	| IntPtr	| pointer	| ProgramCallback	| IntPtr	|
  ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| var cl_program	| array of string	| ProgramCallback	| IntPtr	|
  ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| var cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| var cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| IntPtr	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| IntPtr	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| IntPtr	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| array of cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| array of cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| array of cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| var cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| var cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| var cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| IntPtr	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| IntPtr	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| string	| UInt32	| IntPtr	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| array of cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| array of cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| array of cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| var cl_program	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| var cl_program	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| var cl_program	| IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of string	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of IntPtr	| ProgramCallback	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	| ProgramCallback	| IntPtr	|
+ ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| var cl_program	| var IntPtr	| ProgramCallback	| IntPtr	|
+ ErrorCode	| cl_program	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| IntPtr	| pointer	| ProgramCallback	| IntPtr	|
 
 # clCreateBuffer
  cl_mem	| cl_context	| MemFlags	| UIntPtr	| array of T	| var ErrorCode	|
@@ -127,21 +79,12 @@
  cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clCreateKernel
- cl_kernel	| cl_program	| string	| array of ErrorCode	|
  cl_kernel	| cl_program	| string	| var ErrorCode	|
- cl_kernel	| cl_program	| string	| IntPtr	|
- cl_kernel	| cl_program	| IntPtr	| array of ErrorCode	|
  cl_kernel	| cl_program	| IntPtr	| var ErrorCode	|
- cl_kernel	| cl_program	| IntPtr	| IntPtr	|
 
 # clCreateKernelsInProgram
- ErrorCode	| cl_program	| UInt32	| array of cl_kernel	| array of UInt32	|
- ErrorCode	| cl_program	| UInt32	| array of cl_kernel	| var UInt32	|
- ErrorCode	| cl_program	| UInt32	| array of cl_kernel	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| var cl_kernel	| array of UInt32	|
  ErrorCode	| cl_program	| UInt32	| var cl_kernel	| var UInt32	|
  ErrorCode	| cl_program	| UInt32	| var cl_kernel	| IntPtr	|
- ErrorCode	| cl_program	| UInt32	| IntPtr	| array of UInt32	|
  ErrorCode	| cl_program	| UInt32	| IntPtr	| var UInt32	|
  ErrorCode	| cl_program	| UInt32	| IntPtr	| IntPtr	|
 
@@ -205,21 +148,16 @@
  ErrorCode	| cl_device_id	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateUserEvent
- cl_event	| cl_context	| array of ErrorCode	|
  cl_event	| cl_context	| var ErrorCode	|
- cl_event	| cl_context	| IntPtr	|
 
 # clEnqueueBarrier
  ErrorCode	| cl_command_queue	|
 
 # clEnqueueBarrierWithWaitList
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_event	| var cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| var cl_event	| var cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| IntPtr	|
 
@@ -345,15 +283,9 @@
  ErrorCode	| cl_command_queue	| IntPtr	|
 
 # clEnqueueMarkerWithWaitList
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueMigrateMemObjects
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| MemMigrationFlags	| UInt32	| array of cl_event	| var cl_event	|
@@ -376,85 +308,20 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueNativeKernel
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| array of IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| var IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| array of cl_mem	| pointer	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| array of IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| var cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| var cl_event	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| var IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| var cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| var cl_event	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| var cl_mem	| pointer	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| array of IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| var cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| var cl_event	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var IntPtr	| UInt32	| IntPtr	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| var cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| var cl_event	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| EnqueueNativeKernelCallback	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| pointer	| UInt32	| IntPtr	| IntPtr	|
 
@@ -735,14 +602,24 @@
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetEventInfo
- ErrorCode	| cl_event	| EventInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
- ErrorCode	| cl_event	| EventInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_event	| EventInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var cl_command_queue	| var UIntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var cl_command_queue	| IntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var cl_context	| var UIntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var cl_context	| IntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var CommandType	| var UIntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var CommandType	| IntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var CommandExecutionStatus	| var UIntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var CommandExecutionStatus	| IntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var UInt32	| var UIntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| var UInt32	| IntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_event	| EventInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetEventProfilingInfo
- ErrorCode	| cl_event	| ProfilingInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
- ErrorCode	| cl_event	| ProfilingInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_event	| ProfilingInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_event	| ProfilingInfo	| UIntPtr	| var UInt64	| var UIntPtr	|
+ ErrorCode	| cl_event	| ProfilingInfo	| UIntPtr	| var UInt64	| IntPtr	|
+ ErrorCode	| cl_event	| ProfilingInfo	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_event	| ProfilingInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetExtensionFunctionAddress
  IntPtr	| string	|
@@ -767,24 +644,44 @@
  ErrorCode	| cl_mem	| ImageInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetKernelArgInfo
- ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| var KernelArgAddressQualifier	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| var KernelArgAddressQualifier	| IntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| var KernelArgAccessQualifier	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| var KernelArgAccessQualifier	| IntPtr	|
  ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
  ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| var KernelArgTypeQualifier	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| var KernelArgTypeQualifier	| IntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| KernelArgInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetKernelInfo
- ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
  ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
  ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| var UInt32	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| var UInt32	| IntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| var cl_context	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| var cl_context	| IntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| var cl_program	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| var cl_program	| IntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| KernelInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetKernelSubGroupInfo
- ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| IntPtr	| UIntPtr	| IntPtr	| array of UIntPtr	|
- ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| IntPtr	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| IntPtr	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| var UIntPtr	| UIntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| var UIntPtr	| UIntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| pointer	| UIntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| pointer	| UIntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| pointer	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| pointer	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetKernelWorkGroupInfo
- ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
- ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| var UInt64	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| var UInt64	| IntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_kernel	| cl_device_id	| KernelWorkGroupInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetMemObjectInfo
  ErrorCode	| cl_mem	| MemInfo	| UIntPtr	| var MemObjectType	| var UIntPtr	|
@@ -825,14 +722,34 @@
  ErrorCode	| cl_platform_id	| PlatformInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetProgramBuildInfo
- ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| BuildStatus	| var UIntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| BuildStatus	| IntPtr	|
  ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
  ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| ProgramBinaryType	| var UIntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| ProgramBinaryType	| IntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetProgramInfo
- ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var UInt32	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var UInt32	| IntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var cl_context	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var cl_context	| IntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var cl_device_id	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var cl_device_id	| IntPtr	|
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var Byte	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var Byte	| IntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var Bool	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var Bool	| IntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| pointer	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetSamplerInfo
  ErrorCode	| cl_sampler	| SamplerInfo	| UIntPtr	| var UInt32	| var UIntPtr	|
@@ -860,60 +777,24 @@
  ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| IntPtr	| IntPtr	|
 
 # clLinkProgram
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| array of cl_device_id	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| var cl_device_id	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| IntPtr	| string	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| array of cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| var cl_program	| ProgramCallback	| IntPtr	| IntPtr	|
- cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| var ErrorCode	|
- cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| UInt32	| IntPtr	| ProgramCallback	| IntPtr	| IntPtr	|
 
 # clReleaseCommandQueue
  ErrorCode	| cl_command_queue	|
@@ -972,16 +853,19 @@
  ErrorCode	| cl_context	| cl_device_id	| cl_command_queue	|
 
 # clSetEventCallback
- ErrorCode	| cl_event	| Int32	| EventCallback	| IntPtr	|
+ ErrorCode	| cl_event	| CommandExecutionStatus	| EventCallback	| IntPtr	|
 
 # clSetKernelArg
- ErrorCode	| cl_kernel	| UInt32	| UIntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| UInt32	| UIntPtr	| var T	|
+ ErrorCode	| cl_kernel	| UInt32	| UIntPtr	| pointer	|
 
 # clSetKernelArgSVMPointer
  ErrorCode	| cl_kernel	| UInt32	| IntPtr	|
 
 # clSetKernelExecInfo
- ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| var IntPtr	|
+ ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| Bool	|
+ ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| pointer	|
 
 # clSetMemObjectDestructorCallback
  ErrorCode	| cl_mem	| MemObjectDestructorCallback	| IntPtr	|

@@ -723,7 +723,7 @@ type
           Otp(_ObjectToString(par));
         exit;
       end;
-      if all_overloads.Count>15 then Otp($'WARNING: Too many ({all_overloads.Count}) overloads of func [{name}]');
+      if all_overloads.Count>18 then Otp($'WARNING: Too many ({all_overloads.Count}) overloads of func [{name}]');
       
       for var par_i := 1 to org_par.Length-1 do
         if all_overloads.Any(ovr->ovr[par_i].tname.ToLower=org_par[par_i].name.ToLower) then
@@ -736,7 +736,7 @@ type
         log.WriteLine($'Func [{name}] had api [{api}], which isn''t start of it''s name');
       prev_func_names += l_name.ToLower;
       var l_name_esc := l_name;
-      if l_name.ToLower in unallowed_words then l_name_esc := '&'+l_name_esc;
+      if l_name_esc.ToLower in unallowed_words then l_name_esc := '&'+l_name_esc;
       
       {$endregion MiscInit}
       

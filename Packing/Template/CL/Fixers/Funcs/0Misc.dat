@@ -1,17 +1,6 @@
 
 
 
-# clSetUserEventStatus
-!repl_par_t
-Int32 = CommandExecutionStatus
 
-
-
-# clEnqueueNDRangeKernel
-!possible_par_types
- *	| *	| *	| *	| *					| *					| *					| *	| *	| -array of cl_event	|
-!limit_ovrs
- *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *						|
- *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *						|
 
 
