@@ -122,16 +122,14 @@ type
       loop All.Capacity do All += new Group(br);
     end;
     
-    public static procedure FixCLNames;
-    begin
-      foreach var gr in All do
-        if gr.name.StartsWith('cl_') then
-          gr.name := gr.name.ToWords('_').Skip(1).Select(w->
-          begin
-            w[1] := w[1].ToUpper;
-            Result := w;
-          end).JoinToString('');
-    end;
+    public static procedure FixCL_Names :=
+    foreach var gr in All do
+      if gr.name.StartsWith('cl_') then
+        gr.name := gr.name.ToWords('_').Skip(1).Select(w->
+        begin
+          w[1] := w[1].ToUpper;
+          Result := w;
+        end).JoinToString('');
     
     public used := false;
     public explicit_existence := false;
@@ -442,6 +440,8 @@ type
   
   {$region Func}
   
+  {$region Help types}
+  
   FuncOrgParam = sealed class
     public name, t: string;
     public readonly: boolean;
@@ -558,6 +558,8 @@ type
     self.par := par;
     
   end;
+  
+  {$endregion Help types}
   
   Func = sealed class(INamed)
     
@@ -685,6 +687,15 @@ type
         end;
         
       end);
+    end;
+    
+    private procedure FixCL_ErrCodeRet;
+    begin
+      if org_par.Length=1 then exit;
+      if org_par[org_par.Length-1].GetTName <> 'ErrorCode' then exit;
+      InitPossibleParTypes;
+      possible_par_types[org_par.Length-1].RemoveAt(2);
+      possible_par_types[org_par.Length-1].RemoveAt(0);
     end;
     
     {$endregion PPT}
@@ -1373,6 +1384,14 @@ type
       
     end;
     
+    public static procedure FixCL_ErrCodeRet :=
+    foreach var lst in Feature.ByApi.Values do
+      foreach var f in lst do
+      begin
+        foreach var fnc in f.add do fnc.FixCL_ErrCodeRet;
+        foreach var fnc in f.rem do fnc.FixCL_ErrCodeRet;
+      end;
+    
     private procedure MarkUsed;
     begin
       foreach var fnc in add do fnc.MarkUsed;
@@ -1485,6 +1504,11 @@ type
       end;
       
     end;
+    
+    public static procedure FixCL_ErrCodeRet :=
+    foreach var ext in All do
+      foreach var f in ext.add do
+        f.FixCL_ErrCodeRet;
     
     private procedure MarkUsed;
     begin

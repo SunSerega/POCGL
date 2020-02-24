@@ -274,62 +274,17 @@
     private static function _z_CreateImage2D_ovr_0_anh000100000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImage2D';
     private static z_CreateImage2D_ovr_0_anh000100000 := _z_CreateImage2D_ovr_0_anh000100000;
-    private static function _z_CreateImage2D_ovr_0_anh000000001(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage2D';
-    private static z_CreateImage2D_ovr_0_anh000000001 := _z_CreateImage2D_ovr_0_anh000000001;
-    private static function _z_CreateImage2D_ovr_0_anh000100001(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage2D';
-    private static z_CreateImage2D_ovr_0_anh000100001 := _z_CreateImage2D_ovr_0_anh000100001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if image_format<>nil then
-      if errcode_ret<>nil then
-        z_CreateImage2D_ovr_0(context, flags, image_format[0], image_width, image_height, image_row_pitch, host_ptr, errcode_ret[0]) else
-        z_CreateImage2D_ovr_0_anh000000001(context, flags, image_format[0], image_width, image_height, image_row_pitch, host_ptr, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateImage2D_ovr_0_anh000100000(context, flags, IntPtr.Zero, image_width, image_height, image_row_pitch, host_ptr, errcode_ret[0]) else
-        z_CreateImage2D_ovr_0_anh000100001(context, flags, IntPtr.Zero, image_width, image_height, image_row_pitch, host_ptr, IntPtr.Zero);
-    private static function _z_CreateImage2D_ovr_1_anh000100000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateImage2D';
-    private static z_CreateImage2D_ovr_1_anh000100000 := _z_CreateImage2D_ovr_1_anh000100000;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if image_format<>nil then
       z_CreateImage2D_ovr_0(context, flags, image_format[0], image_width, image_height, image_row_pitch, host_ptr, errcode_ret) else
       z_CreateImage2D_ovr_0_anh000100000(context, flags, IntPtr.Zero, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
-    private static function _z_CreateImage2D_ovr_2(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage2D';
-    public static z_CreateImage2D_ovr_2 := _z_CreateImage2D_ovr_2;
-    private static function _z_CreateImage2D_ovr_2_anh000100000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage2D';
-    private static z_CreateImage2D_ovr_2_anh000100000 := _z_CreateImage2D_ovr_2_anh000100000;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    if image_format<>nil then
-      z_CreateImage2D_ovr_2(context, flags, image_format[0], image_width, image_height, image_row_pitch, host_ptr, errcode_ret) else
-      z_CreateImage2D_ovr_2_anh000100000(context, flags, IntPtr.Zero, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateImage2D_ovr_0(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, errcode_ret[0]) else
-      z_CreateImage2D_ovr_0_anh000000001(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImage2D_ovr_0(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateImage2D_ovr_2(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
-    private static function _z_CreateImage2D_ovr_6(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateImage2D_ovr_2(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImage2D';
-    public static z_CreateImage2D_ovr_6 := _z_CreateImage2D_ovr_6;
-    private static function _z_CreateImage2D_ovr_6_anh000000001(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage2D';
-    private static z_CreateImage2D_ovr_6_anh000000001 := _z_CreateImage2D_ovr_6_anh000000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateImage2D_ovr_6(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, errcode_ret[0]) else
-      z_CreateImage2D_ovr_6_anh000000001(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, IntPtr.Zero);
+    public static z_CreateImage2D_ovr_2 := _z_CreateImage2D_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateImage2D_ovr_6(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
-    private static function _z_CreateImage2D_ovr_8(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage2D';
-    public static z_CreateImage2D_ovr_8 := _z_CreateImage2D_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateImage2D_ovr_8(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
+    z_CreateImage2D_ovr_2(context, flags, image_format, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
     
     // added in cl1.0
     private static function _z_CreateImage3D_ovr_0(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -338,62 +293,17 @@
     private static function _z_CreateImage3D_ovr_0_anh00010000000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImage3D';
     private static z_CreateImage3D_ovr_0_anh00010000000 := _z_CreateImage3D_ovr_0_anh00010000000;
-    private static function _z_CreateImage3D_ovr_0_anh00000000001(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage3D';
-    private static z_CreateImage3D_ovr_0_anh00000000001 := _z_CreateImage3D_ovr_0_anh00000000001;
-    private static function _z_CreateImage3D_ovr_0_anh00010000001(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage3D';
-    private static z_CreateImage3D_ovr_0_anh00010000001 := _z_CreateImage3D_ovr_0_anh00010000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if image_format<>nil then
-      if errcode_ret<>nil then
-        z_CreateImage3D_ovr_0(context, flags, image_format[0], image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret[0]) else
-        z_CreateImage3D_ovr_0_anh00000000001(context, flags, image_format[0], image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateImage3D_ovr_0_anh00010000000(context, flags, IntPtr.Zero, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret[0]) else
-        z_CreateImage3D_ovr_0_anh00010000001(context, flags, IntPtr.Zero, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, IntPtr.Zero);
-    private static function _z_CreateImage3D_ovr_1_anh00010000000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateImage3D';
-    private static z_CreateImage3D_ovr_1_anh00010000000 := _z_CreateImage3D_ovr_1_anh00010000000;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if image_format<>nil then
       z_CreateImage3D_ovr_0(context, flags, image_format[0], image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret) else
       z_CreateImage3D_ovr_0_anh00010000000(context, flags, IntPtr.Zero, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
-    private static function _z_CreateImage3D_ovr_2(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage3D';
-    public static z_CreateImage3D_ovr_2 := _z_CreateImage3D_ovr_2;
-    private static function _z_CreateImage3D_ovr_2_anh00010000000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage3D';
-    private static z_CreateImage3D_ovr_2_anh00010000000 := _z_CreateImage3D_ovr_2_anh00010000000;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    if image_format<>nil then
-      z_CreateImage3D_ovr_2(context, flags, image_format[0], image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret) else
-      z_CreateImage3D_ovr_2_anh00010000000(context, flags, IntPtr.Zero, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateImage3D_ovr_0(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret[0]) else
-      z_CreateImage3D_ovr_0_anh00000000001(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImage3D_ovr_0(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateImage3D_ovr_2(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
-    private static function _z_CreateImage3D_ovr_6(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateImage3D_ovr_2(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImage3D';
-    public static z_CreateImage3D_ovr_6 := _z_CreateImage3D_ovr_6;
-    private static function _z_CreateImage3D_ovr_6_anh00000000001(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage3D';
-    private static z_CreateImage3D_ovr_6_anh00000000001 := _z_CreateImage3D_ovr_6_anh00000000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateImage3D_ovr_6(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret[0]) else
-      z_CreateImage3D_ovr_6_anh00000000001(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, IntPtr.Zero);
+    public static z_CreateImage3D_ovr_2 := _z_CreateImage3D_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateImage3D_ovr_6(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
-    private static function _z_CreateImage3D_ovr_8(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateImage3D';
-    public static z_CreateImage3D_ovr_8 := _z_CreateImage3D_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateImage3D_ovr_8(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
+    z_CreateImage3D_ovr_2(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
     
     // added in cl1.0
     private static function _z_CreateKernel_ovr_0(&program: cl_program; kernel_name: IntPtr; var errcode_ret: ErrorCode): cl_kernel;
@@ -587,20 +497,8 @@
     private static function _z_CreateProgramWithIL_ovr_0(context: cl_context; il: IntPtr; length: UIntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithIL';
     public static z_CreateProgramWithIL_ovr_0 := _z_CreateProgramWithIL_ovr_0;
-    private static function _z_CreateProgramWithIL_ovr_0_anh00001(context: cl_context; il: IntPtr; length: UIntPtr; errcode_ret: IntPtr): cl_program;
-    external 'opencl.dll' name 'clCreateProgramWithIL';
-    private static z_CreateProgramWithIL_ovr_0_anh00001 := _z_CreateProgramWithIL_ovr_0_anh00001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithIL(context: cl_context; il: IntPtr; length: UIntPtr; errcode_ret: array of ErrorCode): cl_program :=
-    if errcode_ret<>nil then
-      z_CreateProgramWithIL_ovr_0(context, il, length, errcode_ret[0]) else
-      z_CreateProgramWithIL_ovr_0_anh00001(context, il, length, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithIL(context: cl_context; il: IntPtr; length: UIntPtr; var errcode_ret: ErrorCode): cl_program :=
     z_CreateProgramWithIL_ovr_0(context, il, length, errcode_ret);
-    private static function _z_CreateProgramWithIL_ovr_2(context: cl_context; il: IntPtr; length: UIntPtr; errcode_ret: IntPtr): cl_program;
-    external 'opencl.dll' name 'clCreateProgramWithIL';
-    public static z_CreateProgramWithIL_ovr_2 := _z_CreateProgramWithIL_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithIL(context: cl_context; il: IntPtr; length: UIntPtr; errcode_ret: IntPtr): cl_program :=
-    z_CreateProgramWithIL_ovr_2(context, il, length, errcode_ret);
     
     // added in cl1.0
     private static function _z_CreateProgramWithSource_ovr_0(context: cl_context; count: UInt32; var strings: IntPtr; var lengths: UIntPtr; var errcode_ret: ErrorCode): cl_program;
@@ -5465,62 +5363,17 @@
     private static function _z_CreateFromD3D10BufferKHR_ovr_0_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
     private static z_CreateFromD3D10BufferKHR_ovr_0_anh00010 := _z_CreateFromD3D10BufferKHR_ovr_0_anh00010;
-    private static function _z_CreateFromD3D10BufferKHR_ovr_0_anh00001(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    private static z_CreateFromD3D10BufferKHR_ovr_0_anh00001 := _z_CreateFromD3D10BufferKHR_ovr_0_anh00001;
-    private static function _z_CreateFromD3D10BufferKHR_ovr_0_anh00011(context: cl_context; flags: MemFlags; resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    private static z_CreateFromD3D10BufferKHR_ovr_0_anh00011 := _z_CreateFromD3D10BufferKHR_ovr_0_anh00011;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if resource<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromD3D10BufferKHR_ovr_0(context, flags, resource[0], errcode_ret[0]) else
-        z_CreateFromD3D10BufferKHR_ovr_0_anh00001(context, flags, resource[0], IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromD3D10BufferKHR_ovr_0_anh00010(context, flags, IntPtr.Zero, errcode_ret[0]) else
-        z_CreateFromD3D10BufferKHR_ovr_0_anh00011(context, flags, IntPtr.Zero, IntPtr.Zero);
-    private static function _z_CreateFromD3D10BufferKHR_ovr_1_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    private static z_CreateFromD3D10BufferKHR_ovr_1_anh00010 := _z_CreateFromD3D10BufferKHR_ovr_1_anh00010;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if resource<>nil then
       z_CreateFromD3D10BufferKHR_ovr_0(context, flags, resource[0], errcode_ret) else
       z_CreateFromD3D10BufferKHR_ovr_0_anh00010(context, flags, IntPtr.Zero, errcode_ret);
-    private static function _z_CreateFromD3D10BufferKHR_ovr_2(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    public static z_CreateFromD3D10BufferKHR_ovr_2 := _z_CreateFromD3D10BufferKHR_ovr_2;
-    private static function _z_CreateFromD3D10BufferKHR_ovr_2_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    private static z_CreateFromD3D10BufferKHR_ovr_2_anh00010 := _z_CreateFromD3D10BufferKHR_ovr_2_anh00010;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; errcode_ret: IntPtr): cl_mem :=
-    if resource<>nil then
-      z_CreateFromD3D10BufferKHR_ovr_2(context, flags, resource[0], errcode_ret) else
-      z_CreateFromD3D10BufferKHR_ovr_2_anh00010(context, flags, IntPtr.Zero, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D10BufferKHR_ovr_0(context, flags, resource, errcode_ret[0]) else
-      z_CreateFromD3D10BufferKHR_ovr_0_anh00001(context, flags, resource, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromD3D10BufferKHR_ovr_0(context, flags, resource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D10BufferKHR_ovr_2(context, flags, resource, errcode_ret);
-    private static function _z_CreateFromD3D10BufferKHR_ovr_6(context: cl_context; flags: MemFlags; resource: pointer; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromD3D10BufferKHR_ovr_2(context: cl_context; flags: MemFlags; resource: pointer; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    public static z_CreateFromD3D10BufferKHR_ovr_6 := _z_CreateFromD3D10BufferKHR_ovr_6;
-    private static function _z_CreateFromD3D10BufferKHR_ovr_6_anh00001(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    private static z_CreateFromD3D10BufferKHR_ovr_6_anh00001 := _z_CreateFromD3D10BufferKHR_ovr_6_anh00001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D10BufferKHR_ovr_6(context, flags, resource, errcode_ret[0]) else
-      z_CreateFromD3D10BufferKHR_ovr_6_anh00001(context, flags, resource, IntPtr.Zero);
+    public static z_CreateFromD3D10BufferKHR_ovr_2 := _z_CreateFromD3D10BufferKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; resource: pointer; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromD3D10BufferKHR_ovr_6(context, flags, resource, errcode_ret);
-    private static function _z_CreateFromD3D10BufferKHR_ovr_8(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
-    public static z_CreateFromD3D10BufferKHR_ovr_8 := _z_CreateFromD3D10BufferKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D10BufferKHR_ovr_8(context, flags, resource, errcode_ret);
+    z_CreateFromD3D10BufferKHR_ovr_2(context, flags, resource, errcode_ret);
     
     private static function _z_CreateFromD3D10Texture2DKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
@@ -5528,62 +5381,17 @@
     private static function _z_CreateFromD3D10Texture2DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
     private static z_CreateFromD3D10Texture2DKHR_ovr_0_anh000100 := _z_CreateFromD3D10Texture2DKHR_ovr_0_anh000100;
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_0_anh000001(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    private static z_CreateFromD3D10Texture2DKHR_ovr_0_anh000001 := _z_CreateFromD3D10Texture2DKHR_ovr_0_anh000001;
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_0_anh000101(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    private static z_CreateFromD3D10Texture2DKHR_ovr_0_anh000101 := _z_CreateFromD3D10Texture2DKHR_ovr_0_anh000101;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if resource<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromD3D10Texture2DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret[0]) else
-        z_CreateFromD3D10Texture2DKHR_ovr_0_anh000001(context, flags, resource[0], subresource, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromD3D10Texture2DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret[0]) else
-        z_CreateFromD3D10Texture2DKHR_ovr_0_anh000101(context, flags, IntPtr.Zero, subresource, IntPtr.Zero);
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_1_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    private static z_CreateFromD3D10Texture2DKHR_ovr_1_anh000100 := _z_CreateFromD3D10Texture2DKHR_ovr_1_anh000100;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     if resource<>nil then
       z_CreateFromD3D10Texture2DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D10Texture2DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_2(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    public static z_CreateFromD3D10Texture2DKHR_ovr_2 := _z_CreateFromD3D10Texture2DKHR_ovr_2;
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_2_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    private static z_CreateFromD3D10Texture2DKHR_ovr_2_anh000100 := _z_CreateFromD3D10Texture2DKHR_ovr_2_anh000100;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    if resource<>nil then
-      z_CreateFromD3D10Texture2DKHR_ovr_2(context, flags, resource[0], subresource, errcode_ret) else
-      z_CreateFromD3D10Texture2DKHR_ovr_2_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D10Texture2DKHR_ovr_0(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D10Texture2DKHR_ovr_0_anh000001(context, flags, resource, subresource, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromD3D10Texture2DKHR_ovr_0(context, flags, resource, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D10Texture2DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_6(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromD3D10Texture2DKHR_ovr_2(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    public static z_CreateFromD3D10Texture2DKHR_ovr_6 := _z_CreateFromD3D10Texture2DKHR_ovr_6;
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_6_anh000001(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    private static z_CreateFromD3D10Texture2DKHR_ovr_6_anh000001 := _z_CreateFromD3D10Texture2DKHR_ovr_6_anh000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D10Texture2DKHR_ovr_6(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D10Texture2DKHR_ovr_6_anh000001(context, flags, resource, subresource, IntPtr.Zero);
+    public static z_CreateFromD3D10Texture2DKHR_ovr_2 := _z_CreateFromD3D10Texture2DKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromD3D10Texture2DKHR_ovr_6(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D10Texture2DKHR_ovr_8(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
-    public static z_CreateFromD3D10Texture2DKHR_ovr_8 := _z_CreateFromD3D10Texture2DKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D10Texture2DKHR_ovr_8(context, flags, resource, subresource, errcode_ret);
+    z_CreateFromD3D10Texture2DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
     
     private static function _z_CreateFromD3D10Texture3DKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
@@ -5591,62 +5399,17 @@
     private static function _z_CreateFromD3D10Texture3DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
     private static z_CreateFromD3D10Texture3DKHR_ovr_0_anh000100 := _z_CreateFromD3D10Texture3DKHR_ovr_0_anh000100;
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_0_anh000001(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    private static z_CreateFromD3D10Texture3DKHR_ovr_0_anh000001 := _z_CreateFromD3D10Texture3DKHR_ovr_0_anh000001;
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_0_anh000101(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    private static z_CreateFromD3D10Texture3DKHR_ovr_0_anh000101 := _z_CreateFromD3D10Texture3DKHR_ovr_0_anh000101;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if resource<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromD3D10Texture3DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret[0]) else
-        z_CreateFromD3D10Texture3DKHR_ovr_0_anh000001(context, flags, resource[0], subresource, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromD3D10Texture3DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret[0]) else
-        z_CreateFromD3D10Texture3DKHR_ovr_0_anh000101(context, flags, IntPtr.Zero, subresource, IntPtr.Zero);
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_1_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    private static z_CreateFromD3D10Texture3DKHR_ovr_1_anh000100 := _z_CreateFromD3D10Texture3DKHR_ovr_1_anh000100;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     if resource<>nil then
       z_CreateFromD3D10Texture3DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D10Texture3DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_2(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    public static z_CreateFromD3D10Texture3DKHR_ovr_2 := _z_CreateFromD3D10Texture3DKHR_ovr_2;
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_2_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    private static z_CreateFromD3D10Texture3DKHR_ovr_2_anh000100 := _z_CreateFromD3D10Texture3DKHR_ovr_2_anh000100;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    if resource<>nil then
-      z_CreateFromD3D10Texture3DKHR_ovr_2(context, flags, resource[0], subresource, errcode_ret) else
-      z_CreateFromD3D10Texture3DKHR_ovr_2_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D10Texture3DKHR_ovr_0(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D10Texture3DKHR_ovr_0_anh000001(context, flags, resource, subresource, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromD3D10Texture3DKHR_ovr_0(context, flags, resource, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D10Texture3DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_6(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromD3D10Texture3DKHR_ovr_2(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    public static z_CreateFromD3D10Texture3DKHR_ovr_6 := _z_CreateFromD3D10Texture3DKHR_ovr_6;
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_6_anh000001(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    private static z_CreateFromD3D10Texture3DKHR_ovr_6_anh000001 := _z_CreateFromD3D10Texture3DKHR_ovr_6_anh000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D10Texture3DKHR_ovr_6(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D10Texture3DKHR_ovr_6_anh000001(context, flags, resource, subresource, IntPtr.Zero);
+    public static z_CreateFromD3D10Texture3DKHR_ovr_2 := _z_CreateFromD3D10Texture3DKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromD3D10Texture3DKHR_ovr_6(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D10Texture3DKHR_ovr_8(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
-    public static z_CreateFromD3D10Texture3DKHR_ovr_8 := _z_CreateFromD3D10Texture3DKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D10Texture3DKHR_ovr_8(context, flags, resource, subresource, errcode_ret);
+    z_CreateFromD3D10Texture3DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
     
     private static function _z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
@@ -6195,62 +5958,17 @@
     private static function _z_CreateFromD3D11BufferKHR_ovr_0_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
     private static z_CreateFromD3D11BufferKHR_ovr_0_anh00010 := _z_CreateFromD3D11BufferKHR_ovr_0_anh00010;
-    private static function _z_CreateFromD3D11BufferKHR_ovr_0_anh00001(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    private static z_CreateFromD3D11BufferKHR_ovr_0_anh00001 := _z_CreateFromD3D11BufferKHR_ovr_0_anh00001;
-    private static function _z_CreateFromD3D11BufferKHR_ovr_0_anh00011(context: cl_context; flags: MemFlags; resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    private static z_CreateFromD3D11BufferKHR_ovr_0_anh00011 := _z_CreateFromD3D11BufferKHR_ovr_0_anh00011;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if resource<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromD3D11BufferKHR_ovr_0(context, flags, resource[0], errcode_ret[0]) else
-        z_CreateFromD3D11BufferKHR_ovr_0_anh00001(context, flags, resource[0], IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromD3D11BufferKHR_ovr_0_anh00010(context, flags, IntPtr.Zero, errcode_ret[0]) else
-        z_CreateFromD3D11BufferKHR_ovr_0_anh00011(context, flags, IntPtr.Zero, IntPtr.Zero);
-    private static function _z_CreateFromD3D11BufferKHR_ovr_1_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    private static z_CreateFromD3D11BufferKHR_ovr_1_anh00010 := _z_CreateFromD3D11BufferKHR_ovr_1_anh00010;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if resource<>nil then
       z_CreateFromD3D11BufferKHR_ovr_0(context, flags, resource[0], errcode_ret) else
       z_CreateFromD3D11BufferKHR_ovr_0_anh00010(context, flags, IntPtr.Zero, errcode_ret);
-    private static function _z_CreateFromD3D11BufferKHR_ovr_2(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    public static z_CreateFromD3D11BufferKHR_ovr_2 := _z_CreateFromD3D11BufferKHR_ovr_2;
-    private static function _z_CreateFromD3D11BufferKHR_ovr_2_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    private static z_CreateFromD3D11BufferKHR_ovr_2_anh00010 := _z_CreateFromD3D11BufferKHR_ovr_2_anh00010;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; errcode_ret: IntPtr): cl_mem :=
-    if resource<>nil then
-      z_CreateFromD3D11BufferKHR_ovr_2(context, flags, resource[0], errcode_ret) else
-      z_CreateFromD3D11BufferKHR_ovr_2_anh00010(context, flags, IntPtr.Zero, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D11BufferKHR_ovr_0(context, flags, resource, errcode_ret[0]) else
-      z_CreateFromD3D11BufferKHR_ovr_0_anh00001(context, flags, resource, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromD3D11BufferKHR_ovr_0(context, flags, resource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D11BufferKHR_ovr_2(context, flags, resource, errcode_ret);
-    private static function _z_CreateFromD3D11BufferKHR_ovr_6(context: cl_context; flags: MemFlags; resource: pointer; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromD3D11BufferKHR_ovr_2(context: cl_context; flags: MemFlags; resource: pointer; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    public static z_CreateFromD3D11BufferKHR_ovr_6 := _z_CreateFromD3D11BufferKHR_ovr_6;
-    private static function _z_CreateFromD3D11BufferKHR_ovr_6_anh00001(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    private static z_CreateFromD3D11BufferKHR_ovr_6_anh00001 := _z_CreateFromD3D11BufferKHR_ovr_6_anh00001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D11BufferKHR_ovr_6(context, flags, resource, errcode_ret[0]) else
-      z_CreateFromD3D11BufferKHR_ovr_6_anh00001(context, flags, resource, IntPtr.Zero);
+    public static z_CreateFromD3D11BufferKHR_ovr_2 := _z_CreateFromD3D11BufferKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; resource: pointer; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromD3D11BufferKHR_ovr_6(context, flags, resource, errcode_ret);
-    private static function _z_CreateFromD3D11BufferKHR_ovr_8(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
-    public static z_CreateFromD3D11BufferKHR_ovr_8 := _z_CreateFromD3D11BufferKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; resource: pointer; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D11BufferKHR_ovr_8(context, flags, resource, errcode_ret);
+    z_CreateFromD3D11BufferKHR_ovr_2(context, flags, resource, errcode_ret);
     
     private static function _z_CreateFromD3D11Texture2DKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
@@ -6258,62 +5976,17 @@
     private static function _z_CreateFromD3D11Texture2DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
     private static z_CreateFromD3D11Texture2DKHR_ovr_0_anh000100 := _z_CreateFromD3D11Texture2DKHR_ovr_0_anh000100;
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_0_anh000001(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    private static z_CreateFromD3D11Texture2DKHR_ovr_0_anh000001 := _z_CreateFromD3D11Texture2DKHR_ovr_0_anh000001;
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_0_anh000101(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    private static z_CreateFromD3D11Texture2DKHR_ovr_0_anh000101 := _z_CreateFromD3D11Texture2DKHR_ovr_0_anh000101;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if resource<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromD3D11Texture2DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret[0]) else
-        z_CreateFromD3D11Texture2DKHR_ovr_0_anh000001(context, flags, resource[0], subresource, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromD3D11Texture2DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret[0]) else
-        z_CreateFromD3D11Texture2DKHR_ovr_0_anh000101(context, flags, IntPtr.Zero, subresource, IntPtr.Zero);
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_1_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    private static z_CreateFromD3D11Texture2DKHR_ovr_1_anh000100 := _z_CreateFromD3D11Texture2DKHR_ovr_1_anh000100;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     if resource<>nil then
       z_CreateFromD3D11Texture2DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D11Texture2DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_2(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    public static z_CreateFromD3D11Texture2DKHR_ovr_2 := _z_CreateFromD3D11Texture2DKHR_ovr_2;
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_2_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    private static z_CreateFromD3D11Texture2DKHR_ovr_2_anh000100 := _z_CreateFromD3D11Texture2DKHR_ovr_2_anh000100;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    if resource<>nil then
-      z_CreateFromD3D11Texture2DKHR_ovr_2(context, flags, resource[0], subresource, errcode_ret) else
-      z_CreateFromD3D11Texture2DKHR_ovr_2_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D11Texture2DKHR_ovr_0(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D11Texture2DKHR_ovr_0_anh000001(context, flags, resource, subresource, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromD3D11Texture2DKHR_ovr_0(context, flags, resource, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D11Texture2DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_6(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromD3D11Texture2DKHR_ovr_2(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    public static z_CreateFromD3D11Texture2DKHR_ovr_6 := _z_CreateFromD3D11Texture2DKHR_ovr_6;
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_6_anh000001(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    private static z_CreateFromD3D11Texture2DKHR_ovr_6_anh000001 := _z_CreateFromD3D11Texture2DKHR_ovr_6_anh000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D11Texture2DKHR_ovr_6(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D11Texture2DKHR_ovr_6_anh000001(context, flags, resource, subresource, IntPtr.Zero);
+    public static z_CreateFromD3D11Texture2DKHR_ovr_2 := _z_CreateFromD3D11Texture2DKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromD3D11Texture2DKHR_ovr_6(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D11Texture2DKHR_ovr_8(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
-    public static z_CreateFromD3D11Texture2DKHR_ovr_8 := _z_CreateFromD3D11Texture2DKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D11Texture2DKHR_ovr_8(context, flags, resource, subresource, errcode_ret);
+    z_CreateFromD3D11Texture2DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
     
     private static function _z_CreateFromD3D11Texture3DKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
@@ -6321,62 +5994,17 @@
     private static function _z_CreateFromD3D11Texture3DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
     private static z_CreateFromD3D11Texture3DKHR_ovr_0_anh000100 := _z_CreateFromD3D11Texture3DKHR_ovr_0_anh000100;
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_0_anh000001(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    private static z_CreateFromD3D11Texture3DKHR_ovr_0_anh000001 := _z_CreateFromD3D11Texture3DKHR_ovr_0_anh000001;
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_0_anh000101(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    private static z_CreateFromD3D11Texture3DKHR_ovr_0_anh000101 := _z_CreateFromD3D11Texture3DKHR_ovr_0_anh000101;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if resource<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromD3D11Texture3DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret[0]) else
-        z_CreateFromD3D11Texture3DKHR_ovr_0_anh000001(context, flags, resource[0], subresource, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromD3D11Texture3DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret[0]) else
-        z_CreateFromD3D11Texture3DKHR_ovr_0_anh000101(context, flags, IntPtr.Zero, subresource, IntPtr.Zero);
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_1_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    private static z_CreateFromD3D11Texture3DKHR_ovr_1_anh000100 := _z_CreateFromD3D11Texture3DKHR_ovr_1_anh000100;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     if resource<>nil then
       z_CreateFromD3D11Texture3DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D11Texture3DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_2(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    public static z_CreateFromD3D11Texture3DKHR_ovr_2 := _z_CreateFromD3D11Texture3DKHR_ovr_2;
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_2_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    private static z_CreateFromD3D11Texture3DKHR_ovr_2_anh000100 := _z_CreateFromD3D11Texture3DKHR_ovr_2_anh000100;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    if resource<>nil then
-      z_CreateFromD3D11Texture3DKHR_ovr_2(context, flags, resource[0], subresource, errcode_ret) else
-      z_CreateFromD3D11Texture3DKHR_ovr_2_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D11Texture3DKHR_ovr_0(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D11Texture3DKHR_ovr_0_anh000001(context, flags, resource, subresource, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromD3D11Texture3DKHR_ovr_0(context, flags, resource, subresource, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D11Texture3DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_6(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromD3D11Texture3DKHR_ovr_2(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    public static z_CreateFromD3D11Texture3DKHR_ovr_6 := _z_CreateFromD3D11Texture3DKHR_ovr_6;
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_6_anh000001(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    private static z_CreateFromD3D11Texture3DKHR_ovr_6_anh000001 := _z_CreateFromD3D11Texture3DKHR_ovr_6_anh000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromD3D11Texture3DKHR_ovr_6(context, flags, resource, subresource, errcode_ret[0]) else
-      z_CreateFromD3D11Texture3DKHR_ovr_6_anh000001(context, flags, resource, subresource, IntPtr.Zero);
+    public static z_CreateFromD3D11Texture3DKHR_ovr_2 := _z_CreateFromD3D11Texture3DKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromD3D11Texture3DKHR_ovr_6(context, flags, resource, subresource, errcode_ret);
-    private static function _z_CreateFromD3D11Texture3DKHR_ovr_8(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
-    public static z_CreateFromD3D11Texture3DKHR_ovr_8 := _z_CreateFromD3D11Texture3DKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; resource: pointer; subresource: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromD3D11Texture3DKHR_ovr_8(context, flags, resource, subresource, errcode_ret);
+    z_CreateFromD3D11Texture3DKHR_ovr_2(context, flags, resource, subresource, errcode_ret);
     
     private static function _z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
@@ -7096,20 +6724,8 @@
     private static function _z_CreateFromDX9MediaSurfaceKHR_ovr_0(context: cl_context; flags: MemFlags; adapter_type: UInt32; surface_info: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceKHR';
     public static z_CreateFromDX9MediaSurfaceKHR_ovr_0 := _z_CreateFromDX9MediaSurfaceKHR_ovr_0;
-    private static function _z_CreateFromDX9MediaSurfaceKHR_ovr_0_anh0000001(context: cl_context; flags: MemFlags; adapter_type: UInt32; surface_info: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceKHR';
-    private static z_CreateFromDX9MediaSurfaceKHR_ovr_0_anh0000001 := _z_CreateFromDX9MediaSurfaceKHR_ovr_0_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceKHR(context: cl_context; flags: MemFlags; adapter_type: UInt32; surface_info: IntPtr; plane: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromDX9MediaSurfaceKHR_ovr_0(context, flags, adapter_type, surface_info, plane, errcode_ret[0]) else
-      z_CreateFromDX9MediaSurfaceKHR_ovr_0_anh0000001(context, flags, adapter_type, surface_info, plane, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceKHR(context: cl_context; flags: MemFlags; adapter_type: UInt32; surface_info: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromDX9MediaSurfaceKHR_ovr_0(context, flags, adapter_type, surface_info, plane, errcode_ret);
-    private static function _z_CreateFromDX9MediaSurfaceKHR_ovr_2(context: cl_context; flags: MemFlags; adapter_type: UInt32; surface_info: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceKHR';
-    public static z_CreateFromDX9MediaSurfaceKHR_ovr_2 := _z_CreateFromDX9MediaSurfaceKHR_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceKHR(context: cl_context; flags: MemFlags; adapter_type: UInt32; surface_info: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromDX9MediaSurfaceKHR_ovr_2(context, flags, adapter_type, surface_info, plane, errcode_ret);
     
     private static function _z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
@@ -7595,62 +7211,17 @@
     private static function _z_CreateFromEGLImageKHR_ovr_0_anh0000010(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromEGLImageKHR';
     private static z_CreateFromEGLImageKHR_ovr_0_anh0000010 := _z_CreateFromEGLImageKHR_ovr_0_anh0000010;
-    private static function _z_CreateFromEGLImageKHR_ovr_0_anh0000001(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; var properties: EglImagePropertiesKhr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    private static z_CreateFromEGLImageKHR_ovr_0_anh0000001 := _z_CreateFromEGLImageKHR_ovr_0_anh0000001;
-    private static function _z_CreateFromEGLImageKHR_ovr_0_anh0000011(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    private static z_CreateFromEGLImageKHR_ovr_0_anh0000011 := _z_CreateFromEGLImageKHR_ovr_0_anh0000011;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: array of EglImagePropertiesKhr; errcode_ret: array of ErrorCode): cl_mem :=
-    if properties<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromEGLImageKHR_ovr_0(context, egldisplay, eglimage, flags, properties[0], errcode_ret[0]) else
-        z_CreateFromEGLImageKHR_ovr_0_anh0000001(context, egldisplay, eglimage, flags, properties[0], IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromEGLImageKHR_ovr_0_anh0000010(context, egldisplay, eglimage, flags, IntPtr.Zero, errcode_ret[0]) else
-        z_CreateFromEGLImageKHR_ovr_0_anh0000011(context, egldisplay, eglimage, flags, IntPtr.Zero, IntPtr.Zero);
-    private static function _z_CreateFromEGLImageKHR_ovr_1_anh0000010(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    private static z_CreateFromEGLImageKHR_ovr_1_anh0000010 := _z_CreateFromEGLImageKHR_ovr_1_anh0000010;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: array of EglImagePropertiesKhr; var errcode_ret: ErrorCode): cl_mem :=
     if properties<>nil then
       z_CreateFromEGLImageKHR_ovr_0(context, egldisplay, eglimage, flags, properties[0], errcode_ret) else
       z_CreateFromEGLImageKHR_ovr_0_anh0000010(context, egldisplay, eglimage, flags, IntPtr.Zero, errcode_ret);
-    private static function _z_CreateFromEGLImageKHR_ovr_2(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; var properties: EglImagePropertiesKhr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    public static z_CreateFromEGLImageKHR_ovr_2 := _z_CreateFromEGLImageKHR_ovr_2;
-    private static function _z_CreateFromEGLImageKHR_ovr_2_anh0000010(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    private static z_CreateFromEGLImageKHR_ovr_2_anh0000010 := _z_CreateFromEGLImageKHR_ovr_2_anh0000010;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: array of EglImagePropertiesKhr; errcode_ret: IntPtr): cl_mem :=
-    if properties<>nil then
-      z_CreateFromEGLImageKHR_ovr_2(context, egldisplay, eglimage, flags, properties[0], errcode_ret) else
-      z_CreateFromEGLImageKHR_ovr_2_anh0000010(context, egldisplay, eglimage, flags, IntPtr.Zero, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; var properties: EglImagePropertiesKhr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromEGLImageKHR_ovr_0(context, egldisplay, eglimage, flags, properties, errcode_ret[0]) else
-      z_CreateFromEGLImageKHR_ovr_0_anh0000001(context, egldisplay, eglimage, flags, properties, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; var properties: EglImagePropertiesKhr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromEGLImageKHR_ovr_0(context, egldisplay, eglimage, flags, properties, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; var properties: EglImagePropertiesKhr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromEGLImageKHR_ovr_2(context, egldisplay, eglimage, flags, properties, errcode_ret);
-    private static function _z_CreateFromEGLImageKHR_ovr_6(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromEGLImageKHR_ovr_2(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    public static z_CreateFromEGLImageKHR_ovr_6 := _z_CreateFromEGLImageKHR_ovr_6;
-    private static function _z_CreateFromEGLImageKHR_ovr_6_anh0000001(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    private static z_CreateFromEGLImageKHR_ovr_6_anh0000001 := _z_CreateFromEGLImageKHR_ovr_6_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromEGLImageKHR_ovr_6(context, egldisplay, eglimage, flags, properties, errcode_ret[0]) else
-      z_CreateFromEGLImageKHR_ovr_6_anh0000001(context, egldisplay, eglimage, flags, properties, IntPtr.Zero);
+    public static z_CreateFromEGLImageKHR_ovr_2 := _z_CreateFromEGLImageKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromEGLImageKHR_ovr_6(context, egldisplay, eglimage, flags, properties, errcode_ret);
-    private static function _z_CreateFromEGLImageKHR_ovr_8(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromEGLImageKHR';
-    public static z_CreateFromEGLImageKHR_ovr_8 := _z_CreateFromEGLImageKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromEGLImageKHR_ovr_8(context, egldisplay, eglimage, flags, properties, errcode_ret);
+    z_CreateFromEGLImageKHR_ovr_2(context, egldisplay, eglimage, flags, properties, errcode_ret);
     
     private static function _z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
@@ -8133,20 +7704,8 @@
     private static function _z_CreateEventFromEGLSyncKHR_ovr_0(context: cl_context; sync: IntPtr; display: IntPtr; var errcode_ret: ErrorCode): cl_event;
     external 'opencl.dll' name 'clCreateEventFromEGLSyncKHR';
     public static z_CreateEventFromEGLSyncKHR_ovr_0 := _z_CreateEventFromEGLSyncKHR_ovr_0;
-    private static function _z_CreateEventFromEGLSyncKHR_ovr_0_anh00001(context: cl_context; sync: IntPtr; display: IntPtr; errcode_ret: IntPtr): cl_event;
-    external 'opencl.dll' name 'clCreateEventFromEGLSyncKHR';
-    private static z_CreateEventFromEGLSyncKHR_ovr_0_anh00001 := _z_CreateEventFromEGLSyncKHR_ovr_0_anh00001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateEventFromEGLSyncKHR(context: cl_context; sync: IntPtr; display: IntPtr; errcode_ret: array of ErrorCode): cl_event :=
-    if errcode_ret<>nil then
-      z_CreateEventFromEGLSyncKHR_ovr_0(context, sync, display, errcode_ret[0]) else
-      z_CreateEventFromEGLSyncKHR_ovr_0_anh00001(context, sync, display, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateEventFromEGLSyncKHR(context: cl_context; sync: IntPtr; display: IntPtr; var errcode_ret: ErrorCode): cl_event :=
     z_CreateEventFromEGLSyncKHR_ovr_0(context, sync, display, errcode_ret);
-    private static function _z_CreateEventFromEGLSyncKHR_ovr_2(context: cl_context; sync: IntPtr; display: IntPtr; errcode_ret: IntPtr): cl_event;
-    external 'opencl.dll' name 'clCreateEventFromEGLSyncKHR';
-    public static z_CreateEventFromEGLSyncKHR_ovr_2 := _z_CreateEventFromEGLSyncKHR_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateEventFromEGLSyncKHR(context: cl_context; sync: IntPtr; display: IntPtr; errcode_ret: IntPtr): cl_event :=
-    z_CreateEventFromEGLSyncKHR_ovr_2(context, sync, display, errcode_ret);
     
   end;
   
@@ -8307,62 +7866,17 @@
     private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00010(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue;
     external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
     private static z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00010 := _z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00010;
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00001(context: cl_context; device: cl_device_id; var properties: UInt64; errcode_ret: IntPtr): cl_command_queue;
-    external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    private static z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00001 := _z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00001;
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00011(context: cl_context; device: cl_device_id; properties: IntPtr; errcode_ret: IntPtr): cl_command_queue;
-    external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    private static z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00011 := _z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00011;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; properties: array of UInt64; errcode_ret: array of ErrorCode): cl_command_queue :=
-    if properties<>nil then
-      if errcode_ret<>nil then
-        z_CreateCommandQueueWithPropertiesKHR_ovr_0(context, device, properties[0], errcode_ret[0]) else
-        z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00001(context, device, properties[0], IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00010(context, device, IntPtr.Zero, errcode_ret[0]) else
-        z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00011(context, device, IntPtr.Zero, IntPtr.Zero);
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_1_anh00010(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue;
-    external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    private static z_CreateCommandQueueWithPropertiesKHR_ovr_1_anh00010 := _z_CreateCommandQueueWithPropertiesKHR_ovr_1_anh00010;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; properties: array of UInt64; var errcode_ret: ErrorCode): cl_command_queue :=
     if properties<>nil then
       z_CreateCommandQueueWithPropertiesKHR_ovr_0(context, device, properties[0], errcode_ret) else
       z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00010(context, device, IntPtr.Zero, errcode_ret);
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_2(context: cl_context; device: cl_device_id; var properties: UInt64; errcode_ret: IntPtr): cl_command_queue;
-    external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    public static z_CreateCommandQueueWithPropertiesKHR_ovr_2 := _z_CreateCommandQueueWithPropertiesKHR_ovr_2;
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_2_anh00010(context: cl_context; device: cl_device_id; properties: IntPtr; errcode_ret: IntPtr): cl_command_queue;
-    external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    private static z_CreateCommandQueueWithPropertiesKHR_ovr_2_anh00010 := _z_CreateCommandQueueWithPropertiesKHR_ovr_2_anh00010;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; properties: array of UInt64; errcode_ret: IntPtr): cl_command_queue :=
-    if properties<>nil then
-      z_CreateCommandQueueWithPropertiesKHR_ovr_2(context, device, properties[0], errcode_ret) else
-      z_CreateCommandQueueWithPropertiesKHR_ovr_2_anh00010(context, device, IntPtr.Zero, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; var properties: UInt64; errcode_ret: array of ErrorCode): cl_command_queue :=
-    if errcode_ret<>nil then
-      z_CreateCommandQueueWithPropertiesKHR_ovr_0(context, device, properties, errcode_ret[0]) else
-      z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00001(context, device, properties, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; var properties: UInt64; var errcode_ret: ErrorCode): cl_command_queue :=
     z_CreateCommandQueueWithPropertiesKHR_ovr_0(context, device, properties, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; var properties: UInt64; errcode_ret: IntPtr): cl_command_queue :=
-    z_CreateCommandQueueWithPropertiesKHR_ovr_2(context, device, properties, errcode_ret);
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_6(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue;
+    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_2(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue;
     external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    public static z_CreateCommandQueueWithPropertiesKHR_ovr_6 := _z_CreateCommandQueueWithPropertiesKHR_ovr_6;
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_6_anh00001(context: cl_context; device: cl_device_id; properties: IntPtr; errcode_ret: IntPtr): cl_command_queue;
-    external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    private static z_CreateCommandQueueWithPropertiesKHR_ovr_6_anh00001 := _z_CreateCommandQueueWithPropertiesKHR_ovr_6_anh00001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; properties: IntPtr; errcode_ret: array of ErrorCode): cl_command_queue :=
-    if errcode_ret<>nil then
-      z_CreateCommandQueueWithPropertiesKHR_ovr_6(context, device, properties, errcode_ret[0]) else
-      z_CreateCommandQueueWithPropertiesKHR_ovr_6_anh00001(context, device, properties, IntPtr.Zero);
+    public static z_CreateCommandQueueWithPropertiesKHR_ovr_2 := _z_CreateCommandQueueWithPropertiesKHR_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue :=
-    z_CreateCommandQueueWithPropertiesKHR_ovr_6(context, device, properties, errcode_ret);
-    private static function _z_CreateCommandQueueWithPropertiesKHR_ovr_8(context: cl_context; device: cl_device_id; properties: IntPtr; errcode_ret: IntPtr): cl_command_queue;
-    external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
-    public static z_CreateCommandQueueWithPropertiesKHR_ovr_8 := _z_CreateCommandQueueWithPropertiesKHR_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; properties: IntPtr; errcode_ret: IntPtr): cl_command_queue :=
-    z_CreateCommandQueueWithPropertiesKHR_ovr_8(context, device, properties, errcode_ret);
+    z_CreateCommandQueueWithPropertiesKHR_ovr_2(context, device, properties, errcode_ret);
     
   end;
   
@@ -9435,62 +8949,17 @@
     private static function _z_ImportMemoryARM_ovr_0_anh0001000(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
     private static z_ImportMemoryARM_ovr_0_anh0001000 := _z_ImportMemoryARM_ovr_0_anh0001000;
-    private static function _z_ImportMemoryARM_ovr_0_anh0000001(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clImportMemoryARM';
-    private static z_ImportMemoryARM_ovr_0_anh0000001 := _z_ImportMemoryARM_ovr_0_anh0000001;
-    private static function _z_ImportMemoryARM_ovr_0_anh0001001(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clImportMemoryARM';
-    private static z_ImportMemoryARM_ovr_0_anh0001001 := _z_ImportMemoryARM_ovr_0_anh0001001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if properties<>nil then
-      if errcode_ret<>nil then
-        z_ImportMemoryARM_ovr_0(context, flags, properties[0], memory, size, errcode_ret[0]) else
-        z_ImportMemoryARM_ovr_0_anh0000001(context, flags, properties[0], memory, size, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_ImportMemoryARM_ovr_0_anh0001000(context, flags, IntPtr.Zero, memory, size, errcode_ret[0]) else
-        z_ImportMemoryARM_ovr_0_anh0001001(context, flags, IntPtr.Zero, memory, size, IntPtr.Zero);
-    private static function _z_ImportMemoryARM_ovr_1_anh0001000(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clImportMemoryARM';
-    private static z_ImportMemoryARM_ovr_1_anh0001000 := _z_ImportMemoryARM_ovr_1_anh0001000;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if properties<>nil then
       z_ImportMemoryARM_ovr_0(context, flags, properties[0], memory, size, errcode_ret) else
       z_ImportMemoryARM_ovr_0_anh0001000(context, flags, IntPtr.Zero, memory, size, errcode_ret);
-    private static function _z_ImportMemoryARM_ovr_2(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clImportMemoryARM';
-    public static z_ImportMemoryARM_ovr_2 := _z_ImportMemoryARM_ovr_2;
-    private static function _z_ImportMemoryARM_ovr_2_anh0001000(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clImportMemoryARM';
-    private static z_ImportMemoryARM_ovr_2_anh0001000 := _z_ImportMemoryARM_ovr_2_anh0001000;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem :=
-    if properties<>nil then
-      z_ImportMemoryARM_ovr_2(context, flags, properties[0], memory, size, errcode_ret) else
-      z_ImportMemoryARM_ovr_2_anh0001000(context, flags, IntPtr.Zero, memory, size, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_ImportMemoryARM_ovr_0(context, flags, properties, memory, size, errcode_ret[0]) else
-      z_ImportMemoryARM_ovr_0_anh0000001(context, flags, properties, memory, size, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_ImportMemoryARM_ovr_0(context, flags, properties, memory, size, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_ImportMemoryARM_ovr_2(context, flags, properties, memory, size, errcode_ret);
-    private static function _z_ImportMemoryARM_ovr_6(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_ImportMemoryARM_ovr_2(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
-    public static z_ImportMemoryARM_ovr_6 := _z_ImportMemoryARM_ovr_6;
-    private static function _z_ImportMemoryARM_ovr_6_anh0000001(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clImportMemoryARM';
-    private static z_ImportMemoryARM_ovr_6_anh0000001 := _z_ImportMemoryARM_ovr_6_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_ImportMemoryARM_ovr_6(context, flags, properties, memory, size, errcode_ret[0]) else
-      z_ImportMemoryARM_ovr_6_anh0000001(context, flags, properties, memory, size, IntPtr.Zero);
+    public static z_ImportMemoryARM_ovr_2 := _z_ImportMemoryARM_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    z_ImportMemoryARM_ovr_6(context, flags, properties, memory, size, errcode_ret);
-    private static function _z_ImportMemoryARM_ovr_8(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clImportMemoryARM';
-    public static z_ImportMemoryARM_ovr_8 := _z_ImportMemoryARM_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; errcode_ret: IntPtr): cl_mem :=
-    z_ImportMemoryARM_ovr_8(context, flags, properties, memory, size, errcode_ret);
+    z_ImportMemoryARM_ovr_2(context, flags, properties, memory, size, errcode_ret);
     
   end;
   
@@ -9842,20 +9311,8 @@
     private static function _z_CreateAcceleratorINTEL_ovr_0(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; var errcode_ret: ErrorCode): cl_accelerator_intel;
     external 'opencl.dll' name 'clCreateAcceleratorINTEL';
     public static z_CreateAcceleratorINTEL_ovr_0 := _z_CreateAcceleratorINTEL_ovr_0;
-    private static function _z_CreateAcceleratorINTEL_ovr_0_anh000001(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; errcode_ret: IntPtr): cl_accelerator_intel;
-    external 'opencl.dll' name 'clCreateAcceleratorINTEL';
-    private static z_CreateAcceleratorINTEL_ovr_0_anh000001 := _z_CreateAcceleratorINTEL_ovr_0_anh000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateAcceleratorINTEL(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; errcode_ret: array of ErrorCode): cl_accelerator_intel :=
-    if errcode_ret<>nil then
-      z_CreateAcceleratorINTEL_ovr_0(context, accelerator_type, descriptor_size, descriptor, errcode_ret[0]) else
-      z_CreateAcceleratorINTEL_ovr_0_anh000001(context, accelerator_type, descriptor_size, descriptor, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateAcceleratorINTEL(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; var errcode_ret: ErrorCode): cl_accelerator_intel :=
     z_CreateAcceleratorINTEL_ovr_0(context, accelerator_type, descriptor_size, descriptor, errcode_ret);
-    private static function _z_CreateAcceleratorINTEL_ovr_2(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; errcode_ret: IntPtr): cl_accelerator_intel;
-    external 'opencl.dll' name 'clCreateAcceleratorINTEL';
-    public static z_CreateAcceleratorINTEL_ovr_2 := _z_CreateAcceleratorINTEL_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateAcceleratorINTEL(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; errcode_ret: IntPtr): cl_accelerator_intel :=
-    z_CreateAcceleratorINTEL_ovr_2(context, accelerator_type, descriptor_size, descriptor, errcode_ret);
     
     private static function _z_GetAcceleratorInfoINTEL_ovr_0(accelerator: cl_accelerator_intel; param_name: AcceleratorInfoIntel; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetAcceleratorInfoINTEL';
@@ -9894,20 +9351,8 @@
     private static function _z_CreateEventFromGLsyncKHR_ovr_0(context: cl_context; sync: IntPtr; var errcode_ret: ErrorCode): cl_event;
     external 'opencl.dll' name 'clCreateEventFromGLsyncKHR';
     public static z_CreateEventFromGLsyncKHR_ovr_0 := _z_CreateEventFromGLsyncKHR_ovr_0;
-    private static function _z_CreateEventFromGLsyncKHR_ovr_0_anh0001(context: cl_context; sync: IntPtr; errcode_ret: IntPtr): cl_event;
-    external 'opencl.dll' name 'clCreateEventFromGLsyncKHR';
-    private static z_CreateEventFromGLsyncKHR_ovr_0_anh0001 := _z_CreateEventFromGLsyncKHR_ovr_0_anh0001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateEventFromGLsyncKHR(context: cl_context; sync: IntPtr; errcode_ret: array of ErrorCode): cl_event :=
-    if errcode_ret<>nil then
-      z_CreateEventFromGLsyncKHR_ovr_0(context, sync, errcode_ret[0]) else
-      z_CreateEventFromGLsyncKHR_ovr_0_anh0001(context, sync, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateEventFromGLsyncKHR(context: cl_context; sync: IntPtr; var errcode_ret: ErrorCode): cl_event :=
     z_CreateEventFromGLsyncKHR_ovr_0(context, sync, errcode_ret);
-    private static function _z_CreateEventFromGLsyncKHR_ovr_2(context: cl_context; sync: IntPtr; errcode_ret: IntPtr): cl_event;
-    external 'opencl.dll' name 'clCreateEventFromGLsyncKHR';
-    public static z_CreateEventFromGLsyncKHR_ovr_2 := _z_CreateEventFromGLsyncKHR_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateEventFromGLsyncKHR(context: cl_context; sync: IntPtr; errcode_ret: IntPtr): cl_event :=
-    z_CreateEventFromGLsyncKHR_ovr_2(context, sync, errcode_ret);
     
   end;
   
@@ -9982,62 +9427,17 @@
     private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000100(context: cl_context; flags: MemFlags; surface: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
     private static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000100 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000100;
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000001(context: cl_context; flags: MemFlags; var surface: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    private static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000001 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000001;
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000101(context: cl_context; flags: MemFlags; surface: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    private static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000101 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000101;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; surface: array of IntPtr; plane: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if surface<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0(context, flags, surface[0], plane, errcode_ret[0]) else
-        z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000001(context, flags, surface[0], plane, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000100(context, flags, IntPtr.Zero, plane, errcode_ret[0]) else
-        z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000101(context, flags, IntPtr.Zero, plane, IntPtr.Zero);
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_1_anh000100(context: cl_context; flags: MemFlags; surface: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    private static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_1_anh000100 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_1_anh000100;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; surface: array of IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     if surface<>nil then
       z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0(context, flags, surface[0], plane, errcode_ret) else
       z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000100(context, flags, IntPtr.Zero, plane, errcode_ret);
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2(context: cl_context; flags: MemFlags; var surface: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    public static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2;
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2_anh000100(context: cl_context; flags: MemFlags; surface: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    private static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2_anh000100 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2_anh000100;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; surface: array of IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem :=
-    if surface<>nil then
-      z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2(context, flags, surface[0], plane, errcode_ret) else
-      z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2_anh000100(context, flags, IntPtr.Zero, plane, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; var surface: IntPtr; plane: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0(context, flags, surface, plane, errcode_ret[0]) else
-      z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000001(context, flags, surface, plane, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; var surface: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0(context, flags, surface, plane, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; var surface: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2(context, flags, surface, plane, errcode_ret);
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6(context: cl_context; flags: MemFlags; surface: pointer; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2(context: cl_context; flags: MemFlags; surface: pointer; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    public static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6;
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6_anh000001(context: cl_context; flags: MemFlags; surface: pointer; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    private static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6_anh000001 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6_anh000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; surface: pointer; plane: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6(context, flags, surface, plane, errcode_ret[0]) else
-      z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6_anh000001(context, flags, surface, plane, IntPtr.Zero);
+    public static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; surface: pointer; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromVA_APIMediaSurfaceINTEL_ovr_6(context, flags, surface, plane, errcode_ret);
-    private static function _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_8(context: cl_context; flags: MemFlags; surface: pointer; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
-    public static z_CreateFromVA_APIMediaSurfaceINTEL_ovr_8 := _z_CreateFromVA_APIMediaSurfaceINTEL_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; surface: pointer; plane: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromVA_APIMediaSurfaceINTEL_ovr_8(context, flags, surface, plane, errcode_ret);
+    z_CreateFromVA_APIMediaSurfaceINTEL_ovr_2(context, flags, surface, plane, errcode_ret);
     
     private static function _z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
@@ -10586,62 +9986,17 @@
     private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001000(context: cl_context; flags: MemFlags; resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
     private static z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001000 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001000;
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0000001(context: cl_context; flags: MemFlags; var resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    private static z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0000001 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0000001;
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001001(context: cl_context; flags: MemFlags; resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    private static z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001001 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; resource: array of IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if resource<>nil then
-      if errcode_ret<>nil then
-        z_CreateFromDX9MediaSurfaceINTEL_ovr_0(context, flags, resource[0], sharedHandle, plane, errcode_ret[0]) else
-        z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0000001(context, flags, resource[0], sharedHandle, plane, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001000(context, flags, IntPtr.Zero, sharedHandle, plane, errcode_ret[0]) else
-        z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001001(context, flags, IntPtr.Zero, sharedHandle, plane, IntPtr.Zero);
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_1_anh0001000(context: cl_context; flags: MemFlags; resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    private static z_CreateFromDX9MediaSurfaceINTEL_ovr_1_anh0001000 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_1_anh0001000;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; resource: array of IntPtr; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     if resource<>nil then
       z_CreateFromDX9MediaSurfaceINTEL_ovr_0(context, flags, resource[0], sharedHandle, plane, errcode_ret) else
       z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001000(context, flags, IntPtr.Zero, sharedHandle, plane, errcode_ret);
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_2(context: cl_context; flags: MemFlags; var resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    public static z_CreateFromDX9MediaSurfaceINTEL_ovr_2 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_2;
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_2_anh0001000(context: cl_context; flags: MemFlags; resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    private static z_CreateFromDX9MediaSurfaceINTEL_ovr_2_anh0001000 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_2_anh0001000;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; resource: array of IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem :=
-    if resource<>nil then
-      z_CreateFromDX9MediaSurfaceINTEL_ovr_2(context, flags, resource[0], sharedHandle, plane, errcode_ret) else
-      z_CreateFromDX9MediaSurfaceINTEL_ovr_2_anh0001000(context, flags, IntPtr.Zero, sharedHandle, plane, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; var resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromDX9MediaSurfaceINTEL_ovr_0(context, flags, resource, sharedHandle, plane, errcode_ret[0]) else
-      z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0000001(context, flags, resource, sharedHandle, plane, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; var resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromDX9MediaSurfaceINTEL_ovr_0(context, flags, resource, sharedHandle, plane, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; var resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromDX9MediaSurfaceINTEL_ovr_2(context, flags, resource, sharedHandle, plane, errcode_ret);
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_6(context: cl_context; flags: MemFlags; resource: pointer; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
+    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_2(context: cl_context; flags: MemFlags; resource: pointer; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    public static z_CreateFromDX9MediaSurfaceINTEL_ovr_6 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_6;
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_6_anh0000001(context: cl_context; flags: MemFlags; resource: pointer; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    private static z_CreateFromDX9MediaSurfaceINTEL_ovr_6_anh0000001 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_6_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; resource: pointer; sharedHandle: IntPtr; plane: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromDX9MediaSurfaceINTEL_ovr_6(context, flags, resource, sharedHandle, plane, errcode_ret[0]) else
-      z_CreateFromDX9MediaSurfaceINTEL_ovr_6_anh0000001(context, flags, resource, sharedHandle, plane, IntPtr.Zero);
+    public static z_CreateFromDX9MediaSurfaceINTEL_ovr_2 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; resource: pointer; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    z_CreateFromDX9MediaSurfaceINTEL_ovr_6(context, flags, resource, sharedHandle, plane, errcode_ret);
-    private static function _z_CreateFromDX9MediaSurfaceINTEL_ovr_8(context: cl_context; flags: MemFlags; resource: pointer; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
-    public static z_CreateFromDX9MediaSurfaceINTEL_ovr_8 := _z_CreateFromDX9MediaSurfaceINTEL_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; resource: pointer; sharedHandle: IntPtr; plane: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromDX9MediaSurfaceINTEL_ovr_8(context, flags, resource, sharedHandle, plane, errcode_ret);
+    z_CreateFromDX9MediaSurfaceINTEL_ovr_2(context, flags, resource, sharedHandle, plane, errcode_ret);
     
     private static function _z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
@@ -11187,92 +10542,32 @@
     private static function _z_CreateFromGLBuffer_ovr_0(context: cl_context; flags: MemFlags; bufobj: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromGLBuffer';
     public static z_CreateFromGLBuffer_ovr_0 := _z_CreateFromGLBuffer_ovr_0;
-    private static function _z_CreateFromGLBuffer_ovr_0_anh00001(context: cl_context; flags: MemFlags; bufobj: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLBuffer';
-    private static z_CreateFromGLBuffer_ovr_0_anh00001 := _z_CreateFromGLBuffer_ovr_0_anh00001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLBuffer(context: cl_context; flags: MemFlags; bufobj: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromGLBuffer_ovr_0(context, flags, bufobj, errcode_ret[0]) else
-      z_CreateFromGLBuffer_ovr_0_anh00001(context, flags, bufobj, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLBuffer(context: cl_context; flags: MemFlags; bufobj: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromGLBuffer_ovr_0(context, flags, bufobj, errcode_ret);
-    private static function _z_CreateFromGLBuffer_ovr_2(context: cl_context; flags: MemFlags; bufobj: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLBuffer';
-    public static z_CreateFromGLBuffer_ovr_2 := _z_CreateFromGLBuffer_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLBuffer(context: cl_context; flags: MemFlags; bufobj: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromGLBuffer_ovr_2(context, flags, bufobj, errcode_ret);
     
     private static function _z_CreateFromGLTexture_ovr_0(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromGLTexture';
     public static z_CreateFromGLTexture_ovr_0 := _z_CreateFromGLTexture_ovr_0;
-    private static function _z_CreateFromGLTexture_ovr_0_anh0000001(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLTexture';
-    private static z_CreateFromGLTexture_ovr_0_anh0000001 := _z_CreateFromGLTexture_ovr_0_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromGLTexture_ovr_0(context, flags, target, miplevel, texture, errcode_ret[0]) else
-      z_CreateFromGLTexture_ovr_0_anh0000001(context, flags, target, miplevel, texture, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromGLTexture_ovr_0(context, flags, target, miplevel, texture, errcode_ret);
-    private static function _z_CreateFromGLTexture_ovr_2(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLTexture';
-    public static z_CreateFromGLTexture_ovr_2 := _z_CreateFromGLTexture_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromGLTexture_ovr_2(context, flags, target, miplevel, texture, errcode_ret);
     
     private static function _z_CreateFromGLTexture2D_ovr_0(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromGLTexture2D';
     public static z_CreateFromGLTexture2D_ovr_0 := _z_CreateFromGLTexture2D_ovr_0;
-    private static function _z_CreateFromGLTexture2D_ovr_0_anh0000001(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLTexture2D';
-    private static z_CreateFromGLTexture2D_ovr_0_anh0000001 := _z_CreateFromGLTexture2D_ovr_0_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture2D(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromGLTexture2D_ovr_0(context, flags, target, miplevel, texture, errcode_ret[0]) else
-      z_CreateFromGLTexture2D_ovr_0_anh0000001(context, flags, target, miplevel, texture, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture2D(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromGLTexture2D_ovr_0(context, flags, target, miplevel, texture, errcode_ret);
-    private static function _z_CreateFromGLTexture2D_ovr_2(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLTexture2D';
-    public static z_CreateFromGLTexture2D_ovr_2 := _z_CreateFromGLTexture2D_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture2D(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromGLTexture2D_ovr_2(context, flags, target, miplevel, texture, errcode_ret);
     
     private static function _z_CreateFromGLTexture3D_ovr_0(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromGLTexture3D';
     public static z_CreateFromGLTexture3D_ovr_0 := _z_CreateFromGLTexture3D_ovr_0;
-    private static function _z_CreateFromGLTexture3D_ovr_0_anh0000001(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLTexture3D';
-    private static z_CreateFromGLTexture3D_ovr_0_anh0000001 := _z_CreateFromGLTexture3D_ovr_0_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture3D(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromGLTexture3D_ovr_0(context, flags, target, miplevel, texture, errcode_ret[0]) else
-      z_CreateFromGLTexture3D_ovr_0_anh0000001(context, flags, target, miplevel, texture, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture3D(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromGLTexture3D_ovr_0(context, flags, target, miplevel, texture, errcode_ret);
-    private static function _z_CreateFromGLTexture3D_ovr_2(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLTexture3D';
-    public static z_CreateFromGLTexture3D_ovr_2 := _z_CreateFromGLTexture3D_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLTexture3D(context: cl_context; flags: MemFlags; target: UInt32; miplevel: Int32; texture: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromGLTexture3D_ovr_2(context, flags, target, miplevel, texture, errcode_ret);
     
     private static function _z_CreateFromGLRenderbuffer_ovr_0(context: cl_context; flags: MemFlags; renderbuffer: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromGLRenderbuffer';
     public static z_CreateFromGLRenderbuffer_ovr_0 := _z_CreateFromGLRenderbuffer_ovr_0;
-    private static function _z_CreateFromGLRenderbuffer_ovr_0_anh00001(context: cl_context; flags: MemFlags; renderbuffer: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLRenderbuffer';
-    private static z_CreateFromGLRenderbuffer_ovr_0_anh00001 := _z_CreateFromGLRenderbuffer_ovr_0_anh00001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLRenderbuffer(context: cl_context; flags: MemFlags; renderbuffer: UInt32; errcode_ret: array of ErrorCode): cl_mem :=
-    if errcode_ret<>nil then
-      z_CreateFromGLRenderbuffer_ovr_0(context, flags, renderbuffer, errcode_ret[0]) else
-      z_CreateFromGLRenderbuffer_ovr_0_anh00001(context, flags, renderbuffer, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLRenderbuffer(context: cl_context; flags: MemFlags; renderbuffer: UInt32; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateFromGLRenderbuffer_ovr_0(context, flags, renderbuffer, errcode_ret);
-    private static function _z_CreateFromGLRenderbuffer_ovr_2(context: cl_context; flags: MemFlags; renderbuffer: UInt32; errcode_ret: IntPtr): cl_mem;
-    external 'opencl.dll' name 'clCreateFromGLRenderbuffer';
-    public static z_CreateFromGLRenderbuffer_ovr_2 := _z_CreateFromGLRenderbuffer_ovr_2;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromGLRenderbuffer(context: cl_context; flags: MemFlags; renderbuffer: UInt32; errcode_ret: IntPtr): cl_mem :=
-    z_CreateFromGLRenderbuffer_ovr_2(context, flags, renderbuffer, errcode_ret);
     
     private static function _z_GetGLObjectInfo_ovr_0(memobj: cl_mem; var gl_object_type: GlObjectType; var gl_object_name: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetGLObjectInfo';
@@ -11839,62 +11134,17 @@
     private static function _z_HostMemAllocINTEL_ovr_0_anh001000(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clHostMemAllocINTEL';
     private static z_HostMemAllocINTEL_ovr_0_anh001000 := _z_HostMemAllocINTEL_ovr_0_anh001000;
-    private static function _z_HostMemAllocINTEL_ovr_0_anh000001(context: cl_context; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clHostMemAllocINTEL';
-    private static z_HostMemAllocINTEL_ovr_0_anh000001 := _z_HostMemAllocINTEL_ovr_0_anh000001;
-    private static function _z_HostMemAllocINTEL_ovr_0_anh001001(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clHostMemAllocINTEL';
-    private static z_HostMemAllocINTEL_ovr_0_anh001001 := _z_HostMemAllocINTEL_ovr_0_anh001001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if properties<>nil then
-      if errcode_ret<>nil then
-        z_HostMemAllocINTEL_ovr_0(context, properties[0], size, alignment, errcode_ret[0]) else
-        z_HostMemAllocINTEL_ovr_0_anh000001(context, properties[0], size, alignment, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_HostMemAllocINTEL_ovr_0_anh001000(context, IntPtr.Zero, size, alignment, errcode_ret[0]) else
-        z_HostMemAllocINTEL_ovr_0_anh001001(context, IntPtr.Zero, size, alignment, IntPtr.Zero);
-    private static function _z_HostMemAllocINTEL_ovr_1_anh001000(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
-    external 'opencl.dll' name 'clHostMemAllocINTEL';
-    private static z_HostMemAllocINTEL_ovr_1_anh001000 := _z_HostMemAllocINTEL_ovr_1_anh001000;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
     if properties<>nil then
       z_HostMemAllocINTEL_ovr_0(context, properties[0], size, alignment, errcode_ret) else
       z_HostMemAllocINTEL_ovr_0_anh001000(context, IntPtr.Zero, size, alignment, errcode_ret);
-    private static function _z_HostMemAllocINTEL_ovr_2(context: cl_context; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clHostMemAllocINTEL';
-    public static z_HostMemAllocINTEL_ovr_2 := _z_HostMemAllocINTEL_ovr_2;
-    private static function _z_HostMemAllocINTEL_ovr_2_anh001000(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clHostMemAllocINTEL';
-    private static z_HostMemAllocINTEL_ovr_2_anh001000 := _z_HostMemAllocINTEL_ovr_2_anh001000;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    if properties<>nil then
-      z_HostMemAllocINTEL_ovr_2(context, properties[0], size, alignment, errcode_ret) else
-      z_HostMemAllocINTEL_ovr_2_anh001000(context, IntPtr.Zero, size, alignment, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if errcode_ret<>nil then
-      z_HostMemAllocINTEL_ovr_0(context, properties, size, alignment, errcode_ret[0]) else
-      z_HostMemAllocINTEL_ovr_0_anh000001(context, properties, size, alignment, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
     z_HostMemAllocINTEL_ovr_0(context, properties, size, alignment, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    z_HostMemAllocINTEL_ovr_2(context, properties, size, alignment, errcode_ret);
-    private static function _z_HostMemAllocINTEL_ovr_6(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
+    private static function _z_HostMemAllocINTEL_ovr_2(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clHostMemAllocINTEL';
-    public static z_HostMemAllocINTEL_ovr_6 := _z_HostMemAllocINTEL_ovr_6;
-    private static function _z_HostMemAllocINTEL_ovr_6_anh000001(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clHostMemAllocINTEL';
-    private static z_HostMemAllocINTEL_ovr_6_anh000001 := _z_HostMemAllocINTEL_ovr_6_anh000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if errcode_ret<>nil then
-      z_HostMemAllocINTEL_ovr_6(context, properties, size, alignment, errcode_ret[0]) else
-      z_HostMemAllocINTEL_ovr_6_anh000001(context, properties, size, alignment, IntPtr.Zero);
+    public static z_HostMemAllocINTEL_ovr_2 := _z_HostMemAllocINTEL_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
-    z_HostMemAllocINTEL_ovr_6(context, properties, size, alignment, errcode_ret);
-    private static function _z_HostMemAllocINTEL_ovr_8(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clHostMemAllocINTEL';
-    public static z_HostMemAllocINTEL_ovr_8 := _z_HostMemAllocINTEL_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    z_HostMemAllocINTEL_ovr_8(context, properties, size, alignment, errcode_ret);
+    z_HostMemAllocINTEL_ovr_2(context, properties, size, alignment, errcode_ret);
     
     private static function _z_DeviceMemAllocINTEL_ovr_0(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clDeviceMemAllocINTEL';
@@ -11902,62 +11152,17 @@
     private static function _z_DeviceMemAllocINTEL_ovr_0_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clDeviceMemAllocINTEL';
     private static z_DeviceMemAllocINTEL_ovr_0_anh0001000 := _z_DeviceMemAllocINTEL_ovr_0_anh0001000;
-    private static function _z_DeviceMemAllocINTEL_ovr_0_anh0000001(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    private static z_DeviceMemAllocINTEL_ovr_0_anh0000001 := _z_DeviceMemAllocINTEL_ovr_0_anh0000001;
-    private static function _z_DeviceMemAllocINTEL_ovr_0_anh0001001(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    private static z_DeviceMemAllocINTEL_ovr_0_anh0001001 := _z_DeviceMemAllocINTEL_ovr_0_anh0001001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if properties<>nil then
-      if errcode_ret<>nil then
-        z_DeviceMemAllocINTEL_ovr_0(context, device, properties[0], size, alignment, errcode_ret[0]) else
-        z_DeviceMemAllocINTEL_ovr_0_anh0000001(context, device, properties[0], size, alignment, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_DeviceMemAllocINTEL_ovr_0_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret[0]) else
-        z_DeviceMemAllocINTEL_ovr_0_anh0001001(context, device, IntPtr.Zero, size, alignment, IntPtr.Zero);
-    private static function _z_DeviceMemAllocINTEL_ovr_1_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
-    external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    private static z_DeviceMemAllocINTEL_ovr_1_anh0001000 := _z_DeviceMemAllocINTEL_ovr_1_anh0001000;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
     if properties<>nil then
       z_DeviceMemAllocINTEL_ovr_0(context, device, properties[0], size, alignment, errcode_ret) else
       z_DeviceMemAllocINTEL_ovr_0_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret);
-    private static function _z_DeviceMemAllocINTEL_ovr_2(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    public static z_DeviceMemAllocINTEL_ovr_2 := _z_DeviceMemAllocINTEL_ovr_2;
-    private static function _z_DeviceMemAllocINTEL_ovr_2_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    private static z_DeviceMemAllocINTEL_ovr_2_anh0001000 := _z_DeviceMemAllocINTEL_ovr_2_anh0001000;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    if properties<>nil then
-      z_DeviceMemAllocINTEL_ovr_2(context, device, properties[0], size, alignment, errcode_ret) else
-      z_DeviceMemAllocINTEL_ovr_2_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if errcode_ret<>nil then
-      z_DeviceMemAllocINTEL_ovr_0(context, device, properties, size, alignment, errcode_ret[0]) else
-      z_DeviceMemAllocINTEL_ovr_0_anh0000001(context, device, properties, size, alignment, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
     z_DeviceMemAllocINTEL_ovr_0(context, device, properties, size, alignment, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    z_DeviceMemAllocINTEL_ovr_2(context, device, properties, size, alignment, errcode_ret);
-    private static function _z_DeviceMemAllocINTEL_ovr_6(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
+    private static function _z_DeviceMemAllocINTEL_ovr_2(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    public static z_DeviceMemAllocINTEL_ovr_6 := _z_DeviceMemAllocINTEL_ovr_6;
-    private static function _z_DeviceMemAllocINTEL_ovr_6_anh0000001(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    private static z_DeviceMemAllocINTEL_ovr_6_anh0000001 := _z_DeviceMemAllocINTEL_ovr_6_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if errcode_ret<>nil then
-      z_DeviceMemAllocINTEL_ovr_6(context, device, properties, size, alignment, errcode_ret[0]) else
-      z_DeviceMemAllocINTEL_ovr_6_anh0000001(context, device, properties, size, alignment, IntPtr.Zero);
+    public static z_DeviceMemAllocINTEL_ovr_2 := _z_DeviceMemAllocINTEL_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
-    z_DeviceMemAllocINTEL_ovr_6(context, device, properties, size, alignment, errcode_ret);
-    private static function _z_DeviceMemAllocINTEL_ovr_8(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clDeviceMemAllocINTEL';
-    public static z_DeviceMemAllocINTEL_ovr_8 := _z_DeviceMemAllocINTEL_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    z_DeviceMemAllocINTEL_ovr_8(context, device, properties, size, alignment, errcode_ret);
+    z_DeviceMemAllocINTEL_ovr_2(context, device, properties, size, alignment, errcode_ret);
     
     private static function _z_SharedMemAllocINTEL_ovr_0(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clSharedMemAllocINTEL';
@@ -11965,62 +11170,17 @@
     private static function _z_SharedMemAllocINTEL_ovr_0_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clSharedMemAllocINTEL';
     private static z_SharedMemAllocINTEL_ovr_0_anh0001000 := _z_SharedMemAllocINTEL_ovr_0_anh0001000;
-    private static function _z_SharedMemAllocINTEL_ovr_0_anh0000001(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    private static z_SharedMemAllocINTEL_ovr_0_anh0000001 := _z_SharedMemAllocINTEL_ovr_0_anh0000001;
-    private static function _z_SharedMemAllocINTEL_ovr_0_anh0001001(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    private static z_SharedMemAllocINTEL_ovr_0_anh0001001 := _z_SharedMemAllocINTEL_ovr_0_anh0001001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if properties<>nil then
-      if errcode_ret<>nil then
-        z_SharedMemAllocINTEL_ovr_0(context, device, properties[0], size, alignment, errcode_ret[0]) else
-        z_SharedMemAllocINTEL_ovr_0_anh0000001(context, device, properties[0], size, alignment, IntPtr.Zero) else
-      if errcode_ret<>nil then
-        z_SharedMemAllocINTEL_ovr_0_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret[0]) else
-        z_SharedMemAllocINTEL_ovr_0_anh0001001(context, device, IntPtr.Zero, size, alignment, IntPtr.Zero);
-    private static function _z_SharedMemAllocINTEL_ovr_1_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
-    external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    private static z_SharedMemAllocINTEL_ovr_1_anh0001000 := _z_SharedMemAllocINTEL_ovr_1_anh0001000;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
     if properties<>nil then
       z_SharedMemAllocINTEL_ovr_0(context, device, properties[0], size, alignment, errcode_ret) else
       z_SharedMemAllocINTEL_ovr_0_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret);
-    private static function _z_SharedMemAllocINTEL_ovr_2(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    public static z_SharedMemAllocINTEL_ovr_2 := _z_SharedMemAllocINTEL_ovr_2;
-    private static function _z_SharedMemAllocINTEL_ovr_2_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    private static z_SharedMemAllocINTEL_ovr_2_anh0001000 := _z_SharedMemAllocINTEL_ovr_2_anh0001000;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    if properties<>nil then
-      z_SharedMemAllocINTEL_ovr_2(context, device, properties[0], size, alignment, errcode_ret) else
-      z_SharedMemAllocINTEL_ovr_2_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if errcode_ret<>nil then
-      z_SharedMemAllocINTEL_ovr_0(context, device, properties, size, alignment, errcode_ret[0]) else
-      z_SharedMemAllocINTEL_ovr_0_anh0000001(context, device, properties, size, alignment, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
     z_SharedMemAllocINTEL_ovr_0(context, device, properties, size, alignment, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    z_SharedMemAllocINTEL_ovr_2(context, device, properties, size, alignment, errcode_ret);
-    private static function _z_SharedMemAllocINTEL_ovr_6(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
+    private static function _z_SharedMemAllocINTEL_ovr_2(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    public static z_SharedMemAllocINTEL_ovr_6 := _z_SharedMemAllocINTEL_ovr_6;
-    private static function _z_SharedMemAllocINTEL_ovr_6_anh0000001(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    private static z_SharedMemAllocINTEL_ovr_6_anh0000001 := _z_SharedMemAllocINTEL_ovr_6_anh0000001;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: array of ErrorCode): IntPtr :=
-    if errcode_ret<>nil then
-      z_SharedMemAllocINTEL_ovr_6(context, device, properties, size, alignment, errcode_ret[0]) else
-      z_SharedMemAllocINTEL_ovr_6_anh0000001(context, device, properties, size, alignment, IntPtr.Zero);
+    public static z_SharedMemAllocINTEL_ovr_2 := _z_SharedMemAllocINTEL_ovr_2;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
-    z_SharedMemAllocINTEL_ovr_6(context, device, properties, size, alignment, errcode_ret);
-    private static function _z_SharedMemAllocINTEL_ovr_8(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr;
-    external 'opencl.dll' name 'clSharedMemAllocINTEL';
-    public static z_SharedMemAllocINTEL_ovr_8 := _z_SharedMemAllocINTEL_ovr_8;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; errcode_ret: IntPtr): IntPtr :=
-    z_SharedMemAllocINTEL_ovr_8(context, device, properties, size, alignment, errcode_ret);
+    z_SharedMemAllocINTEL_ovr_2(context, device, properties, size, alignment, errcode_ret);
     
     private static function _z_MemFreeINTEL_ovr_0(context: cl_context; ptr: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clMemFreeINTEL';

@@ -10,7 +10,9 @@ begin
     LoadBin('DataScraping\XML\CL\funcs.bin');
     
     Otp($'Fixing all');
-    Group.FixCLNames;
+    Group.FixCL_Names;
+    Feature.FixCL_ErrCodeRet;
+    Extension.FixCL_ErrCodeRet;
     ApplyFixers;
     MarkUsed;
     

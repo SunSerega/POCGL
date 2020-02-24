@@ -57,26 +57,14 @@
  cl_mem	| cl_context	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
 
 # clCreateImage2D
- cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clCreateImage3D
- cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clCreateKernel
  cl_kernel	| cl_program	| string	| var ErrorCode	|
@@ -111,9 +99,7 @@
  cl_program	| cl_context	| UInt32	| IntPtr	| IntPtr	| var ErrorCode	|
 
 # clCreateProgramWithIL
- cl_program	| cl_context	| IntPtr	| UIntPtr	| array of ErrorCode	|
  cl_program	| cl_context	| IntPtr	| UIntPtr	| var ErrorCode	|
- cl_program	| cl_context	| IntPtr	| UIntPtr	| IntPtr	|
 
 # clCreateProgramWithSource
  cl_program	| cl_context	| UInt32	| array of string	| array of UIntPtr	| var ErrorCode	|
@@ -910,37 +896,19 @@
  ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromD3D10BufferKHR
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	|
 
 # clCreateFromD3D10Texture2DKHR
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| IntPtr	|
 
 # clCreateFromD3D10Texture3DKHR
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| IntPtr	|
 
 # clEnqueueAcquireD3D10ObjectsKHR
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1012,37 +980,19 @@
  ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromD3D11BufferKHR
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	|
 
 # clCreateFromD3D11Texture2DKHR
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| IntPtr	|
 
 # clCreateFromD3D11Texture3DKHR
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| IntPtr	|
 
 # clEnqueueAcquireD3D11ObjectsKHR
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1132,9 +1082,7 @@
  ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromDX9MediaSurfaceKHR
- cl_mem	| cl_context	| MemFlags	| UInt32	| IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| UInt32	| IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| UInt32	| IntPtr	| UInt32	| IntPtr	|
 
 # clEnqueueAcquireDX9MediaSurfacesKHR
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1195,15 +1143,9 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromEGLImageKHR
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of EglImagePropertiesKhr	| array of ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of EglImagePropertiesKhr	| var ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| array of EglImagePropertiesKhr	| IntPtr	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var EglImagePropertiesKhr	| array of ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var EglImagePropertiesKhr	| var ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| var EglImagePropertiesKhr	| IntPtr	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| IntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| IntPtr	| IntPtr	| MemFlags	| IntPtr	| IntPtr	|
 
 # clEnqueueAcquireEGLObjectsKHR
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1264,9 +1206,7 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateEventFromEGLSyncKHR
- cl_event	| cl_context	| IntPtr	| IntPtr	| array of ErrorCode	|
  cl_event	| cl_context	| IntPtr	| IntPtr	| var ErrorCode	|
- cl_event	| cl_context	| IntPtr	| IntPtr	| IntPtr	|
 
 # clSetMemObjectDestructorAPPLE
  ErrorCode	| cl_mem	| MemObjectDestructorCallback	| IntPtr	|
@@ -1303,15 +1243,9 @@
  ErrorCode	| cl_context	|
 
 # clCreateCommandQueueWithPropertiesKHR
- cl_command_queue	| cl_context	| cl_device_id	| array of UInt64	| array of ErrorCode	|
  cl_command_queue	| cl_context	| cl_device_id	| array of UInt64	| var ErrorCode	|
- cl_command_queue	| cl_context	| cl_device_id	| array of UInt64	| IntPtr	|
- cl_command_queue	| cl_context	| cl_device_id	| var UInt64	| array of ErrorCode	|
  cl_command_queue	| cl_context	| cl_device_id	| var UInt64	| var ErrorCode	|
- cl_command_queue	| cl_context	| cl_device_id	| var UInt64	| IntPtr	|
- cl_command_queue	| cl_context	| cl_device_id	| IntPtr	| array of ErrorCode	|
  cl_command_queue	| cl_context	| cl_device_id	| IntPtr	| var ErrorCode	|
- cl_command_queue	| cl_context	| cl_device_id	| IntPtr	| IntPtr	|
 
 # clReleaseDeviceEXT
  ErrorCode	| cl_device_id	|
@@ -1452,15 +1386,9 @@
  ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| IntPtr	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clImportMemoryARM
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UIntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UIntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UIntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	| UIntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	| UIntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	| UIntPtr	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	| UIntPtr	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	| UIntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	| UIntPtr	| IntPtr	|
 
 # clSVMAllocARM
  IntPtr	| cl_context	| UInt64	| UIntPtr	| UInt32	|
@@ -1530,9 +1458,7 @@
  ErrorCode	| cl_kernel	| UInt32	| UIntPtr	| IntPtr	|
 
 # clCreateAcceleratorINTEL
- cl_accelerator_intel	| cl_context	| AcceleratorTypeIntel	| UIntPtr	| IntPtr	| array of ErrorCode	|
  cl_accelerator_intel	| cl_context	| AcceleratorTypeIntel	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_accelerator_intel	| cl_context	| AcceleratorTypeIntel	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clGetAcceleratorInfoINTEL
  ErrorCode	| cl_accelerator_intel	| AcceleratorInfoIntel	| UIntPtr	| IntPtr	| array of UIntPtr	|
@@ -1546,9 +1472,7 @@
  ErrorCode	| cl_accelerator_intel	|
 
 # clCreateEventFromGLsyncKHR
- cl_event	| cl_context	| IntPtr	| array of ErrorCode	|
  cl_event	| cl_context	| IntPtr	| var ErrorCode	|
- cl_event	| cl_context	| IntPtr	| IntPtr	|
 
 # clGetDeviceIDsFromVA_APIMediaAdapterINTEL
  ErrorCode	| cl_platform_id	| VaApiDeviceSourceIntel	| IntPtr	| VaApiDeviceSetIntel	| UInt32	| array of cl_device_id	| array of UInt32	|
@@ -1562,15 +1486,9 @@
  ErrorCode	| cl_platform_id	| VaApiDeviceSourceIntel	| IntPtr	| VaApiDeviceSetIntel	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromVA_APIMediaSurfaceINTEL
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| UInt32	| IntPtr	|
 
 # clEnqueueAcquireVA_APIMediaSurfacesINTEL
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1642,15 +1560,9 @@
  ErrorCode	| cl_platform_id	| Dx9DeviceSourceIntel	| IntPtr	| Dx9DeviceSetIntel	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromDX9MediaSurfaceINTEL
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	| UInt32	| IntPtr	|
- cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	| UInt32	| IntPtr	|
 
 # clEnqueueAcquireDX9ObjectsINTEL
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1722,29 +1634,19 @@
  ErrorCode	| IntPtr	| GlContextInfo	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clCreateFromGLBuffer
- cl_mem	| cl_context	| MemFlags	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| UInt32	| IntPtr	|
 
 # clCreateFromGLTexture
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| IntPtr	|
 
 # clCreateFromGLTexture2D
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| IntPtr	|
 
 # clCreateFromGLTexture3D
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| IntPtr	|
 
 # clCreateFromGLRenderbuffer
- cl_mem	| cl_context	| MemFlags	| UInt32	| array of ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| UInt32	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| UInt32	| IntPtr	|
 
 # clGetGLObjectInfo
  ErrorCode	| cl_mem	| array of GlObjectType	| array of UInt32	|
@@ -1821,37 +1723,19 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clHostMemAllocINTEL
- IntPtr	| cl_context	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| var MemPropertiesIntel	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| var MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| var MemPropertiesIntel	| UIntPtr	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| IntPtr	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| IntPtr	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| IntPtr	| UIntPtr	| UInt32	| IntPtr	|
 
 # clDeviceMemAllocINTEL
- IntPtr	| cl_context	| cl_device_id	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| cl_device_id	| var MemPropertiesIntel	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| var MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| var MemPropertiesIntel	| UIntPtr	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| cl_device_id	| IntPtr	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| IntPtr	| UIntPtr	| UInt32	| IntPtr	|
 
 # clSharedMemAllocINTEL
- IntPtr	| cl_context	| cl_device_id	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| cl_device_id	| var MemPropertiesIntel	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| var MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| var MemPropertiesIntel	| UIntPtr	| UInt32	| IntPtr	|
- IntPtr	| cl_context	| cl_device_id	| IntPtr	| UIntPtr	| UInt32	| array of ErrorCode	|
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UIntPtr	| UInt32	| var ErrorCode	|
- IntPtr	| cl_context	| cl_device_id	| IntPtr	| UIntPtr	| UInt32	| IntPtr	|
 
 # clMemFreeINTEL
  ErrorCode	| cl_context	| IntPtr	|

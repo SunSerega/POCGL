@@ -29,24 +29,11 @@
 !possible_par_types
  *	| *	| *	| *	| -array of cl_device_id	| -array of UInt32	|
 
-# clCreateContext
-!possible_par_types
- *	| *	| *	| *	| *	| *	| -array of ErrorCode -IntPtr	|
-
-# clCreateContextFromType
-!possible_par_types
- *	| *	| *	| *	| *	| -array of ErrorCode -IntPtr	|
-
 # clGetContextInfo
 !possible_par_types
  *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_device_id +var ContextProperties +pointer	| -array of UIntPtr	|
 
 
-
-# clCreateCommandQueue
-# clCreateCommandQueueWithProperties
-!possible_par_types
- *	| *	| *	| *	| -array of ErrorCode -IntPtr	|
 
 # clGetCommandQueueInfo
 !possible_par_types
@@ -54,11 +41,11 @@
 
 # clCreateBuffer
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +array of T +var T +IntPtr	| -array of ErrorCode -IntPtr	|
+ *	| *	| *	| *	| -IntPtr +array of T +var T +IntPtr	| *	|
 
 # clCreateSubBuffer
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var cl_buffer_region +IntPtr	| -array of ErrorCode -IntPtr	|
+ *	| *	| *	| *	| -IntPtr +var cl_buffer_region +IntPtr	| *	|
 
 # clEnqueue[Read,Write]Buffer
 !possible_par_types
@@ -87,11 +74,11 @@
 
 # clEnqueueMapBuffer
 !possible_par_types
- *	| *	| *	| *	| *	| *	| *	| *	| *	| -array of cl_event	| -array of ErrorCode -IntPtr	|
+ *	| *	| *	| *	| *	| *	| *	| *	| *	| -array of cl_event	| *	|
 
 # clCreateImage
 !possible_par_types
- *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| -IntPtr +array of T +var T +IntPtr	| -array of ErrorCode -IntPtr	|
+ *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| -IntPtr +array of T +var T +IntPtr	| *	|
 
 # clEnqueue[Read,Write]Image
 !possible_par_types
@@ -137,7 +124,7 @@
 
 # clCreatePipe
 !possible_par_types
- *	| *	| *	| *	| *	| -array of IntPtr -var IntPtr	| -array of ErrorCode -IntPtr	|
+ *	| *	| *	| *	| *	| -array of IntPtr -var IntPtr	| *	|
 
 # clGetPipeInfo
 !possible_par_types
@@ -183,14 +170,6 @@
  *	| *	| *	| var IntPtr		| var UIntPtr		| *	| *	| *	| *						|
  *	| *	| *	| pointer			| IntPtr			| *	| *	| *	| *						|
 
-# clCreateSampler
-!possible_par_types
- *	| *	| *	| *	| *	| -array of ErrorCode -IntPtr	|
-
-# clCreateSamplerWithProperties
-!possible_par_types
- *	| *	| *	| -array of ErrorCode -IntPtr	|
-
 # clGetSamplerInfo
 !possible_par_types
  *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var Bool +var AddressingMode +var FilterMode +pointer	| -array of UIntPtr	|
@@ -208,21 +187,19 @@
 
 # clCreateProgramWithILKHR
 !possible_par_types
- *	| *	| -IntPtr +array of byte +var byte +IntPtr	| *	| -array of ErrorCode -IntPtr	|
+ *	| *	| -IntPtr +array of byte +var byte +IntPtr	| *	| *	|
 
 # clCreateProgramWithBinary
 !repl_par_t
 var Int32 = var ErrorCode
+!possible_par_types
+ *	| *	| *	| *					| *				| *	| *				| +IntPtr		|
 !limit_ovrs
  *	| *	| *	| var cl_device_id	| var UIntPtr	| *	| *				| *				|
 !limit_ovrs
  *	| *	| *	| *					| *				| *	| var ErrorCode	| var ErrorCode	|
  *	| *	| *	| *					| *				| *	| var ErrorCode	| IntPtr		|
  *	| *	| *	| *					| *				| *	| IntPtr		| var ErrorCode	|
-
-# clCreateProgramWithBuiltInKernels
-!possible_par_types
- *	| *	| *	| *	| *	| -array of ErrorCode -IntPtr	|
 
 # clSetProgramSpecializationConstant
 !possible_par_types
