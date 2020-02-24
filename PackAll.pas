@@ -238,7 +238,7 @@ begin
       EventTask(E_TemplatePacker) +
       ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
       ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('Packing\Template\GL\0OpenGL.pas').Replace(#10,#13#10))) +
-      ProcTask(()->System.IO.File.Delete('Packing\Template\CL\0OpenGL.pas'))
+      ProcTask(()->System.IO.File.Delete('Packing\Template\GL\0OpenGL.pas'))
     ;
     
     var T_GLABC := not stages.Contains('GLABC') ? EmptyTask :

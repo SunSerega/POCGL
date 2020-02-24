@@ -1088,7 +1088,6 @@ type
             if m_ovr_i=max_marshal_chain-1 then
             begin
               ovr_name := (l_name, new boolean[0]);
-              is_static := is_static or use_external;
             end else
             if PrevOvrNames.TryGetValue(curr_ovr, ovr_name) then
             begin
@@ -1096,6 +1095,7 @@ type
               exit;
             end else
             begin
+              is_static := is_static or use_external;
               var ovr_name_str: string;
               var ovr_name_arr_nil := nil_arr_par_flags;
               
