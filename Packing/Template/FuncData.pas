@@ -476,6 +476,7 @@ type
     gr=nil ? t : gr.name;
     
   end;
+  
   FuncParamT = sealed class(System.IEquatable<FuncParamT>)
     public var_arg: boolean;
     public arr_lvl: integer;
@@ -525,8 +526,43 @@ type
     public function Equals(other: FuncParamT) := self=other;
     
   end;
+  FuncOverload = sealed class(System.IEquatable<FuncOverload>)
+    public pars: array of FuncParamT;
+    public constructor(pars: array of FuncParamT) := self.pars := pars;
+    
+    public static function operator=(ovr1, ovr2: FuncOverload): boolean :=
+    ovr1.pars.Zip(ovr2.pars, (par1,par2)->par1=par2).All(b->b);
+    
+    public function Equals(other: FuncOverload) := self=other;
+    
+    public function GetHashCode: integer; override := pars.Last.tname.GetHashCode;
+    
+  end;
+  
+  FuncParamMarshaler = sealed class
+    public par: FuncParamT;
+    public call_str: string; // res_str для [0]
+    public generic_name: string;
+    public init, fnls: List<string>;
+    
+    public constructor(par: FuncParamT; call_str: string; generic_name: string; init, fnls: List<string>);
+    begin
+      self.par          := par;
+      self.call_str     := call_str;
+      self.generic_name := generic_name;
+      self.init         := init;
+      self.fnls         := fnls;
+    end;
+    
+    public constructor(par: FuncParamT) := 
+    self.par := par;
+    
+  end;
   
   Func = sealed class(INamed)
+    
+    {$region Basic}
+    
     public org_par: array of FuncOrgParam;
     
     public name: string;
@@ -538,6 +574,10 @@ type
       ext_name := GetExt(name);
       is_proc := org_par[0].t=nil;
     end;
+    
+    {$endregion Basic}
+    
+    {$region Misc}
     
     public function GetName: string := name;
     
@@ -556,8 +596,23 @@ type
       loop All.Capacity do All += new Func(br);
     end;
     
+    public static procedure WriteGetPtrFunc(sb: StringBuilder; api: string);
+    begin
+      if not (api in ['gl','glx']) then exit;
+      sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
+      if api='glx' then
+        sb += '    external ''opengl32.dll'' name ''glXGetProcAddress'';'#10 else
+        sb += '    external ''opengl32.dll'' name ''wglGetProcAddress'';'#10;
+      sb += '    public static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
+      sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
+      sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
+    end;
+    
+    {$endregion Misc}
+    
+    {$region PPT}
+    
     // ": array of possible_par_type_collection"
-    // (array_lvl, array_el_type)
     public possible_par_types: array of List<FuncParamT>;
     public procedure InitPossibleParTypes;
     begin
@@ -632,13 +687,17 @@ type
       end);
     end;
     
-    public all_overloads: List<array of FuncParamT>;
+    {$endregion PPT}
+    
+    {$region Overloads}
+    
+    public all_overloads: List<FuncOverload>;
     public procedure InitOverloads;
     begin
       if all_overloads<>nil then exit;
       InitPossibleParTypes;
       
-      all_overloads := new List<array of FuncParamT>(
+      all_overloads := new List<FuncOverload>(
         possible_par_types.Select(types->types.Count).Product
       );
       var overloads := Seq&<sequence of FuncParamT>(Seq&<FuncParamT>());
@@ -649,27 +708,19 @@ type
       foreach var ovr in overloads do
       begin
         var enmr := ovr.GetEnumerator();
-        all_overloads += ArrGen(org_par.Length, i->
+        all_overloads += new FuncOverload(ArrGen(org_par.Length, i->
         begin
           if not enmr.MoveNext then raise new System.InvalidOperationException;
           Result := enmr.Current;
-        end);
+        end));
         if enmr.MoveNext then raise new System.InvalidOperationException;
       end;
       
     end;
     
-    public static procedure WriteGetPtrFunc(sb: StringBuilder; api: string);
-    begin
-      if not (api in ['gl','glx']) then exit;
-      sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
-      if api='glx' then
-        sb += '    external ''opengl32.dll'' name ''glXGetProcAddress'';'#10 else
-        sb += '    external ''opengl32.dll'' name ''wglGetProcAddress'';'#10;
-      sb += '    public static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
-      sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
-      sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
-    end;
+    {$endregion Overloads}
+    
+    {$region MarkUsed}
     
     public used := false;
     public procedure MarkUsed;
@@ -678,7 +729,7 @@ type
       used := true;
       InitOverloads;
       foreach var ovr in all_overloads do
-        foreach var par in is_proc ? ovr.Skip(1) : ovr do
+        foreach var par in is_proc ? ovr.pars.Skip(1) : ovr.pars do
         begin
           Group.MarkUsed(par.tname);
           Struct.MarkUsed(par.tname);
@@ -696,10 +747,13 @@ type
       if not f.used then
         Otp($'ERROR: Func [{f.name}] wasn''t used');
     
+    {$endregion MarkUsed}
+    
     public static prev_func_names := new HashSet<string>;
     public procedure Write(sb: StringBuilder; api, version: string; static_container: boolean);
     begin
       InitOverloads;
+      var arr_hlp_ovr_par := new FuncParamT(false, 0, 'IntPtr');
       
       {$region MiscInit}
       
@@ -711,7 +765,7 @@ type
           log_func_ovrs.WriteLine($'# {name}');
           foreach var ovr in all_overloads do
           begin
-            foreach var par in is_proc?ovr.Skip(1):ovr do
+            foreach var par in is_proc ? ovr.pars.Skip(1) : ovr.pars do
               log_func_ovrs.Write($' {par.ToString(true,true)}{#9}|');
             log_func_ovrs.WriteLine;
           end;
@@ -731,7 +785,7 @@ type
       if all_overloads.Count>18 then Otp($'WARNING: Too many ({all_overloads.Count}) overloads of func [{name}]');
       
       for var par_i := 1 to org_par.Length-1 do
-        if all_overloads.Any(ovr->ovr[par_i].tname.ToLower=org_par[par_i].name.ToLower) then
+        if all_overloads.Any(ovr->ovr.pars[par_i].tname.ToLower=org_par[par_i].name.ToLower) then
           org_par[par_i].name := '_' + org_par[par_i].name;
       
       var l_name := name;
@@ -740,14 +794,19 @@ type
       if api<>'gdi' then
         log.WriteLine($'Func [{name}] had api [{api}], which isn''t start of it''s name');
       prev_func_names += l_name.ToLower;
-      var l_name_esc := l_name;
-      if l_name_esc.ToLower in unallowed_words then l_name_esc := '&'+l_name_esc;
+      
+      var use_external := true;
+      case api of
+        'gl': use_external := version <= '1.1';
+      end;
+      if not use_external then
+        sb += $'    public z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
       
       {$endregion MiscInit}
       
       {$region WriteOvrT}
       
-      var WriteOvrT: procedure(ovr: array of FuncParamT; generic_names: List<string>; name: string; is_static: boolean) := (ovr,generic_names,name, is_static)->
+      var WriteOvrT: procedure(ovr: FuncOverload; generic_names: List<string>; name: string; is_static: boolean) := (ovr,generic_names,name, is_static)->
       begin
         
         var use_standart_dt := false; // единственное применение - в "Marshal.GetDelegateForFunctionPointer". Но он их и не принимает
@@ -776,12 +835,12 @@ type
           end;
         end;
         
-        if ovr.Length>1 then
+        if ovr.pars.Length>1 then
         begin
           sb += use_standart_dt ? '<' : '(';
-          for var par_i := 1 to ovr.Length-1 do
+          for var par_i := 1 to ovr.pars.Length-1 do
           begin
-            var par := ovr[par_i];
+            var par := ovr.pars[par_i];
             if not use_standart_dt then
             begin
               if par.var_arg then sb += 'var ';
@@ -800,310 +859,445 @@ type
         if not is_proc then
           if use_standart_dt then
           begin
-            if ovr.Length>1 then
+            if ovr.pars.Length>1 then
             begin
               sb.Length -= 1;
               sb += ', ';
             end else
               sb += '<';
-            sb += ovr[0].ToString(true);
+            sb += ovr.pars[0].ToString(true);
             sb += '>';
           end else
           begin
             sb += ': ';
-            sb += ovr[0].ToString(true);
+            sb += ovr.pars[0].ToString(true);
           end;
         
       end;
       
       {$endregion WriteOvrT}
       
-      var use_external := true;
-      case api of
-        'gl': use_external := version <= '1.1';
-      end;
-      
-      if not use_external then
-        sb += $'    public z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
-      
-      var PrevNtvOvrs := new Dictionary<array of FuncParamT, integer>(all_overloads.Count);
-      var PrevTempOvrGInds := new Dictionary<integer, Dictionary<List<integer>,integer> >;
+      var PrevOvrNames := new Dictionary<FuncOverload, (string,array of boolean)>;
       
       for var ovr_i := 0 to all_overloads.Count-1 do
       begin
         var ovr := all_overloads[ovr_i];
         
-        var generic_inds := new List<integer>; // индексы шаблонных параметров с шаблонным типом в temp перегрузке
-        var temp_generic_names := new List<string>; // шаблонные параметры temp перегрузки
-        var all_generic_names := new List<string>; // шаблонные параметры основной публичной перегрузки
-        
-        var init := new List<string>;
-        var finl := new List<string>;
-        var par_strs := new string[ovr.Length];
-        
         {$region Constructing ntv/temp ovrs}
         
-        var ntv_ovr := ovr.ConvertAll((par,par_i)->
+        var marshalers := ArrGen(ovr.pars.Length, i->new List<FuncParamMarshaler>);
+        
+        {$region Result}
+        if not is_proc then
         begin
-          var res_var_arg := par.var_arg;
-          var res_t := par.tname;
+          var par := ovr.pars[0];
+          var ntv := new FuncParamT(par.var_arg, 0, par.tname);
           
-          if par_i=0 then
+          var relevant_res_str := 'Result';
+          var init := new List<string>;
+          var fnls := new List<string>;
+          
+          // нельзя определить размер массива в результате
+          if par.arr_lvl<>0 then raise new System.NotSupportedException;
+          
+          if ntv.tname='string' then
           begin
-            if is_proc then
-            begin
-              Result := new FuncParamT(false,0,nil);
-              exit;
-            end;
+            var str_ptr_name := $'res_str_ptr';
             
-            // нельзя определить размер массива в результате
-            if par.arr_lvl<>0 then raise new System.NotSupportedException;
-            var relevant_par_name := 'Result';
+            fnls += $'{relevant_res_str} := Marshal.PtrToStringAnsi({str_ptr_name});';
+            if not org_par[0].readonly then
+              fnls += $'Marshal.FreeHGlobal({str_ptr_name});';
             
-            if par.tname='string' then
-            begin
-              var str_ptr_name := $'par_{par_i}_str_ptr';
-              
-              finl += $'{relevant_par_name} := Marshal.PtrToStringAnsi({str_ptr_name});';
-              // Marshal.FreeHGlobal не нужно, потому что строка в возвращаемом значении - всегда статичная строка
-              
-              par_strs[par_i] := str_ptr_name;
-              relevant_par_name := str_ptr_name;
-              res_t := 'IntPtr';
-            end;
-            
-            if relevant_par_name<>'Result' then relevant_par_name := 'var '+relevant_par_name;
-            par_strs[par_i] := relevant_par_name;
-          end else
-          begin
-            var relevant_par_name := org_par[par_i].name;
-            
-            var sres_t := res_t;
-            var generic := (res_t<>nil) and sres_t.StartsWith('T') and sres_t.Skip(1).All(ch->ch.IsDigit);
-            if generic then
-              if par.arr_lvl=0 then
-              begin
-                relevant_par_name := $'PByte(pointer(@{relevant_par_name}))^';
-                res_var_arg := true;
-                res_t := 'Byte';
-                all_generic_names += sres_t;
-              end else
-              begin
-                generic_inds += par_i;
-                temp_generic_names += sres_t;
-                all_generic_names += sres_t;
-                res_t := 'Byte';
-              end;
-            
-            if par.tname='string' then
-            begin
-              var str_ptr_arr_name := $'par_{par_i}_str_ptr';
-              
-              var str_ptr_arr_init := new StringBuilder;
-              str_ptr_arr_init += $'var {str_ptr_arr_name} := ';
-              var prev_arr_name := relevant_par_name;
-              for var i := 1 to par.arr_lvl do
-              begin
-                var new_arr_name := $'arr_el{i}';
-                str_ptr_arr_init += $'{prev_arr_name}.ConvertAll({new_arr_name}->';
-                prev_arr_name := new_arr_name;
-              end;
-              str_ptr_arr_init += $'Marshal.StringToHGlobalAnsi({prev_arr_name})';
-              str_ptr_arr_init.Append(')',par.arr_lvl);
-              str_ptr_arr_init += ';';
-              init += str_ptr_arr_init.ToString;
-              
-              var str_ptr_arr_finl := new StringBuilder;
-              prev_arr_name := str_ptr_arr_name;
-              for var i := 1 to par.arr_lvl do
-              begin
-                var new_arr_name := $'arr_el{i}';
-                str_ptr_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
-                prev_arr_name := new_arr_name;
-              end;
-              str_ptr_arr_finl += $'Marshal.FreeHGlobal({prev_arr_name});';
-              finl += str_ptr_arr_finl.ToString;
-              
-              relevant_par_name := str_ptr_arr_name;
-              res_t := 'IntPtr';
-            end;
-            
-            if par.arr_lvl>1 then
-              for var temp_arr_i := par.arr_lvl-1 downto 1 do
-              begin
-                var temp_arr_name := $'par_{par_i}_temp_arr{temp_arr_i}';
-                
-                var temp_arr_init := new StringBuilder;
-                temp_arr_init += $'var {temp_arr_name} := {relevant_par_name}';
-                for var i := 1 to temp_arr_i-1 do
-                  temp_arr_init += $'.ConvertAll(arr_el{i}->arr_el{i}';
-                temp_arr_init += $'.ConvertAll(arr_el{temp_arr_i}->begin{#10}';
-                temp_arr_init += $'        var l := sizeof({res_t})*arr_el{temp_arr_i}.Length;{#10}';
-                temp_arr_init += $'        Result := Marshal.AllocHGlobal(l);{#10}';
-                temp_arr_init += $'        Marshal.Copy(arr_el{temp_arr_i},0,Result,l);{#10}';
-                temp_arr_init += $'      end)';
-                temp_arr_init.Append(')',temp_arr_i-1);
-                temp_arr_init += ';';
-                init += temp_arr_init.ToString;
-                
-                var temp_arr_finl := new StringBuilder;
-                var prev_arr_name := temp_arr_name;
-                for var i := 1 to temp_arr_i do
-                begin
-                  var new_arr_name := $'arr_el{i}';
-                  temp_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
-                  prev_arr_name := new_arr_name;
-                end;
-                temp_arr_finl += $'Marshal.FreeHGlobal(arr_el{temp_arr_i});';
-                finl += temp_arr_finl.ToString;
-                
-                relevant_par_name := temp_arr_name;
-                res_t := 'IntPtr'; // внутри цикла, чтоб в следующей итерации "sizeof({res_t})" было правильным
-              end;
-            
-            if par.arr_lvl<>0 then
-            begin
-              res_var_arg := true;
-              par_strs[par_i] := $'{relevant_par_name}[0]';
-            end else
-              par_strs[par_i] := relevant_par_name;
-            
+            relevant_res_str := 'var '+str_ptr_name;
+            ntv.tname := 'IntPtr';
           end;
           
-          Result := new FuncParamT(res_var_arg, 0, res_t);
-        end);
+          marshalers[0] += new FuncParamMarshaler(ntv);
+          marshalers[0] += new FuncParamMarshaler(par, relevant_res_str, nil, init,fnls);
+        end;
+        {$endregion Result}
+        
+        {$region Param}
+        for var par_i := 1 to ovr.pars.Length-1 do
+        begin
+          var par := ovr.pars[par_i];
+          var ntv := new FuncParamT(par.var_arg, 0, par.tname);
+          
+          var relevant_call_str := org_par[par_i].name;
+          var generic_name: string := nil;
+          var init := new List<string>;
+          var fnls := new List<string>;
+          
+          {$region string}
+          
+          if ntv.tname='string' then
+          begin
+            var str_ptr_arr_name := $'par_{par_i}_str_ptr';
+            
+            var str_ptr_arr_init := new StringBuilder;
+            str_ptr_arr_init += $'var {str_ptr_arr_name} := ';
+            var prev_arr_name := relevant_call_str;
+            for var i := 1 to par.arr_lvl do
+            begin
+              var new_arr_name := $'arr_el{i}';
+              str_ptr_arr_init += $'{prev_arr_name}?.ConvertAll({new_arr_name}->';
+              prev_arr_name := new_arr_name;
+            end;
+            str_ptr_arr_init += $'Marshal.StringToHGlobalAnsi({prev_arr_name})';
+            str_ptr_arr_init.Append(')',par.arr_lvl);
+            str_ptr_arr_init += ';';
+            init += str_ptr_arr_init.ToString;
+            
+            var str_ptr_arr_finl := new StringBuilder;
+            prev_arr_name := str_ptr_arr_name;
+            for var i := 1 to par.arr_lvl do
+            begin
+              var new_arr_name := $'arr_el{i}';
+              str_ptr_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
+              prev_arr_name := new_arr_name;
+            end;
+            str_ptr_arr_finl += $'Marshal.FreeHGlobal({prev_arr_name});';
+            fnls += str_ptr_arr_finl.ToString;
+            
+            relevant_call_str := str_ptr_arr_name;
+            ntv.tname := 'IntPtr';
+          end;
+          
+          {$endregion string}
+          
+          {$region array}
+          
+          if par.arr_lvl>1 then
+            for var temp_arr_i := par.arr_lvl-1 downto 1 do
+            begin
+              var temp_arr_name := $'par_{par_i}_temp_arr{temp_arr_i}';
+              
+              var temp_arr_init := new StringBuilder;
+              temp_arr_init += $'var {temp_arr_name} := {relevant_call_str}';
+              for var i := 1 to temp_arr_i-1 do
+                temp_arr_init += $'?.ConvertAll(arr_el{i}->arr_el{i}';
+              temp_arr_init += $'?.ConvertAll(arr_el{temp_arr_i}->begin';
+              init += temp_arr_init.ToString;
+              init += $'  if arr_el{temp_arr_i}=nil then';
+              init += $'    Result := IntPtr.Zero else';
+              init += $'  begin';
+              init += $'    var l := Marshal.SizeOf&<{ntv.tname}>*arr_el{temp_arr_i}.Length;';
+              init += $'    Result := Marshal.AllocHGlobal(l);';
+              init += $'    Marshal.Copy(arr_el{temp_arr_i},0,Result,l);';
+              init += $'  end;';
+              init += Concat('end)', ')'*(temp_arr_i-1), ';');
+              
+              var temp_arr_finl := new StringBuilder;
+              var prev_arr_name := temp_arr_name;
+              for var i := 1 to temp_arr_i do
+              begin
+                var new_arr_name := $'arr_el{i}';
+                temp_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
+                prev_arr_name := new_arr_name;
+              end;
+              temp_arr_finl += $'Marshal.FreeHGlobal(arr_el{temp_arr_i});';
+              fnls += temp_arr_finl.ToString;
+              
+              relevant_call_str := temp_arr_name;
+              ntv.tname := 'IntPtr'; // внутри цикла для того, чтоб в следующей итерации "sizeof({ntv.tname})" было правильным
+            end;
+          
+          if par.arr_lvl<>0 then
+          begin
+            ntv.var_arg := true;
+            // Учтено ниже
+            // Перед получением [0] - надо сначала проверить на nil
+//            relevant_call_str += '[0]';
+          end;
+          
+          {$endregion array}
+          
+          {$region genetic}
+          
+          if ntv.tname.StartsWith('T') and ntv.tname.Skip(1).All(ch->ch.IsDigit) then
+          begin
+            generic_name := ntv.tname;
+            
+            if par.arr_lvl=0 then
+            begin
+              if not ntv.var_arg then raise new System.NotSupportedException;
+            end else
+            begin
+              ntv.var_arg := true;
+              
+              marshalers[par_i] += new FuncParamMarshaler(par, relevant_call_str, generic_name, init,fnls);
+              par := new FuncParamT(true, 0, generic_name);
+              relevant_call_str := org_par[par_i].name;
+              init := new List<string>;
+              fnls := new List<string>;
+              
+            end;
+            
+            relevant_call_str := $'PByte(pointer(@{relevant_call_str}))^';
+            ntv.tname := 'Byte';
+          end;
+          
+          {$endregion genetic}
+          
+          marshalers[par_i] += new FuncParamMarshaler(par, relevant_call_str, generic_name, init,fnls);
+          marshalers[par_i] += new FuncParamMarshaler(ntv);
+          marshalers[par_i].Reverse;
+        end;
+        {$endregion Param}
         
         {$endregion Constructing ntv/temp ovrs}
         
-        {$region ntv/temp ovrs codegeneration}
-        var relevant_ovr_name: string;
+        {$region Code-generation}
+        var max_marshal_chain := marshalers.Max(lst->lst.Count);
+        
+        // имя перегрузки, обрабатываемой на текущей итерации m_ovr_i
+        // имена _anh сюда не попадают
+        var relevant_ovr_name: (string,array of boolean) := nil;
+        for var m_ovr_i := 0 to max_marshal_chain-1 do
         begin
+          var ms := ArrGen(marshalers.Length, par_i->
+            m_ovr_i < marshalers[par_i].Count ?
+              marshalers[par_i][m_ovr_i] : nil
+          );
           
-          var same_ntv_ovr_ind := PrevNtvOvrs.Where(kvp->ntv_ovr.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
-          if same_ntv_ovr_ind <> -1 then
+          // имя перегрузки, обработанной на предыдущей итерации m_ovr_i
+          // имена _anh сюда попадают только если перегрузку нашло в PrevOvrNames
+          var prev_ovr_name := relevant_ovr_name;
+          
+          marshalers.Select(m_lst->
+            (m_ovr_i < m_lst.Count-1) and
+            (m_lst[m_ovr_i+1].par.arr_lvl <> 0)
+          ).Aggregate(Seq&<sequence of boolean>(Seq&<boolean>()), (prev, b)->
           begin
-            relevant_ovr_name := $'z_{l_name}_ovr_{same_ntv_ovr_ind}';
-            if generic_inds.Count<>0 then
-            begin
-              var PrevTempOvrs := PrevTempOvrGInds[same_ntv_ovr_ind];
-              var same_temp_ovr_ind := PrevTempOvrs.Where(kvp->generic_inds.SequenceEqual(kvp.Key)).Select(kvp->kvp.Value).DefaultIfEmpty(-1).First;
-              if same_temp_ovr_ind <> -1 then
-              begin
-                relevant_ovr_name := $'temp_{l_name}_ovr_{same_temp_ovr_ind}';
-                generic_inds.Clear;
-              end;
-            end;
-          end else
+            var res := prev.Select(v->v.Append(false));
+            if b then
+              res := res + prev.Select(v->v.Append(true));
+            Result := res;
+          end).Select(v->v.ToArray)
+          .Foreach((nil_arr_par_flags, nil_arr_hlp_ovr_i)->
           begin
-            PrevNtvOvrs[ntv_ovr] := ovr_i;
-            relevant_ovr_name := $'z_{l_name}_ovr_{ovr_i}';
+            var curr_ovr_holey := new FuncOverload( ms.ConvertAll((m,par_i)->nil_arr_par_flags[par_i] ? arr_hlp_ovr_par : m?.par) );
+            var curr_ovr := new FuncOverload( curr_ovr_holey.pars.ConvertAll((par,par_i)->par as object=nil ? ovr.pars[par_i] : par) );
             
-            {$region ntv}
+            {$region Name construction}
             
-            if use_external then
+            var is_static := static_container;
+            
+            var ovr_name: (string,array of boolean);
+            var vis := 'public';
+            if m_ovr_i=max_marshal_chain-1 then
             begin
-              var temp_ovr_name := '_'+relevant_ovr_name;
-              
-              sb += '    private ';
-              WriteOvrT(ntv_ovr,nil, temp_ovr_name, true);
-              sb += ';'#10;
-              if api='gdi' then
-                sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
-                sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
-              
-              sb += $'    public static {relevant_ovr_name}';
-              if (org_par.Length=1) and not is_proc then
-              begin
-                sb += ': ';
-                WriteOvrT(ntv_ovr,nil, nil, false);
-              end;
-              sb += $' := {temp_ovr_name};' + #10;
-              
+              ovr_name := (l_name, new boolean[0]);
+              is_static := is_static or use_external;
+            end else
+            if PrevOvrNames.TryGetValue(curr_ovr, ovr_name) then
+            begin
+              if nil_arr_hlp_ovr_i=0 then relevant_ovr_name := ovr_name;
+              exit;
             end else
             begin
+              var ovr_name_str: string;
+              var ovr_name_arr_nil := nil_arr_par_flags;
               
-              sb += $'    public {relevant_ovr_name} := GetFuncOrNil&<';
-              WriteOvrT(ntv_ovr,nil, nil, false);
-              sb += $'>(z_{l_name}_adr);'+#10;
+              if m_ovr_i=0 then
+                ovr_name_str := $'z_{l_name}_ovr_{ovr_i}' else
+              begin
+                vis := 'private';
+                ovr_name_str := $'temp_{l_name}_ovr_{ovr_i}';
+              end;
+              
+              ovr_name := (ovr_name_str, ovr_name_arr_nil);
+              
+              if nil_arr_hlp_ovr_i = 0 then
+              begin
+                relevant_ovr_name := ovr_name;
+                PrevOvrNames.Add(curr_ovr, ovr_name);
+              end else
+                vis := 'private';
               
             end;
             
-            {$endregion ntv}
+            var ovr_name_str := ovr_name[0];
+            if ovr_name[1].Any(b->b) then
+              ovr_name_str += '_anh' + ovr_name[1].Select(b->b?'1':'0').JoinToString else
+            if ovr_name_str.ToLower in unallowed_words then
+              ovr_name_str := '&'+ovr_name_str;
             
-          end;
-          
-          {$region temp}
-          
-          if generic_inds.Count<>0 then
-          begin
-            var relevant_ntv_ovr_ind := same_ntv_ovr_ind=-1 ? ovr_i : same_ntv_ovr_ind;
-            if not PrevTempOvrGInds.ContainsKey(relevant_ntv_ovr_ind) then PrevTempOvrGInds[relevant_ntv_ovr_ind] := new Dictionary<List<integer>, integer>;
-            PrevTempOvrGInds[relevant_ntv_ovr_ind].Add(generic_inds, ovr_i);
+            {$endregion Name construction}
             
-            var temp_z_ovr_name := $'temp_{l_name}_ovr_{ovr_i}';
-            
-            sb += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-            WriteOvrT(ntv_ovr.ConvertAll((par,par_i)->
+            if m_ovr_i=0 then
             begin
-              var g_ind := generic_inds.IndexOf(par_i);
-              Result := g_ind=-1 ? par : new FuncParamT(true, par.arr_lvl, temp_generic_names[g_ind]);
-            end),temp_generic_names, temp_z_ovr_name, use_external);
-            sb += ' :='#10;
-            sb += $'    {relevant_ovr_name}(';
-            for var par_i := 1 to ntv_ovr.Length-1 do
+              {$region ntv}
+              
+              if use_external then
+              begin
+                var ext_ovr_name := '_'+ovr_name_str;
+                
+                sb += '    private ';
+                WriteOvrT(curr_ovr,nil, ext_ovr_name, true);
+                sb += ';'#10;
+                if api='gdi' then
+                  sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
+                  sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
+                
+                sb += $'    {vis} static {ovr_name_str}';
+                if (org_par.Length=1) and not is_proc then
+                begin
+                  sb += ': ';
+                  WriteOvrT(curr_ovr,nil, nil, false);
+                end;
+                sb += $' := {ext_ovr_name};' + #10;
+                
+              end else
+              begin
+                
+                sb += $'    {vis} {ovr_name_str} := GetFuncOrNil&<';
+                WriteOvrT(curr_ovr,nil, nil, false);
+                sb += $'>(z_{l_name}_adr);'+#10;
+                
+              end;
+              
+              {$endregion ntv}
+            end else
             begin
-              sb += par_i in generic_inds ? $'PByte(pointer(@{org_par[par_i].name}))^' : org_par[par_i].name ;
-              sb += ', ';
+              {$region non-ntv}
+              
+              var generic_names := new List<string>;
+              foreach var par_i in ms.Indices do
+                if (ms[par_i]<>nil) and (ms[par_i].generic_name<>nil) and not nil_arr_par_flags[par_i] then
+                  generic_names += ms[par_i].generic_name;
+              
+              var need_block :=
+                ms.Any(m-> (m?.init<>nil) and (m.init.Count<>0) ) or
+                ms.Any(m-> (m?.fnls<>nil) and (m.fnls.Count<>0) )
+              ;
+              var tabs := 2 + integer(need_block);
+              
+              sb += $'    {vis} [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
+              WriteOvrT(curr_ovr, generic_names, ovr_name_str, is_static);
+              
+              if need_block then
+              begin
+                sb += ';'#10;
+                sb += '    begin'#10;
+              end else
+                sb += ' :='#10;
+              
+              if need_block then foreach var m in ms do if m?.init<>nil then
+                foreach var l in m.init do
+                begin
+                  sb += '  '*3;
+                  sb += l;
+                  sb += #10;
+                end;
+              
+              var arr_par_inds := Range(0, curr_ovr.pars.Length-1)
+              .Where(par_i->
+                (curr_ovr_holey.pars[par_i] <> nil) and
+                (curr_ovr.pars[par_i].arr_lvl <> 0)
+              ).ToHashSet;
+              
+              var nil_arr_call_flags := new List<boolean>;
+              var cont_call_cascade := true;
+              while cont_call_cascade do
+                if nil_arr_call_flags.Count < curr_ovr.pars.Length then
+                begin
+                  
+                  if nil_arr_call_flags.Count in arr_par_inds then
+                  begin
+                    sb += '  '*tabs;
+                    sb += $'if {ms[nil_arr_call_flags.Count].call_str}<>nil then';
+                    sb += #10;
+                    tabs += 1;
+                  end;
+                  
+                  nil_arr_call_flags += false;
+                end else
+                begin
+                  
+                  sb += '  '*tabs;
+                  if need_block and not is_proc then
+                  begin
+                    sb += ms[0]=nil ? 'Result' : ms[0].call_str;
+                    sb += ' := '
+                  end;
+                  
+                  sb += prev_ovr_name[0];
+                  if prev_ovr_name[1].Any(b->b) or nil_arr_call_flags.Any(b->b) then
+                  begin
+                    sb += '_anh';
+                    for var par_i := 0 to curr_ovr.pars.Length-1 do
+                      sb += prev_ovr_name[1][par_i] or nil_arr_call_flags[par_i] ? '1' : '0';
+                  end;
+                  
+                  if curr_ovr.pars.Length>1 then
+                  begin
+                    sb += '(';
+                    for var par_i := 1 to ms.Length-1 do
+                    begin
+                      if nil_arr_call_flags[par_i] then
+                        sb += 'IntPtr.Zero' else
+                      if nil_arr_par_flags[par_i] then
+                        sb += 'PByte(nil)^' else
+                      begin
+                        sb += ms[par_i]=nil ? org_par[par_i].name : ms[par_i].call_str;
+                        if arr_par_inds.Contains(par_i) and (curr_ovr.pars[par_i].arr_lvl <> 0) then sb += '[0]';
+                      end;
+                      sb += ', ';
+                    end;
+                    sb.Length -= ', '.Length;
+                    sb += ')';
+                  end;
+                  sb += ' else'#10;
+                  
+                  while true do
+                  begin
+                    var last_ind := nil_arr_call_flags.Count-1;
+                    var last := nil_arr_call_flags[last_ind];
+                    nil_arr_call_flags.RemoveAt(last_ind);
+                    
+                    if arr_par_inds.Contains(last_ind) then
+                    begin
+                      if last then
+                        tabs -= 1 else
+                      begin
+                        nil_arr_call_flags += true;
+                        break;
+                      end;
+                    end;
+                    
+                    if nil_arr_call_flags.Count=0 then
+                    begin
+                      cont_call_cascade := false;
+                      break;
+                    end;
+                  end;
+                  
+                end;
+              sb.Length -= ' else'#10.Length;
+              sb += ';'#10;
+              
+              if need_block then foreach var m in ms do if m?.fnls<>nil then
+                foreach var l in m.fnls do
+                begin
+                  sb += '  '*3;
+                  sb += l;
+                  sb += #10;
+                end;
+              
+              if need_block then
+                sb += '    end;'#10;
+              
+              {$endregion non-ntv}
             end;
-            sb.Length -= 2;
-            sb += ');'#10;
             
-            relevant_ovr_name := temp_z_ovr_name;
-          end;
-          
-          {$endregion temp}
+          end);
           
         end;
-        {$endregion ntv/temp ovrs codegeneration}
         
-        sb += '    public [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-        WriteOvrT(ovr,all_generic_names, l_name_esc, static_container);
-        sb += ';'#10;
-        sb += '    begin'#10;
+        {$endregion Code-generation}
         
-        foreach var l in init do
-        begin
-          sb += '      ';
-          sb += l;
-          sb += #10;
-        end;
-        
-        sb += '      ';
-        if not is_proc then sb += $'{par_strs[0]} := ';
-        sb += relevant_ovr_name;
-        if ovr.Length>1 then
-        begin
-          sb += '(';
-          foreach var par_str in par_strs.Skip(1) do
-          begin
-            sb += par_str;
-            sb += ', ';
-          end;
-          sb.Length -= 2;
-          sb += ')';
-        end;
-        sb += ';'#10;
-        
-        foreach var l in finl do
-        begin
-          sb += '      ';
-          sb += l;
-          sb += #10;
-        end;
-        
-        sb += '    end;'#10;
       end;
-      
       
       sb += '    '#10;
     end;
@@ -1511,6 +1705,37 @@ type
     public function Apply(gr: Group): boolean; override;
     begin
       gr.name := new_name;
+      gr.FinishInit;
+      self.used := true;
+      Result := false;
+    end;
+    
+  end;
+  GroupAddEnumFixer = sealed class(GroupFixer)
+    public enums := new List<(string,int64)>;
+    
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(name);
+      
+      foreach var l in data.Where(l->not string.IsNullOrWhiteSpace(l)) do
+      begin
+        var s := l.Split('=');
+        var key := s[0].Trim;
+        var val := s[1].Trim;
+        enums += (key, val.StartsWith('0x') ?
+          System.Convert.ToInt64(val, 16) :
+          System.Convert.ToInt64(val)
+        );
+      end;
+      
+    end;
+    
+    public function Apply(gr: Group): boolean; override;
+    begin
+      foreach var t in enums do
+        gr.enums.Add(t[0],t[1]);
+      gr.FinishInit;
       self.used := true;
       Result := false;
     end;
@@ -1560,6 +1785,7 @@ begin
       'remove':     GroupRemover          .Create(gr[0], bl[1]);
       
       'rename':     GroupNameFixer        .Create(gr[0], bl[1]);
+      'add_enum':   GroupAddEnumFixer     .Create(gr[0], bl[1]);
       'cust_memb':  GroupCustopMemberFixer.Create(gr[0], bl[1]);
       
       else raise new MessageException($'Invalid group fixer type [!{bl[0]}] for group [{gr[0]}]');
@@ -1817,7 +2043,7 @@ type
   end;
   
   FuncOvrsFixerBase = abstract class(FuncFixer)
-    public ovrs := new List<array of FuncParamT>;
+    public ovrs := new List<FuncOverload>;
     
     public constructor(name: string; data: sequence of string);
     begin
@@ -1830,7 +2056,7 @@ type
         
         if not string.IsNullOrWhiteSpace(s[s.Length-1]) then raise new System.FormatException(l);
         
-        ovrs += ArrGen(s.Length-1, i->new FuncParamT(s[i]) );
+        ovrs += new FuncOverload(ArrGen(s.Length-1, i->new FuncParamT(s[i]) ));
       end;
       
     end;
@@ -1840,20 +2066,17 @@ type
   end;
   FuncReplOvrsFixer = sealed class(FuncOvrsFixerBase)
     
-    public static function PrepareOvr(add_void: boolean; ovr: array of FuncParamT): array of FuncParamT;
+    public static function PrepareOvr(add_void: boolean; ovr: FuncOverload): FuncOverload;
     begin
       if add_void then
       begin
-        var res := new FuncParamT[ovr.Length+1];
+        var res := new FuncParamT[ovr.pars.Length+1];
         res[0] := new FuncParamT(false,0,nil);
-        ovr.CopyTo(res,1);
-        Result := res;
+        ovr.pars.CopyTo(res,1);
+        Result := new FuncOverload(res);
       end else
         Result := ovr;
     end;
-    
-    public static function ContainsOvr(lst: List<array of FuncParamT>; ovr: array of FuncParamT) :=
-    lst.Any(povr->povr.SequenceEqual(ovr));
     
     public function Apply(f: Func): boolean; override;
     begin
@@ -1863,11 +2086,11 @@ type
       foreach var ovr in ovrs do
       begin
         var povr := PrepareOvr(f.is_proc, ovr);
-        if f.org_par.Length<>povr.Length then
-          raise new MessageException($'ERROR: [FuncReplOvrsFixer] of func [{self.name}] had wrong param count: {f.org_par.Length} org vs {povr.Length} custom');
+        if f.org_par.Length<>povr.pars.Length then
+          raise new MessageException($'ERROR: [FuncReplOvrsFixer] of func [{self.name}] had wrong param count: {f.org_par.Length} org vs {povr.pars.Length} custom');
         
-        if ContainsOvr(f.all_overloads, povr) then
-          Otp($'ERROR: [FuncReplOvrsFixer] of func [{f.name}] failed to add overload [{povr.JoinToString}]') else
+        if f.all_overloads.Contains(povr) then
+          Otp($'ERROR: [FuncReplOvrsFixer] of func [{f.name}] failed to add overload [{povr.pars.JoinToString}]') else
           f.all_overloads += povr;
         
       end;
@@ -1885,14 +2108,14 @@ type
       
       var expected_ovr_l := f.org_par.Length - integer(f.is_proc);
       foreach var ovr in ovrs do
-        if ovr.Length<>expected_ovr_l then
-          raise new MessageException($'ERROR: [FuncLimitOvrsFixer] of func [{f.name}] had wrong param count: {f.org_par.Length} org vs {ovr.Length+integer(f.is_proc)} custom');
+        if ovr.pars.Length<>expected_ovr_l then
+          raise new MessageException($'ERROR: [FuncLimitOvrsFixer] of func [{f.name}] had wrong param count: {f.org_par.Length} org vs {ovr.pars.Length+integer(f.is_proc)} custom');
       
       var unused_t_ovrs := self.ovrs.ToList;
       f.all_overloads.RemoveAll(fovr->
         not self.ovrs.Any(tovr->
         begin
-          Result := tovr.Zip(fovr,
+          Result := tovr.pars.Zip(fovr.pars,
             (tp,fp)-> (tp.tname='*') or (tp=fp)
           ).All(b->b);
           if Result then unused_t_ovrs.Remove(tovr);

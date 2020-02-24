@@ -201,14 +201,8 @@ type
     
     public static procedure operator+=(l: __EventList; ev: __EventList);
     begin
-      {$ifdef DebugMode}
       for var i := 0 to ev.count-1 do
         l += ev[i];
-      exit;
-      {$endif DebugMode}
-      if ev.count=0 then exit;
-      System.Buffer.BlockCopy( ev.evs,0, l.evs,l.count*cl_event.Size, ev.count*cl_event.Size );
-      l.count += ev.count;
     end;
     
     public static function operator+(l1,l2: __EventList): __EventList;
@@ -1550,12 +1544,13 @@ type
     
     public function GetAllKernels: Dictionary<string, Kernel>;
     begin
+      // Можно и "cl.CreateKernelsInProgram", но тогда имена придётся получать отдельно, а они нужны
       
       var names_char_len: UIntPtr;
-      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_NUM_KERNELS, new UIntPtr(UIntPtr.Size), @names_char_len, nil).RaiseIfError;
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_KERNEL_NAMES, UIntPtr.Zero,IntPtr.Zero, names_char_len).RaiseIfError;
       
-      var names_ptr := Marshal.AllocHGlobal(IntPtr(pointer(names_char_len))+1);
-      cl.GetProgramInfo(_program, ProgramInfoType.KERNEL_NAMES, names_char_len, pointer(names_ptr), nil).RaiseIfError;
+      var names_ptr := Marshal.AllocHGlobal(IntPtr(pointer(names_char_len)));
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_KERNEL_NAMES, names_char_len,names_ptr, IntPtr.Zero).RaiseIfError;
       
       var names := Marshal.PtrToStringAnsi(names_ptr).Split(';');
       Marshal.FreeHGlobal(names_ptr);
@@ -1573,14 +1568,10 @@ type
     public function Serialize: array of byte;
     begin
       var bytes_count: UIntPtr;
-      cl.GetProgramInfo(_program, ProgramInfoType.BINARY_SIZES, new UIntPtr(UIntPtr.Size), @bytes_count, nil).RaiseIfError;
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_BINARY_SIZES, new UIntPtr(UIntPtr.Size),bytes_count, IntPtr.Zero).RaiseIfError;
       
-      var bytes_mem := Marshal.AllocHGlobal(IntPtr(pointer(bytes_count)));
-      cl.GetProgramInfo(_program, ProgramInfoType.BINARIES, new UIntPtr(UIntPtr.Size), @bytes_mem, nil).RaiseIfError;
-      
-      Result := new byte[bytes_count.ToUInt64()];
-      Marshal.Copy(bytes_mem,Result, 0,Result.Length);
-      Marshal.FreeHGlobal(bytes_mem);
+      Result := new byte[bytes_count.ToUInt64];
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_BINARIES, bytes_count,Result[0], IntPtr.Zero).RaiseIfError;
       
     end;
     
@@ -1599,17 +1590,16 @@ type
     
     public static function Deserialize(c: Context; bin: array of byte): ProgramCode;
     begin
-      var ec: ErrorCode;
-      
       Result := new ProgramCode;
-      
-      var gchnd := GCHandle.Alloc(bin, GCHandleType.Pinned);
-      var bin_mem: ^byte := pointer(gchnd.AddrOfPinnedObject);
       var bin_len := new UIntPtr(bin.Length);
       
-      Result._program := cl.CreateProgramWithBinary(c._context,1,@c._device, @bin_len, @bin_mem, nil, @ec);
+      var bin_arr: array of array of byte;
+      SetLength(bin_arr,1);
+      bin_arr[0] := bin;
+      
+      var ec: ErrorCode;
+      Result._program := cl.CreateProgramWithBinary(c._context,1,c._device, bin_len,bin_arr, IntPtr.Zero,ec);
       ec.RaiseIfError;
-      gchnd.Free;
       
     end;
     
@@ -1850,7 +1840,7 @@ begin
     if cq=cl_command_queue.Zero then
     begin
       var ec: ErrorCode;
-      cq := cl.CreateCommandQueue(c._context, c._device, CommandQueuePropertyFlags.NONE, ec);
+      cq := cl.CreateCommandQueueWithProperties(c._context,c._device, IntPtr.Zero, ec);
       ec.RaiseIfError;
     end;
     
@@ -2853,7 +2843,7 @@ type
     if cq=cl_command_queue.Zero then
     begin
       var ec: ErrorCode;
-      cq := cl.CreateCommandQueue(c._context, c._device, CommandQueuePropertyFlags.NONE, ec);
+      cq := cl.CreateCommandQueueWithProperties(c._context,c._device, IntPtr.Zero, ec);
       ec.RaiseIfError;
     end;
     
@@ -2984,7 +2974,7 @@ type
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(len.Get),
           ptr.Get,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3029,10 +3019,10 @@ type
       begin
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 1,
+          l_cq, b.memobj, Bool.BLOCKING,
           new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
           Marshal.UnsafeAddrOfPinnedArrayElement(a.WaitAndGet,0),
-          0,nil,nil
+          0,IntPtr.Zero,IntPtr.Zero
         ).RaiseIfError;
         
         Result := cl_event.Zero;
@@ -3055,7 +3045,7 @@ type
     
     public constructor(val: T; offset_q: CommandQueue<integer>);
     begin
-      self.val      := new IntPtr(__NativUtils.CopyToUnm(val));
+      self.val      := __NativUtils.CopyToUnm(val);
       self.offset_q := offset_q;
     end;
     
@@ -3071,7 +3061,7 @@ type
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(Marshal.SizeOf&<T>),
           self.val,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3112,10 +3102,10 @@ type
       Result := (b, l_c, l_cq, prev_ev)->
       begin
         var res_ev: cl_event;
-        var val_ptr := new IntPtr(__NativUtils.CopyToUnm(val.Get()));
+        var val_ptr := __NativUtils.CopyToUnm(val.Get());
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(Marshal.SizeOf&<T>),
           val_ptr,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3186,7 +3176,7 @@ type
         var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(len.Get),
           ptr.Get,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3231,10 +3221,10 @@ type
       begin
         
         cl.EnqueueReadBuffer(
-          l_cq, b.memobj, 1,
+          l_cq, b.memobj, Bool.BLOCKING,
           new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
           Marshal.UnsafeAddrOfPinnedArrayElement(a.WaitAndGet,0),
-          0,nil,nil
+          0,IntPtr.Zero,IntPtr.Zero
         ).RaiseIfError;
         
         Result := cl_event.Zero;
@@ -3348,8 +3338,8 @@ type
           new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
           prev_ev.count,prev_ev.evs,res_ev
         ).RaiseIfError;
-        cl.WaitForEvents(1,@res_ev);
-        cl.ReleaseEvent(res_ev);
+        cl.WaitForEvents(1,res_ev).RaiseIfError;
+        cl.ReleaseEvent(res_ev).RaiseIfError;
         
         a_hnd.Free;
         Result := cl_event.Zero;
@@ -3372,7 +3362,7 @@ type
     
     public constructor(val: T; offset_q, len_q: CommandQueue<integer>);
     begin
-      self.val      := new IntPtr(__NativUtils.CopyToUnm(val));
+      self.val      := __NativUtils.CopyToUnm(val);
       self.offset_q := offset_q;
       self.len_q    := len_q;
     end;
@@ -3434,7 +3424,7 @@ type
       Result := (b, l_c, l_cq, prev_ev)->
       begin
         var res_ev: cl_event;
-        var val_ptr := new IntPtr(__NativUtils.CopyToUnm(val.Get()));
+        var val_ptr := __NativUtils.CopyToUnm(val.Get());
         
         cl.EnqueueFillBuffer(
           l_cq, b.memobj,
@@ -3706,7 +3696,7 @@ begin
   if self.memobj<>cl_mem.Zero then Dispose;
   GC.AddMemoryPressure(Size64);
   var ec: ErrorCode;
-  self.memobj := cl.CreateBuffer(c._context, MemoryFlags.READ_WRITE, self.sz, IntPtr.Zero, ec);
+  self.memobj := cl.CreateBuffer(c._context, MemFlags.MEM_READ_WRITE, self.sz, IntPtr.Zero, ec);
   ec.RaiseIfError;
 end;
 
@@ -3722,7 +3712,7 @@ begin
     new UIntPtr( offset ),
     new UIntPtr( size )
   );
-  Result.memobj := cl.CreateSubBuffer(self.memobj, MemoryFlags.READ_WRITE, BufferCreateType.REGION, pointer(@reg), ec);
+  Result.memobj := cl.CreateSubBuffer(self.memobj, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION,reg, ec);
   ec.RaiseIfError;
   
 end;

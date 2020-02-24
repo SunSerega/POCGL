@@ -17,7 +17,7 @@ begin
         sw.WriteLine($'    public val: {tt};');
         sw.WriteLine($'    public constructor(val: {tt}) := self.val := val;');
         sw.WriteLine($'    public static property Zero: {tname} read default({tname});');
-        sw.WriteLine($'    public static property Size: integer read sizeof({tt});');
+        sw.WriteLine($'    public static property Size: integer read Marshal.SizeOf&<{tt}>;');
         sw.WriteLine($'  end;');
       end;
     

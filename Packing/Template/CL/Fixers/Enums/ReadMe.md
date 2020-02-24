@@ -18,6 +18,7 @@ Genral syntax of `.dat` files:
 - `!add`
 - `!remove`
 - `!rename`
+- `!add_enum`
 - `!cust_memb`
 
 ---
@@ -54,6 +55,17 @@ Syntax:
 # OldEnumName
 !rename
 NewEnumName
+```
+
+---
+### !add_enum
+
+Syntax:
+```
+# GroupName
+!add_enum
+val1	= 1
+val2	= 0x2
 ```
 
 ---
