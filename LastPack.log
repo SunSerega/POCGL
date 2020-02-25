@@ -193,16 +193,12 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.pas"
 Tester: Finished compiling: ERRОR
-Tester: %WARNING: Settings updated for "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
 Tester: Finished compiling: ERRОR
-Tester: %WARNING: Settings updated for "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
 Tester: Finished compiling: ERRОR
-Tester: %WARNING: Settings updated for "Samples\OpenCL\MatrMlt.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\SimpleAddition.pas"
 Tester: Finished compiling: ERRОR
-Tester: %WARNING: Settings updated for "Samples\OpenCL\SimpleAddition.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -232,17 +228,13 @@ Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#
 Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Finished runing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: Finished runing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: ERROR: Execution took too long for "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.exe"
 Tester: Runing Test[Tests\Exec\CLABC\ErrOtp]
 Tester: Finished runing Test[Tests\Exec\CLABC\ErrOtp]
 Tester: Runing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Finished runing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Runing Test[Tests\Exec\GL\Mtr.Translate]
 Tester: Finished runing Test[Tests\Exec\GL\Mtr.Translate]
-Tester: WARNING: File "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.td" updated
-Tester: WARNING: File "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.td" updated
-Tester: WARNING: File "Samples\OpenCL\MatrMlt.td" updated
-Tester: WARNING: File "Samples\OpenCL\SimpleAddition.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

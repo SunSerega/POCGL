@@ -1183,6 +1183,7 @@ type
                   generic_names += ms[par_i].generic_name;
               
               var need_block :=
+                (generic_names.Count <> 0) or
                 ms.Any(m-> (m?.init<>nil) and (m.init.Count<>0) ) or
                 ms.Any(m-> (m?.fnls<>nil) and (m.fnls.Count<>0) )
               ;
@@ -1193,7 +1194,19 @@ type
               
               if need_block then
               begin
-                sb += ';'#10;
+                sb += ';';
+                if generic_names.Count<>0 then
+                begin
+                  sb += ' where ';
+                  foreach var gn in generic_names do
+                  begin
+                    sb += gn;
+                    sb += ', ';
+                  end;
+                  sb.Length -= 2;
+                  sb += ': record;';
+                end;
+                sb += #10;
                 sb += '    begin'#10;
               end else
                 sb += ' :='#10;
