@@ -591,7 +591,6 @@ type
     end;
     
     private static All := new List<Func>;
-    private static ByName: Dictionary<string, Struct> := nil;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
@@ -1060,6 +1059,7 @@ type
         
         {$region Code-generation}
         var max_marshal_chain := marshalers.Max(lst->lst.Count);
+        if max_marshal_chain<2 then max_marshal_chain := 2;
         
         // имя перегрузки, обрабатываемой на текущей итерации m_ovr_i
         // имена _anh сюда не попадают
@@ -1434,7 +1434,7 @@ type
         begin
           if api<>'gdi' then
             sb += $'    // added in {api}{all_funcs[f]}'+#10;
-          f.Write(sb, api,all_funcs[f], class_type='static');
+          f.Write(sb, api,all_funcs[f], is_static);
         end;
       
       Func.prev_func_names.Clear;
@@ -1450,7 +1450,7 @@ type
       begin
         if api<>'gdi' then
           sb += $'    // added in {api}{all_funcs[f]}, deprecated in {api}{deprecated[f]}'+#10;
-        f.Write(sb, api,all_funcs[f], class_type='static');
+        f.Write(sb, api,all_funcs[f], is_static);
       end;
       
       Func.prev_func_names.Clear;

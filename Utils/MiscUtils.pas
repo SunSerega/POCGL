@@ -400,6 +400,9 @@ begin
   if not System.IO.File.Exists(fname) then raise new System.IO.FileNotFoundException(nil,fname);
   if l_otp=nil then l_otp := l->MiscUtils.Otp(l.ConvStr(s->$'{nick}: {s}'));
   
+  foreach var p in Process.GetProcessesByName(fname.Substring(fname.LastIndexOf('\')+1)) do
+    p.Kill;
+  
   MiscUtils.Otp($'Runing {nick}');
   
   var psi := new ProcessStartInfo(fname, pars.Append('"SecondaryProc"').JoinIntoString);
@@ -467,6 +470,9 @@ procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->());
 begin
   fname := GetFullPath(fname);
   var nick := fname.Substring(fname.LastIndexOf('\')+1);
+  
+  foreach var p in Process.GetProcessesByName(nick) do
+    p.Kill;
   
   if l_otp=nil then l_otp := MiscUtils.Otp;
   if err=nil then err := s->raise new MessageException($'Error compiling "{fname}": {s}');

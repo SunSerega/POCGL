@@ -92,6 +92,7 @@ type
   
 begin
   try
+    var CommandLineArgs := PABCSystem.CommandLineArgs();
     if not CommandLineArgs.Contains('SecondaryProc') then CommandLineArgs := Arr('fname=OpenCLABC');
     
     var fname := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;

@@ -91,6 +91,7 @@ end;
 
 begin
   try
+    var CommandLineArgs := PABCSystem.CommandLineArgs();
     if not CommandLineArgs.Contains('SecondaryProc') then CommandLineArgs := Arr('fname=Packing\Template\GL\0OpenGL.template');
     
     var inp_fname := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
