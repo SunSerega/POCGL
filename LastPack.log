@@ -68,8 +68,6 @@ Finished runing Template[OpenCL]
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
-Comments[OpenCLABC]: WARNING: key %Context.(DeviceTypeFlags)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %c.ctorD% wasn't used!
 Finished runing Comments[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
@@ -228,7 +226,7 @@ Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#
 Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Finished runing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: ERROR: Execution took too long for "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.exe"
+Tester: Finished runing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
 Tester: Runing Test[Tests\Exec\CLABC\ErrOtp]
 Tester: Finished runing Test[Tests\Exec\CLABC\ErrOtp]
 Tester: Runing Test[Tests\Exec\GL\Mtr.Rotate3D]

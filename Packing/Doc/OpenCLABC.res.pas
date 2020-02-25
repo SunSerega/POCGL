@@ -138,7 +138,7 @@ type
   
   ProgramCode = class;
   
-  DeviceTypeFlags = OpenCL.DeviceTypeFlags;
+  DeviceType = OpenCL.DeviceType;
   
   {$endregion pre def}
   
@@ -147,10 +147,11 @@ type
   ///--
   __NativUtils = static class
     
-    static function CopyToUnm<TRecord>(a: TRecord): ^TRecord; where TRecord: record;
+    static function CopyToUnm<TRecord>(a: TRecord): IntPtr; where TRecord: record;
     begin
-      Result := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
-      Result^ := a;
+      Result := Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>);
+      var res: ^TRecord := pointer(Result);
+      res^ := a;
     end;
     
     static function AsPtr<T>(p: pointer): ^T := p;
@@ -158,10 +159,10 @@ type
     static function GCHndAlloc(o: object) :=
     CopyToUnm(GCHandle.Alloc(o));
     
-    static procedure GCHndFree(gc_hnd_ptr: pointer);
+    static procedure GCHndFree(gc_hnd_ptr: IntPtr);
     begin
-      AsPtr&<GCHandle>(gc_hnd_ptr)^.Free;
-      Marshal.FreeHGlobal(IntPtr(gc_hnd_ptr));
+      AsPtr&<GCHandle>(pointer(gc_hnd_ptr))^.Free;
+      Marshal.FreeHGlobal(gc_hnd_ptr);
     end;
     
   end;
@@ -202,14 +203,8 @@ type
     
     public static procedure operator+=(l: __EventList; ev: __EventList);
     begin
-      {$ifdef DebugMode}
       for var i := 0 to ev.count-1 do
         l += ev[i];
-      exit;
-      {$endif DebugMode}
-      if ev.count=0 then exit;
-      System.Buffer.BlockCopy( ev.evs,0, l.evs,l.count*cl_event.Size, ev.count*cl_event.Size );
-      l.count += ev.count;
     end;
     
     public static function operator+(l1,l2: __EventList): __EventList;
@@ -234,12 +229,12 @@ type
     for var i := 0 to count-1 do
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     
-    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback);
-    public static procedure AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase);
+    public static procedure AttachCallback(ev: cl_event; cb: EventCallback);
+    public static procedure AttachCallback(ev: cl_event; cb: EventCallback; tsk: CLTaskBase);
     
     ///cb должен иметь глобальный try и вызывать "state.RaiseIfError" и "__NativUtils.GCHndFree(data)",
     ///А "cl.ReleaseEvent" если и вызывать - то только на результате вызова AttachCallback
-    public function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
+    public function AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): cl_event;
     
   end;
   
@@ -259,7 +254,7 @@ type
     
     function WaitAndGetBase: object;
     
-    function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes;
+    function AttachCallbackBase(cb: EventCallback; c: Context; var cq: cl_command_queue): __IQueueRes;
     
   end;
   ///--
@@ -311,13 +306,13 @@ type
       
     end;
     
-    function AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): __QueueRes<T>;
+    function AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): __QueueRes<T>;
     begin
       Result.res    := self.res;
       Result.res_f  := self.res_f;
       Result.ev     := self.ev.AttachCallback(cb, c, cq);
     end;
-    function AttachCallbackBase(cb: Event_Callback; c: Context; var cq: cl_command_queue): __IQueueRes := AttachCallback(cb, c, cq);
+    function AttachCallbackBase(cb: EventCallback; c: Context; var cq: cl_command_queue): __IQueueRes := AttachCallback(cb, c, cq);
     
   end;
   
@@ -542,7 +537,7 @@ type
     if err.IS_ERROR then AddErr(new OpenCLException(err.ToString));
     
     protected procedure AddErr(st: CommandExecutionStatus) :=
-    if st.IS_ERROR then AddErr(new OpenCLException(st.GetError.ToString));
+    if st.IS_ERROR then AddErr(new OpenCLException(ErrorCode.Create(st).ToString));
     
     /// Возвращает True если очередь уже завершилась
     protected function AddEventHandler<T>(var ev: T; cb: T): boolean; where T: Delegate;
@@ -1910,26 +1905,26 @@ type
       _def_cont := new Context;
     except
       try
-        _def_cont := new Context(DeviceTypeFlags.All); // если нету GPU - попытаться хотя бы для чего то инициализировать
+        _def_cont := new Context(DeviceType.DEVICE_TYPE_ALL); // если нету GPU - попытаться хотя бы для чего то инициализировать
       except
         _def_cont := nil;
       end;
     end;
     
     ///Создаёт контекст из первого попавшегося GPU
-    public constructor := Create(DeviceTypeFlags.GPU);
+    public constructor := Create(DeviceType.DEVICE_TYPE_GPU);
     
     ///Создаёт контекст из первого попавшегося устройства указанного типа
-    public constructor(dt: DeviceTypeFlags);
+    public constructor(dt: DeviceType);
     begin
       var ec: ErrorCode;
       
       var _platform: cl_platform_id;
-      cl.GetPlatformIDs(1, @_platform, nil).RaiseIfError;
+      cl.GetPlatformIDs(1, _platform, IntPtr.Zero).RaiseIfError;
       
-      cl.GetDeviceIDs(_platform, dt, 1, @_device, nil).RaiseIfError;
+      cl.GetDeviceIDs(_platform, dt, 1, _device, IntPtr.Zero).RaiseIfError;
       
-      _context := cl.CreateContext(nil, 1, @_device, nil, nil, @ec);
+      _context := cl.CreateContext(IntPtr.Zero, 1, _device, nil, IntPtr.Zero, ec);
       ec.RaiseIfError;
       
       need_finnalize := true;
@@ -1941,7 +1936,7 @@ type
     public constructor(context: cl_context);
     begin
       
-      cl.GetContextInfo(context, ContextInfoType.CL_CONTEXT_DEVICES, new UIntPtr(IntPtr.Size), @_device, nil).RaiseIfError;
+      cl.GetContextInfo(context, ContextInfo.CONTEXT_DEVICES, new UIntPtr(IntPtr.Size), _device, IntPtr.Zero).RaiseIfError;
       
       _context := context;
     end;
@@ -1994,7 +1989,7 @@ type
       self._program := cl.CreateProgramWithSource(c._context, files_texts.Length, files_texts, files_texts.ConvertAll(s->new UIntPtr(s.Length)), ec);
       ec.RaiseIfError;
       
-      cl.BuildProgram(self._program, 1, @c._device, nil,nil,nil).RaiseIfError;
+      cl.BuildProgram(self._program, 1,c._device, nil, nil,IntPtr.Zero).RaiseIfError;
       
     end;
     
@@ -2013,12 +2008,13 @@ type
     ///Получает все подпрограммы-kernel'ы, содержащиеся в данном прекомпилированном коде
     public function GetAllKernels: Dictionary<string, Kernel>;
     begin
+      // Можно и "cl.CreateKernelsInProgram", но тогда имена придётся получать отдельно, а они нужны
       
       var names_char_len: UIntPtr;
-      cl.GetProgramInfo(_program, ProgramInfoType.NUM_KERNELS, new UIntPtr(UIntPtr.Size), @names_char_len, nil).RaiseIfError;
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_KERNEL_NAMES, UIntPtr.Zero,IntPtr.Zero, names_char_len).RaiseIfError;
       
-      var names_ptr := Marshal.AllocHGlobal(IntPtr(pointer(names_char_len))+1);
-      cl.GetProgramInfo(_program, ProgramInfoType.KERNEL_NAMES, names_char_len, pointer(names_ptr), nil).RaiseIfError;
+      var names_ptr := Marshal.AllocHGlobal(IntPtr(pointer(names_char_len)));
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_KERNEL_NAMES, names_char_len,names_ptr, IntPtr.Zero).RaiseIfError;
       
       var names := Marshal.PtrToStringAnsi(names_ptr).Split(';');
       Marshal.FreeHGlobal(names_ptr);
@@ -2037,14 +2033,10 @@ type
     public function Serialize: array of byte;
     begin
       var bytes_count: UIntPtr;
-      cl.GetProgramInfo(_program, ProgramInfoType.BINARY_SIZES, new UIntPtr(UIntPtr.Size), @bytes_count, nil).RaiseIfError;
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_BINARY_SIZES, new UIntPtr(UIntPtr.Size),bytes_count, IntPtr.Zero).RaiseIfError;
       
-      var bytes_mem := Marshal.AllocHGlobal(IntPtr(pointer(bytes_count)));
-      cl.GetProgramInfo(_program, ProgramInfoType.BINARIES, new UIntPtr(UIntPtr.Size), @bytes_mem, nil).RaiseIfError;
-      
-      Result := new byte[bytes_count.ToUInt64()];
-      Marshal.Copy(bytes_mem,Result, 0,Result.Length);
-      Marshal.FreeHGlobal(bytes_mem);
+      Result := new byte[bytes_count.ToUInt64];
+      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_BINARIES, bytes_count,Result[0], IntPtr.Zero).RaiseIfError;
       
     end;
     
@@ -2070,17 +2062,16 @@ type
     ///Превращает массив байт, полученный методом ProgramCode.Serialize, в прекомпилированный код для GPU
     public static function Deserialize(c: Context; bin: array of byte): ProgramCode;
     begin
-      var ec: ErrorCode;
-      
       Result := new ProgramCode;
-      
-      var gchnd := GCHandle.Alloc(bin, GCHandleType.Pinned);
-      var bin_mem: ^byte := pointer(gchnd.AddrOfPinnedObject);
       var bin_len := new UIntPtr(bin.Length);
       
-      Result._program := cl.CreateProgramWithBinary(c._context,1,@c._device, @bin_len, @bin_mem, nil, @ec);
+      var bin_arr: array of array of byte;
+      SetLength(bin_arr,1);
+      bin_arr[0] := bin;
+      
+      var ec: ErrorCode;
+      Result._program := cl.CreateProgramWithBinary(c._context,1,c._device, bin_len,bin_arr, IntPtr.Zero,ec);
       ec.RaiseIfError;
-      gchnd.Free;
       
     end;
     
@@ -2397,12 +2388,12 @@ end;
 
 {$endregion CommandQueue}
 
-static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback) :=
+static procedure __EventList.AttachCallback(ev: cl_event; cb: EventCallback) :=
 cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)).RaiseIfError;
-static procedure __EventList.AttachCallback(ev: cl_event; cb: Event_Callback; tsk: CLTaskBase) :=
+static procedure __EventList.AttachCallback(ev: cl_event; cb: EventCallback; tsk: CLTaskBase) :=
 tsk.AddErr( cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, __NativUtils.GCHndAlloc(cb)) );
 
-function __EventList.AttachCallback(cb: Event_Callback; c: Context; var cq: cl_command_queue): cl_event;
+function __EventList.AttachCallback(cb: EventCallback; c: Context; var cq: cl_command_queue): cl_event;
 begin
   
   var ev: cl_event;
@@ -2412,7 +2403,7 @@ begin
     if cq=cl_command_queue.Zero then
     begin
       var ec: ErrorCode;
-      cq := cl.CreateCommandQueue(c._context, c._device, CommandQueuePropertyFlags.NONE, ec);
+      cq := cl.CreateCommandQueueWithProperties(c._context,c._device, IntPtr.Zero, ec);
       ec.RaiseIfError;
     end;
     
@@ -3415,7 +3406,7 @@ type
     if cq=cl_command_queue.Zero then
     begin
       var ec: ErrorCode;
-      cq := cl.CreateCommandQueue(c._context, c._device, CommandQueuePropertyFlags.NONE, ec);
+      cq := cl.CreateCommandQueueWithProperties(c._context,c._device, IntPtr.Zero, ec);
       ec.RaiseIfError;
     end;
     
@@ -3454,7 +3445,7 @@ type
           end).Start else
         begin
           
-          var set_complete: Event_Callback := (ev,st,data)->
+          var set_complete: EventCallback := (ev,st,data)->
           begin
             tsk.AddErr( st );
             
@@ -3546,7 +3537,7 @@ type
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(len.Get),
           ptr.Get,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3591,10 +3582,10 @@ type
       begin
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 1,
+          l_cq, b.memobj, Bool.BLOCKING,
           new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
           Marshal.UnsafeAddrOfPinnedArrayElement(a.WaitAndGet,0),
-          0,nil,nil
+          0,IntPtr.Zero,IntPtr.Zero
         ).RaiseIfError;
         
         Result := cl_event.Zero;
@@ -3617,7 +3608,7 @@ type
     
     public constructor(val: T; offset_q: CommandQueue<integer>);
     begin
-      self.val      := new IntPtr(__NativUtils.CopyToUnm(val));
+      self.val      := __NativUtils.CopyToUnm(val);
       self.offset_q := offset_q;
     end;
     
@@ -3633,7 +3624,7 @@ type
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(Marshal.SizeOf&<T>),
           self.val,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3674,10 +3665,10 @@ type
       Result := (b, l_c, l_cq, prev_ev)->
       begin
         var res_ev: cl_event;
-        var val_ptr := new IntPtr(__NativUtils.CopyToUnm(val.Get()));
+        var val_ptr := __NativUtils.CopyToUnm(val.Get());
         
         cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(Marshal.SizeOf&<T>),
           val_ptr,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3748,7 +3739,7 @@ type
         var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          l_cq, b.memobj, 0,
+          l_cq, b.memobj, Bool.NON_BLOCKING,
           new UIntPtr(offset.Get), new UIntPtr(len.Get),
           ptr.Get,
           prev_ev.count,prev_ev.evs,res_ev
@@ -3793,10 +3784,10 @@ type
       begin
         
         cl.EnqueueReadBuffer(
-          l_cq, b.memobj, 1,
+          l_cq, b.memobj, Bool.BLOCKING,
           new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
           Marshal.UnsafeAddrOfPinnedArrayElement(a.WaitAndGet,0),
-          0,nil,nil
+          0,IntPtr.Zero,IntPtr.Zero
         ).RaiseIfError;
         
         Result := cl_event.Zero;
@@ -3910,8 +3901,8 @@ type
           new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
           prev_ev.count,prev_ev.evs,res_ev
         ).RaiseIfError;
-        cl.WaitForEvents(1,@res_ev);
-        cl.ReleaseEvent(res_ev);
+        cl.WaitForEvents(1,res_ev).RaiseIfError;
+        cl.ReleaseEvent(res_ev).RaiseIfError;
         
         a_hnd.Free;
         Result := cl_event.Zero;
@@ -3934,7 +3925,7 @@ type
     
     public constructor(val: T; offset_q, len_q: CommandQueue<integer>);
     begin
-      self.val      := new IntPtr(__NativUtils.CopyToUnm(val));
+      self.val      := __NativUtils.CopyToUnm(val);
       self.offset_q := offset_q;
       self.len_q    := len_q;
     end;
@@ -3996,7 +3987,7 @@ type
       Result := (b, l_c, l_cq, prev_ev)->
       begin
         var res_ev: cl_event;
-        var val_ptr := new IntPtr(__NativUtils.CopyToUnm(val.Get()));
+        var val_ptr := __NativUtils.CopyToUnm(val.Get());
         
         cl.EnqueueFillBuffer(
           l_cq, b.memobj,
@@ -4268,7 +4259,7 @@ begin
   if self.memobj<>cl_mem.Zero then Dispose;
   GC.AddMemoryPressure(Size64);
   var ec: ErrorCode;
-  self.memobj := cl.CreateBuffer(c._context, MemoryFlags.READ_WRITE, self.sz, IntPtr.Zero, ec);
+  self.memobj := cl.CreateBuffer(c._context, MemFlags.MEM_READ_WRITE, self.sz, IntPtr.Zero, ec);
   ec.RaiseIfError;
 end;
 
@@ -4284,7 +4275,7 @@ begin
     new UIntPtr( offset ),
     new UIntPtr( size )
   );
-  Result.memobj := cl.CreateSubBuffer(self.memobj, MemoryFlags.READ_WRITE, BufferCreateType.REGION, pointer(@reg), ec);
+  Result.memobj := cl.CreateSubBuffer(self.memobj, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION,reg, ec);
   ec.RaiseIfError;
   
 end;

@@ -528,7 +528,7 @@
 
 # Context.()
 %c.ctor%
-# Context.(DeviceTypeFlags)
+# Context.(DeviceType)
 %c.ctorD%
 
 # Context.(cl_context)
