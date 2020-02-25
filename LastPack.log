@@ -12,21 +12,77 @@ SpecPacker: Packing spec "Справка OpenCLABC"
 SpecPacker: Done packing spec "Справка OpenCLABC"
 Finished runing SpecPacker
 ===================================== OpenCL =====================================
+Runing Template[OpenCL]
+Template[OpenCL]: Runing Template[..\LicenseHeader]
+Template[OpenCL]: Finished runing Template[..\LicenseHeader]
+Template[OpenCL]: Runing Template[Static\CoreTypes]
+Template[OpenCL]: Finished runing Template[Static\CoreTypes]
+Template[OpenCL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\CL\Pack NameRecords.pas"
+Template[OpenCL]: Finished compiling: OK
+Template[OpenCL]: Runing TemplateCommand[Pack NameRecords.pas]
+Template[OpenCL]: Finished runing TemplateCommand[Pack NameRecords.pas]
+Template[OpenCL]: Runing Template[NameRecords]
+Template[OpenCL]: Finished runing Template[NameRecords]
+Template[OpenCL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\CL\Pack Most.pas"
+Template[OpenCL]: Finished compiling: OK
+Template[OpenCL]: Runing TemplateCommand[Pack Most.pas]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: Reading .bin
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: Fixing all
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing records code
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing enums code
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Group [MemMigrationFlagsIntel] had 0 enums
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing funcs code
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (30) overloads of func [clGetDeviceInfo]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueMigrateMemObjectEXT]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
+Template[OpenCL]: Finished runing TemplateCommand[Pack Most.pas]
+Template[OpenCL]: Runing Template[Enums]
+Template[OpenCL]: Finished runing Template[Enums]
+Template[OpenCL]: Runing Template[Static\Delegates]
+Template[OpenCL]: Finished runing Template[Static\Delegates]
+Template[OpenCL]: Runing Template[Records]
+Template[OpenCL]: Finished runing Template[Records]
+Template[OpenCL]: Runing Template[Funcs]
+Template[OpenCL]: Finished runing Template[Funcs]
+Template[OpenCL]: Runing Template[Static\DebugImpl]
+Template[OpenCL]: Finished runing Template[Static\DebugImpl]
+Finished runing Template[OpenCL]
 ==================================== OpenCLABC ===================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenCLABC.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
+Comments[OpenCLABC]: WARNING: key %Context.(DeviceTypeFlags)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %c.ctorD% wasn't used!
 Finished runing Comments[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\CoreTypes.template]
+Template[OpenGL]: Runing Template[..\LicenseHeader]
+Template[OpenGL]: Finished runing Template[..\LicenseHeader]
+Template[OpenGL]: Runing Template[Static\CoreTypes]
+Template[OpenGL]: Finished runing Template[Static\CoreTypes]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack NameRecords.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack NameRecords.pas]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\NameRecords.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\NameRecords.template]
+Template[OpenGL]: Runing Template[NameRecords]
+Template[OpenGL]: Finished runing Template[NameRecords]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack Most.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack Most.pas]
@@ -46,12 +102,10 @@ Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloa
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVarying]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (18) overloads of func [glSpecializeShader]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetPerfMonitorCountersAMD]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (18) overloads of func [glSpecializeShaderARB]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
@@ -80,34 +134,34 @@ Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloa
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
 Template[OpenGL]: Finished runing TemplateCommand[Pack Most.pas]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Enums.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Enums.template]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\Delegates.template]
+Template[OpenGL]: Runing Template[Enums]
+Template[OpenGL]: Finished runing Template[Enums]
+Template[OpenGL]: Runing Template[Static\Delegates]
+Template[OpenGL]: Finished runing Template[Static\Delegates]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack VecTypes.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack VecTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack VecTypes.pas]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\VecTypes.template]
+Template[OpenGL]: Runing Template[VecTypes]
+Template[OpenGL]: Finished runing Template[VecTypes]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack MtrTypes.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrTypes.template]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Records.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Records.template]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Funcs.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Funcs.template]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Static\GDIIntegration.template]
+Template[OpenGL]: Runing Template[MtrTypes]
+Template[OpenGL]: Finished runing Template[MtrTypes]
+Template[OpenGL]: Runing Template[Records]
+Template[OpenGL]: Finished runing Template[Records]
+Template[OpenGL]: Runing Template[Funcs]
+Template[OpenGL]: Finished runing Template[Funcs]
+Template[OpenGL]: Runing Template[Static\GDIIntegration]
+Template[OpenGL]: Finished runing Template[Static\GDIIntegration]
 Template[OpenGL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\Pack MtrExt.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack MtrExt.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack MtrExt.pas]
-Template[OpenGL]: Runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
-Template[OpenGL]: Finished runing Template[D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\GL\MtrExt.template]
+Template[OpenGL]: Runing Template[MtrExt]
+Template[OpenGL]: Finished runing Template[MtrExt]
 Finished runing Template[OpenGL]
 ==================================== OpenGLABC ===================================
 Compiling "D:\1Cергей\Мои программы\проекты\POCGL\OpenGLABC.pas"
@@ -139,12 +193,16 @@ Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCG
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.pas"
 Tester: Finished compiling: ERRОR
+Tester: %WARNING: Settings updated for "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
 Tester: Finished compiling: ERRОR
+Tester: %WARNING: Settings updated for "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
+Tester: %WARNING: Settings updated for "Samples\OpenCL\MatrMlt.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\SimpleAddition.pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
+Tester: %WARNING: Settings updated for "Samples\OpenCL\SimpleAddition.td"
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -154,7 +212,7 @@ Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\CLABC\ErrOtp.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\GL\Mtr.Rotate3D.pas"
@@ -181,6 +239,10 @@ Tester: Runing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Finished runing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Runing Test[Tests\Exec\GL\Mtr.Translate]
 Tester: Finished runing Test[Tests\Exec\GL\Mtr.Translate]
+Tester: WARNING: File "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.td" updated
+Tester: WARNING: File "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.td" updated
+Tester: WARNING: File "Samples\OpenCL\MatrMlt.td" updated
+Tester: WARNING: File "Samples\OpenCL\SimpleAddition.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
