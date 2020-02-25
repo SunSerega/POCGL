@@ -209,10 +209,10 @@ type
         sb +=     $'        res.JoinToString(''+'');' + #10;
       end else
       begin
-        sb +=     $'      var res := typeof({name}).GetProperties(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.Public).FirstOrDefault(prop->{t}(prop.GetValue(self))=self.val);' + #10;
+        sb +=     $'      var res := typeof({name}).GetFields(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.NonPublic).FirstOrDefault(fld->{name}(fld.GetValue(nil)).val=self.val);' + #10;
         sb +=     $'      Result := res=nil?' + #10;
         sb +=     $'        $''{name}[{{ self.val=default({t}) ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
-        sb +=     $'        res.Name.TrimStart(''&'');' + #10;
+        sb +=     $'        res.Name.SubString(1);' + #10;
       end;
       sb +=       $'    end;' + #10;
       sb +=       $'    ' + #10;
