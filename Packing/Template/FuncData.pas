@@ -482,6 +482,8 @@ type
     public arr_lvl: integer;
     public tname: string;
     
+    public arr_hlp_skip := false;
+    
     public constructor(str: string);
     begin
       str := str.Trim;
@@ -764,6 +766,7 @@ type
     begin
       InitOverloads;
       var arr_hlp_ovr_par := new FuncParamT(false, 0, 'IntPtr');
+      arr_hlp_ovr_par.arr_hlp_skip := true;
       
       {$region MiscInit}
       
@@ -816,7 +819,7 @@ type
       
       {$region WriteOvrT}
       
-      var WriteOvrT: procedure(ovr: FuncOverload; generic_names: List<string>; name: string; is_static: boolean) := (ovr,generic_names,name, is_static)->
+      var WriteOvrT: procedure(ovr: FuncOverload; generic_names: List<string>; name: string; is_static, allow_skip_arr_hlp: boolean) := (ovr,generic_names,name, is_static, allow_skip_arr_hlp)->
       begin
         
         var use_standart_dt := false; // единственное применение - в "Marshal.GetDelegateForFunctionPointer". Но он их и не принимает
@@ -851,6 +854,7 @@ type
           for var par_i := 1 to ovr.pars.Length-1 do
           begin
             var par := ovr.pars[par_i];
+            if allow_skip_arr_hlp and par.arr_hlp_skip then continue;
             if not use_standart_dt then
             begin
               if par.var_arg then sb += 'var ';
@@ -1145,7 +1149,7 @@ type
                 var ext_ovr_name := '_'+ovr_name_str;
                 
                 sb += '    private ';
-                WriteOvrT(curr_ovr,nil, ext_ovr_name, true);
+                WriteOvrT(curr_ovr,nil, ext_ovr_name, true, false);
                 sb += ';'#10;
                 if api='gdi' then
                   sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
@@ -1155,7 +1159,7 @@ type
                 if (org_par.Length=1) and not is_proc then
                 begin
                   sb += ': ';
-                  WriteOvrT(curr_ovr,nil, nil, false);
+                  WriteOvrT(curr_ovr,nil, nil, false, false);
                 end;
                 sb += $' := {ext_ovr_name};' + #10;
                 
@@ -1163,7 +1167,7 @@ type
               begin
                 
                 sb += $'    {vis} {ovr_name_str} := GetFuncOrNil&<';
-                WriteOvrT(curr_ovr,nil, nil, false);
+                WriteOvrT(curr_ovr,nil, nil, false, false);
                 sb += $'>(z_{l_name}_adr);'+#10;
                 
               end;
@@ -1185,7 +1189,7 @@ type
               var tabs := 2 + integer(need_block);
               
               sb += $'    {vis} [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-              WriteOvrT(curr_ovr, generic_names, ovr_name_str, is_static);
+              WriteOvrT(curr_ovr, generic_names, ovr_name_str, is_static, m_ovr_i>0);
               
               if need_block then
               begin
@@ -1247,7 +1251,10 @@ type
                     for var par_i := 1 to ms.Length-1 do
                     begin
                       if nil_arr_call_flags[par_i] then
-                        sb += 'IntPtr.Zero' else
+                      begin
+                        if m_ovr_i>1 then continue;
+                        sb += 'IntPtr.Zero';
+                      end else
                       if nil_arr_par_flags[par_i] then
                         sb += 'PByte(nil)^' else
                       begin
