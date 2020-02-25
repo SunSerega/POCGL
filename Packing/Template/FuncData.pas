@@ -813,7 +813,7 @@ type
         'gl': use_external := version <= '1.1';
       end;
       if not use_external then
-        sb += $'    public z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
+        sb += $'    private z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
       
       {$endregion MiscInit}
       
@@ -1146,7 +1146,7 @@ type
               
               if use_external then
               begin
-                var ext_ovr_name := '_'+ovr_name_str;
+                var ext_ovr_name := {'_'+}ovr_name_str;
                 
                 sb += '    private ';
                 WriteOvrT(curr_ovr,nil, ext_ovr_name, true, false);
@@ -1155,18 +1155,18 @@ type
                   sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
                   sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
                 
-                sb += $'    {vis} static {ovr_name_str}';
-                if (org_par.Length=1) and not is_proc then
-                begin
-                  sb += ': ';
-                  WriteOvrT(curr_ovr,nil, nil, false, false);
-                end;
-                sb += $' := {ext_ovr_name};' + #10;
+//                sb += $'    {vis} static {ovr_name_str}';
+//                if (org_par.Length=1) and not is_proc then
+//                begin
+//                  sb += ': ';
+//                  WriteOvrT(curr_ovr,nil, nil, false, false);
+//                end;
+//                sb += $' := {ext_ovr_name};' + #10;
                 
               end else
               begin
                 
-                sb += $'    {vis} {ovr_name_str} := GetFuncOrNil&<';
+                sb += $'    private {ovr_name_str} := GetFuncOrNil&<';
                 WriteOvrT(curr_ovr,nil, nil, false, false);
                 sb += $'>(z_{l_name}_adr);'+#10;
                 
