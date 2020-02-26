@@ -26,6 +26,7 @@ uses MiscUtils in 'Utils\MiscUtils.pas';
 // 
 
 function AllModules := Lst('OpenCL','OpenCLABC','OpenGL','OpenGLABC');
+function AllModulesShort := AllModules.Select(m->m.SubString(4));
 
 function TitleTask(title: string; decor: char := '='): SecThrProc;
 begin
@@ -253,7 +254,7 @@ begin
     var T_Test := not stages.Contains('Test') ? EmptyTask :
       TitleTask('Testing') +
       EventTask(E_Tester) +
-      ExecTask('Tests\Tester.exe', 'Tester', AddTimeMarksStr)
+      ExecTask('Tests\Tester.exe', 'Tester', AddTimeMarksStr, $'Modules={stages.Intersect(AllModulesShort).JoinToString(''+'')}')
     ;
     
     {$endregion Test}

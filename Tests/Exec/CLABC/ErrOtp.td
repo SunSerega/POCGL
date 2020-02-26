@@ -14,4 +14,7 @@ System.AggregateException: %task:errors% ---> System.Exception: >>> текст �
    в OpenCLABC_implementation______.CommandQueueHostProc.ExecFunc(Object o, Context c)
    в OpenCLABC.<>local_variables_class_7`2.<>lambda11()<---
 
+#ReqModules
+CLABC
+
 

@@ -46,13 +46,33 @@ type
     resave_settings := false;
     
     test_mode: HashSet<string>;
+    req_modules: IList<string>;
     expected_comp_err: string;
     expected_otp: string;
+    
+    static allowed_modules := new HashSet<string>(4);
+    static valid_modules := HSet('CL','CLABC', 'GL','GLABC');
     
     static all_loaded := new List<TestInfo>;
     static test_folders := new List<string>;
     
     {$region Load}
+    
+    static procedure LoadCLA;
+    const modules_def = 'Modules=';
+    begin
+      var arg := CommandLineArgs.FirstOrDefault(arg->arg.StartsWith(modules_def));
+      if arg<>nil then
+        foreach var w in arg.Remove(0,modules_def.Length).ToWords('+') do
+          allowed_modules += w;
+      if allowed_modules.Count=0 then
+      begin
+        allowed_modules := valid_modules;
+        Otp($'Testing all modules:');
+      end else
+        Otp($'Testing selected modules:');
+      Otp(allowed_modules.JoinToString(' + '));
+    end;
     
     procedure LoadSettingsDict;
     begin
@@ -118,6 +138,22 @@ type
       end;
       
     end;
+    procedure FindReqModules;
+    begin
+      req_modules := new List<string>;
+      foreach var l in ReadLines(pas_fname) do
+        if l.StartsWith('uses') then
+          foreach var _m in l.Substring('uses'.Length).ToWords(',',' ',';') do
+          begin
+            var m := _m;
+            if m.StartsWith('Open') then m := m.Substring('Open'.Length);
+            if m in valid_modules then
+              req_modules.Add(m);
+          end;
+      all_settings.Add('#ReqModules', req_modules.JoinToString('+'));
+      used_settings += '#ReqModules';
+      resave_settings := true;
+    end;
     
     function ExtractSettingStr(name: string; def: string := nil): string;
     begin
@@ -151,7 +187,15 @@ type
         if t.all_settings.ContainsKey('#SkipTest') then continue;
         all_loaded += t;
         
-        t.test_mode := t.ExtractSettingStr('#TestMode', exp_mode).Split('+').ToHashSet;
+        t.req_modules := t.ExtractSettingStr('#ReqModules', nil)?.ToWords('+');
+        if t.req_modules=nil then t.FindReqModules;
+        if not t.req_modules.All(m->allowed_modules.Contains(m)) then
+        begin
+          t.req_modules := nil;
+          continue;
+        end;
+        
+        t.test_mode := t.ExtractSettingStr('#TestMode', exp_mode).ToWords('+').ToHashSet;
         
         if t.test_mode.Contains('Comp') then
         begin
@@ -180,7 +224,7 @@ type
     static procedure CompAll;
     begin
       
-      all_loaded.Where(t->t.test_mode.Contains('Comp'))
+      all_loaded.Where(t->(t.req_modules<>nil) and t.test_mode.Contains('Comp'))
       .Select(t->ProcTask(()->
       try
         var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
@@ -255,7 +299,7 @@ type
     begin
       
       foreach var t in all_loaded do
-        if t.test_mode.Contains('Exec') then
+        if (t.req_modules<>nil) and t.test_mode.Contains('Exec') then
         try
           var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
           
@@ -350,6 +394,7 @@ type
   
 begin
   try
+    TestInfo.LoadCLA;
     
     TestInfo.LoadAll('Tests\Comp',  'Comp');
     TestInfo.LoadAll('Samples',     'Comp');

@@ -11,4 +11,7 @@ System.String[abc]
 Выполнилась HPQ
 [nil]
 
+#ReqModules
+CLABC
+
 

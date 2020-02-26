@@ -23,6 +23,12 @@ Template[OpenCL]: Runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenCL]: Finished runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenCL]: Runing Template[NameRecords]
 Template[OpenCL]: Finished runing Template[NameRecords]
+Template[OpenCL]: Runing Template[Enums]
+Template[OpenCL]: Finished runing Template[Enums]
+Template[OpenCL]: Runing Template[Static\Delegates]
+Template[OpenCL]: Finished runing Template[Static\Delegates]
+Template[OpenCL]: Runing Template[Records]
+Template[OpenCL]: Finished runing Template[Records]
 Template[OpenCL]: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packing\Template\CL\Pack Most.pas"
 Template[OpenCL]: Finished compiling: OK
 Template[OpenCL]: Runing TemplateCommand[Pack Most.pas]
@@ -53,12 +59,6 @@ Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloa
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
 Template[OpenCL]: Finished runing TemplateCommand[Pack Most.pas]
-Template[OpenCL]: Runing Template[Enums]
-Template[OpenCL]: Finished runing Template[Enums]
-Template[OpenCL]: Runing Template[Static\Delegates]
-Template[OpenCL]: Finished runing Template[Static\Delegates]
-Template[OpenCL]: Runing Template[Records]
-Template[OpenCL]: Finished runing Template[Records]
 Template[OpenCL]: Runing Template[Funcs]
 Template[OpenCL]: Finished runing Template[Funcs]
 Template[OpenCL]: Runing Template[Static\DebugImpl]
@@ -173,6 +173,8 @@ Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Packin
 Finished compiling: OK
 ===================================== Testing ====================================
 Runing Tester
+Tester: Testing selected modules:
+Tester: CL + CLABC + GL + GLABC
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10.pas"
