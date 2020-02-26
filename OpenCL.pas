@@ -15,7 +15,7 @@
 ///Код переведён отсюда:
 ///   https://github.com/KhronosGroup/OpenCL-Docs/tree/master/xml
 ///
-///Спецификации всех версий:
+///Спецификации всех версий OpenCL:
 ///   https://www.khronos.org/registry/OpenCL/
 ///
 ///Если чего-либо не хватает, или найдена ошибка - писать сюда:
@@ -2541,7 +2541,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; device_list: array of cl_device_id; options: string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if device_list<>nil then
+      if (device_list<>nil) and (device_list.Length<>0) then
         Result := z_BuildProgram_ovr_0(&program, num_devices, device_list[0], par_4_str_ptr, pfn_notify, user_data) else
         Result := z_BuildProgram_ovr_0_anh0001000(&program, num_devices, IntPtr.Zero, par_4_str_ptr, pfn_notify, user_data);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -2549,7 +2549,7 @@ type
     private static function z_BuildProgram_ovr_1_anh0001000(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clBuildProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; device_list: array of cl_device_id; options: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
-    if device_list<>nil then
+    if (device_list<>nil) and (device_list.Length<>0) then
       z_BuildProgram_ovr_0(&program, num_devices, device_list[0], options, pfn_notify, user_data) else
       z_BuildProgram_ovr_0_anh0001000(&program, num_devices, IntPtr.Zero, options, pfn_notify, user_data);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
@@ -2586,7 +2586,7 @@ type
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
       var par_7_str_ptr := header_include_names?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
-      if par_7_str_ptr<>nil then
+      if (par_7_str_ptr<>nil) and (par_7_str_ptr.Length<>0) then
         Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, par_7_str_ptr[0], pfn_notify, user_data) else
         Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -2597,7 +2597,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: array of IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if header_include_names<>nil then
+      if (header_include_names<>nil) and (header_include_names.Length<>0) then
         Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, header_include_names[0], pfn_notify, user_data) else
         Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -2621,7 +2621,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: array of string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
       var par_7_str_ptr := header_include_names?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
-      if par_7_str_ptr<>nil then
+      if (par_7_str_ptr<>nil) and (par_7_str_ptr.Length<>0) then
         Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, options, num_input_headers, input_headers, par_7_str_ptr[0], pfn_notify, user_data) else
         Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, options, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
       foreach var arr_el1 in par_7_str_ptr do Marshal.FreeHGlobal(arr_el1);
@@ -2629,7 +2629,7 @@ type
     private static function z_CompileProgram_ovr_5_anh0000000100(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCompileProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: array of IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
-    if header_include_names<>nil then
+    if (header_include_names<>nil) and (header_include_names.Length<>0) then
       z_CompileProgram_ovr_0(&program, num_devices, device_list, options, num_input_headers, input_headers, header_include_names[0], pfn_notify, user_data) else
       z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, options, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
@@ -2648,7 +2648,7 @@ type
     z_CreateBuffer_ovr_0(context, flags, size, PByte(nil)^, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBuffer<T>(context: cl_context; flags: MemFlags; size: UIntPtr; host_ptr: array of T; var errcode_ret: ErrorCode): cl_mem; where T: record;
     begin
-      if host_ptr<>nil then
+      if (host_ptr<>nil) and (host_ptr.Length<>0) then
         Result := temp_CreateBuffer_ovr_0(context, flags, size, host_ptr[0], errcode_ret) else
         Result := temp_CreateBuffer_ovr_0_anh000010(context, flags, size, errcode_ret);
     end;
@@ -2673,7 +2673,7 @@ type
     private static function z_CreateCommandQueueWithProperties_ovr_0_anh00010(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue;
     external 'opencl.dll' name 'clCreateCommandQueueWithProperties';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithProperties(context: cl_context; device: cl_device_id; properties: array of QueueProperties; var errcode_ret: ErrorCode): cl_command_queue :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateCommandQueueWithProperties_ovr_0(context, device, properties[0], errcode_ret) else
       z_CreateCommandQueueWithProperties_ovr_0_anh00010(context, device, IntPtr.Zero, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithProperties(context: cl_context; device: cl_device_id; var properties: QueueProperties; var errcode_ret: ErrorCode): cl_command_queue :=
@@ -2693,17 +2693,17 @@ type
     private static function z_CreateContext_ovr_0_anh0101000(properties: IntPtr; num_devices: UInt32; devices: IntPtr; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context;
     external 'opencl.dll' name 'clCreateContext';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContext(properties: array of ContextProperties; num_devices: UInt32; devices: array of cl_device_id; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
-    if properties<>nil then
-      if devices<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
+      if (devices<>nil) and (devices.Length<>0) then
         z_CreateContext_ovr_0(properties[0], num_devices, devices[0], pfn_notify, user_data, errcode_ret) else
         z_CreateContext_ovr_0_anh0001000(properties[0], num_devices, IntPtr.Zero, pfn_notify, user_data, errcode_ret) else
-      if devices<>nil then
+      if (devices<>nil) and (devices.Length<>0) then
         z_CreateContext_ovr_0_anh0100000(IntPtr.Zero, num_devices, devices[0], pfn_notify, user_data, errcode_ret) else
         z_CreateContext_ovr_0_anh0101000(IntPtr.Zero, num_devices, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
     private static function z_CreateContext_ovr_1_anh0100000(properties: IntPtr; num_devices: UInt32; var devices: cl_device_id; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context;
     external 'opencl.dll' name 'clCreateContext';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContext(properties: array of ContextProperties; num_devices: UInt32; var devices: cl_device_id; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateContext_ovr_0(properties[0], num_devices, devices, pfn_notify, user_data, errcode_ret) else
       z_CreateContext_ovr_0_anh0100000(IntPtr.Zero, num_devices, devices, pfn_notify, user_data, errcode_ret);
     private static function z_CreateContext_ovr_2(var properties: ContextProperties; num_devices: UInt32; devices: IntPtr; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context;
@@ -2711,11 +2711,11 @@ type
     private static function z_CreateContext_ovr_2_anh0100000(properties: IntPtr; num_devices: UInt32; devices: IntPtr; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context;
     external 'opencl.dll' name 'clCreateContext';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContext(properties: array of ContextProperties; num_devices: UInt32; devices: IntPtr; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateContext_ovr_2(properties[0], num_devices, devices, pfn_notify, user_data, errcode_ret) else
       z_CreateContext_ovr_2_anh0100000(IntPtr.Zero, num_devices, devices, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContext(var properties: ContextProperties; num_devices: UInt32; devices: array of cl_device_id; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_CreateContext_ovr_0(properties, num_devices, devices[0], pfn_notify, user_data, errcode_ret) else
       z_CreateContext_ovr_0_anh0001000(properties, num_devices, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContext(var properties: ContextProperties; num_devices: UInt32; var devices: cl_device_id; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
@@ -2727,7 +2727,7 @@ type
     private static function z_CreateContext_ovr_6_anh0001000(properties: IntPtr; num_devices: UInt32; devices: IntPtr; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context;
     external 'opencl.dll' name 'clCreateContext';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContext(properties: IntPtr; num_devices: UInt32; devices: array of cl_device_id; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_CreateContext_ovr_6(properties, num_devices, devices[0], pfn_notify, user_data, errcode_ret) else
       z_CreateContext_ovr_6_anh0001000(properties, num_devices, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContext(properties: IntPtr; num_devices: UInt32; var devices: cl_device_id; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
@@ -2743,7 +2743,7 @@ type
     private static function z_CreateContextFromType_ovr_0_anh010000(properties: IntPtr; device_type: DeviceType; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context;
     external 'opencl.dll' name 'clCreateContextFromType';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContextFromType(properties: array of ContextProperties; device_type: DeviceType; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateContextFromType_ovr_0(properties[0], device_type, pfn_notify, user_data, errcode_ret) else
       z_CreateContextFromType_ovr_0_anh010000(IntPtr.Zero, device_type, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateContextFromType(var properties: ContextProperties; device_type: DeviceType; pfn_notify: CreateContextCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_context :=
@@ -2764,7 +2764,7 @@ type
     z_CreateImage_ovr_0(context, flags, image_format, image_desc, PByte(nil)^, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage<T>(context: cl_context; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: array of T; var errcode_ret: ErrorCode): cl_mem; where T: record;
     begin
-      if host_ptr<>nil then
+      if (host_ptr<>nil) and (host_ptr.Length<>0) then
         Result := temp_CreateImage_ovr_0(context, flags, image_format, image_desc, host_ptr[0], errcode_ret) else
         Result := temp_CreateImage_ovr_0_anh0000010(context, flags, image_format, image_desc, errcode_ret);
     end;
@@ -2783,7 +2783,7 @@ type
     private static function z_CreateImage2D_ovr_0_anh000100000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImage2D';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    if image_format<>nil then
+    if (image_format<>nil) and (image_format.Length<>0) then
       z_CreateImage2D_ovr_0(context, flags, image_format[0], image_width, image_height, image_row_pitch, host_ptr, errcode_ret) else
       z_CreateImage2D_ovr_0_anh000100000(context, flags, IntPtr.Zero, image_width, image_height, image_row_pitch, host_ptr, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage2D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_row_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
@@ -2799,7 +2799,7 @@ type
     private static function z_CreateImage3D_ovr_0_anh00010000000(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImage3D';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: array of cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    if image_format<>nil then
+    if (image_format<>nil) and (image_format.Length<>0) then
       z_CreateImage3D_ovr_0(context, flags, image_format[0], image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret) else
       z_CreateImage3D_ovr_0_anh00010000000(context, flags, IntPtr.Zero, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; var image_format: cl_image_format; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
@@ -2853,7 +2853,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
-        if arr_el1=nil then
+        if (arr_el1=nil) or (arr_el1.Length=0) then
           Result := IntPtr.Zero else
         begin
           var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
@@ -2861,7 +2861,7 @@ type
           Marshal.Copy(arr_el1,0,Result,l);
         end;
       end);
-      if par_5_temp_arr1<>nil then
+      if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
         Result := z_CreateProgramWithBinary_ovr_0(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
         Result := z_CreateProgramWithBinary_ovr_0_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
       foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
@@ -2873,7 +2873,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
     begin
       var par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
-        if arr_el1=nil then
+        if (arr_el1=nil) or (arr_el1.Length=0) then
           Result := IntPtr.Zero else
         begin
           var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
@@ -2881,7 +2881,7 @@ type
           Marshal.Copy(arr_el1,0,Result,l);
         end;
       end);
-      if par_5_temp_arr1<>nil then
+      if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
         Result := z_CreateProgramWithBinary_ovr_1(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
         Result := z_CreateProgramWithBinary_ovr_1_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
       foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
@@ -2893,7 +2893,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
-        if arr_el1=nil then
+        if (arr_el1=nil) or (arr_el1.Length=0) then
           Result := IntPtr.Zero else
         begin
           var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
@@ -2901,7 +2901,7 @@ type
           Marshal.Copy(arr_el1,0,Result,l);
         end;
       end);
-      if par_5_temp_arr1<>nil then
+      if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
         Result := z_CreateProgramWithBinary_ovr_2(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
         Result := z_CreateProgramWithBinary_ovr_2_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
       foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
@@ -2909,19 +2909,19 @@ type
     private static function z_CreateProgramWithBinary_ovr_3_anh00000100(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program :=
-    if binaries<>nil then
+    if (binaries<>nil) and (binaries.Length<>0) then
       z_CreateProgramWithBinary_ovr_0(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret) else
       z_CreateProgramWithBinary_ovr_0_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
     private static function z_CreateProgramWithBinary_ovr_4_anh00000100(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program :=
-    if binaries<>nil then
+    if (binaries<>nil) and (binaries.Length<>0) then
       z_CreateProgramWithBinary_ovr_1(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret) else
       z_CreateProgramWithBinary_ovr_1_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
     private static function z_CreateProgramWithBinary_ovr_5_anh00000100(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if binaries<>nil then
+    if (binaries<>nil) and (binaries.Length<>0) then
       z_CreateProgramWithBinary_ovr_2(context, num_devices, device_list, lengths, binaries[0], binary_status, errcode_ret) else
       z_CreateProgramWithBinary_ovr_2_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
     private static function z_CreateProgramWithBinary_ovr_6(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
@@ -2945,7 +2945,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; kernel_names: string; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(kernel_names);
-      if device_list<>nil then
+      if (device_list<>nil) and (device_list.Length<>0) then
         Result := z_CreateProgramWithBuiltInKernels_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, errcode_ret) else
         Result := z_CreateProgramWithBuiltInKernels_ovr_0_anh000100(context, num_devices, IntPtr.Zero, par_4_str_ptr, errcode_ret);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -2953,7 +2953,7 @@ type
     private static function z_CreateProgramWithBuiltInKernels_ovr_1_anh000100(context: cl_context; num_devices: UInt32; device_list: IntPtr; kernel_names: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBuiltInKernels';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; kernel_names: IntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if device_list<>nil then
+    if (device_list<>nil) and (device_list.Length<>0) then
       z_CreateProgramWithBuiltInKernels_ovr_0(context, num_devices, device_list[0], kernel_names, errcode_ret) else
       z_CreateProgramWithBuiltInKernels_ovr_0_anh000100(context, num_devices, IntPtr.Zero, kernel_names, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; kernel_names: string; var errcode_ret: ErrorCode): cl_program;
@@ -2993,11 +2993,11 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithSource(context: cl_context; count: UInt32; strings: array of string; lengths: array of UIntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_3_str_ptr := strings?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
-      if par_3_str_ptr<>nil then
-        if lengths<>nil then
+      if (par_3_str_ptr<>nil) and (par_3_str_ptr.Length<>0) then
+        if (lengths<>nil) and (lengths.Length<>0) then
           Result := z_CreateProgramWithSource_ovr_0(context, count, par_3_str_ptr[0], lengths[0], errcode_ret) else
           Result := z_CreateProgramWithSource_ovr_0_anh000010(context, count, par_3_str_ptr[0], IntPtr.Zero, errcode_ret) else
-        if lengths<>nil then
+        if (lengths<>nil) and (lengths.Length<>0) then
           Result := z_CreateProgramWithSource_ovr_0_anh000100(context, count, IntPtr.Zero, lengths[0], errcode_ret) else
           Result := z_CreateProgramWithSource_ovr_0_anh000110(context, count, IntPtr.Zero, IntPtr.Zero, errcode_ret);
       foreach var arr_el1 in par_3_str_ptr do Marshal.FreeHGlobal(arr_el1);
@@ -3009,11 +3009,11 @@ type
     private static function z_CreateProgramWithSource_ovr_1_anh000110(context: cl_context; count: UInt32; strings: IntPtr; lengths: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithSource';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithSource(context: cl_context; count: UInt32; strings: array of IntPtr; lengths: array of UIntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if strings<>nil then
-      if lengths<>nil then
+    if (strings<>nil) and (strings.Length<>0) then
+      if (lengths<>nil) and (lengths.Length<>0) then
         z_CreateProgramWithSource_ovr_0(context, count, strings[0], lengths[0], errcode_ret) else
         z_CreateProgramWithSource_ovr_0_anh000010(context, count, strings[0], IntPtr.Zero, errcode_ret) else
-      if lengths<>nil then
+      if (lengths<>nil) and (lengths.Length<>0) then
         z_CreateProgramWithSource_ovr_0_anh000100(context, count, IntPtr.Zero, lengths[0], errcode_ret) else
         z_CreateProgramWithSource_ovr_0_anh000110(context, count, IntPtr.Zero, IntPtr.Zero, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithSource(context: cl_context; count: UInt32; var strings: IntPtr; var lengths: UIntPtr; var errcode_ret: ErrorCode): cl_program :=
@@ -3035,7 +3035,7 @@ type
     private static function z_CreateSamplerWithProperties_ovr_0_anh0010(context: cl_context; sampler_properties: IntPtr; var errcode_ret: ErrorCode): cl_sampler;
     external 'opencl.dll' name 'clCreateSamplerWithProperties';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSamplerWithProperties(context: cl_context; sampler_properties: array of SamplerProperties; var errcode_ret: ErrorCode): cl_sampler :=
-    if sampler_properties<>nil then
+    if (sampler_properties<>nil) and (sampler_properties.Length<>0) then
       z_CreateSamplerWithProperties_ovr_0(context, sampler_properties[0], errcode_ret) else
       z_CreateSamplerWithProperties_ovr_0_anh0010(context, IntPtr.Zero, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSamplerWithProperties(context: cl_context; var sampler_properties: SamplerProperties; var errcode_ret: ErrorCode): cl_sampler :=
@@ -3061,7 +3061,7 @@ type
     private static function z_CreateSubDevices_ovr_0_anh001000(in_device: cl_device_id; properties: IntPtr; num_devices: UInt32; var out_devices: cl_device_id; var num_devices_ret: UInt32): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevices';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevices(in_device: cl_device_id; properties: array of DevicePartitionProperty; num_devices: UInt32; var out_devices: cl_device_id; var num_devices_ret: UInt32): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevices_ovr_0(in_device, properties[0], num_devices, out_devices, num_devices_ret) else
       z_CreateSubDevices_ovr_0_anh001000(in_device, IntPtr.Zero, num_devices, out_devices, num_devices_ret);
     private static function z_CreateSubDevices_ovr_1(in_device: cl_device_id; var properties: DevicePartitionProperty; num_devices: UInt32; var out_devices: cl_device_id; num_devices_ret: IntPtr): ErrorCode;
@@ -3069,7 +3069,7 @@ type
     private static function z_CreateSubDevices_ovr_1_anh001000(in_device: cl_device_id; properties: IntPtr; num_devices: UInt32; var out_devices: cl_device_id; num_devices_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevices';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevices(in_device: cl_device_id; properties: array of DevicePartitionProperty; num_devices: UInt32; var out_devices: cl_device_id; num_devices_ret: IntPtr): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevices_ovr_1(in_device, properties[0], num_devices, out_devices, num_devices_ret) else
       z_CreateSubDevices_ovr_1_anh001000(in_device, IntPtr.Zero, num_devices, out_devices, num_devices_ret);
     private static function z_CreateSubDevices_ovr_2(in_device: cl_device_id; var properties: DevicePartitionProperty; num_devices: UInt32; out_devices: IntPtr; var num_devices_ret: UInt32): ErrorCode;
@@ -3077,7 +3077,7 @@ type
     private static function z_CreateSubDevices_ovr_2_anh001000(in_device: cl_device_id; properties: IntPtr; num_devices: UInt32; out_devices: IntPtr; var num_devices_ret: UInt32): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevices';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevices(in_device: cl_device_id; properties: array of DevicePartitionProperty; num_devices: UInt32; out_devices: IntPtr; var num_devices_ret: UInt32): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevices_ovr_2(in_device, properties[0], num_devices, out_devices, num_devices_ret) else
       z_CreateSubDevices_ovr_2_anh001000(in_device, IntPtr.Zero, num_devices, out_devices, num_devices_ret);
     private static function z_CreateSubDevices_ovr_3(in_device: cl_device_id; var properties: DevicePartitionProperty; num_devices: UInt32; out_devices: IntPtr; num_devices_ret: IntPtr): ErrorCode;
@@ -3085,7 +3085,7 @@ type
     private static function z_CreateSubDevices_ovr_3_anh001000(in_device: cl_device_id; properties: IntPtr; num_devices: UInt32; out_devices: IntPtr; num_devices_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevices';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevices(in_device: cl_device_id; properties: array of DevicePartitionProperty; num_devices: UInt32; out_devices: IntPtr; num_devices_ret: IntPtr): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevices_ovr_3(in_device, properties[0], num_devices, out_devices, num_devices_ret) else
       z_CreateSubDevices_ovr_3_anh001000(in_device, IntPtr.Zero, num_devices, out_devices, num_devices_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevices(in_device: cl_device_id; var properties: DevicePartitionProperty; num_devices: UInt32; var out_devices: cl_device_id; var num_devices_ret: UInt32): ErrorCode :=
@@ -3131,7 +3131,7 @@ type
     private static function z_EnqueueBarrierWithWaitList_ovr_0_anh00010(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueBarrierWithWaitList';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueBarrierWithWaitList(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueBarrierWithWaitList_ovr_0(command_queue, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueBarrierWithWaitList_ovr_0_anh00010(command_queue, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueBarrierWithWaitList_ovr_1(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3139,7 +3139,7 @@ type
     private static function z_EnqueueBarrierWithWaitList_ovr_1_anh00010(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueBarrierWithWaitList';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueBarrierWithWaitList(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueBarrierWithWaitList_ovr_1(command_queue, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueBarrierWithWaitList_ovr_1_anh00010(command_queue, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueBarrierWithWaitList(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -3161,7 +3161,7 @@ type
     private static function z_EnqueueCopyBuffer_ovr_0_anh0000000010(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBuffer(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyBuffer_ovr_0(command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyBuffer_ovr_0_anh0000000010(command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyBuffer_ovr_1(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3169,7 +3169,7 @@ type
     private static function z_EnqueueCopyBuffer_ovr_1_anh0000000010(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBuffer(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyBuffer_ovr_1(command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyBuffer_ovr_1_anh0000000010(command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBuffer(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -3219,35 +3219,35 @@ type
     private static function z_EnqueueCopyBufferRect_ovr_0_anh00001110000010(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00000000000010(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0_anh00000010000000(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00000010000010(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0_anh00000100000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00000100000010(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0_anh00000110000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00000110000010(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0_anh00001000000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00001000000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0_anh00001010000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00001010000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0_anh00001100000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00001100000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_0_anh00001110000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_0_anh00001110000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyBufferRect_ovr_1(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3283,35 +3283,35 @@ type
     private static function z_EnqueueCopyBufferRect_ovr_1_anh00001110000010(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00000000000010(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1_anh00000010000000(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00000010000010(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1_anh00000100000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00000100000010(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1_anh00000110000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00000110000010(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1_anh00001000000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00001000000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1_anh00001010000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00001010000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1_anh00001100000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00001100000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyBufferRect_ovr_1_anh00001110000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyBufferRect_ovr_1_anh00001110000010(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyBufferRect_ovr_2_anh00001000000000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -3329,19 +3329,19 @@ type
     private static function z_EnqueueCopyBufferRect_ovr_2_anh00001110000000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_0(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_0_anh00000010000000(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_0_anh00000100000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_0_anh00000110000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_0_anh00001000000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_0_anh00001010000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_0_anh00001100000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_0_anh00001110000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyBufferRect_ovr_3_anh00001000000000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3359,19 +3359,19 @@ type
     private static function z_EnqueueCopyBufferRect_ovr_3_anh00001110000000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_1(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_1_anh00000010000000(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_1_anh00000100000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_1_anh00000110000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_1_anh00001000000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_1_anh00001010000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_1_anh00001100000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_1_anh00001110000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyBufferRect_ovr_4(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -3391,19 +3391,19 @@ type
     private static function z_EnqueueCopyBufferRect_ovr_4_anh00001110000000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_4(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_4_anh00000010000000(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_4_anh00000100000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_4_anh00000110000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_4_anh00001000000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_4_anh00001010000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_4_anh00001100000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_4_anh00001110000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyBufferRect_ovr_5(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -3423,27 +3423,27 @@ type
     private static function z_EnqueueCopyBufferRect_ovr_5_anh00001110000000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferRect';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_5(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_5_anh00000010000000(command_queue, src_buffer, dst_buffer, src_origin[0], dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_5_anh00000100000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_5_anh00000110000000(command_queue, src_buffer, dst_buffer, src_origin[0], IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_5_anh00001000000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_5_anh00001010000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, dst_origin[0], IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyBufferRect_ovr_5_anh00001100000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, region[0], src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyBufferRect_ovr_5_anh00001110000000(command_queue, src_buffer, dst_buffer, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyBufferRect_ovr_0(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyBufferRect_ovr_0_anh00000000000010(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyBufferRect_ovr_1(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyBufferRect_ovr_1_anh00000000000010(command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferRect(command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -3473,19 +3473,19 @@ type
     private static function z_EnqueueCopyBufferToImage_ovr_0_anh0000011010(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if dst_origin<>nil then
-      if region<>nil then
-        if event_wait_list<>nil then
+    if (dst_origin<>nil) and (dst_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_0(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_0_anh0000000010(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_0_anh0000001000(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_0_anh0000001010(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if region<>nil then
-        if event_wait_list<>nil then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_0_anh0000010000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_0_anh0000010010(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_0_anh0000011000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_0_anh0000011010(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyBufferToImage_ovr_1(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3505,19 +3505,19 @@ type
     private static function z_EnqueueCopyBufferToImage_ovr_1_anh0000011010(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if dst_origin<>nil then
-      if region<>nil then
-        if event_wait_list<>nil then
+    if (dst_origin<>nil) and (dst_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_1(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_1_anh0000000010(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_1_anh0000001000(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_1_anh0000001010(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if region<>nil then
-        if event_wait_list<>nil then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_1_anh0000010000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_1_anh0000010010(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyBufferToImage_ovr_1_anh0000011000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyBufferToImage_ovr_1_anh0000011010(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyBufferToImage_ovr_2_anh0000010000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -3527,11 +3527,11 @@ type
     private static function z_EnqueueCopyBufferToImage_ovr_2_anh0000011000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if dst_origin<>nil then
-      if region<>nil then
+    if (dst_origin<>nil) and (dst_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_0(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_0_anh0000001000(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_0_anh0000010000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_0_anh0000011000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyBufferToImage_ovr_3_anh0000010000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3541,11 +3541,11 @@ type
     private static function z_EnqueueCopyBufferToImage_ovr_3_anh0000011000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if dst_origin<>nil then
-      if region<>nil then
+    if (dst_origin<>nil) and (dst_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_1(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_1_anh0000001000(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_1_anh0000010000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_1_anh0000011000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyBufferToImage_ovr_4(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -3557,11 +3557,11 @@ type
     private static function z_EnqueueCopyBufferToImage_ovr_4_anh0000011000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if dst_origin<>nil then
-      if region<>nil then
+    if (dst_origin<>nil) and (dst_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_4(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_4_anh0000001000(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_4_anh0000010000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_4_anh0000011000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyBufferToImage_ovr_5(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -3573,19 +3573,19 @@ type
     private static function z_EnqueueCopyBufferToImage_ovr_5_anh0000011000(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyBufferToImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if dst_origin<>nil then
-      if region<>nil then
+    if (dst_origin<>nil) and (dst_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_5(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_5_anh0000001000(command_queue, src_buffer, dst_image, src_offset, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyBufferToImage_ovr_5_anh0000010000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyBufferToImage_ovr_5_anh0000011000(command_queue, src_buffer, dst_image, src_offset, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyBufferToImage_ovr_0(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyBufferToImage_ovr_0_anh0000000010(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyBufferToImage_ovr_1(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyBufferToImage_ovr_1_anh0000000010(command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyBufferToImage(command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -3631,35 +3631,35 @@ type
     private static function z_EnqueueCopyImage_ovr_0_anh0000111010(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000000010(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0_anh0000001000(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000001010(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0_anh0000010000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000010010(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0_anh0000011000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000011010(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0_anh0000100000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000100010(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0_anh0000101000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000101010(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0_anh0000110000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000110010(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_0_anh0000111000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_0_anh0000111010(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyImage_ovr_1(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3695,35 +3695,35 @@ type
     private static function z_EnqueueCopyImage_ovr_1_anh0000111010(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000000010(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1_anh0000001000(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000001010(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1_anh0000010000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000010010(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1_anh0000011000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000011010(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
-          if event_wait_list<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1_anh0000100000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000100010(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1_anh0000101000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000101010(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if region<>nil then
-          if event_wait_list<>nil then
+        if (region<>nil) and (region.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1_anh0000110000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000110010(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueCopyImage_ovr_1_anh0000111000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueCopyImage_ovr_1_anh0000111010(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyImage_ovr_2_anh0000100000(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -3741,19 +3741,19 @@ type
     private static function z_EnqueueCopyImage_ovr_2_anh0000111000(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_0(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_0_anh0000001000(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_0_anh0000010000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_0_anh0000011000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_0_anh0000100000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_0_anh0000101000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_0_anh0000110000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_0_anh0000111000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyImage_ovr_3_anh0000100000(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3771,19 +3771,19 @@ type
     private static function z_EnqueueCopyImage_ovr_3_anh0000111000(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_1(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_1_anh0000001000(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_1_anh0000010000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_1_anh0000011000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_1_anh0000100000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_1_anh0000101000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_1_anh0000110000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_1_anh0000111000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyImage_ovr_4(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -3803,19 +3803,19 @@ type
     private static function z_EnqueueCopyImage_ovr_4_anh0000111000(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_4(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_4_anh0000001000(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_4_anh0000010000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_4_anh0000011000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_4_anh0000100000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_4_anh0000101000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_4_anh0000110000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_4_anh0000111000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyImage_ovr_5(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -3835,27 +3835,27 @@ type
     private static function z_EnqueueCopyImage_ovr_5_anh0000111000(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: array of UIntPtr; dst_origin: array of UIntPtr; region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if dst_origin<>nil then
-        if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_5(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_5_anh0000001000(command_queue, src_image, dst_image, src_origin[0], dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_5_anh0000010000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_5_anh0000011000(command_queue, src_image, dst_image, src_origin[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if dst_origin<>nil then
-        if region<>nil then
+      if (dst_origin<>nil) and (dst_origin.Length<>0) then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_5_anh0000100000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_5_anh0000101000(command_queue, src_image, dst_image, IntPtr.Zero, dst_origin[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if region<>nil then
+        if (region<>nil) and (region.Length<>0) then
           z_EnqueueCopyImage_ovr_5_anh0000110000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, region[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueCopyImage_ovr_5_anh0000111000(command_queue, src_image, dst_image, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyImage_ovr_0(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyImage_ovr_0_anh0000000010(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyImage_ovr_1(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyImage_ovr_1_anh0000000010(command_queue, src_image, dst_image, src_origin, dst_origin, region, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImage(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -3885,19 +3885,19 @@ type
     private static function z_EnqueueCopyImageToBuffer_ovr_0_anh0000110010(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if region<>nil then
-        if event_wait_list<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_0(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_0_anh0000000010(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_0_anh0000010000(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_0_anh0000010010(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if region<>nil then
-        if event_wait_list<>nil then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_0_anh0000100000(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_0_anh0000100010(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_0_anh0000110000(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_0_anh0000110010(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyImageToBuffer_ovr_1(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3917,19 +3917,19 @@ type
     private static function z_EnqueueCopyImageToBuffer_ovr_1_anh0000110010(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if region<>nil then
-        if event_wait_list<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_1(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_1_anh0000000010(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_1_anh0000010000(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_1_anh0000010010(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if region<>nil then
-        if event_wait_list<>nil then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_1_anh0000100000(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_1_anh0000100010(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueCopyImageToBuffer_ovr_1_anh0000110000(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueCopyImageToBuffer_ovr_1_anh0000110010(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueCopyImageToBuffer_ovr_2_anh0000100000(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -3939,11 +3939,11 @@ type
     private static function z_EnqueueCopyImageToBuffer_ovr_2_anh0000110000(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_0(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_0_anh0000010000(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_0_anh0000100000(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_0_anh0000110000(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyImageToBuffer_ovr_3_anh0000100000(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -3953,11 +3953,11 @@ type
     private static function z_EnqueueCopyImageToBuffer_ovr_3_anh0000110000(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_1(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_1_anh0000010000(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_1_anh0000100000(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_1_anh0000110000(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyImageToBuffer_ovr_4(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -3969,11 +3969,11 @@ type
     private static function z_EnqueueCopyImageToBuffer_ovr_4_anh0000110000(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if src_origin<>nil then
-      if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_4(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_4_anh0000010000(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_4_anh0000100000(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_4_anh0000110000(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueCopyImageToBuffer_ovr_5(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -3985,19 +3985,19 @@ type
     private static function z_EnqueueCopyImageToBuffer_ovr_5_anh0000110000(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueCopyImageToBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: array of UIntPtr; region: array of UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if src_origin<>nil then
-      if region<>nil then
+    if (src_origin<>nil) and (src_origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_5(command_queue, src_image, dst_buffer, src_origin[0], region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_5_anh0000010000(command_queue, src_image, dst_buffer, src_origin[0], IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueCopyImageToBuffer_ovr_5_anh0000100000(command_queue, src_image, dst_buffer, IntPtr.Zero, region[0], dst_offset, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueCopyImageToBuffer_ovr_5_anh0000110000(command_queue, src_image, dst_buffer, IntPtr.Zero, IntPtr.Zero, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyImageToBuffer_ovr_0(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyImageToBuffer_ovr_0_anh0000000010(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueCopyImageToBuffer_ovr_1(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueCopyImageToBuffer_ovr_1_anh0000000010(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCopyImageToBuffer(command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -4016,17 +4016,17 @@ type
     external 'opencl.dll' name 'clEnqueueFillBuffer';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueFillBuffer_ovr_0<T>(command_queue: cl_command_queue; buffer: cl_mem; var pattern: T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueFillBuffer_ovr_0(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueFillBuffer_ovr_0_anh0000000010(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueFillBuffer_ovr_0_anh0001000000(command_queue: cl_command_queue; buffer: cl_mem; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueFillBuffer_ovr_0(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueFillBuffer_ovr_0_anh0000000010(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; pattern: array of T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueFillBuffer_ovr_0(command_queue, buffer, pattern[0], pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueFillBuffer_ovr_0_anh0001000000(command_queue, buffer, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4036,17 +4036,17 @@ type
     external 'opencl.dll' name 'clEnqueueFillBuffer';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueFillBuffer_ovr_1<T>(command_queue: cl_command_queue; buffer: cl_mem; var pattern: T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueFillBuffer_ovr_1(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueFillBuffer_ovr_1_anh0000000010(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueFillBuffer_ovr_1_anh0001000000(command_queue: cl_command_queue; buffer: cl_mem; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueFillBuffer_ovr_1(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueFillBuffer_ovr_1_anh0000000010(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; pattern: array of T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueFillBuffer_ovr_1(command_queue, buffer, pattern[0], pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueFillBuffer_ovr_1_anh0001000000(command_queue, buffer, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4058,7 +4058,7 @@ type
     z_EnqueueFillBuffer_ovr_0(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; pattern: array of T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueFillBuffer_ovr_2(command_queue, buffer, pattern[0], pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueFillBuffer_ovr_2_anh0001000000(command_queue, buffer, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4070,7 +4070,7 @@ type
     z_EnqueueFillBuffer_ovr_1(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; pattern: array of T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueFillBuffer_ovr_3(command_queue, buffer, pattern[0], pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueFillBuffer_ovr_3_anh0001000000(command_queue, buffer, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4084,7 +4084,7 @@ type
     z_EnqueueFillBuffer_ovr_4(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; pattern: array of T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueFillBuffer_ovr_4(command_queue, buffer, pattern[0], pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueFillBuffer_ovr_4_anh0001000000(command_queue, buffer, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4098,19 +4098,19 @@ type
     z_EnqueueFillBuffer_ovr_5(command_queue, buffer, PByte(nil)^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; pattern: array of T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueFillBuffer_ovr_5(command_queue, buffer, pattern[0], pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueFillBuffer_ovr_5_anh0001000000(command_queue, buffer, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; var pattern: T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueFillBuffer_ovr_0(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueFillBuffer_ovr_0_anh0000000010(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; var pattern: T; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueFillBuffer_ovr_1(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueFillBuffer_ovr_1_anh0000000010(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
@@ -4135,7 +4135,7 @@ type
     private static function z_EnqueueFillBuffer_ovr_12_anh0000000010(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueFillBuffer_ovr_12(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueFillBuffer_ovr_12_anh0000000010(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueFillBuffer_ovr_13(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -4143,7 +4143,7 @@ type
     private static function z_EnqueueFillBuffer_ovr_13_anh0000000010(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueFillBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueFillBuffer_ovr_13(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueFillBuffer_ovr_13_anh0000000010(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -4207,7 +4207,7 @@ type
     private static function z_EnqueueMapBuffer_ovr_0_anh00000000100(command_queue: cl_command_queue; buffer: cl_mem; blocking_map: Bool; map_flags: MapFlags; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_map: Bool; map_flags: MapFlags; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMapBuffer_ovr_0(command_queue, buffer, blocking_map, map_flags, offset, size, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
       z_EnqueueMapBuffer_ovr_0_anh00000000100(command_queue, buffer, blocking_map, map_flags, offset, size, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret);
     private static function z_EnqueueMapBuffer_ovr_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_map: Bool; map_flags: MapFlags; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
@@ -4215,7 +4215,7 @@ type
     private static function z_EnqueueMapBuffer_ovr_1_anh00000000100(command_queue: cl_command_queue; buffer: cl_mem; blocking_map: Bool; map_flags: MapFlags; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_map: Bool; map_flags: MapFlags; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMapBuffer_ovr_1(command_queue, buffer, blocking_map, map_flags, offset, size, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
       z_EnqueueMapBuffer_ovr_1_anh00000000100(command_queue, buffer, blocking_map, map_flags, offset, size, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_map: Bool; map_flags: MapFlags; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
@@ -4249,19 +4249,19 @@ type
     private static function z_EnqueueMapImage_ovr_0_anh0000011000100(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
-    if origin<>nil then
-      if region<>nil then
-        if event_wait_list<>nil then
+    if (origin<>nil) and (origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_0(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_0_anh0000000000100(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_0_anh0000001000000(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_0_anh0000001000100(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret) else
-      if region<>nil then
-        if event_wait_list<>nil then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_0_anh0000010000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_0_anh0000010000100(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_0_anh0000011000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_0_anh0000011000100(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret);
     private static function z_EnqueueMapImage_ovr_1(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
@@ -4281,19 +4281,19 @@ type
     private static function z_EnqueueMapImage_ovr_1_anh0000011000100(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
-    if origin<>nil then
-      if region<>nil then
-        if event_wait_list<>nil then
+    if (origin<>nil) and (origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_1(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_1_anh0000000000100(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_1_anh0000001000000(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_1_anh0000001000100(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret) else
-      if region<>nil then
-        if event_wait_list<>nil then
+      if (region<>nil) and (region.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_1_anh0000010000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_1_anh0000010000100(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueMapImage_ovr_1_anh0000011000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
           z_EnqueueMapImage_ovr_1_anh0000011000100(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret);
     private static function z_EnqueueMapImage_ovr_2_anh0000010000000(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
@@ -4303,11 +4303,11 @@ type
     private static function z_EnqueueMapImage_ovr_2_anh0000011000000(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
-    if origin<>nil then
-      if region<>nil then
+    if (origin<>nil) and (origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_0(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_0_anh0000001000000(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_0_anh0000010000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_0_anh0000011000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     private static function z_EnqueueMapImage_ovr_3_anh0000010000000(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
@@ -4317,11 +4317,11 @@ type
     private static function z_EnqueueMapImage_ovr_3_anh0000011000000(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
-    if origin<>nil then
-      if region<>nil then
+    if (origin<>nil) and (origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_1(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_1_anh0000001000000(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_1_anh0000010000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_1_anh0000011000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     private static function z_EnqueueMapImage_ovr_4(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
@@ -4333,11 +4333,11 @@ type
     private static function z_EnqueueMapImage_ovr_4_anh0000011000000(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
-    if origin<>nil then
-      if region<>nil then
+    if (origin<>nil) and (origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_4(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_4_anh0000001000000(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_4_anh0000010000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_4_anh0000011000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     private static function z_EnqueueMapImage_ovr_5(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
@@ -4349,19 +4349,19 @@ type
     private static function z_EnqueueMapImage_ovr_5_anh0000011000000(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clEnqueueMapImage';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
-    if origin<>nil then
-      if region<>nil then
+    if (origin<>nil) and (origin.Length<>0) then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_5(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_5_anh0000001000000(command_queue, image, blocking_map, map_flags, origin[0], IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
-      if region<>nil then
+      if (region<>nil) and (region.Length<>0) then
         z_EnqueueMapImage_ovr_5_anh0000010000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
         z_EnqueueMapImage_ovr_5_anh0000011000000(command_queue, image, blocking_map, map_flags, IntPtr.Zero, IntPtr.Zero, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMapImage_ovr_0(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
       z_EnqueueMapImage_ovr_0_anh0000000000100(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMapImage_ovr_1(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
       z_EnqueueMapImage_ovr_1_anh0000000000100(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, IntPtr.Zero, &event, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
@@ -4379,7 +4379,7 @@ type
     private static function z_EnqueueMarker_ovr_0_anh001(command_queue: cl_command_queue; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMarker';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMarker(command_queue: cl_command_queue; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMarker_ovr_0(command_queue, &event[0]) else
       z_EnqueueMarker_ovr_0_anh001(command_queue, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMarker(command_queue: cl_command_queue; var &event: cl_event): ErrorCode :=
@@ -4395,7 +4395,7 @@ type
     private static function z_EnqueueMarkerWithWaitList_ovr_0_anh00010(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMarkerWithWaitList';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMarkerWithWaitList(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMarkerWithWaitList_ovr_0(command_queue, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMarkerWithWaitList_ovr_0_anh00010(command_queue, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMarkerWithWaitList(command_queue: cl_command_queue; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -4415,11 +4415,11 @@ type
     private static function z_EnqueueMigrateMemObjects_ovr_0_anh00010010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjects_ovr_0(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjects_ovr_0_anh00000010(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjects_ovr_0_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjects_ovr_0_anh00010010(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMigrateMemObjects_ovr_1(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -4431,23 +4431,23 @@ type
     private static function z_EnqueueMigrateMemObjects_ovr_1_anh00010010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjects_ovr_1(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjects_ovr_1_anh00000010(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjects_ovr_1_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjects_ovr_1_anh00010010(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMigrateMemObjects_ovr_2_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_0(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjects_ovr_0_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueMigrateMemObjects_ovr_3_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_1(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjects_ovr_1_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueMigrateMemObjects_ovr_4(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -4455,7 +4455,7 @@ type
     private static function z_EnqueueMigrateMemObjects_ovr_4_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_4(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjects_ovr_4_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueMigrateMemObjects_ovr_5(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -4463,15 +4463,15 @@ type
     private static function z_EnqueueMigrateMemObjects_ovr_5_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_5(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjects_ovr_5_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_0(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjects_ovr_0_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_1(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjects_ovr_1_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -4487,7 +4487,7 @@ type
     private static function z_EnqueueMigrateMemObjects_ovr_12_anh00000010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_12(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjects_ovr_12_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMigrateMemObjects_ovr_13(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -4495,7 +4495,7 @@ type
     private static function z_EnqueueMigrateMemObjects_ovr_13_anh00000010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjects_ovr_13(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjects_ovr_13_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjects(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -4611,35 +4611,35 @@ type
     private static function z_EnqueueNDRangeKernel_ovr_0_anh0000111010(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if global_work_offset<>nil then
-      if global_work_size<>nil then
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+    if (global_work_offset<>nil) and (global_work_offset.Length<>0) then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000000010(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0_anh0000001000(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000001010(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0_anh0000010000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000010010(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0_anh0000011000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000011010(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if global_work_size<>nil then
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0_anh0000100000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000100010(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0_anh0000101000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000101010(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0_anh0000110000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000110010(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_0_anh0000111000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_0_anh0000111010(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueNDRangeKernel_ovr_1(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -4675,35 +4675,35 @@ type
     private static function z_EnqueueNDRangeKernel_ovr_1_anh0000111010(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if global_work_offset<>nil then
-      if global_work_size<>nil then
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+    if (global_work_offset<>nil) and (global_work_offset.Length<>0) then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000000010(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1_anh0000001000(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000001010(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1_anh0000010000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000010010(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1_anh0000011000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000011010(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if global_work_size<>nil then
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1_anh0000100000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000100010(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1_anh0000101000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000101010(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if local_work_size<>nil then
-          if event_wait_list<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1_anh0000110000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000110010(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-          if event_wait_list<>nil then
+          if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
             z_EnqueueNDRangeKernel_ovr_1_anh0000111000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
             z_EnqueueNDRangeKernel_ovr_1_anh0000111010(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueNDRangeKernel_ovr_2_anh0000100000(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -4721,19 +4721,19 @@ type
     private static function z_EnqueueNDRangeKernel_ovr_2_anh0000111000(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if global_work_offset<>nil then
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+    if (global_work_offset<>nil) and (global_work_offset.Length<>0) then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_0(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_0_anh0000001000(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_0_anh0000010000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_0_anh0000011000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_0_anh0000100000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_0_anh0000101000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_0_anh0000110000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_0_anh0000111000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueNDRangeKernel_ovr_3_anh0000100000(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -4751,19 +4751,19 @@ type
     private static function z_EnqueueNDRangeKernel_ovr_3_anh0000111000(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if global_work_offset<>nil then
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+    if (global_work_offset<>nil) and (global_work_offset.Length<>0) then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_1(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_1_anh0000001000(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_1_anh0000010000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_1_anh0000011000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_1_anh0000100000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_1_anh0000101000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_1_anh0000110000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_1_anh0000111000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueNDRangeKernel_ovr_4(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -4783,19 +4783,19 @@ type
     private static function z_EnqueueNDRangeKernel_ovr_4_anh0000111000(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if global_work_offset<>nil then
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+    if (global_work_offset<>nil) and (global_work_offset.Length<>0) then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_4(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_4_anh0000001000(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_4_anh0000010000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_4_anh0000011000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_4_anh0000100000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_4_anh0000101000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_4_anh0000110000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_4_anh0000111000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueNDRangeKernel_ovr_5(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -4815,27 +4815,27 @@ type
     private static function z_EnqueueNDRangeKernel_ovr_5_anh0000111000(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueNDRangeKernel';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: array of UIntPtr; global_work_size: array of UIntPtr; local_work_size: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if global_work_offset<>nil then
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+    if (global_work_offset<>nil) and (global_work_offset.Length<>0) then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_5(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_5_anh0000001000(command_queue, kernel, work_dim, global_work_offset[0], global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_5_anh0000010000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_5_anh0000011000(command_queue, kernel, work_dim, global_work_offset[0], IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-      if global_work_size<>nil then
-        if local_work_size<>nil then
+      if (global_work_size<>nil) and (global_work_size.Length<>0) then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_5_anh0000100000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_5_anh0000101000(command_queue, kernel, work_dim, IntPtr.Zero, global_work_size[0], IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event) else
-        if local_work_size<>nil then
+        if (local_work_size<>nil) and (local_work_size.Length<>0) then
           z_EnqueueNDRangeKernel_ovr_5_anh0000110000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, local_work_size[0], num_events_in_wait_list, event_wait_list, &event) else
           z_EnqueueNDRangeKernel_ovr_5_anh0000111000(command_queue, kernel, work_dim, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueNDRangeKernel_ovr_0(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueNDRangeKernel_ovr_0_anh0000000010(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueNDRangeKernel_ovr_1(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueNDRangeKernel_ovr_1_anh0000000010(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNDRangeKernel(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -4854,17 +4854,17 @@ type
     external 'opencl.dll' name 'clEnqueueReadBuffer';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueReadBuffer_ovr_0<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueReadBuffer_ovr_0(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueReadBuffer_ovr_0_anh0000000010(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueReadBuffer_ovr_0_anh0000001000(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReadBuffer_ovr_0(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReadBuffer_ovr_0_anh0000000010(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueReadBuffer_ovr_0(command_queue, buffer, blocking_read, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueReadBuffer_ovr_0_anh0000001000(command_queue, buffer, blocking_read, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4874,17 +4874,17 @@ type
     external 'opencl.dll' name 'clEnqueueReadBuffer';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueReadBuffer_ovr_1<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueReadBuffer_ovr_1(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueReadBuffer_ovr_1_anh0000000010(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueReadBuffer_ovr_1_anh0000001000(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReadBuffer_ovr_1(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReadBuffer_ovr_1_anh0000000010(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueReadBuffer_ovr_1(command_queue, buffer, blocking_read, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueReadBuffer_ovr_1_anh0000001000(command_queue, buffer, blocking_read, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4896,7 +4896,7 @@ type
     z_EnqueueReadBuffer_ovr_0(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueReadBuffer_ovr_2(command_queue, buffer, blocking_read, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueReadBuffer_ovr_2_anh0000001000(command_queue, buffer, blocking_read, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4908,7 +4908,7 @@ type
     z_EnqueueReadBuffer_ovr_1(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueReadBuffer_ovr_3(command_queue, buffer, blocking_read, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueReadBuffer_ovr_3_anh0000001000(command_queue, buffer, blocking_read, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4922,7 +4922,7 @@ type
     z_EnqueueReadBuffer_ovr_4(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueReadBuffer_ovr_4(command_queue, buffer, blocking_read, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueReadBuffer_ovr_4_anh0000001000(command_queue, buffer, blocking_read, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -4936,19 +4936,19 @@ type
     z_EnqueueReadBuffer_ovr_5(command_queue, buffer, blocking_read, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueReadBuffer_ovr_5(command_queue, buffer, blocking_read, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueReadBuffer_ovr_5_anh0000001000(command_queue, buffer, blocking_read, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueReadBuffer_ovr_0(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueReadBuffer_ovr_0_anh0000000010(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueReadBuffer_ovr_1(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueReadBuffer_ovr_1_anh0000000010(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
@@ -4973,7 +4973,7 @@ type
     private static function z_EnqueueReadBuffer_ovr_12_anh0000000010(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReadBuffer_ovr_12(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReadBuffer_ovr_12_anh0000000010(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReadBuffer_ovr_13(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -4981,7 +4981,7 @@ type
     private static function z_EnqueueReadBuffer_ovr_13_anh0000000010(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReadBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReadBuffer_ovr_13(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReadBuffer_ovr_13_anh0000000010(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5091,11 +5091,11 @@ type
     private static function z_EnqueueSVMFree_ovr_0_anh000100010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if svm_pointers<>nil then
-      if event_wait_list<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueSVMFree_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueSVMFree_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueSVMFree_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueSVMFree_ovr_0_anh000100010(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMFree_ovr_1(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5107,23 +5107,23 @@ type
     private static function z_EnqueueSVMFree_ovr_1_anh000100010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if svm_pointers<>nil then
-      if event_wait_list<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueSVMFree_ovr_1(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueSVMFree_ovr_1_anh000000010(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueSVMFree_ovr_1_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueSVMFree_ovr_1_anh000100010(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMFree_ovr_2_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if svm_pointers<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
       z_EnqueueSVMFree_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueSVMFree_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueSVMFree_ovr_3_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if svm_pointers<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
       z_EnqueueSVMFree_ovr_1(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueSVMFree_ovr_1_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueSVMFree_ovr_4(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -5131,7 +5131,7 @@ type
     private static function z_EnqueueSVMFree_ovr_4_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if svm_pointers<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
       z_EnqueueSVMFree_ovr_4(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueSVMFree_ovr_4_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueSVMFree_ovr_5(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -5139,15 +5139,15 @@ type
     private static function z_EnqueueSVMFree_ovr_5_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if svm_pointers<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
       z_EnqueueSVMFree_ovr_5(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueSVMFree_ovr_5_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFree_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFree_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFree_ovr_1(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFree_ovr_1_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5163,7 +5163,7 @@ type
     private static function z_EnqueueSVMFree_ovr_12_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFree_ovr_12(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFree_ovr_12_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMFree_ovr_13(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5171,7 +5171,7 @@ type
     private static function z_EnqueueSVMFree_ovr_13_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFree';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFree_ovr_13(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFree_ovr_13_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFree(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5193,7 +5193,7 @@ type
     private static function z_EnqueueSVMMap_ovr_0_anh000000010(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMap';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMap(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMap_ovr_0(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMap_ovr_0_anh000000010(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMap_ovr_1(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5201,7 +5201,7 @@ type
     private static function z_EnqueueSVMMap_ovr_1_anh000000010(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMap';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMap(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMap_ovr_1(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMap_ovr_1_anh000000010(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMap(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5223,7 +5223,7 @@ type
     private static function z_EnqueueSVMMemcpy_ovr_0_anh000000010(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemcpy';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpy(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemcpy_ovr_0(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemcpy_ovr_0_anh000000010(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMemcpy_ovr_1(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5231,7 +5231,7 @@ type
     private static function z_EnqueueSVMMemcpy_ovr_1_anh000000010(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemcpy';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpy(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemcpy_ovr_1(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemcpy_ovr_1_anh000000010(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpy(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5254,17 +5254,17 @@ type
     external 'opencl.dll' name 'clEnqueueSVMMemFill';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueSVMMemFill_ovr_0<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; var pattern: T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueSVMMemFill_ovr_0(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueSVMMemFill_ovr_0_anh000000010(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueSVMMemFill_ovr_0_anh000100000(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemFill_ovr_0(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemFill_ovr_0_anh000000010(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueSVMMemFill_ovr_0(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueSVMMemFill_ovr_0_anh000100000(command_queue, svm_ptr, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5274,17 +5274,17 @@ type
     external 'opencl.dll' name 'clEnqueueSVMMemFill';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueSVMMemFill_ovr_1<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; var pattern: T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueSVMMemFill_ovr_1(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueSVMMemFill_ovr_1_anh000000010(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueSVMMemFill_ovr_1_anh000100000(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemFill_ovr_1(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemFill_ovr_1_anh000000010(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueSVMMemFill_ovr_1(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueSVMMemFill_ovr_1_anh000100000(command_queue, svm_ptr, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5296,7 +5296,7 @@ type
     z_EnqueueSVMMemFill_ovr_0(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueSVMMemFill_ovr_2(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueSVMMemFill_ovr_2_anh000100000(command_queue, svm_ptr, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5308,7 +5308,7 @@ type
     z_EnqueueSVMMemFill_ovr_1(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueSVMMemFill_ovr_3(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueSVMMemFill_ovr_3_anh000100000(command_queue, svm_ptr, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5322,7 +5322,7 @@ type
     z_EnqueueSVMMemFill_ovr_4(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueSVMMemFill_ovr_4(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueSVMMemFill_ovr_4_anh000100000(command_queue, svm_ptr, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5336,19 +5336,19 @@ type
     z_EnqueueSVMMemFill_ovr_5(command_queue, svm_ptr, PByte(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if pattern<>nil then
+      if (pattern<>nil) and (pattern.Length<>0) then
         Result := temp_EnqueueSVMMemFill_ovr_5(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueSVMMemFill_ovr_5_anh000100000(command_queue, svm_ptr, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; var pattern: T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueSVMMemFill_ovr_0(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueSVMMemFill_ovr_0_anh000000010(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; var pattern: T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueSVMMemFill_ovr_1(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueSVMMemFill_ovr_1_anh000000010(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
@@ -5373,7 +5373,7 @@ type
     private static function z_EnqueueSVMMemFill_ovr_12_anh000000010(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemFill';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemFill_ovr_12(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemFill_ovr_12_anh000000010(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMemFill_ovr_13(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5381,7 +5381,7 @@ type
     private static function z_EnqueueSVMMemFill_ovr_13_anh000000010(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemFill';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemFill_ovr_13(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemFill_ovr_13_anh000000010(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5415,19 +5415,19 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_0_anh000110010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; sizes: array of UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if svm_pointers<>nil then
-      if sizes<>nil then
-        if event_wait_list<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (sizes<>nil) and (sizes.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_0_anh000010000(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_0_anh000010010(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if sizes<>nil then
-        if event_wait_list<>nil then
+      if (sizes<>nil) and (sizes.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_0_anh000100010(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_0_anh000110000(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_0_anh000110010(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMigrateMem_ovr_1(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5447,19 +5447,19 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_1_anh000110010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; sizes: array of UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if svm_pointers<>nil then
-      if sizes<>nil then
-        if event_wait_list<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (sizes<>nil) and (sizes.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_1(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_1_anh000000010(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_1_anh000010000(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_1_anh000010010(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if sizes<>nil then
-        if event_wait_list<>nil then
+      if (sizes<>nil) and (sizes.Length<>0) then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_1_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_1_anh000100010(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-        if event_wait_list<>nil then
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
           z_EnqueueSVMMigrateMem_ovr_1_anh000110000(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
           z_EnqueueSVMMigrateMem_ovr_1_anh000110010(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMigrateMem_ovr_2_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -5469,11 +5469,11 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_2_anh000110000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; sizes: array of UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if svm_pointers<>nil then
-      if sizes<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_0_anh000010000(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event) else
-      if sizes<>nil then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_0_anh000110000(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueSVMMigrateMem_ovr_3_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5483,11 +5483,11 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_3_anh000110000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; sizes: array of UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if svm_pointers<>nil then
-      if sizes<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_1(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_1_anh000010000(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event) else
-      if sizes<>nil then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_1_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_1_anh000110000(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueSVMMigrateMem_ovr_4(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -5499,11 +5499,11 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_4_anh000110000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; sizes: array of UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if svm_pointers<>nil then
-      if sizes<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_4(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_4_anh000010000(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event) else
-      if sizes<>nil then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_4_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_4_anh000110000(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueSVMMigrateMem_ovr_5(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -5515,19 +5515,19 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_5_anh000110000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; sizes: array of UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if svm_pointers<>nil then
-      if sizes<>nil then
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_5(command_queue, num_svm_pointers, svm_pointers[0], sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_5_anh000010000(command_queue, num_svm_pointers, svm_pointers[0], IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event) else
-      if sizes<>nil then
+      if (sizes<>nil) and (sizes.Length<>0) then
         z_EnqueueSVMMigrateMem_ovr_5_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, sizes[0], flags, num_events_in_wait_list, event_wait_list, &event) else
         z_EnqueueSVMMigrateMem_ovr_5_anh000110000(command_queue, num_svm_pointers, IntPtr.Zero, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMigrateMem_ovr_0(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMigrateMem_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMigrateMem_ovr_1(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMigrateMem_ovr_1_anh000000010(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; var sizes: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5543,7 +5543,7 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_12_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMigrateMem_ovr_12(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMigrateMem_ovr_12_anh000000010(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMigrateMem_ovr_13(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5551,7 +5551,7 @@ type
     private static function z_EnqueueSVMMigrateMem_ovr_13_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMigrateMem';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMigrateMem_ovr_13(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMigrateMem_ovr_13_anh000000010(command_queue, num_svm_pointers, svm_pointers, sizes, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMigrateMem(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; sizes: IntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5573,7 +5573,7 @@ type
     private static function z_EnqueueSVMUnmap_ovr_0_anh000010(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMUnmap';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmap(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMUnmap_ovr_0(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMUnmap_ovr_0_anh000010(command_queue, svm_ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMUnmap_ovr_1(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5581,7 +5581,7 @@ type
     private static function z_EnqueueSVMUnmap_ovr_1_anh000010(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMUnmap';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmap(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMUnmap_ovr_1(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMUnmap_ovr_1_anh000010(command_queue, svm_ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmap(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5607,17 +5607,17 @@ type
     private static function z_EnqueueTask_ovr_0_anh000011(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueTask';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueTask(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueTask_ovr_0(command_queue, kernel, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueTask_ovr_0_anh000001(command_queue, kernel, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueTask_ovr_0_anh000010(command_queue, kernel, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueTask_ovr_0_anh000011(command_queue, kernel, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueTask_ovr_1_anh000010(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueTask';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueTask(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueTask_ovr_0(command_queue, kernel, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueTask_ovr_0_anh000010(command_queue, kernel, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueTask_ovr_2(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5625,11 +5625,11 @@ type
     private static function z_EnqueueTask_ovr_2_anh000010(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueTask';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueTask(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueTask_ovr_2(command_queue, kernel, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueTask_ovr_2_anh000010(command_queue, kernel, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueTask(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueTask_ovr_0(command_queue, kernel, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueTask_ovr_0_anh000001(command_queue, kernel, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueTask(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5641,7 +5641,7 @@ type
     private static function z_EnqueueTask_ovr_6_anh000001(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueTask';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueTask(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueTask_ovr_6(command_queue, kernel, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueTask_ovr_6_anh000001(command_queue, kernel, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueTask(command_queue: cl_command_queue; kernel: cl_kernel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -5657,7 +5657,7 @@ type
     private static function z_EnqueueUnmapMemObject_ovr_0_anh0000010(command_queue: cl_command_queue; memobj: cl_mem; mapped_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueUnmapMemObject';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueUnmapMemObject(command_queue: cl_command_queue; memobj: cl_mem; mapped_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueUnmapMemObject_ovr_0(command_queue, memobj, mapped_ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueUnmapMemObject_ovr_0_anh0000010(command_queue, memobj, mapped_ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueUnmapMemObject_ovr_1(command_queue: cl_command_queue; memobj: cl_mem; mapped_ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5665,7 +5665,7 @@ type
     private static function z_EnqueueUnmapMemObject_ovr_1_anh0000010(command_queue: cl_command_queue; memobj: cl_mem; mapped_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueUnmapMemObject';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueUnmapMemObject(command_queue: cl_command_queue; memobj: cl_mem; mapped_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueUnmapMemObject_ovr_1(command_queue, memobj, mapped_ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueUnmapMemObject_ovr_1_anh0000010(command_queue, memobj, mapped_ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueUnmapMemObject(command_queue: cl_command_queue; memobj: cl_mem; mapped_ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -5687,7 +5687,7 @@ type
     private static function z_EnqueueWaitForEvents_ovr_0_anh0001(command_queue: cl_command_queue; num_events: UInt32; event_list: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWaitForEvents';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWaitForEvents(command_queue: cl_command_queue; num_events: UInt32; event_list: array of cl_event): ErrorCode :=
-    if event_list<>nil then
+    if (event_list<>nil) and (event_list.Length<>0) then
       z_EnqueueWaitForEvents_ovr_0(command_queue, num_events, event_list[0]) else
       z_EnqueueWaitForEvents_ovr_0_anh0001(command_queue, num_events, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWaitForEvents(command_queue: cl_command_queue; num_events: UInt32; var event_list: cl_event): ErrorCode :=
@@ -5704,17 +5704,17 @@ type
     external 'opencl.dll' name 'clEnqueueWriteBuffer';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueWriteBuffer_ovr_0<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueWriteBuffer_ovr_0(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueWriteBuffer_ovr_0_anh0000000010(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueWriteBuffer_ovr_0_anh0000001000(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueWriteBuffer_ovr_0(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueWriteBuffer_ovr_0_anh0000000010(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueWriteBuffer_ovr_0(command_queue, buffer, blocking_write, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueWriteBuffer_ovr_0_anh0000001000(command_queue, buffer, blocking_write, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5724,17 +5724,17 @@ type
     external 'opencl.dll' name 'clEnqueueWriteBuffer';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueWriteBuffer_ovr_1<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueWriteBuffer_ovr_1(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueWriteBuffer_ovr_1_anh0000000010(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_EnqueueWriteBuffer_ovr_1_anh0000001000(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueWriteBuffer_ovr_1(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueWriteBuffer_ovr_1_anh0000000010(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueWriteBuffer_ovr_1(command_queue, buffer, blocking_write, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueWriteBuffer_ovr_1_anh0000001000(command_queue, buffer, blocking_write, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5746,7 +5746,7 @@ type
     z_EnqueueWriteBuffer_ovr_0(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueWriteBuffer_ovr_2(command_queue, buffer, blocking_write, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueWriteBuffer_ovr_2_anh0000001000(command_queue, buffer, blocking_write, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5758,7 +5758,7 @@ type
     z_EnqueueWriteBuffer_ovr_1(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueWriteBuffer_ovr_3(command_queue, buffer, blocking_write, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueWriteBuffer_ovr_3_anh0000001000(command_queue, buffer, blocking_write, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5772,7 +5772,7 @@ type
     z_EnqueueWriteBuffer_ovr_4(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueWriteBuffer_ovr_4(command_queue, buffer, blocking_write, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueWriteBuffer_ovr_4_anh0000001000(command_queue, buffer, blocking_write, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
@@ -5786,19 +5786,19 @@ type
     z_EnqueueWriteBuffer_ovr_5(command_queue, buffer, blocking_write, offset, size, PByte(nil)^, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: array of T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if ptr<>nil then
+      if (ptr<>nil) and (ptr.Length<>0) then
         Result := temp_EnqueueWriteBuffer_ovr_5(command_queue, buffer, blocking_write, offset, size, ptr[0], num_events_in_wait_list, event_wait_list, &event) else
         Result := temp_EnqueueWriteBuffer_ovr_5_anh0000001000(command_queue, buffer, blocking_write, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueWriteBuffer_ovr_0(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueWriteBuffer_ovr_0_anh0000000010(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
     begin
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         Result := z_EnqueueWriteBuffer_ovr_1(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
         Result := z_EnqueueWriteBuffer_ovr_1_anh0000000010(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, IntPtr.Zero, &event);
     end;
@@ -5823,7 +5823,7 @@ type
     private static function z_EnqueueWriteBuffer_ovr_12_anh0000000010(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueWriteBuffer_ovr_12(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueWriteBuffer_ovr_12_anh0000000010(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueWriteBuffer_ovr_13(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -5831,7 +5831,7 @@ type
     private static function z_EnqueueWriteBuffer_ovr_13_anh0000000010(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueWriteBuffer';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueWriteBuffer_ovr_13(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueWriteBuffer_ovr_13_anh0000000010(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -6753,17 +6753,17 @@ type
     private static function z_GetSupportedImageFormats_ovr_0_anh0000011(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: IntPtr; num_image_formats: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetSupportedImageFormats';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSupportedImageFormats(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: array of cl_image_format; num_image_formats: array of UInt32): ErrorCode :=
-    if image_formats<>nil then
-      if num_image_formats<>nil then
+    if (image_formats<>nil) and (image_formats.Length<>0) then
+      if (num_image_formats<>nil) and (num_image_formats.Length<>0) then
         z_GetSupportedImageFormats_ovr_0(context, flags, image_type, num_entries, image_formats[0], num_image_formats[0]) else
         z_GetSupportedImageFormats_ovr_0_anh0000001(context, flags, image_type, num_entries, image_formats[0], IntPtr.Zero) else
-      if num_image_formats<>nil then
+      if (num_image_formats<>nil) and (num_image_formats.Length<>0) then
         z_GetSupportedImageFormats_ovr_0_anh0000010(context, flags, image_type, num_entries, IntPtr.Zero, num_image_formats[0]) else
         z_GetSupportedImageFormats_ovr_0_anh0000011(context, flags, image_type, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetSupportedImageFormats_ovr_1_anh0000010(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: IntPtr; var num_image_formats: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetSupportedImageFormats';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSupportedImageFormats(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: array of cl_image_format; var num_image_formats: UInt32): ErrorCode :=
-    if image_formats<>nil then
+    if (image_formats<>nil) and (image_formats.Length<>0) then
       z_GetSupportedImageFormats_ovr_0(context, flags, image_type, num_entries, image_formats[0], num_image_formats) else
       z_GetSupportedImageFormats_ovr_0_anh0000010(context, flags, image_type, num_entries, IntPtr.Zero, num_image_formats);
     private static function z_GetSupportedImageFormats_ovr_2(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; var image_formats: cl_image_format; num_image_formats: IntPtr): ErrorCode;
@@ -6771,11 +6771,11 @@ type
     private static function z_GetSupportedImageFormats_ovr_2_anh0000010(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: IntPtr; num_image_formats: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetSupportedImageFormats';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSupportedImageFormats(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: array of cl_image_format; num_image_formats: IntPtr): ErrorCode :=
-    if image_formats<>nil then
+    if (image_formats<>nil) and (image_formats.Length<>0) then
       z_GetSupportedImageFormats_ovr_2(context, flags, image_type, num_entries, image_formats[0], num_image_formats) else
       z_GetSupportedImageFormats_ovr_2_anh0000010(context, flags, image_type, num_entries, IntPtr.Zero, num_image_formats);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSupportedImageFormats(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; var image_formats: cl_image_format; num_image_formats: array of UInt32): ErrorCode :=
-    if num_image_formats<>nil then
+    if (num_image_formats<>nil) and (num_image_formats.Length<>0) then
       z_GetSupportedImageFormats_ovr_0(context, flags, image_type, num_entries, image_formats, num_image_formats[0]) else
       z_GetSupportedImageFormats_ovr_0_anh0000001(context, flags, image_type, num_entries, image_formats, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSupportedImageFormats(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; var image_formats: cl_image_format; var num_image_formats: UInt32): ErrorCode :=
@@ -6787,7 +6787,7 @@ type
     private static function z_GetSupportedImageFormats_ovr_6_anh0000001(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: IntPtr; num_image_formats: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetSupportedImageFormats';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSupportedImageFormats(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: IntPtr; num_image_formats: array of UInt32): ErrorCode :=
-    if num_image_formats<>nil then
+    if (num_image_formats<>nil) and (num_image_formats.Length<>0) then
       z_GetSupportedImageFormats_ovr_6(context, flags, image_type, num_entries, image_formats, num_image_formats[0]) else
       z_GetSupportedImageFormats_ovr_6_anh0000001(context, flags, image_type, num_entries, image_formats, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSupportedImageFormats(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; image_formats: IntPtr; var num_image_formats: UInt32): ErrorCode :=
@@ -6809,11 +6809,11 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if device_list<>nil then
-        if input_programs<>nil then
+      if (device_list<>nil) and (device_list.Length<>0) then
+        if (input_programs<>nil) and (input_programs.Length<>0) then
           Result := z_LinkProgram_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
           Result := z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret) else
-        if input_programs<>nil then
+        if (input_programs<>nil) and (input_programs.Length<>0) then
           Result := z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
           Result := z_LinkProgram_ovr_0_anh0001001000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -6823,7 +6823,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if device_list<>nil then
+      if (device_list<>nil) and (device_list.Length<>0) then
         Result := z_LinkProgram_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
         Result := z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -6835,7 +6835,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if device_list<>nil then
+      if (device_list<>nil) and (device_list.Length<>0) then
         Result := z_LinkProgram_ovr_2(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
         Result := z_LinkProgram_ovr_2_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -6845,29 +6845,29 @@ type
     private static function z_LinkProgram_ovr_3_anh0001001000(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: IntPtr; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if device_list<>nil then
-      if input_programs<>nil then
+    if (device_list<>nil) and (device_list.Length<>0) then
+      if (input_programs<>nil) and (input_programs.Length<>0) then
         z_LinkProgram_ovr_0(context, num_devices, device_list[0], options, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
         z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list[0], options, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret) else
-      if input_programs<>nil then
+      if (input_programs<>nil) and (input_programs.Length<>0) then
         z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, options, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
         z_LinkProgram_ovr_0_anh0001001000(context, num_devices, IntPtr.Zero, options, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
     private static function z_LinkProgram_ovr_4_anh0001000000(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: IntPtr; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if device_list<>nil then
+    if (device_list<>nil) and (device_list.Length<>0) then
       z_LinkProgram_ovr_0(context, num_devices, device_list[0], options, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
       z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, options, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
     private static function z_LinkProgram_ovr_5_anh0001000000(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: IntPtr; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if device_list<>nil then
+    if (device_list<>nil) and (device_list.Length<>0) then
       z_LinkProgram_ovr_2(context, num_devices, device_list[0], options, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
       z_LinkProgram_ovr_2_anh0001000000(context, num_devices, IntPtr.Zero, options, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if input_programs<>nil then
+      if (input_programs<>nil) and (input_programs.Length<>0) then
         Result := z_LinkProgram_ovr_0(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
         Result := z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -6885,7 +6885,7 @@ type
       Marshal.FreeHGlobal(par_4_str_ptr);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if input_programs<>nil then
+    if (input_programs<>nil) and (input_programs.Length<>0) then
       z_LinkProgram_ovr_0(context, num_devices, device_list, options, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
       z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list, options, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
@@ -6899,7 +6899,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: string; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
       var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if input_programs<>nil then
+      if (input_programs<>nil) and (input_programs.Length<>0) then
         Result := z_LinkProgram_ovr_12(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
         Result := z_LinkProgram_ovr_12_anh0000001000(context, num_devices, device_list, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
       Marshal.FreeHGlobal(par_4_str_ptr);
@@ -6919,7 +6919,7 @@ type
       Marshal.FreeHGlobal(par_4_str_ptr);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if input_programs<>nil then
+    if (input_programs<>nil) and (input_programs.Length<>0) then
       z_LinkProgram_ovr_12(context, num_devices, device_list, options, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
       z_LinkProgram_ovr_12_anh0000001000(context, num_devices, device_list, options, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
@@ -7029,7 +7029,7 @@ type
     private static function z_SetCommandQueueProperty_ovr_0_anh00001(command_queue: cl_command_queue; properties: CommandQueueProperties; enable: Bool; old_properties: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clSetCommandQueueProperty';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetCommandQueueProperty(command_queue: cl_command_queue; properties: CommandQueueProperties; enable: Bool; old_properties: array of CommandQueueProperties): ErrorCode :=
-    if old_properties<>nil then
+    if (old_properties<>nil) and (old_properties.Length<>0) then
       z_SetCommandQueueProperty_ovr_0(command_queue, properties, enable, old_properties[0]) else
       z_SetCommandQueueProperty_ovr_0_anh00001(command_queue, properties, enable, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetCommandQueueProperty(command_queue: cl_command_queue; properties: CommandQueueProperties; enable: Bool; var old_properties: CommandQueueProperties): ErrorCode :=
@@ -7106,7 +7106,7 @@ type
     z_SetProgramSpecializationConstant_ovr_0(&program, spec_id, spec_size, PByte(nil)^);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetProgramSpecializationConstant<T>(&program: cl_program; spec_id: UInt32; spec_size: UIntPtr; spec_value: array of T): ErrorCode; where T: record;
     begin
-      if spec_value<>nil then
+      if (spec_value<>nil) and (spec_value.Length<>0) then
         Result := temp_SetProgramSpecializationConstant_ovr_0(&program, spec_id, spec_size, spec_value[0]) else
         Result := temp_SetProgramSpecializationConstant_ovr_0_anh00001(&program, spec_id, spec_size);
     end;
@@ -7155,7 +7155,7 @@ type
     private static function z_WaitForEvents_ovr_0_anh001(num_events: UInt32; event_list: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clWaitForEvents';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function WaitForEvents(num_events: UInt32; event_list: array of cl_event): ErrorCode :=
-    if event_list<>nil then
+    if (event_list<>nil) and (event_list.Length<>0) then
       z_WaitForEvents_ovr_0(num_events, event_list[0]) else
       z_WaitForEvents_ovr_0_anh001(num_events, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function WaitForEvents(num_events: UInt32; var event_list: cl_event): ErrorCode :=
@@ -7180,17 +7180,17 @@ type
     private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if devices<>nil then
-      if num_devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices[0]) else
         z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetDeviceIDsFromD3D10KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
     private static function z_GetDeviceIDsFromD3D10KHR_ovr_2(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -7198,11 +7198,11 @@ type
     private static function z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -7214,7 +7214,7 @@ type
     private static function z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -7229,7 +7229,7 @@ type
     private static function z_CreateFromD3D10BufferKHR_ovr_0_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10BufferKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    if resource<>nil then
+    if (resource<>nil) and (resource.Length<>0) then
       z_CreateFromD3D10BufferKHR_ovr_0(context, flags, resource[0], errcode_ret) else
       z_CreateFromD3D10BufferKHR_ovr_0_anh00010(context, flags, IntPtr.Zero, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
@@ -7244,7 +7244,7 @@ type
     private static function z_CreateFromD3D10Texture2DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture2DKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    if resource<>nil then
+    if (resource<>nil) and (resource.Length<>0) then
       z_CreateFromD3D10Texture2DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D10Texture2DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
@@ -7259,7 +7259,7 @@ type
     private static function z_CreateFromD3D10Texture3DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D10Texture3DKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    if resource<>nil then
+    if (resource<>nil) and (resource.Length<>0) then
       z_CreateFromD3D10Texture3DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D10Texture3DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D10Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
@@ -7286,19 +7286,19 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -7308,11 +7308,11 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -7324,11 +7324,11 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -7336,23 +7336,23 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -7364,17 +7364,17 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -7382,27 +7382,27 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -7410,7 +7410,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -7426,17 +7426,17 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireD3D10ObjectsKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -7444,11 +7444,11 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -7460,7 +7460,7 @@ type
     private static function z_EnqueueAcquireD3D10ObjectsKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D10ObjectsKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -7487,19 +7487,19 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -7509,11 +7509,11 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -7525,11 +7525,11 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -7537,23 +7537,23 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -7565,17 +7565,17 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -7583,27 +7583,27 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -7611,7 +7611,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseD3D10ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -7627,17 +7627,17 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseD3D10ObjectsKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -7645,11 +7645,11 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -7661,7 +7661,7 @@ type
     private static function z_EnqueueReleaseD3D10ObjectsKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D10ObjectsKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -7684,17 +7684,17 @@ type
     private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if devices<>nil then
-      if num_devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices[0]) else
         z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetDeviceIDsFromD3D11KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
     private static function z_GetDeviceIDsFromD3D11KHR_ovr_2(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -7702,11 +7702,11 @@ type
     private static function z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -7718,7 +7718,7 @@ type
     private static function z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -7733,7 +7733,7 @@ type
     private static function z_CreateFromD3D11BufferKHR_ovr_0_anh00010(context: cl_context; flags: MemFlags; resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11BufferKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    if resource<>nil then
+    if (resource<>nil) and (resource.Length<>0) then
       z_CreateFromD3D11BufferKHR_ovr_0(context, flags, resource[0], errcode_ret) else
       z_CreateFromD3D11BufferKHR_ovr_0_anh00010(context, flags, IntPtr.Zero, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11BufferKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
@@ -7748,7 +7748,7 @@ type
     private static function z_CreateFromD3D11Texture2DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture2DKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    if resource<>nil then
+    if (resource<>nil) and (resource.Length<>0) then
       z_CreateFromD3D11Texture2DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D11Texture2DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture2DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
@@ -7763,7 +7763,7 @@ type
     private static function z_CreateFromD3D11Texture3DKHR_ovr_0_anh000100(context: cl_context; flags: MemFlags; resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromD3D11Texture3DKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; resource: array of IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    if resource<>nil then
+    if (resource<>nil) and (resource.Length<>0) then
       z_CreateFromD3D11Texture3DKHR_ovr_0(context, flags, resource[0], subresource, errcode_ret) else
       z_CreateFromD3D11Texture3DKHR_ovr_0_anh000100(context, flags, IntPtr.Zero, subresource, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromD3D11Texture3DKHR(context: cl_context; flags: MemFlags; var resource: IntPtr; subresource: UInt32; var errcode_ret: ErrorCode): cl_mem :=
@@ -7790,19 +7790,19 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -7812,11 +7812,11 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -7828,11 +7828,11 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -7840,23 +7840,23 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -7868,17 +7868,17 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -7886,27 +7886,27 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -7914,7 +7914,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -7930,17 +7930,17 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireD3D11ObjectsKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -7948,11 +7948,11 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -7964,7 +7964,7 @@ type
     private static function z_EnqueueAcquireD3D11ObjectsKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireD3D11ObjectsKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -7991,19 +7991,19 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8013,11 +8013,11 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8029,11 +8029,11 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8041,23 +8041,23 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -8069,17 +8069,17 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -8087,27 +8087,27 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8115,7 +8115,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseD3D11ObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -8131,17 +8131,17 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseD3D11ObjectsKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8149,11 +8149,11 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8165,7 +8165,7 @@ type
     private static function z_EnqueueReleaseD3D11ObjectsKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseD3D11ObjectsKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -8196,19 +8196,19 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100011(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if media_adapter_type<>nil then
-      if devices<>nil then
-        if num_devices<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
+      if (devices<>nil) and (devices.Length<>0) then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices[0], num_devices[0]) else
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000001(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices[0], IntPtr.Zero) else
-        if num_devices<>nil then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000010(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices[0]) else
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000011(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, IntPtr.Zero, IntPtr.Zero) else
-      if devices<>nil then
-        if num_devices<>nil then
+      if (devices<>nil) and (devices.Length<>0) then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices[0], num_devices[0]) else
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100001(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices[0], IntPtr.Zero) else
-        if num_devices<>nil then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100010(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices[0]) else
           z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100011(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_1_anh000100000(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -8218,11 +8218,11 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_1_anh000100010(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if media_adapter_type<>nil then
-      if devices<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
+      if (devices<>nil) and (devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000010(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices) else
-      if devices<>nil then
+      if (devices<>nil) and (devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100010(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -8234,11 +8234,11 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2_anh000100010(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if media_adapter_type<>nil then
-      if devices<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
+      if (devices<>nil) and (devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2_anh000000010(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices) else
-      if devices<>nil then
+      if (devices<>nil) and (devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2_anh000100010(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_3_anh000100000(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -8246,23 +8246,23 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_3_anh000100001(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if media_adapter_type<>nil then
-      if num_devices<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000001(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100001(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_4_anh000100000(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if media_adapter_type<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, num_devices);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_5_anh000100000(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if media_adapter_type<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, num_devices);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
@@ -8274,17 +8274,17 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6_anh000100001(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if media_adapter_type<>nil then
-      if num_devices<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6_anh000000001(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6_anh000100001(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_7_anh000100000(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
-    if media_adapter_type<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, num_devices);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_8(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
@@ -8292,27 +8292,27 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_8_anh000100000(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: array of UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
-    if media_adapter_type<>nil then
+    if (media_adapter_type<>nil) and (media_adapter_type.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_8(platform, num_media_adapters, media_adapter_type[0], media_adapters, media_adapter_set, num_entries, devices, num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_8_anh000100000(platform, num_media_adapters, IntPtr.Zero, media_adapters, media_adapter_set, num_entries, devices, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if devices<>nil then
-      if num_devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000001(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000010(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000011(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000010(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2_anh000000010(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0_anh000000001(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -8320,7 +8320,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_2(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_6_anh000000001(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -8336,17 +8336,17 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18_anh000000011(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if devices<>nil then
-      if num_devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18_anh000000001(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18_anh000000010(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18_anh000000011(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_19_anh000000010(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18_anh000000010(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_20(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -8354,11 +8354,11 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_20_anh000000010(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_20(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_20_anh000000010(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_18_anh000000001(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -8370,7 +8370,7 @@ type
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_24_anh000000001(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_24(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_24_anh000000001(platform, num_media_adapters, media_adapter_type, media_adapters, media_adapter_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9MediaAdapterKHR(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -8402,19 +8402,19 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8424,11 +8424,11 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8440,11 +8440,11 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8452,23 +8452,23 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -8480,17 +8480,17 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -8498,27 +8498,27 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8526,7 +8526,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -8542,17 +8542,17 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8560,11 +8560,11 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8576,7 +8576,7 @@ type
     private static function z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9MediaSurfacesKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -8603,19 +8603,19 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8625,11 +8625,11 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8641,11 +8641,11 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8653,23 +8653,23 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -8681,17 +8681,17 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -8699,27 +8699,27 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8727,7 +8727,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -8743,17 +8743,17 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8761,11 +8761,11 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8777,7 +8777,7 @@ type
     private static function z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9MediaSurfacesKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -8796,7 +8796,7 @@ type
     private static function z_CreateFromEGLImageKHR_ovr_0_anh0000010(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromEGLImageKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: array of EglImagePropertiesKhr; var errcode_ret: ErrorCode): cl_mem :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateFromEGLImageKHR_ovr_0(context, egldisplay, eglimage, flags, properties[0], errcode_ret) else
       z_CreateFromEGLImageKHR_ovr_0_anh0000010(context, egldisplay, eglimage, flags, IntPtr.Zero, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromEGLImageKHR(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; var properties: EglImagePropertiesKhr; var errcode_ret: ErrorCode): cl_mem :=
@@ -8823,19 +8823,19 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8845,11 +8845,11 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8861,11 +8861,11 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -8873,23 +8873,23 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -8901,17 +8901,17 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -8919,27 +8919,27 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8947,7 +8947,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -8963,17 +8963,17 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireEGLObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireEGLObjectsKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -8981,11 +8981,11 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -8997,7 +8997,7 @@ type
     private static function z_EnqueueAcquireEGLObjectsKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireEGLObjectsKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireEGLObjectsKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -9024,19 +9024,19 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -9046,11 +9046,11 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -9062,11 +9062,11 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -9074,23 +9074,23 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -9102,17 +9102,17 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -9120,27 +9120,27 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -9148,7 +9148,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseEGLObjectsKHR_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -9164,17 +9164,17 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseEGLObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseEGLObjectsKHR_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -9182,11 +9182,11 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -9198,7 +9198,7 @@ type
     private static function z_EnqueueReleaseEGLObjectsKHR_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseEGLObjectsKHR_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseEGLObjectsKHR_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -9276,17 +9276,17 @@ type
     private static function z_IcdGetPlatformIDsKHR_ovr_0_anh0011(num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clIcdGetPlatformIDsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function IcdGetPlatformIDsKHR(num_entries: UInt32; platforms: array of cl_platform_id; num_platforms: array of UInt32): ErrorCode :=
-    if platforms<>nil then
-      if num_platforms<>nil then
+    if (platforms<>nil) and (platforms.Length<>0) then
+      if (num_platforms<>nil) and (num_platforms.Length<>0) then
         z_IcdGetPlatformIDsKHR_ovr_0(num_entries, platforms[0], num_platforms[0]) else
         z_IcdGetPlatformIDsKHR_ovr_0_anh0001(num_entries, platforms[0], IntPtr.Zero) else
-      if num_platforms<>nil then
+      if (num_platforms<>nil) and (num_platforms.Length<>0) then
         z_IcdGetPlatformIDsKHR_ovr_0_anh0010(num_entries, IntPtr.Zero, num_platforms[0]) else
         z_IcdGetPlatformIDsKHR_ovr_0_anh0011(num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_IcdGetPlatformIDsKHR_ovr_1_anh0010(num_entries: UInt32; platforms: IntPtr; var num_platforms: UInt32): ErrorCode;
     external 'opencl.dll' name 'clIcdGetPlatformIDsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function IcdGetPlatformIDsKHR(num_entries: UInt32; platforms: array of cl_platform_id; var num_platforms: UInt32): ErrorCode :=
-    if platforms<>nil then
+    if (platforms<>nil) and (platforms.Length<>0) then
       z_IcdGetPlatformIDsKHR_ovr_0(num_entries, platforms[0], num_platforms) else
       z_IcdGetPlatformIDsKHR_ovr_0_anh0010(num_entries, IntPtr.Zero, num_platforms);
     private static function z_IcdGetPlatformIDsKHR_ovr_2(num_entries: UInt32; var platforms: cl_platform_id; num_platforms: IntPtr): ErrorCode;
@@ -9294,11 +9294,11 @@ type
     private static function z_IcdGetPlatformIDsKHR_ovr_2_anh0010(num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clIcdGetPlatformIDsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function IcdGetPlatformIDsKHR(num_entries: UInt32; platforms: array of cl_platform_id; num_platforms: IntPtr): ErrorCode :=
-    if platforms<>nil then
+    if (platforms<>nil) and (platforms.Length<>0) then
       z_IcdGetPlatformIDsKHR_ovr_2(num_entries, platforms[0], num_platforms) else
       z_IcdGetPlatformIDsKHR_ovr_2_anh0010(num_entries, IntPtr.Zero, num_platforms);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function IcdGetPlatformIDsKHR(num_entries: UInt32; var platforms: cl_platform_id; num_platforms: array of UInt32): ErrorCode :=
-    if num_platforms<>nil then
+    if (num_platforms<>nil) and (num_platforms.Length<>0) then
       z_IcdGetPlatformIDsKHR_ovr_0(num_entries, platforms, num_platforms[0]) else
       z_IcdGetPlatformIDsKHR_ovr_0_anh0001(num_entries, platforms, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function IcdGetPlatformIDsKHR(num_entries: UInt32; var platforms: cl_platform_id; var num_platforms: UInt32): ErrorCode :=
@@ -9310,7 +9310,7 @@ type
     private static function z_IcdGetPlatformIDsKHR_ovr_6_anh0001(num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clIcdGetPlatformIDsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function IcdGetPlatformIDsKHR(num_entries: UInt32; platforms: IntPtr; num_platforms: array of UInt32): ErrorCode :=
-    if num_platforms<>nil then
+    if (num_platforms<>nil) and (num_platforms.Length<>0) then
       z_IcdGetPlatformIDsKHR_ovr_6(num_entries, platforms, num_platforms[0]) else
       z_IcdGetPlatformIDsKHR_ovr_6_anh0001(num_entries, platforms, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function IcdGetPlatformIDsKHR(num_entries: UInt32; platforms: IntPtr; var num_platforms: UInt32): ErrorCode :=
@@ -9329,7 +9329,7 @@ type
     private static function z_CreateProgramWithILKHR_ovr_0_anh00100(context: cl_context; il: IntPtr; length: UIntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithILKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithILKHR(context: cl_context; il: array of byte; length: UIntPtr; var errcode_ret: ErrorCode): cl_program :=
-    if il<>nil then
+    if (il<>nil) and (il.Length<>0) then
       z_CreateProgramWithILKHR_ovr_0(context, il[0], length, errcode_ret) else
       z_CreateProgramWithILKHR_ovr_0_anh00100(context, IntPtr.Zero, length, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithILKHR(context: cl_context; var il: byte; length: UIntPtr; var errcode_ret: ErrorCode): cl_program :=
@@ -9357,7 +9357,7 @@ type
     private static function z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00010(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue;
     external 'opencl.dll' name 'clCreateCommandQueueWithPropertiesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; properties: array of UInt64; var errcode_ret: ErrorCode): cl_command_queue :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateCommandQueueWithPropertiesKHR_ovr_0(context, device, properties[0], errcode_ret) else
       z_CreateCommandQueueWithPropertiesKHR_ovr_0_anh00010(context, device, IntPtr.Zero, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandQueueWithPropertiesKHR(context: cl_context; device: cl_device_id; var properties: UInt64; var errcode_ret: ErrorCode): cl_command_queue :=
@@ -9398,19 +9398,19 @@ type
     private static function z_CreateSubDevicesEXT_ovr_0_anh001011(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; out_devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if properties<>nil then
-      if out_devices<>nil then
-        if num_devices<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
+      if (out_devices<>nil) and (out_devices.Length<>0) then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_CreateSubDevicesEXT_ovr_0(in_device, properties[0], num_entries, out_devices[0], num_devices[0]) else
           z_CreateSubDevicesEXT_ovr_0_anh000001(in_device, properties[0], num_entries, out_devices[0], IntPtr.Zero) else
-        if num_devices<>nil then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_CreateSubDevicesEXT_ovr_0_anh000010(in_device, properties[0], num_entries, IntPtr.Zero, num_devices[0]) else
           z_CreateSubDevicesEXT_ovr_0_anh000011(in_device, properties[0], num_entries, IntPtr.Zero, IntPtr.Zero) else
-      if out_devices<>nil then
-        if num_devices<>nil then
+      if (out_devices<>nil) and (out_devices.Length<>0) then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_CreateSubDevicesEXT_ovr_0_anh001000(in_device, IntPtr.Zero, num_entries, out_devices[0], num_devices[0]) else
           z_CreateSubDevicesEXT_ovr_0_anh001001(in_device, IntPtr.Zero, num_entries, out_devices[0], IntPtr.Zero) else
-        if num_devices<>nil then
+        if (num_devices<>nil) and (num_devices.Length<>0) then
           z_CreateSubDevicesEXT_ovr_0_anh001010(in_device, IntPtr.Zero, num_entries, IntPtr.Zero, num_devices[0]) else
           z_CreateSubDevicesEXT_ovr_0_anh001011(in_device, IntPtr.Zero, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_CreateSubDevicesEXT_ovr_1_anh001000(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -9420,11 +9420,11 @@ type
     private static function z_CreateSubDevicesEXT_ovr_1_anh001010(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; out_devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if properties<>nil then
-      if out_devices<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
+      if (out_devices<>nil) and (out_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_0(in_device, properties[0], num_entries, out_devices[0], num_devices) else
         z_CreateSubDevicesEXT_ovr_0_anh000010(in_device, properties[0], num_entries, IntPtr.Zero, num_devices) else
-      if out_devices<>nil then
+      if (out_devices<>nil) and (out_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_0_anh001000(in_device, IntPtr.Zero, num_entries, out_devices[0], num_devices) else
         z_CreateSubDevicesEXT_ovr_0_anh001010(in_device, IntPtr.Zero, num_entries, IntPtr.Zero, num_devices);
     private static function z_CreateSubDevicesEXT_ovr_2(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; var out_devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -9436,11 +9436,11 @@ type
     private static function z_CreateSubDevicesEXT_ovr_2_anh001010(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; out_devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if properties<>nil then
-      if out_devices<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
+      if (out_devices<>nil) and (out_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_2(in_device, properties[0], num_entries, out_devices[0], num_devices) else
         z_CreateSubDevicesEXT_ovr_2_anh000010(in_device, properties[0], num_entries, IntPtr.Zero, num_devices) else
-      if out_devices<>nil then
+      if (out_devices<>nil) and (out_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_2_anh001000(in_device, IntPtr.Zero, num_entries, out_devices[0], num_devices) else
         z_CreateSubDevicesEXT_ovr_2_anh001010(in_device, IntPtr.Zero, num_entries, IntPtr.Zero, num_devices);
     private static function z_CreateSubDevicesEXT_ovr_3_anh001000(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -9448,23 +9448,23 @@ type
     private static function z_CreateSubDevicesEXT_ovr_3_anh001001(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; var out_devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if properties<>nil then
-      if num_devices<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_0(in_device, properties[0], num_entries, out_devices, num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_0_anh000001(in_device, properties[0], num_entries, out_devices, IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_0_anh001000(in_device, IntPtr.Zero, num_entries, out_devices, num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_0_anh001001(in_device, IntPtr.Zero, num_entries, out_devices, IntPtr.Zero);
     private static function z_CreateSubDevicesEXT_ovr_4_anh001000(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; var out_devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevicesEXT_ovr_0(in_device, properties[0], num_entries, out_devices, num_devices) else
       z_CreateSubDevicesEXT_ovr_0_anh001000(in_device, IntPtr.Zero, num_entries, out_devices, num_devices);
     private static function z_CreateSubDevicesEXT_ovr_5_anh001000(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; var out_devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevicesEXT_ovr_2(in_device, properties[0], num_entries, out_devices, num_devices) else
       z_CreateSubDevicesEXT_ovr_2_anh001000(in_device, IntPtr.Zero, num_entries, out_devices, num_devices);
     private static function z_CreateSubDevicesEXT_ovr_6(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; out_devices: IntPtr; var num_devices: UInt32): ErrorCode;
@@ -9476,17 +9476,17 @@ type
     private static function z_CreateSubDevicesEXT_ovr_6_anh001001(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; out_devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if properties<>nil then
-      if num_devices<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_6(in_device, properties[0], num_entries, out_devices, num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_6_anh000001(in_device, properties[0], num_entries, out_devices, IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_6_anh001000(in_device, IntPtr.Zero, num_entries, out_devices, num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_6_anh001001(in_device, IntPtr.Zero, num_entries, out_devices, IntPtr.Zero);
     private static function z_CreateSubDevicesEXT_ovr_7_anh001000(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; out_devices: IntPtr; var num_devices: UInt32): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevicesEXT_ovr_6(in_device, properties[0], num_entries, out_devices, num_devices) else
       z_CreateSubDevicesEXT_ovr_6_anh001000(in_device, IntPtr.Zero, num_entries, out_devices, num_devices);
     private static function z_CreateSubDevicesEXT_ovr_8(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
@@ -9494,27 +9494,27 @@ type
     private static function z_CreateSubDevicesEXT_ovr_8_anh001000(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: array of DevicePartitionPropertyExt; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_CreateSubDevicesEXT_ovr_8(in_device, properties[0], num_entries, out_devices, num_devices) else
       z_CreateSubDevicesEXT_ovr_8_anh001000(in_device, IntPtr.Zero, num_entries, out_devices, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; out_devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if out_devices<>nil then
-      if num_devices<>nil then
+    if (out_devices<>nil) and (out_devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_0(in_device, properties, num_entries, out_devices[0], num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_0_anh000001(in_device, properties, num_entries, out_devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_0_anh000010(in_device, properties, num_entries, IntPtr.Zero, num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_0_anh000011(in_device, properties, num_entries, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; out_devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if out_devices<>nil then
+    if (out_devices<>nil) and (out_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_0(in_device, properties, num_entries, out_devices[0], num_devices) else
       z_CreateSubDevicesEXT_ovr_0_anh000010(in_device, properties, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; out_devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if out_devices<>nil then
+    if (out_devices<>nil) and (out_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_2(in_device, properties, num_entries, out_devices[0], num_devices) else
       z_CreateSubDevicesEXT_ovr_2_anh000010(in_device, properties, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; var out_devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_0(in_device, properties, num_entries, out_devices, num_devices[0]) else
       z_CreateSubDevicesEXT_ovr_0_anh000001(in_device, properties, num_entries, out_devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; var out_devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -9522,7 +9522,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; var out_devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
     z_CreateSubDevicesEXT_ovr_2(in_device, properties, num_entries, out_devices, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; out_devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_6(in_device, properties, num_entries, out_devices, num_devices[0]) else
       z_CreateSubDevicesEXT_ovr_6_anh000001(in_device, properties, num_entries, out_devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; var properties: DevicePartitionPropertyExt; num_entries: UInt32; out_devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -9538,17 +9538,17 @@ type
     private static function z_CreateSubDevicesEXT_ovr_18_anh000011(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if out_devices<>nil then
-      if num_devices<>nil then
+    if (out_devices<>nil) and (out_devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_18(in_device, properties, num_entries, out_devices[0], num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_18_anh000001(in_device, properties, num_entries, out_devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_CreateSubDevicesEXT_ovr_18_anh000010(in_device, properties, num_entries, IntPtr.Zero, num_devices[0]) else
         z_CreateSubDevicesEXT_ovr_18_anh000011(in_device, properties, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_CreateSubDevicesEXT_ovr_19_anh000010(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if out_devices<>nil then
+    if (out_devices<>nil) and (out_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_18(in_device, properties, num_entries, out_devices[0], num_devices) else
       z_CreateSubDevicesEXT_ovr_18_anh000010(in_device, properties, num_entries, IntPtr.Zero, num_devices);
     private static function z_CreateSubDevicesEXT_ovr_20(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -9556,11 +9556,11 @@ type
     private static function z_CreateSubDevicesEXT_ovr_20_anh000010(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if out_devices<>nil then
+    if (out_devices<>nil) and (out_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_20(in_device, properties, num_entries, out_devices[0], num_devices) else
       z_CreateSubDevicesEXT_ovr_20_anh000010(in_device, properties, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_18(in_device, properties, num_entries, out_devices, num_devices[0]) else
       z_CreateSubDevicesEXT_ovr_18_anh000001(in_device, properties, num_entries, out_devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; var out_devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -9572,7 +9572,7 @@ type
     private static function z_CreateSubDevicesEXT_ovr_24_anh000001(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCreateSubDevicesEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_CreateSubDevicesEXT_ovr_24(in_device, properties, num_entries, out_devices, num_devices[0]) else
       z_CreateSubDevicesEXT_ovr_24_anh000001(in_device, properties, num_entries, out_devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateSubDevicesEXT(in_device: cl_device_id; properties: IntPtr; num_entries: UInt32; out_devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -9603,19 +9603,19 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010011(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000001(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000010(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000011(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010001(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010010(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010011(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_1_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -9625,11 +9625,11 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_1_anh00010010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000010(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010010(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_2(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -9641,11 +9641,11 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_2_anh00010010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_2(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjectEXT_ovr_2_anh00000010(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_2_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueMigrateMemObjectEXT_ovr_2_anh00010010(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_3_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -9653,23 +9653,23 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_3_anh00010001(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000001(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010001(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_4_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_0_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_5_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_2(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_2_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_6(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -9681,17 +9681,17 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_6_anh00010001(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_6(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_6_anh00000001(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_6_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_6_anh00010001(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_7_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_6(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_6_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_8(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -9699,27 +9699,27 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_8_anh00010000(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_8(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_8_anh00010000(command_queue, num_mem_objects, IntPtr.Zero, flags, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000001(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000011(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_2(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_2_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemObjectEXT_ovr_0_anh00000001(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -9727,7 +9727,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueMigrateMemObjectEXT_ovr_2(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_6(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemObjectEXT_ovr_6_anh00000001(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -9743,17 +9743,17 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_18_anh00000011(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_18(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_18_anh00000001(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemObjectEXT_ovr_18_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMigrateMemObjectEXT_ovr_18_anh00000011(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_19_anh00000010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_18(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_18_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMigrateMemObjectEXT_ovr_20(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -9761,11 +9761,11 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_20_anh00000010(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_20(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemObjectEXT_ovr_20_anh00000010(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_18(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemObjectEXT_ovr_18_anh00000001(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -9777,7 +9777,7 @@ type
     private static function z_EnqueueMigrateMemObjectEXT_ovr_24_anh00000001(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemObjectEXT_ovr_24(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemObjectEXT_ovr_24_anh00000001(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -9800,17 +9800,17 @@ type
     private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if image_format<>nil then
-      if param_value_size_ret<>nil then
+    if (image_format<>nil) and (image_format.Length<>0) then
+      if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret[0]) else
         z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, IntPtr.Zero) else
-      if param_value_size_ret<>nil then
+      if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret[0]) else
         z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, IntPtr.Zero);
     private static function z_GetDeviceImageInfoQCOM_ovr_1_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    if image_format<>nil then
+    if (image_format<>nil) and (image_format.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
     private static function z_GetDeviceImageInfoQCOM_ovr_2(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
@@ -9818,11 +9818,11 @@ type
     private static function z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    if image_format<>nil then
+    if (image_format<>nil) and (image_format.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_2(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device, image_width, image_height, image_format, param_name, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -9834,7 +9834,7 @@ type
     private static function z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_6(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device, image_width, image_height, image_format, param_name, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -9865,19 +9865,19 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -9887,11 +9887,11 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -9903,11 +9903,11 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -9915,23 +9915,23 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -9943,17 +9943,17 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -9961,27 +9961,27 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -9989,7 +9989,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10005,17 +10005,17 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGrallocObjectsIMG_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireGrallocObjectsIMG_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10023,11 +10023,11 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10039,7 +10039,7 @@ type
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGrallocObjectsIMG_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGrallocObjectsIMG_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10066,19 +10066,19 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -10088,11 +10088,11 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10104,11 +10104,11 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -10116,23 +10116,23 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -10144,17 +10144,17 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -10162,27 +10162,27 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10190,7 +10190,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseGrallocObjectsIMG_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10206,17 +10206,17 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGrallocObjectsIMG_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseGrallocObjectsIMG_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10224,11 +10224,11 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10240,7 +10240,7 @@ type
     private static function z_EnqueueReleaseGrallocObjectsIMG_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGrallocObjectsIMG_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGrallocObjectsIMG_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10259,7 +10259,7 @@ type
     private static function z_GetKernelSubGroupInfoKHR_ovr_0_anh000000001(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelSubGroupInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetKernelSubGroupInfoKHR_ovr_0(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetKernelSubGroupInfoKHR_ovr_0_anh000000001(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -10278,7 +10278,7 @@ type
     private static function z_ImportMemoryARM_ovr_0_anh0001000(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_ImportMemoryARM_ovr_0(context, flags, properties[0], memory, size, errcode_ret) else
       z_ImportMemoryARM_ovr_0_anh0001000(context, flags, IntPtr.Zero, memory, size, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
@@ -10311,17 +10311,17 @@ type
     private static function z_EnqueueSVMFreeARM_ovr_0_anh000000011(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueSVMFreeARM_ovr_0_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueSVMFreeARM_ovr_0_anh000000011(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueSVMFreeARM_ovr_1_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMFreeARM_ovr_2(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10329,11 +10329,11 @@ type
     private static function z_EnqueueSVMFreeARM_ovr_2_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_2(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFreeARM_ovr_2_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMFreeARM_ovr_0_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10345,7 +10345,7 @@ type
     private static function z_EnqueueSVMFreeARM_ovr_6_anh000000001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_6(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMFreeARM_ovr_6_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10364,17 +10364,17 @@ type
     private static function z_EnqueueSVMMemcpyARM_ovr_0_anh000000011(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemcpyARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMMemcpyARM_ovr_0(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueSVMMemcpyARM_ovr_0_anh000000001(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMMemcpyARM_ovr_0_anh000000010(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueSVMMemcpyARM_ovr_0_anh000000011(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueSVMMemcpyARM_ovr_1_anh000000010(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemcpyARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemcpyARM_ovr_0(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemcpyARM_ovr_0_anh000000010(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMemcpyARM_ovr_2(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10382,11 +10382,11 @@ type
     private static function z_EnqueueSVMMemcpyARM_ovr_2_anh000000010(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemcpyARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemcpyARM_ovr_2(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemcpyARM_ovr_2_anh000000010(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMMemcpyARM_ovr_0(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMMemcpyARM_ovr_0_anh000000001(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10398,7 +10398,7 @@ type
     private static function z_EnqueueSVMMemcpyARM_ovr_6_anh000000001(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemcpyARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMMemcpyARM_ovr_6(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMMemcpyARM_ovr_6_anh000000001(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10417,17 +10417,17 @@ type
     private static function z_EnqueueSVMMemFillARM_ovr_0_anh000000011(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemFillARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMMemFillARM_ovr_0(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueSVMMemFillARM_ovr_0_anh000000001(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMMemFillARM_ovr_0_anh000000010(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueSVMMemFillARM_ovr_0_anh000000011(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueSVMMemFillARM_ovr_1_anh000000010(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemFillARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemFillARM_ovr_0(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemFillARM_ovr_0_anh000000010(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMemFillARM_ovr_2(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10435,11 +10435,11 @@ type
     private static function z_EnqueueSVMMemFillARM_ovr_2_anh000000010(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemFillARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMemFillARM_ovr_2(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMemFillARM_ovr_2_anh000000010(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMMemFillARM_ovr_0(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMMemFillARM_ovr_0_anh000000001(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10451,7 +10451,7 @@ type
     private static function z_EnqueueSVMMemFillARM_ovr_6_anh000000001(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemFillARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMMemFillARM_ovr_6(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMMemFillARM_ovr_6_anh000000001(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10470,17 +10470,17 @@ type
     private static function z_EnqueueSVMMapARM_ovr_0_anh000000011(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMapARM(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMMapARM_ovr_0(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueSVMMapARM_ovr_0_anh000000001(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMMapARM_ovr_0_anh000000010(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueSVMMapARM_ovr_0_anh000000011(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueSVMMapARM_ovr_1_anh000000010(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMapARM(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMapARM_ovr_0(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMapARM_ovr_0_anh000000010(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMMapARM_ovr_2(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10488,11 +10488,11 @@ type
     private static function z_EnqueueSVMMapARM_ovr_2_anh000000010(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMapARM(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMMapARM_ovr_2(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMMapARM_ovr_2_anh000000010(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMapARM(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMMapARM_ovr_0(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMMapARM_ovr_0_anh000000001(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMapARM(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10504,7 +10504,7 @@ type
     private static function z_EnqueueSVMMapARM_ovr_6_anh000000001(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMapARM(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMMapARM_ovr_6(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMMapARM_ovr_6_anh000000001(command_queue, blocking_map, flags, svm_ptr, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMapARM(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10523,17 +10523,17 @@ type
     private static function z_EnqueueSVMUnmapARM_ovr_0_anh000011(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMUnmapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmapARM(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMUnmapARM_ovr_0(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueSVMUnmapARM_ovr_0_anh000001(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMUnmapARM_ovr_0_anh000010(command_queue, svm_ptr, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueSVMUnmapARM_ovr_0_anh000011(command_queue, svm_ptr, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueSVMUnmapARM_ovr_1_anh000010(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMUnmapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmapARM(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMUnmapARM_ovr_0(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMUnmapARM_ovr_0_anh000010(command_queue, svm_ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueSVMUnmapARM_ovr_2(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10541,11 +10541,11 @@ type
     private static function z_EnqueueSVMUnmapARM_ovr_2_anh000010(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMUnmapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmapARM(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMUnmapARM_ovr_2(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMUnmapARM_ovr_2_anh000010(command_queue, svm_ptr, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmapARM(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMUnmapARM_ovr_0(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMUnmapARM_ovr_0_anh000001(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmapARM(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10557,7 +10557,7 @@ type
     private static function z_EnqueueSVMUnmapARM_ovr_6_anh000001(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMUnmapARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmapARM(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMUnmapARM_ovr_6(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMUnmapARM_ovr_6_anh000001(command_queue, svm_ptr, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMUnmapARM(command_queue: cl_command_queue; svm_ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10591,7 +10591,7 @@ type
     private static function z_GetAcceleratorInfoINTEL_ovr_0_anh000001(accelerator: cl_accelerator_intel; param_name: AcceleratorInfoIntel; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetAcceleratorInfoINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL(accelerator: cl_accelerator_intel; param_name: AcceleratorInfoIntel; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetAcceleratorInfoINTEL_ovr_0(accelerator, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetAcceleratorInfoINTEL_ovr_0_anh000001(accelerator, param_name, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL(accelerator: cl_accelerator_intel; param_name: AcceleratorInfoIntel; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -10633,17 +10633,17 @@ type
     private static function z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0_anh00000011(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromVA_APIMediaAdapterINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromVA_APIMediaAdapterINTEL(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if devices<>nil then
-      if num_devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices[0], num_devices[0]) else
         z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0_anh00000001(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0_anh00000010(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0_anh00000011(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_1_anh00000010(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromVA_APIMediaAdapterINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromVA_APIMediaAdapterINTEL(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0_anh00000010(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     private static function z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_2(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -10651,11 +10651,11 @@ type
     private static function z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_2_anh00000010(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromVA_APIMediaAdapterINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromVA_APIMediaAdapterINTEL(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_2(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_2_anh00000010(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromVA_APIMediaAdapterINTEL(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0_anh00000001(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromVA_APIMediaAdapterINTEL(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -10667,7 +10667,7 @@ type
     private static function z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_6_anh00000001(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromVA_APIMediaAdapterINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromVA_APIMediaAdapterINTEL(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_6(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_6_anh00000001(platform, media_adapter_type, media_adapter, media_adapter_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromVA_APIMediaAdapterINTEL(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -10682,7 +10682,7 @@ type
     private static function z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000100(context: cl_context; flags: MemFlags; surface: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromVA_APIMediaSurfaceINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; surface: array of IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    if surface<>nil then
+    if (surface<>nil) and (surface.Length<>0) then
       z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0(context, flags, surface[0], plane, errcode_ret) else
       z_CreateFromVA_APIMediaSurfaceINTEL_ovr_0_anh000100(context, flags, IntPtr.Zero, plane, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromVA_APIMediaSurfaceINTEL(context: cl_context; flags: MemFlags; var surface: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
@@ -10709,19 +10709,19 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -10731,11 +10731,11 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10747,11 +10747,11 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -10759,23 +10759,23 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -10787,17 +10787,17 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -10805,27 +10805,27 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10833,7 +10833,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10849,17 +10849,17 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10867,11 +10867,11 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -10883,7 +10883,7 @@ type
     private static function z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireVA_APIMediaSurfacesINTEL_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -10910,19 +10910,19 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -10932,11 +10932,11 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -10948,11 +10948,11 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -10960,23 +10960,23 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -10988,17 +10988,17 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -11006,27 +11006,27 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11034,7 +11034,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11050,17 +11050,17 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11068,11 +11068,11 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11084,7 +11084,7 @@ type
     private static function z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseVA_APIMediaSurfacesINTEL_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11107,17 +11107,17 @@ type
     private static function z_GetDeviceIDsFromDX9INTEL_ovr_0_anh00000011(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9INTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9INTEL(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if devices<>nil then
-      if num_devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9INTEL_ovr_0(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices[0], num_devices[0]) else
         z_GetDeviceIDsFromDX9INTEL_ovr_0_anh00000001(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices[0], IntPtr.Zero) else
-      if num_devices<>nil then
+      if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromDX9INTEL_ovr_0_anh00000010(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromDX9INTEL_ovr_0_anh00000011(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetDeviceIDsFromDX9INTEL_ovr_1_anh00000010(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9INTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9INTEL(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromDX9INTEL_ovr_0(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromDX9INTEL_ovr_0_anh00000010(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, IntPtr.Zero, num_devices);
     private static function z_GetDeviceIDsFromDX9INTEL_ovr_2(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
@@ -11125,11 +11125,11 @@ type
     private static function z_GetDeviceIDsFromDX9INTEL_ovr_2_anh00000010(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9INTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9INTEL(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
-    if devices<>nil then
+    if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromDX9INTEL_ovr_2(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromDX9INTEL_ovr_2_anh00000010(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, IntPtr.Zero, num_devices);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9INTEL(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromDX9INTEL_ovr_0(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromDX9INTEL_ovr_0_anh00000001(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9INTEL(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
@@ -11141,7 +11141,7 @@ type
     private static function z_GetDeviceIDsFromDX9INTEL_ovr_6_anh00000001(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromDX9INTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9INTEL(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
-    if num_devices<>nil then
+    if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromDX9INTEL_ovr_6(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromDX9INTEL_ovr_6_anh00000001(platform, dx9_device_source, dx9_object, dx9_device_set, num_entries, devices, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromDX9INTEL(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
@@ -11156,7 +11156,7 @@ type
     private static function z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001000(context: cl_context; flags: MemFlags; resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateFromDX9MediaSurfaceINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; resource: array of IntPtr; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
-    if resource<>nil then
+    if (resource<>nil) and (resource.Length<>0) then
       z_CreateFromDX9MediaSurfaceINTEL_ovr_0(context, flags, resource[0], sharedHandle, plane, errcode_ret) else
       z_CreateFromDX9MediaSurfaceINTEL_ovr_0_anh0001000(context, flags, IntPtr.Zero, sharedHandle, plane, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateFromDX9MediaSurfaceINTEL(context: cl_context; flags: MemFlags; var resource: IntPtr; sharedHandle: IntPtr; plane: UInt32; var errcode_ret: ErrorCode): cl_mem :=
@@ -11183,19 +11183,19 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11205,11 +11205,11 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11221,11 +11221,11 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11233,23 +11233,23 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -11261,17 +11261,17 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -11279,27 +11279,27 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11307,7 +11307,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11323,17 +11323,17 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireDX9ObjectsINTEL_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11341,11 +11341,11 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11357,7 +11357,7 @@ type
     private static function z_EnqueueAcquireDX9ObjectsINTEL_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireDX9ObjectsINTEL_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11384,19 +11384,19 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11406,11 +11406,11 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11422,11 +11422,11 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11434,23 +11434,23 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -11462,17 +11462,17 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -11480,27 +11480,27 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11508,7 +11508,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseDX9ObjectsINTEL_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11524,17 +11524,17 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseDX9ObjectsINTEL_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11542,11 +11542,11 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11558,7 +11558,7 @@ type
     private static function z_EnqueueReleaseDX9ObjectsINTEL_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseDX9ObjectsINTEL_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11581,17 +11581,17 @@ type
     private static function z_GetGLContextInfoKHR_ovr_0_anh010001(properties: IntPtr; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLContextInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: array of ContextProperties; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if properties<>nil then
-      if param_value_size_ret<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
+      if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetGLContextInfoKHR_ovr_0(properties[0], param_name, param_value_size, param_value, param_value_size_ret[0]) else
         z_GetGLContextInfoKHR_ovr_0_anh000001(properties[0], param_name, param_value_size, param_value, IntPtr.Zero) else
-      if param_value_size_ret<>nil then
+      if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetGLContextInfoKHR_ovr_0_anh010000(IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret[0]) else
         z_GetGLContextInfoKHR_ovr_0_anh010001(IntPtr.Zero, param_name, param_value_size, param_value, IntPtr.Zero);
     private static function z_GetGLContextInfoKHR_ovr_1_anh010000(properties: IntPtr; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLContextInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: array of ContextProperties; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_GetGLContextInfoKHR_ovr_0(properties[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetGLContextInfoKHR_ovr_0_anh010000(IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
     private static function z_GetGLContextInfoKHR_ovr_2(var properties: ContextProperties; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
@@ -11599,11 +11599,11 @@ type
     private static function z_GetGLContextInfoKHR_ovr_2_anh010000(properties: IntPtr; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLContextInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: array of ContextProperties; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_GetGLContextInfoKHR_ovr_2(properties[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetGLContextInfoKHR_ovr_2_anh010000(IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(var properties: ContextProperties; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetGLContextInfoKHR_ovr_0(properties, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetGLContextInfoKHR_ovr_0_anh000001(properties, param_name, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(var properties: ContextProperties; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -11615,7 +11615,7 @@ type
     private static function z_GetGLContextInfoKHR_ovr_6_anh000001(properties: IntPtr; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLContextInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: IntPtr; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetGLContextInfoKHR_ovr_6(properties, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetGLContextInfoKHR_ovr_6_anh000001(properties, param_name, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: IntPtr; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -11659,17 +11659,17 @@ type
     private static function z_GetGLObjectInfo_ovr_0_anh0011(memobj: cl_mem; gl_object_type: IntPtr; gl_object_name: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLObjectInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLObjectInfo(memobj: cl_mem; gl_object_type: array of GlObjectType; gl_object_name: array of UInt32): ErrorCode :=
-    if gl_object_type<>nil then
-      if gl_object_name<>nil then
+    if (gl_object_type<>nil) and (gl_object_type.Length<>0) then
+      if (gl_object_name<>nil) and (gl_object_name.Length<>0) then
         z_GetGLObjectInfo_ovr_0(memobj, gl_object_type[0], gl_object_name[0]) else
         z_GetGLObjectInfo_ovr_0_anh0001(memobj, gl_object_type[0], IntPtr.Zero) else
-      if gl_object_name<>nil then
+      if (gl_object_name<>nil) and (gl_object_name.Length<>0) then
         z_GetGLObjectInfo_ovr_0_anh0010(memobj, IntPtr.Zero, gl_object_name[0]) else
         z_GetGLObjectInfo_ovr_0_anh0011(memobj, IntPtr.Zero, IntPtr.Zero);
     private static function z_GetGLObjectInfo_ovr_1_anh0010(memobj: cl_mem; gl_object_type: IntPtr; var gl_object_name: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetGLObjectInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLObjectInfo(memobj: cl_mem; gl_object_type: array of GlObjectType; var gl_object_name: UInt32): ErrorCode :=
-    if gl_object_type<>nil then
+    if (gl_object_type<>nil) and (gl_object_type.Length<>0) then
       z_GetGLObjectInfo_ovr_0(memobj, gl_object_type[0], gl_object_name) else
       z_GetGLObjectInfo_ovr_0_anh0010(memobj, IntPtr.Zero, gl_object_name);
     private static function z_GetGLObjectInfo_ovr_2(memobj: cl_mem; var gl_object_type: GlObjectType; gl_object_name: IntPtr): ErrorCode;
@@ -11677,11 +11677,11 @@ type
     private static function z_GetGLObjectInfo_ovr_2_anh0010(memobj: cl_mem; gl_object_type: IntPtr; gl_object_name: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLObjectInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLObjectInfo(memobj: cl_mem; gl_object_type: array of GlObjectType; gl_object_name: IntPtr): ErrorCode :=
-    if gl_object_type<>nil then
+    if (gl_object_type<>nil) and (gl_object_type.Length<>0) then
       z_GetGLObjectInfo_ovr_2(memobj, gl_object_type[0], gl_object_name) else
       z_GetGLObjectInfo_ovr_2_anh0010(memobj, IntPtr.Zero, gl_object_name);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLObjectInfo(memobj: cl_mem; var gl_object_type: GlObjectType; gl_object_name: array of UInt32): ErrorCode :=
-    if gl_object_name<>nil then
+    if (gl_object_name<>nil) and (gl_object_name.Length<>0) then
       z_GetGLObjectInfo_ovr_0(memobj, gl_object_type, gl_object_name[0]) else
       z_GetGLObjectInfo_ovr_0_anh0001(memobj, gl_object_type, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLObjectInfo(memobj: cl_mem; var gl_object_type: GlObjectType; var gl_object_name: UInt32): ErrorCode :=
@@ -11693,7 +11693,7 @@ type
     private static function z_GetGLObjectInfo_ovr_6_anh0001(memobj: cl_mem; gl_object_type: IntPtr; gl_object_name: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLObjectInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLObjectInfo(memobj: cl_mem; gl_object_type: IntPtr; gl_object_name: array of UInt32): ErrorCode :=
-    if gl_object_name<>nil then
+    if (gl_object_name<>nil) and (gl_object_name.Length<>0) then
       z_GetGLObjectInfo_ovr_6(memobj, gl_object_type, gl_object_name[0]) else
       z_GetGLObjectInfo_ovr_6_anh0001(memobj, gl_object_type, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLObjectInfo(memobj: cl_mem; gl_object_type: IntPtr; var gl_object_name: UInt32): ErrorCode :=
@@ -11708,7 +11708,7 @@ type
     private static function z_GetGLTextureInfo_ovr_0_anh000001(memobj: cl_mem; param_name: GlTextureInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetGLTextureInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo(memobj: cl_mem; param_name: GlTextureInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetGLTextureInfo_ovr_0(memobj, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetGLTextureInfo_ovr_0_anh000001(memobj, param_name, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo(memobj: cl_mem; param_name: GlTextureInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -11735,19 +11735,19 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireGLObjects_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueAcquireGLObjects_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueAcquireGLObjects_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueAcquireGLObjects_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireGLObjects_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11757,11 +11757,11 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGLObjects_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireGLObjects_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11773,11 +11773,11 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGLObjects_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueAcquireGLObjects_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireGLObjects_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11785,23 +11785,23 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireGLObjects_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireGLObjects_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGLObjects_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireGLObjects_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -11813,17 +11813,17 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueAcquireGLObjects_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGLObjects_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueAcquireGLObjects_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -11831,27 +11831,27 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueAcquireGLObjects_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGLObjects_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11859,7 +11859,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueAcquireGLObjects_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGLObjects_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11875,17 +11875,17 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueAcquireGLObjects_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueAcquireGLObjects_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueAcquireGLObjects_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGLObjects_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueAcquireGLObjects_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11893,11 +11893,11 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueAcquireGLObjects_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGLObjects_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -11909,7 +11909,7 @@ type
     private static function z_EnqueueAcquireGLObjects_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueAcquireGLObjects_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueAcquireGLObjects_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -11936,19 +11936,19 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_0_anh0001011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
-        if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseGLObjects_ovr_0_anh0000011(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
-      if event_wait_list<>nil then
-        if &event<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event[0]) else
           z_EnqueueReleaseGLObjects_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-        if &event<>nil then
+        if (&event<>nil) and (&event.Length<>0) then
           z_EnqueueReleaseGLObjects_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
           z_EnqueueReleaseGLObjects_ovr_0_anh0001011(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseGLObjects_ovr_1_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11958,11 +11958,11 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_1_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGLObjects_ovr_0_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseGLObjects_ovr_2(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -11974,11 +11974,11 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_2_anh0001010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
-      if event_wait_list<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGLObjects_ovr_2_anh0000010(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, IntPtr.Zero, &event) else
-      if event_wait_list<>nil then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list[0], &event) else
         z_EnqueueReleaseGLObjects_ovr_2_anh0001010(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseGLObjects_ovr_3_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -11986,23 +11986,23 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_3_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_0_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseGLObjects_ovr_4_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_0(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGLObjects_ovr_0_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseGLObjects_ovr_5_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_2(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGLObjects_ovr_2_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseGLObjects_ovr_6(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -12014,17 +12014,17 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_6_anh0001001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if mem_objects<>nil then
-      if &event<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_6_anh0000001(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_6_anh0001001(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     private static function z_EnqueueReleaseGLObjects_ovr_7_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_6(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGLObjects_ovr_6_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     private static function z_EnqueueReleaseGLObjects_ovr_8(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -12032,27 +12032,27 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_8_anh0001000(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    if mem_objects<>nil then
+    if (mem_objects<>nil) and (mem_objects.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_8(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, &event) else
       z_EnqueueReleaseGLObjects_ovr_8_anh0001000(command_queue, num_objects, IntPtr.Zero, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_0_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGLObjects_ovr_0_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGLObjects_ovr_2_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_0(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGLObjects_ovr_0_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -12060,7 +12060,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReleaseGLObjects_ovr_2(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_6(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGLObjects_ovr_6_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -12076,17 +12076,17 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_18_anh0000011(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueReleaseGLObjects_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueReleaseGLObjects_ovr_18_anh0000011(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueReleaseGLObjects_ovr_19_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGLObjects_ovr_18_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueReleaseGLObjects_ovr_20(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -12094,11 +12094,11 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_20_anh0000010(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_20(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueReleaseGLObjects_ovr_20_anh0000010(command_queue, num_objects, mem_objects, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_18(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGLObjects_ovr_18_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -12110,7 +12110,7 @@ type
     private static function z_EnqueueReleaseGLObjects_ovr_24_anh0000001(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueReleaseGLObjects_ovr_24(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueReleaseGLObjects_ovr_24_anh0000001(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -12129,7 +12129,7 @@ type
     private static function z_HostMemAllocINTEL_ovr_0_anh001000(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clHostMemAllocINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_HostMemAllocINTEL_ovr_0(context, properties[0], size, alignment, errcode_ret) else
       z_HostMemAllocINTEL_ovr_0_anh001000(context, IntPtr.Zero, size, alignment, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function HostMemAllocINTEL(context: cl_context; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
@@ -12144,7 +12144,7 @@ type
     private static function z_DeviceMemAllocINTEL_ovr_0_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clDeviceMemAllocINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_DeviceMemAllocINTEL_ovr_0(context, device, properties[0], size, alignment, errcode_ret) else
       z_DeviceMemAllocINTEL_ovr_0_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DeviceMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
@@ -12159,7 +12159,7 @@ type
     private static function z_SharedMemAllocINTEL_ovr_0_anh0001000(context: cl_context; device: cl_device_id; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl.dll' name 'clSharedMemAllocINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; properties: array of MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
-    if properties<>nil then
+    if (properties<>nil) and (properties.Length<>0) then
       z_SharedMemAllocINTEL_ovr_0(context, device, properties[0], size, alignment, errcode_ret) else
       z_SharedMemAllocINTEL_ovr_0_anh0001000(context, device, IntPtr.Zero, size, alignment, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SharedMemAllocINTEL(context: cl_context; device: cl_device_id; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr :=
@@ -12179,7 +12179,7 @@ type
     private static function z_GetMemAllocInfoINTEL_ovr_0_anh0000001(context: cl_context; ptr: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemAllocInfoINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL(context: cl_context; ptr: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
-    if param_value_size_ret<>nil then
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetMemAllocInfoINTEL_ovr_0(context, ptr, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetMemAllocInfoINTEL_ovr_0_anh0000001(context, ptr, param_name, param_value_size, param_value, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL(context: cl_context; ptr: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
@@ -12203,17 +12203,17 @@ type
     private static function z_EnqueueMemsetINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemsetINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemsetINTEL_ovr_0(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueMemsetINTEL_ovr_0_anh00000001(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemsetINTEL_ovr_0_anh00000010(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMemsetINTEL_ovr_0_anh00000011(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueMemsetINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemsetINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemsetINTEL_ovr_0(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemsetINTEL_ovr_0_anh00000010(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMemsetINTEL_ovr_2(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -12221,11 +12221,11 @@ type
     private static function z_EnqueueMemsetINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemsetINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemsetINTEL_ovr_2(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemsetINTEL_ovr_2_anh00000010(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemsetINTEL_ovr_0(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemsetINTEL_ovr_0_anh00000001(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -12237,7 +12237,7 @@ type
     private static function z_EnqueueMemsetINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemsetINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemsetINTEL_ovr_6(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemsetINTEL_ovr_6_anh00000001(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -12256,17 +12256,17 @@ type
     private static function z_EnqueueMemFillINTEL_ovr_0_anh000000011(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemFillINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemFillINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemFillINTEL_ovr_0(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueMemFillINTEL_ovr_0_anh000000001(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemFillINTEL_ovr_0_anh000000010(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMemFillINTEL_ovr_0_anh000000011(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueMemFillINTEL_ovr_1_anh000000010(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemFillINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemFillINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemFillINTEL_ovr_0(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemFillINTEL_ovr_0_anh000000010(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMemFillINTEL_ovr_2(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -12274,11 +12274,11 @@ type
     private static function z_EnqueueMemFillINTEL_ovr_2_anh000000010(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemFillINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemFillINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemFillINTEL_ovr_2(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemFillINTEL_ovr_2_anh000000010(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemFillINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemFillINTEL_ovr_0(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemFillINTEL_ovr_0_anh000000001(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemFillINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -12290,7 +12290,7 @@ type
     private static function z_EnqueueMemFillINTEL_ovr_6_anh000000001(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemFillINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemFillINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemFillINTEL_ovr_6(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemFillINTEL_ovr_6_anh000000001(command_queue, dst_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemFillINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -12309,17 +12309,17 @@ type
     private static function z_EnqueueMemcpyINTEL_ovr_0_anh000000011(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemcpyINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemcpyINTEL_ovr_0(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueMemcpyINTEL_ovr_0_anh000000001(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemcpyINTEL_ovr_0_anh000000010(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMemcpyINTEL_ovr_0_anh000000011(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueMemcpyINTEL_ovr_1_anh000000010(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemcpyINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemcpyINTEL_ovr_0(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemcpyINTEL_ovr_0_anh000000010(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMemcpyINTEL_ovr_2(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -12327,11 +12327,11 @@ type
     private static function z_EnqueueMemcpyINTEL_ovr_2_anh000000010(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemcpyINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemcpyINTEL_ovr_2(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemcpyINTEL_ovr_2_anh000000010(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemcpyINTEL_ovr_0(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemcpyINTEL_ovr_0_anh000000001(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -12343,7 +12343,7 @@ type
     private static function z_EnqueueMemcpyINTEL_ovr_6_anh000000001(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemcpyINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemcpyINTEL_ovr_6(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemcpyINTEL_ovr_6_anh000000001(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -12362,17 +12362,17 @@ type
     private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueMigrateMemINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMigrateMemINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -12380,11 +12380,11 @@ type
     private static function z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -12396,7 +12396,7 @@ type
     private static function z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
@@ -12415,17 +12415,17 @@ type
     private static function z_EnqueueMemAdviseINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if event_wait_list<>nil then
-      if &event<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemAdviseINTEL_ovr_0(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list[0], &event[0]) else
         z_EnqueueMemAdviseINTEL_ovr_0_anh00000001(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if &event<>nil then
+      if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMemAdviseINTEL_ovr_0_anh00000010(command_queue, ptr, size, advice, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMemAdviseINTEL_ovr_0_anh00000011(command_queue, ptr, size, advice, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
     private static function z_EnqueueMemAdviseINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemAdviseINTEL_ovr_0(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemAdviseINTEL_ovr_0_anh00000010(command_queue, ptr, size, advice, num_events_in_wait_list, IntPtr.Zero, &event);
     private static function z_EnqueueMemAdviseINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
@@ -12433,11 +12433,11 @@ type
     private static function z_EnqueueMemAdviseINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if event_wait_list<>nil then
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMemAdviseINTEL_ovr_2(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMemAdviseINTEL_ovr_2_anh00000010(command_queue, ptr, size, advice, num_events_in_wait_list, IntPtr.Zero, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemAdviseINTEL_ovr_0(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemAdviseINTEL_ovr_0_anh00000001(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
@@ -12449,7 +12449,7 @@ type
     private static function z_EnqueueMemAdviseINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if &event<>nil then
+    if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMemAdviseINTEL_ovr_6(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMemAdviseINTEL_ovr_6_anh00000001(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=

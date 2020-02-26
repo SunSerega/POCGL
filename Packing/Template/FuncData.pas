@@ -992,7 +992,7 @@ type
                 temp_arr_init += $'?.ConvertAll(arr_el{i}->arr_el{i}';
               temp_arr_init += $'?.ConvertAll(arr_el{temp_arr_i}->begin';
               init += temp_arr_init.ToString;
-              init += $'  if arr_el{temp_arr_i}=nil then';
+              init += $'  if (arr_el{temp_arr_i}=nil) or (arr_el{temp_arr_i}.Length=0) then';
               init += $'    Result := IntPtr.Zero else';
               init += $'  begin';
               init += $'    var l := Marshal.SizeOf&<{ntv.tname}>*arr_el{temp_arr_i}.Length;';
@@ -1234,7 +1234,8 @@ type
                   if nil_arr_call_flags.Count in arr_par_inds then
                   begin
                     sb += '  '*tabs;
-                    sb += $'if {ms[nil_arr_call_flags.Count].call_str}<>nil then';
+                    var par_call_str := ms[nil_arr_call_flags.Count].call_str;
+                    sb += $'if ({par_call_str}<>nil) and ({par_call_str}.Length<>0) then';
                     sb += #10;
                     tabs += 1;
                   end;
