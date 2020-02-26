@@ -23,7 +23,7 @@ begin
   // DEVICE_TYPE_ALL выберет первое любое устройство, поддерживающее OpenCL
 //  cl.GetDeviceIDs(platform, DeviceType.DEVICE_TYPE_ALL, 1,device,IntPtr.Zero).RaiseIfError;
   // Если всё ещё пишет что устройств нет - обновите драйверы,
-  // потому что даже встроенные в CPU видеокарты поддерживают OpenCL
+  // потому что даже встроенные видеокарты поддерживают OpenCL
   
   var context := cl.CreateContext(nil, 1,device, nil,IntPtr.Zero, ec);
   ec.RaiseIfError;
