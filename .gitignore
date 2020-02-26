@@ -1,6 +1,7 @@
 *.pcu
 *.pdb
 *.exe
+*.backup
 /Release
 /ToDo/Samples
-/LastPack (timed).log
+/LastPack (Timed).log

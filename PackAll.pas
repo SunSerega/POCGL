@@ -50,10 +50,8 @@ begin
     
     {$region Load}
     
-    log_file := 'LastPack.log';
-    timed_log_file := 'LastPack (timed).log';
-    System.IO.File.Delete(log_file);
-    System.IO.File.Delete(timed_log_file);
+    new Logger('LastPack.log');
+    new Logger('LastPack (Timed).log', true);
     
     // ====================================================
     
@@ -64,6 +62,7 @@ begin
       if arg=nil then
       begin
         stages := HSet('Spec', 'CL', 'CLABC', 'GL', 'GLABC', 'Test', 'Release');
+        new Logger('LastPack (Default).log');
         Otp($'Executing default stages:');
       end else
       begin

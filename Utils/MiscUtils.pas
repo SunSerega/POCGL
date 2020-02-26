@@ -70,6 +70,9 @@ type
       Result.t := self.t;
     end;
     
+    function GetStr(timed: boolean) := timed ?
+    $'{t.TimeToStr} | {s}' : s;
+    
   end;
   
   ThrProcOtp = sealed class
@@ -133,6 +136,39 @@ type
     
   end;
   
+  Logger = sealed class
+    private bu_fname: string;
+    private main_sw: System.IO.StreamWriter;
+    private backup_sw: System.IO.StreamWriter;
+    private timed: boolean;
+    
+    protected static All := new List<Logger>;
+    public constructor(fname: string; timed: boolean := false);
+    begin
+      self.bu_fname   := fname+'.backup';
+      self.main_sw    := new System.IO.StreamWriter(fname, false, enc);
+      self.backup_sw  := new System.IO.StreamWriter(bu_fname, false, enc);
+      self.timed      := timed;
+      All += self;
+    end;
+    
+    public procedure Otp(l: OtpLine);
+    begin
+      main_sw.WriteLine(l.GetStr(timed));
+      main_sw.Flush;
+      backup_sw.WriteLine(l.GetStr(timed));
+      backup_sw.Flush;
+    end;
+    
+    public procedure Close;
+    begin
+      main_sw.Close;
+      backup_sw.Close;
+      System.IO.File.Delete(bu_fname);
+    end;
+    
+  end;
+  
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
   if fname.Substring(1).StartsWith(':\') then
@@ -166,8 +202,6 @@ new System.IO.StreamWriter(
 {$region Otp}
 
 var otp_lock := new object;
-var log_file: string := nil;
-var timed_log_file: string := nil;
 
 const AddTimeMarksStr = 'AddTimeMarks';
 var otp_time_marks := CommandLineArgs.Contains(AddTimeMarksStr);
@@ -178,25 +212,8 @@ if ThrProcOtp.curr<>nil then
 lock otp_lock do
 begin
   
-  if log_file<>nil then
-    while true do
-    try
-      if System.IO.File.Exists(log_file) then
-        System.IO.File.Copy(log_file, log_file+'.savepoint');
-      System.IO.File.AppendAllLines(log_file, Arr(line.s));
-      System.IO.File.Delete(log_file+'.savepoint');
-      break;
-    except end;
-  
-  if timed_log_file<>nil then
-    while true do
-    try
-      if System.IO.File.Exists(timed_log_file) then
-        System.IO.File.Copy(timed_log_file, timed_log_file+'.savepoint');
-      System.IO.File.AppendAllLines(timed_log_file, Arr($'{line.t.TimeToStr} | {line.s}'));
-      System.IO.File.Delete(timed_log_file+'.savepoint');
-      break;
-    except end;
+  foreach var log in Logger.All do
+    log.Otp(line);
   
   if line.s.ToLower.Contains('error') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
   if line.s.ToLower.Contains('fatal') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
@@ -204,9 +221,7 @@ begin
   if line.s.ToLower.Contains('warning') then    System.Console.ForegroundColor := System.ConsoleColor.Yellow else
     System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
   
-  if otp_time_marks then line.s := $'{line.t.TimeToStr} | {line.s}';
-  System.Console.WriteLine(line.s);
-  
+  System.Console.WriteLine(line.GetStr(otp_time_marks));
   System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
 end;
 
@@ -259,8 +274,11 @@ end;
 
 static procedure Timers.LogAll;
 begin
-  log_file := nil;
-  Otp('');
+  Logger.All.RemoveAll(log->
+  begin
+    Result := not log.timed;
+    if Result then log.Close;
+  end);
   
   Otp($'.pas compilation : {pas_comp.TimeToStr}');
   if every_pas_comp.Count<>0 then
@@ -278,6 +296,7 @@ begin
       Otp($'    - {key.PadRight(max_key_w)} : {every_exe_exec[key].TimeToStr}');
   end;
   
+  foreach var log in Logger.All do log.Close;
 end;
 
 {$endregion Otp}
