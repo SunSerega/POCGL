@@ -4,10 +4,13 @@ interface
 
 uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
-var log :=            InitLog('Log\Funcs.log');
-var log_groups :=     InitLog('Log\FinalGroups.log');
-var log_structs :=    InitLog('Log\FinalStructs.log');
-var log_func_ovrs :=  InitLog('Log\FinalFuncOverloads.log');
+{$region Log and Misc}
+
+var log := new FileLogger(RelativeToExe('Log\Funcs.log')) +
+           new FileLogger(RelativeToExe('Log\Funcs (Timed).log'), true);
+var log_groups    := new FileLogger(RelativeToExe('Log\FinalGroups.log'));
+var log_structs   := new FileLogger(RelativeToExe('Log\FinalStructs.log'));
+var log_func_ovrs := new FileLogger(RelativeToExe('Log\FinalFuncOverloads.log'));
 
 type
   LogCache = static class
@@ -24,6 +27,8 @@ function GetExt(s: string): string;
 var unallowed_words: HashSet<string>;
 
 var allowed_api: HashSet<string>;
+
+{$endregion Log and Misc}
 
 type
   
@@ -154,15 +159,14 @@ type
       if not gr.used then
         if gr.explicit_existence then
           Otp($'WARNING: Group [{gr.name}] was explicitly added, but wasn''t used') else
-          log.WriteLine($'Group [{gr.name}] was skipped');
+          log.Otp($'Group [{gr.name}] was skipped');
     
     public procedure Write(sb: StringBuilder);
     begin
-      log_groups.WriteLine($'# {name}[{t}]');
+      log_groups.Otp($'# {name}[{t}]');
       foreach var ename in enums.Keys do
-        log_groups.WriteLine($'{#9}{ename} = {enums[ename]:X}');
-      log_groups.WriteLine;
-      log_groups.Flush;
+        log_groups.Otp($'{#9}{ename} = {enums[ename]:X}');
+      log_groups.Otp('');
       
       if not used then exit;
       
@@ -380,15 +384,14 @@ type
       if not s.used then
         if s.explicit_existence then
           Otp($'WARNING: Struct [{s.name}] was explicitly added, but wasn''t used') else
-          log.WriteLine($'Struct [{s.name}] was skipped');
+          log.Otp($'Struct [{s.name}] was skipped');
     
     public procedure Write(sb: StringBuilder);
     begin
-      log_structs.WriteLine($'# {name}');
+      log_structs.Otp($'# {name}');
       foreach var fld in flds do
-        log_structs.WriteLine($'{#9}{fld.MakeDef}');
-      log_structs.WriteLine;
-      log_structs.Flush;
+        log_structs.Otp($'{#9}{fld.MakeDef}');
+      log_structs.Otp('');
       
       if not used then exit;
       
@@ -628,7 +631,7 @@ type
         begin
           if par.t='ntv_char' then
           begin
-            log.WriteLine('Param [{par.name}] with type [{par.t}] in func [{self.name}]');
+            log.Otp('Param [{par.name}] with type [{par.t}] in func [{self.name}]');
             Result := Lst(new FuncParamT(false, 0, 'SByte'));
           end else
             Result := Lst(new FuncParamT(false, 0, par.GetTName)); // (0,nil) for procedure ret par
@@ -775,15 +778,14 @@ type
         
         if not is_proc or (org_par.Length>1) then
         begin
-          log_func_ovrs.WriteLine($'# {name}');
+          log_func_ovrs.Otp($'# {name}');
           foreach var ovr in all_overloads do
-          begin
-            foreach var par in is_proc ? ovr.pars.Skip(1) : ovr.pars do
-              log_func_ovrs.Write($' {par.ToString(true,true)}{#9}|');
-            log_func_ovrs.WriteLine;
-          end;
-          log_func_ovrs.WriteLine;
-          log_func_ovrs.Flush;
+            log_func_ovrs.Otp(
+              (is_proc ? ovr.pars.Skip(1) : ovr.pars)
+              .Select(par->$' {par.ToString(true,true)}{#9}|')
+              .JoinToString('')
+            );
+          log_func_ovrs.Otp('');
         end;
         
       end;
@@ -805,7 +807,7 @@ type
       if l_name.ToLower.StartsWith(api) then
         l_name := l_name.Substring(api.Length) else
       if api<>'gdi' then
-        log.WriteLine($'Func [{name}] had api [{api}], which isn''t start of it''s name');
+        log.Otp($'Func [{name}] had api [{api}], which isn''t start of it''s name');
       prev_func_names += l_name.ToLower;
       
       var use_external := true;
@@ -1370,6 +1372,13 @@ type
       begin
         var f := new Feature(br);
         
+        if f.api='glx' then //ToDo Требует бОльшего тестирования
+        begin
+          foreach var fnc in f.add do fnc.MarkSemiUsed;
+          foreach var fnc in f.rem do fnc.MarkSemiUsed;
+          continue;
+        end;
+        
         var lst: List<Feature>;
         if not ByApi.TryGetValue(f.api, lst) then
         begin
@@ -1377,13 +1386,7 @@ type
           ByApi[f.api] := lst;
         end;
         
-        if f.api='glx' then //ToDo Требует бОльшего тестирования
-        begin
-          foreach var fnc in f.add do fnc.MarkSemiUsed;
-          foreach var fnc in f.rem do fnc.MarkSemiUsed;
-        end else
-          lst += f;
-        
+        lst += f;
       end;
     end;
     
@@ -1432,16 +1435,32 @@ type
       // func - deprecation version
       var deprecated := new Dictionary<Func, string>;
       
-      foreach var ftr in Feature.ByApi[api].AsEnumerable.Reverse do
+      var log_func_ver := new FileLogger(RelativeToExe($'Log\FuncsVer ({api}).log'));
+      loop 3 do log_func_ver.Otp('');
+      
+      foreach var ftr in ByApi[api] do
       begin
-        foreach var f in ftr.rem do
-          if not all_funcs.Remove(f) then // glGetPointerv было добавлено, убрано и ещё раз добавлено
-            deprecated.Add(f, ftr.version);
+        
         foreach var f in ftr.add do
-          if all_funcs.ContainsKey(f) then
+          if all_funcs.ContainsKey(f) and not deprecated.Remove(f) then
             Otp($'WARNING: Func [{f.name}] was added in versions [{all_funcs[f]}] and [{ftr.version}]') else
             all_funcs[f] := ftr.version;
+        
+        foreach var f in ftr.rem do
+          if deprecated.ContainsKey(f) then
+            Otp($'WARNING: Func [{f.name}] was deprecated in versions [{deprecated[f]}] and [{ftr.version}]') else
+            deprecated.Add(f, ftr.version);
+        
+        log_func_ver.Otp($'# {ftr.version}');
+        foreach var f in all_funcs.Keys do
+          if not deprecated.ContainsKey(f) then
+            log_func_ver.Otp($'{#9}{f.name}');
+        log_func_ver.Otp('');
+        
       end;
+      
+      loop 1 do log_func_ver.Otp('');
+      log_func_ver.Close;
       
       var is_static := not (api in ['gl']);
       var class_type := is_static ? 'static' : 'sealed';
@@ -1501,7 +1520,7 @@ type
       if ext_group in allowed_ext_names then
         name := name.Substring(ind+1) else
       if LogCache.invalid_ext_names.Add(ext_group) then
-        log.WriteLine($'Ext group [{ext_group}] of ext [{name}] is not supported');
+        log.Otp($'Ext group [{ext_group}] of ext [{name}] is not supported');
       
     end;
     
@@ -1604,9 +1623,9 @@ begin
     .ToHashSet
   ;
   
-  loop 3 do log_groups.WriteLine;
-  loop 3 do log_structs.WriteLine;
-  loop 3 do log_func_ovrs.WriteLine;
+  loop 3 do log_groups.Otp('');
+  loop 3 do log_structs.Otp('');
+  loop 3 do log_func_ovrs.Otp('');
   
 end;
 
@@ -1646,9 +1665,11 @@ begin
   Group.WarnAllUnused;
   Func.WarnAllUnused;
   
-  loop 1 do log_groups.WriteLine;
-  loop 1 do log_structs.WriteLine;
-  loop 1 do log_func_ovrs.WriteLine;
+  log.Otp('done');
+  
+  loop 1 do log_groups.Otp('');
+  loop 1 do log_structs.Otp('');
+  loop 1 do log_func_ovrs.Otp('');
   
   log.Close;
   log_groups.Close;
@@ -1670,7 +1691,7 @@ begin
     .First(ext->_Result.EndsWith(ext))
   ;
   if LogCache.invalid_ext_names.Add(_Result) and (_Result.Length>1) then
-    log.WriteLine($'Invalid ext name [{_Result}], replaced with [{Result}]');
+    log.Otp($'Invalid ext name [{_Result}], replaced with [{Result}]');
   
 end;
 

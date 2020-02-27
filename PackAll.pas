@@ -50,8 +50,8 @@ begin
     
     {$region Load}
     
-    new Logger('LastPack.log');
-    new Logger('LastPack (Timed).log', true);
+    otp_main += new FileLogger('LastPack.log');
+    otp_main += new FileLogger('LastPack (Timed).log', true);
     
     // ====================================================
     
@@ -62,7 +62,7 @@ begin
       if arg=nil then
       begin
         stages := HSet('Spec', 'CL', 'CLABC', 'GL', 'GLABC', 'Test', 'Release');
-        new Logger('LastPack (Default).log');
+        otp_main += new FileLogger('LastPack (Default).log');
         Otp($'Executing default stages:');
       end else
       begin
@@ -253,7 +253,7 @@ begin
     var T_Test := not stages.Contains('Test') ? EmptyTask :
       TitleTask('Testing') +
       EventTask(E_Tester) +
-      ExecTask('Tests\Tester.exe', 'Tester', AddTimeMarksStr, $'Modules={stages.Intersect(AllModulesShort).JoinToString(''+'')}')
+      ExecTask('Tests\Tester.exe', 'Tester', ConsoleLogger.AddTimeMarksStr, $'Modules={stages.Intersect(AllModulesShort).JoinToString(''+'')}')
     ;
     
     {$endregion Test}

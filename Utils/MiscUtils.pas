@@ -136,35 +136,94 @@ type
     
   end;
   
-  Logger = sealed class
+  Logger = abstract class
+    private sub_loggers := new List<Logger>;
+    
+    protected static timed_only := false;
+    
+    public static procedure operator+=(log1, log2: Logger) :=
+    log1.sub_loggers += log2;
+    public static function operator+(log1, log2: Logger): Logger;
+    begin
+      log1 += log2;
+      Result := log1;
+    end;
+    
+    public function IsTimed: boolean; virtual := false;
+    protected function NeedOtpTime: boolean; virtual := true;
+    
+    public procedure Otp(l: OtpLine); virtual;
+    begin
+      if timed_only and not NeedOtpTime then exit;
+      
+      OtpImpl(l);
+      
+      foreach var log in sub_loggers do
+        log.Otp(l);
+    end;
+    protected procedure OtpImpl(l: OtpLine); abstract;
+    
+    public procedure Close; virtual :=
+    foreach var log in sub_loggers do
+      log.Close;
+    
+  end;
+  ConsoleLogger = sealed class(Logger)
+    
+    protected constructor := exit;
+    public const AddTimeMarksStr = 'AddTimeMarks';
+    private static otp_time_marks := CommandLineArgs.Contains(AddTimeMarksStr);
+    
+    public procedure OtpImpl(l: OtpLine); override;
+    begin
+      if l.s.ToLower.Contains('error') then     Console.ForegroundColor := System.ConsoleColor.Red else
+      if l.s.ToLower.Contains('fatal') then     Console.ForegroundColor := System.ConsoleColor.Red else
+      if l.s.ToLower.Contains('exception') then Console.ForegroundColor := System.ConsoleColor.Red else
+      if l.s.ToLower.Contains('warning') then   Console.ForegroundColor := System.ConsoleColor.Yellow else
+        Console.ForegroundColor := System.ConsoleColor.DarkGreen;
+        
+      Console.WriteLine(l.GetStr(otp_time_marks));
+      
+      Console.ForegroundColor := System.ConsoleColor.DarkGreen;
+    end;
+    
+  end;
+  FileLogger = sealed class(Logger)
     private bu_fname: string;
     private main_sw: System.IO.StreamWriter;
     private backup_sw: System.IO.StreamWriter;
     private timed: boolean;
     
-    protected static All := new List<Logger>;
     public constructor(fname: string; timed: boolean := false);
     begin
       self.bu_fname   := fname+'.backup';
       self.main_sw    := new System.IO.StreamWriter(fname, false, enc);
       self.backup_sw  := new System.IO.StreamWriter(bu_fname, false, enc);
       self.timed      := timed;
-      All += self;
     end;
     
-    public procedure Otp(l: OtpLine);
+    public function IsTimed: boolean; override := timed;
+    public function NeedOtpTime: boolean; override := timed;
+    
+    public procedure OtpImpl(l: OtpLine); override;
     begin
+      
       main_sw.WriteLine(l.GetStr(timed));
       main_sw.Flush;
+      
       backup_sw.WriteLine(l.GetStr(timed));
       backup_sw.Flush;
+      
     end;
     
-    public procedure Close;
+    public procedure Close; override;
     begin
+      
       main_sw.Close;
       backup_sw.Close;
       System.IO.File.Delete(bu_fname);
+      
+      inherited Close;
     end;
     
   end;
@@ -190,40 +249,19 @@ begin
   Result := $'{path}\{fname}';
 end;
 
-/// fname - путь относительно папки .exe файла
-function InitLog(fname: string) :=
-new System.IO.StreamWriter(
-  GetFullPath(fname, System.IO.Path.GetDirectoryName(GetEXEFileName)),
-  false, enc
-);
+function RelativeToExe(fname: string) := GetFullPath(fname, System.IO.Path.GetDirectoryName(GetEXEFileName));
 
 {$endregion Misc}
 
 {$region Otp}
 
-var otp_lock := new object;
-
-const AddTimeMarksStr = 'AddTimeMarks';
-var otp_time_marks := CommandLineArgs.Contains(AddTimeMarksStr);
+var otp_main := new ConsoleLogger;
 
 procedure Otp(line: OtpLine) :=
 if ThrProcOtp.curr<>nil then
   ThrProcOtp.curr.Enq(line) else
-lock otp_lock do
-begin
-  
-  foreach var log in Logger.All do
-    log.Otp(line);
-  
-  if line.s.ToLower.Contains('error') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
-  if line.s.ToLower.Contains('fatal') then      System.Console.ForegroundColor := System.ConsoleColor.Red else
-  if line.s.ToLower.Contains('exception') then  System.Console.ForegroundColor := System.ConsoleColor.Red else
-  if line.s.ToLower.Contains('warning') then    System.Console.ForegroundColor := System.ConsoleColor.Yellow else
-    System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
-  
-  System.Console.WriteLine(line.GetStr(otp_time_marks));
-  System.Console.ForegroundColor := System.ConsoleColor.DarkGreen;
-end;
+lock otp_main do
+  otp_main.Otp(line);
 
 /// Остановка других потоков и подпроцессов, довывод асинхронного вывода и вывод ошибки
 /// На случай ThreadAbortException - после вызова ErrOtp в потоке больше ничего быть не должно
@@ -274,12 +312,9 @@ end;
 
 static procedure Timers.LogAll;
 begin
-  Logger.All.RemoveAll(log->
-  begin
-    Result := not log.timed;
-    if Result then log.Close;
-  end);
+  Logger.timed_only := true;
   
+  Otp('');
   Otp($'.pas compilation : {pas_comp.TimeToStr}');
   if every_pas_comp.Count<>0 then
   begin
@@ -296,7 +331,7 @@ begin
       Otp($'    - {key.PadRight(max_key_w)} : {every_exe_exec[key].TimeToStr}');
   end;
   
-  foreach var log in Logger.All do log.Close;
+  otp_main.Close;
 end;
 
 {$endregion Otp}
@@ -439,7 +474,7 @@ begin
     thr_otp.Finish else
     thr_otp.Enq(e.Data);
   
-  var exp_time_marks := pars.Contains(AddTimeMarksStr);
+  var exp_time_marks := pars.Contains(ConsoleLogger.AddTimeMarksStr);
   p.Start;
   var start_time_mark := OtpLine.pack_timer.ElapsedTicks;
   var curr_exe_timer := Stopwatch.StartNew;
@@ -490,7 +525,7 @@ begin
   fname := GetFullPath(fname);
   var nick := fname.Substring(fname.LastIndexOf('\')+1);
   
-  foreach var p in Process.GetProcessesByName(nick) do
+  foreach var p in Process.GetProcessesByName(nick.Remove(nick.LastIndexOf('.'))+'.exe') do
     p.Kill;
   
   if l_otp=nil then l_otp := MiscUtils.Otp;
