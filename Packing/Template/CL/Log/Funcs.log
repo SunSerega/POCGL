@@ -12,6 +12,7 @@ Struct [cl_motion_estimation_desc_intel] was skipped
 Struct [cl_mem_ext_host_ptr] was skipped
 Struct [cl_mem_ion_host_ptr] was skipped
 Struct [cl_mem_android_native_buffer_host_ptr] was skipped
+Group [DeviceAtomicCapabilities] was skipped
 Group [QueuePriorityKhr] was skipped
 Group [QueueThrottleKhr] was skipped
 Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was skipped

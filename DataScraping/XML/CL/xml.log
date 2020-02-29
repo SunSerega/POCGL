@@ -1,13 +1,4 @@
-﻿Type [double] is referenced but not defined
-Type [float] is referenced but not defined
-Type [int16_t] is referenced but not defined
-Type [int32_t] is referenced but not defined
-Type [int64_t] is referenced but not defined
-Type [int8_t] is referenced but not defined
-Type [uint16_t] is referenced but not defined
-Type [uint32_t] is referenced but not defined
-Type [uint64_t] is referenced but not defined
-Type [unsigned int] is referenced but not defined
+﻿Type [unsigned int] is referenced but not defined
 Type-less group [MiscNumbers]
 Type-less group [cl_affinity_domain_ext]
 Type-less group [clCommandExecutionStatus]

@@ -161,7 +161,7 @@ begin
         +
         
 //        ExecTask('DataScraping\Reps\0BrokenSource\GL\GenerateCoreSource.pas', 'GL BrokenSource') *
-        ExecTask('DataScraping\Reps\PullReps.pas',                            'GLRep Update')
+        ExecTask('DataScraping\Reps\PullReps.pas', 'SubReps Update', ConsoleLogger.AddTimeMarksStr)
         
       ;
       
@@ -173,6 +173,7 @@ begin
         TitleTask('CompForward', '~')
         +
         
+        CompTask('DataScraping\XML\CL\ScrapXML.pas') *
         CompTask('DataScraping\XML\GL\ScrapXML.pas')
         
       ;
@@ -181,9 +182,10 @@ begin
       
       {$region ParseSpec}
       
-      var T_ParseXML_GL :=
-        TitleTask('Parse XML | GL', '~') +
+      var T_ScrapXML :=
+        TitleTask('Scrap XML', '~') +
         
+        ExecTask('DataScraping\XML\CL\ScrapXML.exe',      'ScrapXML[CL]') *
         ExecTask('DataScraping\XML\GL\ScrapXML.exe',      'ScrapXML[GL]')
         
       ;
@@ -192,10 +194,11 @@ begin
       
       T_FirstPack :=
         TitleTask('First Pack') +
-        T_UpdateReps * T_CompForward
+        T_UpdateReps *
+        T_CompForward
         +
         
-        T_ParseXML_GL
+        T_ScrapXML
         
         +
         EmptyTask

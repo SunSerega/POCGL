@@ -365,7 +365,7 @@ type
       var last_par := pars[pars.Count-1];
       if last_par.name = 'errcode_ret' then
         last_par.gr := Group.All['ErrorCode'] else
-      if (pars[0].t='cl_int') and (pars[0].ptr=0) then
+      if (pars[0].t='int32_t') and (pars[0].ptr=0) then
         pars[0].gr := Group.All['ErrorCode'] else
         log.WriteLine($'Func [{pars[0].name}] had no err code return');
       
@@ -476,7 +476,7 @@ type
 procedure ScrapFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
-  var root := new XmlNode(GetFullPath($'..\..\..\Reps\OpenCL-Docs\xml\{api_name}.xml', GetEXEFileName));
+  var root := new XmlNode(RelativeToExe($'..\..\Reps\OpenCL-Docs\xml\{api_name}.xml'));
   
   foreach var n in root.Nodes['types'].Single.Nodes['type'] do
     new TypeDef(n);

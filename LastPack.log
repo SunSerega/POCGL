@@ -30,7 +30,6 @@ Template[OpenCL]: TemplateCommand[Pack Most.pas]: Reading .bin
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Fixing all
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing records code
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing enums code
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Group [MemMigrationFlagsIntel] had 0 enums
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing funcs code
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (30) overloads of func [clGetDeviceInfo]
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D10ObjectsKHR]
@@ -196,9 +195,9 @@ Tester: Finished compiling: ERRОR
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
 Tester: Finished compiling: ERRОR
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\MatrMlt.pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCL\SimpleAddition.pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -208,7 +207,7 @@ Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\CLABC\ErrOtp.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "D:\1Cергей\Мои программы\проекты\POCGL\Tests\Exec\GL\Mtr.Rotate3D.pas"
