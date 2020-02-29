@@ -67,7 +67,7 @@ begin
       end else
       begin
         stages := arg.Remove(0,'StagesOnly='.Length).Split('+').Select(st->st.Trim).ToHashSet;
-        Otp($'Executing only stages:');
+        Otp($'Executing selected stages:');
       end;
       
       Otp(stages.JoinIntoString(' + '));
