@@ -721,8 +721,13 @@ end;
 {$endregion Task operations}
 
 begin
-  DefaultEncoding := enc;
-  RegisterThr;
-  while not System.Environment.CurrentDirectory.EndsWith('POCGL') do
-    System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
+  try
+    RegisterThr;
+    DefaultEncoding := enc;
+    if not CommandLineArgs.Contains('SecondaryProc') then Console.OutputEncoding := enc;
+    while not System.Environment.CurrentDirectory.EndsWith('POCGL') do
+      System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
+  except
+    on e: Exception do ErrOtp(e);
+  end;
 end.
