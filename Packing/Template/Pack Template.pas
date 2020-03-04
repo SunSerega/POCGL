@@ -18,31 +18,28 @@ type
   end;
   
   FuncBlock = sealed class(TextBlock)
-    own_otp := new ThrProcOtp;
+    p_otp := new ThrProcOtp;
     
-    constructor(f: ()->string);
+    constructor(p: SecThrProc; f: ()->string);
     begin
-      Thread.Create(()->
-      try
-        RegisterThr;
-        ThrProcOtp.curr := self.own_otp;
+      p := p + ProcTask(()->
+      begin
         self.str := f();
-        self.own_otp.Finish;
-      except
-        on e: Exception do ErrOtp(e);
-      end).Start;
+      end);
+      p.StartExec;
+      self.p_otp := p.own_otp;
     end;
     
     function Finish: string; override;
     begin
-      foreach var l in own_otp.Enmr do Otp(l);
+      foreach var l in p_otp.Enmr do Otp(l);
       Result := str;
     end;
     
   end;
   
 var prev_commands := new Dictionary<string, ManualResetEvent>;
-procedure WaitCommandExec(name: string; work: ()->());
+procedure WaitCommandExec(name: string; work: SecThrProc);
 begin
   var ev: ManualResetEvent;
   var comm_otp: ThrProcOtp;
@@ -52,10 +49,7 @@ begin
     begin
       ev := new ManualResetEvent(false);
       prev_commands.Add(name, ev);
-      var T_Command := (
-        ProcTask(work) +
-        SetEvTask(ev)
-      );
+      var T_Command := work + SetEvTask(ev);
       T_Command.StartExec;
       comm_otp := T_Command.own_otp;
     end;
@@ -74,12 +68,12 @@ begin
   if sind <> -1 then
   begin
     var fname := comm.Substring(sind+1);
-    WaitCommandExec(fname, ()-> ExecuteFile(GetFullPath(fname, path), $'TemplateCommand[{fname}]') );
+    WaitCommandExec(fname, ExecTask(GetFullPath(fname, path), $'TemplateCommand[{fname}]') );
     comm := comm.Remove(sind);
   end;
   
   var templ_fname := GetFullPath(comm+'.template', path);
-  WaitCommandExec(templ_fname, ()-> RunFile(GetEXEFileName, $'Template[{comm}]', $'"fname={templ_fname}"', $'"otp_dir={path}"') );
+  WaitCommandExec(templ_fname, ExecTask(GetEXEFileName, $'Template[{comm}]', $'"fname={templ_fname}"', $'"otp_dir={path}"') );
   
   if comm.Contains('\') then
     comm := comm.Substring(comm.LastIndexOf('\')+1);
@@ -123,7 +117,14 @@ begin
           ind1 += 1;
           var ind2 := l.IndexOf('%', ind1);
           var comm := l.Substring(ind1,ind2-ind1);
-          lock blocks do blocks.Enqueue(new FuncBlock( ()->ProcessCommand(comm, curr_dir) ));
+          var comm_res: string;
+          lock blocks do
+            blocks.Enqueue(new FuncBlock(
+              ProcTask(()->
+              begin
+                comm_res := ProcessCommand(comm, curr_dir);
+              end), ()->comm_res
+            ));
           
           res += l.Remove(0,ind2+1);
         end else

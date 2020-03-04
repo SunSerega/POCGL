@@ -559,7 +559,7 @@ procedure ExecuteFile(fname, nick: string; l_otp: OtpLine->(); err: string->(); 
 begin
   fname := GetFullPath(fname);
   
-  var ffname := fname.Contains('\') ? fname.Substring(fname.LastIndexOf('\')+1) : fname;
+  var ffname := fname.Substring(fname.LastIndexOf('\')+1);
   if ffname.Contains('.') then
     case ffname.Substring(ffname.LastIndexOf('.')) of
       
@@ -568,8 +568,8 @@ begin
         
         CompilePasFile(fname, l_otp, err);
         
-        fname := fname.Remove(fname.Length-4)+'.exe';
-        ffname := ffname.Remove(ffname.Length-4)+'.exe';
+        fname := fname.Remove(fname.LastIndexOf('.'))+'.exe';
+        ffname := fname.Substring(fname.LastIndexOf('\')+1);
       end;
       
       '.exe': ;
