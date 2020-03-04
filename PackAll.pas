@@ -308,7 +308,13 @@ begin
             end;
             
             System.IO.File.Copy( fname, $'Release\bin\Lib\{fname}' );
-            if copy_to_pf then System.IO.File.Copy( fname, $'{pf_dir}\LibSource\{fname}', true );
+            if copy_to_pf then
+            try
+              System.IO.File.Copy( fname, $'{pf_dir}\LibSource\{fname}', true );
+            except
+              on System.UnauthorizedAccessException do
+                Otp($'WARNING: Not enough rights to copy [{fname}] to [Program Files]');
+            end;
           end;
           
           if copy_to_pf then
@@ -317,7 +323,12 @@ begin
               var fname := $'{mn}.pcu';
               
               if FileExists(fname) then
-                System.IO.File.Copy( fname, $'{pf_dir}\Lib\{mn}.pcu', true ) else
+              try
+                System.IO.File.Copy( fname, $'{pf_dir}\Lib\{mn}.pcu', true );
+              except
+                on System.UnauthorizedAccessException do
+                  Otp($'WARNING: Not enough rights to copy [{fname}] to [Program Files]');
+              end else
                 Otp($'WARNING: {fname} not found!');
               
             end;
