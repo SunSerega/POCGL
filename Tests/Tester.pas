@@ -99,7 +99,7 @@ type
             exit;
           end;
           
-          DialogResult.Cancel: Halt;
+          DialogResult.Cancel: Halt(-1);
           
         end;
         
@@ -249,7 +249,7 @@ type
               
               DialogResult.No: ;
               
-              DialogResult.Cancel: Halt;
+              DialogResult.Cancel: Halt(-1);
             end else
             
           if t.expected_comp_err<>comp_err then
@@ -264,7 +264,7 @@ type
               
               DialogResult.No: ;
               
-              DialogResult.Cancel: Halt;
+              DialogResult.Cancel: Halt(-1);
             end;
           
         end else
@@ -282,7 +282,7 @@ type
               
               DialogResult.No: ;
               
-              DialogResult.Cancel: Halt;
+              DialogResult.Cancel: Halt(-1);
             end;
           
         end;
@@ -343,7 +343,7 @@ type
               
               DialogResult.No: ;
               
-              DialogResult.Cancel: Halt;
+              DialogResult.Cancel: Halt(-1);
               
             end;
           end;

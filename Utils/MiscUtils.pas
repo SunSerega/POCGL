@@ -677,6 +677,8 @@ type
   
 function operator+(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
 new SecThrProcSum(p1,p2);
+procedure operator+=(var p1: SecThrProc; p2: SecThrProc); extensionmethod :=
+p1 := p1+p2;
 
 function operator*(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
 new SecThrProcMlt(p1,p2);

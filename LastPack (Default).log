@@ -23,10 +23,6 @@ Template[OpenCL]: Runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenCL]: Finished runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenCL]: Runing Template[NameRecords]
 Template[OpenCL]: Finished runing Template[NameRecords]
-Template[OpenCL]: Runing Template[Enums]
-Template[OpenCL]: Finished runing Template[Enums]
-Template[OpenCL]: Runing Template[Static\Delegates]
-Template[OpenCL]: Finished runing Template[Static\Delegates]
 Template[OpenCL]: Compiling "C:\0Prog\POCGL\Packing\Template\CL\Pack Most.pas"
 Template[OpenCL]: Finished compiling: OK
 Template[OpenCL]: Runing TemplateCommand[Pack Most.pas]
@@ -56,6 +52,10 @@ Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloa
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
 Template[OpenCL]: Finished runing TemplateCommand[Pack Most.pas]
+Template[OpenCL]: Runing Template[Enums]
+Template[OpenCL]: Finished runing Template[Enums]
+Template[OpenCL]: Runing Template[Static\Delegates]
+Template[OpenCL]: Finished runing Template[Static\Delegates]
 Template[OpenCL]: Runing Template[Records]
 Template[OpenCL]: Finished runing Template[Records]
 Template[OpenCL]: Runing Template[Funcs]
@@ -80,22 +80,6 @@ Template[OpenGL]: Runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenGL]: Runing Template[NameRecords]
 Template[OpenGL]: Finished runing Template[NameRecords]
-Template[OpenGL]: Runing Template[Enums]
-Template[OpenGL]: Finished runing Template[Enums]
-Template[OpenGL]: Runing Template[Static\Delegates]
-Template[OpenGL]: Finished runing Template[Static\Delegates]
-Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack VecTypes.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack VecTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack VecTypes.pas]
-Template[OpenGL]: Runing Template[VecTypes]
-Template[OpenGL]: Finished runing Template[VecTypes]
-Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack MtrTypes.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
-Template[OpenGL]: Runing Template[MtrTypes]
-Template[OpenGL]: Finished runing Template[MtrTypes]
 Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack Most.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack Most.pas]
@@ -147,6 +131,22 @@ Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloa
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
 Template[OpenGL]: Finished runing TemplateCommand[Pack Most.pas]
+Template[OpenGL]: Runing Template[Enums]
+Template[OpenGL]: Finished runing Template[Enums]
+Template[OpenGL]: Runing Template[Static\Delegates]
+Template[OpenGL]: Finished runing Template[Static\Delegates]
+Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack VecTypes.pas"
+Template[OpenGL]: Finished compiling: OK
+Template[OpenGL]: Runing TemplateCommand[Pack VecTypes.pas]
+Template[OpenGL]: Finished runing TemplateCommand[Pack VecTypes.pas]
+Template[OpenGL]: Runing Template[VecTypes]
+Template[OpenGL]: Finished runing Template[VecTypes]
+Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack MtrTypes.pas"
+Template[OpenGL]: Finished compiling: OK
+Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
+Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
+Template[OpenGL]: Runing Template[MtrTypes]
+Template[OpenGL]: Finished runing Template[MtrTypes]
 Template[OpenGL]: Runing Template[Records]
 Template[OpenGL]: Finished runing Template[Records]
 Template[OpenGL]: Runing Template[Funcs]
@@ -195,9 +195,9 @@ Tester: Finished compiling: ERRОR
 Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
 Tester: Finished compiling: ERRОR
 Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCL\MatrMlt.pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCL\SimpleAddition.pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -207,7 +207,7 @@ Tester: Finished compiling: OK
 Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "C:\0Prog\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "C:\0Prog\POCGL\Tests\Exec\CLABC\ErrOtp.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "C:\0Prog\POCGL\Tests\Exec\GL\Mtr.Rotate3D.pas"

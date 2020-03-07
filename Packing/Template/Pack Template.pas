@@ -39,47 +39,47 @@ type
   end;
   
 var prev_commands := new Dictionary<string, ManualResetEvent>;
-procedure WaitCommandExec(name: string; work: SecThrProc);
+function RegisterCommand(name: string; work: ()->SecThrProc): SecThrProc;
 begin
   var ev: ManualResetEvent;
-  var comm_otp: ThrProcOtp;
   
   lock prev_commands do
-    if not prev_commands.TryGetValue(name, ev) then
+    if prev_commands.TryGetValue(name, ev) then
+      Result := EventTask(ev) else
     begin
       ev := new ManualResetEvent(false);
       prev_commands.Add(name, ev);
-      var T_Command := work + SetEvTask(ev);
-      T_Command.StartExec;
-      comm_otp := T_Command.own_otp;
+      Result := work + SetEvTask(ev);
     end;
   
-  if comm_otp=nil then
-    ev.WaitOne else
-  foreach var l in comm_otp.Enmr do
-    Otp(l);
 end;
 
-function ProcessCommand(comm: string; path: string): string;
+function ProcessCommand(comm: string; path: string): FuncBlock;
 begin
   if comm='' then exit;
+  
+  var tsk := EmptyTask;
   
   var sind := comm.IndexOf('!');
   if sind <> -1 then
   begin
     var fname := comm.Substring(sind+1);
-    WaitCommandExec(fname, ExecTask(GetFullPath(fname, path), $'TemplateCommand[{fname}]') );
+    tsk += RegisterCommand(fname, ()->ExecTask(GetFullPath(fname, path), $'TemplateCommand[{fname}]') );
     comm := comm.Remove(sind);
   end;
   
   var templ_fname := GetFullPath(comm+'.template', path);
-  WaitCommandExec(templ_fname, ExecTask(GetEXEFileName, $'Template[{comm}]', $'"fname={templ_fname}"', $'"otp_dir={path}"') );
+  tsk += RegisterCommand(templ_fname, ()->ExecTask(GetEXEFileName, $'Template[{comm}]', $'"fname={templ_fname}"', $'"otp_dir={path}"') );
   
   if comm.Contains('\') then
     comm := comm.Substring(comm.LastIndexOf('\')+1);
   var tr_fname := $'{path}\{comm}.templateres';
-  Result := ReadAllText(tr_fname);
-  System.IO.File.Delete(tr_fname);
+  
+  Result := new FuncBlock(tsk, ()->
+  begin
+    Result := ReadAllText(tr_fname);
+    System.IO.File.Delete(tr_fname);
+  end);
   
 end;
 
@@ -97,11 +97,10 @@ begin
     if otp_dir<>nil then
       otp_dir := GetFullPath(otp_dir.SubString('otp_dir='.Length));
     
-    var blocks := new Queue<TextBlock>;
-    var read_done := false;
+    var blocks := new List<TextBlock>;
     
-    Thread.Create(()->
-    try
+    {$region Read}
+    begin
       var res := new StringBuilder;
       
       foreach var l in ReadAllText(inp_fname).Remove(#13).Trim(#10' '.ToArray).Split(#10) do
@@ -111,20 +110,13 @@ begin
         if ind1<>-1 then
         begin
           res += l.Remove(ind1);
-          lock blocks do blocks.Enqueue(new StrBlock(res.ToString));
+          blocks.Add( new StrBlock(res.ToString) );
           res.Clear;
           
           ind1 += 1;
           var ind2 := l.IndexOf('%', ind1);
           var comm := l.Substring(ind1,ind2-ind1);
-          var comm_res: string;
-          lock blocks do
-            blocks.Enqueue(new FuncBlock(
-              ProcTask(()->
-              begin
-                comm_res := ProcessCommand(comm, curr_dir);
-              end), ()->comm_res
-            ));
+          blocks.Add( ProcessCommand(comm, curr_dir) );
           
           res += l.Remove(0,ind2+1);
         end else
@@ -134,40 +126,25 @@ begin
       end;
       
       res.Length -= 1; // -= #10
-      lock blocks do blocks.Enqueue(new StrBlock(res.ToString));
-      read_done := true;
-    except
-      on e: Exception do ErrOtp(e);
-    end).Start;
-    
-    var fname := inp_fname.Remove(inp_fname.LastIndexOf('.'));
-    if CommandLineArgs.Contains('GenPas') then
-      fname += '.pas' else
-      fname += '.templateres';
-    
-    if otp_dir<>nil then
-      fname := otp_dir + fname.Substring(fname.LastIndexOf('\'));
-    
-    var sw := new System.IO.StreamWriter(System.IO.File.Create(fname));
-    
-    while true do
-    begin
-      while blocks.Count=0 do
-      begin
-        if read_done and (blocks.Count=0) then
-        begin
-          sw.Flush;
-          sw.Close;
-          Halt;
-        end;
-        Sleep(10);
-      end;
-      
-      var bl: TextBlock;
-      lock blocks do bl := blocks.Dequeue;
-      sw.Write(bl.Finish);
-      
+      blocks.Add( new StrBlock(res.ToString) );
     end;
+    {$endregion Read}
+    
+    var otp_fname := inp_fname.Remove(inp_fname.LastIndexOf('.')) + (CommandLineArgs.Contains('GenPas') ? '.pas' : '.templateres');
+    if otp_dir<>nil then
+      otp_fname := otp_dir + otp_fname.Substring(otp_fname.LastIndexOf('\'));
+    
+    {$region Write}
+    begin
+      var sw := new System.IO.StreamWriter(System.IO.File.Create(otp_fname));
+      
+      foreach var bl in blocks do
+        if bl<>nil then
+          sw.Write(bl.Finish);
+      
+      sw.Close;
+    end;
+    {$endregion Write}
     
   except
     on e: Exception do ErrOtp(e);

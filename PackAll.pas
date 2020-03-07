@@ -220,7 +220,7 @@ begin
     var T_CL := not stages.Contains('CL') ? EmptyTask :
       TitleTask('OpenCL') +
       EventTask(E_TemplatePacker) +
-      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenCL]', 'fname=Packing\Template\CL\0OpenCL.template', 'GenPas') +
+      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenCL]', 'fname=Packing\Template\CL\0OpenCL.template', 'GenPas', ConsoleLogger.AddTimeMarksStr) +
       ProcTask(()->WriteAllText('OpenCL.pas', ReadAllText('Packing\Template\CL\0OpenCL.pas').Replace(#10,#13#10))) +
       ProcTask(()->System.IO.File.Delete('Packing\Template\CL\0OpenCL.pas'))
     ;
@@ -239,7 +239,7 @@ begin
     var T_GL := not stages.Contains('GL') ? EmptyTask :
       TitleTask('OpenGL') +
       EventTask(E_TemplatePacker) +
-      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
+      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas', ConsoleLogger.AddTimeMarksStr) +
       ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('Packing\Template\GL\0OpenGL.pas').Replace(#10,#13#10))) +
       ProcTask(()->System.IO.File.Delete('Packing\Template\GL\0OpenGL.pas'))
     ;
