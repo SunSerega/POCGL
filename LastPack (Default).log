@@ -1,7 +1,7 @@
 ﻿Executing default stages:
 Spec + CL + CLABC + GL + GLABC + Test + Release
 ====================================== Specs =====================================
-Compiling "C:\0Prog\POCGL\Packing\Spec\SpecPacker.pas"
+Compiling "Packing\Spec\SpecPacker.pas"
 Finished compiling: OK
 Runing SpecPacker
 SpecPacker: Packing spec "Гайд по использованию OpenGL и OpenCL"
@@ -17,13 +17,13 @@ Template[OpenCL]: Runing Template[..\LicenseHeader]
 Template[OpenCL]: Finished runing Template[..\LicenseHeader]
 Template[OpenCL]: Runing Template[Static\CoreTypes]
 Template[OpenCL]: Finished runing Template[Static\CoreTypes]
-Template[OpenCL]: Compiling "C:\0Prog\POCGL\Packing\Template\CL\Pack NameRecords.pas"
+Template[OpenCL]: Compiling "Packing\Template\CL\Pack NameRecords.pas"
 Template[OpenCL]: Finished compiling: OK
 Template[OpenCL]: Runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenCL]: Finished runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenCL]: Runing Template[NameRecords]
 Template[OpenCL]: Finished runing Template[NameRecords]
-Template[OpenCL]: Compiling "C:\0Prog\POCGL\Packing\Template\CL\Pack Most.pas"
+Template[OpenCL]: Compiling "Packing\Template\CL\Pack Most.pas"
 Template[OpenCL]: Finished compiling: OK
 Template[OpenCL]: Runing TemplateCommand[Pack Most.pas]
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Reading .bin
@@ -64,7 +64,7 @@ Template[OpenCL]: Runing Template[Static\DebugImpl]
 Template[OpenCL]: Finished runing Template[Static\DebugImpl]
 Finished runing Template[OpenCL]
 ==================================== OpenCLABC ===================================
-Compiling "C:\0Prog\POCGL\OpenCLABC.pas"
+Compiling "OpenCLABC.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
 Finished runing Comments[OpenCLABC]
@@ -74,13 +74,13 @@ Template[OpenGL]: Runing Template[..\LicenseHeader]
 Template[OpenGL]: Finished runing Template[..\LicenseHeader]
 Template[OpenGL]: Runing Template[Static\CoreTypes]
 Template[OpenGL]: Finished runing Template[Static\CoreTypes]
-Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack NameRecords.pas"
+Template[OpenGL]: Compiling "Packing\Template\GL\Pack NameRecords.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack NameRecords.pas]
 Template[OpenGL]: Runing Template[NameRecords]
 Template[OpenGL]: Finished runing Template[NameRecords]
-Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack Most.pas"
+Template[OpenGL]: Compiling "Packing\Template\GL\Pack Most.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack Most.pas]
 Template[OpenGL]: TemplateCommand[Pack Most.pas]: Reading .bin
@@ -135,13 +135,13 @@ Template[OpenGL]: Runing Template[Enums]
 Template[OpenGL]: Finished runing Template[Enums]
 Template[OpenGL]: Runing Template[Static\Delegates]
 Template[OpenGL]: Finished runing Template[Static\Delegates]
-Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack VecTypes.pas"
+Template[OpenGL]: Compiling "Packing\Template\GL\Pack VecTypes.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack VecTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack VecTypes.pas]
 Template[OpenGL]: Runing Template[VecTypes]
 Template[OpenGL]: Finished runing Template[VecTypes]
-Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack MtrTypes.pas"
+Template[OpenGL]: Compiling "Packing\Template\GL\Pack MtrTypes.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
@@ -153,7 +153,7 @@ Template[OpenGL]: Runing Template[Funcs]
 Template[OpenGL]: Finished runing Template[Funcs]
 Template[OpenGL]: Runing Template[Static\GDIIntegration]
 Template[OpenGL]: Finished runing Template[Static\GDIIntegration]
-Template[OpenGL]: Compiling "C:\0Prog\POCGL\Packing\Template\GL\Pack MtrExt.pas"
+Template[OpenGL]: Compiling "Packing\Template\GL\Pack MtrExt.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack MtrExt.pas]
 Template[OpenGL]: Finished runing TemplateCommand[Pack MtrExt.pas]
@@ -161,58 +161,58 @@ Template[OpenGL]: Runing Template[MtrExt]
 Template[OpenGL]: Finished runing Template[MtrExt]
 Finished runing Template[OpenGL]
 ==================================== OpenGLABC ===================================
-Compiling "C:\0Prog\POCGL\OpenGLABC.pas"
+Compiling "OpenGLABC.pas"
 Finished compiling: OK
 ==================================== Pre Init ====================================
-Compiling "C:\0Prog\POCGL\Tests\Tester.pas"
+Compiling "Tests\Tester.pas"
 Finished compiling: OK
-Compiling "C:\0Prog\POCGL\Packing\Doc\PackComments.pas"
+Compiling "Packing\Doc\PackComments.pas"
 Finished compiling: OK
-Compiling "C:\0Prog\POCGL\Packing\Template\Pack Template.pas"
+Compiling "Packing\Template\Pack Template.pas"
 Finished compiling: OK
 ===================================== Testing ====================================
 Runing Tester
 Tester: Testing selected modules:
 Tester: CL + CLABC + GL + GLABC
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#6.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#6.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#1.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#2.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#2.pas"
 Tester: Finished compiling: ERRОR
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.pas"
 Tester: Finished compiling: ERRОR
-Tester: Compiling "C:\0Prog\POCGL\Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
+Tester: Compiling "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
 Tester: Finished compiling: ERRОR
-Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCL\MatrMlt.pas"
+Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCL\SimpleAddition.pas"
+Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCLABC\Wait очереди\1.pas"
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Samples\OpenCLABC\Wait очереди\2.pas"
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Exec\CLABC\ErrOtp.pas"
+Tester: Compiling "Tests\Exec\CLABC\ErrOtp.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Exec\GL\Mtr.Rotate3D.pas"
+Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "C:\0Prog\POCGL\Tests\Exec\GL\Mtr.Translate.pas"
+Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
 Tester: Finished compiling: OK
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]

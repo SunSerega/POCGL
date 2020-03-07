@@ -6,11 +6,11 @@ uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 {$region Log and Misc}
 
-var log := new FileLogger(RelativeToExe('Log\Funcs.log')) +
-           new FileLogger(RelativeToExe('Log\Funcs (Timed).log'), true);
-var log_groups    := new FileLogger(RelativeToExe('Log\FinalGroups.log'));
-var log_structs   := new FileLogger(RelativeToExe('Log\FinalStructs.log'));
-var log_func_ovrs := new FileLogger(RelativeToExe('Log\FinalFuncOverloads.log'));
+var log := new FileLogger(GetFullPathRTE('Log\Funcs.log')) +
+           new FileLogger(GetFullPathRTE('Log\Funcs (Timed).log'), true);
+var log_groups    := new FileLogger(GetFullPathRTE('Log\FinalGroups.log'));
+var log_structs   := new FileLogger(GetFullPathRTE('Log\FinalStructs.log'));
+var log_func_ovrs := new FileLogger(GetFullPathRTE('Log\FinalFuncOverloads.log'));
 
 type
   LogCache = static class
@@ -1435,7 +1435,7 @@ type
       // func - deprecation version
       var deprecated := new Dictionary<Func, string>;
       
-      var log_func_ver := new FileLogger(RelativeToExe($'Log\FuncsVer ({api}).log'));
+      var log_func_ver := new FileLogger(GetFullPathRTE($'Log\FuncsVer ({api}).log'));
       loop 3 do log_func_ver.Otp('');
       
       foreach var ftr in ByApi[api] do
