@@ -476,7 +476,7 @@ type
 procedure ScrapFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
-  var root := new XmlNode(RelativeToExe($'..\..\Reps\OpenCL-Docs\xml\{api_name}.xml'));
+  var root := new XmlNode(GetFullPathRTE($'..\..\Reps\OpenCL-Docs\xml\{api_name}.xml'));
   
   foreach var n in root.Nodes['types'].Single.Nodes['type'] do
     new TypeDef(n);

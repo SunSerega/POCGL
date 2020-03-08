@@ -4,7 +4,7 @@
 uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 var log := new System.IO.StreamWriter(
-  GetFullPath('..\xml.log', GetEXEFileName),
+  GetFullPathRTE('xml.log'),
   false, enc
 );
 var xmls: HashSet<string>;

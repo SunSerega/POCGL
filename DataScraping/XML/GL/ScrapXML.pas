@@ -309,7 +309,7 @@ var extensions := new List<Extension>;
 procedure ScrapFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
-  var root := new XmlNode(GetFullPath($'..\..\..\Reps\OpenGL-Registry\xml\{api_name}.xml', GetEXEFileName));
+  var root := new XmlNode(GetFullPathRTE($'..\..\Reps\OpenGL-Registry\xml\{api_name}.xml'));
   
   foreach var enums in root.Nodes['enums'] do
   begin
