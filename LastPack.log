@@ -1,48 +1,5 @@
-﻿Executing selected stages:
-FirstPack + Spec + CL + CLABC + GL + GLABC + Test + Release
-=================================== First Pack ===================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
-Finished compiling: OK
-Runing SubReps Update
-SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] [up to date]      master             -> origin/master
-SubReps Update: OpenCL Docs : [Info] [up to date]      job-slot-selection -> origin/job-slot-selection
-SubReps Update: OpenCL Docs : [Info] [up to date]      pub93-links        -> origin/pub93-links
-SubReps Update: OpenCL Docs : [Info] [up to date]      reflinks           -> origin/reflinks
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages           -> origin/refpages
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages2          -> origin/refpages2
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages3          -> origin/refpages3
-SubReps Update: OpenCL Docs : [Info] [up to date]      reserve-enums      -> origin/reserve-enums
-SubReps Update: OpenCL Docs : [Info] [up to date]      vksync             -> origin/vksync
-SubReps Update: OpenCL Docs : Already up to date.
-SubReps Update: Done pulling OpenCL Docs
-SubReps Update: Pulling OpenGL Registry
-SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL Registry : [Info] [up to date]      master     -> origin/master
-SubReps Update: OpenGL Registry : [Info] [up to date]      335-docs   -> origin/335-docs
-SubReps Update: OpenGL Registry : [Info] [up to date]      341-issue  -> origin/341-issue
-SubReps Update: OpenGL Registry : Already up to date.
-SubReps Update: Done pulling OpenGL Registry
-Finished runing SubReps Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CompForward ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\CL\ScrapXML.pas"
-Finished compiling: OK
-Compiling "DataScraping\XML\GL\ScrapXML.pas"
-Finished compiling: OK
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Runing ScrapXML[CL]
-ScrapXML[CL]: Parsing "cl"
-ScrapXML[CL]: Saving as binary
-Finished runing ScrapXML[CL]
-Runing ScrapXML[GL]
-ScrapXML[GL]: Parsing "gl"
-ScrapXML[GL]: WARNING: Func [glShadingRateImageBarrierNV] found 2 times in ext [GL_NV_shading_rate_image]
-ScrapXML[GL]: Parsing "wgl"
-ScrapXML[GL]: Parsing "glx"
-ScrapXML[GL]: Saving as binary
-Finished runing ScrapXML[GL]
+﻿Executing default stages:
+Spec + CL + CLABC + GL + GLABC + Test + Release
 ====================================== Specs =====================================
 Compiling "Packing\Spec\SpecPacker.pas"
 Finished compiling: OK
@@ -258,48 +215,9 @@ Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
 Tester: Finished compiling: OK
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
+Tester: ERROR: Execution took too long for "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.exe"
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
-Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
-Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
-Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
-Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
-Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: Finished runing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: Finished runing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: Runing Test[Tests\Exec\CLABC\ErrOtp]
-Tester: Finished runing Test[Tests\Exec\CLABC\ErrOtp]
-Tester: Runing Test[Tests\Exec\GL\Mtr.Rotate3D]
-Tester: Finished runing Test[Tests\Exec\GL\Mtr.Rotate3D]
-Tester: Runing Test[Tests\Exec\GL\Mtr.Translate]
-Tester: Finished runing Test[Tests\Exec\GL\Mtr.Translate]
-Tester: Done testing
-Finished runing Tester
-===================================== Release ====================================
-Packing OpenCL.pas
-Packing OpenCLABC.pas with doc
-Packing OpenGL.pas
-Packing OpenGLABC.pas
-Done copying release modules
-Packing sample "Samples\OpenCL\MatrMlt.cl"
-Packing sample "Samples\OpenCL\MatrMlt.pas"
-Packing sample "Samples\OpenCL\SimpleAddition.cl"
-Packing sample "Samples\OpenCL\SimpleAddition.pas"
-Packing sample "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.cl"
-Packing sample "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.cl"
-Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-Packing sample "Samples\OpenCLABC\Wait очереди\1.pas"
-Packing sample "Samples\OpenCLABC\Wait очереди\2.pas"
-Packing sample "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
-Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Packed 12 samples
-Packing spec "Packing\Spec\Справка OpenGLABC.html"
-Packing spec "Packing\Spec\Справка OpenCLABC.html"
-Packing spec "Packing\Spec\Гайд по использованию OpenGL и OpenCL.html"
-Packed 3 spec files
-done packing
+Tester: System.Exception: Error in Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]: ---> System.Runtime.InteropServices.COMException: Exception from HRESULT: 0xE0434352
+Tester:    --- End of inner exception stack trace ---
+System.Exception: Error in Tester: ---> System.Exception: Выдано исключение типа "System.Exception".
+   --- Конец трассировки внутреннего стека исключений ---

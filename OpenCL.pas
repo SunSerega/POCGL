@@ -2557,6 +2557,7 @@ uses System.Runtime.CompilerServices;
 
 type
   
+  [PCUNotRestore]
   cl = static class
     
     // added in cl1.0
@@ -7195,6 +7196,7 @@ type
   
   {$region Extensions}
   
+  [PCUNotRestore]
   clD3d10SharingKHR = static class
     
     private static function z_GetDeviceIDsFromD3D10KHR_ovr_0(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -7699,6 +7701,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clD3d11SharingKHR = static class
     
     private static function z_GetDeviceIDsFromD3D11KHR_ovr_0(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -8203,6 +8206,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clDx9MediaSharingKHR = static class
     
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_ovr_0(platform: cl_platform_id; num_media_adapters: UInt32; var media_adapter_type: UInt32; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -8815,6 +8819,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clEglImageKHR = static class
     
     private static function z_CreateFromEGLImageKHR_ovr_0(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; var properties: EglImagePropertiesKhr; var errcode_ret: ErrorCode): cl_mem;
@@ -9236,6 +9241,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clEglEventKHR = static class
     
     private static function z_CreateEventFromEGLSyncKHR_ovr_0(context: cl_context; sync: IntPtr; display: IntPtr; var errcode_ret: ErrorCode): cl_event;
@@ -9245,6 +9251,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clSetMemObjectDestructorAPPLE = static class
     
     private static function z_SetMemObjectDestructorAPPLE_ovr_0(memobj: cl_mem; pfn_notify: MemObjectDestructorCallback; user_data: IntPtr): ErrorCode;
@@ -9254,6 +9261,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clContextLoggingFunctionsAPPLE = static class
     
     private static procedure z_LogMessagesToSystemLogAPPLE_ovr_0(errstr: IntPtr; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
@@ -9291,6 +9299,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clIcdKHR = static class
     
     private static function z_IcdGetPlatformIDsKHR_ovr_0(num_entries: UInt32; var platforms: cl_platform_id; var num_platforms: UInt32): ErrorCode;
@@ -9348,6 +9357,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clIlProgramKHR = static class
     
     private static function z_CreateProgramWithILKHR_ovr_0(context: cl_context; var il: byte; length: UIntPtr; var errcode_ret: ErrorCode): cl_program;
@@ -9367,6 +9377,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clTerminateContextKHR = static class
     
     private static function z_TerminateContextKHR_ovr_0(context: cl_context): ErrorCode;
@@ -9376,6 +9387,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clCreateCommandQueueKHR = static class
     
     private static function z_CreateCommandQueueWithPropertiesKHR_ovr_0(context: cl_context; device: cl_device_id; var properties: UInt64; var errcode_ret: ErrorCode): cl_command_queue;
@@ -9395,6 +9407,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clDeviceFissionEXT = static class
     
     private static function z_ReleaseDeviceEXT_ovr_0(device: cl_device_id): ErrorCode;
@@ -9610,6 +9623,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clMigrateMemobjectEXT = static class
     
     private static function z_EnqueueMigrateMemObjectEXT_ovr_0(command_queue: cl_command_queue; num_mem_objects: UInt32; var mem_objects: cl_mem; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -9815,6 +9829,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clExtHostPtrQCOM = static class
     
     private static function z_GetDeviceImageInfoQCOM_ovr_0(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
@@ -9872,6 +9887,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clUseGrallocPtrIMG = static class
     
     private static function z_EnqueueAcquireGrallocObjectsIMG_ovr_0(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
@@ -10278,6 +10294,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clSubgroupsKHR = static class
     
     private static function z_GetKernelSubGroupInfoKHR_ovr_0(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
@@ -10297,6 +10314,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clImportMemoryARM = static class
     
     private static function z_ImportMemoryARM_ovr_0(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -10316,6 +10334,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clSharedVirtualMemoryARM = static class
     
     private static function z_SVMAllocARM_ovr_0(context: cl_context; flags: UInt64; size: UIntPtr; alignment: UInt32): IntPtr;
@@ -10605,6 +10624,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clAcceleratorINTEL = static class
     
     private static function z_CreateAcceleratorINTEL_ovr_0(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; var errcode_ret: ErrorCode): cl_accelerator_intel;
@@ -10639,6 +10659,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clGlEventKHR = static class
     
     private static function z_CreateEventFromGLsyncKHR_ovr_0(context: cl_context; sync: IntPtr; var errcode_ret: ErrorCode): cl_event;
@@ -10648,6 +10669,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clVaApiMediaSharingINTEL = static class
     
     private static function z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_ovr_0(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -11122,6 +11144,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clDx9MediaSharingINTEL = static class
     
     private static function z_GetDeviceIDsFromDX9INTEL_ovr_0(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
@@ -11596,6 +11619,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clGlSharingKHR = static class
     
     private static function z_GetGLContextInfoKHR_ovr_0(var properties: ContextProperties; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
@@ -12148,6 +12172,7 @@ type
     
   end;
   
+  [PCUNotRestore]
   clUnifiedSharedMemoryINTEL = static class
     
     private static function z_HostMemAllocINTEL_ovr_0(context: cl_context; var properties: MemPropertiesIntel; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;

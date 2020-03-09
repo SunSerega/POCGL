@@ -1465,6 +1465,7 @@ type
       var is_static := not (api in ['gl']);
       var class_type := is_static ? 'static' : 'sealed';
       
+      sb += $'  [PCUNotRestore]'+#10;
       sb += $'  {api} = {class_type} class'+#10;
       Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
@@ -1482,6 +1483,7 @@ type
       sb += $'  '+#10;
       
       if not deprecated.Any then continue;
+      sb += $'  [PCUNotRestore]'+#10;
       sb += $'  {api}D = {class_type} class'+#10;
       Func.WriteGetPtrFunc(sb, api);
       sb += $'    '+#10;
@@ -1568,6 +1570,7 @@ type
         Result := w;
       end).JoinToString('') + ext_group;
       
+      sb += $'  [PCUNotRestore]'+#10;
       sb += $'  {display_name} = ';
       var is_static := not (api in ['gl']);
       sb += is_static ? 'static' : 'sealed';
