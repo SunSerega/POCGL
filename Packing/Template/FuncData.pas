@@ -259,7 +259,7 @@ type
   end;
   GroupFixer = abstract class(Fixer<GroupFixer, Group>)
     
-    public static constructor;
+    public static procedure InitAll;
     
     protected procedure WarnUnused; override :=
     Otp($'WARNING: Fixer of group [{self.name}] wasn''t used');
@@ -432,7 +432,7 @@ type
   end;
   StructFixer = abstract class(Fixer<StructFixer, Struct>)
     
-    public static constructor;
+    public static procedure InitAll;
     
     protected procedure WarnUnused; override :=
     Otp($'WARNING: Fixer of struct [{self.name}] wasn''t used');
@@ -1339,7 +1339,7 @@ type
   end;
   FuncFixer = abstract class(Fixer<FuncFixer, Func>)
     
-    public static constructor;
+    public static procedure InitAll;
     
     protected procedure WarnUnused; override :=
     Otp($'WARNING: Fixer of func [{self.name}] wasn''t used');
@@ -1630,6 +1630,10 @@ begin
   loop 3 do log_structs.Otp('');
   loop 3 do log_func_ovrs.Otp('');
   
+  StructFixer.InitAll;
+  GroupFixer.InitAll;
+  FuncFixer.InitAll;
+  
 end;
 
 procedure LoadBin(fname: string);
@@ -1842,7 +1846,7 @@ type
     
   end;
   
-static constructor GroupFixer.Create;
+static procedure GroupFixer.InitAll;
 begin
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Enums', GetEXEFileName), '*.dat');
@@ -1972,7 +1976,7 @@ type
     
   end;
   
-static constructor StructFixer.Create;
+static procedure StructFixer.InitAll;
 begin
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat');
@@ -2200,7 +2204,7 @@ type
     
   end;
   
-static constructor FuncFixer.Create;
+static procedure FuncFixer.InitAll;
 begin
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Funcs', GetEXEFileName), '*.dat');

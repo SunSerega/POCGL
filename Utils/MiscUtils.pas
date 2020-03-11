@@ -446,13 +446,8 @@ type
     protected function Apply(o: TFixable): boolean; abstract;
     public static procedure ApplyAll(lst: List<TFixable>);
     begin
-      System.Runtime.CompilerServices.RuntimeHelpers.PrepareMethod(
-        typeof(TFixer)
-        .GetMethod('WarnUnused', System.Reflection.BindingFlags.NonPublic or System.Reflection.BindingFlags.Instance)
-        .MethodHandle
-      );
-      
       lst.Capacity := lst.Count + adders.Count;
+      
       foreach var a in adders do
       begin
         var o := new TFixable;
