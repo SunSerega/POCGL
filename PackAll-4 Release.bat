@@ -1,6 +1,6 @@
 
 
 
-PackAll.exe "StagesOnly=Release"
+PackAll.exe "Stages=Release"
 
 

@@ -1,6 +1,6 @@
 
 
 
-PackAll.exe "StagesOnly= CL+CLABC + Test + Release"
+PackAll.exe "Stages= CL+CLABC + Test + Release"
 
 

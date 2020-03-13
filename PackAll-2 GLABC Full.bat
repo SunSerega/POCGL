@@ -1,6 +1,6 @@
 
 
 
-PackAll.exe "StagesOnly= GL+GLABC + Test + Release"
+PackAll.exe "Stages= GL+GLABC + Test + Release"
 
 

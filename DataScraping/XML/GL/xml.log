@@ -1,6 +1,5 @@
 ﻿Enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
 Skipped group attrib for type [GLfloat]
-Group [MaterialFace] isn't defined
 Skipped group attrib for type [GLint]
 Skipped group attrib for type [GLuint]
 Skipped group attrib for type [GLboolean]
@@ -19,11 +18,9 @@ Invalid api: [gles2]
 Invalid api: [glsc2]
 Skipped group attrib for type [struct _cl_context]
 Skipped group attrib for type [struct _cl_event]
-Group [ColorTableParameterPNameSGI] isn't defined
 Skipped group attrib for type [GLhandleARB]
 Skipped group attrib for type [GLsizeiptrARB]
 Skipped group attrib for type [GLintptrARB]
-Group [TexBumpParameterATI] isn't defined
 Skipped group attrib for type [GLclampd]
 Skipped group attrib for type [GLclampf]
 Invalid api: [disabled]
@@ -31,12 +28,20 @@ Group [SampleMaskNV] isn't defined
 Skipped group attrib for type [GLhalfNV]
 Skipped group attrib for type [GLvdpauSurfaceNV]
 Skipped group attrib for type [GLfixed]
-Group [IglooFunctionSelectSGIX] isn't defined
-Group [FfdMaskSGIX] isn't defined
 Group [ContextFlagMask] wasn't used in any function
 Group [ContextProfileMask] wasn't used in any function
 Group [SubgroupSupportedFeatures] wasn't used in any function
+Group [FragmentShaderDestMaskATI] wasn't used in any function
+Group [FragmentShaderDestModMaskATI] wasn't used in any function
+Group [FragmentShaderColorModMaskATI] wasn't used in any function
+Group [TraceMaskMESA] wasn't used in any function
+Group [PerformanceQueryCapsMaskINTEL] wasn't used in any function
+Group [VertexHintsMaskPGI] wasn't used in any function
+Group [FoveationConfigBitQCOM] wasn't used in any function
+Group [CommandOpcodesNV] wasn't used in any function
 Group [MapTextureFormatINTEL] wasn't used in any function
+Group [TransformFeedbackTokenNV] wasn't used in any function
+Group [TriangleListSUN] wasn't used in any function
 Group [TextureSwizzle] wasn't used in any function
 Group [TextureCompareMode] wasn't used in any function
 Group [PixelTexGenMode] wasn't used in any function
@@ -63,7 +68,17 @@ Group [FramebufferFetchNoncoherent] wasn't used in any function
 Group [ContextFlagMask] wasn't used in any function
 Group [ContextProfileMask] wasn't used in any function
 Group [SubgroupSupportedFeatures] wasn't used in any function
+Group [FragmentShaderDestMaskATI] wasn't used in any function
+Group [FragmentShaderDestModMaskATI] wasn't used in any function
+Group [FragmentShaderColorModMaskATI] wasn't used in any function
+Group [TraceMaskMESA] wasn't used in any function
+Group [PerformanceQueryCapsMaskINTEL] wasn't used in any function
+Group [VertexHintsMaskPGI] wasn't used in any function
+Group [FoveationConfigBitQCOM] wasn't used in any function
+Group [CommandOpcodesNV] wasn't used in any function
 Group [MapTextureFormatINTEL] wasn't used in any function
+Group [TransformFeedbackTokenNV] wasn't used in any function
+Group [TriangleListSUN] wasn't used in any function
 Group [TextureSwizzle] wasn't used in any function
 Group [TextureCompareMode] wasn't used in any function
 Group [PixelTexGenMode] wasn't used in any function
@@ -90,7 +105,17 @@ Group [FramebufferFetchNoncoherent] wasn't used in any function
 Group [ContextFlagMask] wasn't used in any function
 Group [ContextProfileMask] wasn't used in any function
 Group [SubgroupSupportedFeatures] wasn't used in any function
+Group [FragmentShaderDestMaskATI] wasn't used in any function
+Group [FragmentShaderDestModMaskATI] wasn't used in any function
+Group [FragmentShaderColorModMaskATI] wasn't used in any function
+Group [TraceMaskMESA] wasn't used in any function
+Group [PerformanceQueryCapsMaskINTEL] wasn't used in any function
+Group [VertexHintsMaskPGI] wasn't used in any function
+Group [FoveationConfigBitQCOM] wasn't used in any function
+Group [CommandOpcodesNV] wasn't used in any function
 Group [MapTextureFormatINTEL] wasn't used in any function
+Group [TransformFeedbackTokenNV] wasn't used in any function
+Group [TriangleListSUN] wasn't used in any function
 Group [TextureSwizzle] wasn't used in any function
 Group [TextureCompareMode] wasn't used in any function
 Group [PixelTexGenMode] wasn't used in any function

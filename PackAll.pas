@@ -12,7 +12,7 @@ uses MiscUtils in 'Utils\MiscUtils.pas';
 //   - Halt возвращает код исключения, при ошибке
 //   - Данные о замерах времени в конце не выводятся
 // 
-// - "StagesOnly=...+...+..." | запускает только указанные стадии упаковки
+// - "Stages=...+...+..." | запускает только указанные стадии упаковки
 //   - "FirstPack"  - Датаскрапинг спецификаций и исходников. Следует проводить только 1 раз, единственная по-умолчанию выключенная стадия
 //   - "Spec"       - Упаковка справок
 //   - "CL"         - Упаковка "OpenCL.pas"
@@ -21,8 +21,8 @@ uses MiscUtils in 'Utils\MiscUtils.pas';
 //   - "GLABC"      - Упаковка "OpenGLABC.pas"
 //   - "Test"       - Тестирование (вообще можно запускать тестер напрямую)
 //   - "Release"    - Создание и наполнение папки Release, а так же копирование чего надо в ProgramFiles
-// === к примеру: "StagesOnly=CLABC+Test+Release"
-// === лишние пробелы по краям имён стадий допускаются, но "StagesOnly=" должно быть слитно и без пробелов в начале
+// === к примеру: "Stages= CLABC + Test + Release"
+// === лишние пробелы по краям имён стадий допускаются, но "Stages=" должно быть слитно и без пробелов в начале
 // 
 
 function AllModules := Lst('OpenCL','OpenCLABC','OpenGL','OpenGLABC');
@@ -57,7 +57,7 @@ begin
     
     var stages: HashSet<string>;
     begin
-      var arg := CommandLineArgs.SingleOrDefault(arg->arg.StartsWith('StagesOnly='));
+      var arg := CommandLineArgs.SingleOrDefault(arg->arg.StartsWith('Stages='));
       
       if arg=nil then
       begin
@@ -66,7 +66,7 @@ begin
         Otp($'Executing default stages:');
       end else
       begin
-        stages := arg.Remove(0,'StagesOnly='.Length).Split('+').Select(st->st.Trim).ToHashSet;
+        stages := arg.Remove(0,'Stages='.Length).Split('+').Select(st->st.Trim).ToHashSet;
         Otp($'Executing selected stages:');
       end;
       

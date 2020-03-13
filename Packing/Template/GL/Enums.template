@@ -7186,6 +7186,28 @@
     
   end;
   
+  MaterialFace = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _FRONT          := new MaterialFace($0404);
+    private static _BACK           := new MaterialFace($0405);
+    private static _FRONT_AND_BACK := new MaterialFace($0408);
+    
+    public static property FRONT:          MaterialFace read _FRONT;
+    public static property BACK:           MaterialFace read _BACK;
+    public static property FRONT_AND_BACK: MaterialFace read _FRONT_AND_BACK;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($0404) then Result := 'FRONT' else
+      if self.val = UInt32($0405) then Result := 'BACK' else
+      if self.val = UInt32($0408) then Result := 'FRONT_AND_BACK' else
+        Result := self.val.ToString;
+    end;
+    
+  end;
+  
   MaterialParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13109,6 +13131,22 @@
     
   end;
   
+  TexBumpParameterATI = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _BUMP_ROT_MATRIX_ATI := new TexBumpParameterATI($8775);
+    
+    public static property BUMP_ROT_MATRIX_ATI: TexBumpParameterATI read _BUMP_ROT_MATRIX_ATI;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($8775) then Result := 'BUMP_ROT_MATRIX_ATI' else
+        Result := self.val.ToString;
+    end;
+    
+  end;
+  
   VertexStreamATI = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13912,6 +13950,79 @@
   
   {$region SGI}
   
+  ColorTableParameterPNameSGI = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _COLOR_TABLE_SCALE              := new ColorTableParameterPNameSGI($80D6);
+    private static _COLOR_TABLE_SCALE_SGI          := new ColorTableParameterPNameSGI($80D6);
+    private static _COLOR_TABLE_BIAS               := new ColorTableParameterPNameSGI($80D7);
+    private static _COLOR_TABLE_BIAS_SGI           := new ColorTableParameterPNameSGI($80D7);
+    private static _COLOR_TABLE_FORMAT             := new ColorTableParameterPNameSGI($80D8);
+    private static _COLOR_TABLE_FORMAT_SGI         := new ColorTableParameterPNameSGI($80D8);
+    private static _COLOR_TABLE_WIDTH              := new ColorTableParameterPNameSGI($80D9);
+    private static _COLOR_TABLE_WIDTH_SGI          := new ColorTableParameterPNameSGI($80D9);
+    private static _COLOR_TABLE_RED_SIZE           := new ColorTableParameterPNameSGI($80DA);
+    private static _COLOR_TABLE_RED_SIZE_SGI       := new ColorTableParameterPNameSGI($80DA);
+    private static _COLOR_TABLE_GREEN_SIZE         := new ColorTableParameterPNameSGI($80DB);
+    private static _COLOR_TABLE_GREEN_SIZE_SGI     := new ColorTableParameterPNameSGI($80DB);
+    private static _COLOR_TABLE_BLUE_SIZE          := new ColorTableParameterPNameSGI($80DC);
+    private static _COLOR_TABLE_BLUE_SIZE_SGI      := new ColorTableParameterPNameSGI($80DC);
+    private static _COLOR_TABLE_ALPHA_SIZE         := new ColorTableParameterPNameSGI($80DD);
+    private static _COLOR_TABLE_ALPHA_SIZE_SGI     := new ColorTableParameterPNameSGI($80DD);
+    private static _COLOR_TABLE_LUMINANCE_SIZE     := new ColorTableParameterPNameSGI($80DE);
+    private static _COLOR_TABLE_LUMINANCE_SIZE_SGI := new ColorTableParameterPNameSGI($80DE);
+    private static _COLOR_TABLE_INTENSITY_SIZE     := new ColorTableParameterPNameSGI($80DF);
+    private static _COLOR_TABLE_INTENSITY_SIZE_SGI := new ColorTableParameterPNameSGI($80DF);
+    
+    public static property COLOR_TABLE_SCALE:              ColorTableParameterPNameSGI read _COLOR_TABLE_SCALE;
+    public static property COLOR_TABLE_SCALE_SGI:          ColorTableParameterPNameSGI read _COLOR_TABLE_SCALE_SGI;
+    public static property COLOR_TABLE_BIAS:               ColorTableParameterPNameSGI read _COLOR_TABLE_BIAS;
+    public static property COLOR_TABLE_BIAS_SGI:           ColorTableParameterPNameSGI read _COLOR_TABLE_BIAS_SGI;
+    public static property COLOR_TABLE_FORMAT:             ColorTableParameterPNameSGI read _COLOR_TABLE_FORMAT;
+    public static property COLOR_TABLE_FORMAT_SGI:         ColorTableParameterPNameSGI read _COLOR_TABLE_FORMAT_SGI;
+    public static property COLOR_TABLE_WIDTH:              ColorTableParameterPNameSGI read _COLOR_TABLE_WIDTH;
+    public static property COLOR_TABLE_WIDTH_SGI:          ColorTableParameterPNameSGI read _COLOR_TABLE_WIDTH_SGI;
+    public static property COLOR_TABLE_RED_SIZE:           ColorTableParameterPNameSGI read _COLOR_TABLE_RED_SIZE;
+    public static property COLOR_TABLE_RED_SIZE_SGI:       ColorTableParameterPNameSGI read _COLOR_TABLE_RED_SIZE_SGI;
+    public static property COLOR_TABLE_GREEN_SIZE:         ColorTableParameterPNameSGI read _COLOR_TABLE_GREEN_SIZE;
+    public static property COLOR_TABLE_GREEN_SIZE_SGI:     ColorTableParameterPNameSGI read _COLOR_TABLE_GREEN_SIZE_SGI;
+    public static property COLOR_TABLE_BLUE_SIZE:          ColorTableParameterPNameSGI read _COLOR_TABLE_BLUE_SIZE;
+    public static property COLOR_TABLE_BLUE_SIZE_SGI:      ColorTableParameterPNameSGI read _COLOR_TABLE_BLUE_SIZE_SGI;
+    public static property COLOR_TABLE_ALPHA_SIZE:         ColorTableParameterPNameSGI read _COLOR_TABLE_ALPHA_SIZE;
+    public static property COLOR_TABLE_ALPHA_SIZE_SGI:     ColorTableParameterPNameSGI read _COLOR_TABLE_ALPHA_SIZE_SGI;
+    public static property COLOR_TABLE_LUMINANCE_SIZE:     ColorTableParameterPNameSGI read _COLOR_TABLE_LUMINANCE_SIZE;
+    public static property COLOR_TABLE_LUMINANCE_SIZE_SGI: ColorTableParameterPNameSGI read _COLOR_TABLE_LUMINANCE_SIZE_SGI;
+    public static property COLOR_TABLE_INTENSITY_SIZE:     ColorTableParameterPNameSGI read _COLOR_TABLE_INTENSITY_SIZE;
+    public static property COLOR_TABLE_INTENSITY_SIZE_SGI: ColorTableParameterPNameSGI read _COLOR_TABLE_INTENSITY_SIZE_SGI;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($80D6) then Result := 'COLOR_TABLE_SCALE' else
+      if self.val = UInt32($80D6) then Result := 'COLOR_TABLE_SCALE_SGI' else
+      if self.val = UInt32($80D7) then Result := 'COLOR_TABLE_BIAS' else
+      if self.val = UInt32($80D7) then Result := 'COLOR_TABLE_BIAS_SGI' else
+      if self.val = UInt32($80D8) then Result := 'COLOR_TABLE_FORMAT' else
+      if self.val = UInt32($80D8) then Result := 'COLOR_TABLE_FORMAT_SGI' else
+      if self.val = UInt32($80D9) then Result := 'COLOR_TABLE_WIDTH' else
+      if self.val = UInt32($80D9) then Result := 'COLOR_TABLE_WIDTH_SGI' else
+      if self.val = UInt32($80DA) then Result := 'COLOR_TABLE_RED_SIZE' else
+      if self.val = UInt32($80DA) then Result := 'COLOR_TABLE_RED_SIZE_SGI' else
+      if self.val = UInt32($80DB) then Result := 'COLOR_TABLE_GREEN_SIZE' else
+      if self.val = UInt32($80DB) then Result := 'COLOR_TABLE_GREEN_SIZE_SGI' else
+      if self.val = UInt32($80DC) then Result := 'COLOR_TABLE_BLUE_SIZE' else
+      if self.val = UInt32($80DC) then Result := 'COLOR_TABLE_BLUE_SIZE_SGI' else
+      if self.val = UInt32($80DD) then Result := 'COLOR_TABLE_ALPHA_SIZE' else
+      if self.val = UInt32($80DD) then Result := 'COLOR_TABLE_ALPHA_SIZE_SGI' else
+      if self.val = UInt32($80DE) then Result := 'COLOR_TABLE_LUMINANCE_SIZE' else
+      if self.val = UInt32($80DE) then Result := 'COLOR_TABLE_LUMINANCE_SIZE_SGI' else
+      if self.val = UInt32($80DF) then Result := 'COLOR_TABLE_INTENSITY_SIZE' else
+      if self.val = UInt32($80DF) then Result := 'COLOR_TABLE_INTENSITY_SIZE_SGI' else
+        Result := self.val.ToString;
+    end;
+    
+  end;
+  
   ColorTableTargetSGI = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14137,6 +14248,36 @@
   {$endregion SGIS}
   
   {$region SGIX}
+  
+  FfdMaskSGIX = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _TEXTURE_DEFORMATION_BIT_SGIX  := new FfdMaskSGIX($0001);
+    private static _GEOMETRY_DEFORMATION_BIT_SGIX := new FfdMaskSGIX($0002);
+    
+    public static property TEXTURE_DEFORMATION_BIT_SGIX:  FfdMaskSGIX read _TEXTURE_DEFORMATION_BIT_SGIX;
+    public static property GEOMETRY_DEFORMATION_BIT_SGIX: FfdMaskSGIX read _GEOMETRY_DEFORMATION_BIT_SGIX;
+    
+    public static function operator or(f1,f2: FfdMaskSGIX) := new FfdMaskSGIX(f1.val or f2.val);
+    
+    public property HAS_FLAG_TEXTURE_DEFORMATION_BIT_SGIX:  boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_GEOMETRY_DEFORMATION_BIT_SGIX: boolean read self.val and $0002 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      if self.val and UInt32($0001) = UInt32($0001) then res += 'TEXTURE_DEFORMATION_BIT_SGIX+';
+      if self.val and UInt32($0002) = UInt32($0002) then res += 'GEOMETRY_DEFORMATION_BIT_SGIX+';
+      if res.Length<>0 then
+      begin
+        res.Length -= 1;
+        Result := res.ToString;
+      end else
+        Result := self.val.ToString;
+    end;
+    
+  end;
   
   FfdTargetSGIX = record
     public val: UInt32;

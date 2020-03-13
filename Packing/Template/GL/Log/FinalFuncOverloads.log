@@ -1754,7 +1754,7 @@
  single	|
 
 # glPolygonMode
- DummyEnum	| PolygonMode	|
+ MaterialFace	| PolygonMode	|
 
 # glPolygonOffset
  single	| single	|
@@ -3143,7 +3143,7 @@
  IntPtr	|
 
 # glColorMaterial
- DummyEnum	| ColorMaterialParameter	|
+ MaterialFace	| ColorMaterialParameter	|
 
 # glColorPointer
  Int32	| ColorPointerType	| Int32	| IntPtr	|
@@ -3295,14 +3295,14 @@
  MapTarget	| GetMapQuery	| IntPtr	|
 
 # glGetMaterialfv
- DummyEnum	| MaterialParameter	| array of single	|
- DummyEnum	| MaterialParameter	| var single	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of single	|
+ MaterialFace	| MaterialParameter	| var single	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glGetMaterialiv
- DummyEnum	| MaterialParameter	| array of Int32	|
- DummyEnum	| MaterialParameter	| var Int32	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of Int32	|
+ MaterialFace	| MaterialParameter	| var Int32	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glGetPixelMapfv
  PixelMap	| array of single	|
@@ -3495,20 +3495,20 @@
  Int32	| single	| single	| Int32	| single	| single	|
 
 # glMaterialf
- DummyEnum	| MaterialParameter	| single	|
+ MaterialFace	| MaterialParameter	| single	|
 
 # glMaterialfv
- DummyEnum	| MaterialParameter	| array of single	|
- DummyEnum	| MaterialParameter	| var single	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of single	|
+ MaterialFace	| MaterialParameter	| var single	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glMateriali
- DummyEnum	| MaterialParameter	| Int32	|
+ MaterialFace	| MaterialParameter	| Int32	|
 
 # glMaterialiv
- DummyEnum	| MaterialParameter	| array of Int32	|
- DummyEnum	| MaterialParameter	| var Int32	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of Int32	|
+ MaterialFace	| MaterialParameter	| var Int32	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glMatrixMode
  MatrixMode	|
@@ -5283,14 +5283,14 @@
  ColorTableTarget	| InternalFormat	| Int32	| PixelFormat	| PixelType	| IntPtr	|
 
 # glColorTableParameterfv
- ColorTableTarget	| DummyEnum	| array of single	|
- ColorTableTarget	| DummyEnum	| var single	|
- ColorTableTarget	| DummyEnum	| IntPtr	|
+ ColorTableTarget	| ColorTableParameterPNameSGI	| array of single	|
+ ColorTableTarget	| ColorTableParameterPNameSGI	| var single	|
+ ColorTableTarget	| ColorTableParameterPNameSGI	| IntPtr	|
 
 # glColorTableParameteriv
- ColorTableTarget	| DummyEnum	| array of Int32	|
- ColorTableTarget	| DummyEnum	| var Int32	|
- ColorTableTarget	| DummyEnum	| IntPtr	|
+ ColorTableTarget	| ColorTableParameterPNameSGI	| array of Int32	|
+ ColorTableTarget	| ColorTableParameterPNameSGI	| var Int32	|
+ ColorTableTarget	| ColorTableParameterPNameSGI	| IntPtr	|
 
 # glCopyColorTable
  ColorTableTarget	| InternalFormat	| Int32	| Int32	| Int32	|
@@ -6391,14 +6391,14 @@
  PrimitiveType	| UInt32	| UInt32	| Int32	|
 
 # glTexBumpParameterivATI
- DummyEnum	| array of Int32	|
- DummyEnum	| var Int32	|
- DummyEnum	| IntPtr	|
+ TexBumpParameterATI	| array of Int32	|
+ TexBumpParameterATI	| var Int32	|
+ TexBumpParameterATI	| IntPtr	|
 
 # glTexBumpParameterfvATI
- DummyEnum	| array of single	|
- DummyEnum	| var single	|
- DummyEnum	| IntPtr	|
+ TexBumpParameterATI	| array of single	|
+ TexBumpParameterATI	| var single	|
+ TexBumpParameterATI	| IntPtr	|
 
 # glGetTexBumpParameterivATI
  GetTexBumpParameterATI	| array of Int32	|
@@ -8099,7 +8099,7 @@
  IndexFunctionEXT	| single	|
 
 # glIndexMaterialEXT
- DummyEnum	| IndexMaterialParameterEXT	|
+ MaterialFace	| IndexMaterialParameterEXT	|
 
 # glApplyTextureEXT
  LightTextureModeEXT	|
@@ -8108,7 +8108,7 @@
  LightTexturePNameEXT	|
 
 # glTextureMaterialEXT
- DummyEnum	| MaterialParameter	|
+ MaterialFace	| MaterialParameter	|
 
 # glGetUnsignedBytevEXT
  GetPName	| array of Byte	|
@@ -8761,7 +8761,7 @@
  UInt32	| LightName	| LightParameter	|
 
 # glBindMaterialParameterEXT
- UInt32	| DummyEnum	| MaterialParameter	|
+ UInt32	| MaterialFace	| MaterialParameter	|
 
 # glBindTexGenParameterEXT
  UInt32	| TextureUnit	| TextureCoordName	| TextureGenParameter	|
@@ -11848,12 +11848,12 @@
  IntPtr	|
 
 # glMaterialxOES
- DummyEnum	| MaterialParameter	| Fixed	|
+ MaterialFace	| MaterialParameter	| Fixed	|
 
 # glMaterialxvOES
- DummyEnum	| MaterialParameter	| array of Fixed	|
- DummyEnum	| MaterialParameter	| var Fixed	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of Fixed	|
+ MaterialFace	| MaterialParameter	| var Fixed	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glMultMatrixxOES
  array of Fixed	|
@@ -11982,7 +11982,7 @@
  MapTarget	| GetMapQuery	| IntPtr	|
 
 # glGetMaterialxOES
- DummyEnum	| MaterialParameter	| Fixed	|
+ MaterialFace	| MaterialParameter	| Fixed	|
 
 # glGetPixelMapxv
  PixelMap	| Int32	| array of Fixed	|
@@ -12344,7 +12344,7 @@
  boolean	| UInt32	|
 
 # glFragmentColorMaterialSGIX
- DummyEnum	| MaterialParameter	|
+ MaterialFace	| MaterialParameter	|
 
 # glFragmentLightfSGIX
  FragmentLightNameSGIX	| FragmentLightParameterSGIX	| single	|
@@ -12379,20 +12379,20 @@
  FragmentLightModelParameterSGIX	| IntPtr	|
 
 # glFragmentMaterialfSGIX
- DummyEnum	| MaterialParameter	| single	|
+ MaterialFace	| MaterialParameter	| single	|
 
 # glFragmentMaterialfvSGIX
- DummyEnum	| MaterialParameter	| array of single	|
- DummyEnum	| MaterialParameter	| var single	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of single	|
+ MaterialFace	| MaterialParameter	| var single	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glFragmentMaterialiSGIX
- DummyEnum	| MaterialParameter	| Int32	|
+ MaterialFace	| MaterialParameter	| Int32	|
 
 # glFragmentMaterialivSGIX
- DummyEnum	| MaterialParameter	| array of Int32	|
- DummyEnum	| MaterialParameter	| var Int32	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of Int32	|
+ MaterialFace	| MaterialParameter	| var Int32	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glGetFragmentLightfvSGIX
  FragmentLightNameSGIX	| FragmentLightParameterSGIX	| array of single	|
@@ -12405,14 +12405,14 @@
  FragmentLightNameSGIX	| FragmentLightParameterSGIX	| IntPtr	|
 
 # glGetFragmentMaterialfvSGIX
- DummyEnum	| MaterialParameter	| array of single	|
- DummyEnum	| MaterialParameter	| var single	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of single	|
+ MaterialFace	| MaterialParameter	| var single	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glGetFragmentMaterialivSGIX
- DummyEnum	| MaterialParameter	| array of Int32	|
- DummyEnum	| MaterialParameter	| var Int32	|
- DummyEnum	| MaterialParameter	| IntPtr	|
+ MaterialFace	| MaterialParameter	| array of Int32	|
+ MaterialFace	| MaterialParameter	| var Int32	|
+ MaterialFace	| MaterialParameter	| IntPtr	|
 
 # glLightEnviSGIX
  LightEnvParameterSGIX	| Int32	|
@@ -12482,10 +12482,10 @@
  FfdTargetSGIX	| single	| single	| Int32	| Int32	| single	| single	| Int32	| Int32	| single	| single	| Int32	| Int32	| IntPtr	|
 
 # glDeformSGIX
- DummyFlags	|
+ FfdMaskSGIX	|
 
 # glLoadIdentityDeformationMapSGIX
- DummyFlags	|
+ FfdMaskSGIX	|
 
 # glReferencePlaneSGIX
  array of real	|
@@ -12512,14 +12512,14 @@
  ColorTableTargetSGI	| InternalFormat	| Int32	| PixelFormat	| PixelType	| IntPtr	|
 
 # glColorTableParameterfvSGI
- ColorTableTargetSGI	| DummyEnum	| array of single	|
- ColorTableTargetSGI	| DummyEnum	| var single	|
- ColorTableTargetSGI	| DummyEnum	| IntPtr	|
+ ColorTableTargetSGI	| ColorTableParameterPNameSGI	| array of single	|
+ ColorTableTargetSGI	| ColorTableParameterPNameSGI	| var single	|
+ ColorTableTargetSGI	| ColorTableParameterPNameSGI	| IntPtr	|
 
 # glColorTableParameterivSGI
- ColorTableTargetSGI	| DummyEnum	| array of Int32	|
- ColorTableTargetSGI	| DummyEnum	| var Int32	|
- ColorTableTargetSGI	| DummyEnum	| IntPtr	|
+ ColorTableTargetSGI	| ColorTableParameterPNameSGI	| array of Int32	|
+ ColorTableTargetSGI	| ColorTableParameterPNameSGI	| var Int32	|
+ ColorTableTargetSGI	| ColorTableParameterPNameSGI	| IntPtr	|
 
 # glCopyColorTableSGI
  ColorTableTargetSGI	| InternalFormat	| Int32	| Int32	| Int32	|
