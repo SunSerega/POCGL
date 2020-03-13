@@ -37,7 +37,7 @@
 
 # clGetCommandQueueInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +cl_context +cl_device_id +UInt32 +CommandQueueProperties +cl_command_queue +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var cl_context +var cl_device_id +var UInt32 +var CommandQueueProperties +var cl_command_queue +pointer	| -array of UIntPtr	|
 
 # clCreateBuffer
 !possible_par_types
@@ -226,7 +226,7 @@ var Int32 = var ErrorCode
 
 # clGetProgramBuildInfo
 !possible_par_types
- *	| *	| *	| *	| *	| -IntPtr +BuildStatus +IntPtr +ProgramBinaryType +var UIntPtr +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| *	| -IntPtr +var BuildStatus +IntPtr +var ProgramBinaryType +var UIntPtr +pointer	| -array of UIntPtr	|
 
 
 
@@ -244,7 +244,7 @@ var Int32 = var ErrorCode
 
 # clSetKernelExecInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var IntPtr +Bool +pointer	|
+ *	| *	| *	| *	| -IntPtr +var IntPtr +var Bool +pointer	|
 
 # clCloneKernel
 !limit_ovrs

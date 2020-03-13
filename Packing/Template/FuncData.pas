@@ -151,8 +151,8 @@ type
         res.MarkUsed;
     end;
     
-    private function EnumrKeys := enums.Keys.OrderBy(ename->enums[ename]).ThenBy(ename->ename);
-    private property ValueStr[ename: string]: string read '$'+enums[ename].ToString('X4');
+    private function EnumrKeys := enums.Keys.OrderBy(ename->Abs(enums[ename])).ThenBy(ename->ename);
+    private property ValueStr[ename: string]: string read not bitmask and (enums[ename]<0) ? enums[ename].ToString : '$'+enums[ename].ToString('X4');
     
     public static procedure WarnAllUnused :=
     foreach var gr in All do
@@ -206,18 +206,27 @@ type
       sb +=       $'    public function ToString: string; override;' + #10;
       sb +=       $'    begin' + #10;
       if bitmask then
+        sb +=     $'      var res := new StringBuilder;'+#10;
+      foreach var ename in EnumrKeys do
       begin
-        sb +=     $'      var res := typeof({name}).GetProperties.Where(prop->prop.Name.StartsWith(''HAS_FLAG_'') and boolean(prop.GetValue(self))).Select(prop->prop.Name.TrimStart(''&'')).ToList;' + #10;
-        sb +=     $'      Result := res.Count=0?' + #10;
-        sb +=     $'        $''{name}[{{ self.val=default({t}) ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
-        sb +=     $'        res.JoinToString(''+'');' + #10;
-      end else
-      begin
-        sb +=     $'      var res := typeof({name}).GetFields(System.Reflection.BindingFlags.Static or System.Reflection.BindingFlags.NonPublic).FirstOrDefault(fld->{name}(fld.GetValue(nil)).val=self.val);' + #10;
-        sb +=     $'      Result := res=nil?' + #10;
-        sb +=     $'        $''{name}[{{ self.val=default({t}) ? ''''NONE'''' : self.val.ToString(''''X'''') }}]'':' + #10;
-        sb +=     $'        res.Name.SubString(1);' + #10;
+        sb +=     $'      if self.val ';
+        var val_str := ValueStr[ename];
+        if bitmask then sb += $'and {t}({val_str}) ';
+        sb += $'= {t}({val_str}) then ';
+        if bitmask then
+          sb +=   $'res += ''{ename}+'';' else
+          sb +=   $'Result := ''{ename}'' else';
+        sb += #10;
       end;
+      if bitmask then
+      begin
+        sb +=     $'      if res.Length<>0 then'+#10;
+        sb +=     $'      begin'+#10;
+        sb +=     $'        res.Length -= 1;'+#10;
+        sb +=     $'        Result := res.ToString;'+#10;
+        sb +=     $'      end else'+#10;
+      end;
+      sb +=       $'        Result := self.val.ToString;'+#10;
       sb +=       $'    end;' + #10;
       sb +=       $'    ' + #10;
       

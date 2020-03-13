@@ -3415,45 +3415,45 @@
     z_Flush_ovr_0(command_queue);
     
     // added in cl1.0
-    private static function z_GetCommandQueueInfo_ovr_0(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_0(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_0(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_1(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_1(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_1(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_2(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_2(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_2(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_3(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_3(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_3(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_4(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_4(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_4(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_5(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_5(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_5(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_6(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_6(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_6(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_7(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_7(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_7(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_8(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_8(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_8(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetCommandQueueInfo_ovr_9(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_ovr_9(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_ovr_9(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
     private static function z_GetCommandQueueInfo_ovr_10(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetCommandQueueInfo';
@@ -4057,13 +4057,13 @@
     z_GetPlatformInfo_ovr_3(platform, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetProgramBuildInfo_ovr_0(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_ovr_0(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramBuildInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetProgramBuildInfo_ovr_0(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetProgramBuildInfo_ovr_1(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_ovr_1(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramBuildInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramBuildInfo_ovr_1(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
     private static function z_GetProgramBuildInfo_ovr_2(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramBuildInfo';
@@ -4073,13 +4073,13 @@
     external 'opencl.dll' name 'clGetProgramBuildInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramBuildInfo_ovr_3(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetProgramBuildInfo_ovr_4(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: ProgramBinaryType; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_ovr_4(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: ProgramBinaryType; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramBuildInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: ProgramBinaryType; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: ProgramBinaryType; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetProgramBuildInfo_ovr_4(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetProgramBuildInfo_ovr_5(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: ProgramBinaryType; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_ovr_5(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: ProgramBinaryType; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramBuildInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: ProgramBinaryType; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: ProgramBinaryType; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramBuildInfo_ovr_5(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
     private static function z_GetProgramBuildInfo_ovr_6(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramBuildInfo';
@@ -4545,9 +4545,9 @@
     external 'opencl.dll' name 'clSetKernelExecInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode :=
     z_SetKernelExecInfo_ovr_0(kernel, param_name, param_value_size, param_value);
-    private static function z_SetKernelExecInfo_ovr_1(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; param_value: Bool): ErrorCode;
+    private static function z_SetKernelExecInfo_ovr_1(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: Bool): ErrorCode;
     external 'opencl.dll' name 'clSetKernelExecInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; param_value: Bool): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: Bool): ErrorCode :=
     z_SetKernelExecInfo_ovr_1(kernel, param_name, param_value_size, param_value);
     private static function z_SetKernelExecInfo_ovr_2(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; param_value: pointer): ErrorCode;
     external 'opencl.dll' name 'clSetKernelExecInfo';

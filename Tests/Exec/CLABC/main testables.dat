@@ -3,6 +3,11 @@ ToDo нормально дополнить этот список
 
 
 - Вывод ошибок
-- Wait [All, Any] [Wait, ThenWait, AddWait]
+- ConstQueue
+- Cast
+- ThenConvert [Context]
+- +/*
+- Multiusable
+- [Wait, ThenWait, AddWait] [, All, Any] 
 
 

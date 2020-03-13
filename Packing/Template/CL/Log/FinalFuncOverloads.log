@@ -520,16 +520,16 @@
  ErrorCode	| cl_command_queue	|
 
 # clGetCommandQueueInfo
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| cl_context	| var UIntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| cl_context	| IntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| cl_device_id	| var UIntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| cl_device_id	| IntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| UInt32	| var UIntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| UInt32	| IntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| CommandQueueProperties	| var UIntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| CommandQueueProperties	| IntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| cl_command_queue	| var UIntPtr	|
- ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| cl_command_queue	| IntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var cl_context	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var cl_context	| IntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var cl_device_id	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var UInt32	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var UInt32	| IntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var CommandQueueProperties	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var CommandQueueProperties	| IntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var cl_command_queue	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| var cl_command_queue	| IntPtr	|
  ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| pointer	| var UIntPtr	|
  ErrorCode	| cl_command_queue	| CommandQueueInfo	| UIntPtr	| pointer	| IntPtr	|
 
@@ -708,12 +708,12 @@
  ErrorCode	| cl_platform_id	| PlatformInfo	| UIntPtr	| pointer	| IntPtr	|
 
 # clGetProgramBuildInfo
- ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| BuildStatus	| var UIntPtr	|
- ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| BuildStatus	| IntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var BuildStatus	| var UIntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var BuildStatus	| IntPtr	|
  ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
  ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| IntPtr	| IntPtr	|
- ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| ProgramBinaryType	| var UIntPtr	|
- ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| ProgramBinaryType	| IntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var ProgramBinaryType	| var UIntPtr	|
+ ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var ProgramBinaryType	| IntPtr	|
  ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var UIntPtr	| var UIntPtr	|
  ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| var UIntPtr	| IntPtr	|
  ErrorCode	| cl_program	| cl_device_id	| ProgramBuildInfo	| UIntPtr	| pointer	| var UIntPtr	|
@@ -850,7 +850,7 @@
 
 # clSetKernelExecInfo
  ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| var IntPtr	|
- ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| Bool	|
+ ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| var Bool	|
  ErrorCode	| cl_kernel	| KernelExecInfo	| UIntPtr	| pointer	|
 
 # clSetMemObjectDestructorCallback
