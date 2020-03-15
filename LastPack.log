@@ -6,8 +6,34 @@ Compiling "DataScraping\Reps\PullReps.pas"
 Finished compiling: OK
 Runing SubReps Update
 SubReps Update: Pulling OpenCL Docs
+SubReps Update: OpenCL Docs : [Info] remote: Enumerating objects: 14, done.
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:   7% (1/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  14% (2/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  21% (3/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  28% (4/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  35% (5/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  42% (6/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  50% (7/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  57% (8/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  64% (9/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  71% (10/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  78% (11/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  85% (12/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  92% (13/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects: 100% (14/14)
+SubReps Update: OpenCL Docs : [Info] remote: Counting objects: 100% (14/14), done.
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  12% (1/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  25% (2/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  37% (3/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  50% (4/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  62% (5/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  75% (6/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  87% (7/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects: 100% (8/8)
+SubReps Update: OpenCL Docs : [Info] remote: Compressing objects: 100% (8/8), done.
+SubReps Update: OpenCL Docs : [Info] remote: Total 14 (delta 7), reused 8 (delta 6), pack-reused 0
 SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] [up to date]      master             -> origin/master
+SubReps Update: OpenCL Docs : [Info] e5d04be..e6ab43e  master             -> origin/master
 SubReps Update: OpenCL Docs : [Info] [up to date]      job-slot-selection -> origin/job-slot-selection
 SubReps Update: OpenCL Docs : [Info] [up to date]      pub93-links        -> origin/pub93-links
 SubReps Update: OpenCL Docs : [Info] [up to date]      reflinks           -> origin/reflinks
@@ -16,29 +42,65 @@ SubReps Update: OpenCL Docs : [Info] [up to date]      refpages2          -> ori
 SubReps Update: OpenCL Docs : [Info] [up to date]      refpages3          -> origin/refpages3
 SubReps Update: OpenCL Docs : [Info] [up to date]      reserve-enums      -> origin/reserve-enums
 SubReps Update: OpenCL Docs : [Info] [up to date]      vksync             -> origin/vksync
-SubReps Update: OpenCL Docs : Already up to date.
+SubReps Update: OpenCL Docs : Updating e5d04be..e6ab43e
+SubReps Update: OpenCL Docs : Fast-forward
+SubReps Update: OpenCL Docs : Makefile                              |  6 +--
+SubReps Update: OpenCL Docs : api/opencl_platform_layer.asciidoc    | 36 +++++++++++-----
+SubReps Update: OpenCL Docs : config/asciidoctor-pdf-monkeypatch.rb | 79 -----------------------------------
+SubReps Update: OpenCL Docs : config/sectnumoffset-treeprocessor.rb | 21 ++++++----
+SubReps Update: OpenCL Docs : xml/cl.xml                            | 13 ++++++
+SubReps Update: OpenCL Docs : 5 files changed, 53 insertions(+), 102 deletions(-)
+SubReps Update: OpenCL Docs : delete mode 100644 config/asciidoctor-pdf-monkeypatch.rb
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
-SubReps Update: OpenGL Registry : [Info] remote: Enumerating objects: 4, done.
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  25% (1/4)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  50% (2/4)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  75% (3/4)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects: 100% (4/4)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects: 100% (4/4), done.
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  25% (1/4)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  50% (2/4)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  75% (3/4)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects: 100% (4/4)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects: 100% (4/4), done.
-SubReps Update: OpenGL Registry : [Info] remote: Total 4 (delta 0), reused 3 (delta 0), pack-reused 0
+SubReps Update: OpenGL Registry : [Info] remote: Enumerating objects: 15, done.
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:   6% (1/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  13% (2/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  20% (3/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  26% (4/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  33% (5/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  40% (6/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  46% (7/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  53% (8/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  60% (9/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  66% (10/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  73% (11/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  80% (12/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  86% (13/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  93% (14/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects: 100% (15/15)
+SubReps Update: OpenGL Registry : [Info] remote: Counting objects: 100% (15/15), done.
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:   6% (1/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  13% (2/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  20% (3/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  26% (4/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  33% (5/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  40% (6/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  46% (7/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  53% (8/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  60% (9/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  66% (10/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  73% (11/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  80% (12/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  86% (13/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  93% (14/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects: 100% (15/15)
+SubReps Update: OpenGL Registry : [Info] remote: Compressing objects: 100% (15/15), done.
+SubReps Update: OpenGL Registry : [Info] remote: Total 15 (delta 4), reused 4 (delta 0), pack-reused 0
 SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL Registry : [Info] c750b85..fc4c9f5  master     -> origin/master
+SubReps Update: OpenGL Registry : [Info] fc4c9f5..2313103  master     -> origin/master
 SubReps Update: OpenGL Registry : [Info] [up to date]      335-docs   -> origin/335-docs
 SubReps Update: OpenGL Registry : [Info] [up to date]      341-issue  -> origin/341-issue
-SubReps Update: OpenGL Registry : Updating c750b85..fc4c9f5
+SubReps Update: OpenGL Registry : Updating fc4c9f5..2313103
 SubReps Update: OpenGL Registry : Fast-forward
-SubReps Update: OpenGL Registry : xml/gl.xml | 196 ++++++++++++++++++++++++++++++-------------------------------
-SubReps Update: OpenGL Registry : 1 file changed, 98 insertions(+), 98 deletions(-)
+SubReps Update: OpenGL Registry : api/GL/glext.h     | 2 +-
+SubReps Update: OpenGL Registry : api/GLES/gl.h      | 2 +-
+SubReps Update: OpenGL Registry : api/GLES/glext.h   | 2 +-
+SubReps Update: OpenGL Registry : api/GLES2/gl2.h    | 2 +-
+SubReps Update: OpenGL Registry : api/GLES2/gl2ext.h | 2 +-
+SubReps Update: OpenGL Registry : api/GLES3/gl3.h    | 2 +-
+SubReps Update: OpenGL Registry : xml/gl.xml         | 8 ++++++--
+SubReps Update: OpenGL Registry : 7 files changed, 12 insertions(+), 8 deletions(-)
 SubReps Update: Done pulling OpenGL Registry
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CompForward ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
