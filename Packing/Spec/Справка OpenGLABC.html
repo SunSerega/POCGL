@@ -71,12 +71,26 @@ body {
 }
 .ps-page-name {
 	cursor: pointer;
-    padding: 1;
+	padding: 1;
 }
 
 /* ============================== *\
 	       page display
 \* ============================== */
+
+blockquote > *:first-child {
+	margin-top: 0;
+}
+blockquote > *:last-child {
+	margin-bottom: 0;
+}
+blockquote {
+	margin-left: 0;
+	margin-right: 0;
+	padding: 12px;
+	border-left: 5px solid #d0d0d0;
+	background-color: #f7f7f7;
+}
 
 .smart-link {
 	color: blue;
@@ -99,7 +113,6 @@ body {
 .code-block {
 	display: inline-block;
 	cursor: text;
-	background: #F0F0F0;
 	border-radius: 3px;
 	
 	padding: 4px;
@@ -121,8 +134,12 @@ body {
 	box-shadow: -2px 2px 3px #0000004a;
 	background: linear-gradient(0deg, #f0f0f0, white);
 }
-.inline-code {
+.inline-code, .code-block {
 	background: #F0F0F0;
+}
+blockquote .inline-code,
+blockquote .code-block {
+	background: #DEDEDE;
 }
 
 .code-keyword {

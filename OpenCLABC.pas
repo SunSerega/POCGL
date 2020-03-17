@@ -45,12 +45,13 @@ uses System.Runtime.CompilerServices;
 //===================================
 // Запланированное:
 
-//ToDo Раздел справки про оптимизацию
-// - почему 1 очередь быстрее 2 её кусков
+//ToDo Очереди-маркеры для Wait-очередей
+// - чтоб не приходилось использовать константные для этого
 
 //ToDo Очередь-обработчик ошибок
 // - сделать легко, надо только вставить свой промежуточный CLTaskBase
-// - единственное - для Wait очереди надо хранить так же оригинальный таск
+// - единственное - для Wait очереди надо хранить так же оригинальный CLTaskBase
+//ToDo Раздел справки про обработку ошибок
 
 //ToDo Если в предыдущей очереди исключение - остановить выполнение
 // - это не критично, но иначе будет выводить кучу лишних ошибок
@@ -60,9 +61,11 @@ uses System.Runtime.CompilerServices;
 //ToDo Синхронные (с припиской Fast) варианты всего работающего по принципу HostQueue
 //ToDo и асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
 
-//ToDo исправить десериализацию ProgramCode
+//ToDo Исправить десериализацию ProgramCode
 
-//ToDo когда partial классы начнут нормально себя вести - использовать их чтоб переместить все "__*" классы в implementation
+//ToDo Когда partial классы начнут нормально себя вести:
+// - использовать их чтоб переместить все "__*" классы в implementation
+// - типизировать prev_hubs
 
 //ToDo CommmandQueueBase.ToString для дебага
 // - так же дублирующий protected метод (tabs: integer; index: Dictionary<CommandQueueBase,integer>)
@@ -99,6 +102,8 @@ uses System.Runtime.CompilerServices;
 
 //ToDo Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - у Kernel.Exec несколько параметров не используются. Стоит использовать
+
+//ToDo Сделать чтоб тестер и релиз работали с версией модуля после Packing/Doc
 
 //===================================
 
@@ -546,7 +551,7 @@ type
       lock err_lst do if err_lst.Count<>0 then raise new AggregateException(
         Format(
           '%task:errors%',
-          err_lst
+          err_lst.Count
         ),
         err_lst
       );
@@ -658,21 +663,21 @@ type
         on e: Exception do AddErr(e);
       end;
       
-      try
+      if err_lst.Count=0 then
+      begin
         if lb_EvComplete<>nil then lb_EvComplete(self, res);
         if  l_EvComplete<>nil then  l_EvComplete(self, res);
-      except
-        on e: Exception do AddErr(e);
-      end;
-      
-      if (lb_EvError<>nil) or (l_EvError<>nil) then
+      end else
       begin
-        var err_arr: array of Exception;
-        lock err_lst do err_arr := err_lst.ToArray;
-        
-        if lb_EvError<>nil then lb_EvError(self, err_arr);
-        if  l_EvError<>nil then  l_EvError(self, err_arr);
-        
+        if (lb_EvError<>nil) or (l_EvError<>nil) then
+        begin
+          var err_arr: array of Exception;
+          lock err_lst do err_arr := err_lst.ToArray;
+          
+          if lb_EvError<>nil then lb_EvError(self, err_arr);
+          if  l_EvError<>nil then  l_EvError(self, err_arr);
+          
+        end;
       end;
       
     except
@@ -761,19 +766,20 @@ type
         on e: Exception do AddErr(e);
       end;
       
-      try
-        if lb_EvComplete<>nil then lb_EvComplete(self, res);
-      except
-        on e: Exception do AddErr(e);
-      end;
-      
-      if lb_EvError<>nil then
+      if err_lst.Count=0 then
       begin
-        var err_arr: array of Exception;
-        lock err_lst do err_arr := err_lst.ToArray;
-        
-        lb_EvError(self, err_arr);
-        
+        if lb_EvComplete<>nil then
+          lb_EvComplete(self, res);
+      end else
+      begin
+        if lb_EvError<>nil then
+        begin
+          var err_arr: array of Exception;
+          lock err_lst do err_arr := err_lst.ToArray;
+          
+          lb_EvError(self, err_arr);
+          
+        end;
       end;
       
     except
@@ -1785,7 +1791,7 @@ end;
 procedure CommandQueueBase.RegisterWaiterTask(tsk: CLTaskBase) :=
 lock mw_evs do if not mw_evs.ContainsKey(tsk) then
 begin
-  mw_evs.Add(tsk, new __MWEventContainer);
+  mw_evs[tsk] := new __MWEventContainer;
   tsk.WhenDone(tsk->mw_evs.Remove(tsk));
 end;
 

@@ -104,7 +104,7 @@ begin
     var res := System.IO.File.CreateText($'{exe_path}\{fname}.res.pas');
     var last_line: string := nil;
     
-    var skiped := System.IO.File.CreateText($'{exe_path}\{fname}.skiped.dat');
+    var skiped := System.IO.File.CreateText($'{exe_path}\{fname}.skiped.log');
     
     CommentData.Load($'{exe_path}\{fname}');
     CommentableData.FindCommentable(ReadLines(fname+'.pas'),
