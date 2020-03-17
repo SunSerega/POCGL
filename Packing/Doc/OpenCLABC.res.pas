@@ -105,7 +105,6 @@ uses System.Runtime.CompilerServices;
 //ToDo issue компилятора:
 // - #1981
 // - #2118
-// - #2120
 // - #2145
 // - #2150
 // - #2173
@@ -374,14 +373,9 @@ type
     
     {$region Mutiusable}
     
-    //ToDo #2120
-//    ///Создаёт массив из n очередей, каждая из которых возвращает результат данной очереди
-//    ///Каждую полученную очередь можно использовать одновременно с другими, но только в общей очереди
-//    public function Multiusable(n: integer): array of CommandQueueBase;
-//    
-//    ///Создаёт функцию, создающую очередь, которая возвращает результат данной очереди
-//    ///Каждую очередь, созданную полученной функцией, можно использовать одновременно с другими, но только в общей очереди
-//    public function Multiusable: ()->CommandQueueBase;
+    ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
+    ///Подробнее смотрите в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
+    public function Multiusable: ()->CommandQueueBase;
     
     {$endregion Mutiusable}
     
@@ -475,8 +469,8 @@ type
     
     {$region Mutiusable}
     
-    ///Создаёт функцию, с которой можно создать любое кол-во очередей-удлинителей для данной очереди
-    ///Подробнее смотрите в справке: "Очередь>>Создание>>Множественное использование"
+    ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
+    ///Подробнее смотрите в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
     public function Multiusable: ()->CommandQueue<T>;
     
     {$endregion Mutiusable}
@@ -2631,13 +2625,14 @@ type
         Result := __QueueRes&<T>( res_o ) else
       begin
         Result := self.q.InvokeNewQ(tsk, c);
-        tsk.mu_res.Add(self, Result);
+        tsk.mu_res[self] := Result;
       end;
       
       Result.ev.Retain;
     end;
     
     public function MakeNode: CommandQueue<T>;
+    public function MakeNodeBase: CommandQueueBase := MakeNode;
     
   end;
   
@@ -2663,6 +2658,12 @@ function CommandQueue<T>.Multiusable: ()->CommandQueue<T>;
 begin
   var hub := new MultiusableCommandQueueHub<T>(self);
   Result := hub.MakeNode;
+end;
+
+function CommandQueueBase.Multiusable: ()->CommandQueueBase;
+begin
+  var hub := new MultiusableCommandQueueHub<object>(self.Cast&<object>);
+  Result := hub.MakeNodeBase;
 end;
 
 {$endregion Multiusable}

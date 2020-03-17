@@ -1,136 +1,5 @@
 ﻿Executing selected stages:
-FirstPack + Spec + CL + CLABC + GL + GLABC + Test + Release
-=================================== First Pack ===================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
-Finished compiling: OK
-Runing SubReps Update
-SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : [Info] remote: Enumerating objects: 14, done.
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:   7% (1/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  14% (2/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  21% (3/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  28% (4/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  35% (5/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  42% (6/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  50% (7/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  57% (8/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  64% (9/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  71% (10/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  78% (11/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  85% (12/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects:  92% (13/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects: 100% (14/14)
-SubReps Update: OpenCL Docs : [Info] remote: Counting objects: 100% (14/14), done.
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  12% (1/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  25% (2/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  37% (3/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  50% (4/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  62% (5/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  75% (6/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects:  87% (7/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects: 100% (8/8)
-SubReps Update: OpenCL Docs : [Info] remote: Compressing objects: 100% (8/8), done.
-SubReps Update: OpenCL Docs : [Info] remote: Total 14 (delta 7), reused 8 (delta 6), pack-reused 0
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] e5d04be..e6ab43e  master             -> origin/master
-SubReps Update: OpenCL Docs : [Info] [up to date]      job-slot-selection -> origin/job-slot-selection
-SubReps Update: OpenCL Docs : [Info] [up to date]      pub93-links        -> origin/pub93-links
-SubReps Update: OpenCL Docs : [Info] [up to date]      reflinks           -> origin/reflinks
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages           -> origin/refpages
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages2          -> origin/refpages2
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages3          -> origin/refpages3
-SubReps Update: OpenCL Docs : [Info] [up to date]      reserve-enums      -> origin/reserve-enums
-SubReps Update: OpenCL Docs : [Info] [up to date]      vksync             -> origin/vksync
-SubReps Update: OpenCL Docs : Updating e5d04be..e6ab43e
-SubReps Update: OpenCL Docs : Fast-forward
-SubReps Update: OpenCL Docs : Makefile                              |  6 +--
-SubReps Update: OpenCL Docs : api/opencl_platform_layer.asciidoc    | 36 +++++++++++-----
-SubReps Update: OpenCL Docs : config/asciidoctor-pdf-monkeypatch.rb | 79 -----------------------------------
-SubReps Update: OpenCL Docs : config/sectnumoffset-treeprocessor.rb | 21 ++++++----
-SubReps Update: OpenCL Docs : xml/cl.xml                            | 13 ++++++
-SubReps Update: OpenCL Docs : 5 files changed, 53 insertions(+), 102 deletions(-)
-SubReps Update: OpenCL Docs : delete mode 100644 config/asciidoctor-pdf-monkeypatch.rb
-SubReps Update: Done pulling OpenCL Docs
-SubReps Update: Pulling OpenGL Registry
-SubReps Update: OpenGL Registry : [Info] remote: Enumerating objects: 15, done.
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:   6% (1/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  13% (2/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  20% (3/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  26% (4/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  33% (5/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  40% (6/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  46% (7/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  53% (8/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  60% (9/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  66% (10/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  73% (11/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  80% (12/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  86% (13/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects:  93% (14/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects: 100% (15/15)
-SubReps Update: OpenGL Registry : [Info] remote: Counting objects: 100% (15/15), done.
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:   6% (1/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  13% (2/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  20% (3/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  26% (4/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  33% (5/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  40% (6/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  46% (7/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  53% (8/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  60% (9/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  66% (10/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  73% (11/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  80% (12/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  86% (13/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects:  93% (14/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects: 100% (15/15)
-SubReps Update: OpenGL Registry : [Info] remote: Compressing objects: 100% (15/15), done.
-SubReps Update: OpenGL Registry : [Info] remote: Total 15 (delta 4), reused 4 (delta 0), pack-reused 0
-SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL Registry : [Info] fc4c9f5..2313103  master     -> origin/master
-SubReps Update: OpenGL Registry : [Info] [up to date]      335-docs   -> origin/335-docs
-SubReps Update: OpenGL Registry : [Info] [up to date]      341-issue  -> origin/341-issue
-SubReps Update: OpenGL Registry : Updating fc4c9f5..2313103
-SubReps Update: OpenGL Registry : Fast-forward
-SubReps Update: OpenGL Registry : api/GL/glext.h     | 2 +-
-SubReps Update: OpenGL Registry : api/GLES/gl.h      | 2 +-
-SubReps Update: OpenGL Registry : api/GLES/glext.h   | 2 +-
-SubReps Update: OpenGL Registry : api/GLES2/gl2.h    | 2 +-
-SubReps Update: OpenGL Registry : api/GLES2/gl2ext.h | 2 +-
-SubReps Update: OpenGL Registry : api/GLES3/gl3.h    | 2 +-
-SubReps Update: OpenGL Registry : xml/gl.xml         | 8 ++++++--
-SubReps Update: OpenGL Registry : 7 files changed, 12 insertions(+), 8 deletions(-)
-SubReps Update: Done pulling OpenGL Registry
-Finished runing SubReps Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CompForward ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\CL\ScrapXML.pas"
-Finished compiling: OK
-Compiling "DataScraping\XML\GL\ScrapXML.pas"
-Finished compiling: OK
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Runing ScrapXML[CL]
-ScrapXML[CL]: Parsing "cl"
-ScrapXML[CL]: Saving as binary
-Finished runing ScrapXML[CL]
-Runing ScrapXML[GL]
-ScrapXML[GL]: Parsing "gl"
-ScrapXML[GL]: WARNING: Func [glShadingRateImageBarrierNV] found 2 times in ext [GL_NV_shading_rate_image]
-ScrapXML[GL]: Parsing "wgl"
-ScrapXML[GL]: Parsing "glx"
-ScrapXML[GL]: Saving as binary
-Finished runing ScrapXML[GL]
-====================================== Specs =====================================
-Compiling "Packing\Spec\SpecPacker.pas"
-Finished compiling: OK
-Runing SpecPacker
-SpecPacker: Packing spec "Гайд по использованию OpenGL и OpenCL"
-SpecPacker: Done packing spec "Гайд по использованию OpenGL и OpenCL"
-SpecPacker: Packing spec "Справка OpenGLABC"
-SpecPacker: Done packing spec "Справка OpenGLABC"
-SpecPacker: Packing spec "Справка OpenCLABC"
-SpecPacker: Done packing spec "Справка OpenCLABC"
-Finished runing SpecPacker
+CL + CLABC + Test + Release
 ===================================== OpenCL =====================================
 Runing Template[OpenCL]
 Template[OpenCL]: Runing Template[..\LicenseHeader]
@@ -188,101 +57,6 @@ Compiling "OpenCLABC.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
 Finished runing Comments[OpenCLABC]
-===================================== OpenGL =====================================
-Runing Template[OpenGL]
-Template[OpenGL]: Runing Template[..\LicenseHeader]
-Template[OpenGL]: Finished runing Template[..\LicenseHeader]
-Template[OpenGL]: Runing Template[Static\CoreTypes]
-Template[OpenGL]: Finished runing Template[Static\CoreTypes]
-Template[OpenGL]: Compiling "Packing\Template\GL\Pack NameRecords.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack NameRecords.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack NameRecords.pas]
-Template[OpenGL]: Runing Template[NameRecords]
-Template[OpenGL]: Finished runing Template[NameRecords]
-Template[OpenGL]: Compiling "Packing\Template\GL\Pack Most.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack Most.pas]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Reading .bin
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Fixing all
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing records code
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing enums code
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing funcs code
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glBindBufferRange] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glBindBufferBase] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glProgramParameteri] was added in versions [4.1] and [4.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveAttrib]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveUniform]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVarying]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetPerfMonitorCountersAMD]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveUniformARB]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveAttribARB]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glWaitSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glSignalSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVaryingEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiModeDrawArraysIBM]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiModeDrawElementsIBM]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesAddressNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glListDrawCommandsStatesClientNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glAsyncCopyBufferSubDataNVX]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glAsyncCopyImageSubDataNVX]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glPointAlongPathNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourcefvNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveVaryingNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatARB]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglGetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglSetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglAssociateImageBufferEventsI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglQueryFrameTrackingI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglGetSyncValuesOML]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
-Template[OpenGL]: Finished runing TemplateCommand[Pack Most.pas]
-Template[OpenGL]: Runing Template[Enums]
-Template[OpenGL]: Finished runing Template[Enums]
-Template[OpenGL]: Runing Template[Static\Delegates]
-Template[OpenGL]: Finished runing Template[Static\Delegates]
-Template[OpenGL]: Compiling "Packing\Template\GL\Pack VecTypes.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack VecTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack VecTypes.pas]
-Template[OpenGL]: Runing Template[VecTypes]
-Template[OpenGL]: Finished runing Template[VecTypes]
-Template[OpenGL]: Compiling "Packing\Template\GL\Pack MtrTypes.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
-Template[OpenGL]: Runing Template[MtrTypes]
-Template[OpenGL]: Finished runing Template[MtrTypes]
-Template[OpenGL]: Runing Template[Records]
-Template[OpenGL]: Finished runing Template[Records]
-Template[OpenGL]: Runing Template[Funcs]
-Template[OpenGL]: Finished runing Template[Funcs]
-Template[OpenGL]: Runing Template[Static\GDIIntegration]
-Template[OpenGL]: Finished runing Template[Static\GDIIntegration]
-Template[OpenGL]: Compiling "Packing\Template\GL\Pack MtrExt.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack MtrExt.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack MtrExt.pas]
-Template[OpenGL]: Runing Template[MtrExt]
-Template[OpenGL]: Finished runing Template[MtrExt]
-Finished runing Template[OpenGL]
-==================================== OpenGLABC ===================================
-Compiling "OpenGLABC.pas"
-Finished compiling: OK
 ==================================== Pre Init ====================================
 Compiling "Tests\Tester.pas"
 Finished compiling: OK
@@ -293,7 +67,7 @@ Finished compiling: OK
 ===================================== Testing ====================================
 Runing Tester
 Tester: Testing selected modules:
-Tester: CL + CLABC + GL + GLABC
+Tester: CL + CLABC
 Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10.pas"
@@ -326,13 +100,7 @@ Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\ErrOtp.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
 Tester: Finished compiling: OK
 Tester: Runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
 Tester: Finished runing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
@@ -354,17 +122,11 @@ Tester: Runing Test[Samples\OpenCLABC\0Простейшие примеры\Simpl
 Tester: Finished runing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
 Tester: Runing Test[Tests\Exec\CLABC\ErrOtp]
 Tester: Finished runing Test[Tests\Exec\CLABC\ErrOtp]
-Tester: Runing Test[Tests\Exec\GL\Mtr.Rotate3D]
-Tester: Finished runing Test[Tests\Exec\GL\Mtr.Rotate3D]
-Tester: Runing Test[Tests\Exec\GL\Mtr.Translate]
-Tester: Finished runing Test[Tests\Exec\GL\Mtr.Translate]
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 Packing OpenCL.pas
 Packing OpenCLABC.pas with doc
-Packing OpenGL.pas
-Packing OpenGLABC.pas
 Done copying release modules
 Packing sample "Samples\OpenCL\MatrMlt.cl"
 Packing sample "Samples\OpenCL\MatrMlt.pas"
