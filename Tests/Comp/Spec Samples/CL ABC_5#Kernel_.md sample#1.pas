@@ -7,7 +7,7 @@ begin
   
   // но лучше добавить .cl файл внутрь .exe и загружать оттуда:
   {$resource '0.cl'}
-  var code_text := System.IO.StreamReader.Create( GetResourceStream('0.cl') ).ReadToEnd;
+  var code_text := System.IO.StreamReader.Create( System.Reflection.Assembly.GetCallingAssembly.GetManifestResourceStream('0.cl') ).ReadToEnd;
   // так не нужно таскать .cl файл вместе с .exe
   
   var code := new ProgramCode(code_text);

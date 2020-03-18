@@ -31,7 +31,9 @@ begin
   // Чтение и компиляция .cl файла
   
   {$resource MatrMlt.cl}
-  var prog_str := System.IO.StreamReader.Create(GetResourceStream('MatrMlt.cl')).ReadToEnd;
+  var prog_str := System.IO.StreamReader.Create(
+    System.Reflection.Assembly.GetCallingAssembly.GetManifestResourceStream('MatrMlt.cl')
+  ).ReadToEnd;
   var prog := cl.CreateProgramWithSource(
     context,
     1,

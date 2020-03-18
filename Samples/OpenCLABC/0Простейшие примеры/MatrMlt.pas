@@ -21,7 +21,7 @@ begin
     // А полученный бинарник уже подключать через $resource
     var code := new ProgramCode(
       System.IO.StreamReader.Create(
-        GetResourceStream('MatrMlt.cl')
+        System.Reflection.Assembly.GetCallingAssembly.GetManifestResourceStream('MatrMlt.cl')
       ).ReadToEnd
     );
     

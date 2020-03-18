@@ -7,33 +7,75 @@ type MessageBoxIcon           = System.Windows.Forms.MessageBoxIcon;
 type MessageBoxDefaultButton  = System.Windows.Forms.MessageBoxDefaultButton;
 type DialogResult             = System.Windows.Forms.DialogResult;
 
-///Result=True когда времени не хватило
-function TimedExecute(p: procedure; t: integer): boolean;
+const
+  MaxExecTime = 5000;
+  
+///Result = (res, err)
+function ExecuteTestExe(fname, nick: string): (string, string);
 begin
-  var res := false;
+  var dom := System.AppDomain.CreateDomain('Domain of '+nick);
+  dom.SetData('fname', fname);
   
-  var et := ProcTask(p);
-  var exec_thr := et.StartExec;
+  var otp_l: OtpLine := $'Executing {nick}';
+  Otp(otp_l);
   
-  var st := ProcTask(()->
-  begin
-    Sleep(t);
-    et.own_otp.Finish;
-    res := true;
-    exec_thr.Abort;
+  dom.DoCallBack(()->
+  try
+    var dom := System.AppDomain.CurrentDomain;
+    var fname := dom.GetData('fname') as string;
+    
+    var ep := System.Reflection.Assembly.LoadFile(fname).EntryPoint;
+    if ep=nil then raise new System.EntryPointNotFoundException;
+    
+    var res := new System.IO.StringWriter;
+    Console.SetOut(res);
+    
+    var thr := new System.Threading.Thread(()->
+    try
+      var sw := System.Diagnostics.Stopwatch.StartNew;
+      try
+        var prev_path := System.Environment.CurrentDirectory;
+        try
+          System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(fname);
+          ep.Invoke(nil, new object[0]);
+        finally
+          System.Environment.CurrentDirectory := prev_path;
+        end;
+      except
+        on e: Exception do dom.SetData('Err', e.InnerException.ToString);
+      end;
+      sw.Stop;
+      dom.SetData('exec_time', sw.ElapsedTicks);
+    except
+      on e: Exception do dom.SetData('fatal_err', e.ToString);
+    end);
+    thr.Start;
+    
+    if not thr.Join(MaxExecTime) then
+    begin
+      thr.Abort;
+      dom.SetData('exec_time', MaxExecTime*System.TimeSpan.TicksPerMillisecond);
+      Otp($'ERROR: Execution took too long for "{fname}"');
+    end else
+      dom.SetData('Result', res.ToString);
+    
+  except
+    on e: Exception do System.AppDomain.CurrentDomain.SetData('fatal_err', e.ToString);
   end);
-  var stop_thr := st.StartExec;
   
-  exec_thr.Join;
-  stop_thr.Abort;
-  st.own_otp.Finish;
+  if dom.GetData('fatal_err') is string(var fatal_err) then
+    ErrOtp(new MessageException(fatal_err));
   
-  foreach var l in et.own_otp.Enmr+st.own_otp.Enmr do Otp(l);
+  otp_l.s := $'Done executing {nick}';
+  otp_l.t += int64(dom.GetData('exec_time'));
+  Otp(otp_l);
   
-  Result := res;
+  Result := (
+    dom.GetData('Result') as string,
+    dom.GetData('Err') as string
+  );
+  System.AppDomain.Unload(dom);
 end;
-
-var enc := new System.Text.UTF8Encoding(true);
 
 type
   TestCanceledException = class(Exception) end;
@@ -49,9 +91,10 @@ type
     req_modules: IList<string>;
     expected_comp_err: string;
     expected_otp: string;
+    expected_exec_err: string;
     
-    static allowed_modules := new HashSet<string>(4);
     static valid_modules := HSet('CL','CLABC', 'GL','GLABC');
+    static allowed_modules := new HashSet<string>(valid_modules.Count);
     
     static all_loaded := new List<TestInfo>;
     static test_folders := new List<string>;
@@ -207,7 +250,8 @@ type
         if t.test_mode.Contains('Exec') then
         begin
           
-          t.expected_otp := t.ExtractSettingStr('#ExpOtp');
+          t.expected_otp      := t.ExtractSettingStr('#ExpOtp');
+          t.expected_exec_err := t.ExtractSettingStr('#ExpExecErr');
           
         end;
         
@@ -309,43 +353,95 @@ type
             continue;
           end;
           
-          var res_sb := new StringBuilder;
-          if TimedExecute(()->RunFile(fwoe+'.exe', $'Test[{fwoe}]', l->res_sb.AppendLine(l.s)), 5000) then
-          begin
-            Otp($'ERROR: Execution took too long for "{fwoe}.exe"');
-            continue;
-          end;
+          var (res, err) := ExecuteTestExe(GetFullPath(fwoe+'.exe'), $'Test[{fwoe}]');
+          res := res?.Remove(#13)?.Trim(#10);
+          err := err?.Remove(#13)?.Trim(#10);
           
-          var res := res_sb.ToString.Remove(#13).Trim(#10);
-          if t.expected_otp=nil then
+          if err<>nil then
           begin
-            t.all_settings['#ExpOtp'] := res;
-            t.used_settings += '#ExpOtp';
-            t.resave_settings := true;
-            Otp($'WARNING: Settings updated for "{fwoe}.td"');
-          end else
-          if t.expected_otp<>res then
-          begin
-    //        Otp($'{expected_otp.Length} : {otp.Length}');
-    //        expected_otp.ZipTuple(otp)
-    //        .Select(t->(word(t[0]), word(t[1])))
-    //        .PrintLines;
-    //        Halt;
             
-            case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
+            if t.expected_exec_err=nil then
+              case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  t.all_settings['#ExpExecErr'] := err;
+                  t.used_settings += '#ExpExecErr';
+                  t.resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
+              end else
               
-              DialogResult.Yes:
-              begin
-                t.all_settings['#ExpOtp'] := res;
-                t.resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+            if t.expected_exec_err<>err then
+              case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_exec_err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  t.all_settings['#ExpExecErr'] := err;
+                  t.resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
               end;
-              
-              DialogResult.No: ;
-              
-              DialogResult.Cancel: Halt(-1);
-              
+            
+            if t.expected_otp<>nil then
+            begin
+              t.all_settings.Remove('#ExpOtp');
+              t.resave_settings := true;
             end;
+            
+          end else
+          begin
+            
+            if t.expected_exec_err<>nil then
+              case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_exec_err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  t.all_settings.Remove('#ExpErr');
+                  t.resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
+              end;
+            
+            if t.expected_otp=nil then
+            begin
+              t.all_settings['#ExpOtp'] := res;
+              t.used_settings += '#ExpOtp';
+              t.resave_settings := true;
+              Otp($'WARNING: Settings updated for "{fwoe}.td"');
+            end else
+            if t.expected_otp<>res then
+            begin
+              
+              case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  t.all_settings['#ExpOtp'] := res;
+                  t.used_settings += '#ExpOtp';
+                  t.resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
+                
+              end;
+            end;
+            
           end;
           
         except
