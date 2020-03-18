@@ -1,13 +1,39 @@
-ToDo нормально дополнить этот список
 
 
 
 - Вывод ошибок
+
 - ConstQueue
+
 - Cast
-- ThenConvert [Context]
-- +/*
+
+- ThenConvert [, Context]
+
 - Multiusable
-- [Wait, ThenWait, AddWait] [, All, Any] 
+
+- Wait ( [Wait, ThenWait, .AddWait][, All, Any] )
+
+- GPUCommandContainer
+* - AddQueue
+* - AddProc
+* - Other .Add*
+
+- ProgramCode
+* - constructor (build err otp)
+* - GetAllKernels
+* - Serialize/Deserialize
+
+- HostExec (HFQ/HPQ)
+
+- CombineQueues [Sync, Async] [, operator[+,*,+=,*=]]
+* - NonConv
+* - Conv
+* * - NonContext
+* * - Context
+
+
+
+В будущем:
+- Context и т.п. - когда будет нормальная связь с OpenCL.pas
 
 
