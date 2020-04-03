@@ -22,12 +22,6 @@ uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
-{$region Основные типы} type
-  
-  %Static\CoreTypes%
-  
-{$endregion Основные типы}
-
 {$region Записи-имена} type
   
   %NameRecords!Pack NameRecords.pas%
@@ -59,6 +53,12 @@ uses System.Runtime.CompilerServices;
   {$endregion Misc}
   
 {$endregion Записи}
+
+{$region Другие типы} type
+  
+  %Static\MiscTypes%
+  
+{$endregion Другие типы}
 
 type
   

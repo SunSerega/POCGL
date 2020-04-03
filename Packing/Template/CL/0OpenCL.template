@@ -31,12 +31,6 @@ uses System.Runtime.CompilerServices;
 
 {$endregion Debug}
 
-{$region Основные типы} type
-  
-  %Static\CoreTypes%
-  
-{$endregion Основные типы}
-
 {$region Записи-имена} type
   
   %NameRecords!Pack NameRecords.pas%
@@ -61,6 +55,12 @@ uses System.Runtime.CompilerServices;
   
 {$endregion Записи}
 
+{$region Другие типы} type
+  
+  %Static\MiscTypes%
+  
+{$endregion Другие типы}
+
 type
   
   %Funcs!Pack Most.pas%
@@ -74,6 +74,12 @@ implementation
 
 {$endif DebugMode}
 {$endregion Debug}
+
+{$region Misc}
+
+%Static\MiscImpl%
+
+{$endregion Misc}
 
 end.
 

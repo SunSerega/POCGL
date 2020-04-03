@@ -27,6 +27,11 @@
  cl_mem	| cl_context	| MemFlags	| UIntPtr	| var T	| var ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
 
+# clCreateBufferWithProperties
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+
 # clCreateCommandQueue
  cl_command_queue	| cl_context	| cl_device_id	| CommandQueueProperties	| var ErrorCode	|
 
@@ -65,6 +70,35 @@
  cl_mem	| cl_context	| MemFlags	| array of cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| var cl_image_format	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
  cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
+
+# clCreateImageWithProperties
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| var cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| var cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| IntPtr	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| IntPtr	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of UInt64	| MemFlags	| IntPtr	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| var cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| var cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| IntPtr	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| IntPtr	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var UInt64	| MemFlags	| IntPtr	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| var cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| var cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| IntPtr	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| IntPtr	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| IntPtr	| IntPtr	| IntPtr	| var ErrorCode	|
 
 # clCreateKernel
  cl_kernel	| cl_program	| string	| var ErrorCode	|
@@ -566,6 +600,8 @@
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var UInt64	| IntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var Bool	| var UIntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var Bool	| IntPtr	|
+ ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| IntPtr	| IntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var DeviceFPConfig	| var UIntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var DeviceFPConfig	| IntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var DeviceMemCacheType	| var UIntPtr	|

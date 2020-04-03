@@ -327,19 +327,21 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _QUEUE_CONTEXT         := new CommandQueueInfo($1090);
-    private static _QUEUE_DEVICE          := new CommandQueueInfo($1091);
-    private static _QUEUE_REFERENCE_COUNT := new CommandQueueInfo($1092);
-    private static _QUEUE_PROPERTIES      := new CommandQueueInfo($1093);
-    private static _QUEUE_SIZE            := new CommandQueueInfo($1094);
-    private static _QUEUE_DEVICE_DEFAULT  := new CommandQueueInfo($1095);
+    private static _QUEUE_CONTEXT          := new CommandQueueInfo($1090);
+    private static _QUEUE_DEVICE           := new CommandQueueInfo($1091);
+    private static _QUEUE_REFERENCE_COUNT  := new CommandQueueInfo($1092);
+    private static _QUEUE_PROPERTIES       := new CommandQueueInfo($1093);
+    private static _QUEUE_SIZE             := new CommandQueueInfo($1094);
+    private static _QUEUE_DEVICE_DEFAULT   := new CommandQueueInfo($1095);
+    private static _QUEUE_PROPERTIES_ARRAY := new CommandQueueInfo($1098);
     
-    public static property QUEUE_CONTEXT:         CommandQueueInfo read _QUEUE_CONTEXT;
-    public static property QUEUE_DEVICE:          CommandQueueInfo read _QUEUE_DEVICE;
-    public static property QUEUE_REFERENCE_COUNT: CommandQueueInfo read _QUEUE_REFERENCE_COUNT;
-    public static property QUEUE_PROPERTIES:      CommandQueueInfo read _QUEUE_PROPERTIES;
-    public static property QUEUE_SIZE:            CommandQueueInfo read _QUEUE_SIZE;
-    public static property QUEUE_DEVICE_DEFAULT:  CommandQueueInfo read _QUEUE_DEVICE_DEFAULT;
+    public static property QUEUE_CONTEXT:          CommandQueueInfo read _QUEUE_CONTEXT;
+    public static property QUEUE_DEVICE:           CommandQueueInfo read _QUEUE_DEVICE;
+    public static property QUEUE_REFERENCE_COUNT:  CommandQueueInfo read _QUEUE_REFERENCE_COUNT;
+    public static property QUEUE_PROPERTIES:       CommandQueueInfo read _QUEUE_PROPERTIES;
+    public static property QUEUE_SIZE:             CommandQueueInfo read _QUEUE_SIZE;
+    public static property QUEUE_DEVICE_DEFAULT:   CommandQueueInfo read _QUEUE_DEVICE_DEFAULT;
+    public static property QUEUE_PROPERTIES_ARRAY: CommandQueueInfo read _QUEUE_PROPERTIES_ARRAY;
     
     public function ToString: string; override;
     begin
@@ -349,6 +351,7 @@
       if self.val = UInt32($1093) then Result := 'QUEUE_PROPERTIES' else
       if self.val = UInt32($1094) then Result := 'QUEUE_SIZE' else
       if self.val = UInt32($1095) then Result := 'QUEUE_DEVICE_DEFAULT' else
+      if self.val = UInt32($1098) then Result := 'QUEUE_PROPERTIES_ARRAY' else
         Result := self.val.ToString;
     end;
     
@@ -886,11 +889,14 @@
     private static _DEVICE_IL_VERSION_KHR                              := new DeviceInfo($105B);
     private static _DEVICE_MAX_NUM_SUB_GROUPS                          := new DeviceInfo($105C);
     private static _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS      := new DeviceInfo($105D);
+    private static _DEVICE_NUMERIC_VERSION                             := new DeviceInfo($105E);
+    private static _DEVICE_EXTENSIONS_WITH_VERSION                     := new DeviceInfo($1060);
+    private static _DEVICE_ILS_WITH_VERSION                            := new DeviceInfo($1061);
+    private static _DEVICE_BUILT_IN_KERNELS_WITH_VERSION               := new DeviceInfo($1062);
     private static _DEVICE_ATOMIC_MEMORY_CAPABILITIES                  := new DeviceInfo($1063);
     private static _DEVICE_ATOMIC_FENCE_CAPABILITIES                   := new DeviceInfo($1064);
     private static _DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT              := new DeviceInfo($1065);
-    private static _DEVICE_OPENCL_C_VERSIONS                           := new DeviceInfo($1066);
-    private static _DEVICE_MAX_WRITE_IMAGE3D_ARGS                      := new DeviceInfo($1067);
+    private static _DEVICE_OPENCL_C_ALL_VERSIONS                       := new DeviceInfo($1066);
     private static _DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT     := new DeviceInfo($1068);
     private static _DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT               := new DeviceInfo($1069);
     private static _DEVICE_OPENCL_C_FEATURES                           := new DeviceInfo($106F);
@@ -1025,11 +1031,14 @@
     public static property DEVICE_IL_VERSION_KHR:                              DeviceInfo read _DEVICE_IL_VERSION_KHR;
     public static property DEVICE_MAX_NUM_SUB_GROUPS:                          DeviceInfo read _DEVICE_MAX_NUM_SUB_GROUPS;
     public static property DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS:      DeviceInfo read _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS;
+    public static property DEVICE_NUMERIC_VERSION:                             DeviceInfo read _DEVICE_NUMERIC_VERSION;
+    public static property DEVICE_EXTENSIONS_WITH_VERSION:                     DeviceInfo read _DEVICE_EXTENSIONS_WITH_VERSION;
+    public static property DEVICE_ILS_WITH_VERSION:                            DeviceInfo read _DEVICE_ILS_WITH_VERSION;
+    public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION:               DeviceInfo read _DEVICE_BUILT_IN_KERNELS_WITH_VERSION;
     public static property DEVICE_ATOMIC_MEMORY_CAPABILITIES:                  DeviceInfo read _DEVICE_ATOMIC_MEMORY_CAPABILITIES;
     public static property DEVICE_ATOMIC_FENCE_CAPABILITIES:                   DeviceInfo read _DEVICE_ATOMIC_FENCE_CAPABILITIES;
     public static property DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT:              DeviceInfo read _DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT;
-    public static property DEVICE_OPENCL_C_VERSIONS:                           DeviceInfo read _DEVICE_OPENCL_C_VERSIONS;
-    public static property DEVICE_MAX_WRITE_IMAGE3D_ARGS:                      DeviceInfo read _DEVICE_MAX_WRITE_IMAGE3D_ARGS;
+    public static property DEVICE_OPENCL_C_ALL_VERSIONS:                       DeviceInfo read _DEVICE_OPENCL_C_ALL_VERSIONS;
     public static property DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT:     DeviceInfo read _DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT;
     public static property DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT:               DeviceInfo read _DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT;
     public static property DEVICE_OPENCL_C_FEATURES:                           DeviceInfo read _DEVICE_OPENCL_C_FEATURES;
@@ -1166,11 +1175,14 @@
       if self.val = UInt32($105B) then Result := 'DEVICE_IL_VERSION_KHR' else
       if self.val = UInt32($105C) then Result := 'DEVICE_MAX_NUM_SUB_GROUPS' else
       if self.val = UInt32($105D) then Result := 'DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS' else
+      if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION' else
+      if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION' else
+      if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION' else
+      if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION' else
       if self.val = UInt32($1063) then Result := 'DEVICE_ATOMIC_MEMORY_CAPABILITIES' else
       if self.val = UInt32($1064) then Result := 'DEVICE_ATOMIC_FENCE_CAPABILITIES' else
       if self.val = UInt32($1065) then Result := 'DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT' else
-      if self.val = UInt32($1066) then Result := 'DEVICE_OPENCL_C_VERSIONS' else
-      if self.val = UInt32($1067) then Result := 'DEVICE_MAX_WRITE_IMAGE3D_ARGS' else
+      if self.val = UInt32($1066) then Result := 'DEVICE_OPENCL_C_ALL_VERSIONS' else
       if self.val = UInt32($1068) then Result := 'DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT' else
       if self.val = UInt32($1069) then Result := 'DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT' else
       if self.val = UInt32($106F) then Result := 'DEVICE_OPENCL_C_FEATURES' else
@@ -1556,6 +1568,7 @@
     private static _VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL     := new ErrorCode(-1101);
     private static _PIPE_FULL_INTEL                             := new ErrorCode(-1106);
     private static _PIPE_EMPTY_INTEL                            := new ErrorCode(-1107);
+    private static _CONTEXT_TERMINATED_KHR                      := new ErrorCode(-1121);
     
     public static property SUCCESS:                                     ErrorCode read _SUCCESS;
     public static property DEVICE_NOT_FOUND:                            ErrorCode read _DEVICE_NOT_FOUND;
@@ -1653,6 +1666,7 @@
     public static property VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL:     ErrorCode read _VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL;
     public static property PIPE_FULL_INTEL:                             ErrorCode read _PIPE_FULL_INTEL;
     public static property PIPE_EMPTY_INTEL:                            ErrorCode read _PIPE_EMPTY_INTEL;
+    public static property CONTEXT_TERMINATED_KHR:                      ErrorCode read _CONTEXT_TERMINATED_KHR;
     
     public function ToString: string; override;
     begin
@@ -1752,15 +1766,16 @@
       if self.val = Int32(-1101) then Result := 'VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL' else
       if self.val = Int32(-1106) then Result := 'PIPE_FULL_INTEL' else
       if self.val = Int32(-1107) then Result := 'PIPE_EMPTY_INTEL' else
+      if self.val = Int32(-1121) then Result := 'CONTEXT_TERMINATED_KHR' else
         Result := self.val.ToString;
     end;
     
     public function IS_ERROR := val<>0;
     
-    public procedure RaiseIfError :=
-    if IS_ERROR then raise new OpenCLException(self.ToString);
+    public procedure RaiseIfError;
     
-    public constructor(st: CommandExecutionStatus) := self.val := st.val;
+    public static function operator explicit(st: CommandExecutionStatus): ErrorCode := new ErrorCode(st.val);
+    public static function operator explicit(ec: ErrorCode): CommandExecutionStatus := new CommandExecutionStatus(ec.val);
     
   end;
   
@@ -2343,6 +2358,7 @@
     private static _MEM_ASSOCIATED_MEMOBJECT       := new MemInfo($1107);
     private static _MEM_OFFSET                     := new MemInfo($1108);
     private static _MEM_USES_SVM_POINTER           := new MemInfo($1109);
+    private static _MEM_PROPERTIES                 := new MemInfo($110A);
     private static _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR := new MemInfo($2028);
     private static _MEM_DX9_MEDIA_SURFACE_INFO_KHR := new MemInfo($2029);
     private static _MEM_D3D10_RESOURCE_KHR         := new MemInfo($4015);
@@ -2361,6 +2377,7 @@
     public static property MEM_ASSOCIATED_MEMOBJECT:       MemInfo read _MEM_ASSOCIATED_MEMOBJECT;
     public static property MEM_OFFSET:                     MemInfo read _MEM_OFFSET;
     public static property MEM_USES_SVM_POINTER:           MemInfo read _MEM_USES_SVM_POINTER;
+    public static property MEM_PROPERTIES:                 MemInfo read _MEM_PROPERTIES;
     public static property MEM_DX9_MEDIA_ADAPTER_TYPE_KHR: MemInfo read _MEM_DX9_MEDIA_ADAPTER_TYPE_KHR;
     public static property MEM_DX9_MEDIA_SURFACE_INFO_KHR: MemInfo read _MEM_DX9_MEDIA_SURFACE_INFO_KHR;
     public static property MEM_D3D10_RESOURCE_KHR:         MemInfo read _MEM_D3D10_RESOURCE_KHR;
@@ -2381,6 +2398,7 @@
       if self.val = UInt32($1107) then Result := 'MEM_ASSOCIATED_MEMOBJECT' else
       if self.val = UInt32($1108) then Result := 'MEM_OFFSET' else
       if self.val = UInt32($1109) then Result := 'MEM_USES_SVM_POINTER' else
+      if self.val = UInt32($110A) then Result := 'MEM_PROPERTIES' else
       if self.val = UInt32($2028) then Result := 'MEM_DX9_MEDIA_ADAPTER_TYPE_KHR' else
       if self.val = UInt32($2029) then Result := 'MEM_DX9_MEDIA_SURFACE_INFO_KHR' else
       if self.val = UInt32($4015) then Result := 'MEM_D3D10_RESOURCE_KHR' else
@@ -2517,14 +2535,17 @@
     
     private static _PIPE_PACKET_SIZE := new PipeInfo($1120);
     private static _PIPE_MAX_PACKETS := new PipeInfo($1121);
+    private static _PIPE_PROPERTIES  := new PipeInfo($1122);
     
     public static property PIPE_PACKET_SIZE: PipeInfo read _PIPE_PACKET_SIZE;
     public static property PIPE_MAX_PACKETS: PipeInfo read _PIPE_MAX_PACKETS;
+    public static property PIPE_PROPERTIES:  PipeInfo read _PIPE_PROPERTIES;
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($1120) then Result := 'PIPE_PACKET_SIZE' else
       if self.val = UInt32($1121) then Result := 'PIPE_MAX_PACKETS' else
+      if self.val = UInt32($1122) then Result := 'PIPE_PROPERTIES' else
         Result := self.val.ToString;
     end;
     
@@ -2534,21 +2555,25 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _PLATFORM_PROFILE               := new PlatformInfo($0900);
-    private static _PLATFORM_VERSION               := new PlatformInfo($0901);
-    private static _PLATFORM_NAME                  := new PlatformInfo($0902);
-    private static _PLATFORM_VENDOR                := new PlatformInfo($0903);
-    private static _PLATFORM_EXTENSIONS            := new PlatformInfo($0904);
-    private static _PLATFORM_HOST_TIMER_RESOLUTION := new PlatformInfo($0905);
-    private static _PLATFORM_ICD_SUFFIX_KHR        := new PlatformInfo($0920);
+    private static _PLATFORM_PROFILE                 := new PlatformInfo($0900);
+    private static _PLATFORM_VERSION                 := new PlatformInfo($0901);
+    private static _PLATFORM_NAME                    := new PlatformInfo($0902);
+    private static _PLATFORM_VENDOR                  := new PlatformInfo($0903);
+    private static _PLATFORM_EXTENSIONS              := new PlatformInfo($0904);
+    private static _PLATFORM_HOST_TIMER_RESOLUTION   := new PlatformInfo($0905);
+    private static _PLATFORM_NUMERIC_VERSION         := new PlatformInfo($0906);
+    private static _PLATFORM_EXTENSIONS_WITH_VERSION := new PlatformInfo($0907);
+    private static _PLATFORM_ICD_SUFFIX_KHR          := new PlatformInfo($0920);
     
-    public static property PLATFORM_PROFILE:               PlatformInfo read _PLATFORM_PROFILE;
-    public static property PLATFORM_VERSION:               PlatformInfo read _PLATFORM_VERSION;
-    public static property PLATFORM_NAME:                  PlatformInfo read _PLATFORM_NAME;
-    public static property PLATFORM_VENDOR:                PlatformInfo read _PLATFORM_VENDOR;
-    public static property PLATFORM_EXTENSIONS:            PlatformInfo read _PLATFORM_EXTENSIONS;
-    public static property PLATFORM_HOST_TIMER_RESOLUTION: PlatformInfo read _PLATFORM_HOST_TIMER_RESOLUTION;
-    public static property PLATFORM_ICD_SUFFIX_KHR:        PlatformInfo read _PLATFORM_ICD_SUFFIX_KHR;
+    public static property PLATFORM_PROFILE:                 PlatformInfo read _PLATFORM_PROFILE;
+    public static property PLATFORM_VERSION:                 PlatformInfo read _PLATFORM_VERSION;
+    public static property PLATFORM_NAME:                    PlatformInfo read _PLATFORM_NAME;
+    public static property PLATFORM_VENDOR:                  PlatformInfo read _PLATFORM_VENDOR;
+    public static property PLATFORM_EXTENSIONS:              PlatformInfo read _PLATFORM_EXTENSIONS;
+    public static property PLATFORM_HOST_TIMER_RESOLUTION:   PlatformInfo read _PLATFORM_HOST_TIMER_RESOLUTION;
+    public static property PLATFORM_NUMERIC_VERSION:         PlatformInfo read _PLATFORM_NUMERIC_VERSION;
+    public static property PLATFORM_EXTENSIONS_WITH_VERSION: PlatformInfo read _PLATFORM_EXTENSIONS_WITH_VERSION;
+    public static property PLATFORM_ICD_SUFFIX_KHR:          PlatformInfo read _PLATFORM_ICD_SUFFIX_KHR;
     
     public function ToString: string; override;
     begin
@@ -2558,6 +2583,8 @@
       if self.val = UInt32($0903) then Result := 'PLATFORM_VENDOR' else
       if self.val = UInt32($0904) then Result := 'PLATFORM_EXTENSIONS' else
       if self.val = UInt32($0905) then Result := 'PLATFORM_HOST_TIMER_RESOLUTION' else
+      if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION' else
+      if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
       if self.val = UInt32($0920) then Result := 'PLATFORM_ICD_SUFFIX_KHR' else
         Result := self.val.ToString;
     end;
@@ -2728,6 +2755,7 @@
     private static _SAMPLER_MIP_FILTER_MODE   := new SamplerInfo($1155);
     private static _SAMPLER_LOD_MIN           := new SamplerInfo($1156);
     private static _SAMPLER_LOD_MAX           := new SamplerInfo($1157);
+    private static _SAMPLER_PROPERTIES        := new SamplerInfo($1158);
     
     public static property SAMPLER_REFERENCE_COUNT:   SamplerInfo read _SAMPLER_REFERENCE_COUNT;
     public static property SAMPLER_CONTEXT:           SamplerInfo read _SAMPLER_CONTEXT;
@@ -2737,6 +2765,7 @@
     public static property SAMPLER_MIP_FILTER_MODE:   SamplerInfo read _SAMPLER_MIP_FILTER_MODE;
     public static property SAMPLER_LOD_MIN:           SamplerInfo read _SAMPLER_LOD_MIN;
     public static property SAMPLER_LOD_MAX:           SamplerInfo read _SAMPLER_LOD_MAX;
+    public static property SAMPLER_PROPERTIES:        SamplerInfo read _SAMPLER_PROPERTIES;
     
     public function ToString: string; override;
     begin
@@ -2748,6 +2777,7 @@
       if self.val = UInt32($1155) then Result := 'SAMPLER_MIP_FILTER_MODE' else
       if self.val = UInt32($1156) then Result := 'SAMPLER_LOD_MIN' else
       if self.val = UInt32($1157) then Result := 'SAMPLER_LOD_MAX' else
+      if self.val = UInt32($1158) then Result := 'SAMPLER_PROPERTIES' else
         Result := self.val.ToString;
     end;
     

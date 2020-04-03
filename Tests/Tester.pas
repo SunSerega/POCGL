@@ -212,10 +212,8 @@ type
       foreach var dir in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
       begin
         test_folders += dir;
-        System.IO.File.Copy( 'OpenCL.pcu',    dir+'\OpenCL.pcu',    true );
-        System.IO.File.Copy( 'OpenCLABC.pcu', dir+'\OpenCLABC.pcu', true );
-        System.IO.File.Copy( 'OpenGL.pcu',    dir+'\OpenGL.pcu',    true );
-        System.IO.File.Copy( 'OpenGLABC.pcu', dir+'\OpenGLABC.pcu', true );
+        foreach var u in allowed_modules do
+          System.IO.File.Copy($'Open{u}.pcu', $'{dir}\Open{u}.pcu', true);
       end;
       
       foreach var pas_fname in System.IO.Directory.EnumerateFiles(path, '*.pas', System.IO.SearchOption.AllDirectories) do

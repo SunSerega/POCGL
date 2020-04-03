@@ -251,6 +251,7 @@ type
   
   ParData = sealed class
     private name, t: string;
+    private rep_c: int64 := 1;
     private readonly: boolean;
     private ptr: integer;
     private gr: Group := nil;
@@ -274,6 +275,14 @@ type
         end else
           raise new MessageException($'ERROR: unable to parse func par [{text}]');
       
+      if self.t.Contains('[') and self.t.EndsWith(']') then
+      begin
+        var ind := self.t.IndexOf('[');
+        var c := self.t.Substring(ind+1, self.t.Length-ind-2);
+        if TryStrToInt64(c, self.rep_c) or Group.AllEnums.TryGetValue(c, self.rep_c) then
+          self.t := self.t.Remove(ind);
+      end;
+      
       self.readonly := text.Contains('const');
       
       if (self.t<>'CL_CALLBACK') and not Group.All.TryGetValue(self.t, self.gr) then
@@ -291,6 +300,7 @@ type
     begin
       bw.Write(name);
       bw.Write(t);
+      bw.Write(rep_c);
       bw.Write(readonly);
       bw.Write(ptr);
       

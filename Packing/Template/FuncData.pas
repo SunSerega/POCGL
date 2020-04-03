@@ -281,6 +281,7 @@ type
   
   StructField = sealed class
     public name, t: string;
+    public rep_c: int64 := 1;
     public ptr: integer;
     public gr: Group;
     
@@ -292,10 +293,19 @@ type
     public constructor(br: System.IO.BinaryReader);
     begin
       self.name := br.ReadString;
+      
       self.t := TypeTable.Convert(br.ReadString);
+      
+      self.rep_c := br.ReadInt64;
+      if (self.t='ntv_char') and (self.rep_c<>1) then
+        self.t := 'Byte';
+      
       if br.ReadBoolean then raise new System.NotSupportedException; // readonly
+      
       self.ptr := br.ReadInt32 - self.t.Count(ch->ch='-');
+      if self.ptr<0 then raise new System.InvalidOperationException;
       self.t := self.t.Remove('-').Trim;
+      
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
     end;
@@ -317,13 +327,19 @@ type
       Result := res.ToString;
     end;
     
-    public procedure Write(sb: StringBuilder);
+    public procedure Write(sb: StringBuilder; pos: string := nil);
     begin
       sb += '    ';
       if name<>nil then
       begin
         sb += vis;
         sb += ' ';
+        if pos<>nil then
+        begin
+          sb += '[FieldOffset(';
+          sb += pos;
+          sb += ')] ';
+        end;
         sb += self.MakeDef;
         if def_val<>nil then
         begin
@@ -399,15 +415,62 @@ type
     begin
       log_structs.Otp($'# {name}');
       foreach var fld in flds do
-        log_structs.Otp($'{#9}{fld.MakeDef}');
+        log_structs.Otp($'{#9}{fld.MakeDef}' + (fld.rep_c<>1 ? $'[{fld.rep_c}]' : '') );
       log_structs.Otp('');
       
       if not used then exit;
       
+      var need_expl := flds.Any(fld->fld.rep_c<>1);
+      var fld_offset := new Dictionary<StructField, string>;
+      var max_fld_offset_len: integer;
+      if need_expl then
+      begin
+        var tc := new Dictionary<string, integer>;
+        var prev_val := 0;
+        var temp_fld := new StructField;
+        
+        foreach var fld in flds.Append(nil) do
+        begin
+          
+          if tc.Count=0 then
+            fld_offset[fld] := '0' else
+          begin
+            
+            var ofs := new StringBuilder;
+            foreach var t in tc.Keys do
+            begin
+//              ofs += $'sizeof({t})'; //ToDo http://forum.mmcs.sfedu.ru/t/topic/143/1767?u=sun_serega
+              
+              case t of
+                'UInt32': ofs += '4';
+                'Byte':   ofs += '1';
+                else raise new System.NotSupportedException($'{t} in {name}');
+              end;
+              
+              ofs += $'*{tc[t]} + ';
+            end;
+            ofs.Length -= ' + '.Length;
+            
+            fld_offset[fld??temp_fld] := ofs.ToString;
+          end;
+          
+          if fld=nil then break;
+          
+          if tc.TryGetValue(fld.t, prev_val) then
+            tc[fld.t] := prev_val+fld.rep_c else
+            tc[fld.t] := fld.rep_c;
+          
+        end;
+        
+        sb += $'  [StructLayout(LayoutKind.&Explicit, Size = {fld_offset[temp_fld]})]';
+        max_fld_offset_len := fld_offset[flds[flds.Count-1]].Length;
+      end;
+      
       sb += $'  {name} = record' + #10;
       
+      var pos := 0;
       foreach var fld in flds do
-        fld.Write(sb);
+        fld.Write(sb, need_expl ? fld_offset[fld].PadLeft(max_fld_offset_len) : nil);
       sb += '    '#10;
       
       var constr_flds := flds.ToList;
@@ -468,6 +531,9 @@ type
       
       var ntv_t := br.ReadString;
       self.t := TypeTable.Convert(ntv_t);
+      
+      // rep_c, used for static strings in structs
+      if br.ReadInt64 <> 1 then raise new System.NotSupportedException;
       
       self.readonly := br.ReadBoolean;
       self.ptr := br.ReadInt32 + self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
@@ -1511,7 +1577,7 @@ type
     
   end;
   Extension = sealed class
-    public name: string;
+    public name, display_name: string;
     public api: string;
     public ext_group: string;
     public add: List<Func>;
@@ -1529,9 +1595,18 @@ type
       var ind := name.IndexOf('_');
       ext_group := name.Remove(ind).ToUpper;
       if ext_group in allowed_ext_names then
-        name := name.Substring(ind+1) else
-      if LogCache.invalid_ext_names.Add(ext_group) then
-        log.Otp($'Ext group [{ext_group}] of ext [{name}] is not supported');
+        display_name := name.Substring(ind+1) else
+      begin
+        display_name := name;
+        if LogCache.invalid_ext_names.Add(ext_group) then
+          log.Otp($'Ext group [{ext_group}] of ext [{name}] is not supported');
+      end;
+      
+      display_name := api+display_name.Split('_').Select(w->
+      begin
+        if w.Length<>0 then w[1] := w[1].ToUpper;
+        Result := w;
+      end).JoinToString('') + ext_group;
       
     end;
     
@@ -1573,18 +1648,13 @@ type
     begin
       if add.Count=0 then exit;
       
-      var display_name := api+name.Split('_').Select(w->
-      begin
-        if w.Length<>0 then w[1] := w[1].ToUpper;
-        Result := w;
-      end).JoinToString('') + ext_group;
-      
       sb += $'  [PCUNotRestore]'+#10;
       sb += $'  {display_name} = ';
       var is_static := not (api in ['gl']);
       sb += is_static ? 'static' : 'sealed';
       sb += ' class'#10;
       Func.WriteGetPtrFunc(sb, api);
+      sb += $'    public const _ExtStr = ''{name}'';'+#10;
       sb += $'    '+#10;
       
       foreach var f in add do

@@ -168,6 +168,7 @@ type
     begin
       bw.Write(name);
       bw.Write(t);
+      bw.Write(int64(1)); // rep_c, static strings
       bw.Write(readonly);
       bw.Write(ptr);
       

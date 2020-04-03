@@ -1,0 +1,7 @@
+
+
+
+procedure ErrorCode.RaiseIfError :=
+if IS_ERROR then raise new OpenCLException(self);
+
+

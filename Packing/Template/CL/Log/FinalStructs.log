@@ -44,4 +44,8 @@
 	sad_adjust_mode: UInt32
 	search_path_type: UInt32
 
+# cl_name_version
+	version: UInt32
+	name: Byte[64]
+
 

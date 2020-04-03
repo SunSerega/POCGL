@@ -1,4 +1,5 @@
 ﻿Type [unsigned int] is referenced but not defined
+Type-less group [Constants.Versioning]
 Type-less group [MiscNumbers]
 Type-less group [cl_affinity_domain_ext]
 Type-less group [clCommandExecutionStatus]
