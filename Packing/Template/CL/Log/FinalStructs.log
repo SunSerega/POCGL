@@ -46,6 +46,6 @@
 
 # cl_name_version
 	version: UInt32
-	name: Byte[64]
+	name: ntv_char
 
 

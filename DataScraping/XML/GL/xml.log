@@ -51,6 +51,7 @@ Group [ColorMaterialFace] wasn't used in any function
 Group [FeedBackToken] wasn't used in any function
 Group [FogMode] wasn't used in any function
 Group [GetPixelMap] wasn't used in any function
+Group [GlslTypeToken] wasn't used in any function
 Group [TextureGenMode] wasn't used in any function
 Group [TextureMagFilter] wasn't used in any function
 Group [TextureMinFilter] wasn't used in any function
@@ -60,6 +61,7 @@ Group [ConvolutionBorderModeEXT] wasn't used in any function
 Group [PointParameterNameSGIS] wasn't used in any function
 Group [TextureFilterFuncSGIS] wasn't used in any function
 Group [LightModelColorControl] wasn't used in any function
+Group [VertexBufferObjectParameter] wasn't used in any function
 Group [PixelStoreResampleMode] wasn't used in any function
 Group [PixelStoreSubsampleRate] wasn't used in any function
 Group [CheckFramebufferStatusTarget] wasn't used in any function
@@ -88,6 +90,7 @@ Group [ColorMaterialFace] wasn't used in any function
 Group [FeedBackToken] wasn't used in any function
 Group [FogMode] wasn't used in any function
 Group [GetPixelMap] wasn't used in any function
+Group [GlslTypeToken] wasn't used in any function
 Group [TextureGenMode] wasn't used in any function
 Group [TextureMagFilter] wasn't used in any function
 Group [TextureMinFilter] wasn't used in any function
@@ -97,6 +100,7 @@ Group [ConvolutionBorderModeEXT] wasn't used in any function
 Group [PointParameterNameSGIS] wasn't used in any function
 Group [TextureFilterFuncSGIS] wasn't used in any function
 Group [LightModelColorControl] wasn't used in any function
+Group [VertexBufferObjectParameter] wasn't used in any function
 Group [PixelStoreResampleMode] wasn't used in any function
 Group [PixelStoreSubsampleRate] wasn't used in any function
 Group [CheckFramebufferStatusTarget] wasn't used in any function
@@ -125,6 +129,7 @@ Group [ColorMaterialFace] wasn't used in any function
 Group [FeedBackToken] wasn't used in any function
 Group [FogMode] wasn't used in any function
 Group [GetPixelMap] wasn't used in any function
+Group [GlslTypeToken] wasn't used in any function
 Group [TextureGenMode] wasn't used in any function
 Group [TextureMagFilter] wasn't used in any function
 Group [TextureMinFilter] wasn't used in any function
@@ -134,6 +139,7 @@ Group [ConvolutionBorderModeEXT] wasn't used in any function
 Group [PointParameterNameSGIS] wasn't used in any function
 Group [TextureFilterFuncSGIS] wasn't used in any function
 Group [LightModelColorControl] wasn't used in any function
+Group [VertexBufferObjectParameter] wasn't used in any function
 Group [PixelStoreResampleMode] wasn't used in any function
 Group [PixelStoreSubsampleRate] wasn't used in any function
 Group [CheckFramebufferStatusTarget] wasn't used in any function

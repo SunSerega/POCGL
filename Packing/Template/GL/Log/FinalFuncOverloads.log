@@ -929,19 +929,19 @@
  GetMultisamplePNameNV	| UInt32	| IntPtr	|
 
 # glGetNamedBufferParameteri64v
- UInt32	| VertexBufferObjectParameter	| array of Int64	|
- UInt32	| VertexBufferObjectParameter	| var Int64	|
- UInt32	| VertexBufferObjectParameter	| IntPtr	|
+ UInt32	| BufferPNameARB	| array of Int64	|
+ UInt32	| BufferPNameARB	| var Int64	|
+ UInt32	| BufferPNameARB	| IntPtr	|
 
 # glGetNamedBufferParameteriv
- UInt32	| VertexBufferObjectParameter	| array of Int32	|
- UInt32	| VertexBufferObjectParameter	| var Int32	|
- UInt32	| VertexBufferObjectParameter	| IntPtr	|
+ UInt32	| BufferPNameARB	| array of Int32	|
+ UInt32	| BufferPNameARB	| var Int32	|
+ UInt32	| BufferPNameARB	| IntPtr	|
 
 # glGetNamedBufferPointerv
- UInt32	| VertexBufferObjectParameter	| array of IntPtr	|
- UInt32	| VertexBufferObjectParameter	| var IntPtr	|
- UInt32	| VertexBufferObjectParameter	| pointer	|
+ UInt32	| BufferPointerNameARB	| array of IntPtr	|
+ UInt32	| BufferPointerNameARB	| var IntPtr	|
+ UInt32	| BufferPointerNameARB	| pointer	|
 
 # glGetNamedBufferSubData
  UInt32	| IntPtr	| IntPtr	| IntPtr	|
@@ -1340,32 +1340,32 @@
  UInt32	| TransformFeedbackPName	| IntPtr	|
 
 # glGetTransformFeedbackVarying
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetUniformBlockIndex
@@ -2845,7 +2845,7 @@
  UInt32	| Int32	| VertexAttribIType	| UInt32	|
 
 # glVertexAttribIPointer
- UInt32	| Int32	| VertexAttribPointerType	| Int32	| IntPtr	|
+ UInt32	| Int32	| VertexAttribIType	| Int32	| IntPtr	|
 
 # glVertexAttribL1d
  UInt32	| real	|
@@ -2883,7 +2883,7 @@
  UInt32	| Int32	| VertexAttribLType	| UInt32	|
 
 # glVertexAttribLPointer
- UInt32	| Int32	| VertexAttribPointerType	| Int32	| IntPtr	|
+ UInt32	| Int32	| VertexAttribLType	| Int32	| IntPtr	|
 
 # glVertexAttribP1ui
  UInt32	| VertexAttribPointerType	| boolean	| UInt32	|
@@ -7311,14 +7311,14 @@
  boolean	| UInt32	|
 
 # glGetNamedBufferParameterivEXT
- UInt32	| VertexBufferObjectParameter	| array of Int32	|
- UInt32	| VertexBufferObjectParameter	| var Int32	|
- UInt32	| VertexBufferObjectParameter	| IntPtr	|
+ UInt32	| BufferPNameARB	| array of Int32	|
+ UInt32	| BufferPNameARB	| var Int32	|
+ UInt32	| BufferPNameARB	| IntPtr	|
 
 # glGetNamedBufferPointervEXT
- UInt32	| VertexBufferObjectParameter	| array of IntPtr	|
- UInt32	| VertexBufferObjectParameter	| var IntPtr	|
- UInt32	| VertexBufferObjectParameter	| pointer	|
+ UInt32	| BufferPointerNameARB	| array of IntPtr	|
+ UInt32	| BufferPointerNameARB	| var IntPtr	|
+ UInt32	| BufferPointerNameARB	| pointer	|
 
 # glGetNamedBufferSubDataEXT
  UInt32	| IntPtr	| IntPtr	| IntPtr	|
@@ -8570,32 +8570,32 @@
  UInt32	| Int32	| IntPtr	| DummyEnum	|
 
 # glGetTransformFeedbackVaryingEXT
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of GlslTypeToken	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var GlslTypeToken	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of AttributeType	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glArrayElementEXT
@@ -8662,7 +8662,7 @@
  UInt32	| IntPtr	|
 
 # glVertexAttribLPointerEXT
- UInt32	| Int32	| VertexAttribPointerType	| Int32	| IntPtr	|
+ UInt32	| Int32	| VertexAttribLType	| Int32	| IntPtr	|
 
 # glGetVertexAttribLdvEXT
  UInt32	| VertexAttribEnum	| array of real	|
@@ -10906,9 +10906,9 @@
  BufferTargetARB	| DummyEnum	| IntPtr	|
 
 # glGetNamedBufferParameterui64vNV
- UInt32	| VertexBufferObjectParameter	| array of UInt64	|
- UInt32	| VertexBufferObjectParameter	| var UInt64	|
- UInt32	| VertexBufferObjectParameter	| IntPtr	|
+ UInt32	| BufferPNameARB	| array of UInt64	|
+ UInt32	| BufferPNameARB	| var UInt64	|
+ UInt32	| BufferPNameARB	| IntPtr	|
 
 # glGetIntegerui64vNV
  DummyEnum	| array of UInt64	|
@@ -11611,7 +11611,7 @@
  UInt32	| IntPtr	|
 
 # glVertexAttribIPointerEXT
- UInt32	| Int32	| VertexAttribPointerType	| Int32	| IntPtr	|
+ UInt32	| Int32	| VertexAttribIType	| Int32	| IntPtr	|
 
 # glGetVertexAttribIivEXT
  UInt32	| VertexAttribEnum	| array of Int32	|

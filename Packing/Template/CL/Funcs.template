@@ -132,7 +132,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBuffer(context: cl_context; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateBuffer_ovr_2(context, flags, size, host_ptr, errcode_ret);
     
-    // added in cl2.2
+    // added in cl3.0
     private static function z_CreateBufferWithProperties_ovr_0(context: cl_context; var properties: UInt64; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateBufferWithProperties';
     private static function z_CreateBufferWithProperties_ovr_0_anh0010000(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -296,7 +296,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImage3D_ovr_2(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
     
-    // added in cl2.2
+    // added in cl3.0
     private static function z_CreateImageWithProperties_ovr_0(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_0_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -4019,46 +4019,46 @@
     z_GetImageInfo_ovr_7(image, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.2
-    private static function z_GetKernelArgInfo_ovr_0(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelArgInfo_ovr_0(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_0(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_1(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_0(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_1(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_1(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_2(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_1(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_2(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_2(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_3(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_2(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_3(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_3(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_4(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_3(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_4(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_4(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_5(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_4(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_5(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_5(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_6(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_5(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_6(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_6(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_7(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_6(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_7(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_7(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_8(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_7(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_8(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_8(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_9(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_8(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_9(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_9(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_9(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
     private static function z_GetKernelInfo_ovr_0(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;

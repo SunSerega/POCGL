@@ -1,6 +1,6 @@
 
 
 
-PackAll.exe "Stages=FirstPack"
+start PackAll.exe "Stages=FirstPack"
 
 

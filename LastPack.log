@@ -1,5 +1,5 @@
-﻿Executing default stages:
-Spec + CL + CLABC + GL + GLABC + Test + Release
+﻿Executing selected stages:
+Spec + CL + GL + Test + Release
 ====================================== Specs =====================================
 Compiling "Packing\Spec\SpecPacker.pas"
 Finished compiling: OK
@@ -15,8 +15,6 @@ Finished runing SpecPacker
 Runing Template[OpenCL]
 Template[OpenCL]: Runing Template[..\LicenseHeader]
 Template[OpenCL]: Finished runing Template[..\LicenseHeader]
-Template[OpenCL]: Runing Template[Static\CoreTypes]
-Template[OpenCL]: Finished runing Template[Static\CoreTypes]
 Template[OpenCL]: Compiling "Packing\Template\CL\Pack NameRecords.pas"
 Template[OpenCL]: Finished compiling: OK
 Template[OpenCL]: Runing TemplateCommand[Pack NameRecords.pas]
@@ -31,7 +29,8 @@ Template[OpenCL]: TemplateCommand[Pack Most.pas]: Fixing all
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing records code
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing enums code
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing funcs code
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (30) overloads of func [clGetDeviceInfo]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
+Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (32) overloads of func [clGetDeviceInfo]
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D10ObjectsKHR]
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D10ObjectsKHR]
 Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D11ObjectsKHR]
@@ -58,22 +57,21 @@ Template[OpenCL]: Runing Template[Static\Delegates]
 Template[OpenCL]: Finished runing Template[Static\Delegates]
 Template[OpenCL]: Runing Template[Records]
 Template[OpenCL]: Finished runing Template[Records]
+Template[OpenCL]: Runing Template[Static\MiscTypes]
+Template[OpenCL]: Finished runing Template[Static\MiscTypes]
 Template[OpenCL]: Runing Template[Funcs]
 Template[OpenCL]: Finished runing Template[Funcs]
 Template[OpenCL]: Runing Template[Static\DebugImpl]
 Template[OpenCL]: Finished runing Template[Static\DebugImpl]
+Template[OpenCL]: Runing Template[Static\MiscImpl]
+Template[OpenCL]: Finished runing Template[Static\MiscImpl]
 Finished runing Template[OpenCL]
-==================================== OpenCLABC ===================================
-Compiling "OpenCLABC.pas"
+Compiling "OpenCL.pas"
 Finished compiling: OK
-Runing Comments[OpenCLABC]
-Finished runing Comments[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
 Template[OpenGL]: Runing Template[..\LicenseHeader]
 Template[OpenGL]: Finished runing Template[..\LicenseHeader]
-Template[OpenGL]: Runing Template[Static\CoreTypes]
-Template[OpenGL]: Finished runing Template[Static\CoreTypes]
 Template[OpenGL]: Compiling "Packing\Template\GL\Pack NameRecords.pas"
 Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[Pack NameRecords.pas]
@@ -149,6 +147,8 @@ Template[OpenGL]: Runing Template[MtrTypes]
 Template[OpenGL]: Finished runing Template[MtrTypes]
 Template[OpenGL]: Runing Template[Records]
 Template[OpenGL]: Finished runing Template[Records]
+Template[OpenGL]: Runing Template[Static\MiscTypes]
+Template[OpenGL]: Finished runing Template[Static\MiscTypes]
 Template[OpenGL]: Runing Template[Funcs]
 Template[OpenGL]: Finished runing Template[Funcs]
 Template[OpenGL]: Runing Template[Static\GDIIntegration]
@@ -160,36 +160,17 @@ Template[OpenGL]: Finished runing TemplateCommand[Pack MtrExt.pas]
 Template[OpenGL]: Runing Template[MtrExt]
 Template[OpenGL]: Finished runing Template[MtrExt]
 Finished runing Template[OpenGL]
-==================================== OpenGLABC ===================================
-Compiling "OpenGLABC.pas"
+Compiling "OpenGL.pas"
 Finished compiling: OK
 ==================================== Pre Init ====================================
 Compiling "Tests\Tester.pas"
-Finished compiling: OK
-Compiling "Packing\Doc\PackComments.pas"
 Finished compiling: OK
 Compiling "Packing\Template\Pack Template.pas"
 Finished compiling: OK
 ===================================== Testing ====================================
 Runing Tester
 Tester: Testing selected modules:
-Tester: CL + CLABC + GL + GLABC
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#6.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#2.pas"
-Tester: Finished compiling: ERRОR
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1.pas"
-Tester: Finished compiling: OK
+Tester: CL + GL
 Tester: Compiling "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.pas"
 Tester: Finished compiling: ERRОR
 Tester: Compiling "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
@@ -198,42 +179,16 @@ Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
-Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\07 HostExec\Err\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
 Tester: Finished compiling: OK
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
 Tester: Executing Test[Samples\OpenCL\MatrMlt]
 Tester: Done executing Test[Samples\OpenCL\MatrMlt]
 Tester: Executing Test[Samples\OpenCL\SimpleAddition]
 Tester: Done executing Test[Samples\OpenCL\SimpleAddition]
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: Executing Test[Tests\Exec\CLABC\07 HostExec\Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\07 HostExec\Err\0]
 Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Done executing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
@@ -242,9 +197,7 @@ Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 Packing OpenCL.pas
-Packing OpenCLABC.pas with doc
 Packing OpenGL.pas
-Packing OpenGLABC.pas
 Done copying release modules
 Packing sample "Samples\OpenCL\MatrMlt.cl"
 Packing sample "Samples\OpenCL\MatrMlt.pas"

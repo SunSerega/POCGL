@@ -3343,6 +3343,8 @@
     private static _TRANSFORM_FEEDBACK_BUFFER_START                := new GetPName($8C84);
     private static _TRANSFORM_FEEDBACK_BUFFER_SIZE                 := new GetPName($8C85);
     private static _TRANSFORM_FEEDBACK_BUFFER_BINDING              := new GetPName($8C8F);
+    private static _MOTION_ESTIMATION_SEARCH_BLOCK_X_QCOM          := new GetPName($8C90);
+    private static _MOTION_ESTIMATION_SEARCH_BLOCK_Y_QCOM          := new GetPName($8C91);
     private static _STENCIL_BACK_REF                               := new GetPName($8CA3);
     private static _STENCIL_BACK_VALUE_MASK                        := new GetPName($8CA4);
     private static _STENCIL_BACK_WRITEMASK                         := new GetPName($8CA5);
@@ -3359,6 +3361,8 @@
     private static _TIMESTAMP                                      := new GetPName($8E28);
     private static _PROVOKING_VERTEX                               := new GetPName($8E4F);
     private static _MAX_SAMPLE_MASK_WORDS                          := new GetPName($8E59);
+    private static _MAX_TESS_CONTROL_UNIFORM_BLOCKS                := new GetPName($8E89);
+    private static _MAX_TESS_EVALUATION_UNIFORM_BLOCKS             := new GetPName($8E8A);
     private static _PRIMITIVE_RESTART_INDEX                        := new GetPName($8F9E);
     private static _MIN_MAP_BUFFER_ALIGNMENT                       := new GetPName($90BC);
     private static _SHADER_STORAGE_BUFFER_BINDING                  := new GetPName($90D3);
@@ -3385,6 +3389,7 @@
     private static _MAX_GEOMETRY_INPUT_COMPONENTS                  := new GetPName($9123);
     private static _MAX_GEOMETRY_OUTPUT_COMPONENTS                 := new GetPName($9124);
     private static _MAX_FRAGMENT_INPUT_COMPONENTS                  := new GetPName($9125);
+    private static _CONTEXT_PROFILE_MASK                           := new GetPName($9126);
     private static _TEXTURE_BUFFER_OFFSET_ALIGNMENT                := new GetPName($919F);
     private static _MAX_COMPUTE_UNIFORM_BLOCKS                     := new GetPName($91BB);
     private static _MAX_COMPUTE_TEXTURE_IMAGE_UNITS                := new GetPName($91BC);
@@ -3897,6 +3902,8 @@
     public static property TRANSFORM_FEEDBACK_BUFFER_START:                GetPName read _TRANSFORM_FEEDBACK_BUFFER_START;
     public static property TRANSFORM_FEEDBACK_BUFFER_SIZE:                 GetPName read _TRANSFORM_FEEDBACK_BUFFER_SIZE;
     public static property TRANSFORM_FEEDBACK_BUFFER_BINDING:              GetPName read _TRANSFORM_FEEDBACK_BUFFER_BINDING;
+    public static property MOTION_ESTIMATION_SEARCH_BLOCK_X_QCOM:          GetPName read _MOTION_ESTIMATION_SEARCH_BLOCK_X_QCOM;
+    public static property MOTION_ESTIMATION_SEARCH_BLOCK_Y_QCOM:          GetPName read _MOTION_ESTIMATION_SEARCH_BLOCK_Y_QCOM;
     public static property STENCIL_BACK_REF:                               GetPName read _STENCIL_BACK_REF;
     public static property STENCIL_BACK_VALUE_MASK:                        GetPName read _STENCIL_BACK_VALUE_MASK;
     public static property STENCIL_BACK_WRITEMASK:                         GetPName read _STENCIL_BACK_WRITEMASK;
@@ -3913,6 +3920,8 @@
     public static property TIMESTAMP:                                      GetPName read _TIMESTAMP;
     public static property PROVOKING_VERTEX:                               GetPName read _PROVOKING_VERTEX;
     public static property MAX_SAMPLE_MASK_WORDS:                          GetPName read _MAX_SAMPLE_MASK_WORDS;
+    public static property MAX_TESS_CONTROL_UNIFORM_BLOCKS:                GetPName read _MAX_TESS_CONTROL_UNIFORM_BLOCKS;
+    public static property MAX_TESS_EVALUATION_UNIFORM_BLOCKS:             GetPName read _MAX_TESS_EVALUATION_UNIFORM_BLOCKS;
     public static property PRIMITIVE_RESTART_INDEX:                        GetPName read _PRIMITIVE_RESTART_INDEX;
     public static property MIN_MAP_BUFFER_ALIGNMENT:                       GetPName read _MIN_MAP_BUFFER_ALIGNMENT;
     public static property SHADER_STORAGE_BUFFER_BINDING:                  GetPName read _SHADER_STORAGE_BUFFER_BINDING;
@@ -3939,6 +3948,7 @@
     public static property MAX_GEOMETRY_INPUT_COMPONENTS:                  GetPName read _MAX_GEOMETRY_INPUT_COMPONENTS;
     public static property MAX_GEOMETRY_OUTPUT_COMPONENTS:                 GetPName read _MAX_GEOMETRY_OUTPUT_COMPONENTS;
     public static property MAX_FRAGMENT_INPUT_COMPONENTS:                  GetPName read _MAX_FRAGMENT_INPUT_COMPONENTS;
+    public static property CONTEXT_PROFILE_MASK:                           GetPName read _CONTEXT_PROFILE_MASK;
     public static property TEXTURE_BUFFER_OFFSET_ALIGNMENT:                GetPName read _TEXTURE_BUFFER_OFFSET_ALIGNMENT;
     public static property MAX_COMPUTE_UNIFORM_BLOCKS:                     GetPName read _MAX_COMPUTE_UNIFORM_BLOCKS;
     public static property MAX_COMPUTE_TEXTURE_IMAGE_UNITS:                GetPName read _MAX_COMPUTE_TEXTURE_IMAGE_UNITS;
@@ -4453,6 +4463,8 @@
       if self.val = UInt32($8C84) then Result := 'TRANSFORM_FEEDBACK_BUFFER_START' else
       if self.val = UInt32($8C85) then Result := 'TRANSFORM_FEEDBACK_BUFFER_SIZE' else
       if self.val = UInt32($8C8F) then Result := 'TRANSFORM_FEEDBACK_BUFFER_BINDING' else
+      if self.val = UInt32($8C90) then Result := 'MOTION_ESTIMATION_SEARCH_BLOCK_X_QCOM' else
+      if self.val = UInt32($8C91) then Result := 'MOTION_ESTIMATION_SEARCH_BLOCK_Y_QCOM' else
       if self.val = UInt32($8CA3) then Result := 'STENCIL_BACK_REF' else
       if self.val = UInt32($8CA4) then Result := 'STENCIL_BACK_VALUE_MASK' else
       if self.val = UInt32($8CA5) then Result := 'STENCIL_BACK_WRITEMASK' else
@@ -4469,6 +4481,8 @@
       if self.val = UInt32($8E28) then Result := 'TIMESTAMP' else
       if self.val = UInt32($8E4F) then Result := 'PROVOKING_VERTEX' else
       if self.val = UInt32($8E59) then Result := 'MAX_SAMPLE_MASK_WORDS' else
+      if self.val = UInt32($8E89) then Result := 'MAX_TESS_CONTROL_UNIFORM_BLOCKS' else
+      if self.val = UInt32($8E8A) then Result := 'MAX_TESS_EVALUATION_UNIFORM_BLOCKS' else
       if self.val = UInt32($8F9E) then Result := 'PRIMITIVE_RESTART_INDEX' else
       if self.val = UInt32($90BC) then Result := 'MIN_MAP_BUFFER_ALIGNMENT' else
       if self.val = UInt32($90D3) then Result := 'SHADER_STORAGE_BUFFER_BINDING' else
@@ -4495,6 +4509,7 @@
       if self.val = UInt32($9123) then Result := 'MAX_GEOMETRY_INPUT_COMPONENTS' else
       if self.val = UInt32($9124) then Result := 'MAX_GEOMETRY_OUTPUT_COMPONENTS' else
       if self.val = UInt32($9125) then Result := 'MAX_FRAGMENT_INPUT_COMPONENTS' else
+      if self.val = UInt32($9126) then Result := 'CONTEXT_PROFILE_MASK' else
       if self.val = UInt32($919F) then Result := 'TEXTURE_BUFFER_OFFSET_ALIGNMENT' else
       if self.val = UInt32($91BB) then Result := 'MAX_COMPUTE_UNIFORM_BLOCKS' else
       if self.val = UInt32($91BC) then Result := 'MAX_COMPUTE_TEXTURE_IMAGE_UNITS' else
@@ -4758,337 +4773,6 @@
       if self.val = UInt32($836A) then Result := 'TEXTURE_MAX_CLAMP_T_SGIX' else
       if self.val = UInt32($836B) then Result := 'TEXTURE_MAX_CLAMP_R_SGIX' else
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
-        Result := self.val.ToString;
-    end;
-    
-  end;
-  
-  GlslTypeToken = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _INT                                       := new GlslTypeToken($1404);
-    private static _UNSIGNED_INT                              := new GlslTypeToken($1405);
-    private static _FLOAT                                     := new GlslTypeToken($1406);
-    private static _DOUBLE                                    := new GlslTypeToken($140A);
-    private static _FLOAT_VEC2                                := new GlslTypeToken($8B50);
-    private static _FLOAT_VEC3                                := new GlslTypeToken($8B51);
-    private static _FLOAT_VEC4                                := new GlslTypeToken($8B52);
-    private static _INT_VEC2                                  := new GlslTypeToken($8B53);
-    private static _INT_VEC3                                  := new GlslTypeToken($8B54);
-    private static _INT_VEC4                                  := new GlslTypeToken($8B55);
-    private static _BOOL                                      := new GlslTypeToken($8B56);
-    private static _BOOL_VEC2                                 := new GlslTypeToken($8B57);
-    private static _BOOL_VEC3                                 := new GlslTypeToken($8B58);
-    private static _BOOL_VEC4                                 := new GlslTypeToken($8B59);
-    private static _FLOAT_MAT2                                := new GlslTypeToken($8B5A);
-    private static _FLOAT_MAT3                                := new GlslTypeToken($8B5B);
-    private static _FLOAT_MAT4                                := new GlslTypeToken($8B5C);
-    private static _SAMPLER_1D                                := new GlslTypeToken($8B5D);
-    private static _SAMPLER_2D                                := new GlslTypeToken($8B5E);
-    private static _SAMPLER_3D                                := new GlslTypeToken($8B5F);
-    private static _SAMPLER_CUBE                              := new GlslTypeToken($8B60);
-    private static _SAMPLER_1D_SHADOW                         := new GlslTypeToken($8B61);
-    private static _SAMPLER_2D_SHADOW                         := new GlslTypeToken($8B62);
-    private static _SAMPLER_2D_RECT                           := new GlslTypeToken($8B63);
-    private static _SAMPLER_2D_RECT_SHADOW                    := new GlslTypeToken($8B64);
-    private static _FLOAT_MAT2x3                              := new GlslTypeToken($8B65);
-    private static _FLOAT_MAT2x4                              := new GlslTypeToken($8B66);
-    private static _FLOAT_MAT3x2                              := new GlslTypeToken($8B67);
-    private static _FLOAT_MAT3x4                              := new GlslTypeToken($8B68);
-    private static _FLOAT_MAT4x2                              := new GlslTypeToken($8B69);
-    private static _FLOAT_MAT4x3                              := new GlslTypeToken($8B6A);
-    private static _SAMPLER_1D_ARRAY                          := new GlslTypeToken($8DC0);
-    private static _SAMPLER_2D_ARRAY                          := new GlslTypeToken($8DC1);
-    private static _SAMPLER_BUFFER                            := new GlslTypeToken($8DC2);
-    private static _SAMPLER_1D_ARRAY_SHADOW                   := new GlslTypeToken($8DC3);
-    private static _SAMPLER_2D_ARRAY_SHADOW                   := new GlslTypeToken($8DC4);
-    private static _SAMPLER_CUBE_SHADOW                       := new GlslTypeToken($8DC5);
-    private static _UNSIGNED_INT_VEC2                         := new GlslTypeToken($8DC6);
-    private static _UNSIGNED_INT_VEC3                         := new GlslTypeToken($8DC7);
-    private static _UNSIGNED_INT_VEC4                         := new GlslTypeToken($8DC8);
-    private static _INT_SAMPLER_1D                            := new GlslTypeToken($8DC9);
-    private static _INT_SAMPLER_2D                            := new GlslTypeToken($8DCA);
-    private static _INT_SAMPLER_3D                            := new GlslTypeToken($8DCB);
-    private static _INT_SAMPLER_CUBE                          := new GlslTypeToken($8DCC);
-    private static _INT_SAMPLER_2D_RECT                       := new GlslTypeToken($8DCD);
-    private static _INT_SAMPLER_1D_ARRAY                      := new GlslTypeToken($8DCE);
-    private static _INT_SAMPLER_2D_ARRAY                      := new GlslTypeToken($8DCF);
-    private static _INT_SAMPLER_BUFFER                        := new GlslTypeToken($8DD0);
-    private static _UNSIGNED_INT_SAMPLER_1D                   := new GlslTypeToken($8DD1);
-    private static _UNSIGNED_INT_SAMPLER_2D                   := new GlslTypeToken($8DD2);
-    private static _UNSIGNED_INT_SAMPLER_3D                   := new GlslTypeToken($8DD3);
-    private static _UNSIGNED_INT_SAMPLER_CUBE                 := new GlslTypeToken($8DD4);
-    private static _UNSIGNED_INT_SAMPLER_2D_RECT              := new GlslTypeToken($8DD5);
-    private static _UNSIGNED_INT_SAMPLER_1D_ARRAY             := new GlslTypeToken($8DD6);
-    private static _UNSIGNED_INT_SAMPLER_2D_ARRAY             := new GlslTypeToken($8DD7);
-    private static _UNSIGNED_INT_SAMPLER_BUFFER               := new GlslTypeToken($8DD8);
-    private static _DOUBLE_MAT2                               := new GlslTypeToken($8F46);
-    private static _DOUBLE_MAT3                               := new GlslTypeToken($8F47);
-    private static _DOUBLE_MAT4                               := new GlslTypeToken($8F48);
-    private static _DOUBLE_VEC2                               := new GlslTypeToken($8FFC);
-    private static _DOUBLE_VEC3                               := new GlslTypeToken($8FFD);
-    private static _DOUBLE_VEC4                               := new GlslTypeToken($8FFE);
-    private static _SAMPLER_CUBE_MAP_ARRAY                    := new GlslTypeToken($900C);
-    private static _SAMPLER_CUBE_MAP_ARRAY_SHADOW             := new GlslTypeToken($900D);
-    private static _INT_SAMPLER_CUBE_MAP_ARRAY                := new GlslTypeToken($900E);
-    private static _UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY       := new GlslTypeToken($900F);
-    private static _IMAGE_1D                                  := new GlslTypeToken($904C);
-    private static _IMAGE_2D                                  := new GlslTypeToken($904D);
-    private static _IMAGE_3D                                  := new GlslTypeToken($904E);
-    private static _IMAGE_2D_RECT                             := new GlslTypeToken($904F);
-    private static _IMAGE_CUBE                                := new GlslTypeToken($9050);
-    private static _IMAGE_BUFFER                              := new GlslTypeToken($9051);
-    private static _IMAGE_1D_ARRAY                            := new GlslTypeToken($9052);
-    private static _IMAGE_2D_ARRAY                            := new GlslTypeToken($9053);
-    private static _IMAGE_CUBE_MAP_ARRAY                      := new GlslTypeToken($9054);
-    private static _IMAGE_2D_MULTISAMPLE                      := new GlslTypeToken($9055);
-    private static _IMAGE_2D_MULTISAMPLE_ARRAY                := new GlslTypeToken($9056);
-    private static _INT_IMAGE_1D                              := new GlslTypeToken($9057);
-    private static _INT_IMAGE_2D                              := new GlslTypeToken($9058);
-    private static _INT_IMAGE_3D                              := new GlslTypeToken($9059);
-    private static _INT_IMAGE_2D_RECT                         := new GlslTypeToken($905A);
-    private static _INT_IMAGE_CUBE                            := new GlslTypeToken($905B);
-    private static _INT_IMAGE_BUFFER                          := new GlslTypeToken($905C);
-    private static _INT_IMAGE_1D_ARRAY                        := new GlslTypeToken($905D);
-    private static _INT_IMAGE_2D_ARRAY                        := new GlslTypeToken($905E);
-    private static _INT_IMAGE_CUBE_MAP_ARRAY                  := new GlslTypeToken($905F);
-    private static _INT_IMAGE_2D_MULTISAMPLE                  := new GlslTypeToken($9060);
-    private static _INT_IMAGE_2D_MULTISAMPLE_ARRAY            := new GlslTypeToken($9061);
-    private static _UNSIGNED_INT_IMAGE_1D                     := new GlslTypeToken($9062);
-    private static _UNSIGNED_INT_IMAGE_2D                     := new GlslTypeToken($9063);
-    private static _UNSIGNED_INT_IMAGE_3D                     := new GlslTypeToken($9064);
-    private static _UNSIGNED_INT_IMAGE_2D_RECT                := new GlslTypeToken($9065);
-    private static _UNSIGNED_INT_IMAGE_CUBE                   := new GlslTypeToken($9066);
-    private static _UNSIGNED_INT_IMAGE_BUFFER                 := new GlslTypeToken($9067);
-    private static _UNSIGNED_INT_IMAGE_1D_ARRAY               := new GlslTypeToken($9068);
-    private static _UNSIGNED_INT_IMAGE_2D_ARRAY               := new GlslTypeToken($9069);
-    private static _UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY         := new GlslTypeToken($906A);
-    private static _UNSIGNED_INT_IMAGE_2D_MULTISAMPLE         := new GlslTypeToken($906B);
-    private static _UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY   := new GlslTypeToken($906C);
-    private static _SAMPLER_2D_MULTISAMPLE                    := new GlslTypeToken($9108);
-    private static _INT_SAMPLER_2D_MULTISAMPLE                := new GlslTypeToken($9109);
-    private static _UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE       := new GlslTypeToken($910A);
-    private static _SAMPLER_2D_MULTISAMPLE_ARRAY              := new GlslTypeToken($910B);
-    private static _INT_SAMPLER_2D_MULTISAMPLE_ARRAY          := new GlslTypeToken($910C);
-    private static _UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY := new GlslTypeToken($910D);
-    private static _UNSIGNED_INT_ATOMIC_COUNTER               := new GlslTypeToken($92DB);
-    
-    public static property INT:                                       GlslTypeToken read _INT;
-    public static property UNSIGNED_INT:                              GlslTypeToken read _UNSIGNED_INT;
-    public static property FLOAT:                                     GlslTypeToken read _FLOAT;
-    public static property DOUBLE:                                    GlslTypeToken read _DOUBLE;
-    public static property FLOAT_VEC2:                                GlslTypeToken read _FLOAT_VEC2;
-    public static property FLOAT_VEC3:                                GlslTypeToken read _FLOAT_VEC3;
-    public static property FLOAT_VEC4:                                GlslTypeToken read _FLOAT_VEC4;
-    public static property INT_VEC2:                                  GlslTypeToken read _INT_VEC2;
-    public static property INT_VEC3:                                  GlslTypeToken read _INT_VEC3;
-    public static property INT_VEC4:                                  GlslTypeToken read _INT_VEC4;
-    public static property BOOL:                                      GlslTypeToken read _BOOL;
-    public static property BOOL_VEC2:                                 GlslTypeToken read _BOOL_VEC2;
-    public static property BOOL_VEC3:                                 GlslTypeToken read _BOOL_VEC3;
-    public static property BOOL_VEC4:                                 GlslTypeToken read _BOOL_VEC4;
-    public static property FLOAT_MAT2:                                GlslTypeToken read _FLOAT_MAT2;
-    public static property FLOAT_MAT3:                                GlslTypeToken read _FLOAT_MAT3;
-    public static property FLOAT_MAT4:                                GlslTypeToken read _FLOAT_MAT4;
-    public static property SAMPLER_1D:                                GlslTypeToken read _SAMPLER_1D;
-    public static property SAMPLER_2D:                                GlslTypeToken read _SAMPLER_2D;
-    public static property SAMPLER_3D:                                GlslTypeToken read _SAMPLER_3D;
-    public static property SAMPLER_CUBE:                              GlslTypeToken read _SAMPLER_CUBE;
-    public static property SAMPLER_1D_SHADOW:                         GlslTypeToken read _SAMPLER_1D_SHADOW;
-    public static property SAMPLER_2D_SHADOW:                         GlslTypeToken read _SAMPLER_2D_SHADOW;
-    public static property SAMPLER_2D_RECT:                           GlslTypeToken read _SAMPLER_2D_RECT;
-    public static property SAMPLER_2D_RECT_SHADOW:                    GlslTypeToken read _SAMPLER_2D_RECT_SHADOW;
-    public static property FLOAT_MAT2x3:                              GlslTypeToken read _FLOAT_MAT2x3;
-    public static property FLOAT_MAT2x4:                              GlslTypeToken read _FLOAT_MAT2x4;
-    public static property FLOAT_MAT3x2:                              GlslTypeToken read _FLOAT_MAT3x2;
-    public static property FLOAT_MAT3x4:                              GlslTypeToken read _FLOAT_MAT3x4;
-    public static property FLOAT_MAT4x2:                              GlslTypeToken read _FLOAT_MAT4x2;
-    public static property FLOAT_MAT4x3:                              GlslTypeToken read _FLOAT_MAT4x3;
-    public static property SAMPLER_1D_ARRAY:                          GlslTypeToken read _SAMPLER_1D_ARRAY;
-    public static property SAMPLER_2D_ARRAY:                          GlslTypeToken read _SAMPLER_2D_ARRAY;
-    public static property SAMPLER_BUFFER:                            GlslTypeToken read _SAMPLER_BUFFER;
-    public static property SAMPLER_1D_ARRAY_SHADOW:                   GlslTypeToken read _SAMPLER_1D_ARRAY_SHADOW;
-    public static property SAMPLER_2D_ARRAY_SHADOW:                   GlslTypeToken read _SAMPLER_2D_ARRAY_SHADOW;
-    public static property SAMPLER_CUBE_SHADOW:                       GlslTypeToken read _SAMPLER_CUBE_SHADOW;
-    public static property UNSIGNED_INT_VEC2:                         GlslTypeToken read _UNSIGNED_INT_VEC2;
-    public static property UNSIGNED_INT_VEC3:                         GlslTypeToken read _UNSIGNED_INT_VEC3;
-    public static property UNSIGNED_INT_VEC4:                         GlslTypeToken read _UNSIGNED_INT_VEC4;
-    public static property INT_SAMPLER_1D:                            GlslTypeToken read _INT_SAMPLER_1D;
-    public static property INT_SAMPLER_2D:                            GlslTypeToken read _INT_SAMPLER_2D;
-    public static property INT_SAMPLER_3D:                            GlslTypeToken read _INT_SAMPLER_3D;
-    public static property INT_SAMPLER_CUBE:                          GlslTypeToken read _INT_SAMPLER_CUBE;
-    public static property INT_SAMPLER_2D_RECT:                       GlslTypeToken read _INT_SAMPLER_2D_RECT;
-    public static property INT_SAMPLER_1D_ARRAY:                      GlslTypeToken read _INT_SAMPLER_1D_ARRAY;
-    public static property INT_SAMPLER_2D_ARRAY:                      GlslTypeToken read _INT_SAMPLER_2D_ARRAY;
-    public static property INT_SAMPLER_BUFFER:                        GlslTypeToken read _INT_SAMPLER_BUFFER;
-    public static property UNSIGNED_INT_SAMPLER_1D:                   GlslTypeToken read _UNSIGNED_INT_SAMPLER_1D;
-    public static property UNSIGNED_INT_SAMPLER_2D:                   GlslTypeToken read _UNSIGNED_INT_SAMPLER_2D;
-    public static property UNSIGNED_INT_SAMPLER_3D:                   GlslTypeToken read _UNSIGNED_INT_SAMPLER_3D;
-    public static property UNSIGNED_INT_SAMPLER_CUBE:                 GlslTypeToken read _UNSIGNED_INT_SAMPLER_CUBE;
-    public static property UNSIGNED_INT_SAMPLER_2D_RECT:              GlslTypeToken read _UNSIGNED_INT_SAMPLER_2D_RECT;
-    public static property UNSIGNED_INT_SAMPLER_1D_ARRAY:             GlslTypeToken read _UNSIGNED_INT_SAMPLER_1D_ARRAY;
-    public static property UNSIGNED_INT_SAMPLER_2D_ARRAY:             GlslTypeToken read _UNSIGNED_INT_SAMPLER_2D_ARRAY;
-    public static property UNSIGNED_INT_SAMPLER_BUFFER:               GlslTypeToken read _UNSIGNED_INT_SAMPLER_BUFFER;
-    public static property DOUBLE_MAT2:                               GlslTypeToken read _DOUBLE_MAT2;
-    public static property DOUBLE_MAT3:                               GlslTypeToken read _DOUBLE_MAT3;
-    public static property DOUBLE_MAT4:                               GlslTypeToken read _DOUBLE_MAT4;
-    public static property DOUBLE_VEC2:                               GlslTypeToken read _DOUBLE_VEC2;
-    public static property DOUBLE_VEC3:                               GlslTypeToken read _DOUBLE_VEC3;
-    public static property DOUBLE_VEC4:                               GlslTypeToken read _DOUBLE_VEC4;
-    public static property SAMPLER_CUBE_MAP_ARRAY:                    GlslTypeToken read _SAMPLER_CUBE_MAP_ARRAY;
-    public static property SAMPLER_CUBE_MAP_ARRAY_SHADOW:             GlslTypeToken read _SAMPLER_CUBE_MAP_ARRAY_SHADOW;
-    public static property INT_SAMPLER_CUBE_MAP_ARRAY:                GlslTypeToken read _INT_SAMPLER_CUBE_MAP_ARRAY;
-    public static property UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:       GlslTypeToken read _UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY;
-    public static property IMAGE_1D:                                  GlslTypeToken read _IMAGE_1D;
-    public static property IMAGE_2D:                                  GlslTypeToken read _IMAGE_2D;
-    public static property IMAGE_3D:                                  GlslTypeToken read _IMAGE_3D;
-    public static property IMAGE_2D_RECT:                             GlslTypeToken read _IMAGE_2D_RECT;
-    public static property IMAGE_CUBE:                                GlslTypeToken read _IMAGE_CUBE;
-    public static property IMAGE_BUFFER:                              GlslTypeToken read _IMAGE_BUFFER;
-    public static property IMAGE_1D_ARRAY:                            GlslTypeToken read _IMAGE_1D_ARRAY;
-    public static property IMAGE_2D_ARRAY:                            GlslTypeToken read _IMAGE_2D_ARRAY;
-    public static property IMAGE_CUBE_MAP_ARRAY:                      GlslTypeToken read _IMAGE_CUBE_MAP_ARRAY;
-    public static property IMAGE_2D_MULTISAMPLE:                      GlslTypeToken read _IMAGE_2D_MULTISAMPLE;
-    public static property IMAGE_2D_MULTISAMPLE_ARRAY:                GlslTypeToken read _IMAGE_2D_MULTISAMPLE_ARRAY;
-    public static property INT_IMAGE_1D:                              GlslTypeToken read _INT_IMAGE_1D;
-    public static property INT_IMAGE_2D:                              GlslTypeToken read _INT_IMAGE_2D;
-    public static property INT_IMAGE_3D:                              GlslTypeToken read _INT_IMAGE_3D;
-    public static property INT_IMAGE_2D_RECT:                         GlslTypeToken read _INT_IMAGE_2D_RECT;
-    public static property INT_IMAGE_CUBE:                            GlslTypeToken read _INT_IMAGE_CUBE;
-    public static property INT_IMAGE_BUFFER:                          GlslTypeToken read _INT_IMAGE_BUFFER;
-    public static property INT_IMAGE_1D_ARRAY:                        GlslTypeToken read _INT_IMAGE_1D_ARRAY;
-    public static property INT_IMAGE_2D_ARRAY:                        GlslTypeToken read _INT_IMAGE_2D_ARRAY;
-    public static property INT_IMAGE_CUBE_MAP_ARRAY:                  GlslTypeToken read _INT_IMAGE_CUBE_MAP_ARRAY;
-    public static property INT_IMAGE_2D_MULTISAMPLE:                  GlslTypeToken read _INT_IMAGE_2D_MULTISAMPLE;
-    public static property INT_IMAGE_2D_MULTISAMPLE_ARRAY:            GlslTypeToken read _INT_IMAGE_2D_MULTISAMPLE_ARRAY;
-    public static property UNSIGNED_INT_IMAGE_1D:                     GlslTypeToken read _UNSIGNED_INT_IMAGE_1D;
-    public static property UNSIGNED_INT_IMAGE_2D:                     GlslTypeToken read _UNSIGNED_INT_IMAGE_2D;
-    public static property UNSIGNED_INT_IMAGE_3D:                     GlslTypeToken read _UNSIGNED_INT_IMAGE_3D;
-    public static property UNSIGNED_INT_IMAGE_2D_RECT:                GlslTypeToken read _UNSIGNED_INT_IMAGE_2D_RECT;
-    public static property UNSIGNED_INT_IMAGE_CUBE:                   GlslTypeToken read _UNSIGNED_INT_IMAGE_CUBE;
-    public static property UNSIGNED_INT_IMAGE_BUFFER:                 GlslTypeToken read _UNSIGNED_INT_IMAGE_BUFFER;
-    public static property UNSIGNED_INT_IMAGE_1D_ARRAY:               GlslTypeToken read _UNSIGNED_INT_IMAGE_1D_ARRAY;
-    public static property UNSIGNED_INT_IMAGE_2D_ARRAY:               GlslTypeToken read _UNSIGNED_INT_IMAGE_2D_ARRAY;
-    public static property UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY:         GlslTypeToken read _UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY;
-    public static property UNSIGNED_INT_IMAGE_2D_MULTISAMPLE:         GlslTypeToken read _UNSIGNED_INT_IMAGE_2D_MULTISAMPLE;
-    public static property UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:   GlslTypeToken read _UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY;
-    public static property SAMPLER_2D_MULTISAMPLE:                    GlslTypeToken read _SAMPLER_2D_MULTISAMPLE;
-    public static property INT_SAMPLER_2D_MULTISAMPLE:                GlslTypeToken read _INT_SAMPLER_2D_MULTISAMPLE;
-    public static property UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:       GlslTypeToken read _UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE;
-    public static property SAMPLER_2D_MULTISAMPLE_ARRAY:              GlslTypeToken read _SAMPLER_2D_MULTISAMPLE_ARRAY;
-    public static property INT_SAMPLER_2D_MULTISAMPLE_ARRAY:          GlslTypeToken read _INT_SAMPLER_2D_MULTISAMPLE_ARRAY;
-    public static property UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: GlslTypeToken read _UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY;
-    public static property UNSIGNED_INT_ATOMIC_COUNTER:               GlslTypeToken read _UNSIGNED_INT_ATOMIC_COUNTER;
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt32($1404) then Result := 'INT' else
-      if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-      if self.val = UInt32($1406) then Result := 'FLOAT' else
-      if self.val = UInt32($140A) then Result := 'DOUBLE' else
-      if self.val = UInt32($8B50) then Result := 'FLOAT_VEC2' else
-      if self.val = UInt32($8B51) then Result := 'FLOAT_VEC3' else
-      if self.val = UInt32($8B52) then Result := 'FLOAT_VEC4' else
-      if self.val = UInt32($8B53) then Result := 'INT_VEC2' else
-      if self.val = UInt32($8B54) then Result := 'INT_VEC3' else
-      if self.val = UInt32($8B55) then Result := 'INT_VEC4' else
-      if self.val = UInt32($8B56) then Result := 'BOOL' else
-      if self.val = UInt32($8B57) then Result := 'BOOL_VEC2' else
-      if self.val = UInt32($8B58) then Result := 'BOOL_VEC3' else
-      if self.val = UInt32($8B59) then Result := 'BOOL_VEC4' else
-      if self.val = UInt32($8B5A) then Result := 'FLOAT_MAT2' else
-      if self.val = UInt32($8B5B) then Result := 'FLOAT_MAT3' else
-      if self.val = UInt32($8B5C) then Result := 'FLOAT_MAT4' else
-      if self.val = UInt32($8B5D) then Result := 'SAMPLER_1D' else
-      if self.val = UInt32($8B5E) then Result := 'SAMPLER_2D' else
-      if self.val = UInt32($8B5F) then Result := 'SAMPLER_3D' else
-      if self.val = UInt32($8B60) then Result := 'SAMPLER_CUBE' else
-      if self.val = UInt32($8B61) then Result := 'SAMPLER_1D_SHADOW' else
-      if self.val = UInt32($8B62) then Result := 'SAMPLER_2D_SHADOW' else
-      if self.val = UInt32($8B63) then Result := 'SAMPLER_2D_RECT' else
-      if self.val = UInt32($8B64) then Result := 'SAMPLER_2D_RECT_SHADOW' else
-      if self.val = UInt32($8B65) then Result := 'FLOAT_MAT2x3' else
-      if self.val = UInt32($8B66) then Result := 'FLOAT_MAT2x4' else
-      if self.val = UInt32($8B67) then Result := 'FLOAT_MAT3x2' else
-      if self.val = UInt32($8B68) then Result := 'FLOAT_MAT3x4' else
-      if self.val = UInt32($8B69) then Result := 'FLOAT_MAT4x2' else
-      if self.val = UInt32($8B6A) then Result := 'FLOAT_MAT4x3' else
-      if self.val = UInt32($8DC0) then Result := 'SAMPLER_1D_ARRAY' else
-      if self.val = UInt32($8DC1) then Result := 'SAMPLER_2D_ARRAY' else
-      if self.val = UInt32($8DC2) then Result := 'SAMPLER_BUFFER' else
-      if self.val = UInt32($8DC3) then Result := 'SAMPLER_1D_ARRAY_SHADOW' else
-      if self.val = UInt32($8DC4) then Result := 'SAMPLER_2D_ARRAY_SHADOW' else
-      if self.val = UInt32($8DC5) then Result := 'SAMPLER_CUBE_SHADOW' else
-      if self.val = UInt32($8DC6) then Result := 'UNSIGNED_INT_VEC2' else
-      if self.val = UInt32($8DC7) then Result := 'UNSIGNED_INT_VEC3' else
-      if self.val = UInt32($8DC8) then Result := 'UNSIGNED_INT_VEC4' else
-      if self.val = UInt32($8DC9) then Result := 'INT_SAMPLER_1D' else
-      if self.val = UInt32($8DCA) then Result := 'INT_SAMPLER_2D' else
-      if self.val = UInt32($8DCB) then Result := 'INT_SAMPLER_3D' else
-      if self.val = UInt32($8DCC) then Result := 'INT_SAMPLER_CUBE' else
-      if self.val = UInt32($8DCD) then Result := 'INT_SAMPLER_2D_RECT' else
-      if self.val = UInt32($8DCE) then Result := 'INT_SAMPLER_1D_ARRAY' else
-      if self.val = UInt32($8DCF) then Result := 'INT_SAMPLER_2D_ARRAY' else
-      if self.val = UInt32($8DD0) then Result := 'INT_SAMPLER_BUFFER' else
-      if self.val = UInt32($8DD1) then Result := 'UNSIGNED_INT_SAMPLER_1D' else
-      if self.val = UInt32($8DD2) then Result := 'UNSIGNED_INT_SAMPLER_2D' else
-      if self.val = UInt32($8DD3) then Result := 'UNSIGNED_INT_SAMPLER_3D' else
-      if self.val = UInt32($8DD4) then Result := 'UNSIGNED_INT_SAMPLER_CUBE' else
-      if self.val = UInt32($8DD5) then Result := 'UNSIGNED_INT_SAMPLER_2D_RECT' else
-      if self.val = UInt32($8DD6) then Result := 'UNSIGNED_INT_SAMPLER_1D_ARRAY' else
-      if self.val = UInt32($8DD7) then Result := 'UNSIGNED_INT_SAMPLER_2D_ARRAY' else
-      if self.val = UInt32($8DD8) then Result := 'UNSIGNED_INT_SAMPLER_BUFFER' else
-      if self.val = UInt32($8F46) then Result := 'DOUBLE_MAT2' else
-      if self.val = UInt32($8F47) then Result := 'DOUBLE_MAT3' else
-      if self.val = UInt32($8F48) then Result := 'DOUBLE_MAT4' else
-      if self.val = UInt32($8FFC) then Result := 'DOUBLE_VEC2' else
-      if self.val = UInt32($8FFD) then Result := 'DOUBLE_VEC3' else
-      if self.val = UInt32($8FFE) then Result := 'DOUBLE_VEC4' else
-      if self.val = UInt32($900C) then Result := 'SAMPLER_CUBE_MAP_ARRAY' else
-      if self.val = UInt32($900D) then Result := 'SAMPLER_CUBE_MAP_ARRAY_SHADOW' else
-      if self.val = UInt32($900E) then Result := 'INT_SAMPLER_CUBE_MAP_ARRAY' else
-      if self.val = UInt32($900F) then Result := 'UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY' else
-      if self.val = UInt32($904C) then Result := 'IMAGE_1D' else
-      if self.val = UInt32($904D) then Result := 'IMAGE_2D' else
-      if self.val = UInt32($904E) then Result := 'IMAGE_3D' else
-      if self.val = UInt32($904F) then Result := 'IMAGE_2D_RECT' else
-      if self.val = UInt32($9050) then Result := 'IMAGE_CUBE' else
-      if self.val = UInt32($9051) then Result := 'IMAGE_BUFFER' else
-      if self.val = UInt32($9052) then Result := 'IMAGE_1D_ARRAY' else
-      if self.val = UInt32($9053) then Result := 'IMAGE_2D_ARRAY' else
-      if self.val = UInt32($9054) then Result := 'IMAGE_CUBE_MAP_ARRAY' else
-      if self.val = UInt32($9055) then Result := 'IMAGE_2D_MULTISAMPLE' else
-      if self.val = UInt32($9056) then Result := 'IMAGE_2D_MULTISAMPLE_ARRAY' else
-      if self.val = UInt32($9057) then Result := 'INT_IMAGE_1D' else
-      if self.val = UInt32($9058) then Result := 'INT_IMAGE_2D' else
-      if self.val = UInt32($9059) then Result := 'INT_IMAGE_3D' else
-      if self.val = UInt32($905A) then Result := 'INT_IMAGE_2D_RECT' else
-      if self.val = UInt32($905B) then Result := 'INT_IMAGE_CUBE' else
-      if self.val = UInt32($905C) then Result := 'INT_IMAGE_BUFFER' else
-      if self.val = UInt32($905D) then Result := 'INT_IMAGE_1D_ARRAY' else
-      if self.val = UInt32($905E) then Result := 'INT_IMAGE_2D_ARRAY' else
-      if self.val = UInt32($905F) then Result := 'INT_IMAGE_CUBE_MAP_ARRAY' else
-      if self.val = UInt32($9060) then Result := 'INT_IMAGE_2D_MULTISAMPLE' else
-      if self.val = UInt32($9061) then Result := 'INT_IMAGE_2D_MULTISAMPLE_ARRAY' else
-      if self.val = UInt32($9062) then Result := 'UNSIGNED_INT_IMAGE_1D' else
-      if self.val = UInt32($9063) then Result := 'UNSIGNED_INT_IMAGE_2D' else
-      if self.val = UInt32($9064) then Result := 'UNSIGNED_INT_IMAGE_3D' else
-      if self.val = UInt32($9065) then Result := 'UNSIGNED_INT_IMAGE_2D_RECT' else
-      if self.val = UInt32($9066) then Result := 'UNSIGNED_INT_IMAGE_CUBE' else
-      if self.val = UInt32($9067) then Result := 'UNSIGNED_INT_IMAGE_BUFFER' else
-      if self.val = UInt32($9068) then Result := 'UNSIGNED_INT_IMAGE_1D_ARRAY' else
-      if self.val = UInt32($9069) then Result := 'UNSIGNED_INT_IMAGE_2D_ARRAY' else
-      if self.val = UInt32($906A) then Result := 'UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY' else
-      if self.val = UInt32($906B) then Result := 'UNSIGNED_INT_IMAGE_2D_MULTISAMPLE' else
-      if self.val = UInt32($906C) then Result := 'UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY' else
-      if self.val = UInt32($9108) then Result := 'SAMPLER_2D_MULTISAMPLE' else
-      if self.val = UInt32($9109) then Result := 'INT_SAMPLER_2D_MULTISAMPLE' else
-      if self.val = UInt32($910A) then Result := 'UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE' else
-      if self.val = UInt32($910B) then Result := 'SAMPLER_2D_MULTISAMPLE_ARRAY' else
-      if self.val = UInt32($910C) then Result := 'INT_SAMPLER_2D_MULTISAMPLE_ARRAY' else
-      if self.val = UInt32($910D) then Result := 'UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY' else
-      if self.val = UInt32($92DB) then Result := 'UNSIGNED_INT_ATOMIC_COUNTER' else
         Result := self.val.ToString;
     end;
     
@@ -9624,12 +9308,14 @@
     private static _TEXTURE_MIN_LOD                      := new SamplerParameterF($813A);
     private static _TEXTURE_MAX_LOD                      := new SamplerParameterF($813B);
     private static _TEXTURE_MAX_ANISOTROPY               := new SamplerParameterF($84FE);
+    private static _TEXTURE_LOD_BIAS                     := new SamplerParameterF($8501);
     private static _TEXTURE_UNNORMALIZED_COORDINATES_ARM := new SamplerParameterF($8F6A);
     
     public static property TEXTURE_BORDER_COLOR:                 SamplerParameterF read _TEXTURE_BORDER_COLOR;
     public static property TEXTURE_MIN_LOD:                      SamplerParameterF read _TEXTURE_MIN_LOD;
     public static property TEXTURE_MAX_LOD:                      SamplerParameterF read _TEXTURE_MAX_LOD;
     public static property TEXTURE_MAX_ANISOTROPY:               SamplerParameterF read _TEXTURE_MAX_ANISOTROPY;
+    public static property TEXTURE_LOD_BIAS:                     SamplerParameterF read _TEXTURE_LOD_BIAS;
     public static property TEXTURE_UNNORMALIZED_COORDINATES_ARM: SamplerParameterF read _TEXTURE_UNNORMALIZED_COORDINATES_ARM;
     
     public function ToString: string; override;
@@ -9638,6 +9324,7 @@
       if self.val = UInt32($813A) then Result := 'TEXTURE_MIN_LOD' else
       if self.val = UInt32($813B) then Result := 'TEXTURE_MAX_LOD' else
       if self.val = UInt32($84FE) then Result := 'TEXTURE_MAX_ANISOTROPY' else
+      if self.val = UInt32($8501) then Result := 'TEXTURE_LOD_BIAS' else
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
         Result := self.val.ToString;
     end;
@@ -10477,6 +10164,7 @@
     private static _TEXTURE_2D_ARRAY                   := new TextureTarget($8C1A);
     private static _PROXY_TEXTURE_2D_ARRAY             := new TextureTarget($8C1B);
     private static _PROXY_TEXTURE_2D_ARRAY_EXT         := new TextureTarget($8C1B);
+    private static _TEXTURE_BUFFER                     := new TextureTarget($8C2A);
     private static _TEXTURE_CUBE_MAP_ARRAY             := new TextureTarget($9009);
     private static _TEXTURE_CUBE_MAP_ARRAY_ARB         := new TextureTarget($9009);
     private static _TEXTURE_CUBE_MAP_ARRAY_EXT         := new TextureTarget($9009);
@@ -10522,6 +10210,7 @@
     public static property TEXTURE_2D_ARRAY:                   TextureTarget read _TEXTURE_2D_ARRAY;
     public static property PROXY_TEXTURE_2D_ARRAY:             TextureTarget read _PROXY_TEXTURE_2D_ARRAY;
     public static property PROXY_TEXTURE_2D_ARRAY_EXT:         TextureTarget read _PROXY_TEXTURE_2D_ARRAY_EXT;
+    public static property TEXTURE_BUFFER:                     TextureTarget read _TEXTURE_BUFFER;
     public static property TEXTURE_CUBE_MAP_ARRAY:             TextureTarget read _TEXTURE_CUBE_MAP_ARRAY;
     public static property TEXTURE_CUBE_MAP_ARRAY_ARB:         TextureTarget read _TEXTURE_CUBE_MAP_ARRAY_ARB;
     public static property TEXTURE_CUBE_MAP_ARRAY_EXT:         TextureTarget read _TEXTURE_CUBE_MAP_ARRAY_EXT;
@@ -10569,6 +10258,7 @@
       if self.val = UInt32($8C1A) then Result := 'TEXTURE_2D_ARRAY' else
       if self.val = UInt32($8C1B) then Result := 'PROXY_TEXTURE_2D_ARRAY' else
       if self.val = UInt32($8C1B) then Result := 'PROXY_TEXTURE_2D_ARRAY_EXT' else
+      if self.val = UInt32($8C2A) then Result := 'TEXTURE_BUFFER' else
       if self.val = UInt32($9009) then Result := 'TEXTURE_CUBE_MAP_ARRAY' else
       if self.val = UInt32($9009) then Result := 'TEXTURE_CUBE_MAP_ARRAY_ARB' else
       if self.val = UInt32($9009) then Result := 'TEXTURE_CUBE_MAP_ARRAY_EXT' else
@@ -11405,46 +11095,6 @@
       if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV' else
       if self.val = UInt32($8C3B) then Result := 'UNSIGNED_INT_10F_11F_11F_REV' else
       if self.val = UInt32($8D9F) then Result := 'INT_2_10_10_10_REV' else
-        Result := self.val.ToString;
-    end;
-    
-  end;
-  
-  VertexBufferObjectParameter = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    private static _BUFFER_IMMUTABLE_STORAGE := new VertexBufferObjectParameter($821F);
-    private static _BUFFER_STORAGE_FLAGS     := new VertexBufferObjectParameter($8220);
-    private static _BUFFER_SIZE              := new VertexBufferObjectParameter($8764);
-    private static _BUFFER_USAGE             := new VertexBufferObjectParameter($8765);
-    private static _BUFFER_ACCESS            := new VertexBufferObjectParameter($88BB);
-    private static _BUFFER_MAPPED            := new VertexBufferObjectParameter($88BC);
-    private static _BUFFER_ACCESS_FLAGS      := new VertexBufferObjectParameter($911F);
-    private static _BUFFER_MAP_LENGTH        := new VertexBufferObjectParameter($9120);
-    private static _BUFFER_MAP_OFFSET        := new VertexBufferObjectParameter($9121);
-    
-    public static property BUFFER_IMMUTABLE_STORAGE: VertexBufferObjectParameter read _BUFFER_IMMUTABLE_STORAGE;
-    public static property BUFFER_STORAGE_FLAGS:     VertexBufferObjectParameter read _BUFFER_STORAGE_FLAGS;
-    public static property BUFFER_SIZE:              VertexBufferObjectParameter read _BUFFER_SIZE;
-    public static property BUFFER_USAGE:             VertexBufferObjectParameter read _BUFFER_USAGE;
-    public static property BUFFER_ACCESS:            VertexBufferObjectParameter read _BUFFER_ACCESS;
-    public static property BUFFER_MAPPED:            VertexBufferObjectParameter read _BUFFER_MAPPED;
-    public static property BUFFER_ACCESS_FLAGS:      VertexBufferObjectParameter read _BUFFER_ACCESS_FLAGS;
-    public static property BUFFER_MAP_LENGTH:        VertexBufferObjectParameter read _BUFFER_MAP_LENGTH;
-    public static property BUFFER_MAP_OFFSET:        VertexBufferObjectParameter read _BUFFER_MAP_OFFSET;
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt32($821F) then Result := 'BUFFER_IMMUTABLE_STORAGE' else
-      if self.val = UInt32($8220) then Result := 'BUFFER_STORAGE_FLAGS' else
-      if self.val = UInt32($8764) then Result := 'BUFFER_SIZE' else
-      if self.val = UInt32($8765) then Result := 'BUFFER_USAGE' else
-      if self.val = UInt32($88BB) then Result := 'BUFFER_ACCESS' else
-      if self.val = UInt32($88BC) then Result := 'BUFFER_MAPPED' else
-      if self.val = UInt32($911F) then Result := 'BUFFER_ACCESS_FLAGS' else
-      if self.val = UInt32($9120) then Result := 'BUFFER_MAP_LENGTH' else
-      if self.val = UInt32($9121) then Result := 'BUFFER_MAP_OFFSET' else
         Result := self.val.ToString;
     end;
     

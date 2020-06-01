@@ -1,6 +1,6 @@
 
 
 
-PackAll.exe "Stages= Test + Release"
+start PackAll.exe "Stages= Test + Release"
 
 

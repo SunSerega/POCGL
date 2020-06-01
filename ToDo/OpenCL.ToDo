@@ -1,0 +1,19 @@
+
+
+
+        <type category="struct" name="cl_name_version">
+            <member><type>cl_version</type>          <name>version</name></member>
+            <member><type>char</type><name>name</name>[<enum>CL_NAME_VERSION_MAX_NAME_SIZE</enum>]</member>
+        </type>
+
+Разворачивается в:
+
+# cl_name_version
+	version: UInt32
+	name: ntv_char
+
+То есть нужны статичные строки
+
+=======================
+
+

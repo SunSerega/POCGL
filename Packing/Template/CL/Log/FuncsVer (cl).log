@@ -564,7 +564,7 @@
 	clSetProgramReleaseCallback
 	clSetProgramSpecializationConstant
 
-# 2.2
+# 3.0
 	clGetPlatformIDs
 	clGetPlatformInfo
 	clGetDeviceIDs

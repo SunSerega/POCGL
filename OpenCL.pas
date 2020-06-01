@@ -1001,6 +1001,7 @@ uses System.Runtime.CompilerServices;
     private static _DEVICE_ATOMIC_FENCE_CAPABILITIES                   := new DeviceInfo($1064);
     private static _DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT              := new DeviceInfo($1065);
     private static _DEVICE_OPENCL_C_ALL_VERSIONS                       := new DeviceInfo($1066);
+    private static _DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE          := new DeviceInfo($1067);
     private static _DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT     := new DeviceInfo($1068);
     private static _DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT               := new DeviceInfo($1069);
     private static _DEVICE_OPENCL_C_FEATURES                           := new DeviceInfo($106F);
@@ -1016,7 +1017,27 @@ uses System.Runtime.CompilerServices;
     private static _DEVICE_GPU_OVERLAP_NV                              := new DeviceInfo($4004);
     private static _DEVICE_KERNEL_EXEC_TIMEOUT_NV                      := new DeviceInfo($4005);
     private static _DEVICE_INTEGRATED_MEMORY_NV                        := new DeviceInfo($4006);
+    private static _DEVICE_PREFERRED_WORK_GROUP_SIZE_AMD               := new DeviceInfo($4030);
+    private static _DEVICE_MAX_WORK_GROUP_SIZE_AMD                     := new DeviceInfo($4031);
+    private static _DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE_AMD          := new DeviceInfo($4033);
+    private static _DEVICE_PCIE_ID_AMD                                 := new DeviceInfo($4034);
     private static _DEVICE_PROFILING_TIMER_OFFSET_AMD                  := new DeviceInfo($4036);
+    private static _DEVICE_TOPOLOGY_AMD                                := new DeviceInfo($4037);
+    private static _DEVICE_BOARD_NAME_AMD                              := new DeviceInfo($4038);
+    private static _DEVICE_GLOBAL_FREE_MEMORY_AMD                      := new DeviceInfo($4039);
+    private static _DEVICE_SIMD_PER_COMPUTE_UNIT_AMD                   := new DeviceInfo($4040);
+    private static _DEVICE_SIMD_WIDTH_AMD                              := new DeviceInfo($4041);
+    private static _DEVICE_SIMD_INSTRUCTION_WIDTH_AMD                  := new DeviceInfo($4042);
+    private static _DEVICE_WAVEFRONT_WIDTH_AMD                         := new DeviceInfo($4043);
+    private static _DEVICE_GLOBAL_MEM_CHANNELS_AMD                     := new DeviceInfo($4044);
+    private static _DEVICE_GLOBAL_MEM_CHANNEL_BANKS_AMD                := new DeviceInfo($4045);
+    private static _DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH_AMD           := new DeviceInfo($4046);
+    private static _DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT_AMD         := new DeviceInfo($4047);
+    private static _DEVICE_LOCAL_MEM_BANKS_AMD                         := new DeviceInfo($4048);
+    private static _DEVICE_THREAD_TRACE_SUPPORTED_AMD                  := new DeviceInfo($4049);
+    private static _DEVICE_GFXIP_MAJOR_AMD                             := new DeviceInfo($404A);
+    private static _DEVICE_GFXIP_MINOR_AMD                             := new DeviceInfo($404B);
+    private static _DEVICE_AVAILABLE_ASYNC_QUEUES_AMD                  := new DeviceInfo($404C);
     private static _DEVICE_PARENT_DEVICE_EXT                           := new DeviceInfo($4054);
     private static _DEVICE_PARTITION_TYPES_EXT                         := new DeviceInfo($4055);
     private static _DEVICE_AFFINITY_DOMAINS_EXT                        := new DeviceInfo($4056);
@@ -1143,6 +1164,7 @@ uses System.Runtime.CompilerServices;
     public static property DEVICE_ATOMIC_FENCE_CAPABILITIES:                   DeviceInfo read _DEVICE_ATOMIC_FENCE_CAPABILITIES;
     public static property DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT:              DeviceInfo read _DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT;
     public static property DEVICE_OPENCL_C_ALL_VERSIONS:                       DeviceInfo read _DEVICE_OPENCL_C_ALL_VERSIONS;
+    public static property DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE:          DeviceInfo read _DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE;
     public static property DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT:     DeviceInfo read _DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT;
     public static property DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT:               DeviceInfo read _DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT;
     public static property DEVICE_OPENCL_C_FEATURES:                           DeviceInfo read _DEVICE_OPENCL_C_FEATURES;
@@ -1158,7 +1180,27 @@ uses System.Runtime.CompilerServices;
     public static property DEVICE_GPU_OVERLAP_NV:                              DeviceInfo read _DEVICE_GPU_OVERLAP_NV;
     public static property DEVICE_KERNEL_EXEC_TIMEOUT_NV:                      DeviceInfo read _DEVICE_KERNEL_EXEC_TIMEOUT_NV;
     public static property DEVICE_INTEGRATED_MEMORY_NV:                        DeviceInfo read _DEVICE_INTEGRATED_MEMORY_NV;
+    public static property DEVICE_PREFERRED_WORK_GROUP_SIZE_AMD:               DeviceInfo read _DEVICE_PREFERRED_WORK_GROUP_SIZE_AMD;
+    public static property DEVICE_MAX_WORK_GROUP_SIZE_AMD:                     DeviceInfo read _DEVICE_MAX_WORK_GROUP_SIZE_AMD;
+    public static property DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE_AMD:          DeviceInfo read _DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE_AMD;
+    public static property DEVICE_PCIE_ID_AMD:                                 DeviceInfo read _DEVICE_PCIE_ID_AMD;
     public static property DEVICE_PROFILING_TIMER_OFFSET_AMD:                  DeviceInfo read _DEVICE_PROFILING_TIMER_OFFSET_AMD;
+    public static property DEVICE_TOPOLOGY_AMD:                                DeviceInfo read _DEVICE_TOPOLOGY_AMD;
+    public static property DEVICE_BOARD_NAME_AMD:                              DeviceInfo read _DEVICE_BOARD_NAME_AMD;
+    public static property DEVICE_GLOBAL_FREE_MEMORY_AMD:                      DeviceInfo read _DEVICE_GLOBAL_FREE_MEMORY_AMD;
+    public static property DEVICE_SIMD_PER_COMPUTE_UNIT_AMD:                   DeviceInfo read _DEVICE_SIMD_PER_COMPUTE_UNIT_AMD;
+    public static property DEVICE_SIMD_WIDTH_AMD:                              DeviceInfo read _DEVICE_SIMD_WIDTH_AMD;
+    public static property DEVICE_SIMD_INSTRUCTION_WIDTH_AMD:                  DeviceInfo read _DEVICE_SIMD_INSTRUCTION_WIDTH_AMD;
+    public static property DEVICE_WAVEFRONT_WIDTH_AMD:                         DeviceInfo read _DEVICE_WAVEFRONT_WIDTH_AMD;
+    public static property DEVICE_GLOBAL_MEM_CHANNELS_AMD:                     DeviceInfo read _DEVICE_GLOBAL_MEM_CHANNELS_AMD;
+    public static property DEVICE_GLOBAL_MEM_CHANNEL_BANKS_AMD:                DeviceInfo read _DEVICE_GLOBAL_MEM_CHANNEL_BANKS_AMD;
+    public static property DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH_AMD:           DeviceInfo read _DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH_AMD;
+    public static property DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT_AMD:         DeviceInfo read _DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT_AMD;
+    public static property DEVICE_LOCAL_MEM_BANKS_AMD:                         DeviceInfo read _DEVICE_LOCAL_MEM_BANKS_AMD;
+    public static property DEVICE_THREAD_TRACE_SUPPORTED_AMD:                  DeviceInfo read _DEVICE_THREAD_TRACE_SUPPORTED_AMD;
+    public static property DEVICE_GFXIP_MAJOR_AMD:                             DeviceInfo read _DEVICE_GFXIP_MAJOR_AMD;
+    public static property DEVICE_GFXIP_MINOR_AMD:                             DeviceInfo read _DEVICE_GFXIP_MINOR_AMD;
+    public static property DEVICE_AVAILABLE_ASYNC_QUEUES_AMD:                  DeviceInfo read _DEVICE_AVAILABLE_ASYNC_QUEUES_AMD;
     public static property DEVICE_PARENT_DEVICE_EXT:                           DeviceInfo read _DEVICE_PARENT_DEVICE_EXT;
     public static property DEVICE_PARTITION_TYPES_EXT:                         DeviceInfo read _DEVICE_PARTITION_TYPES_EXT;
     public static property DEVICE_AFFINITY_DOMAINS_EXT:                        DeviceInfo read _DEVICE_AFFINITY_DOMAINS_EXT;
@@ -1287,6 +1329,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1064) then Result := 'DEVICE_ATOMIC_FENCE_CAPABILITIES' else
       if self.val = UInt32($1065) then Result := 'DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT' else
       if self.val = UInt32($1066) then Result := 'DEVICE_OPENCL_C_ALL_VERSIONS' else
+      if self.val = UInt32($1067) then Result := 'DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE' else
       if self.val = UInt32($1068) then Result := 'DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT' else
       if self.val = UInt32($1069) then Result := 'DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT' else
       if self.val = UInt32($106F) then Result := 'DEVICE_OPENCL_C_FEATURES' else
@@ -1302,7 +1345,27 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4004) then Result := 'DEVICE_GPU_OVERLAP_NV' else
       if self.val = UInt32($4005) then Result := 'DEVICE_KERNEL_EXEC_TIMEOUT_NV' else
       if self.val = UInt32($4006) then Result := 'DEVICE_INTEGRATED_MEMORY_NV' else
+      if self.val = UInt32($4030) then Result := 'DEVICE_PREFERRED_WORK_GROUP_SIZE_AMD' else
+      if self.val = UInt32($4031) then Result := 'DEVICE_MAX_WORK_GROUP_SIZE_AMD' else
+      if self.val = UInt32($4033) then Result := 'DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE_AMD' else
+      if self.val = UInt32($4034) then Result := 'DEVICE_PCIE_ID_AMD' else
       if self.val = UInt32($4036) then Result := 'DEVICE_PROFILING_TIMER_OFFSET_AMD' else
+      if self.val = UInt32($4037) then Result := 'DEVICE_TOPOLOGY_AMD' else
+      if self.val = UInt32($4038) then Result := 'DEVICE_BOARD_NAME_AMD' else
+      if self.val = UInt32($4039) then Result := 'DEVICE_GLOBAL_FREE_MEMORY_AMD' else
+      if self.val = UInt32($4040) then Result := 'DEVICE_SIMD_PER_COMPUTE_UNIT_AMD' else
+      if self.val = UInt32($4041) then Result := 'DEVICE_SIMD_WIDTH_AMD' else
+      if self.val = UInt32($4042) then Result := 'DEVICE_SIMD_INSTRUCTION_WIDTH_AMD' else
+      if self.val = UInt32($4043) then Result := 'DEVICE_WAVEFRONT_WIDTH_AMD' else
+      if self.val = UInt32($4044) then Result := 'DEVICE_GLOBAL_MEM_CHANNELS_AMD' else
+      if self.val = UInt32($4045) then Result := 'DEVICE_GLOBAL_MEM_CHANNEL_BANKS_AMD' else
+      if self.val = UInt32($4046) then Result := 'DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH_AMD' else
+      if self.val = UInt32($4047) then Result := 'DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT_AMD' else
+      if self.val = UInt32($4048) then Result := 'DEVICE_LOCAL_MEM_BANKS_AMD' else
+      if self.val = UInt32($4049) then Result := 'DEVICE_THREAD_TRACE_SUPPORTED_AMD' else
+      if self.val = UInt32($404A) then Result := 'DEVICE_GFXIP_MAJOR_AMD' else
+      if self.val = UInt32($404B) then Result := 'DEVICE_GFXIP_MINOR_AMD' else
+      if self.val = UInt32($404C) then Result := 'DEVICE_AVAILABLE_ASYNC_QUEUES_AMD' else
       if self.val = UInt32($4054) then Result := 'DEVICE_PARENT_DEVICE_EXT' else
       if self.val = UInt32($4055) then Result := 'DEVICE_PARTITION_TYPES_EXT' else
       if self.val = UInt32($4056) then Result := 'DEVICE_AFFINITY_DOMAINS_EXT' else
@@ -2891,19 +2954,19 @@ uses System.Runtime.CompilerServices;
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    private static _SAMPLER_MIP_FILTER_MODE := new SamplerProperties($1155);
-    private static _SAMPLER_LOD_MIN         := new SamplerProperties($1156);
-    private static _SAMPLER_LOD_MAX         := new SamplerProperties($1157);
+    private static _SAMPLER_MIP_FILTER_MODE_KHR := new SamplerProperties($1155);
+    private static _SAMPLER_LOD_MIN_KHR         := new SamplerProperties($1156);
+    private static _SAMPLER_LOD_MAX_KHR         := new SamplerProperties($1157);
     
-    public static property SAMPLER_MIP_FILTER_MODE: SamplerProperties read _SAMPLER_MIP_FILTER_MODE;
-    public static property SAMPLER_LOD_MIN:         SamplerProperties read _SAMPLER_LOD_MIN;
-    public static property SAMPLER_LOD_MAX:         SamplerProperties read _SAMPLER_LOD_MAX;
+    public static property SAMPLER_MIP_FILTER_MODE_KHR: SamplerProperties read _SAMPLER_MIP_FILTER_MODE_KHR;
+    public static property SAMPLER_LOD_MIN_KHR:         SamplerProperties read _SAMPLER_LOD_MIN_KHR;
+    public static property SAMPLER_LOD_MAX_KHR:         SamplerProperties read _SAMPLER_LOD_MAX_KHR;
     
     public function ToString: string; override;
     begin
-      if self.val = UInt64($1155) then Result := 'SAMPLER_MIP_FILTER_MODE' else
-      if self.val = UInt64($1156) then Result := 'SAMPLER_LOD_MIN' else
-      if self.val = UInt64($1157) then Result := 'SAMPLER_LOD_MAX' else
+      if self.val = UInt64($1155) then Result := 'SAMPLER_MIP_FILTER_MODE_KHR' else
+      if self.val = UInt64($1156) then Result := 'SAMPLER_LOD_MIN_KHR' else
+      if self.val = UInt64($1157) then Result := 'SAMPLER_LOD_MAX_KHR' else
         Result := self.val.ToString;
     end;
     
@@ -3227,7 +3290,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBuffer(context: cl_context; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateBuffer_ovr_2(context, flags, size, host_ptr, errcode_ret);
     
-    // added in cl2.2
+    // added in cl3.0
     private static function z_CreateBufferWithProperties_ovr_0(context: cl_context; var properties: UInt64; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateBufferWithProperties';
     private static function z_CreateBufferWithProperties_ovr_0_anh0010000(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -3391,7 +3454,7 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage3D(context: cl_context; flags: MemFlags; image_format: IntPtr; image_width: UIntPtr; image_height: UIntPtr; image_depth: UIntPtr; image_row_pitch: UIntPtr; image_slice_pitch: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImage3D_ovr_2(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
     
-    // added in cl2.2
+    // added in cl3.0
     private static function z_CreateImageWithProperties_ovr_0(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_0_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -7114,46 +7177,46 @@ type
     z_GetImageInfo_ovr_7(image, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.2
-    private static function z_GetKernelArgInfo_ovr_0(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelArgInfo_ovr_0(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_0(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_1(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_0(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_1(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_1(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_2(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_1(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_2(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_2(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_3(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_2(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_3(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_3(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_4(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_3(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_4(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_4(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_5(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_4(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_5(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_5(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_6(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_5(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_6(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_6(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_7(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_6(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_7(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_7(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_8(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_7(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_8(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_8(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetKernelArgInfo_ovr_9(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_8(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetKernelArgInfo_ovr_9(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_indx: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_ovr_9(kernel, arg_indx, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelArgInfo_ovr_9(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
     private static function z_GetKernelInfo_ovr_0(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
