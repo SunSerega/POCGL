@@ -501,7 +501,7 @@ begin
     
     Otp('Done testing');
     
-    if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('Press Enter to exit');
+    if not is_secondary_proc then Otp('Press Enter to exit');
   except
     on e: Exception do ErrOtp(e);
   end;

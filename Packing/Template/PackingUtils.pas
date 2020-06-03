@@ -16,6 +16,8 @@ MiscUtils.ErrOtp(e);
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string :=
 MiscUtils.GetFullPath(fname, base_folder);
 
+function is_secondary_proc := MiscUtils.is_secondary_proc;
+
 {$endregion MiscUtils calls}
 
 procedure RunInSTA(a: Action0);

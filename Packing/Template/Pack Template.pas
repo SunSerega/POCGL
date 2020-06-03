@@ -85,12 +85,11 @@ end;
 
 begin
   try
-    var CommandLineArgs := PABCSystem.CommandLineArgs();
-    if not CommandLineArgs.Contains('SecondaryProc') then CommandLineArgs := Arr('fname=Packing\Template\GL\0OpenGL.template');
-    
-    var inp_fname := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
-    if inp_fname=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
-    inp_fname := GetFullPath(inp_fname.SubString('fname='.Length));
+    var inp_fname := GetFullPath(
+      is_secondary_proc ?
+      CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault.SubString('fname='.Length) :
+      'Packing\Template\GL\0OpenGL.template'
+    );
     var curr_dir := System.IO.Path.GetDirectoryName(inp_fname);
     
     var otp_dir := CommandLineArgs.Where(arg->arg.StartsWith('otp_dir=')).SingleOrDefault;

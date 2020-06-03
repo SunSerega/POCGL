@@ -7,10 +7,11 @@ uses MiscUtils in 'Utils\MiscUtils.pas';
 
 // АРГУМЕНТЫ КОМАНДНОЙ СТРОКИ:
 // 
-// - "SecondaryProc" | что то вроде тихого режима:
+// - "OutputPipeId=123" | что то вроде тихого режима:
 //   - Readln в конце НЕТУ
 //   - Halt возвращает код исключения, при ошибке
 //   - Данные о замерах времени в конце не выводятся
+//   - Вместо 123 должен быть дескриптор анонимного пайпа-сервера в режиме "In". Туда будет направлен вывод
 // 
 // - "Stages=...+...+..." | запускает только указанные стадии упаковки
 //   - "FirstPack"  - Датаскрапинг спецификаций и исходников. Следует проводить только 1 раз, единственная по-умолчанию выключенная стадия
@@ -50,9 +51,8 @@ begin
     
     {$region Load}
     
-    otp_main += new FileLogger('LastPack.log');
-    otp_main += new FileLogger('LastPack (Timed).log', true);
-    if not CommandLineArgs.Contains('SecondaryProc') then Timers.StartTT;
+    Logger.main_log += new FileLogger('LastPack.log');
+    Logger.main_log += new FileLogger('LastPack (Timed).log', true);
     
     // ====================================================
     
@@ -63,7 +63,7 @@ begin
       if arg=nil then
       begin
         stages := HSet('Spec', 'CL', 'CLABC', 'GL', 'GLABC', 'Test', 'Release');
-        otp_main += new FileLogger('LastPack (Default).log');
+        Logger.main_log += new FileLogger('LastPack (Default).log');
         Otp($'Executing default stages:');
       end else
       begin
@@ -162,7 +162,7 @@ begin
         +
         
 //        ExecTask('DataScraping\Reps\0BrokenSource\GL\GenerateCoreSource.pas', 'GL BrokenSource') *
-        ExecTask('DataScraping\Reps\PullReps.pas', 'SubReps Update', ConsoleLogger.AddTimeMarksStr)
+        ExecTask('DataScraping\Reps\PullReps.pas', 'SubReps Update')
         
       ;
       
@@ -221,7 +221,7 @@ begin
     var T_CL := not stages.Contains('CL') ? EmptyTask :
       TitleTask('OpenCL') +
       EventTask(E_TemplatePacker) +
-      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenCL]', 'fname=Packing\Template\CL\0OpenCL.template', 'GenPas', ConsoleLogger.AddTimeMarksStr) +
+      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenCL]', 'fname=Packing\Template\CL\0OpenCL.template', 'GenPas') +
       ProcTask(()->WriteAllText('OpenCL.pas', ReadAllText('Packing\Template\CL\0OpenCL.pas').Replace(#10,#13#10))) +
       ProcTask(()->System.IO.File.Delete('Packing\Template\CL\0OpenCL.pas')) +
       CompTask('OpenCL.pas')
@@ -241,7 +241,7 @@ begin
     var T_GL := not stages.Contains('GL') ? EmptyTask :
       TitleTask('OpenGL') +
       EventTask(E_TemplatePacker) +
-      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas', ConsoleLogger.AddTimeMarksStr) +
+      ExecTask('Packing\Template\Pack Template.exe', 'Template[OpenGL]', 'fname=Packing\Template\GL\0OpenGL.template', 'GenPas') +
       ProcTask(()->WriteAllText('OpenGL.pas', ReadAllText('Packing\Template\GL\0OpenGL.pas').Replace(#10,#13#10))) +
       ProcTask(()->System.IO.File.Delete('Packing\Template\GL\0OpenGL.pas')) +
       CompTask('OpenGL.pas')
@@ -259,7 +259,7 @@ begin
     var T_Test := not stages.Contains('Test') ? EmptyTask :
       TitleTask('Testing') +
       EventTask(E_Tester) +
-      ExecTask('Tests\Tester.exe', 'Tester', ConsoleLogger.AddTimeMarksStr, $'Modules={stages.Intersect(AllModulesShort).JoinToString(''+'')}')
+      ExecTask('Tests\Tester.exe', 'Tester', $'Modules={stages.Intersect(AllModulesShort).JoinToString(''+'')}')
     ;
     
     {$endregion Test}
@@ -430,11 +430,6 @@ begin
     ).SyncExec;
     
     Otp('done packing');
-    if not CommandLineArgs.Contains('SecondaryProc') then
-    begin
-      Timers.LogAll;
-      Readln;
-    end;
     
     {$endregion ExecAll}
     

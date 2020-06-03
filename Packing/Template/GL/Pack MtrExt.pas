@@ -75,7 +75,7 @@ begin
     res += '{$endregion MtrTranspose}'#10;
     res += '';
     
-    if CommandLineArgs.Contains('SecondaryProc') then
+    if is_secondary_proc then
       WriteAllText(GetFullPath('..\MtrExt.template', GetEXEFileName), res.ToString, new System.Text.UTF8Encoding(true)) else
     begin
       System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));

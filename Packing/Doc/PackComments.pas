@@ -31,7 +31,7 @@ type
 //            Write($'>>>{comment}<<<');
             foreach var cn in cns do
               if all.ContainsKey(cn) then
-                Writeln($'ERROR: key %{cn}% found in "{all[cn].source}" and "{fname}"') else
+                Otp($'ERROR: key %{cn}% found in "{all[cn].source}" and "{fname}"') else
                 all.Add(cn, new CommentData(fname, comment));
             cns.Clear;
             sb := nil;
@@ -78,7 +78,7 @@ type
           val.used := true;
           res.Append( Apply(all[key].comment, prev.ToList) ); //ToDo ошибки prev
         end else
-          Writeln($'ERROR: key %{key}% not found!');
+          Otp($'ERROR: key %{key}% not found!');
         
         last_ind := ind2+1;
         if last_ind=l.Length then break;
@@ -92,12 +92,7 @@ type
   
 begin
   try
-    var CommandLineArgs := PABCSystem.CommandLineArgs();
-    if not CommandLineArgs.Contains('SecondaryProc') then CommandLineArgs := Arr('fname=OpenCLABC');
-    
-    var fname := CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault;
-    if fname=nil then raise new MessageException('Invalid args: [' + CommandLineArgs.Select(arg->$'"{arg}"').JoinIntoString + ']' );
-    fname := fname.SubString('fname='.Length);
+    var fname := is_secondary_proc ? CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault.SubString('fname='.Length) : 'OpenCLABC';
     
     var exe_path := System.IO.Path.GetDirectoryName(GetEXEFileName);
     
@@ -133,11 +128,11 @@ begin
     
     foreach var key in CommentData.all.Keys do
       if not CommentData.all[key].used then
-        Writeln($'WARNING: key %{key}% wasn''t used!');
+        Otp($'WARNING: key %{key}% wasn''t used!');
     
     res.Close;
     skiped.Close;
-    if not CommandLineArgs.Contains('SecondaryProc') then ReadlnString('done');
+    if not is_secondary_proc then Otp('done');
   except
     on e: Exception do ErrOtp(e);
   end;
