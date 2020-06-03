@@ -10,6 +10,7 @@ uses System.Threading.Tasks;
 var sec_procs := new List<Process>;
 var sec_thrs := new List<Thread>;
 var in_err_state := false;
+var in_err_state_lock := new object;
 var nfi := new System.Globalization.NumberFormatInfo;
 var enc := new System.Text.UTF8Encoding(true);
 
@@ -23,12 +24,16 @@ type
   end;
   
   Timers = static class
+    static total_timer: Stopwatch;
     
     static pas_comp := int64(0);
     static every_pas_comp := new Dictionary<string, int64>;
     
     static exe_exec := int64(0);
     static every_exe_exec := new Dictionary<string, int64>;
+    
+    static procedure StartTT :=
+    total_timer := Stopwatch.StartNew;
     
     static procedure AddPasTime(nick: string; t: int64) :=
     lock every_pas_comp do
@@ -208,11 +213,12 @@ type
     
     public procedure OtpImpl(l: OtpLine); override;
     begin
+      var s := l.GetStr(timed);
       
-      main_sw.WriteLine(l.GetStr(timed));
+      main_sw.WriteLine(s);
       main_sw.Flush;
       
-      backup_sw.WriteLine(l.GetStr(timed));
+      backup_sw.WriteLine(s);
       backup_sw.Flush;
       
     end;
@@ -231,7 +237,7 @@ type
   
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
-  if fname.Substring(1).StartsWith(':\') then
+  if System.IO.Path.IsPathRooted(fname) then
   begin
     Result := fname;
     exit;
@@ -308,7 +314,7 @@ begin
     exit;
   end;
   
-  lock sec_procs do
+  lock in_err_state_lock do
   begin
     if in_err_state then exit;
     in_err_state := true;
@@ -347,9 +353,12 @@ end;
 
 static procedure Timers.LogAll;
 begin
+  total_timer.Stop;
   Logger.timed_only := true;
   
   Otp('');
+  Otp($'Total            : {total_timer.ElapsedTicks.TimeToStr}');
+  
   Otp($'.pas compilation : {pas_comp.TimeToStr}');
   if every_pas_comp.Count<>0 then
   begin

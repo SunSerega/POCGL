@@ -52,6 +52,7 @@ begin
     
     otp_main += new FileLogger('LastPack.log');
     otp_main += new FileLogger('LastPack (Timed).log', true);
+    if not CommandLineArgs.Contains('SecondaryProc') then Timers.StartTT;
     
     // ====================================================
     
