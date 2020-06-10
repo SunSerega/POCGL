@@ -199,7 +199,8 @@ begin
         ind := Max( l.IndexOf('procedure'), l.IndexOf('function') );
         if ind<>-1 then
         begin
-          on_commentable(ParseMethod(last_type,l, ind,h_ind1));
+          var comm := ParseMethod(last_type,l, ind,h_ind1);
+          if not string.IsNullOrEmpty(comm) then on_commentable(comm);
           continue;
         end;
         

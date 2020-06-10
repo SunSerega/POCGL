@@ -1818,15 +1818,15 @@
  ErrorCode	| cl_command_queue	| Bool	| IntPtr	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueMigrateMemINTEL
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlagsIntel	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueMemAdviseINTEL
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| array of cl_event	| array of cl_event	|

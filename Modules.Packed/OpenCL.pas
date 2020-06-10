@@ -2624,25 +2624,6 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-  MemMigrationFlagsIntel = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _MIGRATE_MEM_OBJECT_HOST_INTEL              := new MemMigrationFlagsIntel($0001);
-    private static _MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL := new MemMigrationFlagsIntel($0002);
-    
-    public static property MIGRATE_MEM_OBJECT_HOST_INTEL:              MemMigrationFlagsIntel read _MIGRATE_MEM_OBJECT_HOST_INTEL;
-    public static property MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL: MemMigrationFlagsIntel read _MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt64($0001) then Result := 'MIGRATE_MEM_OBJECT_HOST_INTEL' else
-      if self.val = UInt64($0002) then Result := 'MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL' else
-        Result := self.val.ToString;
-    end;
-    
-  end;
-  
   MemObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13256,15 +13237,15 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMemcpyINTEL_ovr_8(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event);
     
-    private static function z_EnqueueMigrateMemINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
     if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
@@ -13272,41 +13253,41 @@ type
       if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
-    private static function z_EnqueueMigrateMemINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
     if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
     if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
     if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_6(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_6(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
     if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_8(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueMigrateMemINTEL_ovr_8(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlagsIntel; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMigrateMemINTEL_ovr_8(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
     
     private static function z_EnqueueMemAdviseINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;

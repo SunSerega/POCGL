@@ -2520,25 +2520,6 @@
     
   end;
   
-  MemMigrationFlagsIntel = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    private static _MIGRATE_MEM_OBJECT_HOST_INTEL              := new MemMigrationFlagsIntel($0001);
-    private static _MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL := new MemMigrationFlagsIntel($0002);
-    
-    public static property MIGRATE_MEM_OBJECT_HOST_INTEL:              MemMigrationFlagsIntel read _MIGRATE_MEM_OBJECT_HOST_INTEL;
-    public static property MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL: MemMigrationFlagsIntel read _MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL;
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt64($0001) then Result := 'MIGRATE_MEM_OBJECT_HOST_INTEL' else
-      if self.val = UInt64($0002) then Result := 'MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED_INTEL' else
-        Result := self.val.ToString;
-    end;
-    
-  end;
-  
   MemObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
