@@ -94,6 +94,6 @@
 └                        ┘
 
 #ReqModules
-GL
+OpenGL
 
 

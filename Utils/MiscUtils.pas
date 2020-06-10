@@ -12,17 +12,23 @@ type
     const OutputPipeId    = 'OutputPipeId';
   end;
   
-var pack_timer := Stopwatch.StartNew;
-var sec_procs := new List<Process>;
 var sec_thrs := new List<Thread>;
+//var sec_procs := new List<Process>;
+var sec_proc_halt_strs := new List<System.IO.Stream>;
+
 var in_err_state := false;
 var in_err_state_lock := new object;
+
+var pack_timer := Stopwatch.StartNew;
+
+var is_secondary_proc: boolean;
 var nfi := new System.Globalization.NumberFormatInfo;
 var enc := new System.Text.UTF8Encoding(true);
-var is_secondary_proc: boolean;
 
 function TimeToStr(self: int64): string; extensionmethod :=
 (self/10/1000/1000).ToString('N7', nfi).PadLeft(11);
+
+procedure ErrOtp(e: Exception); forward;
 
 procedure RegisterThr;
 begin
@@ -31,6 +37,13 @@ begin
   lock sec_thrs do sec_thrs += thr;
   if in_err_state then thr.Abort;
   
+end;
+
+procedure StartBgThread(p: ()->());
+begin
+  var thr := new Thread(p);
+  thr.IsBackground := true;
+  thr.Start;
 end;
 
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
@@ -98,6 +111,9 @@ type
   MessageException = class(Exception)
     constructor(text: string) :=
     inherited Create(text);
+  end;
+  ParentHaltException = class(Exception)
+    constructor := exit;
   end;
   
 {$endregion Exception's}
@@ -318,7 +334,7 @@ type
     begin
       lock q do
       begin
-        if done then exit;
+        if done then raise new MessageException('Двойная попытка завершить вывод потока');
         done := true;
         ev.Set;
       end;
@@ -428,14 +444,30 @@ type
     
     private constructor;
     begin
-      var str := new System.IO.Pipes.AnonymousPipeClientStream(
-        System.IO.Pipes.PipeDirection.Out,
-        CommandLineArgs
+      var hnd_strs := CommandLineArgs
         .First(arg->arg.StartsWith(StrConsts.OutputPipeId))
         .Substring(StrConsts.OutputPipeId.Length+1)
+        .ToWords
+      ;
+      
+      var str := new System.IO.Pipes.AnonymousPipeClientStream(
+        System.IO.Pipes.PipeDirection.Out,
+        hnd_strs[0]
       );
       self.bw := new System.IO.BinaryWriter(str);
       bw.Write(byte(0)); // подтверждение соединения для другой стороны (так проще ошибку ловить)
+      
+      var halt_str := new System.IO.Pipes.AnonymousPipeClientStream(
+        System.IO.Pipes.PipeDirection.In,
+        hnd_strs[1]
+      );
+      StartBgThread(()->
+      begin
+        RegisterThr;
+        if halt_str.ReadByte = 1 then
+          ErrOtp(new ParentHaltException);
+      end);
+      
     end;
     
     protected procedure OtpImpl(l: OtpLine); override;
@@ -512,12 +544,16 @@ lock Logger.main_log do
 procedure ErrOtp(e: Exception);
 begin
   if e is ThreadAbortException then
-    if is_secondary_proc then exit else
-    begin
-      Readln;
-      Halt;
-    end;
+  begin
+    Thread.ResetAbort;
+    Thread.CurrentThread.IsBackground := true;
+    Thread.CurrentThread.Suspend;
+  end;
+//  Console.Error.WriteLine($'pre err {e}');
   
+  // обычно это из за попытки писать в закрытый пайп, при аварийном завершении родителя
+  // даём время родителю убить данный процесс через sec_proc_halt_strs
+  if e is System.IO.IOException then Sleep(1000);
   lock in_err_state_lock do
   begin
     if in_err_state then exit;
@@ -529,22 +565,41 @@ begin
       if thr<>Thread.CurrentThread then
         thr.Abort;
   
-  lock sec_procs do
-    foreach var p in sec_procs do
-      try
-        p.Kill;
-      except end;
-  
-  if ThrProcOtp.curr<>nil then
-  begin
-    var q := ThrProcOtp.curr.q;
-    ThrProcOtp.curr := nil;
-    lock q do foreach var l in q do Otp(l);
+  foreach var str in sec_proc_halt_strs do
+  try
+    str.WriteByte(1);
+    str.Close;
+  except
   end;
   
-  if e is MessageException then
-    Otp(e.Message) else
-    Otp(e.ToString);
+//  lock sec_procs do
+//    foreach var p in sec_procs do
+//      try
+//        p.Kill;
+//      except end;
+  
+  try
+    
+    if ThrProcOtp.curr<>nil then
+    begin
+      var q := ThrProcOtp.curr.q;
+      ThrProcOtp.curr := nil;
+      lock q do foreach var l in q do Otp(l);
+    end;
+    
+    if e is ParentHaltException then
+      else
+    if e is MessageException then
+      Otp(e.Message) else
+      Otp(e.ToString);
+    
+  except
+    on dbl_e: System.IO.IOException do
+    begin
+      Sleep(1000); // обычно это из за ошибки вообще в другом процессе, лучше сначала дать довывести ту ошибку
+      Console.Error.WriteLine($'{GetRelativePath(GetEXEFileName)} failed to output it''s error because: {dbl_e}');
+    end;
+  end;
   
   if is_secondary_proc then
     Halt(e.HResult) else
@@ -568,10 +623,10 @@ begin
   if l_otp=nil then l_otp := l->MiscUtils.Otp(l.ConvStr(s->$'{nick}: {s}'));
   
   var pipe := new System.IO.Pipes.AnonymousPipeServerStream(System.IO.Pipes.PipeDirection.In, System.IO.HandleInheritability.Inheritable);
+  var halt_pipe := new System.IO.Pipes.AnonymousPipeServerStream(System.IO.Pipes.PipeDirection.Out, System.IO.HandleInheritability.Inheritable);
+  lock sec_proc_halt_strs do sec_proc_halt_strs.Add( halt_pipe );
   
-  
-  var psi := new ProcessStartInfo(fname, pars.Append($'"{StrConsts.OutputPipeId}={pipe.GetClientHandleAsString}"').JoinToString);
-//  pipe.DisposeLocalCopyOfClientHandle; //ToDo разобраться на сколько это надо и куда сувать
+  var psi := new ProcessStartInfo(fname, pars.Append($'"{StrConsts.OutputPipeId}={pipe.GetClientHandleAsString} {halt_pipe.GetClientHandleAsString}"').JoinToString);
   psi.UseShellExecute := false;
   psi.RedirectStandardOutput := true;
   psi.WorkingDirectory := System.IO.Path.GetDirectoryName(fname);
@@ -582,68 +637,78 @@ begin
   var curr_timer: ExeTimer := Timer.main.exe_exec[nick];
   
   {$region otp capture}
+  var start_time_mark: int64;
+  var pipe_connection_established := false;
   
   var thr_otp := new ThrProcOtp;
   p.OutputDataReceived += (o,e)->
   try
     if e.Data=nil then
-      thr_otp.Finish else
+    begin
+      if not pipe_connection_established then
+        thr_otp.Finish;
+    end else
       thr_otp.Enq(e.Data);
   except
     on exc: Exception do ErrOtp(exc);
   end;
   
-  var start_time_mark: int64;
-  var pipe_connection_established := false;
-  Thread.Create(()->
+  StartBgThread(()->
   try
     var br := new System.IO.BinaryReader(pipe);
     
     try
       br.ReadByte;
+      pipe_connection_established := true;
+      
+      //ToDo разобраться на сколько это надо и куда сувать
+      // - update: таки без него не видит завершение вывода при умирании процесса
+      pipe.DisposeLocalCopyOfClientHandle;
+      halt_pipe.DisposeLocalCopyOfClientHandle;
+      
+      while true do
+      begin
+        var otp_type := br.ReadInt32;
+        
+        case otp_type of
+          
+          1:
+          begin
+            var l := new OtpLine;
+            l.t := start_time_mark + br.ReadInt64;
+            l.s := br.ReadString;
+            thr_otp.Enq(l);
+          end;
+          
+          2:
+          begin
+            thr_otp.Finish;
+            curr_timer.MergeLoad(br);
+            br.Close;
+            break;
+          end;
+          
+          else raise new MessageException($'Invalid bin otp type: [{otp_type}]');
+        end;
+        
+      end;
+      
     except
       on e: System.IO.EndOfStreamException do
       begin
-        Otp($'WARNING: Pipe connection with [{nick}] wasn''t established');
+        if pipe_connection_established then
+          thr_otp.Finish else
+          Otp($'WARNING: Pipe connection with "{nick}" wasn''t established');
         exit;
       end;
     end;
-    pipe_connection_established := true;
-    
-    while true do
-    begin
-      var otp_type := br.ReadInt32;
-      
-      case otp_type of
-        
-        1:
-        begin
-          var l := new OtpLine;
-          l.t := start_time_mark + br.ReadInt64;
-          l.s := br.ReadString;
-          thr_otp.Enq(l);
-        end;
-        
-        2:
-        begin
-          thr_otp.Finish;
-          curr_timer.MergeLoad(br);
-          br.Close; // тоже не обязательно, основной поток тоже его вызовет, но уже после завершения работы .exe
-          break;
-        end;
-        
-        else raise new MessageException($'Invalid bin otp type: [{otp_type}]');
-      end;
-      
-    end;
-    
   except
     on e: Exception do ErrOtp(e);
-  end).Start;
+  end);
   
   {$endregion otp capture}
   
-  lock sec_procs do sec_procs += p;
+//  lock sec_procs do sec_procs += p;
   curr_timer.MeasureTime(()->
   begin
     start_time_mark := pack_timer.ElapsedTicks;
@@ -658,7 +723,7 @@ begin
       if p.ExitCode<>0 then
       begin
         var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
-        ErrOtp(new Exception($'Error in {nick}:', ex));
+        ErrOtp(new MessageException($'Error in {nick}: {ex}'));
       end;
       
       MiscUtils.Otp($'Finished runing {nick}');
@@ -666,6 +731,7 @@ begin
       try
         p.Kill;
       except end;
+      lock sec_proc_halt_strs do sec_proc_halt_strs.Remove( halt_pipe );
     end;
     
   end);
@@ -678,8 +744,11 @@ begin
   fname := GetFullPath(fname);
   var nick := System.IO.Path.GetFileNameWithoutExtension(fname);
   
-  foreach var p in Process.GetProcessesByName(nick+'.exe') do
+  foreach var p in Process.GetProcessesByName(nick) do
+  begin
+    Otp($'WARNING: Killed runing process [{nick}] to be able to compile .pas file');
     p.Kill;
+  end;
   
   if l_otp=nil then l_otp := MiscUtils.Otp;
   if err=nil then err := s->raise new MessageException($'Error compiling "{fname}": {s}');
@@ -751,70 +820,142 @@ ExecuteFile(fname, nick, nil, nil, pars);
 
 type
   SecThrProc = abstract class
-    own_otp: ThrProcOtp;
+    public own_otp: ThrProcOtp;
     
-    procedure SyncExec; abstract;
+    private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); abstract;
+    private procedure SyncExecImpl; abstract;
     
-    function CreateThread := new Thread(()->
+    private function CreateThread := new Thread(()->
     try
       RegisterThr;
       ThrProcOtp.curr := self.own_otp;
-      SyncExec;
+      SyncExecImpl;
       self.own_otp.Finish;
     except
       on e: Exception do ErrOtp(e);
     end);
     
-    function StartExec: Thread;
+    private function StartExecImpl: Thread;
     begin
       self.own_otp := new ThrProcOtp;
       Result := CreateThread;
       Result.Start;
     end;
     
+    public procedure SyncExec;
+    begin
+      Prepare(new Dictionary<string, ManualResetEvent>);
+      SyncExecImpl;
+    end;
+    
+    public function StartExec: Thread;
+    begin
+      Prepare(new Dictionary<string, ManualResetEvent>);
+      Result := StartExecImpl;
+    end;
+    
   end;
   
   SecThrProcCustom = sealed class(SecThrProc)
-    p: Action0;
-    constructor(p: Action0) := self.p := p;
+    private p: Action0;
+    protected constructor(p: Action0) := self.p := p;
     
-    procedure SyncExec; override := p;
+    private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); override := exit;
+    private procedure SyncExecImpl; override := p;
     
   end;
   
   SecThrProcSum = sealed class(SecThrProc)
-    p1,p2: SecThrProc;
+    private p1, p2: SecThrProc;
     
-    constructor(p1,p2: SecThrProc);
+    protected constructor(p1, p2: SecThrProc);
     begin
       self.p1 := p1;
       self.p2 := p2;
     end;
     
-    procedure SyncExec; override;
+    private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); override;
     begin
-      p1.SyncExec;
-      p2.SyncExec;
+      p1.Prepare(evs);
+      p2.Prepare(evs);
+    end;
+    
+    private procedure SyncExecImpl; override;
+    begin
+      p1.SyncExecImpl;
+      p2.SyncExecImpl;
     end;
     
   end;
   
   SecThrProcMlt = sealed class(SecThrProc)
-    p1,p2: SecThrProc;
+    private p1,p2: SecThrProc;
     
-    constructor(p1,p2: SecThrProc);
+    protected constructor(p1,p2: SecThrProc);
     begin
       self.p1 := p1;
       self.p2 := p2;
     end;
     
-    procedure SyncExec; override;
+    private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); override;
     begin
-      p1.StartExec;
-      p2.StartExec;
+      p1.Prepare(evs);
+      p2.Prepare(evs);
+    end;
+    
+    private procedure SyncExecImpl; override;
+    begin
+      p1.StartExecImpl;
+      p2.StartExecImpl;
       
       foreach var l in p1.own_otp.Enmr do Otp(l);
       foreach var l in p2.own_otp.Enmr do Otp(l);
+    end;
+    
+  end;
+  
+  SecThrProcExec = sealed class(SecThrProc)
+    private fname, nick: string;
+    private pars: array of string;
+    
+    protected constructor(fname, nick: string; params pars: array of string);
+    begin
+      self.fname := fname;
+      self.nick := nick;
+      self.pars := pars;
+    end;
+    
+    private ev: ManualResetEvent;
+    private prep_otp: ThrProcOtp;
+    
+    private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); override :=
+    case System.IO.Path.GetExtension(fname) of
+      
+      '.pas':
+      begin
+        var pas_fname := fname;
+        fname := System.IO.Path.ChangeExtension(pas_fname, '.exe');
+        if evs.TryGetValue(pas_fname, self.ev) then exit;
+        self.ev := new ManualResetEvent(false);
+        evs[pas_fname] := self.ev;
+        
+        var p := new SecThrProcCustom(()->
+        begin
+          CompilePasFile(pas_fname);
+          self.ev.Set;
+        end);
+        
+        p.StartExecImpl;
+        prep_otp := p.own_otp;
+      end;
+      
+    end;
+    
+    private procedure SyncExecImpl; override;
+    begin
+      if prep_otp<>nil then foreach var l in prep_otp.Enmr do Otp(l);
+      if ev<>nil then ev.WaitOne;
+      ExecuteFile(fname, nick, pars);
     end;
     
   end;
@@ -834,7 +975,7 @@ function CompTask(fname: string) :=
 ProcTask(()->CompilePasFile(fname));
 
 function ExecTask(fname, nick: string; params pars: array of string) :=
-ProcTask(()->ExecuteFile(fname, nick, pars));
+new SecThrProcExec(fname, nick, pars);
 
 function EmptyTask := ProcTask(()->exit());
 
@@ -873,7 +1014,9 @@ type
     function GetName: string;
   end;
   
-  Fixer<TFixer,TFixable> = abstract class where TFixable: INamed, constructor;// where TFixer: Fixer<TFixer,TFixalbe>; //ToDo #2191
+  Fixer<TFixer,TFixable> = abstract class
+  where TFixable: INamed, constructor;
+//  where TFixer: Fixer<TFixer,TFixalbe>; //ToDo #2191
     protected name: string;
     protected used: boolean;
     
@@ -937,7 +1080,7 @@ type
     protected static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
     protected function ApplyOrder; virtual := 0;
-    /// Return "True" if "o" is deleted
+    /// Return "True" if "o" needs to be deleted
     protected function Apply(o: TFixable): boolean; abstract;
     public static procedure ApplyAll(lst: List<TFixable>);
     begin
@@ -975,6 +1118,9 @@ type
 ///--
 procedure InitMiscUtils :=
 try
+  // Заранее, чтоб выводить ошибки при инициализации
+  Logger.main_log := new ConsoleLogger;
+  
   RegisterThr;
   DefaultEncoding := enc;
   is_secondary_proc := CommandLineArgs.Any(arg->arg.StartsWith(StrConsts.OutputPipeId));
@@ -983,8 +1129,9 @@ try
   if is_secondary_proc then
     Logger.main_log := new ParentStreamLogger else
   begin
-    Logger.main_log := new ConsoleLogger;
     Console.OutputEncoding := enc;
+    //ToDo желательно ещё Console.SetError, чтоб выводить в файл ошибки из финализации дочеренных процессов
+    // - но при этом не забыть и про ошибку в финализации текущего процесса
   end;
   
   while not System.Environment.CurrentDirectory.EndsWith('POCGL') do
@@ -993,9 +1140,33 @@ except
   on e: Exception do ErrOtp(e);
 end;
 
+///--
+procedure FnlzMiscUtils;
+begin
+  
+  try
+    Logger.main_log.Close;
+  except
+    on e: System.IO.IOException do
+    begin
+      Sleep(1000); // обычно это из за ошибки вообще в другом процессе, лучше сначала дать довывести ту ошибку
+      // тут из за Sleep, часто, следующая срочка даже не успевает выполнится потому что sec_proc_halt_strs
+      Console.Error.WriteLine($'WARNING: {GetRelativePath(GetEXEFileName)} failed to close output because: {e}');
+    end;
+  end;
+  
+  if not is_secondary_proc then Readln;
+  StartBgThread(()->
+  begin
+    Sleep(5000);
+    Console.Error.WriteLine($'WARNING: {GetRelativePath(GetEXEFileName)} needed force halt because of some lingering non-background threads');
+    if not is_secondary_proc then Readln;
+    Halt;
+  end);
+end;
+
 initialization
   InitMiscUtils;
 finalization
-  Logger.main_log.Close;
-  if not is_secondary_proc then Readln;
+  FnlzMiscUtils;
 end.

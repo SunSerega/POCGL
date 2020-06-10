@@ -88,7 +88,7 @@ begin
     var inp_fname := GetFullPath(
       is_secondary_proc ?
       CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault.SubString('fname='.Length) :
-      'Packing\Template\GL\0OpenGL.template'
+      'Packing\Template\OpenCL\0.template'
     );
     var curr_dir := System.IO.Path.GetDirectoryName(inp_fname);
     

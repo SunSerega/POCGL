@@ -92,17 +92,16 @@ type
   
 begin
   try
-    var fname := is_secondary_proc ? CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault.SubString('fname='.Length) : 'OpenCLABC';
+    var fname := is_secondary_proc ? CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault.SubString('fname='.Length) : 'Modules.Packed\OpenCLABC.pas';
+    var mn := System.IO.Path.GetFileNameWithoutExtension(fname);
     
-    var exe_path := System.IO.Path.GetDirectoryName(GetEXEFileName);
-    
-    var res := System.IO.File.CreateText($'{exe_path}\{fname}.res.pas');
+    var res := System.IO.File.CreateText($'{fname}.docres');
     var last_line: string := nil;
     
-    var skiped := System.IO.File.CreateText($'{exe_path}\{fname}.skiped.log');
+    var skiped := System.IO.File.CreateText(GetFullPathRTE($'{mn}.skiped.log'));
     
-    CommentData.Load($'{exe_path}\{fname}');
-    CommentableData.FindCommentable(ReadLines(fname+'.pas'),
+    CommentData.Load(GetFullPathRTE(mn));
+    CommentableData.FindCommentable(ReadLines(fname),
       l->
       begin
         if last_line<>nil then res.WriteLine(last_line);
@@ -113,25 +112,28 @@ begin
       begin
         if CommentData.all.ContainsKey(c) then
         begin
-          var pre := last_line.Substring(0,last_line.TakeWhile(ch->ch=' ').Count)+'///';
+          var spaces := last_line.TakeWhile(ch->ch=' ').Count;
           foreach var l in CommentData.Apply($'%{c}%').Remove(#13).Split(#10) do
           begin
-            res.Write(pre);
+            res.Write(' ',spaces);
+            res.Write('///');
             res.WriteLine(l);
           end;
         end else
-        if not c.Contains('.operator') then
           skiped.WriteLine(c);
       end
     );
     res.Write(last_line);
     
+    res.Close;
+    skiped.Close;
+    System.IO.File.Delete(fname);
+    System.IO.File.Move($'{fname}.docres', fname);
+    
     foreach var key in CommentData.all.Keys do
       if not CommentData.all[key].used then
         Otp($'WARNING: key %{key}% wasn''t used!');
     
-    res.Close;
-    skiped.Close;
     if not is_secondary_proc then Otp('done');
   except
     on e: Exception do ErrOtp(e);

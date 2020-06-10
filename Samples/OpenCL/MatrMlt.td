@@ -5,7 +5,7 @@
 Comp+Exec
 
 #ReqModules
-CL
+OpenCL
 
 #ExpOtp
 Матрица A:

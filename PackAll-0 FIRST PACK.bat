@@ -1,6 +1,6 @@
 
 
 
-start PackAll.exe "Stages= FirstPack + Spec + CL+CLABC + GL+GLABC + Test + Release"
+start PackAll.exe "Stages= FirstPack + Spec + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release"
 
 

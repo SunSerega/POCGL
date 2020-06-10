@@ -1,6 +1,6 @@
 
 
 
-start PackAll.exe "Stages= CL+CLABC + Test + Release"
+start PackAll.exe "Stages= OpenCL+OpenCLABC + Compile + Test + Release"
 
 

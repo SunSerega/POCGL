@@ -583,11 +583,8 @@
 # ConstQueue<T>.(T)
 %ccq.ctor%
 
-# ConstQueue<T>.GetConstVal()
-%hidden%
 # IConstQueue.GetConstVal()
 %ccq.GetConstVal%
-
 # ConstQueue<T>.Val
 %ccq.Val%
 

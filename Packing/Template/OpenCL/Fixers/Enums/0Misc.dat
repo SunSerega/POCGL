@@ -1,0 +1,36 @@
+
+
+
+# ErrorCode
+!cust_memb
+public function IS_ERROR := val<>0;
+!cust_memb
+public procedure RaiseIfError;
+!cust_memb
+public static function operator explicit(st: CommandExecutionStatus): ErrorCode := new ErrorCode(st.val);
+public static function operator explicit(ec: ErrorCode): CommandExecutionStatus := new CommandExecutionStatus(ec.val);
+
+
+
+# CommandExecutionStatus
+!add
+Int32
+false
+COMPLETE	= 0x0
+RUNNING		= 0x1
+SUBMITTED	= 0x2
+QUEUED		= 0x3
+!cust_memb
+public function IS_ERROR := val < 0;
+
+
+
+# DeviceFpConfig
+!rename
+DeviceFPConfig
+
+# DeviceSvmCapabilities
+!rename
+DeviceSVMCapabilities
+
+

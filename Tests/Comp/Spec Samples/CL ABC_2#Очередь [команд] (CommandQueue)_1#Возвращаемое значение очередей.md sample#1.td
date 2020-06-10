@@ -12,6 +12,6 @@ System.String[abc]
 [nil]
 
 #ReqModules
-CLABC
+OpenCLABC
 
 

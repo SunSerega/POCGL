@@ -1,0 +1,23 @@
+﻿Invalid ext name [2D], replaced with []
+Invalid ext name [3D], replaced with []
+Invalid ext name [IL], replaced with []
+Invalid ext name [D3D10KHR], replaced with [KHR]
+Invalid ext name [2DKHR], replaced with [KHR]
+Invalid ext name [3DKHR], replaced with [KHR]
+Invalid ext name [D3D11KHR], replaced with [KHR]
+Invalid ext name [ILKHR], replaced with [KHR]
+Invalid ext name [DX9INTEL], replaced with [INTEL]
+Struct [cl_dx9_surface_info_khr] was skipped
+Struct [cl_motion_estimation_desc_intel] was skipped
+Struct [cl_mem_ext_host_ptr] was skipped
+Struct [cl_mem_ion_host_ptr] was skipped
+Struct [cl_mem_android_native_buffer_host_ptr] was skipped
+Struct [cl_name_version] was skipped
+Group [DeviceAtomicCapabilities] was skipped
+Group [QueuePriorityKhr] was skipped
+Group [QueueThrottleKhr] was skipped
+Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was skipped
+Group [MemAllocFlagsIntel] was skipped
+Group [KhronosVendorId] was skipped
+Group [UnifiedSharedMemoryTypeIntel] was skipped
+done

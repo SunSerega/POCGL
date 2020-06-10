@@ -2,6 +2,6 @@
 
 
 #ReqModules
-GL
+OpenGL
 
 

@@ -10,6 +10,8 @@ type DialogResult             = System.Windows.Forms.DialogResult;
 const
   MaxExecTime = 5000;
   
+var domain_unload_otps := new List<ThrProcOtp>;
+
 ///Result = (res, err)
 function ExecuteTestExe(fname, nick: string): (string, string);
 begin
@@ -74,7 +76,20 @@ begin
     dom.GetData('Result') as string,
     dom.GetData('Err') as string
   );
-  System.AppDomain.Unload(dom);
+  StartBgThread(()->
+  try
+    var du_otp := new ThrProcOtp;
+    domain_unload_otps += du_otp;
+    try
+      System.AppDomain.Unload(dom);
+    except
+      on e: System.CannotUnloadAppDomainException do
+        du_otp.Enq($'Error unloading domain of {nick}: {e}');
+    end;
+    du_otp.Finish;
+  except
+    on e: Exception do ErrOtp(e);
+  end);
 end;
 
 type
@@ -93,7 +108,7 @@ type
     expected_otp: string;
     expected_exec_err: string;
     
-    static valid_modules := HSet('CL','CLABC', 'GL','GLABC');
+    static valid_modules := HSet('OpenCL','OpenCLABC', 'OpenGL','OpenGLABC');
     static allowed_modules := new HashSet<string>(valid_modules.Count);
     
     static all_loaded := new List<TestInfo>;
@@ -106,8 +121,10 @@ type
     begin
       var arg := CommandLineArgs.FirstOrDefault(arg->arg.StartsWith(modules_def));
       if arg<>nil then
-        foreach var w in arg.Remove(0,modules_def.Length).ToWords('+') do
-          allowed_modules += w;
+        foreach var w in arg.Remove(0,modules_def.Length).ToWords('+').Select(w->w.Trim) do
+          if w in valid_modules then
+            allowed_modules += w else
+            Otp($'WARNING: Invalid module [{w}]');
       if allowed_modules.Count=0 then
       begin
         allowed_modules := valid_modules;
@@ -186,14 +203,10 @@ type
       req_modules := new List<string>;
       foreach var l in ReadLines(pas_fname) do
         if l.StartsWith('uses') then
-          foreach var _m in l.Substring('uses'.Length).ToWords(',',' ',';') do
-          begin
-            var m := _m;
-            if m.StartsWith('Open') then m := m.Substring('Open'.Length);
+          foreach var m in l.Substring('uses'.Length).ToWords(',',' ',';') do
             if m in valid_modules then
               req_modules.Add(m);
-          end;
-      all_settings.Add('#ReqModules', req_modules.JoinToString('+'));
+      all_settings['#ReqModules'] := req_modules.JoinToString('+');
       used_settings += '#ReqModules';
       resave_settings := true;
     end;
@@ -212,8 +225,8 @@ type
       foreach var dir in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
       begin
         test_folders += dir;
-        foreach var u in allowed_modules do
-          System.IO.File.Copy($'Open{u}.pcu', $'{dir}\Open{u}.pcu', true);
+        foreach var mn in allowed_modules do
+          System.IO.File.Copy($'Modules.Packed\{mn}.pcu', $'{dir}\{mn}.pcu', true);
       end;
       
       foreach var pas_fname in System.IO.Directory.EnumerateFiles(path, '*.pas', System.IO.SearchOption.AllDirectories) do
@@ -229,7 +242,7 @@ type
         all_loaded += t;
         
         t.req_modules := t.ExtractSettingStr('#ReqModules', nil)?.ToWords('+');
-        if t.req_modules=nil then t.FindReqModules;
+        if (t.req_modules=nil) or t.req_modules.Any(mn->not allowed_modules.Contains(mn)) then t.FindReqModules;
         if not t.req_modules.All(m->allowed_modules.Contains(m)) then
         begin
           t.req_modules := nil;
@@ -266,6 +279,7 @@ type
     static procedure CompAll;
     begin
       
+      // req_modules становится nil если не подошло
       all_loaded.Where(t->(t.req_modules<>nil) and t.test_mode.Contains('Comp'))
       .Select(t->ProcTask(()->
       try
@@ -450,6 +464,7 @@ type
     
     static procedure Cleanup;
     begin
+      Otp('Cleanup');
       
       foreach var t in all_loaded do
         if t.resave_settings then
@@ -475,12 +490,12 @@ type
         end;
       
       foreach var dir in test_folders do
-      begin
-        System.IO.File.Delete( dir+'\OpenCL.pcu'    );
-        System.IO.File.Delete( dir+'\OpenCLABC.pcu' );
-        System.IO.File.Delete( dir+'\OpenGL.pcu'    );
-        System.IO.File.Delete( dir+'\OpenGLABC.pcu' );
-      end;
+        foreach var mn in allowed_modules do
+          System.IO.File.Delete($'{dir}\{mn}.pcu');
+      
+      foreach var du_otp in domain_unload_otps do
+        foreach var l in du_otp.Enmr do
+          Otp(l);
       
     end;
     

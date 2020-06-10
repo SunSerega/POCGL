@@ -14,6 +14,6 @@
 [ 0.00, 0.00, 1.00 ]
 
 #ReqModules
-GL
+OpenGL
 
 

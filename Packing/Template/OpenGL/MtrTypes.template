@@ -1,0 +1,3600 @@
+﻿
+  {$region Mtr}
+  
+  Mtr2x2f = record
+    public val00, val10: single;
+    public val01, val11: single;
+    
+    public constructor(val00, val01, val10, val11: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+    end;
+    
+    public static property Identity: Mtr2x2f read new Mtr2x2f(1.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec2f read new Vec2f(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2f read new Vec2f(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    
+    public property Col0: Vec2f read new Vec2f(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2f read new Vec2f(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    
+    public property ColPtr0: ^Vec2f read pointer(@val00);
+    public property ColPtr1: ^Vec2f read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    
+    public procedure UseColPtr0(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val01))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val01))^); end;
+    
+    public static function Scale(k: single): Mtr2x2f := new Mtr2x2f(k, 0.0, 0.0, k);
+    
+    public static function Traslate(X: single): Mtr2x2f := new Mtr2x2f(1.0, X, 0.0, 1.0);
+    public static function TraslateTransposed(X: single): Mtr2x2f := new Mtr2x2f(1.0, 0.0, X, 1.0);
+    
+    public static function RotateXYcw(rot: double): Mtr2x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x2f(
+         cr, +sr,
+        -sr,  cr
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr2x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x2f(
+         cr, -sr,
+        +sr,  cr
+      );
+    end;
+    
+    public function Det: single :=
+    val00*val11 - val10*val01;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[2,2];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x2f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr2x2f; v: Vec2f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
+    public static function operator*(v: Vec2f; m: Mtr2x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
+    
+  end;
+  Mtr2f = Mtr2x2f;
+  
+  Mtr3x3f = record
+    public val00, val10, val20: single;
+    public val01, val11, val21: single;
+    public val02, val12, val22: single;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+    end;
+    
+    public static property Identity: Mtr3x3f read new Mtr3x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec3f read new Vec3f(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3f read new Vec3f(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3f read new Vec3f(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    
+    public property Col0: Vec3f read new Vec3f(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3f read new Vec3f(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3f read new Vec3f(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    
+    public property ColPtr0: ^Vec3f read pointer(@val00);
+    public property ColPtr1: ^Vec3f read pointer(@val01);
+    public property ColPtr2: ^Vec3f read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public procedure UseColPtr0(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val02))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val02))^); end;
+    
+    public static function Scale(k: single): Mtr3x3f := new Mtr3x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y: single): Mtr3x3f := new Mtr3x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, 1.0);
+    
+    public static function RotateXYcw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr3x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x3f(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3f; rot: double): Mtr3x3f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3f; rot: double): Mtr3x3f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public function Det: single :=
+    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[3,3];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x3f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr3x3f; v: Vec3f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
+    public static function operator*(v: Vec3f; m: Mtr3x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr3x3f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+  end;
+  Mtr3f = Mtr3x3f;
+  
+  Mtr4x4f = record
+    public val00, val10, val20, val30: single;
+    public val01, val11, val21, val31: single;
+    public val02, val12, val22, val32: single;
+    public val03, val13, val23, val33: single;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+      self.val33 := val33;
+    end;
+    
+    public static property Identity: Mtr4x4f read new Mtr4x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec4f read new Vec4f(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4f read new Vec4f(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4f read new Vec4f(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    public property Row3: Vec4f read new Vec4f(self.val30, self.val31, self.val32, self.val33) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; self.val33 := value.val3; end;
+    
+    public property Col0: Vec4f read new Vec4f(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4f read new Vec4f(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4f read new Vec4f(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    public property Col3: Vec4f read new Vec4f(self.val03, self.val13, self.val23, self.val33) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; self.val33 := value.val3; end;
+    
+    public property ColPtr0: ^Vec4f read pointer(@val00);
+    public property ColPtr1: ^Vec4f read pointer(@val01);
+    public property ColPtr2: ^Vec4f read pointer(@val02);
+    public property ColPtr3: ^Vec4f read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public procedure UseColPtr0(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val02))^); end;
+    public procedure UseColPtr3(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val03))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val02))^); end;
+    public function UseColPtr3<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val03))^); end;
+    
+    public static function Scale(k: single): Mtr4x4f := new Mtr4x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z, 0.0, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y, Z: single): Mtr4x4f := new Mtr4x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, Z, 1.0);
+    
+    public static function RotateXYcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr4x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x4f(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3f; rot: double): Mtr4x4f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+      Result.val33 := 1;
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3f; rot: double): Mtr4x4f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+      Result.val33 := 1;
+    end;
+    
+    public function Det: single :=
+    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[4,4];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[0,3] := (Sign(val03)=-1?'-':'+') + Abs(val03).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[1,3] := (Sign(val13)=-1?'-':'+') + Abs(val13).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      ElStrs[2,3] := (Sign(val23)=-1?'-':'+') + Abs(val23).ToString('f2');
+      ElStrs[3,0] := (Sign(val30)=-1?'-':'+') + Abs(val30).ToString('f2');
+      ElStrs[3,1] := (Sign(val31)=-1?'-':'+') + Abs(val31).ToString('f2');
+      ElStrs[3,2] := (Sign(val32)=-1?'-':'+') + Abs(val32).ToString('f2');
+      ElStrs[3,3] := (Sign(val33)=-1?'-':'+') + Abs(val33).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x4f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr4x4f; v: Vec4f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
+    public static function operator*(v: Vec4f; m: Mtr4x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+  end;
+  Mtr4f = Mtr4x4f;
+  
+  Mtr2x3f = record
+    public val00, val10: single;
+    public val01, val11: single;
+    public val02, val12: single;
+    
+    public constructor(val00, val01, val02, val10, val11, val12: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+    end;
+    
+    public static property Identity: Mtr2x3f read new Mtr2x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec3f read new Vec3f(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3f read new Vec3f(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    
+    public property Col0: Vec2f read new Vec2f(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2f read new Vec2f(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2f read new Vec2f(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    
+    public property ColPtr0: ^Vec2f read pointer(@val00);
+    public property ColPtr1: ^Vec2f read pointer(@val01);
+    public property ColPtr2: ^Vec2f read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    
+    public procedure UseColPtr0(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val02))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val02))^); end;
+    
+    public static function Scale(k: single): Mtr2x3f := new Mtr2x3f(k, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, X, 0.0, 1.0, Y);
+    public static function TraslateTransposed(X: single): Mtr2x3f := new Mtr2x3f(1.0, 0.0, 0.0, X, 1.0, 0.0);
+    
+    public static function RotateXYcw(rot: double): Mtr2x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x3f(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr2x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x3f(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[2,3];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x3f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr2x3f; v: Vec3f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
+    public static function operator*(v: Vec2f; m: Mtr2x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+  end;
+  
+  Mtr3x2f = record
+    public val00, val10, val20: single;
+    public val01, val11, val21: single;
+    
+    public constructor(val00, val01, val10, val11, val20, val21: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+    end;
+    
+    public static property Identity: Mtr3x2f read new Mtr3x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec2f read new Vec2f(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2f read new Vec2f(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2f read new Vec2f(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    
+    public property Col0: Vec3f read new Vec3f(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3f read new Vec3f(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    
+    public property ColPtr0: ^Vec3f read pointer(@val00);
+    public property ColPtr1: ^Vec3f read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public procedure UseColPtr0(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val01))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val01))^); end;
+    
+    public static function Scale(k: single): Mtr3x2f := new Mtr3x2f(k, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X: single): Mtr3x2f := new Mtr3x2f(1.0, X, 0.0, 1.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: single): Mtr3x2f := new Mtr3x2f(1.0, 0.0, 0.0, 1.0, X, Y);
+    
+    public static function RotateXYcw(rot: double): Mtr3x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x2f(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr3x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x2f(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[3,2];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x2f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr3x2f; v: Vec2f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
+    public static function operator*(v: Vec3f; m: Mtr3x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+  end;
+  
+  Mtr2x4f = record
+    public val00, val10: single;
+    public val01, val11: single;
+    public val02, val12: single;
+    public val03, val13: single;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+    end;
+    
+    public static property Identity: Mtr2x4f read new Mtr2x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec4f read new Vec4f(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4f read new Vec4f(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    
+    public property Col0: Vec2f read new Vec2f(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2f read new Vec2f(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2f read new Vec2f(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    public property Col3: Vec2f read new Vec2f(self.val03, self.val13) write begin self.val03 := value.val0; self.val13 := value.val1; end;
+    
+    public property ColPtr0: ^Vec2f read pointer(@val00);
+    public property ColPtr1: ^Vec2f read pointer(@val01);
+    public property ColPtr2: ^Vec2f read pointer(@val02);
+    public property ColPtr3: ^Vec2f read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec2f read pointer(IntPtr(pointer(@self)) + x*8);
+    
+    public procedure UseColPtr0(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val02))^); end;
+    public procedure UseColPtr3(callback: UseVec2fPtrCallbackP);
+    type PVec2f = ^Vec2f;
+    begin callback(PVec2f(pointer(@val03))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val02))^); end;
+    public function UseColPtr3<T>(callback: UseVec2fPtrCallbackF<T>): T;
+    type PVec2f = ^Vec2f;
+    begin Result := callback(PVec2f(pointer(@val03))^); end;
+    
+    public static function Scale(k: single): Mtr2x4f := new Mtr2x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y);
+    public static function TraslateTransposed(X: single): Mtr2x4f := new Mtr2x4f(1.0, 0.0, 0.0, 0.0, X, 1.0, 0.0, 0.0);
+    
+    public static function RotateXYcw(rot: double): Mtr2x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x4f(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr2x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr2x4f(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[2,4];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[0,3] := (Sign(val03)=-1?'-':'+') + Abs(val03).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[1,3] := (Sign(val13)=-1?'-':'+') + Abs(val13).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x4f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr2x4f; v: Vec4f): Vec2f := new Vec2f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
+    public static function operator*(v: Vec2f; m: Mtr2x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1, m.val03*v.val0+m.val13*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x2f = record
+    public val00, val10, val20, val30: single;
+    public val01, val11, val21, val31: single;
+    
+    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val30 := val30;
+      self.val31 := val31;
+    end;
+    
+    public static property Identity: Mtr4x2f read new Mtr4x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec2f read new Vec2f(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2f read new Vec2f(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2f read new Vec2f(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    public property Row3: Vec2f read new Vec2f(self.val30, self.val31) write begin self.val30 := value.val0; self.val31 := value.val1; end;
+    
+    public property Col0: Vec4f read new Vec4f(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4f read new Vec4f(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    
+    public property ColPtr0: ^Vec4f read pointer(@val00);
+    public property ColPtr1: ^Vec4f read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public procedure UseColPtr0(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val01))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val01))^); end;
+    
+    public static function Scale(k: single): Mtr4x2f := new Mtr4x2f(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X: single): Mtr4x2f := new Mtr4x2f(1.0, X, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: single): Mtr4x2f := new Mtr4x2f(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y);
+    
+    public static function RotateXYcw(rot: double): Mtr4x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x2f(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr4x2f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x2f(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[4,2];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[3,0] := (Sign(val30)=-1?'-':'+') + Abs(val30).ToString('f2');
+      ElStrs[3,1] := (Sign(val31)=-1?'-':'+') + Abs(val31).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x2f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr4x2f; v: Vec2f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
+    public static function operator*(v: Vec4f; m: Mtr4x2f): Vec2f := new Vec2f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, m.val30, m.val31, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr3x4f = record
+    public val00, val10, val20: single;
+    public val01, val11, val21: single;
+    public val02, val12, val22: single;
+    public val03, val13, val23: single;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+    end;
+    
+    public static property Identity: Mtr3x4f read new Mtr3x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec4f read new Vec4f(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4f read new Vec4f(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4f read new Vec4f(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    
+    public property Col0: Vec3f read new Vec3f(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3f read new Vec3f(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3f read new Vec3f(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    public property Col3: Vec3f read new Vec3f(self.val03, self.val13, self.val23) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; end;
+    
+    public property ColPtr0: ^Vec3f read pointer(@val00);
+    public property ColPtr1: ^Vec3f read pointer(@val01);
+    public property ColPtr2: ^Vec3f read pointer(@val02);
+    public property ColPtr3: ^Vec3f read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec3f read pointer(IntPtr(pointer(@self)) + x*12);
+    
+    public procedure UseColPtr0(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val02))^); end;
+    public procedure UseColPtr3(callback: UseVec3fPtrCallbackP);
+    type PVec3f = ^Vec3f;
+    begin callback(PVec3f(pointer(@val03))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val02))^); end;
+    public function UseColPtr3<T>(callback: UseVec3fPtrCallbackF<T>): T;
+    type PVec3f = ^Vec3f;
+    begin Result := callback(PVec3f(pointer(@val03))^); end;
+    
+    public static function Scale(k: single): Mtr3x4f := new Mtr3x4f(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y, Z: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z);
+    public static function TraslateTransposed(X, Y: single): Mtr3x4f := new Mtr3x4f(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y, 1.0, 0.0);
+    
+    public static function RotateXYcw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr3x4f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr3x4f(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3f; rot: double): Mtr3x4f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3f; rot: double): Mtr3x4f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[3,4];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[0,3] := (Sign(val03)=-1?'-':'+') + Abs(val03).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[1,3] := (Sign(val13)=-1?'-':'+') + Abs(val13).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      ElStrs[2,3] := (Sign(val23)=-1?'-':'+') + Abs(val23).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x4f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr3x4f; v: Vec4f): Vec3f := new Vec3f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
+    public static function operator*(v: Vec3f; m: Mtr3x4f): Vec4f := new Vec4f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x3f = record
+    public val00, val10, val20, val30: single;
+    public val01, val11, val21, val31: single;
+    public val02, val12, val22, val32: single;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: single);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+    end;
+    
+    public static property Identity: Mtr4x3f read new Mtr4x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec3f read new Vec3f(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3f read new Vec3f(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3f read new Vec3f(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    public property Row3: Vec3f read new Vec3f(self.val30, self.val31, self.val32) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; end;
+    
+    public property Col0: Vec4f read new Vec4f(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4f read new Vec4f(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4f read new Vec4f(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    
+    public property ColPtr0: ^Vec4f read pointer(@val00);
+    public property ColPtr1: ^Vec4f read pointer(@val01);
+    public property ColPtr2: ^Vec4f read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec4f read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public procedure UseColPtr0(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec4fPtrCallbackP);
+    type PVec4f = ^Vec4f;
+    begin callback(PVec4f(pointer(@val02))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec4fPtrCallbackF<T>): T;
+    type PVec4f = ^Vec4f;
+    begin Result := callback(PVec4f(pointer(@val02))^); end;
+    
+    public static function Scale(k: single): Mtr4x3f := new Mtr4x3f(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y, Z: single): Mtr4x3f := new Mtr4x3f(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, X, Y, Z);
+    
+    public static function RotateXYcw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr4x3f;
+    begin
+      var sr: single := Sin(rot);
+      var cr: single := Cos(rot);
+      Result := new Mtr4x3f(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3f; rot: double): Mtr4x3f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3f; rot: double): Mtr4x3f;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[4,3];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      ElStrs[3,0] := (Sign(val30)=-1?'-':'+') + Abs(val30).ToString('f2');
+      ElStrs[3,1] := (Sign(val31)=-1?'-':'+') + Abs(val31).ToString('f2');
+      ElStrs[3,2] := (Sign(val32)=-1?'-':'+') + Abs(val32).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x3f;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr4x3f; v: Vec3f): Vec4f := new Vec4f(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
+    public static function operator*(v: Vec4f; m: Mtr4x3f): Vec3f := new Vec3f(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3f): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, m.val30, m.val31, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3f): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+  end;
+  
+  Mtr2x2d = record
+    public val00, val10: double;
+    public val01, val11: double;
+    
+    public constructor(val00, val01, val10, val11: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+    end;
+    
+    public static property Identity: Mtr2x2d read new Mtr2x2d(1.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec2d read new Vec2d(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2d read new Vec2d(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    
+    public property Col0: Vec2d read new Vec2d(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2d read new Vec2d(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    
+    public property ColPtr0: ^Vec2d read pointer(@val00);
+    public property ColPtr1: ^Vec2d read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public procedure UseColPtr0(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val01))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val01))^); end;
+    
+    public static function Scale(k: double): Mtr2x2d := new Mtr2x2d(k, 0.0, 0.0, k);
+    
+    public static function Traslate(X: double): Mtr2x2d := new Mtr2x2d(1.0, X, 0.0, 1.0);
+    public static function TraslateTransposed(X: double): Mtr2x2d := new Mtr2x2d(1.0, 0.0, X, 1.0);
+    
+    public static function RotateXYcw(rot: double): Mtr2x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x2d(
+         cr, +sr,
+        -sr,  cr
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr2x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x2d(
+         cr, -sr,
+        +sr,  cr
+      );
+    end;
+    
+    public function Det: double :=
+    val00*val11 - val10*val01;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[2,2];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x2d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr2x2d; v: Vec2d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1);
+    public static function operator*(v: Vec2d; m: Mtr2x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    public static function operator implicit(m: Mtr2x2d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    
+  end;
+  Mtr2d = Mtr2x2d;
+  
+  Mtr3x3d = record
+    public val00, val10, val20: double;
+    public val01, val11, val21: double;
+    public val02, val12, val22: double;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+    end;
+    
+    public static property Identity: Mtr3x3d read new Mtr3x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec3d read new Vec3d(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3d read new Vec3d(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3d read new Vec3d(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    
+    public property Col0: Vec3d read new Vec3d(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3d read new Vec3d(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3d read new Vec3d(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    
+    public property ColPtr0: ^Vec3d read pointer(@val00);
+    public property ColPtr1: ^Vec3d read pointer(@val01);
+    public property ColPtr2: ^Vec3d read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public procedure UseColPtr0(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val02))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val02))^); end;
+    
+    public static function Scale(k: double): Mtr3x3d := new Mtr3x3d(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y: double): Mtr3x3d := new Mtr3x3d(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y: double): Mtr3x3d := new Mtr3x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, 1.0);
+    
+    public static function RotateXYcw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr3x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x3d(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3d; rot: double): Mtr3x3d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3d; rot: double): Mtr3x3d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public function Det: double :=
+    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[3,3];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x3d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr3x3d; v: Vec3d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2);
+    public static function operator*(v: Vec3d; m: Mtr3x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    public static function operator implicit(m: Mtr3x3d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr3x3d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+  end;
+  Mtr3d = Mtr3x3d;
+  
+  Mtr4x4d = record
+    public val00, val10, val20, val30: double;
+    public val01, val11, val21, val31: double;
+    public val02, val12, val22, val32: double;
+    public val03, val13, val23, val33: double;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23, val30, val31, val32, val33: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+      self.val33 := val33;
+    end;
+    
+    public static property Identity: Mtr4x4d read new Mtr4x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public property Row0: Vec4d read new Vec4d(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4d read new Vec4d(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4d read new Vec4d(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    public property Row3: Vec4d read new Vec4d(self.val30, self.val31, self.val32, self.val33) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; self.val33 := value.val3; end;
+    
+    public property Col0: Vec4d read new Vec4d(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4d read new Vec4d(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4d read new Vec4d(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    public property Col3: Vec4d read new Vec4d(self.val03, self.val13, self.val23, self.val33) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; self.val33 := value.val3; end;
+    
+    public property ColPtr0: ^Vec4d read pointer(@val00);
+    public property ColPtr1: ^Vec4d read pointer(@val01);
+    public property ColPtr2: ^Vec4d read pointer(@val02);
+    public property ColPtr3: ^Vec4d read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public procedure UseColPtr0(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val02))^); end;
+    public procedure UseColPtr3(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val03))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val02))^); end;
+    public function UseColPtr3<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val03))^); end;
+    
+    public static function Scale(k: double): Mtr4x4d := new Mtr4x4d(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k);
+    
+    public static function Traslate(X, Y, Z: double): Mtr4x4d := new Mtr4x4d(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z, 0.0, 0.0, 0.0, 1.0);
+    public static function TraslateTransposed(X, Y, Z: double): Mtr4x4d := new Mtr4x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, X, Y, Z, 1.0);
+    
+    public static function RotateXYcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr4x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x4d(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3d; rot: double): Mtr4x4d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+      Result.val33 := 1;
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3d; rot: double): Mtr4x4d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+      Result.val33 := 1;
+    end;
+    
+    public function Det: double :=
+    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[4,4];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[0,3] := (Sign(val03)=-1?'-':'+') + Abs(val03).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[1,3] := (Sign(val13)=-1?'-':'+') + Abs(val13).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      ElStrs[2,3] := (Sign(val23)=-1?'-':'+') + Abs(val23).ToString('f2');
+      ElStrs[3,0] := (Sign(val30)=-1?'-':'+') + Abs(val30).ToString('f2');
+      ElStrs[3,1] := (Sign(val31)=-1?'-':'+') + Abs(val31).ToString('f2');
+      ElStrs[3,2] := (Sign(val32)=-1?'-':'+') + Abs(val32).ToString('f2');
+      ElStrs[3,3] := (Sign(val33)=-1?'-':'+') + Abs(val33).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x4d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr4x4d; v: Vec4d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2+m.val33*v.val3);
+    public static function operator*(v: Vec4d; m: Mtr4x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2+m.val33*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, m.val30, m.val31, m.val32, m.val33);
+    public static function operator implicit(m: Mtr4x4d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, m.val30, m.val31, m.val32, m.val33);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, m.val30, m.val31, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static function operator implicit(m: Mtr4x4d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+  end;
+  Mtr4d = Mtr4x4d;
+  
+  Mtr2x3d = record
+    public val00, val10: double;
+    public val01, val11: double;
+    public val02, val12: double;
+    
+    public constructor(val00, val01, val02, val10, val11, val12: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+    end;
+    
+    public static property Identity: Mtr2x3d read new Mtr2x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec3d read new Vec3d(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3d read new Vec3d(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    
+    public property Col0: Vec2d read new Vec2d(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2d read new Vec2d(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2d read new Vec2d(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    
+    public property ColPtr0: ^Vec2d read pointer(@val00);
+    public property ColPtr1: ^Vec2d read pointer(@val01);
+    public property ColPtr2: ^Vec2d read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public procedure UseColPtr0(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val02))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val02))^); end;
+    
+    public static function Scale(k: double): Mtr2x3d := new Mtr2x3d(k, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y: double): Mtr2x3d := new Mtr2x3d(1.0, 0.0, X, 0.0, 1.0, Y);
+    public static function TraslateTransposed(X: double): Mtr2x3d := new Mtr2x3d(1.0, 0.0, 0.0, X, 1.0, 0.0);
+    
+    public static function RotateXYcw(rot: double): Mtr2x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x3d(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr2x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x3d(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[2,3];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x3d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr2x3d; v: Vec3d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2);
+    public static function operator*(v: Vec2d; m: Mtr2x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    public static function operator implicit(m: Mtr2x3d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    public static function operator implicit(m: Mtr2x3d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+  end;
+  
+  Mtr3x2d = record
+    public val00, val10, val20: double;
+    public val01, val11, val21: double;
+    
+    public constructor(val00, val01, val10, val11, val20, val21: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+    end;
+    
+    public static property Identity: Mtr3x2d read new Mtr3x2d(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec2d read new Vec2d(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2d read new Vec2d(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2d read new Vec2d(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    
+    public property Col0: Vec3d read new Vec3d(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3d read new Vec3d(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    
+    public property ColPtr0: ^Vec3d read pointer(@val00);
+    public property ColPtr1: ^Vec3d read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public procedure UseColPtr0(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val01))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val01))^); end;
+    
+    public static function Scale(k: double): Mtr3x2d := new Mtr3x2d(k, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X: double): Mtr3x2d := new Mtr3x2d(1.0, X, 0.0, 1.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: double): Mtr3x2d := new Mtr3x2d(1.0, 0.0, 0.0, 1.0, X, Y);
+    
+    public static function RotateXYcw(rot: double): Mtr3x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x2d(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr3x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x2d(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[3,2];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x2d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr3x2d; v: Vec2d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1);
+    public static function operator*(v: Vec3d; m: Mtr3x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    public static function operator implicit(m: Mtr3x2d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr3x2d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+  end;
+  
+  Mtr2x4d = record
+    public val00, val10: double;
+    public val01, val11: double;
+    public val02, val12: double;
+    public val03, val13: double;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+    end;
+    
+    public static property Identity: Mtr2x4d read new Mtr2x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    
+    public property Row0: Vec4d read new Vec4d(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4d read new Vec4d(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    
+    public property Col0: Vec2d read new Vec2d(self.val00, self.val10) write begin self.val00 := value.val0; self.val10 := value.val1; end;
+    public property Col1: Vec2d read new Vec2d(self.val01, self.val11) write begin self.val01 := value.val0; self.val11 := value.val1; end;
+    public property Col2: Vec2d read new Vec2d(self.val02, self.val12) write begin self.val02 := value.val0; self.val12 := value.val1; end;
+    public property Col3: Vec2d read new Vec2d(self.val03, self.val13) write begin self.val03 := value.val0; self.val13 := value.val1; end;
+    
+    public property ColPtr0: ^Vec2d read pointer(@val00);
+    public property ColPtr1: ^Vec2d read pointer(@val01);
+    public property ColPtr2: ^Vec2d read pointer(@val02);
+    public property ColPtr3: ^Vec2d read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec2d read pointer(IntPtr(pointer(@self)) + x*16);
+    
+    public procedure UseColPtr0(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val02))^); end;
+    public procedure UseColPtr3(callback: UseVec2dPtrCallbackP);
+    type PVec2d = ^Vec2d;
+    begin callback(PVec2d(pointer(@val03))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val02))^); end;
+    public function UseColPtr3<T>(callback: UseVec2dPtrCallbackF<T>): T;
+    type PVec2d = ^Vec2d;
+    begin Result := callback(PVec2d(pointer(@val03))^); end;
+    
+    public static function Scale(k: double): Mtr2x4d := new Mtr2x4d(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: double): Mtr2x4d := new Mtr2x4d(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y);
+    public static function TraslateTransposed(X: double): Mtr2x4d := new Mtr2x4d(1.0, 0.0, 0.0, 0.0, X, 1.0, 0.0, 0.0);
+    
+    public static function RotateXYcw(rot: double): Mtr2x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x4d(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr2x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr2x4d(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[2,4];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[0,3] := (Sign(val03)=-1?'-':'+') + Abs(val03).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[1,3] := (Sign(val13)=-1?'-':'+') + Abs(val13).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr2x4d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr2x4d; v: Vec4d): Vec2d := new Vec2d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3);
+    public static function operator*(v: Vec2d; m: Mtr2x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1, m.val01*v.val0+m.val11*v.val1, m.val02*v.val0+m.val12*v.val1, m.val03*v.val0+m.val13*v.val1);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    public static function operator implicit(m: Mtr2x4d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    public static function operator implicit(m: Mtr2x4d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x2d = record
+    public val00, val10, val20, val30: double;
+    public val01, val11, val21, val31: double;
+    
+    public constructor(val00, val01, val10, val11, val20, val21, val30, val31: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val30 := val30;
+      self.val31 := val31;
+    end;
+    
+    public static property Identity: Mtr4x2d read new Mtr4x2d(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec2d read new Vec2d(self.val00, self.val01) write begin self.val00 := value.val0; self.val01 := value.val1; end;
+    public property Row1: Vec2d read new Vec2d(self.val10, self.val11) write begin self.val10 := value.val0; self.val11 := value.val1; end;
+    public property Row2: Vec2d read new Vec2d(self.val20, self.val21) write begin self.val20 := value.val0; self.val21 := value.val1; end;
+    public property Row3: Vec2d read new Vec2d(self.val30, self.val31) write begin self.val30 := value.val0; self.val31 := value.val1; end;
+    
+    public property Col0: Vec4d read new Vec4d(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4d read new Vec4d(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    
+    public property ColPtr0: ^Vec4d read pointer(@val00);
+    public property ColPtr1: ^Vec4d read pointer(@val01);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public procedure UseColPtr0(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val01))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val01))^); end;
+    
+    public static function Scale(k: double): Mtr4x2d := new Mtr4x2d(k, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X: double): Mtr4x2d := new Mtr4x2d(1.0, X, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y: double): Mtr4x2d := new Mtr4x2d(1.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y);
+    
+    public static function RotateXYcw(rot: double): Mtr4x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x2d(
+         cr, +sr,
+        -sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr4x2d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x2d(
+         cr, -sr,
+        +sr,  cr,
+        0.0, 0.0,
+        0.0, 0.0
+      );
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[4,2];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[3,0] := (Sign(val30)=-1?'-':'+') + Abs(val30).ToString('f2');
+      ElStrs[3,1] := (Sign(val31)=-1?'-':'+') + Abs(val31).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*2 + 4; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x2d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr4x2d; v: Vec2d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1, m.val10*v.val0+m.val11*v.val1, m.val20*v.val0+m.val21*v.val1, m.val30*v.val0+m.val31*v.val1);
+    public static function operator*(v: Vec4d; m: Mtr4x2d): Vec2d := new Vec2d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, m.val30, m.val31, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, m.val30, m.val31, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    public static function operator implicit(m: Mtr4x2d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0, m.val30, m.val31, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x2d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0);
+    
+  end;
+  
+  Mtr3x4d = record
+    public val00, val10, val20: double;
+    public val01, val11, val21: double;
+    public val02, val12, val22: double;
+    public val03, val13, val23: double;
+    
+    public constructor(val00, val01, val02, val03, val10, val11, val12, val13, val20, val21, val22, val23: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val03 := val03;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val13 := val13;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val23 := val23;
+    end;
+    
+    public static property Identity: Mtr3x4d read new Mtr3x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    
+    public property Row0: Vec4d read new Vec4d(self.val00, self.val01, self.val02, self.val03) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; self.val03 := value.val3; end;
+    public property Row1: Vec4d read new Vec4d(self.val10, self.val11, self.val12, self.val13) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; self.val13 := value.val3; end;
+    public property Row2: Vec4d read new Vec4d(self.val20, self.val21, self.val22, self.val23) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; self.val23 := value.val3; end;
+    
+    public property Col0: Vec3d read new Vec3d(self.val00, self.val10, self.val20) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; end;
+    public property Col1: Vec3d read new Vec3d(self.val01, self.val11, self.val21) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; end;
+    public property Col2: Vec3d read new Vec3d(self.val02, self.val12, self.val22) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; end;
+    public property Col3: Vec3d read new Vec3d(self.val03, self.val13, self.val23) write begin self.val03 := value.val0; self.val13 := value.val1; self.val23 := value.val2; end;
+    
+    public property ColPtr0: ^Vec3d read pointer(@val00);
+    public property ColPtr1: ^Vec3d read pointer(@val01);
+    public property ColPtr2: ^Vec3d read pointer(@val02);
+    public property ColPtr3: ^Vec3d read pointer(@val03);
+    public property ColPtr[x: integer]: ^Vec3d read pointer(IntPtr(pointer(@self)) + x*24);
+    
+    public procedure UseColPtr0(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val02))^); end;
+    public procedure UseColPtr3(callback: UseVec3dPtrCallbackP);
+    type PVec3d = ^Vec3d;
+    begin callback(PVec3d(pointer(@val03))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val02))^); end;
+    public function UseColPtr3<T>(callback: UseVec3dPtrCallbackF<T>): T;
+    type PVec3d = ^Vec3d;
+    begin Result := callback(PVec3d(pointer(@val03))^); end;
+    
+    public static function Scale(k: double): Mtr3x4d := new Mtr3x4d(k, 0.0, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, 0.0, k, 0.0);
+    
+    public static function Traslate(X, Y, Z: double): Mtr3x4d := new Mtr3x4d(1.0, 0.0, 0.0, X, 0.0, 1.0, 0.0, Y, 0.0, 0.0, 1.0, Z);
+    public static function TraslateTransposed(X, Y: double): Mtr3x4d := new Mtr3x4d(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, X, Y, 1.0, 0.0);
+    
+    public static function RotateXYcw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, +sr, 0.0, 0.0,
+        -sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, -sr, 0.0, 0.0,
+        +sr,  cr, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, +sr, 0.0,
+        0.0, -sr,  cr, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+        1.0, 0.0, 0.0, 0.0,
+        0.0,  cr, -sr, 0.0,
+        0.0, +sr,  cr, 0.0
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, 0.0, -sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        +sr, 0.0,  cr, 0.0
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr3x4d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr3x4d(
+         cr, 0.0, +sr, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        -sr, 0.0,  cr, 0.0
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3d; rot: double): Mtr3x4d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3d; rot: double): Mtr3x4d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[3,4];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[0,3] := (Sign(val03)=-1?'-':'+') + Abs(val03).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[1,3] := (Sign(val13)=-1?'-':'+') + Abs(val13).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      ElStrs[2,3] := (Sign(val23)=-1?'-':'+') + Abs(val23).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*4 + 8; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,3].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr3x4d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr3x4d; v: Vec4d): Vec3d := new Vec3d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2+m.val03*v.val3, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2+m.val13*v.val3, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2+m.val23*v.val3);
+    public static function operator*(v: Vec3d; m: Mtr3x4d): Vec4d := new Vec4d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2, m.val03*v.val0+m.val13*v.val1+m.val23*v.val2);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, m.val20, m.val21, m.val22, m.val23, 0.0, 0.0, 0.0, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13, 0.0, 0.0, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, m.val03, m.val10, m.val11, m.val12, m.val13);
+    
+    public static function operator implicit(m: Mtr4x2d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, 0.0, 0.0, m.val10, m.val11, 0.0, 0.0, m.val20, m.val21, 1.0, 0.0);
+    public static function operator implicit(m: Mtr3x4d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, 0.0, 0.0);
+    
+  end;
+  
+  Mtr4x3d = record
+    public val00, val10, val20, val30: double;
+    public val01, val11, val21, val31: double;
+    public val02, val12, val22, val32: double;
+    
+    public constructor(val00, val01, val02, val10, val11, val12, val20, val21, val22, val30, val31, val32: double);
+    begin
+      self.val00 := val00;
+      self.val01 := val01;
+      self.val02 := val02;
+      self.val10 := val10;
+      self.val11 := val11;
+      self.val12 := val12;
+      self.val20 := val20;
+      self.val21 := val21;
+      self.val22 := val22;
+      self.val30 := val30;
+      self.val31 := val31;
+      self.val32 := val32;
+    end;
+    
+    public static property Identity: Mtr4x3d read new Mtr4x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    
+    public property Row0: Vec3d read new Vec3d(self.val00, self.val01, self.val02) write begin self.val00 := value.val0; self.val01 := value.val1; self.val02 := value.val2; end;
+    public property Row1: Vec3d read new Vec3d(self.val10, self.val11, self.val12) write begin self.val10 := value.val0; self.val11 := value.val1; self.val12 := value.val2; end;
+    public property Row2: Vec3d read new Vec3d(self.val20, self.val21, self.val22) write begin self.val20 := value.val0; self.val21 := value.val1; self.val22 := value.val2; end;
+    public property Row3: Vec3d read new Vec3d(self.val30, self.val31, self.val32) write begin self.val30 := value.val0; self.val31 := value.val1; self.val32 := value.val2; end;
+    
+    public property Col0: Vec4d read new Vec4d(self.val00, self.val10, self.val20, self.val30) write begin self.val00 := value.val0; self.val10 := value.val1; self.val20 := value.val2; self.val30 := value.val3; end;
+    public property Col1: Vec4d read new Vec4d(self.val01, self.val11, self.val21, self.val31) write begin self.val01 := value.val0; self.val11 := value.val1; self.val21 := value.val2; self.val31 := value.val3; end;
+    public property Col2: Vec4d read new Vec4d(self.val02, self.val12, self.val22, self.val32) write begin self.val02 := value.val0; self.val12 := value.val1; self.val22 := value.val2; self.val32 := value.val3; end;
+    
+    public property ColPtr0: ^Vec4d read pointer(@val00);
+    public property ColPtr1: ^Vec4d read pointer(@val01);
+    public property ColPtr2: ^Vec4d read pointer(@val02);
+    public property ColPtr[x: integer]: ^Vec4d read pointer(IntPtr(pointer(@self)) + x*32);
+    
+    public procedure UseColPtr0(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val00))^); end;
+    public procedure UseColPtr1(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val01))^); end;
+    public procedure UseColPtr2(callback: UseVec4dPtrCallbackP);
+    type PVec4d = ^Vec4d;
+    begin callback(PVec4d(pointer(@val02))^); end;
+    
+    public function UseColPtr0<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val00))^); end;
+    public function UseColPtr1<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val01))^); end;
+    public function UseColPtr2<T>(callback: UseVec4dPtrCallbackF<T>): T;
+    type PVec4d = ^Vec4d;
+    begin Result := callback(PVec4d(pointer(@val02))^); end;
+    
+    public static function Scale(k: double): Mtr4x3d := new Mtr4x3d(k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0, k, 0.0, 0.0, 0.0);
+    
+    public static function Traslate(X, Y: double): Mtr4x3d := new Mtr4x3d(1.0, 0.0, X, 0.0, 1.0, Y, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function TraslateTransposed(X, Y, Z: double): Mtr4x3d := new Mtr4x3d(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, X, Y, Z);
+    
+    public static function RotateXYcw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, +sr, 0.0,
+        -sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateXYccw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, -sr, 0.0,
+        +sr,  cr, 0.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateYZcw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, +sr,
+        0.0, -sr,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateYZccw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+        1.0, 0.0, 0.0,
+        0.0,  cr, -sr,
+        0.0, +sr,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function RotateZXcw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, 0.0, -sr,
+        0.0, 1.0, 0.0,
+        +sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    public static function RotateZXccw(rot: double): Mtr4x3d;
+    begin
+      var sr: double := Sin(rot);
+      var cr: double := Cos(rot);
+      Result := new Mtr4x3d(
+         cr, 0.0, +sr,
+        0.0, 1.0, 0.0,
+        -sr, 0.0,  cr,
+        0.0, 0.0, 0.0
+      );
+    end;
+    
+    public static function Rotate3Dcw(u: Vec3d; rot: double): Mtr4x3d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := -k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := -k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := -k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public static function Rotate3Dccw(u: Vec3d; rot: double): Mtr4x3d;
+    begin
+      var k1 := Sin(rot);
+      var k2 := 2*Sqr(Sin(rot/2));
+      
+      Result.val00 := 1 + k2*( -u.val2*u.val2 - u.val1*u.val1 );
+      Result.val01 := -k1*u.val2 + k2*( u.val1*u.val0 );
+      Result.val02 := k1*u.val1 + k2*( u.val2*u.val0 );
+      Result.val10 := k1*u.val2 + k2*( u.val0*u.val1 );
+      Result.val11 := 1 + k2*( -u.val2*u.val2 - u.val0*u.val0 );
+      Result.val12 := -k1*u.val0 + k2*( u.val2*u.val1 );
+      Result.val20 := -k1*u.val1 + k2*( u.val0*u.val2 );
+      Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
+      Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      var ElStrs := new string[4,3];
+      ElStrs[0,0] := (Sign(val00)=-1?'-':'+') + Abs(val00).ToString('f2');
+      ElStrs[0,1] := (Sign(val01)=-1?'-':'+') + Abs(val01).ToString('f2');
+      ElStrs[0,2] := (Sign(val02)=-1?'-':'+') + Abs(val02).ToString('f2');
+      ElStrs[1,0] := (Sign(val10)=-1?'-':'+') + Abs(val10).ToString('f2');
+      ElStrs[1,1] := (Sign(val11)=-1?'-':'+') + Abs(val11).ToString('f2');
+      ElStrs[1,2] := (Sign(val12)=-1?'-':'+') + Abs(val12).ToString('f2');
+      ElStrs[2,0] := (Sign(val20)=-1?'-':'+') + Abs(val20).ToString('f2');
+      ElStrs[2,1] := (Sign(val21)=-1?'-':'+') + Abs(val21).ToString('f2');
+      ElStrs[2,2] := (Sign(val22)=-1?'-':'+') + Abs(val22).ToString('f2');
+      ElStrs[3,0] := (Sign(val30)=-1?'-':'+') + Abs(val30).ToString('f2');
+      ElStrs[3,1] := (Sign(val31)=-1?'-':'+') + Abs(val31).ToString('f2');
+      ElStrs[3,2] := (Sign(val32)=-1?'-':'+') + Abs(val32).ToString('f2');
+      var MtrElTextW := ElStrs.OfType&<string>.Max(s->s.Length);
+      var PrintlnMtrW := MtrElTextW*3 + 6; // +2*(Width-1) + 2;
+      
+      res += '┌';
+      res.Append(#32, PrintlnMtrW);
+      res += '┐'#10;
+      res += '│ ';
+      res += ElStrs[0,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[0,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[1,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[1,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[2,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[2,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '│ ';
+      res += ElStrs[3,0].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,1].PadLeft(MtrElTextW);
+      res += ', ';
+      res += ElStrs[3,2].PadLeft(MtrElTextW);
+      res += ' │'#10;
+      res += '└';
+      res.Append(#32, PrintlnMtrW);
+      res += '┘';
+      
+      Result := res.ToString;
+    end;
+    
+    public function Println: Mtr4x3d;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    public static function operator*(m: Mtr4x3d; v: Vec3d): Vec4d := new Vec4d(m.val00*v.val0+m.val01*v.val1+m.val02*v.val2, m.val10*v.val0+m.val11*v.val1+m.val12*v.val2, m.val20*v.val0+m.val21*v.val1+m.val22*v.val2, m.val30*v.val0+m.val31*v.val1+m.val32*v.val2);
+    public static function operator*(v: Vec4d; m: Mtr4x3d): Vec3d := new Vec3d(m.val00*v.val0+m.val10*v.val1+m.val20*v.val2+m.val30*v.val3, m.val01*v.val0+m.val11*v.val1+m.val21*v.val2+m.val31*v.val3, m.val02*v.val0+m.val12*v.val1+m.val22*v.val2+m.val32*v.val3);
+    
+    public static function operator implicit(m: Mtr2x2f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x2f := new Mtr2x2f(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x3f := new Mtr3x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x4f := new Mtr4x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x3f := new Mtr2x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x2f := new Mtr3x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x4f := new Mtr2x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, m.val30, m.val31, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x2f := new Mtr4x2f(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x4f := new Mtr3x4f(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+    public static function operator implicit(m: Mtr4x3f): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x3f := new Mtr4x3f(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    
+    public static function operator implicit(m: Mtr2x2d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x2d := new Mtr2x2d(m.val00, m.val01, m.val10, m.val11);
+    
+    public static function operator implicit(m: Mtr3x3d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x3d := new Mtr3x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22);
+    
+    public static function operator implicit(m: Mtr4x4d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, m.val30, m.val31, m.val32);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x4d := new Mtr4x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0, m.val30, m.val31, m.val32, 1.0);
+    
+    public static function operator implicit(m: Mtr2x3d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x3d := new Mtr2x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12);
+    
+    public static function operator implicit(m: Mtr3x2d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x2d := new Mtr3x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21);
+    
+    public static function operator implicit(m: Mtr2x4d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr2x4d := new Mtr2x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0);
+    
+    public static function operator implicit(m: Mtr4x2d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, 0.0, m.val10, m.val11, 0.0, m.val20, m.val21, 1.0, m.val30, m.val31, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr4x2d := new Mtr4x2d(m.val00, m.val01, m.val10, m.val11, m.val20, m.val21, m.val30, m.val31);
+    
+    public static function operator implicit(m: Mtr3x4d): Mtr4x3d := new Mtr4x3d(m.val00, m.val01, m.val02, m.val10, m.val11, m.val12, m.val20, m.val21, m.val22, 0.0, 0.0, 0.0);
+    public static function operator implicit(m: Mtr4x3d): Mtr3x4d := new Mtr3x4d(m.val00, m.val01, m.val02, 0.0, m.val10, m.val11, m.val12, 0.0, m.val20, m.val21, m.val22, 0.0);
+    
+  end;
+  
+  {$endregion Mtr}
+  

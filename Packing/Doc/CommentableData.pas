@@ -73,6 +73,7 @@ begin
   if ind3=-1 then ind3 := l.IndexOf(';',ind1);
   if ind3=-1 then ind3 := l.Length;
   var m_name := l.Substring(ind1, ind3-ind1).Trim(' ', ':');
+  if m_name.StartsWith('operator') then exit;
   
   var pars := ind2=-1 ? '' : GetParams(
     l.Substring(ind2+1,l.Substring(0,h_ind1).LastIndexOf(')',h_ind1-1,h_ind1-ind2)-ind2-1)
@@ -183,7 +184,8 @@ begin
         ind := Max( l.IndexOf('procedure'), l.IndexOf('function') );
         if ind<>-1 then
         begin
-          on_commentable(ParseMethod(last_type,l, ind,l.Length));
+          var comm := ParseMethod(last_type,l, ind,l.Length);
+          if not string.IsNullOrEmpty(comm) then on_commentable(comm);
           continue;
         end;
         

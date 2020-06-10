@@ -2,6 +2,6 @@
 
 
 #ReqModules
-CLABC
+OpenCLABC
 
 

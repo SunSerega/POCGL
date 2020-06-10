@@ -1,0 +1,12 @@
+﻿
+
+
+# 
+	ChoosePixelFormat
+	DescribePixelFormat
+	GetEnhMetaFilePixelFormat
+	GetPixelFormat
+	SetPixelFormat
+	SwapBuffers
+
+

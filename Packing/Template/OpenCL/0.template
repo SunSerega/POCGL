@@ -1,0 +1,86 @@
+﻿
+
+
+%%
+%..\LicenseHeader%
+
+///
+///Код переведён отсюда:
+///   https://github.com/KhronosGroup/OpenCL-Docs/tree/master/xml
+///
+///Спецификации всех версий OpenCL:
+///   https://www.khronos.org/registry/OpenCL/
+///
+///Если чего-либо не хватает, или найдена ошибка - писать сюда:
+///   https://github.com/SunSerega/POCGL/issues
+///
+unit OpenCL;
+
+interface
+
+uses System;
+uses System.Runtime.InteropServices;
+uses System.Runtime.CompilerServices;
+
+{$region Debug}
+
+{ $define DebugMode}
+{$ifdef DebugMode}
+//
+{$endif DebugMode}
+
+{$endregion Debug}
+
+{$region Записи-имена} type
+  
+  %NameRecords!Pack NameRecords.pas%
+  
+{$endregion Записи-имена}
+
+{$region Перечисления} type
+  
+  %Enums!Pack Most.pas%
+  
+{$endregion Перечисления}
+
+{$region Делегаты} type
+  
+  %Static\Delegates%
+  
+{$endregion Делегаты}
+
+{$region Записи} type
+  
+  %Records!Pack Most.pas%
+  
+{$endregion Записи}
+
+{$region Другие типы} type
+  
+  %Static\MiscTypes%
+  
+{$endregion Другие типы}
+
+type
+  
+  %Funcs!Pack Most.pas%
+  
+implementation
+
+{$region Debug}
+{$ifdef DebugMode}
+
+%Static\DebugImpl%
+
+{$endif DebugMode}
+{$endregion Debug}
+
+{$region Misc}
+
+%Static\MiscImpl%
+
+{$endregion Misc}
+
+end.
+
+

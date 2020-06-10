@@ -1,0 +1,58 @@
+﻿
+
+
+# Fixed
+	val: UInt32
+
+# GDI_COLORREF
+	a: byte
+	r: byte
+	g: byte
+	b: byte
+
+# GDI_GlyphmetricsFloat
+	gmfBlackBoxX: single
+	gmfBlackBoxY: single
+	gmfptGlyphOriginX: single
+	gmfptGlyphOriginY: single
+	gmfCellIncX: single
+	gmfCellIncY: single
+
+# GDI_PixelFormatDescriptor
+	nSize: UInt16
+	nVersion: UInt16
+	: 
+	dwFlags: PixelFormatFlagsGDI
+	iPixelType: PixelDataTypeGDI
+	: 
+	cColorBits: Byte
+	cRedBits: Byte
+	cRedShift: Byte
+	cGreenBits: Byte
+	cGreenShift: Byte
+	cBlueBits: Byte
+	cBlueShift: Byte
+	cAlphaBits: Byte
+	cAlphaShift: Byte
+	: 
+	cAccumBits: Byte
+	cAccumRedBits: Byte
+	cAccumGreenBits: Byte
+	cAccumBlueBits: Byte
+	cAccumAlphaBits: Byte
+	: 
+	cDepthBits: Byte
+	cStencilBits: Byte
+	cAuxBuffers: Byte
+	: 
+	iLayerType: Byte
+	bLayersSize: Byte
+	: 
+	dwLayerMask: UInt32
+	dwVisibleMask: UInt32
+	dwDamageMask: UInt32
+
+# Half
+	val: UInt16
+
+

@@ -9,6 +9,6 @@ Comp+Exec
 1 2 
 
 #ReqModules
-CLABC
+OpenCLABC
 
 
