@@ -1,0 +1,15 @@
+﻿    
+    
+    
+    public property ReferenceCount:          UInt32                 read GetUInt32    (ProgramInfo.PROGRAM_REFERENCE_COUNT);
+    public property Source:                  String                 read GetString    (ProgramInfo.PROGRAM_SOURCE);
+    public property Il:                      array of Byte          read GetByteArr   (ProgramInfo.PROGRAM_IL);
+    public property BinarySizes:             array of UIntPtr       read GetUIntPtrArr(ProgramInfo.PROGRAM_BINARY_SIZES);
+    public property Binaries:                array of array of Byte read GetByteArrArr(ProgramInfo.PROGRAM_BINARIES, BinarySizes);
+    public property NumKernels:              UIntPtr                read GetUIntPtr   (ProgramInfo.PROGRAM_NUM_KERNELS);
+    public property KernelNames:             String                 read GetString    (ProgramInfo.PROGRAM_KERNEL_NAMES);
+    public property ScopeGlobalCtorsPresent: Boolean                read GetBoolean   (ProgramInfo.PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT);
+    public property ScopeGlobalDtorsPresent: Boolean                read GetBoolean   (ProgramInfo.PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT);
+    
+    
+    

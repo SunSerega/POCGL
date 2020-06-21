@@ -1,0 +1,14 @@
+﻿    
+    
+    
+    public property &Type:          MemObjectType read GetMemObjectType(MemInfo.MEM_TYPE);
+    public property Flags:          MemFlags      read GetMemFlags     (MemInfo.MEM_FLAGS);
+    public property Size:           UIntPtr       read GetUIntPtr      (MemInfo.MEM_SIZE);
+    public property HostPtr:        IntPtr        read GetIntPtr       (MemInfo.MEM_HOST_PTR);
+    public property MapCount:       UInt32        read GetUInt32       (MemInfo.MEM_MAP_COUNT);
+    public property ReferenceCount: UInt32        read GetUInt32       (MemInfo.MEM_REFERENCE_COUNT);
+    public property UsesSvmPointer: Boolean       read GetBoolean      (MemInfo.MEM_USES_SVM_POINTER);
+    public property Offset:         UIntPtr       read GetUIntPtr      (MemInfo.MEM_OFFSET);
+    
+    
+    

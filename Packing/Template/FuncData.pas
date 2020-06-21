@@ -2,7 +2,9 @@
 
 interface
 
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses MiscUtils  in '..\..\Utils\MiscUtils.pas';
+uses Fixers     in '..\..\Utils\Fixers.pas';
+uses PackingUtils;
 
 {$region Log and Misc}
 
@@ -23,8 +25,6 @@ var dll_name: string;
 
 var allowed_ext_names: HashSet<string>;
 function GetExt(s: string): string;
-
-var unallowed_words: HashSet<string>;
 
 var allowed_api: HashSet<string>;
 
@@ -70,12 +70,13 @@ type
   
   {$region Group}
   
-  Group = sealed class(INamed)
+  //ToDo #2264
+  // - сделать конструктор, принемающий фиксер
+//  GroupFixer = class;
+  Group = sealed class
     public name, t: string;
     public bitmask: boolean;
     public enums: Dictionary<string, int64>;
-    
-    public function GetName: string := name;
     
     public ext_name: string;
     public screened_enums: Dictionary<string,string>;
@@ -89,7 +90,7 @@ type
       
       screened_enums := new Dictionary<string, string>;
       foreach var key in enums.Keys do
-        screened_enums.Add(key, key.ToLower in unallowed_words ? '&'+key : key);
+        screened_enums.Add(key, key.ToLower in pas_keywords ? '&'+key : key);
       
     end;
     
@@ -226,7 +227,7 @@ type
         sb +=     $'        Result := res.ToString;'+#10;
         sb +=     $'      end else'+#10;
       end;
-      sb +=       $'        Result := self.val.ToString;'+#10;
+      sb +=       $'        Result := $''{name}[{{self.val}}]'';'+#10;
       sb +=       $'    end;' + #10;
       sb +=       $'    ' + #10;
       
@@ -357,12 +358,10 @@ type
     end;
     
   end;
-  Struct = sealed class(INamed)
+  Struct = sealed class
     private name: string;
     // (name, ptr, type)
     private flds := new List<StructField>;
-    
-    public function GetName: string := name;
     
     public constructor := exit;
     public constructor(br: System.IO.BinaryReader);
@@ -468,7 +467,6 @@ type
       
       sb += $'  {name} = record' + #10;
       
-      var pos := 0;
       foreach var fld in flds do
         fld.Write(sb, need_expl ? fld_offset[fld].PadLeft(max_fld_offset_len) : nil);
       sb += '    '#10;
@@ -527,7 +525,7 @@ type
     public constructor(br: System.IO.BinaryReader; proto: boolean);
     begin
       self.name := br.ReadString;
-      if not proto and (self.name.ToLower in unallowed_words) then self.name := '&'+self.name;
+      if not proto and (self.name.ToLower in pas_keywords) then self.name := '&'+self.name;
       
       var ntv_t := br.ReadString;
       self.t := TypeTable.Convert(ntv_t);
@@ -641,7 +639,7 @@ type
   
   {$endregion Help types}
   
-  Func = sealed class(INamed)
+  Func = sealed class
     
     {$region Basic}
     
@@ -660,8 +658,6 @@ type
     {$endregion Basic}
     
     {$region Misc}
-    
-    public function GetName: string := name;
     
     public constructor := exit;
     public constructor(br: System.IO.BinaryReader);
@@ -1212,7 +1208,7 @@ type
             var ovr_name_str := ovr_name[0];
             if ovr_name[1].Any(b->b) then
               ovr_name_str += '_anh' + ovr_name[1].Select(b->b?'1':'0').JoinToString else
-            if ovr_name_str.ToLower in unallowed_words then
+            if ovr_name_str.ToLower in pas_keywords then
               ovr_name_str := '&'+ovr_name_str;
             
             {$endregion Name construction}
@@ -1415,6 +1411,9 @@ type
   FuncFixer = abstract class(Fixer<FuncFixer, Func>)
     
     public static procedure InitAll;
+    
+    protected function ApplyOrder: integer; abstract;
+    protected function ApplyOrderBase: integer; override := ApplyOrder;
     
     protected procedure WarnUnused; override :=
     Otp($'WARNING: Fixer of func [{self.name}] wasn''t used');
@@ -1698,13 +1697,6 @@ begin
     .ToHashSet
   ;
   
-  unallowed_words :=
-    ReadLines(GetFullPath('..\MiscInput\UnAllowedWords.dat',GetEXEFileName))
-    .Where(l->not string.IsNullOrWhiteSpace(l))
-    .Select(l->l.Trim.ToLower)
-    .ToHashSet
-  ;
-  
   loop 3 do log_groups.Otp('');
   loop 3 do log_structs.Otp('');
   loop 3 do log_func_ovrs.Otp('');
@@ -1927,10 +1919,16 @@ type
   
 static procedure GroupFixer.InitAll;
 begin
+  GroupFixer.GetFixableName := gr->gr.name;
+  GroupFixer.MakeNewFixable := f->
+  begin
+    Result := new Group;
+    f.Apply(Result);
+  end;
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Enums', GetEXEFileName), '*.dat');
-  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
-    foreach var bl in ReadBlocks(gr[1],'!',false) do
+  foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
+    foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
       
       'add':        GroupAdder            .Create(gr[0], bl[1]);
@@ -2057,10 +2055,16 @@ type
   
 static procedure StructFixer.InitAll;
 begin
+  StructFixer.GetFixableName := s->s.name;
+  StructFixer.MakeNewFixable := f->
+  begin
+    Result := new Struct;
+    f.Apply(Result);
+  end;
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat');
-  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
-    foreach var bl in ReadBlocks(gr[1],'!',false) do
+  foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
+    foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
       
       'add':      StructAdder       .Create(gr[0], bl[1]);
@@ -2285,10 +2289,11 @@ type
   
 static procedure FuncFixer.InitAll;
 begin
+  FuncFixer.GetFixableName := f->f.name;
   
   var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Funcs', GetEXEFileName), '*.dat');
-  foreach var gr in fls.SelectMany(fname->GroupFixer.ReadBlocks(fname,true)) do
-    foreach var bl in ReadBlocks(gr[1],'!',false) do
+  foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
+    foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
       
       'repl_par_t':         FuncReplParTFixer .Create(gr[0], bl[1]);

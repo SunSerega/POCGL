@@ -494,7 +494,7 @@ type
           System.IO.File.Delete($'{dir}\{mn}.pcu');
       
       foreach var du_otp in domain_unload_otps do
-        foreach var l in du_otp.Enmr do
+        foreach var l in du_otp do
           Otp(l);
       
     end;

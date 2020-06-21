@@ -29,16 +29,9 @@ uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
-{$region Debug}
-
-{ $define DebugMode}
-{$ifdef DebugMode}
-//
-{$endif DebugMode}
-
-{$endregion Debug}
-
-{$region Записи-имена} type
+type
+  
+  {$region Записи-имена}
   
   cl_mem = record
     public val: IntPtr;
@@ -101,9 +94,9 @@ uses System.Runtime.CompilerServices;
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
   end;
   
-{$endregion Записи-имена}
-
-{$region Перечисления} type
+  {$endregion Записи-имена}
+  
+  {$region Перечисления}
   
   {$region Core}
   
@@ -127,7 +120,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4091) then Result := 'ACCELERATOR_REFERENCE_COUNT_INTEL' else
       if self.val = UInt32($4092) then Result := 'ACCELERATOR_CONTEXT_INTEL' else
       if self.val = UInt32($4093) then Result := 'ACCELERATOR_TYPE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'AcceleratorInfoIntel[{self.val}]';
     end;
     
   end;
@@ -143,7 +136,7 @@ uses System.Runtime.CompilerServices;
     public function ToString: string; override;
     begin
       if self.val = UInt32($0000) then Result := 'ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL' else
-        Result := self.val.ToString;
+        Result := $'AcceleratorTypeIntel[{self.val}]';
     end;
     
   end;
@@ -171,7 +164,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1132) then Result := 'ADDRESS_CLAMP' else
       if self.val = UInt32($1133) then Result := 'ADDRESS_REPEAT' else
       if self.val = UInt32($1134) then Result := 'ADDRESS_MIRRORED_REPEAT' else
-        Result := self.val.ToString;
+        Result := $'AddressingMode[{self.val}]';
     end;
     
   end;
@@ -196,7 +189,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($0000) then Result := 'NON_BLOCKING' else
       if self.val = UInt32($0001) then Result := 'BLOCKING' else
       if self.val = UInt32($0001) then Result := 'TRUE' else
-        Result := self.val.ToString;
+        Result := $'Bool[{self.val}]';
     end;
     
   end;
@@ -212,7 +205,7 @@ uses System.Runtime.CompilerServices;
     public function ToString: string; override;
     begin
       if self.val = UInt32($1220) then Result := 'BUFFER_CREATE_TYPE_REGION' else
-        Result := self.val.ToString;
+        Result := $'BufferCreateType[{self.val}]';
     end;
     
   end;
@@ -237,7 +230,7 @@ uses System.Runtime.CompilerServices;
       if self.val = Int32(-1) then Result := 'BUILD_NONE' else
       if self.val = Int32(-2) then Result := 'BUILD_ERROR' else
       if self.val = Int32(-3) then Result := 'BUILD_IN_PROGRESS' else
-        Result := self.val.ToString;
+        Result := $'BuildStatus[{self.val}]';
     end;
     
   end;
@@ -331,7 +324,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($40D0) then Result := 'NV21_IMG' else
       if self.val = UInt32($40D1) then Result := 'YV12_IMG' else
       if self.val = UInt32($410E) then Result := 'NV12_INTEL' else
-        Result := self.val.ToString;
+        Result := $'ChannelOrder[{self.val}]';
     end;
     
   end;
@@ -395,7 +388,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($10DE) then Result := 'FLOAT' else
       if self.val = UInt32($10DF) then Result := 'UNORM_INT24' else
       if self.val = UInt32($10E0) then Result := 'UNORM_INT_101010_2' else
-        Result := self.val.ToString;
+        Result := $'ChannelType[{self.val}]';
     end;
     
   end;
@@ -420,7 +413,7 @@ uses System.Runtime.CompilerServices;
       if self.val = Int32($0001) then Result := 'RUNNING' else
       if self.val = Int32($0002) then Result := 'SUBMITTED' else
       if self.val = Int32($0003) then Result := 'QUEUED' else
-        Result := self.val.ToString;
+        Result := $'CommandExecutionStatus[{self.val}]';
     end;
     
     public function IS_ERROR := val < 0;
@@ -456,7 +449,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1094) then Result := 'QUEUE_SIZE' else
       if self.val = UInt32($1095) then Result := 'QUEUE_DEVICE_DEFAULT' else
       if self.val = UInt32($1098) then Result := 'QUEUE_PROPERTIES_ARRAY' else
-        Result := self.val.ToString;
+        Result := $'CommandQueueInfo[{self.val}]';
     end;
     
   end;
@@ -465,6 +458,7 @@ uses System.Runtime.CompilerServices;
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
+    private static _NONE                                 := new CommandQueueProperties($0000);
     private static _QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE  := new CommandQueueProperties($0001);
     private static _QUEUE_PROFILING_ENABLE               := new CommandQueueProperties($0002);
     private static _QUEUE_ON_DEVICE                      := new CommandQueueProperties($0004);
@@ -472,6 +466,7 @@ uses System.Runtime.CompilerServices;
     private static _QUEUE_RESERVED_QCOM                  := new CommandQueueProperties($40000000);
     private static _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL := new CommandQueueProperties($FFFFFFFF80000000);
     
+    public static property NONE:                                 CommandQueueProperties read _NONE;
     public static property QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE:  CommandQueueProperties read _QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
     public static property QUEUE_PROFILING_ENABLE:               CommandQueueProperties read _QUEUE_PROFILING_ENABLE;
     public static property QUEUE_ON_DEVICE:                      CommandQueueProperties read _QUEUE_ON_DEVICE;
@@ -481,6 +476,7 @@ uses System.Runtime.CompilerServices;
     
     public static function operator or(f1,f2: CommandQueueProperties) := new CommandQueueProperties(f1.val or f2.val);
     
+    public property ANY_FLAGS: boolean read self.val<>0;
     public property HAS_FLAG_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE:  boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_QUEUE_PROFILING_ENABLE:               boolean read self.val and $0002 <> 0;
     public property HAS_FLAG_QUEUE_ON_DEVICE:                      boolean read self.val and $0004 <> 0;
@@ -491,6 +487,7 @@ uses System.Runtime.CompilerServices;
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
+      if self.val and UInt64($0000) = UInt64($0000) then res += 'NONE+';
       if self.val and UInt64($0001) = UInt64($0001) then res += 'QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE+';
       if self.val and UInt64($0002) = UInt64($0002) then res += 'QUEUE_PROFILING_ENABLE+';
       if self.val and UInt64($0004) = UInt64($0004) then res += 'QUEUE_ON_DEVICE+';
@@ -502,7 +499,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'CommandQueueProperties[{self.val}]';
     end;
     
   end;
@@ -656,7 +653,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4205) then Result := 'COMMAND_MEMCPY_INTEL' else
       if self.val = UInt32($4206) then Result := 'COMMAND_MIGRATEMEM_INTEL' else
       if self.val = UInt32($4207) then Result := 'COMMAND_MEMADVISE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'CommandType[{self.val}]';
     end;
     
   end;
@@ -714,7 +711,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4072) then Result := 'CONTEXT_D3D9EX_DEVICE_INTEL' else
       if self.val = UInt32($4073) then Result := 'CONTEXT_DXVA_DEVICE_INTEL' else
       if self.val = UInt32($4097) then Result := 'CONTEXT_VA_API_DISPLAY_INTEL' else
-        Result := self.val.ToString;
+        Result := $'ContextInfo[{self.val}]';
     end;
     
   end;
@@ -758,7 +755,7 @@ uses System.Runtime.CompilerServices;
       if self.val = IntPtr($2032) then Result := 'CONTEXT_TERMINATE_KHR' else
       if self.val = IntPtr($40B0) then Result := 'PRINTF_CALLBACK_ARM' else
       if self.val = IntPtr($40B1) then Result := 'PRINTF_BUFFERSIZE_ARM' else
-        Result := self.val.ToString;
+        Result := $'ContextProperties[{self.val}]';
     end;
     
   end;
@@ -804,7 +801,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'DeviceAffinityDomain[{self.val}]';
     end;
     
   end;
@@ -834,7 +831,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'DeviceExecCapabilities[{self.val}]';
     end;
     
   end;
@@ -888,7 +885,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'DeviceFPConfig[{self.val}]';
     end;
     
   end;
@@ -1387,7 +1384,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4192) then Result := 'DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL' else
       if self.val = UInt32($4193) then Result := 'DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL' else
       if self.val = UInt32($4194) then Result := 'DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL' else
-        Result := self.val.ToString;
+        Result := $'DeviceInfo[{self.val}]';
     end;
     
   end;
@@ -1406,7 +1403,7 @@ uses System.Runtime.CompilerServices;
     begin
       if self.val = UInt32($0001) then Result := 'LOCAL' else
       if self.val = UInt32($0002) then Result := 'GLOBAL' else
-        Result := self.val.ToString;
+        Result := $'DeviceLocalMemType[{self.val}]';
     end;
     
   end;
@@ -1428,7 +1425,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($0000) then Result := 'NONE' else
       if self.val = UInt32($0001) then Result := 'READ_ONLY_CACHE' else
       if self.val = UInt32($0002) then Result := 'READ_WRITE_CACHE' else
-        Result := self.val.ToString;
+        Result := $'DeviceMemCacheType[{self.val}]';
     end;
     
   end;
@@ -1454,7 +1451,7 @@ uses System.Runtime.CompilerServices;
       if self.val = IntPtr($1086) then Result := 'DEVICE_PARTITION_EQUALLY' else
       if self.val = IntPtr($1087) then Result := 'DEVICE_PARTITION_BY_COUNTS' else
       if self.val = IntPtr($1088) then Result := 'DEVICE_PARTITION_BY_AFFINITY_DOMAIN' else
-        Result := self.val.ToString;
+        Result := $'DevicePartitionProperty[{self.val}]';
     end;
     
   end;
@@ -1488,7 +1485,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt64($4051) then Result := 'DEVICE_PARTITION_BY_COUNTS_EXT' else
       if self.val = UInt64($4052) then Result := 'DEVICE_PARTITION_BY_NAMES_EXT' else
       if self.val = UInt64($4053) then Result := 'DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT' else
-        Result := self.val.ToString;
+        Result := $'DevicePartitionPropertyExt[{self.val}]';
     end;
     
   end;
@@ -1526,7 +1523,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'DeviceSVMCapabilities[{self.val}]';
     end;
     
   end;
@@ -1572,7 +1569,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'DeviceType[{self.val}]';
     end;
     
   end;
@@ -1591,7 +1588,7 @@ uses System.Runtime.CompilerServices;
     begin
       if self.val = UInt32($4024) then Result := 'PREFERRED_DEVICES_FOR_DX9_INTEL' else
       if self.val = UInt32($4025) then Result := 'ALL_DEVICES_FOR_DX9_INTEL' else
-        Result := self.val.ToString;
+        Result := $'Dx9DeviceSetIntel[{self.val}]';
     end;
     
   end;
@@ -1613,7 +1610,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4022) then Result := 'D3D9_DEVICE_INTEL' else
       if self.val = UInt32($4070) then Result := 'D3D9EX_DEVICE_INTEL' else
       if self.val = UInt32($4071) then Result := 'DXVA_DEVICE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'Dx9DeviceSourceIntel[{self.val}]';
     end;
     
   end;
@@ -1630,7 +1627,7 @@ uses System.Runtime.CompilerServices;
     public function ToString: string; override;
     begin
       if self.val = IntPtr($4107) then Result := 'EGL_YUV_PLANE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'EglImagePropertiesKhr[{self.val}]';
     end;
     
   end;
@@ -1934,7 +1931,7 @@ uses System.Runtime.CompilerServices;
       if self.val = Int32(-1106) then Result := 'PIPE_FULL_INTEL' else
       if self.val = Int32(-1107) then Result := 'PIPE_EMPTY_INTEL' else
       if self.val = Int32(-1121) then Result := 'CONTEXT_TERMINATED_KHR' else
-        Result := self.val.ToString;
+        Result := $'ErrorCode[{self.val}]';
     end;
     
     public function IS_ERROR := val<>0;
@@ -1969,7 +1966,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($11D2) then Result := 'EVENT_REFERENCE_COUNT' else
       if self.val = UInt32($11D3) then Result := 'EVENT_COMMAND_EXECUTION_STATUS' else
       if self.val = UInt32($11D4) then Result := 'EVENT_CONTEXT' else
-        Result := self.val.ToString;
+        Result := $'EventInfo[{self.val}]';
     end;
     
   end;
@@ -1988,7 +1985,7 @@ uses System.Runtime.CompilerServices;
     begin
       if self.val = UInt32($1140) then Result := 'FILTER_NEAREST' else
       if self.val = UInt32($1141) then Result := 'FILTER_LINEAR' else
-        Result := self.val.ToString;
+        Result := $'FilterMode[{self.val}]';
     end;
     
   end;
@@ -2007,7 +2004,7 @@ uses System.Runtime.CompilerServices;
     begin
       if self.val = UInt32($2006) then Result := 'CURRENT_DEVICE_FOR_GL_CONTEXT_KHR' else
       if self.val = UInt32($2007) then Result := 'DEVICES_FOR_GL_CONTEXT_KHR' else
-        Result := self.val.ToString;
+        Result := $'GlContextInfo[{self.val}]';
     end;
     
   end;
@@ -2044,7 +2041,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($200F) then Result := 'GL_OBJECT_TEXTURE1D' else
       if self.val = UInt32($2010) then Result := 'GL_OBJECT_TEXTURE1D_ARRAY' else
       if self.val = UInt32($2011) then Result := 'GL_OBJECT_TEXTURE_BUFFER' else
-        Result := self.val.ToString;
+        Result := $'GlObjectType[{self.val}]';
     end;
     
   end;
@@ -2066,7 +2063,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($2004) then Result := 'GL_TEXTURE_TARGET' else
       if self.val = UInt32($2005) then Result := 'GL_MIPMAP_LEVEL' else
       if self.val = UInt32($2012) then Result := 'GL_NUM_SAMPLES' else
-        Result := self.val.ToString;
+        Result := $'GlTextureInfo[{self.val}]';
     end;
     
   end;
@@ -2127,7 +2124,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($401F) then Result := 'IMAGE_D3D11_SUBRESOURCE_KHR' else
       if self.val = UInt32($4075) then Result := 'IMAGE_DX9_PLANE_INTEL' else
       if self.val = UInt32($4099) then Result := 'IMAGE_VA_API_PLANE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'ImageInfo[{self.val}]';
     end;
     
   end;
@@ -2152,7 +2149,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($11A1) then Result := 'KERNEL_ARG_ACCESS_WRITE_ONLY' else
       if self.val = UInt32($11A2) then Result := 'KERNEL_ARG_ACCESS_READ_WRITE' else
       if self.val = UInt32($11A3) then Result := 'KERNEL_ARG_ACCESS_NONE' else
-        Result := self.val.ToString;
+        Result := $'KernelArgAccessQualifier[{self.val}]';
     end;
     
   end;
@@ -2177,7 +2174,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($119C) then Result := 'KERNEL_ARG_ADDRESS_LOCAL' else
       if self.val = UInt32($119D) then Result := 'KERNEL_ARG_ADDRESS_CONSTANT' else
       if self.val = UInt32($119E) then Result := 'KERNEL_ARG_ADDRESS_PRIVATE' else
-        Result := self.val.ToString;
+        Result := $'KernelArgAddressQualifier[{self.val}]';
     end;
     
   end;
@@ -2205,7 +2202,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1198) then Result := 'KERNEL_ARG_TYPE_NAME' else
       if self.val = UInt32($1199) then Result := 'KERNEL_ARG_TYPE_QUALIFIER' else
       if self.val = UInt32($119A) then Result := 'KERNEL_ARG_NAME' else
-        Result := self.val.ToString;
+        Result := $'KernelArgInfo[{self.val}]';
     end;
     
   end;
@@ -2233,7 +2230,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt64($0002) then Result := 'KERNEL_ARG_TYPE_RESTRICT' else
       if self.val = UInt64($0004) then Result := 'KERNEL_ARG_TYPE_VOLATILE' else
       if self.val = UInt64($0008) then Result := 'KERNEL_ARG_TYPE_PIPE' else
-        Result := self.val.ToString;
+        Result := $'KernelArgTypeQualifier[{self.val}]';
     end;
     
   end;
@@ -2264,7 +2261,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4201) then Result := 'KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL' else
       if self.val = UInt32($4202) then Result := 'KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL' else
       if self.val = UInt32($4203) then Result := 'KERNEL_EXEC_INFO_USM_PTRS_INTEL' else
-        Result := self.val.ToString;
+        Result := $'KernelExecInfo[{self.val}]';
     end;
     
   end;
@@ -2295,7 +2292,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1193) then Result := 'KERNEL_CONTEXT' else
       if self.val = UInt32($1194) then Result := 'KERNEL_PROGRAM' else
       if self.val = UInt32($1195) then Result := 'KERNEL_ATTRIBUTES' else
-        Result := self.val.ToString;
+        Result := $'KernelInfo[{self.val}]';
     end;
     
   end;
@@ -2332,7 +2329,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($2034) then Result := 'KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE' else
       if self.val = UInt32($2034) then Result := 'KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR' else
       if self.val = UInt32($410A) then Result := 'KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'KernelSubGroupInfo[{self.val}]';
     end;
     
   end;
@@ -2366,7 +2363,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($11B4) then Result := 'KERNEL_PRIVATE_MEM_SIZE' else
       if self.val = UInt32($11B5) then Result := 'KERNEL_GLOBAL_WORK_SIZE' else
       if self.val = UInt32($4109) then Result := 'KERNEL_SPILL_MEM_SIZE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'KernelWorkGroupInfo[{self.val}]';
     end;
     
   end;
@@ -2400,7 +2397,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'MapFlags[{self.val}]';
     end;
     
   end;
@@ -2506,7 +2503,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'MemFlags[{self.val}]';
     end;
     
   end;
@@ -2573,7 +2570,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($4027) then Result := 'MEM_DX9_RESOURCE_INTEL' else
       if self.val = UInt32($4074) then Result := 'MEM_DX9_SHARED_HANDLE_INTEL' else
       if self.val = UInt32($4098) then Result := 'MEM_VA_API_MEDIA_SURFACE_INTEL' else
-        Result := self.val.ToString;
+        Result := $'MemInfo[{self.val}]';
     end;
     
   end;
@@ -2603,7 +2600,7 @@ uses System.Runtime.CompilerServices;
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'MemMigrationFlags[{self.val}]';
     end;
     
   end;
@@ -2619,7 +2616,7 @@ uses System.Runtime.CompilerServices;
     public function ToString: string; override;
     begin
       if self.val = UInt64($0001) then Result := 'MIGRATE_MEM_OBJECT_HOST_EXT' else
-        Result := self.val.ToString;
+        Result := $'MemMigrationFlagsExt[{self.val}]';
     end;
     
   end;
@@ -2656,7 +2653,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($10F5) then Result := 'MEM_OBJECT_IMAGE1D_ARRAY' else
       if self.val = UInt32($10F6) then Result := 'MEM_OBJECT_IMAGE1D_BUFFER' else
       if self.val = UInt32($10F7) then Result := 'MEM_OBJECT_PIPE' else
-        Result := self.val.ToString;
+        Result := $'MemObjectType[{self.val}]';
     end;
     
   end;
@@ -2672,7 +2669,7 @@ uses System.Runtime.CompilerServices;
     public function ToString: string; override;
     begin
       if self.val = UInt64($4195) then Result := 'MEM_ALLOC_FLAGS_INTEL' else
-        Result := self.val.ToString;
+        Result := $'MemPropertiesIntel[{self.val}]';
     end;
     
   end;
@@ -2694,7 +2691,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1120) then Result := 'PIPE_PACKET_SIZE' else
       if self.val = UInt32($1121) then Result := 'PIPE_MAX_PACKETS' else
       if self.val = UInt32($1122) then Result := 'PIPE_PROPERTIES' else
-        Result := self.val.ToString;
+        Result := $'PipeInfo[{self.val}]';
     end;
     
   end;
@@ -2734,7 +2731,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION' else
       if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
       if self.val = UInt32($0920) then Result := 'PLATFORM_ICD_SUFFIX_KHR' else
-        Result := self.val.ToString;
+        Result := $'PlatformInfo[{self.val}]';
     end;
     
   end;
@@ -2762,7 +2759,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1282) then Result := 'PROFILING_COMMAND_START' else
       if self.val = UInt32($1283) then Result := 'PROFILING_COMMAND_END' else
       if self.val = UInt32($1284) then Result := 'PROFILING_COMMAND_COMPLETE' else
-        Result := self.val.ToString;
+        Result := $'ProfilingInfo[{self.val}]';
     end;
     
   end;
@@ -2790,7 +2787,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($0002) then Result := 'PROGRAM_BINARY_TYPE_LIBRARY' else
       if self.val = UInt32($0004) then Result := 'PROGRAM_BINARY_TYPE_EXECUTABLE' else
       if self.val = UInt32($40E1) then Result := 'PROGRAM_BINARY_TYPE_INTERMEDIATE' else
-        Result := self.val.ToString;
+        Result := $'ProgramBinaryType[{self.val}]';
     end;
     
   end;
@@ -2818,7 +2815,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1183) then Result := 'PROGRAM_BUILD_LOG' else
       if self.val = UInt32($1184) then Result := 'PROGRAM_BINARY_TYPE' else
       if self.val = UInt32($1185) then Result := 'PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE' else
-        Result := self.val.ToString;
+        Result := $'ProgramBuildInfo[{self.val}]';
     end;
     
   end;
@@ -2867,7 +2864,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1169) then Result := 'PROGRAM_IL' else
       if self.val = UInt32($116A) then Result := 'PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT' else
       if self.val = UInt32($116B) then Result := 'PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT' else
-        Result := self.val.ToString;
+        Result := $'ProgramInfo[{self.val}]';
     end;
     
   end;
@@ -2886,7 +2883,7 @@ uses System.Runtime.CompilerServices;
     begin
       if self.val = UInt64($1096) then Result := 'QUEUE_PRIORITY_KHR' else
       if self.val = UInt64($1097) then Result := 'QUEUE_THROTTLE_KHR' else
-        Result := self.val.ToString;
+        Result := $'QueueProperties[{self.val}]';
     end;
     
   end;
@@ -2926,7 +2923,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt32($1156) then Result := 'SAMPLER_LOD_MIN' else
       if self.val = UInt32($1157) then Result := 'SAMPLER_LOD_MAX' else
       if self.val = UInt32($1158) then Result := 'SAMPLER_PROPERTIES' else
-        Result := self.val.ToString;
+        Result := $'SamplerInfo[{self.val}]';
     end;
     
   end;
@@ -2948,7 +2945,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt64($1155) then Result := 'SAMPLER_MIP_FILTER_MODE_KHR' else
       if self.val = UInt64($1156) then Result := 'SAMPLER_LOD_MIN_KHR' else
       if self.val = UInt64($1157) then Result := 'SAMPLER_LOD_MAX_KHR' else
-        Result := self.val.ToString;
+        Result := $'SamplerProperties[{self.val}]';
     end;
     
   end;
@@ -2997,7 +2994,7 @@ uses System.Runtime.CompilerServices;
       if self.val = UInt64($0400) then Result := 'MEM_SVM_FINE_GRAIN_BUFFER' else
       if self.val = UInt64($0800) then Result := 'MEM_SVM_ATOMICS' else
       if self.val = UInt64($1000) then Result := 'MEM_KERNEL_READ_AND_WRITE' else
-        Result := self.val.ToString;
+        Result := $'SvmMemFlags[{self.val}]';
     end;
     
   end;
@@ -3016,7 +3013,7 @@ uses System.Runtime.CompilerServices;
     begin
       if self.val = UInt32($4095) then Result := 'PREFERRED_DEVICES_FOR_VA_API_INTEL' else
       if self.val = UInt32($4096) then Result := 'ALL_DEVICES_FOR_VA_API_INTEL' else
-        Result := self.val.ToString;
+        Result := $'VaApiDeviceSetIntel[{self.val}]';
     end;
     
   end;
@@ -3032,16 +3029,16 @@ uses System.Runtime.CompilerServices;
     public function ToString: string; override;
     begin
       if self.val = UInt32($4094) then Result := 'VA_API_DISPLAY_INTEL' else
-        Result := self.val.ToString;
+        Result := $'VaApiDeviceSourceIntel[{self.val}]';
     end;
     
   end;
   
   {$endregion Core}
   
-{$endregion Перечисления}
-
-{$region Делегаты} type
+  {$endregion Перечисления}
+  
+  {$region Делегаты}
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   ProgramCallback = procedure(&program: cl_program; user_data: IntPtr);
@@ -3061,9 +3058,9 @@ uses System.Runtime.CompilerServices;
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   MemObjectDestructorCallback = procedure(memobj: cl_mem; user_data: IntPtr);
   
-{$endregion Делегаты}
-
-{$region Записи} type
+  {$endregion Делегаты}
+  
+  {$region Записи}
   
   cl_buffer_region = record
     public origin: UIntPtr;
@@ -3117,9 +3114,9 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-{$endregion Записи}
-
-{$region Другие типы} type
+  {$endregion Записи}
+  
+  {$region Другие типы}
   
   OpenCLException = sealed class(Exception)
     private ec: ErrorCode;
@@ -3136,9 +3133,9 @@ uses System.Runtime.CompilerServices;
     
   end;
   
-{$endregion Другие типы}
-
-type
+  {$endregion Другие типы}
+  
+  {$region Функции}
   
   [PCUNotRestore]
   cl = static class
@@ -7404,22 +7401,30 @@ type
     z_GetPlatformIDs_ovr_3(num_entries, platforms, num_platforms);
     
     // added in cl1.0
-    private static function z_GetPlatformInfo_ovr_0(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetPlatformInfo_ovr_0(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetPlatformInfo';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetPlatformInfo_ovr_0(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_1(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetPlatformInfo';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetPlatformInfo_ovr_1(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_2(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_0(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetPlatformInfo_ovr_1(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
+    z_GetPlatformInfo_ovr_2(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_3(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_1(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetPlatformInfo_ovr_2(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    z_GetPlatformInfo_ovr_3(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_4(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_2(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetPlatformInfo_ovr_3(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    z_GetPlatformInfo_ovr_4(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_5(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_3(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetPlatformInfo_ovr_5(platform, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
     private static function z_GetProgramBuildInfo_ovr_0(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode;
@@ -13347,23 +13352,9 @@ type
   
   {$endregion Extensions}
   
+  {$endregion Функции}
+  
 implementation
-
-{$region Debug}
-{$ifdef DebugMode}
-
-function GetRefCount(self: cl_event): IntPtr; extensionmethod;
-begin
-  cl.GetEventInfo(self, EventInfoType.REFERENCE_COUNT, new UIntPtr(IntPtr.Size), Result, nil).RaiseIfError;
-end;
-
-function GetState(self: cl_event): CommandExecutionStatus; extensionmethod;
-begin
-  cl.GetEventInfo(self, EventInfoType.COMMAND_EXECUTION_STATUS, new UIntPtr(4), Result, nil).RaiseIfError;
-end;
-
-{$endif DebugMode}
-{$endregion Debug}
 
 {$region Misc}
 

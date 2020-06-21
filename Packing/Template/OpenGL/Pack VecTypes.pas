@@ -1,4 +1,5 @@
 ﻿uses PackingUtils in '..\PackingUtils.pas';
+uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 
 {$reference System.Windows.Forms.dll}
 
@@ -291,8 +292,7 @@ begin
 end;
 
 begin
-  RunInSTA(()->
-  begin
+  try
     var res := new StringBuilder;
     
     res += #10;
@@ -334,12 +334,8 @@ begin
     res += '  {$endregion Vec}'#10;
     res += '  ';
     
-    if is_secondary_proc then
-      WriteAllText(GetFullPath('..\VecTypes.template', GetEXEFileName), res.ToString, new System.Text.UTF8Encoding(true)) else
-    begin
-      System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
-      System.Console.Beep;
-    end;
-    
-  end);
+    WriteAllText(GetFullPathRTE('VecTypes.template'), res.ToString, enc);
+  except
+    on e: Exception do ErrOtp(e);
+  end;
 end.

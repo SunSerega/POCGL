@@ -26,7 +26,7 @@
       if self.val = UInt32($0102) then Result := 'RETURN' else
       if self.val = UInt32($0103) then Result := 'MULT' else
       if self.val = UInt32($0104) then Result := 'ADD' else
-        Result := self.val.ToString;
+        Result := $'AccumOp[{self.val}]';
     end;
     
   end;
@@ -63,7 +63,7 @@
       if self.val = UInt32($0205) then Result := 'NOTEQUAL' else
       if self.val = UInt32($0206) then Result := 'GEQUAL' else
       if self.val = UInt32($0207) then Result := 'ALWAYS' else
-        Result := self.val.ToString;
+        Result := $'AlphaFunction[{self.val}]';
     end;
     
   end;
@@ -106,7 +106,7 @@
       if self.val = UInt32($92C9) then Result := 'ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER' else
       if self.val = UInt32($92CA) then Result := 'ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER' else
       if self.val = UInt32($92CB) then Result := 'ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER' else
-        Result := self.val.ToString;
+        Result := $'AtomicCounterBufferPName[{self.val}]';
     end;
     
   end;
@@ -228,7 +228,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'AttribMask[{self.val}]';
     end;
     
   end;
@@ -685,7 +685,7 @@
       if self.val = UInt32($910B) then Result := 'SAMPLER_2D_MULTISAMPLE_ARRAY' else
       if self.val = UInt32($910C) then Result := 'INT_SAMPLER_2D_MULTISAMPLE_ARRAY' else
       if self.val = UInt32($910D) then Result := 'UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY' else
-        Result := self.val.ToString;
+        Result := $'AttributeType[{self.val}]';
     end;
     
   end;
@@ -701,7 +701,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8E22) then Result := 'TRANSFORM_FEEDBACK' else
-        Result := self.val.ToString;
+        Result := $'BindTransformFeedbackTarget[{self.val}]';
     end;
     
   end;
@@ -771,7 +771,7 @@
       if self.val = UInt32($88F9) then Result := 'SRC1_COLOR' else
       if self.val = UInt32($88FA) then Result := 'ONE_MINUS_SRC1_COLOR' else
       if self.val = UInt32($88FB) then Result := 'ONE_MINUS_SRC1_ALPHA' else
-        Result := self.val.ToString;
+        Result := $'BlendingFactor[{self.val}]';
     end;
     
   end;
@@ -790,7 +790,7 @@
     begin
       if self.val = UInt32($2600) then Result := 'NEAREST' else
       if self.val = UInt32($2601) then Result := 'LINEAR' else
-        Result := self.val.ToString;
+        Result := $'BlitFramebufferFilter[{self.val}]';
     end;
     
   end;
@@ -812,7 +812,7 @@
       if self.val = UInt32($1800) then Result := 'COLOR' else
       if self.val = UInt32($1801) then Result := 'DEPTH' else
       if self.val = UInt32($1802) then Result := 'STENCIL' else
-        Result := self.val.ToString;
+        Result := $'Buffer[{self.val}]';
     end;
     
   end;
@@ -898,7 +898,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'BufferStorageMask[{self.val}]';
     end;
     
   end;
@@ -953,7 +953,7 @@
       if self.val = UInt32($90EE) then Result := 'DISPATCH_INDIRECT_BUFFER' else
       if self.val = UInt32($9192) then Result := 'QUERY_BUFFER' else
       if self.val = UInt32($92C0) then Result := 'ATOMIC_COUNTER_BUFFER' else
-        Result := self.val.ToString;
+        Result := $'BufferStorageTarget[{self.val}]';
     end;
     
   end;
@@ -995,7 +995,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'ClearBufferMask[{self.val}]';
     end;
     
   end;
@@ -1029,7 +1029,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'ClientAttribMask[{self.val}]';
     end;
     
   end;
@@ -1048,7 +1048,7 @@
     begin
       if self.val = UInt32($935E) then Result := 'NEGATIVE_ONE_TO_ONE' else
       if self.val = UInt32($935F) then Result := 'ZERO_TO_ONE' else
-        Result := self.val.ToString;
+        Result := $'ClipControlDepth[{self.val}]';
     end;
     
   end;
@@ -1067,7 +1067,7 @@
     begin
       if self.val = UInt32($8CA1) then Result := 'LOWER_LEFT' else
       if self.val = UInt32($8CA2) then Result := 'UPPER_LEFT' else
-        Result := self.val.ToString;
+        Result := $'ClipControlOrigin[{self.val}]';
     end;
     
   end;
@@ -1122,7 +1122,7 @@
       if self.val = UInt32($3005) then Result := 'CLIP_PLANE5' else
       if self.val = UInt32($3006) then Result := 'CLIP_DISTANCE6' else
       if self.val = UInt32($3007) then Result := 'CLIP_DISTANCE7' else
-        Result := self.val.ToString;
+        Result := $'ClipPlaneName[{self.val}]';
     end;
     
   end;
@@ -1261,7 +1261,7 @@
       if self.val = UInt32($8CFD) then Result := 'COLOR_ATTACHMENT29' else
       if self.val = UInt32($8CFE) then Result := 'COLOR_ATTACHMENT30' else
       if self.val = UInt32($8CFF) then Result := 'COLOR_ATTACHMENT31' else
-        Result := self.val.ToString;
+        Result := $'ColorBuffer[{self.val}]';
     end;
     
   end;
@@ -1289,7 +1289,7 @@
       if self.val = UInt32($1202) then Result := 'SPECULAR' else
       if self.val = UInt32($1600) then Result := 'EMISSION' else
       if self.val = UInt32($1602) then Result := 'AMBIENT_AND_DIFFUSE' else
-        Result := self.val.ToString;
+        Result := $'ColorMaterialParameter[{self.val}]';
     end;
     
   end;
@@ -1314,7 +1314,7 @@
       if self.val = UInt32($1401) then Result := 'UNSIGNED_BYTE' else
       if self.val = UInt32($1403) then Result := 'UNSIGNED_SHORT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-        Result := self.val.ToString;
+        Result := $'ColorPointerType[{self.val}]';
     end;
     
   end;
@@ -1336,7 +1336,7 @@
       if self.val = UInt32($80D0) then Result := 'COLOR_TABLE' else
       if self.val = UInt32($80D1) then Result := 'POST_CONVOLUTION_COLOR_TABLE' else
       if self.val = UInt32($80D2) then Result := 'POST_COLOR_MATRIX_COLOR_TABLE' else
-        Result := self.val.ToString;
+        Result := $'ColorTableTarget[{self.val}]';
     end;
     
   end;
@@ -1373,7 +1373,7 @@
       if self.val = UInt32($8E18) then Result := 'QUERY_NO_WAIT_INVERTED' else
       if self.val = UInt32($8E19) then Result := 'QUERY_BY_REGION_WAIT_INVERTED' else
       if self.val = UInt32($8E1A) then Result := 'QUERY_BY_REGION_NO_WAIT_INVERTED' else
-        Result := self.val.ToString;
+        Result := $'ConditionalRenderMode[{self.val}]';
     end;
     
   end;
@@ -1392,7 +1392,7 @@
     begin
       if self.val = UInt32($8010) then Result := 'CONVOLUTION_1D' else
       if self.val = UInt32($8011) then Result := 'CONVOLUTION_2D' else
-        Result := self.val.ToString;
+        Result := $'ConvolutionTarget[{self.val}]';
     end;
     
   end;
@@ -1447,7 +1447,7 @@
       if self.val = UInt32($90EE) then Result := 'DISPATCH_INDIRECT_BUFFER' else
       if self.val = UInt32($9192) then Result := 'QUERY_BUFFER' else
       if self.val = UInt32($92C0) then Result := 'ATOMIC_COUNTER_BUFFER' else
-        Result := self.val.ToString;
+        Result := $'CopyBufferSubDataTarget[{self.val}]';
     end;
     
   end;
@@ -1493,7 +1493,7 @@
       if self.val = UInt32($9009) then Result := 'TEXTURE_CUBE_MAP_ARRAY' else
       if self.val = UInt32($9100) then Result := 'TEXTURE_2D_MULTISAMPLE' else
       if self.val = UInt32($9102) then Result := 'TEXTURE_2D_MULTISAMPLE_ARRAY' else
-        Result := self.val.ToString;
+        Result := $'CopyImageSubDataTarget[{self.val}]';
     end;
     
   end;
@@ -1515,7 +1515,7 @@
       if self.val = UInt32($0404) then Result := 'FRONT' else
       if self.val = UInt32($0405) then Result := 'BACK' else
       if self.val = UInt32($0408) then Result := 'FRONT_AND_BACK' else
-        Result := self.val.ToString;
+        Result := $'CullFaceMode[{self.val}]';
     end;
     
   end;
@@ -1543,7 +1543,7 @@
       if self.val = UInt32($9146) then Result := 'DEBUG_SEVERITY_HIGH' else
       if self.val = UInt32($9147) then Result := 'DEBUG_SEVERITY_MEDIUM' else
       if self.val = UInt32($9148) then Result := 'DEBUG_SEVERITY_LOW' else
-        Result := self.val.ToString;
+        Result := $'DebugSeverity[{self.val}]';
     end;
     
   end;
@@ -1577,7 +1577,7 @@
       if self.val = UInt32($8249) then Result := 'DEBUG_SOURCE_THIRD_PARTY' else
       if self.val = UInt32($824A) then Result := 'DEBUG_SOURCE_APPLICATION' else
       if self.val = UInt32($824B) then Result := 'DEBUG_SOURCE_OTHER' else
-        Result := self.val.ToString;
+        Result := $'DebugSource[{self.val}]';
     end;
     
   end;
@@ -1620,7 +1620,7 @@
       if self.val = UInt32($8268) then Result := 'DEBUG_TYPE_MARKER' else
       if self.val = UInt32($8269) then Result := 'DEBUG_TYPE_PUSH_GROUP' else
       if self.val = UInt32($826A) then Result := 'DEBUG_TYPE_POP_GROUP' else
-        Result := self.val.ToString;
+        Result := $'DebugType[{self.val}]';
     end;
     
   end;
@@ -1657,7 +1657,7 @@
       if self.val = UInt32($0205) then Result := 'NOTEQUAL' else
       if self.val = UInt32($0206) then Result := 'GEQUAL' else
       if self.val = UInt32($0207) then Result := 'ALWAYS' else
-        Result := self.val.ToString;
+        Result := $'DepthFunction[{self.val}]';
     end;
     
   end;
@@ -1811,7 +1811,7 @@
       if self.val = UInt32($8CFD) then Result := 'COLOR_ATTACHMENT29' else
       if self.val = UInt32($8CFE) then Result := 'COLOR_ATTACHMENT30' else
       if self.val = UInt32($8CFF) then Result := 'COLOR_ATTACHMENT31' else
-        Result := self.val.ToString;
+        Result := $'DrawBufferMode[{self.val}]';
     end;
     
   end;
@@ -1833,7 +1833,7 @@
       if self.val = UInt32($1401) then Result := 'UNSIGNED_BYTE' else
       if self.val = UInt32($1403) then Result := 'UNSIGNED_SHORT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-        Result := self.val.ToString;
+        Result := $'DrawElementsType[{self.val}]';
     end;
     
   end;
@@ -2236,7 +2236,7 @@
       if self.val = UInt32($8F9D) then Result := 'PRIMITIVE_RESTART' else
       if self.val = UInt32($92E0) then Result := 'DEBUG_OUTPUT' else
       if self.val = UInt32($96A5) then Result := 'SHADING_RATE_PRESERVE_ASPECT_RATIO_QCOM' else
-        Result := self.val.ToString;
+        Result := $'EnableCap[{self.val}]';
     end;
     
   end;
@@ -2288,7 +2288,7 @@
       if self.val = UInt32($8031) then Result := 'TABLE_TOO_LARGE' else
       if self.val = UInt32($8031) then Result := 'TABLE_TOO_LARGE_EXT' else
       if self.val = UInt32($8065) then Result := 'TEXTURE_TOO_LARGE_EXT' else
-        Result := self.val.ToString;
+        Result := $'ErrorCode[{self.val}]';
     end;
     
   end;
@@ -2325,7 +2325,7 @@
       if self.val = UInt32($958B) then Result := 'HANDLE_TYPE_D3D11_IMAGE_EXT' else
       if self.val = UInt32($958C) then Result := 'HANDLE_TYPE_D3D11_IMAGE_KMT_EXT' else
       if self.val = UInt32($9594) then Result := 'HANDLE_TYPE_D3D12_FENCE_EXT' else
-        Result := self.val.ToString;
+        Result := $'ExternalHandleType[{self.val}]';
     end;
     
   end;
@@ -2353,7 +2353,7 @@
       if self.val = UInt32($0602) then Result := 'GL_3D_COLOR' else
       if self.val = UInt32($0603) then Result := 'GL_3D_COLOR_TEXTURE' else
       if self.val = UInt32($0604) then Result := 'GL_4D_COLOR_TEXTURE' else
-        Result := self.val.ToString;
+        Result := $'FeedbackType[{self.val}]';
     end;
     
   end;
@@ -2372,7 +2372,7 @@
     begin
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'FogCoordinatePointerType[{self.val}]';
     end;
     
   end;
@@ -2406,7 +2406,7 @@
       if self.val = UInt32($0B65) then Result := 'FOG_MODE' else
       if self.val = UInt32($0B66) then Result := 'FOG_COLOR' else
       if self.val = UInt32($8199) then Result := 'FOG_OFFSET_VALUE_SGIX' else
-        Result := self.val.ToString;
+        Result := $'FogParameter[{self.val}]';
     end;
     
   end;
@@ -2437,7 +2437,7 @@
       if self.val = UInt32($0B64) then Result := 'FOG_END' else
       if self.val = UInt32($0B65) then Result := 'FOG_MODE' else
       if self.val = UInt32($8450) then Result := 'FOG_COORD_SRC' else
-        Result := self.val.ToString;
+        Result := $'FogPName[{self.val}]';
     end;
     
   end;
@@ -2549,7 +2549,7 @@
       if self.val = UInt32($8CFE) then Result := 'COLOR_ATTACHMENT30' else
       if self.val = UInt32($8CFF) then Result := 'COLOR_ATTACHMENT31' else
       if self.val = UInt32($8D20) then Result := 'STENCIL_ATTACHMENT' else
-        Result := self.val.ToString;
+        Result := $'FramebufferAttachment[{self.val}]';
     end;
     
   end;
@@ -2664,7 +2664,7 @@
       if self.val = UInt32($913F) then Result := 'FRAMEBUFFER_ATTACHMENT_TEXTURE_SCALE_IMG' else
       if self.val = UInt32($9630) then Result := 'FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR' else
       if self.val = UInt32($9632) then Result := 'FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR' else
-        Result := self.val.ToString;
+        Result := $'FramebufferAttachmentParameterName[{self.val}]';
     end;
     
   end;
@@ -2692,7 +2692,7 @@
       if self.val = UInt32($9312) then Result := 'FRAMEBUFFER_DEFAULT_LAYERS' else
       if self.val = UInt32($9313) then Result := 'FRAMEBUFFER_DEFAULT_SAMPLES' else
       if self.val = UInt32($9314) then Result := 'FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS' else
-        Result := self.val.ToString;
+        Result := $'FramebufferParameterName[{self.val}]';
     end;
     
   end;
@@ -2732,7 +2732,7 @@
       if self.val = UInt32($8CDD) then Result := 'FRAMEBUFFER_UNSUPPORTED' else
       if self.val = UInt32($8D56) then Result := 'FRAMEBUFFER_INCOMPLETE_MULTISAMPLE' else
       if self.val = UInt32($8DA8) then Result := 'FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS' else
-        Result := self.val.ToString;
+        Result := $'FramebufferStatus[{self.val}]';
     end;
     
   end;
@@ -2757,7 +2757,7 @@
       if self.val = UInt32($8CA9) then Result := 'DRAW_FRAMEBUFFER' else
       if self.val = UInt32($8D40) then Result := 'FRAMEBUFFER' else
       if self.val = UInt32($8D40) then Result := 'FRAMEBUFFER_OES' else
-        Result := self.val.ToString;
+        Result := $'FramebufferTarget[{self.val}]';
     end;
     
   end;
@@ -2776,7 +2776,7 @@
     begin
       if self.val = UInt32($0900) then Result := 'CW' else
       if self.val = UInt32($0901) then Result := 'CCW' else
-        Result := self.val.ToString;
+        Result := $'FrontFaceDirection[{self.val}]';
     end;
     
   end;
@@ -2822,7 +2822,7 @@
       if self.val = UInt32($9312) then Result := 'FRAMEBUFFER_DEFAULT_LAYERS' else
       if self.val = UInt32($9313) then Result := 'FRAMEBUFFER_DEFAULT_SAMPLES' else
       if self.val = UInt32($9314) then Result := 'FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS' else
-        Result := self.val.ToString;
+        Result := $'GetFramebufferParameter[{self.val}]';
     end;
     
   end;
@@ -2844,7 +2844,7 @@
       if self.val = UInt32($0A00) then Result := 'COEFF' else
       if self.val = UInt32($0A01) then Result := 'ORDER' else
       if self.val = UInt32($0A02) then Result := 'DOMAIN' else
-        Result := self.val.ToString;
+        Result := $'GetMapQuery[{self.val}]';
     end;
     
   end;
@@ -4531,7 +4531,7 @@
       if self.val = UInt32($9599) then Result := 'DEVICE_LUID_EXT' else
       if self.val = UInt32($959A) then Result := 'DEVICE_NODE_MASK_EXT' else
       if self.val = UInt32($96A4) then Result := 'SHADING_RATE_QCOM' else
-        Result := self.val.ToString;
+        Result := $'GetPName[{self.val}]';
     end;
     
   end;
@@ -4595,7 +4595,7 @@
       if self.val = UInt32($8180) then Result := 'INSTRUMENT_BUFFER_POINTER_SGIX' else
       if self.val = UInt32($8244) then Result := 'DEBUG_CALLBACK_FUNCTION' else
       if self.val = UInt32($8245) then Result := 'DEBUG_CALLBACK_USER_PARAM' else
-        Result := self.val.ToString;
+        Result := $'GetPointervPName[{self.val}]';
     end;
     
   end;
@@ -4773,7 +4773,7 @@
       if self.val = UInt32($836A) then Result := 'TEXTURE_MAX_CLAMP_T_SGIX' else
       if self.val = UInt32($836B) then Result := 'TEXTURE_MAX_CLAMP_R_SGIX' else
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
-        Result := self.val.ToString;
+        Result := $'GetTextureParameter[{self.val}]';
     end;
     
   end;
@@ -4798,7 +4798,7 @@
       if self.val = UInt32($8253) then Result := 'GUILTY_CONTEXT_RESET' else
       if self.val = UInt32($8254) then Result := 'INNOCENT_CONTEXT_RESET' else
       if self.val = UInt32($8255) then Result := 'UNKNOWN_CONTEXT_RESET' else
-        Result := self.val.ToString;
+        Result := $'GraphicsResetStatus[{self.val}]';
     end;
     
   end;
@@ -4820,7 +4820,7 @@
       if self.val = UInt32($1100) then Result := 'DONT_CARE' else
       if self.val = UInt32($1101) then Result := 'FASTEST' else
       if self.val = UInt32($1102) then Result := 'NICEST' else
-        Result := self.val.ToString;
+        Result := $'HintMode[{self.val}]';
     end;
     
   end;
@@ -4986,7 +4986,7 @@
       if self.val = UInt32($1A22B) then Result := 'VERTEX_CONSISTENT_HINT_PGI' else
       if self.val = UInt32($1A22C) then Result := 'MATERIAL_SIDE_HINT_PGI' else
       if self.val = UInt32($1A22D) then Result := 'MAX_VERTEX_HINT_PGI' else
-        Result := self.val.ToString;
+        Result := $'HintTarget[{self.val}]';
     end;
     
   end;
@@ -5011,7 +5011,7 @@
       if self.val = UInt32($1404) then Result := 'INT' else
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'IndexPointerType[{self.val}]';
     end;
     
   end;
@@ -5066,7 +5066,7 @@
       if self.val = UInt32($2A2B) then Result := 'T2F_N3F_V3F' else
       if self.val = UInt32($2A2C) then Result := 'T2F_C4F_N3F_V3F' else
       if self.val = UInt32($2A2D) then Result := 'T4F_C4F_N3F_V4F' else
-        Result := self.val.ToString;
+        Result := $'InterleavedArrayFormat[{self.val}]';
     end;
     
   end;
@@ -5967,7 +5967,7 @@
       if self.val = UInt32($93E7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_OES' else
       if self.val = UInt32($93E8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_OES' else
       if self.val = UInt32($93E9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_OES' else
-        Result := self.val.ToString;
+        Result := $'InternalFormat[{self.val}]';
     end;
     
   end;
@@ -6193,7 +6193,7 @@
       if self.val = UInt32($90C7) then Result := 'IMAGE_FORMAT_COMPATIBILITY_TYPE' else
       if self.val = UInt32($9365) then Result := 'CLEAR_TEXTURE' else
       if self.val = UInt32($9380) then Result := 'NUM_SAMPLE_COUNTS' else
-        Result := self.val.ToString;
+        Result := $'InternalFormatPName[{self.val}]';
     end;
     
   end;
@@ -6428,7 +6428,7 @@
       if self.val = UInt32($8D00) then Result := 'DEPTH_ATTACHMENT_OES' else
       if self.val = UInt32($8D20) then Result := 'STENCIL_ATTACHMENT_EXT' else
       if self.val = UInt32($8D20) then Result := 'STENCIL_ATTACHMENT_OES' else
-        Result := self.val.ToString;
+        Result := $'InvalidateFramebufferAttachment[{self.val}]';
     end;
     
   end;
@@ -6456,7 +6456,7 @@
       if self.val = UInt32($0B53) then Result := 'LIGHT_MODEL_AMBIENT' else
       if self.val = UInt32($81F8) then Result := 'LIGHT_MODEL_COLOR_CONTROL' else
       if self.val = UInt32($81F8) then Result := 'LIGHT_MODEL_COLOR_CONTROL_EXT' else
-        Result := self.val.ToString;
+        Result := $'LightModelParameter[{self.val}]';
     end;
     
   end;
@@ -6517,7 +6517,7 @@
       if self.val = UInt32($8411) then Result := 'FRAGMENT_LIGHT5_SGIX' else
       if self.val = UInt32($8412) then Result := 'FRAGMENT_LIGHT6_SGIX' else
       if self.val = UInt32($8413) then Result := 'FRAGMENT_LIGHT7_SGIX' else
-        Result := self.val.ToString;
+        Result := $'LightName[{self.val}]';
     end;
     
   end;
@@ -6551,7 +6551,7 @@
       if self.val = UInt32($1207) then Result := 'CONSTANT_ATTENUATION' else
       if self.val = UInt32($1208) then Result := 'LINEAR_ATTENUATION' else
       if self.val = UInt32($1209) then Result := 'QUADRATIC_ATTENUATION' else
-        Result := self.val.ToString;
+        Result := $'LightParameter[{self.val}]';
     end;
     
   end;
@@ -6570,7 +6570,7 @@
     begin
       if self.val = UInt32($1300) then Result := 'COMPILE' else
       if self.val = UInt32($1301) then Result := 'COMPILE_AND_EXECUTE' else
-        Result := self.val.ToString;
+        Result := $'ListMode[{self.val}]';
     end;
     
   end;
@@ -6613,7 +6613,7 @@
       if self.val = UInt32($1407) then Result := 'GL_2_BYTES' else
       if self.val = UInt32($1408) then Result := 'GL_3_BYTES' else
       if self.val = UInt32($1409) then Result := 'GL_4_BYTES' else
-        Result := self.val.ToString;
+        Result := $'ListNameType[{self.val}]';
     end;
     
   end;
@@ -6629,7 +6629,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8182) then Result := 'LIST_PRIORITY_SGIX' else
-        Result := self.val.ToString;
+        Result := $'ListParameterName[{self.val}]';
     end;
     
   end;
@@ -6690,7 +6690,7 @@
       if self.val = UInt32($150D) then Result := 'OR_INVERTED' else
       if self.val = UInt32($150E) then Result := 'NAND' else
       if self.val = UInt32($150F) then Result := 'SET' else
-        Result := self.val.ToString;
+        Result := $'LogicOp[{self.val}]';
     end;
     
   end;
@@ -6776,7 +6776,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'MapBufferAccessMask[{self.val}]';
     end;
     
   end;
@@ -6798,7 +6798,7 @@
       if self.val = UInt32($0A00) then Result := 'COEFF' else
       if self.val = UInt32($0A01) then Result := 'ORDER' else
       if self.val = UInt32($0A02) then Result := 'DOMAIN' else
-        Result := self.val.ToString;
+        Result := $'MapQuery[{self.val}]';
     end;
     
   end;
@@ -6871,7 +6871,7 @@
       if self.val = UInt32($0DB8) then Result := 'MAP2_VERTEX_4' else
       if self.val = UInt32($8194) then Result := 'GEOMETRY_DEFORMATION_SGIX' else
       if self.val = UInt32($8195) then Result := 'TEXTURE_DEFORMATION_SGIX' else
-        Result := self.val.ToString;
+        Result := $'MapTarget[{self.val}]';
     end;
     
   end;
@@ -6893,7 +6893,7 @@
       if self.val = UInt32($0404) then Result := 'FRONT' else
       if self.val = UInt32($0405) then Result := 'BACK' else
       if self.val = UInt32($0408) then Result := 'FRONT_AND_BACK' else
-        Result := self.val.ToString;
+        Result := $'MaterialFace[{self.val}]';
     end;
     
   end;
@@ -6927,7 +6927,7 @@
       if self.val = UInt32($1601) then Result := 'SHININESS' else
       if self.val = UInt32($1602) then Result := 'AMBIENT_AND_DIFFUSE' else
       if self.val = UInt32($1603) then Result := 'COLOR_INDEXES' else
-        Result := self.val.ToString;
+        Result := $'MaterialParameter[{self.val}]';
     end;
     
   end;
@@ -6952,7 +6952,7 @@
       if self.val = UInt32($1700) then Result := 'MODELVIEW0_EXT' else
       if self.val = UInt32($1701) then Result := 'PROJECTION' else
       if self.val = UInt32($1702) then Result := 'TEXTURE' else
-        Result := self.val.ToString;
+        Result := $'MatrixMode[{self.val}]';
     end;
     
   end;
@@ -7098,7 +7098,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'MemoryBarrierMask[{self.val}]';
     end;
     
   end;
@@ -7117,7 +7117,7 @@
     begin
       if self.val = UInt32($9581) then Result := 'DEDICATED_MEMORY_OBJECT_EXT' else
       if self.val = UInt32($959B) then Result := 'PROTECTED_MEMORY_OBJECT_EXT' else
-        Result := self.val.ToString;
+        Result := $'MemoryObjectParameterName[{self.val}]';
     end;
     
   end;
@@ -7136,7 +7136,7 @@
     begin
       if self.val = UInt32($1B00) then Result := 'POINT' else
       if self.val = UInt32($1B01) then Result := 'LINE' else
-        Result := self.val.ToString;
+        Result := $'MeshMode1[{self.val}]';
     end;
     
   end;
@@ -7158,7 +7158,7 @@
       if self.val = UInt32($1B00) then Result := 'POINT' else
       if self.val = UInt32($1B01) then Result := 'LINE' else
       if self.val = UInt32($1B02) then Result := 'FILL' else
-        Result := self.val.ToString;
+        Result := $'MeshMode2[{self.val}]';
     end;
     
   end;
@@ -7186,7 +7186,7 @@
       if self.val = UInt32($1404) then Result := 'INT' else
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'NormalPointerType[{self.val}]';
     end;
     
   end;
@@ -7232,7 +7232,7 @@
       if self.val = UInt32($8D40) then Result := 'FRAMEBUFFER' else
       if self.val = UInt32($8D41) then Result := 'RENDERBUFFER' else
       if self.val = UInt32($8E22) then Result := 'TRANSFORM_FEEDBACK' else
-        Result := self.val.ToString;
+        Result := $'ObjectIdentifier[{self.val}]';
     end;
     
   end;
@@ -7254,7 +7254,7 @@
       if self.val = UInt32($8E72) then Result := 'PATCH_VERTICES' else
       if self.val = UInt32($8E73) then Result := 'PATCH_DEFAULT_INNER_LEVEL' else
       if self.val = UInt32($8E74) then Result := 'PATCH_DEFAULT_OUTER_LEVEL' else
-        Result := self.val.ToString;
+        Result := $'PatchParameterName[{self.val}]';
     end;
     
   end;
@@ -7276,7 +7276,7 @@
       if self.val = UInt32($852C) then Result := 'PRIMARY_COLOR_NV' else
       if self.val = UInt32($852D) then Result := 'SECONDARY_COLOR_NV' else
       if self.val = UInt32($8577) then Result := 'PRIMARY_COLOR' else
-        Result := self.val.ToString;
+        Result := $'PathColor[{self.val}]';
     end;
     
   end;
@@ -7310,7 +7310,7 @@
       if self.val = UInt32($1909) then Result := 'LUMINANCE' else
       if self.val = UInt32($190A) then Result := 'LUMINANCE_ALPHA' else
       if self.val = UInt32($8049) then Result := 'INTENSITY' else
-        Result := self.val.ToString;
+        Result := $'PathColorFormat[{self.val}]';
     end;
     
   end;
@@ -7458,7 +7458,7 @@
       if self.val = UInt32($00FC) then Result := 'CIRCULAR_TANGENT_ARC_TO_NV' else
       if self.val = UInt32($00FE) then Result := 'ARC_TO_NV' else
       if self.val = UInt32($00FF) then Result := 'RELATIVE_ARC_TO_NV' else
-        Result := self.val.ToString;
+        Result := $'PathCoordType[{self.val}]';
     end;
     
   end;
@@ -7483,7 +7483,7 @@
       if self.val = UInt32($908B) then Result := 'CONVEX_HULL_NV' else
       if self.val = UInt32($908D) then Result := 'BOUNDING_BOX_NV' else
       if self.val = UInt32($909C) then Result := 'BOUNDING_BOX_OF_BOUNDING_BOXES_NV' else
-        Result := self.val.ToString;
+        Result := $'PathCoverMode[{self.val}]';
     end;
     
   end;
@@ -7502,7 +7502,7 @@
     begin
       if self.val = UInt32($909A) then Result := 'UTF8_NV' else
       if self.val = UInt32($909B) then Result := 'UTF16_NV' else
-        Result := self.val.ToString;
+        Result := $'PathElementType[{self.val}]';
     end;
     
   end;
@@ -7527,7 +7527,7 @@
       if self.val = UInt32($9080) then Result := 'PATH_FILL_MODE_NV' else
       if self.val = UInt32($9088) then Result := 'COUNT_UP_NV' else
       if self.val = UInt32($9089) then Result := 'COUNT_DOWN_NV' else
-        Result := self.val.ToString;
+        Result := $'PathFillMode[{self.val}]';
     end;
     
   end;
@@ -7561,7 +7561,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'PathFontStyle[{self.val}]';
     end;
     
   end;
@@ -7583,7 +7583,7 @@
       if self.val = UInt32($9072) then Result := 'STANDARD_FONT_NAME_NV' else
       if self.val = UInt32($9073) then Result := 'SYSTEM_FONT_NAME_NV' else
       if self.val = UInt32($9074) then Result := 'FILE_NAME_NV' else
-        Result := self.val.ToString;
+        Result := $'PathFontTarget[{self.val}]';
     end;
     
   end;
@@ -7611,7 +7611,7 @@
       if self.val = UInt32($2401) then Result := 'OBJECT_LINEAR' else
       if self.val = UInt32($8576) then Result := 'CONSTANT' else
       if self.val = UInt32($908A) then Result := 'PATH_OBJECT_BOUNDING_BOX_NV' else
-        Result := self.val.ToString;
+        Result := $'PathGenMode[{self.val}]';
     end;
     
   end;
@@ -7630,7 +7630,7 @@
     begin
       if self.val = UInt32($90A9) then Result := 'SKIP_MISSING_GLYPH_NV' else
       if self.val = UInt32($90AA) then Result := 'USE_MISSING_GLYPH_NV' else
-        Result := self.val.ToString;
+        Result := $'PathHandleMissingGlyphs[{self.val}]';
     end;
     
   end;
@@ -7652,7 +7652,7 @@
       if self.val = UInt32($90AD) then Result := 'ACCUM_ADJACENT_PAIRS_NV' else
       if self.val = UInt32($90AE) then Result := 'ADJACENT_PAIRS_NV' else
       if self.val = UInt32($90AF) then Result := 'FIRST_TO_REST_NV' else
-        Result := self.val.ToString;
+        Result := $'PathListMode[{self.val}]';
     end;
     
   end;
@@ -7766,7 +7766,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'PathMetricMask[{self.val}]';
     end;
     
   end;
@@ -7851,7 +7851,7 @@
       if self.val = UInt32($90A1) then Result := 'PATH_FILL_BOUNDING_BOX_NV' else
       if self.val = UInt32($90A2) then Result := 'PATH_STROKE_BOUNDING_BOX_NV' else
       if self.val = UInt32($90B4) then Result := 'PATH_DASH_OFFSET_RESET_NV' else
-        Result := self.val.ToString;
+        Result := $'PathParameter[{self.val}]';
     end;
     
   end;
@@ -7870,7 +7870,7 @@
     begin
       if self.val = UInt32($9070) then Result := 'PATH_FORMAT_SVG_NV' else
       if self.val = UInt32($9071) then Result := 'PATH_FORMAT_PS_NV' else
-        Result := self.val.ToString;
+        Result := $'PathStringFormat[{self.val}]';
     end;
     
   end;
@@ -7910,7 +7910,7 @@
       if self.val = UInt32($9094) then Result := 'AFFINE_3D_NV' else
       if self.val = UInt32($9096) then Result := 'TRANSPOSE_AFFINE_2D_NV' else
       if self.val = UInt32($9098) then Result := 'TRANSPOSE_AFFINE_3D_NV' else
-        Result := self.val.ToString;
+        Result := $'PathTransformType[{self.val}]';
     end;
     
   end;
@@ -7944,7 +7944,7 @@
       if self.val = UInt32($8DD9) then Result := 'GEOMETRY_SHADER' else
       if self.val = UInt32($8E87) then Result := 'TESS_EVALUATION_SHADER' else
       if self.val = UInt32($8E88) then Result := 'TESS_CONTROL_SHADER' else
-        Result := self.val.ToString;
+        Result := $'PipelineParameterName[{self.val}]';
     end;
     
   end;
@@ -7975,7 +7975,7 @@
       if self.val = UInt32($1801) then Result := 'DEPTH_EXT' else
       if self.val = UInt32($1802) then Result := 'STENCIL' else
       if self.val = UInt32($1802) then Result := 'STENCIL_EXT' else
-        Result := self.val.ToString;
+        Result := $'PixelCopyType[{self.val}]';
     end;
     
   end;
@@ -8081,7 +8081,7 @@
       if self.val = UInt32($8D99) then Result := 'RGBA_INTEGER' else
       if self.val = UInt32($8D9A) then Result := 'BGR_INTEGER' else
       if self.val = UInt32($8D9B) then Result := 'BGRA_INTEGER' else
-        Result := self.val.ToString;
+        Result := $'PixelFormat[{self.val}]';
     end;
     
   end;
@@ -8124,7 +8124,7 @@
       if self.val = UInt32($0C77) then Result := 'PIXEL_MAP_G_TO_G' else
       if self.val = UInt32($0C78) then Result := 'PIXEL_MAP_B_TO_B' else
       if self.val = UInt32($0C79) then Result := 'PIXEL_MAP_A_TO_A' else
-        Result := self.val.ToString;
+        Result := $'PixelMap[{self.val}]';
     end;
     
   end;
@@ -8254,7 +8254,7 @@
       if self.val = UInt32($85A1) then Result := 'UNPACK_SUBSAMPLE_RATE_SGIX' else
       if self.val = UInt32($8984) then Result := 'PACK_RESAMPLE_OML' else
       if self.val = UInt32($8985) then Result := 'UNPACK_RESAMPLE_OML' else
-        Result := self.val.ToString;
+        Result := $'PixelStoreParameter[{self.val}]';
     end;
     
   end;
@@ -8405,7 +8405,7 @@
       if self.val = UInt32($80BA) then Result := 'POST_COLOR_MATRIX_BLUE_BIAS_SGI' else
       if self.val = UInt32($80BB) then Result := 'POST_COLOR_MATRIX_ALPHA_BIAS' else
       if self.val = UInt32($80BB) then Result := 'POST_COLOR_MATRIX_ALPHA_BIAS_SGI' else
-        Result := self.val.ToString;
+        Result := $'PixelTransferParameter[{self.val}]';
     end;
     
   end;
@@ -8472,7 +8472,7 @@
       if self.val = UInt32($8035) then Result := 'UNSIGNED_INT_8_8_8_8_EXT' else
       if self.val = UInt32($8036) then Result := 'UNSIGNED_INT_10_10_10_2' else
       if self.val = UInt32($8036) then Result := 'UNSIGNED_INT_10_10_10_2_EXT' else
-        Result := self.val.ToString;
+        Result := $'PixelType[{self.val}]';
     end;
     
   end;
@@ -8494,7 +8494,7 @@
       if self.val = UInt32($1B00) then Result := 'POINT' else
       if self.val = UInt32($1B01) then Result := 'LINE' else
       if self.val = UInt32($1B02) then Result := 'FILL' else
-        Result := self.val.ToString;
+        Result := $'PolygonMode[{self.val}]';
     end;
     
   end;
@@ -8525,7 +8525,7 @@
       if self.val = UInt32($8DF3) then Result := 'LOW_INT' else
       if self.val = UInt32($8DF4) then Result := 'MEDIUM_INT' else
       if self.val = UInt32($8DF5) then Result := 'HIGH_INT' else
-        Result := self.val.ToString;
+        Result := $'PrecisionType[{self.val}]';
     end;
     
   end;
@@ -8613,7 +8613,7 @@
       if self.val = UInt32($000D) then Result := 'TRIANGLE_STRIP_ADJACENCY_EXT' else
       if self.val = UInt32($000E) then Result := 'PATCHES' else
       if self.val = UInt32($000E) then Result := 'PATCHES_EXT' else
-        Result := self.val.ToString;
+        Result := $'PrimitiveType[{self.val}]';
     end;
     
   end;
@@ -8629,7 +8629,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8875) then Result := 'PROGRAM_FORMAT_ASCII_ARB' else
-        Result := self.val.ToString;
+        Result := $'ProgramFormat[{self.val}]';
     end;
     
   end;
@@ -8702,7 +8702,7 @@
       if self.val = UInt32($92F2) then Result := 'FRAGMENT_SUBROUTINE_UNIFORM' else
       if self.val = UInt32($92F3) then Result := 'COMPUTE_SUBROUTINE_UNIFORM' else
       if self.val = UInt32($92F4) then Result := 'TRANSFORM_FEEDBACK_VARYING' else
-        Result := self.val.ToString;
+        Result := $'ProgramInterface[{self.val}]';
     end;
     
   end;
@@ -8727,7 +8727,7 @@
       if self.val = UInt32($92F6) then Result := 'MAX_NAME_LENGTH' else
       if self.val = UInt32($92F7) then Result := 'MAX_NUM_ACTIVE_VARIABLES' else
       if self.val = UInt32($92F8) then Result := 'MAX_NUM_COMPATIBLE_SUBROUTINES' else
-        Result := self.val.ToString;
+        Result := $'ProgramInterfacePName[{self.val}]';
     end;
     
   end;
@@ -8746,7 +8746,7 @@
     begin
       if self.val = UInt32($8257) then Result := 'PROGRAM_BINARY_RETRIEVABLE_HINT' else
       if self.val = UInt32($8258) then Result := 'PROGRAM_SEPARABLE' else
-        Result := self.val.ToString;
+        Result := $'ProgramParameterPName[{self.val}]';
     end;
     
   end;
@@ -8849,7 +8849,7 @@
       if self.val = UInt32($934A) then Result := 'LOCATION_COMPONENT' else
       if self.val = UInt32($934B) then Result := 'TRANSFORM_FEEDBACK_BUFFER_INDEX' else
       if self.val = UInt32($934C) then Result := 'TRANSFORM_FEEDBACK_BUFFER_STRIDE' else
-        Result := self.val.ToString;
+        Result := $'ProgramResourceProperty[{self.val}]';
     end;
     
   end;
@@ -8877,7 +8877,7 @@
       if self.val = UInt32($8E47) then Result := 'ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS' else
       if self.val = UInt32($8E48) then Result := 'ACTIVE_SUBROUTINE_MAX_LENGTH' else
       if self.val = UInt32($8E49) then Result := 'ACTIVE_SUBROUTINE_UNIFORM_MAX_LENGTH' else
-        Result := self.val.ToString;
+        Result := $'ProgramStagePName[{self.val}]';
     end;
     
   end;
@@ -8893,7 +8893,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8628) then Result := 'PROGRAM_STRING_ARB' else
-        Result := self.val.ToString;
+        Result := $'ProgramStringProperty[{self.val}]';
     end;
     
   end;
@@ -8927,7 +8927,7 @@
       if self.val = UInt32($891F) then Result := 'TESS_EVALUATION_PROGRAM_NV' else
       if self.val = UInt32($8C26) then Result := 'GEOMETRY_PROGRAM_NV' else
       if self.val = UInt32($90FB) then Result := 'COMPUTE_PROGRAM_NV' else
-        Result := self.val.ToString;
+        Result := $'ProgramTarget[{self.val}]';
     end;
     
   end;
@@ -8943,7 +8943,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8E28) then Result := 'TIMESTAMP' else
-        Result := self.val.ToString;
+        Result := $'QueryCounterTarget[{self.val}]';
     end;
     
   end;
@@ -8968,7 +8968,7 @@
       if self.val = UInt32($8866) then Result := 'QUERY_RESULT' else
       if self.val = UInt32($8867) then Result := 'QUERY_RESULT_AVAILABLE' else
       if self.val = UInt32($9194) then Result := 'QUERY_RESULT_NO_WAIT' else
-        Result := self.val.ToString;
+        Result := $'QueryObjectParameterName[{self.val}]';
     end;
     
   end;
@@ -8987,7 +8987,7 @@
     begin
       if self.val = UInt32($8864) then Result := 'QUERY_COUNTER_BITS' else
       if self.val = UInt32($8865) then Result := 'CURRENT_QUERY' else
-        Result := self.val.ToString;
+        Result := $'QueryParameterName[{self.val}]';
     end;
     
   end;
@@ -9030,7 +9030,7 @@
       if self.val = UInt32($8C87) then Result := 'PRIMITIVES_GENERATED' else
       if self.val = UInt32($8C88) then Result := 'TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN' else
       if self.val = UInt32($8D6A) then Result := 'ANY_SAMPLES_PASSED_CONSERVATIVE' else
-        Result := self.val.ToString;
+        Result := $'QueryTarget[{self.val}]';
     end;
     
   end;
@@ -9133,7 +9133,7 @@
       if self.val = UInt32($8CED) then Result := 'COLOR_ATTACHMENT13' else
       if self.val = UInt32($8CEE) then Result := 'COLOR_ATTACHMENT14' else
       if self.val = UInt32($8CEF) then Result := 'COLOR_ATTACHMENT15' else
-        Result := self.val.ToString;
+        Result := $'ReadBufferMode[{self.val}]';
     end;
     
   end;
@@ -9254,7 +9254,7 @@
       if self.val = UInt32($8E10) then Result := 'RENDERBUFFER_COLOR_SAMPLES_NV' else
       if self.val = UInt32($9133) then Result := 'RENDERBUFFER_SAMPLES_IMG' else
       if self.val = UInt32($91B2) then Result := 'RENDERBUFFER_STORAGE_SAMPLES_AMD' else
-        Result := self.val.ToString;
+        Result := $'RenderbufferParameterName[{self.val}]';
     end;
     
   end;
@@ -9273,7 +9273,7 @@
     begin
       if self.val = UInt32($8D41) then Result := 'RENDERBUFFER' else
       if self.val = UInt32($8D41) then Result := 'RENDERBUFFER_OES' else
-        Result := self.val.ToString;
+        Result := $'RenderbufferTarget[{self.val}]';
     end;
     
   end;
@@ -9295,7 +9295,7 @@
       if self.val = UInt32($1C00) then Result := 'RENDER' else
       if self.val = UInt32($1C01) then Result := 'FEEDBACK' else
       if self.val = UInt32($1C02) then Result := 'SELECT' else
-        Result := self.val.ToString;
+        Result := $'RenderingMode[{self.val}]';
     end;
     
   end;
@@ -9326,7 +9326,7 @@
       if self.val = UInt32($84FE) then Result := 'TEXTURE_MAX_ANISOTROPY' else
       if self.val = UInt32($8501) then Result := 'TEXTURE_LOD_BIAS' else
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
-        Result := self.val.ToString;
+        Result := $'SamplerParameterF[{self.val}]';
     end;
     
   end;
@@ -9363,7 +9363,7 @@
       if self.val = UInt32($884C) then Result := 'TEXTURE_COMPARE_MODE' else
       if self.val = UInt32($884D) then Result := 'TEXTURE_COMPARE_FUNC' else
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
-        Result := self.val.ToString;
+        Result := $'SamplerParameterI[{self.val}]';
     end;
     
   end;
@@ -9385,7 +9385,7 @@
       if self.val = UInt32($1401) then Result := 'UNSIGNED_BYTE' else
       if self.val = UInt32($1403) then Result := 'UNSIGNED_SHORT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-        Result := self.val.ToString;
+        Result := $'ScalarType[{self.val}]';
     end;
     
   end;
@@ -9401,7 +9401,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($9595) then Result := 'D3D12_FENCE_VALUE_EXT' else
-        Result := self.val.ToString;
+        Result := $'SemaphoreParameterName[{self.val}]';
     end;
     
   end;
@@ -9429,7 +9429,7 @@
       if self.val = UInt32($8B81) then Result := 'COMPILE_STATUS' else
       if self.val = UInt32($8B84) then Result := 'INFO_LOG_LENGTH' else
       if self.val = UInt32($8B88) then Result := 'SHADER_SOURCE_LENGTH' else
-        Result := self.val.ToString;
+        Result := $'ShaderParameterName[{self.val}]';
     end;
     
   end;
@@ -9466,7 +9466,7 @@
       if self.val = UInt32($8E87) then Result := 'TESS_EVALUATION_SHADER' else
       if self.val = UInt32($8E88) then Result := 'TESS_CONTROL_SHADER' else
       if self.val = UInt32($91B9) then Result := 'COMPUTE_SHADER' else
-        Result := self.val.ToString;
+        Result := $'ShaderType[{self.val}]';
     end;
     
   end;
@@ -9485,7 +9485,7 @@
     begin
       if self.val = UInt32($1D00) then Result := 'FLAT' else
       if self.val = UInt32($1D01) then Result := 'SMOOTH' else
-        Result := self.val.ToString;
+        Result := $'ShadingModel[{self.val}]';
     end;
     
   end;
@@ -9507,7 +9507,7 @@
       if self.val = UInt32($0404) then Result := 'FRONT' else
       if self.val = UInt32($0405) then Result := 'BACK' else
       if self.val = UInt32($0408) then Result := 'FRONT_AND_BACK' else
-        Result := self.val.ToString;
+        Result := $'StencilFaceDirection[{self.val}]';
     end;
     
   end;
@@ -9544,7 +9544,7 @@
       if self.val = UInt32($0205) then Result := 'NOTEQUAL' else
       if self.val = UInt32($0206) then Result := 'GEQUAL' else
       if self.val = UInt32($0207) then Result := 'ALWAYS' else
-        Result := self.val.ToString;
+        Result := $'StencilFunction[{self.val}]';
     end;
     
   end;
@@ -9581,7 +9581,7 @@
       if self.val = UInt32($1E03) then Result := 'DECR' else
       if self.val = UInt32($8507) then Result := 'INCR_WRAP' else
       if self.val = UInt32($8508) then Result := 'DECR_WRAP' else
-        Result := self.val.ToString;
+        Result := $'StencilOp[{self.val}]';
     end;
     
   end;
@@ -9609,7 +9609,7 @@
       if self.val = UInt32($1F02) then Result := 'VERSION' else
       if self.val = UInt32($1F03) then Result := 'EXTENSIONS' else
       if self.val = UInt32($8B8C) then Result := 'SHADING_LANGUAGE_VERSION' else
-        Result := self.val.ToString;
+        Result := $'StringName[{self.val}]';
     end;
     
   end;
@@ -9634,7 +9634,7 @@
       if self.val = UInt32($8A39) then Result := 'UNIFORM_NAME_LENGTH' else
       if self.val = UInt32($8E4A) then Result := 'NUM_COMPATIBLE_SUBROUTINES' else
       if self.val = UInt32($8E4B) then Result := 'COMPATIBLE_SUBROUTINES' else
-        Result := self.val.ToString;
+        Result := $'SubroutineParameterName[{self.val}]';
     end;
     
   end;
@@ -9650,7 +9650,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($9117) then Result := 'SYNC_GPU_COMMANDS_COMPLETE' else
-        Result := self.val.ToString;
+        Result := $'SyncCondition[{self.val}]';
     end;
     
   end;
@@ -9680,7 +9680,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'SyncObjectMask[{self.val}]';
     end;
     
   end;
@@ -9705,7 +9705,7 @@
       if self.val = UInt32($9113) then Result := 'SYNC_CONDITION' else
       if self.val = UInt32($9114) then Result := 'SYNC_STATUS' else
       if self.val = UInt32($9115) then Result := 'SYNC_FLAGS' else
-        Result := self.val.ToString;
+        Result := $'SyncParameterName[{self.val}]';
     end;
     
   end;
@@ -9730,7 +9730,7 @@
       if self.val = UInt32($911B) then Result := 'TIMEOUT_EXPIRED' else
       if self.val = UInt32($911C) then Result := 'CONDITION_SATISFIED' else
       if self.val = UInt32($911D) then Result := 'WAIT_FAILED' else
-        Result := self.val.ToString;
+        Result := $'SyncStatus[{self.val}]';
     end;
     
   end;
@@ -9755,7 +9755,7 @@
       if self.val = UInt32($1404) then Result := 'INT' else
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'TexCoordPointerType[{self.val}]';
     end;
     
   end;
@@ -9780,7 +9780,7 @@
       if self.val = UInt32($2001) then Result := 'T' else
       if self.val = UInt32($2002) then Result := 'R' else
       if self.val = UInt32($2003) then Result := 'Q' else
-        Result := self.val.ToString;
+        Result := $'TextureCoordName[{self.val}]';
     end;
     
   end;
@@ -9799,7 +9799,7 @@
     begin
       if self.val = UInt32($2200) then Result := 'TEXTURE_ENV_MODE' else
       if self.val = UInt32($2201) then Result := 'TEXTURE_ENV_COLOR' else
-        Result := self.val.ToString;
+        Result := $'TextureEnvParameter[{self.val}]';
     end;
     
   end;
@@ -9815,7 +9815,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($2300) then Result := 'TEXTURE_ENV' else
-        Result := self.val.ToString;
+        Result := $'TextureEnvTarget[{self.val}]';
     end;
     
   end;
@@ -9849,7 +9849,7 @@
       if self.val = UInt32($81F5) then Result := 'OBJECT_POINT_SGIS' else
       if self.val = UInt32($81F6) then Result := 'EYE_LINE_SGIS' else
       if self.val = UInt32($81F7) then Result := 'OBJECT_LINE_SGIS' else
-        Result := self.val.ToString;
+        Result := $'TextureGenParameter[{self.val}]';
     end;
     
   end;
@@ -9889,7 +9889,7 @@
       if self.val = UInt32($9591) then Result := 'LAYOUT_SHADER_READ_ONLY_EXT' else
       if self.val = UInt32($9592) then Result := 'LAYOUT_TRANSFER_SRC_EXT' else
       if self.val = UInt32($9593) then Result := 'LAYOUT_TRANSFER_DST_EXT' else
-        Result := self.val.ToString;
+        Result := $'TextureLayout[{self.val}]';
     end;
     
   end;
@@ -10121,7 +10121,7 @@
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
       if self.val = UInt32($90EA) then Result := 'DEPTH_STENCIL_TEXTURE_MODE' else
       if self.val = UInt32($9580) then Result := 'TEXTURE_TILING_EXT' else
-        Result := self.val.ToString;
+        Result := $'TextureParameterName[{self.val}]';
     end;
     
   end;
@@ -10269,7 +10269,7 @@
       if self.val = UInt32($9101) then Result := 'PROXY_TEXTURE_2D_MULTISAMPLE' else
       if self.val = UInt32($9102) then Result := 'TEXTURE_2D_MULTISAMPLE_ARRAY' else
       if self.val = UInt32($9103) then Result := 'PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY' else
-        Result := self.val.ToString;
+        Result := $'TextureTarget[{self.val}]';
     end;
     
   end;
@@ -10378,7 +10378,7 @@
       if self.val = UInt32($84DD) then Result := 'TEXTURE29' else
       if self.val = UInt32($84DE) then Result := 'TEXTURE30' else
       if self.val = UInt32($84DF) then Result := 'TEXTURE31' else
-        Result := self.val.ToString;
+        Result := $'TextureUnit[{self.val}]';
     end;
     
   end;
@@ -10397,7 +10397,7 @@
     begin
       if self.val = UInt32($8C8C) then Result := 'INTERLEAVED_ATTRIBS' else
       if self.val = UInt32($8C8D) then Result := 'SEPARATE_ATTRIBS' else
-        Result := self.val.ToString;
+        Result := $'TransformFeedbackBufferMode[{self.val}]';
     end;
     
   end;
@@ -10425,7 +10425,7 @@
       if self.val = UInt32($8C8F) then Result := 'TRANSFORM_FEEDBACK_BUFFER_BINDING' else
       if self.val = UInt32($8E23) then Result := 'TRANSFORM_FEEDBACK_PAUSED' else
       if self.val = UInt32($8E24) then Result := 'TRANSFORM_FEEDBACK_ACTIVE' else
-        Result := self.val.ToString;
+        Result := $'TransformFeedbackPName[{self.val}]';
     end;
     
   end;
@@ -10471,7 +10471,7 @@
       if self.val = UInt32($8A45) then Result := 'UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER' else
       if self.val = UInt32($8A46) then Result := 'UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER' else
       if self.val = UInt32($90EC) then Result := 'UNIFORM_BLOCK_REFERENCED_BY_COMPUTE_SHADER' else
-        Result := self.val.ToString;
+        Result := $'UniformBlockPName[{self.val}]';
     end;
     
   end;
@@ -10511,7 +10511,7 @@
       if self.val = UInt32($8A3D) then Result := 'UNIFORM_MATRIX_STRIDE' else
       if self.val = UInt32($8A3E) then Result := 'UNIFORM_IS_ROW_MAJOR' else
       if self.val = UInt32($92DA) then Result := 'UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX' else
-        Result := self.val.ToString;
+        Result := $'UniformPName[{self.val}]';
     end;
     
   end;
@@ -10758,7 +10758,7 @@
       if self.val = UInt32($910B) then Result := 'SAMPLER_2D_MULTISAMPLE_ARRAY' else
       if self.val = UInt32($910C) then Result := 'INT_SAMPLER_2D_MULTISAMPLE_ARRAY' else
       if self.val = UInt32($910D) then Result := 'UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY' else
-        Result := self.val.ToString;
+        Result := $'UniformType[{self.val}]';
     end;
     
   end;
@@ -10852,7 +10852,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'UseProgramStageMask[{self.val}]';
     end;
     
   end;
@@ -10892,7 +10892,7 @@
       if self.val = UInt32($886A) then Result := 'VERTEX_ATTRIB_ARRAY_NORMALIZED' else
       if self.val = UInt32($88FD) then Result := 'VERTEX_ATTRIB_ARRAY_INTEGER' else
       if self.val = UInt32($88FE) then Result := 'VERTEX_ATTRIB_ARRAY_DIVISOR' else
-        Result := self.val.ToString;
+        Result := $'VertexArrayPName[{self.val}]';
     end;
     
   end;
@@ -10932,7 +10932,7 @@
       if self.val = UInt32($889F) then Result := 'VERTEX_ATTRIB_ARRAY_BUFFER_BINDING' else
       if self.val = UInt32($88FD) then Result := 'VERTEX_ATTRIB_ARRAY_INTEGER' else
       if self.val = UInt32($88FE) then Result := 'VERTEX_ATTRIB_ARRAY_DIVISOR' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribEnum[{self.val}]';
     end;
     
   end;
@@ -10963,7 +10963,7 @@
       if self.val = UInt32($1403) then Result := 'UNSIGNED_SHORT' else
       if self.val = UInt32($1404) then Result := 'INT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribIType[{self.val}]';
     end;
     
   end;
@@ -10979,7 +10979,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribLType[{self.val}]';
     end;
     
   end;
@@ -11043,7 +11043,7 @@
       if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV' else
       if self.val = UInt32($8C3B) then Result := 'UNSIGNED_INT_10F_11F_11F_REV' else
       if self.val = UInt32($8D9F) then Result := 'INT_2_10_10_10_REV' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribPointerType[{self.val}]';
     end;
     
   end;
@@ -11095,7 +11095,7 @@
       if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV' else
       if self.val = UInt32($8C3B) then Result := 'UNSIGNED_INT_10F_11F_11F_REV' else
       if self.val = UInt32($8D9F) then Result := 'INT_2_10_10_10_REV' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribType[{self.val}]';
     end;
     
   end;
@@ -11135,7 +11135,7 @@
       if self.val = UInt32($88E8) then Result := 'DYNAMIC_DRAW' else
       if self.val = UInt32($88E9) then Result := 'DYNAMIC_READ' else
       if self.val = UInt32($88EA) then Result := 'DYNAMIC_COPY' else
-        Result := self.val.ToString;
+        Result := $'VertexBufferObjectUsage[{self.val}]';
     end;
     
   end;
@@ -11160,7 +11160,7 @@
       if self.val = UInt32($1404) then Result := 'INT' else
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'VertexPointerType[{self.val}]';
     end;
     
   end;
@@ -11179,7 +11179,7 @@
     begin
       if self.val = UInt32($8E4D) then Result := 'FIRST_VERTEX_CONVENTION' else
       if self.val = UInt32($8E4E) then Result := 'LAST_VERTEX_CONVENTION' else
-        Result := self.val.ToString;
+        Result := $'VertexProvokingMode[{self.val}]';
     end;
     
   end;
@@ -11198,7 +11198,7 @@
     begin
       if self.val = UInt32($0B03) then Result := 'CURRENT_TEXTURE_COORDS' else
       if self.val = UInt32($0BA8) then Result := 'TEXTURE_MATRIX' else
-        Result := self.val.ToString;
+        Result := $'VertexShaderTextureUnitParameter[{self.val}]';
     end;
     
   end;
@@ -11224,7 +11224,7 @@
       if self.val = UInt32($88B8) then Result := 'READ_ONLY' else
       if self.val = UInt32($88B9) then Result := 'WRITE_ONLY' else
       if self.val = UInt32($88BA) then Result := 'READ_WRITE' else
-        Result := self.val.ToString;
+        Result := $'BufferAccessARB[{self.val}]';
     end;
     
   end;
@@ -11276,7 +11276,7 @@
       if self.val = UInt32($911F) then Result := 'BUFFER_ACCESS_FLAGS' else
       if self.val = UInt32($9120) then Result := 'BUFFER_MAP_LENGTH' else
       if self.val = UInt32($9121) then Result := 'BUFFER_MAP_OFFSET' else
-        Result := self.val.ToString;
+        Result := $'BufferPNameARB[{self.val}]';
     end;
     
   end;
@@ -11295,7 +11295,7 @@
     begin
       if self.val = UInt32($88BD) then Result := 'BUFFER_MAP_POINTER' else
       if self.val = UInt32($88BD) then Result := 'BUFFER_MAP_POINTER_ARB' else
-        Result := self.val.ToString;
+        Result := $'BufferPointerNameARB[{self.val}]';
     end;
     
   end;
@@ -11353,7 +11353,7 @@
       if self.val = UInt32($90EE) then Result := 'DISPATCH_INDIRECT_BUFFER' else
       if self.val = UInt32($9192) then Result := 'QUERY_BUFFER' else
       if self.val = UInt32($92C0) then Result := 'ATOMIC_COUNTER_BUFFER' else
-        Result := self.val.ToString;
+        Result := $'BufferTargetARB[{self.val}]';
     end;
     
   end;
@@ -11393,7 +11393,7 @@
       if self.val = UInt32($88E8) then Result := 'DYNAMIC_DRAW' else
       if self.val = UInt32($88E9) then Result := 'DYNAMIC_READ' else
       if self.val = UInt32($88EA) then Result := 'DYNAMIC_COPY' else
-        Result := self.val.ToString;
+        Result := $'BufferUsageARB[{self.val}]';
     end;
     
   end;
@@ -11418,7 +11418,7 @@
       if self.val = UInt32($0001) then Result := 'TRUE' else
       if self.val = UInt32($891D) then Result := 'FIXED_ONLY' else
       if self.val = UInt32($891D) then Result := 'FIXED_ONLY_ARB' else
-        Result := self.val.ToString;
+        Result := $'ClampColorModeARB[{self.val}]';
     end;
     
   end;
@@ -11443,7 +11443,7 @@
       if self.val = UInt32($891B) then Result := 'CLAMP_FRAGMENT_COLOR_ARB' else
       if self.val = UInt32($891C) then Result := 'CLAMP_READ_COLOR' else
       if self.val = UInt32($891C) then Result := 'CLAMP_READ_COLOR_ARB' else
-        Result := self.val.ToString;
+        Result := $'ClampColorTargetARB[{self.val}]';
     end;
     
   end;
@@ -11465,7 +11465,7 @@
       if self.val = UInt32($1401) then Result := 'UNSIGNED_BYTE' else
       if self.val = UInt32($1403) then Result := 'UNSIGNED_SHORT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-        Result := self.val.ToString;
+        Result := $'MatrixIndexPointerTypeARB[{self.val}]';
     end;
     
   end;
@@ -11490,7 +11490,7 @@
       if self.val = UInt32($8127) then Result := 'POINT_SIZE_MAX_EXT' else
       if self.val = UInt32($8128) then Result := 'POINT_FADE_THRESHOLD_SIZE' else
       if self.val = UInt32($8128) then Result := 'POINT_FADE_THRESHOLD_SIZE_EXT' else
-        Result := self.val.ToString;
+        Result := $'PointParameterNameARB[{self.val}]';
     end;
     
   end;
@@ -11563,7 +11563,7 @@
       if self.val = UInt32($8C7F) then Result := 'TRANSFORM_FEEDBACK_BUFFER_MODE' else
       if self.val = UInt32($8C83) then Result := 'TRANSFORM_FEEDBACK_VARYINGS' else
       if self.val = UInt32($92D9) then Result := 'ACTIVE_ATOMIC_COUNTER_BUFFERS' else
-        Result := self.val.ToString;
+        Result := $'ProgramPropertyARB[{self.val}]';
     end;
     
   end;
@@ -11582,7 +11582,7 @@
     begin
       if self.val = UInt32($8645) then Result := 'VERTEX_ATTRIB_ARRAY_POINTER' else
       if self.val = UInt32($8645) then Result := 'VERTEX_ATTRIB_ARRAY_POINTER_ARB' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribPointerPropertyARB[{self.val}]';
     end;
     
   end;
@@ -11634,7 +11634,7 @@
       if self.val = UInt32($88FD) then Result := 'VERTEX_ATTRIB_ARRAY_INTEGER' else
       if self.val = UInt32($88FD) then Result := 'VERTEX_ATTRIB_ARRAY_INTEGER_EXT' else
       if self.val = UInt32($88FE) then Result := 'VERTEX_ATTRIB_ARRAY_DIVISOR' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribPropertyARB[{self.val}]';
     end;
     
   end;
@@ -11671,7 +11671,7 @@
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'WeightPointerTypeARB[{self.val}]';
     end;
     
   end;
@@ -11706,7 +11706,7 @@
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
       if self.val = UInt32($140A) then Result := 'DOUBLE_EXT' else
-        Result := self.val.ToString;
+        Result := $'BinormalPointerTypeEXT[{self.val}]';
     end;
     
   end;
@@ -11755,7 +11755,7 @@
       if self.val = UInt32($800B) then Result := 'FUNC_REVERSE_SUBTRACT_EXT' else
       if self.val = UInt32($8320) then Result := 'ALPHA_MIN_SGIX' else
       if self.val = UInt32($8321) then Result := 'ALPHA_MAX_SGIX' else
-        Result := self.val.ToString;
+        Result := $'BlendEquationModeEXT[{self.val}]';
     end;
     
   end;
@@ -11786,7 +11786,7 @@
       if self.val = UInt32($8014) then Result := 'CONVOLUTION_FILTER_SCALE_EXT' else
       if self.val = UInt32($8015) then Result := 'CONVOLUTION_FILTER_BIAS' else
       if self.val = UInt32($8015) then Result := 'CONVOLUTION_FILTER_BIAS_EXT' else
-        Result := self.val.ToString;
+        Result := $'ConvolutionParameterEXT[{self.val}]';
     end;
     
   end;
@@ -11811,7 +11811,7 @@
       if self.val = UInt32($8010) then Result := 'CONVOLUTION_1D_EXT' else
       if self.val = UInt32($8011) then Result := 'CONVOLUTION_2D' else
       if self.val = UInt32($8011) then Result := 'CONVOLUTION_2D_EXT' else
-        Result := self.val.ToString;
+        Result := $'ConvolutionTargetEXT[{self.val}]';
     end;
     
   end;
@@ -11830,7 +11830,7 @@
     begin
       if self.val = UInt32($81AB) then Result := 'CULL_VERTEX_EYE_POSITION_EXT' else
       if self.val = UInt32($81AC) then Result := 'CULL_VERTEX_OBJECT_POSITION_EXT' else
-        Result := self.val.ToString;
+        Result := $'CullParameterEXT[{self.val}]';
     end;
     
   end;
@@ -11852,7 +11852,7 @@
       if self.val = UInt32($87BE) then Result := 'SCALAR_EXT' else
       if self.val = UInt32($87BF) then Result := 'VECTOR_EXT' else
       if self.val = UInt32($87C0) then Result := 'MATRIX_EXT' else
-        Result := self.val.ToString;
+        Result := $'DataTypeEXT[{self.val}]';
     end;
     
   end;
@@ -11871,7 +11871,7 @@
     begin
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'FogPointerTypeEXT[{self.val}]';
     end;
     
   end;
@@ -11932,7 +11932,7 @@
       if self.val = UInt32($802C) then Result := 'HISTOGRAM_LUMINANCE_SIZE_EXT' else
       if self.val = UInt32($802D) then Result := 'HISTOGRAM_SINK' else
       if self.val = UInt32($802D) then Result := 'HISTOGRAM_SINK_EXT' else
-        Result := self.val.ToString;
+        Result := $'GetHistogramParameterPNameEXT[{self.val}]';
     end;
     
   end;
@@ -11957,7 +11957,7 @@
       if self.val = UInt32($802F) then Result := 'MINMAX_FORMAT_EXT' else
       if self.val = UInt32($8030) then Result := 'MINMAX_SINK' else
       if self.val = UInt32($8030) then Result := 'MINMAX_SINK_EXT' else
-        Result := self.val.ToString;
+        Result := $'GetMinmaxParameterPNameEXT[{self.val}]';
     end;
     
   end;
@@ -11982,7 +11982,7 @@
       if self.val = UInt32($87E5) then Result := 'VARIANT_DATATYPE_EXT' else
       if self.val = UInt32($87E6) then Result := 'VARIANT_ARRAY_STRIDE_EXT' else
       if self.val = UInt32($87E7) then Result := 'VARIANT_ARRAY_TYPE_EXT' else
-        Result := self.val.ToString;
+        Result := $'GetVariantValueEXT[{self.val}]';
     end;
     
   end;
@@ -12007,7 +12007,7 @@
       if self.val = UInt32($8024) then Result := 'HISTOGRAM_EXT' else
       if self.val = UInt32($8025) then Result := 'PROXY_HISTOGRAM' else
       if self.val = UInt32($8025) then Result := 'PROXY_HISTOGRAM_EXT' else
-        Result := self.val.ToString;
+        Result := $'HistogramTargetEXT[{self.val}]';
     end;
     
   end;
@@ -12044,7 +12044,7 @@
       if self.val = UInt32($0205) then Result := 'NOTEQUAL' else
       if self.val = UInt32($0206) then Result := 'GEQUAL' else
       if self.val = UInt32($0207) then Result := 'ALWAYS' else
-        Result := self.val.ToString;
+        Result := $'IndexFunctionEXT[{self.val}]';
     end;
     
   end;
@@ -12060,7 +12060,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($0D13) then Result := 'INDEX_OFFSET' else
-        Result := self.val.ToString;
+        Result := $'IndexMaterialParameterEXT[{self.val}]';
     end;
     
   end;
@@ -12085,7 +12085,7 @@
       if self.val = UInt32($834A) then Result := 'FRAGMENT_NORMAL_EXT' else
       if self.val = UInt32($834C) then Result := 'FRAGMENT_COLOR_EXT' else
       if self.val = UInt32($8452) then Result := 'FRAGMENT_DEPTH_EXT' else
-        Result := self.val.ToString;
+        Result := $'LightTextureModeEXT[{self.val}]';
     end;
     
   end;
@@ -12104,7 +12104,7 @@
     begin
       if self.val = UInt32($834D) then Result := 'ATTENUATION_EXT' else
       if self.val = UInt32($834E) then Result := 'SHADOW_ATTENUATION_EXT' else
-        Result := self.val.ToString;
+        Result := $'LightTexturePNameEXT[{self.val}]';
     end;
     
   end;
@@ -12123,7 +12123,7 @@
     begin
       if self.val = UInt32($802E) then Result := 'MINMAX' else
       if self.val = UInt32($802E) then Result := 'MINMAX_EXT' else
-        Result := self.val.ToString;
+        Result := $'MinmaxTargetEXT[{self.val}]';
     end;
     
   end;
@@ -12142,7 +12142,7 @@
     begin
       if self.val = UInt32($87E0) then Result := 'NORMALIZED_RANGE_EXT' else
       if self.val = UInt32($87E1) then Result := 'FULL_RANGE_EXT' else
-        Result := self.val.ToString;
+        Result := $'ParameterRangeEXT[{self.val}]';
     end;
     
   end;
@@ -12164,7 +12164,7 @@
       if self.val = UInt32($8331) then Result := 'PIXEL_MAG_FILTER_EXT' else
       if self.val = UInt32($8332) then Result := 'PIXEL_MIN_FILTER_EXT' else
       if self.val = UInt32($8333) then Result := 'PIXEL_CUBIC_WEIGHT_EXT' else
-        Result := self.val.ToString;
+        Result := $'PixelTransformPNameEXT[{self.val}]';
     end;
     
   end;
@@ -12180,7 +12180,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8330) then Result := 'PIXEL_TRANSFORM_2D_EXT' else
-        Result := self.val.ToString;
+        Result := $'PixelTransformTargetEXT[{self.val}]';
     end;
     
   end;
@@ -12214,7 +12214,7 @@
       if self.val = UInt32($80A5) then Result := 'GL_4PASS_1_EXT' else
       if self.val = UInt32($80A6) then Result := 'GL_4PASS_2_EXT' else
       if self.val = UInt32($80A7) then Result := 'GL_4PASS_3_EXT' else
-        Result := self.val.ToString;
+        Result := $'SamplePatternEXT[{self.val}]';
     end;
     
   end;
@@ -12233,7 +12233,7 @@
     begin
       if self.val = UInt32($8012) then Result := 'SEPARABLE_2D' else
       if self.val = UInt32($8012) then Result := 'SEPARABLE_2D_EXT' else
-        Result := self.val.ToString;
+        Result := $'SeparableTargetEXT[{self.val}]';
     end;
     
   end;
@@ -12264,7 +12264,7 @@
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
       if self.val = UInt32($140A) then Result := 'DOUBLE_EXT' else
-        Result := self.val.ToString;
+        Result := $'TangentPointerTypeEXT[{self.val}]';
     end;
     
   end;
@@ -12280,7 +12280,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($85AE) then Result := 'PERTURB_EXT' else
-        Result := self.val.ToString;
+        Result := $'TextureNormalModeEXT[{self.val}]';
     end;
     
   end;
@@ -12296,7 +12296,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($87E8) then Result := 'VARIANT_ARRAY_EXT' else
-        Result := self.val.ToString;
+        Result := $'VariantCapEXT[{self.val}]';
     end;
     
   end;
@@ -12342,7 +12342,7 @@
       if self.val = UInt32($87DD) then Result := 'ZERO_EXT' else
       if self.val = UInt32($87DE) then Result := 'ONE_EXT' else
       if self.val = UInt32($87DF) then Result := 'NEGATIVE_ONE_EXT' else
-        Result := self.val.ToString;
+        Result := $'VertexShaderCoordOutEXT[{self.val}]';
     end;
     
   end;
@@ -12427,7 +12427,7 @@
       if self.val = UInt32($8797) then Result := 'OP_CROSS_PRODUCT_EXT' else
       if self.val = UInt32($8798) then Result := 'OP_MULTIPLY_MATRIX_EXT' else
       if self.val = UInt32($8799) then Result := 'OP_MOV_EXT' else
-        Result := self.val.ToString;
+        Result := $'VertexShaderOpEXT[{self.val}]';
     end;
     
   end;
@@ -12446,7 +12446,7 @@
     begin
       if self.val = UInt32($87E2) then Result := 'CURRENT_VERTEX_EXT' else
       if self.val = UInt32($87E3) then Result := 'MVP_MATRIX_EXT' else
-        Result := self.val.ToString;
+        Result := $'VertexShaderParameterEXT[{self.val}]';
     end;
     
   end;
@@ -12471,7 +12471,7 @@
       if self.val = UInt32($87C2) then Result := 'INVARIANT_EXT' else
       if self.val = UInt32($87C3) then Result := 'LOCAL_CONSTANT_EXT' else
       if self.val = UInt32($87C4) then Result := 'LOCAL_EXT' else
-        Result := self.val.ToString;
+        Result := $'VertexShaderStorageTypeEXT[{self.val}]';
     end;
     
   end;
@@ -12490,7 +12490,7 @@
     begin
       if self.val = UInt32($0000) then Result := 'FALSE' else
       if self.val = UInt32($0001) then Result := 'TRUE' else
-        Result := self.val.ToString;
+        Result := $'VertexShaderWriteMaskEXT[{self.val}]';
     end;
     
   end;
@@ -12506,7 +12506,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($1406) then Result := 'FLOAT' else
-        Result := self.val.ToString;
+        Result := $'VertexWeightPointerTypeEXT[{self.val}]';
     end;
     
   end;
@@ -12536,7 +12536,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'TextureStorageMaskAMD[{self.val}]';
     end;
     
   end;
@@ -12559,7 +12559,7 @@
     begin
       if self.val = UInt32($8A0A) then Result := 'DRAW_PIXELS_APPLE' else
       if self.val = UInt32($8A0B) then Result := 'FENCE_APPLE' else
-        Result := self.val.ToString;
+        Result := $'ObjectTypeAPPLE[{self.val}]';
     end;
     
   end;
@@ -12581,7 +12581,7 @@
       if self.val = UInt32($85B4) then Result := 'STORAGE_CLIENT_APPLE' else
       if self.val = UInt32($85BE) then Result := 'STORAGE_CACHED_APPLE' else
       if self.val = UInt32($85BF) then Result := 'STORAGE_SHARED_APPLE' else
-        Result := self.val.ToString;
+        Result := $'VertexArrayPNameAPPLE[{self.val}]';
     end;
     
   end;
@@ -12604,7 +12604,7 @@
     begin
       if self.val = UInt32($8764) then Result := 'OBJECT_BUFFER_SIZE_ATI' else
       if self.val = UInt32($8765) then Result := 'OBJECT_BUFFER_USAGE_ATI' else
-        Result := self.val.ToString;
+        Result := $'ArrayObjectPNameATI[{self.val}]';
     end;
     
   end;
@@ -12623,7 +12623,7 @@
     begin
       if self.val = UInt32($8760) then Result := 'STATIC_ATI' else
       if self.val = UInt32($8761) then Result := 'DYNAMIC_ATI' else
-        Result := self.val.ToString;
+        Result := $'ArrayObjectUsageATI[{self.val}]';
     end;
     
   end;
@@ -12645,7 +12645,7 @@
       if self.val = UInt32($1401) then Result := 'UNSIGNED_BYTE' else
       if self.val = UInt32($1403) then Result := 'UNSIGNED_SHORT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-        Result := self.val.ToString;
+        Result := $'ElementPointerTypeATI[{self.val}]';
     end;
     
   end;
@@ -12691,7 +12691,7 @@
       if self.val = UInt32($896A) then Result := 'CND_ATI' else
       if self.val = UInt32($896B) then Result := 'CND0_ATI' else
       if self.val = UInt32($896C) then Result := 'DOT2_ADD_ATI' else
-        Result := self.val.ToString;
+        Result := $'FragmentOpATI[{self.val}]';
     end;
     
   end;
@@ -12716,7 +12716,7 @@
       if self.val = UInt32($8776) then Result := 'BUMP_ROT_MATRIX_SIZE_ATI' else
       if self.val = UInt32($8777) then Result := 'BUMP_NUM_TEX_UNITS_ATI' else
       if self.val = UInt32($8778) then Result := 'BUMP_TEX_UNITS_ATI' else
-        Result := self.val.ToString;
+        Result := $'GetTexBumpParameterATI[{self.val}]';
     end;
     
   end;
@@ -12738,7 +12738,7 @@
       if self.val = UInt32($87F2) then Result := 'PN_TRIANGLES_POINT_MODE_ATI' else
       if self.val = UInt32($87F3) then Result := 'PN_TRIANGLES_NORMAL_MODE_ATI' else
       if self.val = UInt32($87F4) then Result := 'PN_TRIANGLES_TESSELATION_LEVEL_ATI' else
-        Result := self.val.ToString;
+        Result := $'PNTrianglesPNameATI[{self.val}]';
     end;
     
   end;
@@ -12757,7 +12757,7 @@
     begin
       if self.val = UInt32($8762) then Result := 'PRESERVE_ATI' else
       if self.val = UInt32($8763) then Result := 'DISCARD_ATI' else
-        Result := self.val.ToString;
+        Result := $'PreserveModeATI[{self.val}]';
     end;
     
   end;
@@ -12782,7 +12782,7 @@
       if self.val = UInt32($8977) then Result := 'SWIZZLE_STQ_ATI' else
       if self.val = UInt32($8978) then Result := 'SWIZZLE_STR_DR_ATI' else
       if self.val = UInt32($8979) then Result := 'SWIZZLE_STQ_DQ_ATI' else
-        Result := self.val.ToString;
+        Result := $'SwizzleOpATI[{self.val}]';
     end;
     
   end;
@@ -12798,7 +12798,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8775) then Result := 'BUMP_ROT_MATRIX_ATI' else
-        Result := self.val.ToString;
+        Result := $'TexBumpParameterATI[{self.val}]';
     end;
     
   end;
@@ -12835,7 +12835,7 @@
       if self.val = UInt32($8771) then Result := 'VERTEX_STREAM5_ATI' else
       if self.val = UInt32($8772) then Result := 'VERTEX_STREAM6_ATI' else
       if self.val = UInt32($8773) then Result := 'VERTEX_STREAM7_ATI' else
-        Result := self.val.ToString;
+        Result := $'VertexStreamATI[{self.val}]';
     end;
     
   end;
@@ -12858,7 +12858,7 @@
     begin
       if self.val = UInt32($0000) then Result := 'RGBA' else
       if self.val = UInt32($0001) then Result := 'COLORINDEX' else
-        Result := self.val.ToString;
+        Result := $'PixelDataTypeGDI[{self.val}]';
     end;
     
   end;
@@ -12948,7 +12948,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'PixelFormatFlagsGDI[{self.val}]';
     end;
     
   end;
@@ -12995,7 +12995,7 @@
       if self.val = UInt32($815C) then Result := 'IMAGE_MAG_FILTER_HP' else
       if self.val = UInt32($815D) then Result := 'IMAGE_MIN_FILTER_HP' else
       if self.val = UInt32($815E) then Result := 'IMAGE_CUBIC_WEIGHT_HP' else
-        Result := self.val.ToString;
+        Result := $'ImageTransformPNameHP[{self.val}]';
     end;
     
   end;
@@ -13011,7 +13011,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8161) then Result := 'IMAGE_TRANSFORM_2D_HP' else
-        Result := self.val.ToString;
+        Result := $'ImageTransformTargetHP[{self.val}]';
     end;
     
   end;
@@ -13034,7 +13034,7 @@
     begin
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'FogPointerTypeIBM[{self.val}]';
     end;
     
   end;
@@ -13059,7 +13059,7 @@
       if self.val = UInt32($1404) then Result := 'INT' else
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'SecondaryColorPointerTypeIBM[{self.val}]';
     end;
     
   end;
@@ -13093,7 +13093,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'PerfQueryCapFlagsINTEL[{self.val}]';
     end;
     
   end;
@@ -13115,7 +13115,7 @@
       if self.val = UInt32($83F9) then Result := 'PERFQUERY_DONOT_FLUSH_INTEL' else
       if self.val = UInt32($83FA) then Result := 'PERFQUERY_FLUSH_INTEL' else
       if self.val = UInt32($83FB) then Result := 'PERFQUERY_WAIT_INTEL' else
-        Result := self.val.ToString;
+        Result := $'PerfQueryDataFlagsINTEL[{self.val}]';
     end;
     
   end;
@@ -13138,7 +13138,7 @@
     begin
       if self.val = UInt32($0000) then Result := 'NONE' else
       if self.val = UInt32($8541) then Result := 'BIAS_BY_NEGATIVE_ONE_HALF_NV' else
-        Result := self.val.ToString;
+        Result := $'CombinerBiasNV[{self.val}]';
     end;
     
   end;
@@ -13160,7 +13160,7 @@
       if self.val = UInt32($1905) then Result := 'BLUE' else
       if self.val = UInt32($1906) then Result := 'ALPHA' else
       if self.val = UInt32($1907) then Result := 'RGB' else
-        Result := self.val.ToString;
+        Result := $'CombinerComponentUsageNV[{self.val}]';
     end;
     
   end;
@@ -13197,7 +13197,7 @@
       if self.val = UInt32($853B) then Result := 'HALF_BIAS_NEGATE_NV' else
       if self.val = UInt32($853C) then Result := 'SIGNED_IDENTITY_NV' else
       if self.val = UInt32($853D) then Result := 'SIGNED_NEGATE_NV' else
-        Result := self.val.ToString;
+        Result := $'CombinerMappingNV[{self.val}]';
     end;
     
   end;
@@ -13219,7 +13219,7 @@
       if self.val = UInt32($8542) then Result := 'COMBINER_INPUT_NV' else
       if self.val = UInt32($8543) then Result := 'COMBINER_MAPPING_NV' else
       if self.val = UInt32($8544) then Result := 'COMBINER_COMPONENT_USAGE_NV' else
-        Result := self.val.ToString;
+        Result := $'CombinerParameterNV[{self.val}]';
     end;
     
   end;
@@ -13238,7 +13238,7 @@
     begin
       if self.val = UInt32($1906) then Result := 'ALPHA' else
       if self.val = UInt32($1907) then Result := 'RGB' else
-        Result := self.val.ToString;
+        Result := $'CombinerPortionNV[{self.val}]';
     end;
     
   end;
@@ -13272,7 +13272,7 @@
       if self.val = UInt32($852E) then Result := 'SPARE0_NV' else
       if self.val = UInt32($852F) then Result := 'SPARE1_NV' else
       if self.val = UInt32($8530) then Result := 'DISCARD_NV' else
-        Result := self.val.ToString;
+        Result := $'CombinerRegisterNV[{self.val}]';
     end;
     
   end;
@@ -13297,7 +13297,7 @@
       if self.val = UInt32($853E) then Result := 'SCALE_BY_TWO_NV' else
       if self.val = UInt32($853F) then Result := 'SCALE_BY_FOUR_NV' else
       if self.val = UInt32($8540) then Result := 'SCALE_BY_ONE_HALF_NV' else
-        Result := self.val.ToString;
+        Result := $'CombinerScaleNV[{self.val}]';
     end;
     
   end;
@@ -13334,7 +13334,7 @@
       if self.val = UInt32($8555) then Result := 'COMBINER5_NV' else
       if self.val = UInt32($8556) then Result := 'COMBINER6_NV' else
       if self.val = UInt32($8557) then Result := 'COMBINER7_NV' else
-        Result := self.val.ToString;
+        Result := $'CombinerStageNV[{self.val}]';
     end;
     
   end;
@@ -13368,7 +13368,7 @@
       if self.val = UInt32($8527) then Result := 'VARIABLE_E_NV' else
       if self.val = UInt32($8528) then Result := 'VARIABLE_F_NV' else
       if self.val = UInt32($8529) then Result := 'VARIABLE_G_NV' else
-        Result := self.val.ToString;
+        Result := $'CombinerVariableNV[{self.val}]';
     end;
     
   end;
@@ -13384,7 +13384,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($1B02) then Result := 'FILL_NV' else
-        Result := self.val.ToString;
+        Result := $'EvalMapsModeNV[{self.val}]';
     end;
     
   end;
@@ -13403,7 +13403,7 @@
     begin
       if self.val = UInt32($86C0) then Result := 'EVAL_2D_NV' else
       if self.val = UInt32($86C1) then Result := 'EVAL_TRIANGULAR_2D_NV' else
-        Result := self.val.ToString;
+        Result := $'EvalTargetNV[{self.val}]';
     end;
     
   end;
@@ -13419,7 +13419,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($84F2) then Result := 'ALL_COMPLETED_NV' else
-        Result := self.val.ToString;
+        Result := $'FenceConditionNV[{self.val}]';
     end;
     
   end;
@@ -13438,7 +13438,7 @@
     begin
       if self.val = UInt32($84F3) then Result := 'FENCE_STATUS_NV' else
       if self.val = UInt32($84F4) then Result := 'FENCE_CONDITION_NV' else
-        Result := self.val.ToString;
+        Result := $'FenceParameterNameNV[{self.val}]';
     end;
     
   end;
@@ -13460,7 +13460,7 @@
       if self.val = UInt32($8E50) then Result := 'SAMPLE_LOCATION_ARB' else
       if self.val = UInt32($8E50) then Result := 'SAMPLE_POSITION' else
       if self.val = UInt32($9341) then Result := 'PROGRAMMABLE_SAMPLE_LOCATION_ARB' else
-        Result := self.val.ToString;
+        Result := $'GetMultisamplePNameNV[{self.val}]';
     end;
     
   end;
@@ -13479,7 +13479,7 @@
     begin
       if self.val = UInt32($86C3) then Result := 'MAP_ATTRIB_U_ORDER_NV' else
       if self.val = UInt32($86C4) then Result := 'MAP_ATTRIB_V_ORDER_NV' else
-        Result := self.val.ToString;
+        Result := $'MapAttribParameterNV[{self.val}]';
     end;
     
   end;
@@ -13495,7 +13495,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($86C2) then Result := 'MAP_TESSELLATION_NV' else
-        Result := self.val.ToString;
+        Result := $'MapParameterNV[{self.val}]';
     end;
     
   end;
@@ -13514,7 +13514,7 @@
     begin
       if self.val = UInt32($1406) then Result := 'FLOAT' else
       if self.val = UInt32($140A) then Result := 'DOUBLE' else
-        Result := self.val.ToString;
+        Result := $'MapTypeNV[{self.val}]';
     end;
     
   end;
@@ -13533,7 +13533,7 @@
     begin
       if self.val = UInt32($8866) then Result := 'PIXEL_COUNT_NV' else
       if self.val = UInt32($8867) then Result := 'PIXEL_COUNT_AVAILABLE_NV' else
-        Result := self.val.ToString;
+        Result := $'OcclusionQueryParameterNameNV[{self.val}]';
     end;
     
   end;
@@ -13552,7 +13552,7 @@
     begin
       if self.val = UInt32($8878) then Result := 'WRITE_PIXEL_DATA_RANGE_NV' else
       if self.val = UInt32($8879) then Result := 'READ_PIXEL_DATA_RANGE_NV' else
-        Result := self.val.ToString;
+        Result := $'PixelDataRangeTargetNV[{self.val}]';
     end;
     
   end;
@@ -13568,7 +13568,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8644) then Result := 'PROGRAM_PARAMETER_NV' else
-        Result := self.val.ToString;
+        Result := $'VertexAttribEnumNV[{self.val}]';
     end;
     
   end;
@@ -13597,7 +13597,7 @@
       if self.val = UInt32($1A22B) then Result := 'VERTEX_CONSISTENT_HINT_PGI' else
       if self.val = UInt32($1A22C) then Result := 'MATERIAL_SIDE_HINT_PGI' else
       if self.val = UInt32($1A22D) then Result := 'MAX_VERTEX_HINT_PGI' else
-        Result := self.val.ToString;
+        Result := $'HintTargetPGI[{self.val}]';
     end;
     
   end;
@@ -13674,7 +13674,7 @@
       if self.val = UInt32($80DE) then Result := 'COLOR_TABLE_LUMINANCE_SIZE_SGI' else
       if self.val = UInt32($80DF) then Result := 'COLOR_TABLE_INTENSITY_SIZE' else
       if self.val = UInt32($80DF) then Result := 'COLOR_TABLE_INTENSITY_SIZE_SGI' else
-        Result := self.val.ToString;
+        Result := $'ColorTableParameterPNameSGI[{self.val}]';
     end;
     
   end;
@@ -13729,7 +13729,7 @@
       if self.val = UInt32($80D4) then Result := 'PROXY_POST_CONVOLUTION_COLOR_TABLE_SGI' else
       if self.val = UInt32($80D5) then Result := 'PROXY_POST_COLOR_MATRIX_COLOR_TABLE' else
       if self.val = UInt32($80D5) then Result := 'PROXY_POST_COLOR_MATRIX_COLOR_TABLE_SGI' else
-        Result := self.val.ToString;
+        Result := $'ColorTableTargetSGI[{self.val}]';
     end;
     
   end;
@@ -13802,7 +13802,7 @@
       if self.val = UInt32($80DE) then Result := 'COLOR_TABLE_LUMINANCE_SIZE_SGI' else
       if self.val = UInt32($80DF) then Result := 'COLOR_TABLE_INTENSITY_SIZE' else
       if self.val = UInt32($80DF) then Result := 'COLOR_TABLE_INTENSITY_SIZE_SGI' else
-        Result := self.val.ToString;
+        Result := $'GetColorTableParameterPNameSGI[{self.val}]';
     end;
     
   end;
@@ -13825,7 +13825,7 @@
     begin
       if self.val = UInt32($8354) then Result := 'PIXEL_FRAGMENT_RGB_SOURCE_SGIS' else
       if self.val = UInt32($8355) then Result := 'PIXEL_FRAGMENT_ALPHA_SOURCE_SGIS' else
-        Result := self.val.ToString;
+        Result := $'PixelTexGenParameterNameSGIS[{self.val}]';
     end;
     
   end;
@@ -13880,7 +13880,7 @@
       if self.val = UInt32($80A6) then Result := 'GL_4PASS_2_SGIS' else
       if self.val = UInt32($80A7) then Result := 'GL_4PASS_3_EXT' else
       if self.val = UInt32($80A7) then Result := 'GL_4PASS_3_SGIS' else
-        Result := self.val.ToString;
+        Result := $'SamplePatternSGIS[{self.val}]';
     end;
     
   end;
@@ -13896,7 +13896,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8146) then Result := 'FILTER4_SGIS' else
-        Result := self.val.ToString;
+        Result := $'TextureFilterSGIS[{self.val}]';
     end;
     
   end;
@@ -13930,7 +13930,7 @@
         res.Length -= 1;
         Result := res.ToString;
       end else
-        Result := self.val.ToString;
+        Result := $'FfdMaskSGIX[{self.val}]';
     end;
     
   end;
@@ -13949,7 +13949,7 @@
     begin
       if self.val = UInt32($8194) then Result := 'GEOMETRY_DEFORMATION_SGIX' else
       if self.val = UInt32($8195) then Result := 'TEXTURE_DEFORMATION_SGIX' else
-        Result := self.val.ToString;
+        Result := $'FfdTargetSGIX[{self.val}]';
     end;
     
   end;
@@ -13974,7 +13974,7 @@
       if self.val = UInt32($8409) then Result := 'FRAGMENT_LIGHT_MODEL_TWO_SIDE_SGIX' else
       if self.val = UInt32($840A) then Result := 'FRAGMENT_LIGHT_MODEL_AMBIENT_SGIX' else
       if self.val = UInt32($840B) then Result := 'FRAGMENT_LIGHT_MODEL_NORMAL_INTERPOLATION_SGIX' else
-        Result := self.val.ToString;
+        Result := $'FragmentLightModelParameterSGIX[{self.val}]';
     end;
     
   end;
@@ -14011,7 +14011,7 @@
       if self.val = UInt32($8411) then Result := 'FRAGMENT_LIGHT5_SGIX' else
       if self.val = UInt32($8412) then Result := 'FRAGMENT_LIGHT6_SGIX' else
       if self.val = UInt32($8413) then Result := 'FRAGMENT_LIGHT7_SGIX' else
-        Result := self.val.ToString;
+        Result := $'FragmentLightNameSGIX[{self.val}]';
     end;
     
   end;
@@ -14054,7 +14054,7 @@
       if self.val = UInt32($1207) then Result := 'CONSTANT_ATTENUATION' else
       if self.val = UInt32($1208) then Result := 'LINEAR_ATTENUATION' else
       if self.val = UInt32($1209) then Result := 'QUADRATIC_ATTENUATION' else
-        Result := self.val.ToString;
+        Result := $'FragmentLightParameterSGIX[{self.val}]';
     end;
     
   end;
@@ -14070,7 +14070,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8407) then Result := 'LIGHT_ENV_MODE_SGIX' else
-        Result := self.val.ToString;
+        Result := $'LightEnvParameterSGIX[{self.val}]';
     end;
     
   end;
@@ -14098,7 +14098,7 @@
       if self.val = UInt32($8186) then Result := 'PIXEL_TEX_GEN_Q_FLOOR_SGIX' else
       if self.val = UInt32($8189) then Result := 'PIXEL_TEX_GEN_ALPHA_LS_SGIX' else
       if self.val = UInt32($818A) then Result := 'PIXEL_TEX_GEN_ALPHA_MS_SGIX' else
-        Result := self.val.ToString;
+        Result := $'PixelTexGenModeSGIX[{self.val}]';
     end;
     
   end;
@@ -14114,7 +14114,7 @@
     public function ToString: string; override;
     begin
       if self.val = UInt32($8149) then Result := 'SPRITE_MODE_SGIX' else
-        Result := self.val.ToString;
+        Result := $'SpriteParameterNameSGIX[{self.val}]';
     end;
     
   end;
@@ -14140,7 +14140,7 @@
       if self.val = UInt32($1401) then Result := 'UNSIGNED_BYTE' else
       if self.val = UInt32($1403) then Result := 'UNSIGNED_SHORT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
-        Result := self.val.ToString;
+        Result := $'ReplacementCodeTypeSUN[{self.val}]';
     end;
     
   end;

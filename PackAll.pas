@@ -94,21 +94,21 @@ end;
 
 function LLModuleTask(mn: string) := not stages.Contains(mn) ? EmptyTask :
   TitleTask(mn) +
-  ExecTask('Packing\Template\Pack Template.pas', $'Template[{mn}]', $'fname=Packing\Template\{mn}\0.template', 'GenPas') +
-  ProcTask(()->WriteAllText($'Modules\{mn}.pas', ReadAllText($'Packing\Template\{mn}\0.pas').Replace(#10,#13#10))) +
-  ProcTask(()->System.IO.File.Delete($'Packing\Template\{mn}\0.pas')) +
-  ProcTask(()->System.IO.Directory.CreateDirectory('Modules.Packed')) +
+  ExecTask('Packing\Template\Pack Template.pas', $'Template[{mn}]', $'nick={mn}', $'"inp_fname=Modules\Template\{mn}.pas"', $'"otp_fname=Modules\{mn}.pas"') +
+  ProcTask(()->Directory.CreateDirectory('Modules.Packed')) +
   ProcTask(()->System.IO.File.Copy($'Modules\{mn}.pas', $'Modules.Packed\{mn}.pas', true)) +
   SetEvTask(module_packed_evs[mn])
 ;
 
 function HLModuleTask(mn: string) := not stages.Contains(mn) ? EmptyTask :
   TitleTask(mn) +
-  ProcTask(()->System.IO.Directory.CreateDirectory('Modules.Packed\Internal')) +
-  ProcTask(()->System.IO.File.Copy($'Modules\{mn}.pas', $'Modules.Packed\{mn}.pas', true)) +
-  ProcTask(()->System.IO.File.Copy($'Modules\Internal\{mn}Base.pas', $'Modules.Packed\Internal\{mn}Base.pas', true)) +
-  ExecTask('Packing\Doc\PackComments.pas', $'Comments[{mn}]', $'fname=Modules.Packed\{mn}.pas') +
-  SetEvTask(module_packed_evs[mn])
+  ProcTask(()->Directory.CreateDirectory('Modules.Packed\Internal')) +
+  
+  ExecTask('Packing\Template\Pack Template.pas', $'Template[{mn}]',     $'nick={mn}', $'"inp_fname=Modules\{mn}.pas"',              $'"otp_fname=Modules.Packed\{mn}.pas"') *
+  ExecTask('Packing\Template\Pack Template.pas', $'Template[{mn}Base]', $'nick={mn}', $'"inp_fname=Modules\Internal\{mn}Base.pas"', $'"otp_fname=Modules.Packed\Internal\{mn}Base.pas"')
+  
+  + ExecTask('Packing\Doc\PackComments.pas', $'Comments[{mn}]', $'nick={mn}', $'"fname=Modules.Packed\{mn}.pas"', $'"fname=Modules.Packed\Internal\{mn}Base.pas"')
+  + SetEvTask(module_packed_evs[mn])
 ;
 
 {$endregion Shortcuts}
@@ -171,11 +171,7 @@ begin
         end;
         
 //        if c<>0 then Otp($'Cleared {c} files');
-      end) +
-      ProcTask(()->
-        if System.IO.Directory.Exists('Modules.Packed') then
-          System.IO.Directory.Delete('Modules.Packed', true)
-      )
+      end)
     ;
     
     {$endregion MiscClear}

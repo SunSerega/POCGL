@@ -1,0 +1,61 @@
+﻿  
+  
+  
+  ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4>, TRes>)
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected q3: CommandQueue<TInp3>;
+    protected q4: CommandQueue<TInp4>;
+    protected f: (TInp1, TInp2, TInp3, TInp4, Context)->TRes;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; f: (TInp1, TInp2, TInp3, TInp4, Context)->TRes);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.q3 := q3;
+      self.q4 := q4;
+      self.f := f;
+    end;
+    private constructor := raise new NotSupportedException;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      self.q1.RegisterWaitables(tsk, prev_hubs);
+      self.q2.RegisterWaitables(tsk, prev_hubs);
+      self.q3.RegisterWaitables(tsk, prev_hubs);
+      self.q4.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, c);
+    
+  end;
+  
+  ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes>)
+    
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
+    begin
+      var qr1 := q1.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr1.ev;
+      var qr2 := q2.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr2.ev;
+      var qr3 := q3.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr3.ev;
+      var qr4 := q4.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr4.ev;
+      Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes()));
+      Result.ev := prev_ev;
+    end;
+    
+  end;
+  ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes>)
+    
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
+    begin
+      var qr1 := q1.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
+      var qr2 := q2.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
+      var qr3 := q3.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
+      var qr4 := q4.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
+      Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes()));
+      Result.ev := EventList.Combine(new EventList[](qr1.ev, qr2.ev, qr3.ev, qr4.ev), tsk, c.Native, main_dvc, cq);
+    end;
+    
+  end;
+  
+  
+  

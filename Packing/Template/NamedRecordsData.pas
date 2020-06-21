@@ -4,9 +4,9 @@ uses MiscUtils in '..\..\Utils\MiscUtils.pas';
 
 begin
   try
-    var sw := new System.IO.StreamWriter(GetFullPath('..\NameRecords.template',GetEXEFileName), false,enc);
+    var sw := new System.IO.StreamWriter(GetFullPathRTE('NameRecords.template'), false, enc);
     
-    foreach var l in ReadLines(GetFullPath('..\MiscInput\NameRecords.dat',GetEXEFileName)) do
+    foreach var l in ReadLines(GetFullPathRTE('MiscInput\NameRecords.dat')) do
       if not l.Contains('=') then
         sw.WriteLine('  '+l) else
       begin

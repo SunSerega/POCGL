@@ -1,0 +1,8 @@
+
+
+
+# CommandQueueProperties
+!add_enum
+NONE	= 0
+
+

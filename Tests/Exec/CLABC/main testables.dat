@@ -31,6 +31,8 @@
 * * - NonContext
 * * - Context
 
+- CLTask.Abort
+
 
 
 В будущем:

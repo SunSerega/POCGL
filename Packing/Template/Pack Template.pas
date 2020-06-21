@@ -1,149 +1,239 @@
 ﻿uses System.Threading;
-//uses PackingUtils;
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses System.IO;
+{$string_nullbased+}
+
+uses MiscUtils in '..\..\Utils\MiscUtils';
 
 type
-  TextBlock = abstract class
-    str: string;
+  FileBlock = abstract class
     
-    function Finish: string; virtual := str;
+    procedure Finish(into: AsyncQueue<string>); abstract;
     
   end;
   
-  StrBlock = sealed class(TextBlock)
+  StrBlock = sealed class(FileBlock)
+    str: string;
     
     constructor(str: string) :=
     self.str := str;
     
+    procedure Finish(into: AsyncQueue<string>); override :=
+    into.Enq(str);
+    
   end;
   
-  FuncBlock = sealed class(TextBlock)
+  WaitBlock = sealed class(FileBlock)
     p_otp := new ThrProcOtp;
+    f: AsyncQueue<string>->();
     
-    constructor(p: SecThrProc; f: ()->string);
+    constructor(p: SecThrProc; f: AsyncQueue<string>->());
     begin
-      p := p + ProcTask(()->
-      begin
-        self.str := f();
-      end);
       p.StartExec;
       self.p_otp := p.own_otp;
+      self.f := f;
     end;
     
-    function Finish: string; override;
+    procedure Finish(into: AsyncQueue<string>); override;
     begin
-      foreach var l in p_otp.Enmr do Otp(l);
-      Result := str;
+      foreach var l in p_otp do Otp(l);
+      f(into);
     end;
     
   end;
   
-var prev_commands := new Dictionary<string, ManualResetEvent>;
-function RegisterCommand(name: string; work: ()->SecThrProc): SecThrProc;
-begin
-  var ev: ManualResetEvent;
-  
-  lock prev_commands do
-    if prev_commands.TryGetValue(name, ev) then
-      Result := EventTask(ev) else
+  TemplateUtils = static class
+    
+    static prev_commands := new Dictionary<string, ManualResetEvent>;
+    static function RegisterCommand(name: string; work: ()->SecThrProc): SecThrProc;
     begin
-      ev := new ManualResetEvent(false);
-      prev_commands.Add(name, ev);
-      Result := work + SetEvTask(ev);
-    end;
-  
-end;
-
-function ProcessCommand(comm: string; path: string): FuncBlock;
-begin
-  if comm='' then exit;
-  
-  var tsk := EmptyTask;
-  
-  var sind := comm.IndexOf('!');
-  if sind <> -1 then
-  begin
-    var fname := comm.Substring(sind+1);
-    tsk += RegisterCommand(fname, ()->ExecTask(GetFullPath(fname, path), $'TemplateCommand[{fname}]') );
-    comm := comm.Remove(sind);
-  end;
-  
-  var templ_fname := GetFullPath(comm+'.template', path);
-  tsk += RegisterCommand(templ_fname, ()->ExecTask(GetEXEFileName, $'Template[{comm}]', $'"fname={templ_fname}"', $'"otp_dir={path}"') );
-  
-  if comm.Contains('\') then
-    comm := comm.Substring(comm.LastIndexOf('\')+1);
-  var tr_fname := $'{path}\{comm}.templateres';
-  
-  Result := new FuncBlock(tsk, ()->
-  begin
-    Result := ReadAllText(tr_fname);
-    System.IO.File.Delete(tr_fname);
-  end);
-  
-end;
-
-begin
-  try
-    var inp_fname := GetFullPath(
-      is_secondary_proc ?
-      CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault.SubString('fname='.Length) :
-      'Packing\Template\OpenCL\0.template'
-    );
-    var curr_dir := System.IO.Path.GetDirectoryName(inp_fname);
-    
-    var otp_dir := CommandLineArgs.Where(arg->arg.StartsWith('otp_dir=')).SingleOrDefault;
-    if otp_dir<>nil then
-      otp_dir := GetFullPath(otp_dir.SubString('otp_dir='.Length));
-    
-    var blocks := new List<TextBlock>;
-    
-    {$region Read}
-    begin
-      var res := new StringBuilder;
+      var ev: ManualResetEvent;
       
-      foreach var l in ReadAllText(inp_fname).Remove(#13).Trim(#10' '.ToArray).Split(#10) do
-      begin
-        var ind1 := l.IndexOf('%');
-        
-        if ind1<>-1 then
+//      Writeln(name);
+      
+      lock prev_commands do
+        if prev_commands.TryGetValue(name, ev) then
         begin
-          res += l.Remove(ind1);
-          blocks.Add( new StrBlock(res.ToString) );
-          res.Clear;
-          
-          ind1 += 1;
-          var ind2 := l.IndexOf('%', ind1);
-          var comm := l.Substring(ind1,ind2-ind1);
-          blocks.Add( ProcessCommand(comm, curr_dir) );
-          
-          res += l.Remove(0,ind2+1);
+//          Writeln('wait');
+          Result := EventTask(ev);
         end else
-          res += l;
+        begin
+//          Writeln('work');
+          ev := new ManualResetEvent(false);
+          prev_commands.Add(name, ev);
+          Result := work + SetEvTask(ev);
+        end;
+      
+//      Writeln('='*50);
+      
+    end;
+    
+    static function ProcessCommand(template_fname, generator_fname: string; generator_par: array of string): sequence of FileBlock;
+    begin
+      var tsk := EmptyTask;
+      
+      if generator_fname<>nil then
+      begin
         
-        res += #10;
+        if Path.GetExtension(generator_fname) = '.pas' then
+        begin
+          tsk := RegisterCommand(generator_fname, ()->tsk+CompTask(generator_fname));
+          generator_fname := Path.ChangeExtension(generator_fname, '.exe');
+        end;
+        
+        tsk := RegisterCommand(Concat(generator_fname,'!',generator_par.JoinToString('!')), ()->tsk+ExecTask(generator_fname, $'TemplateCommand[{GetRelativePathRTE(generator_fname)}]', generator_par));
       end;
       
-      res.Length -= 1; // -= #10
-      blocks.Add( new StrBlock(res.ToString) );
+      //ToDo #
+      var template_nick := $'Template[{GetRelativePathRTE(Path.ChangeExtension(template_fname, nil))}]';
+      yield new WaitBlock(tsk, otp->
+      begin
+        
+        var p := ProcessFile(Path.GetDirectoryName(template_fname), template_fname, otp);
+        p.StartExec;
+        
+        foreach var l in p.own_otp do
+          MiscUtils.Otp(l.ConvStr(s->$'{template_nick}: {s}'));
+        
+      end);
+      
     end;
-    {$endregion Read}
     
-    var otp_fname := inp_fname.Remove(inp_fname.LastIndexOf('.')) + (CommandLineArgs.Contains('GenPas') ? '.pas' : '.templateres');
-    if otp_dir<>nil then
-      otp_fname := otp_dir + otp_fname.Substring(otp_fname.LastIndexOf('\'));
-    
-    {$region Write}
+    static function ParseCommand(comm: string; curr_path: string): sequence of FileBlock;
     begin
-      var sw := new System.IO.StreamWriter(System.IO.File.Create(otp_fname));
+      var wds := comm.Split('!');
+      if wds.Length=0 then exit;
+      if string.IsNullOrWhiteSpace(wds[0]) then exit;
       
-      foreach var bl in blocks do
-        if bl<>nil then
-          sw.Write(bl.Finish);
+      Result := ProcessCommand(
+        GetFullPath(wds[0]+'.template', curr_path),
+        (wds.Length<2) or string.IsNullOrWhiteSpace(wds[1]) ? nil : GetFullPath(wds[1], curr_path),
+        wds?[2:]
+      );
       
-      sw.Close;
     end;
-    {$endregion Write}
+    
+    static function ProcessLine(l: string; curr_path: string): sequence of FileBlock;
+    begin
+      var ind := 0;
+      
+      while true do
+      begin
+        
+        var ind1 := l.IndexOf('{%', ind);
+        if ind1=-1 then break;
+        
+        var ind2 := l.IndexOf('%}', ind1);
+        if ind2=-1 then break;
+        
+        yield new StrBlock(l.Substring(ind, ind1-ind));
+        ind1 += '{%'.Length;
+        
+        var sq := ParseCommand(l.Substring(ind1,ind2-ind1), curr_path);
+        if sq<>nil then yield sequence sq;
+        
+        ind := ind2 + '%}'.Length;
+      end;
+      
+      yield new StrBlock(l.Remove(0,ind));
+      
+    end;
+    
+    static function ProcessFile(curr_path: string; inp_fname: string; otp: AsyncQueue<string>): SecThrProc;
+    begin
+      var bls := new AsyncQueue<FileBlock>;
+      var inp := new AsyncQueue<string>;
+      
+      Result := (
+        ProcTask(()->
+        begin
+//          MiscUtils.Otp($'Reading');
+          var text := ReadAllText(inp_fname, enc).Trim.Remove(#13);
+          
+          var ind1 := 0;
+          while true do
+          begin
+            var ind2 := text.IndexOf(#10, ind1);
+            if ind2=-1 then break;
+            inp.Enq(text.SubString(ind1, ind2-ind1)+#13#10);
+            ind1 := ind2+1;
+          end;
+          inp.Enq(text.Remove(0, ind1));
+          
+          inp.Finish;
+//          MiscUtils.Otp($'Done reading');
+        end)
+      *
+        ProcTask(()->
+        begin
+          foreach var l in inp do
+            bls.EnqRange(ProcessLine(l, curr_path));
+          bls.Finish;
+//          MiscUtils.Otp($'Done parsing');
+        end)
+      *
+        ProcTask(()->
+        begin
+          foreach var bl in bls do
+            bl.Finish(otp);
+//          MiscUtils.Otp($'Done processing');
+        end)
+      );
+      
+    end;
+    static function ProcessingFile(curr_path: string; inp_fname, otp_fname: string): SecThrProc;
+    begin
+      var otp := new AsyncQueue<string>;
+      
+      Result := (
+        (
+          ProcessFile(curr_path, inp_fname, otp) +
+          ProcTask(otp.Finish)
+        )
+      *
+        ProcTask(()->
+        begin
+          var sw := new StreamWriter(otp_fname, false, enc);
+          foreach var s in otp do
+            sw.Write(s);
+          sw.Close;
+        end)
+      );
+      
+    end;
+    
+  end;
+  
+begin
+  try
+    var inp_fname := GetArgs('inp_fname').SingleOrDefault;
+    var otp_fname := GetArgs('otp_fname').SingleOrDefault;
+    var nick := GetArgs('nick').SingleOrDefault;
+    
+    if not is_secondary_proc and string.IsNullOrWhiteSpace(inp_fname) and string.IsNullOrWhiteSpace(otp_fname) and string.IsNullOrWhiteSpace(nick) then
+    begin
+      
+//      inp_fname := 'Modules\Template\OpenGL.pas';
+//      otp_fname := 'Modules\OpenGL.pas';
+//      nick := 'OpenGL';
+      
+//      inp_fname := 'Modules\Template\OpenCL.pas';
+//      otp_fname := 'Modules\OpenCL.pas';
+//      nick := 'OpenCL';
+      
+//      inp_fname := 'Modules\Internal\OpenCLABCBase.pas';
+//      otp_fname := 'Modules.Packed\Internal\OpenCLABCBase.pas';
+//      nick := 'OpenCLABC';
+      
+      inp_fname := 'Modules\OpenCLABC.pas';
+      otp_fname := 'Modules.Packed\OpenCLABC.pas';
+      nick := 'OpenCLABC';
+      
+    end;
+    
+    TemplateUtils.ProcessingFile(
+      GetFullPath(nick, Path.GetDirectoryName(GetEXEFileName)),
+      inp_fname, otp_fname
+    ).SyncExec;
     
   except
     on e: Exception do ErrOtp(e);

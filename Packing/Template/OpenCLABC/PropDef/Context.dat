@@ -1,0 +1,8 @@
+
+
+
+# REFERENCE_COUNT:	UInt32
+# NUM_DEVICES:		UInt32
+# PROPERTIES:		array of ContextProperties
+
+

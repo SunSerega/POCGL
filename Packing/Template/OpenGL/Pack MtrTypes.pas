@@ -1,4 +1,5 @@
 ﻿uses PackingUtils in '..\PackingUtils.pas';
+uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
 uses MtrBase;
 
 procedure AddMtrType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
@@ -523,8 +524,7 @@ begin
 end;
 
 begin
-  RunInSTA(()->
-  begin
+  try
     var res := new StringBuilder;
     
     var t_table: sequence of t_descr :=
@@ -548,12 +548,8 @@ begin
     res += '  {$endregion Mtr}'#10;
     res += '  ';
     
-    if is_secondary_proc then
-      WriteAllText(GetFullPath('..\MtrTypes.template', GetEXEFileName), res.ToString, new System.Text.UTF8Encoding(true)) else
-    begin
-      System.Windows.Forms.Clipboard.SetText(res.ToString.Replace(#10,#13#10));
-      System.Console.Beep;
-    end;
-    
-  end);
+    WriteAllText(GetFullPathRTE('MtrTypes.template'), res.ToString, enc);
+  except
+    on e: Exception do ErrOtp(e);
+  end;
 end.

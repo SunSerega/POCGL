@@ -1,8 +1,9 @@
 ﻿uses CommentableData;
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses MiscUtils  in '..\..\Utils\MiscUtils';
+uses Fixers     in '..\..\Utils\Fixers';
 
 type
-  CommentData = class
+  CommentData = sealed class
     private used: boolean;
     private source: string;
     private comment: string;
@@ -14,49 +15,38 @@ type
     end;
     
     public static all := new Dictionary<string, CommentData>;
-    public static procedure Load(dir: string) :=
-    foreach var fname in System.IO.Directory.EnumerateFiles(dir) do
+    public static procedure LoadFile(fname: string) :=
+    foreach var bl in FixerUtils.ReadBlocks(fname, true) do
+      if all.ContainsKey(bl[0]) then
+        Otp($'ERROR: key %{bl[0]}% found in "{all[bl[0]].source}" and "{GetRelativePathRTE(fname)}"') else
+        all[bl[0]] := new CommentData(GetRelativePathRTE(fname), bl[1].JoinToString(#10).Trim);
+    public static procedure LoadAll(nick: string) :=
+    foreach var fname in System.IO.Directory.EnumerateFiles(GetFullPathRTE(nick), '*.dat', System.IO.SearchOption.AllDirectories) do
+      LoadFile(fname);
+    
+    private static function GetPrintableData(key: string): string;
     begin
-      var sb: StringBuilder := nil;
-      var cns := new List<string>;
-      
-      foreach var l in ReadLines(fname, new System.Text.UTF8Encoding(true)) do
-        if l.StartsWith('#') then
-        begin
-          
-          if sb<>nil then
-          begin
-            sb.Length-=1;
-            var comment := sb.ToString.TrimEnd(#10,#13);
-//            Write($'>>>{comment}<<<');
-            foreach var cn in cns do
-              if all.ContainsKey(cn) then
-                Otp($'ERROR: key %{cn}% found in "{all[cn].source}" and "{fname}"') else
-                all.Add(cn, new CommentData(fname, comment));
-            cns.Clear;
-            sb := nil;
-          end;
-          
-          cns.Add(l.Substring(1).Trim);
-        end else
-        begin
-          if sb=nil then sb := new StringBuilder;
-          sb.AppendLine(l);
-        end;
-      
-      if (sb<>nil) and (cns.Count<>0) then
+      var val := all[key];
+      Result := $'Comment [{key}] from [{val.source}]';
+    end;
+    
+    public static function ApplyToKey(key: string; prev: List<string> := nil): string;
+    begin
+      var cd: CommentData;
+      if all.TryGetValue(key, cd) then
       begin
-        sb.Length-=1;
-        var comment := sb.ToString.TrimEnd(#10,#13);
-        foreach var cn in cns do
-          all.Add(cn, new CommentData(fname, comment));
-      end;
-      
+        cd.used := true;
+        Result := Apply(cd.comment, prev);
+      end else
+        Otp($'ERROR: key %{key}% not found!');
     end;
     
     static function Apply(l: string; prev: List<string> := nil): string;
     begin
-      if prev=nil then prev := new List<string>;
+      if prev=nil then
+        prev := new List<string> else
+      if l in prev then
+        raise new MessageException($'Comment loop chain:{#10}{prev.Select(GetPrintableData).JoinToString(#10)}]');
       prev += l;
       var res := new StringBuilder;
       
@@ -71,14 +61,8 @@ type
         
         res.Append(l, last_ind, ind1-last_ind);
         ind1 += 1;
-        var key := l.Substring(ind1,ind2-ind1);
-        var val: CommentData;
-        if all.TryGetValue(key, val) then
-        begin
-          val.used := true;
-          res.Append( Apply(all[key].comment, prev.ToList) ); //ToDo ошибки prev
-        end else
-          Otp($'ERROR: key %{key}% not found!');
+        
+        res += ApplyToKey(l.Substring(ind1,ind2-ind1));
         
         last_ind := ind2+1;
         if last_ind=l.Length then break;
@@ -92,43 +76,89 @@ type
   
 begin
   try
-    var fname := is_secondary_proc ? CommandLineArgs.Where(arg->arg.StartsWith('fname=')).SingleOrDefault.SubString('fname='.Length) : 'Modules.Packed\OpenCLABC.pas';
-    var mn := System.IO.Path.GetFileNameWithoutExtension(fname);
+    var nick := GetArgs('nick').SingleOrDefault;
+    var fls := GetArgs('fname').ToArray;
     
-    var res := System.IO.File.CreateText($'{fname}.docres');
-    var last_line: string := nil;
+    if not is_secondary_proc and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) then
+    begin
+      
+      nick := 'OpenCLABC';
+      fls := Arr(
+        'Modules.Packed\OpenCLABC.pas',
+        'Modules.Packed\Internal\OpenCLABCBase.pas'
+      );
+      
+    end;
     
-    var skiped := System.IO.File.CreateText(GetFullPathRTE($'{mn}.skiped.log'));
+    CommentData.LoadAll(nick);
     
-    CommentData.Load(GetFullPathRTE(mn));
-    CommentableData.FindCommentable(ReadLines(fname),
-      l->
+    var all_skipped := new Dictionary<string, AsyncQueue<CommentableBase>>;
+    foreach var fname in fls do all_skipped[fname] := new AsyncQueue<CommentableBase>;
+    
+    (
+      ProcTask(()->
       begin
-        if last_line<>nil then res.WriteLine(last_line);
-        last_line := CommentData.Apply(l);
-        Result := not l.TrimStart(' ').StartsWith('///');
-      end,
-      c->
-      begin
-        if CommentData.all.ContainsKey(c) then
-        begin
-          var spaces := last_line.TakeWhile(ch->ch=' ').Count;
-          foreach var l in CommentData.Apply($'%{c}%').Remove(#13).Split(#10) do
-          begin
-            res.Write(' ',spaces);
-            res.Write('///');
-            res.WriteLine(l);
+        var skipped_types := new HashSet<string>;
+        var skipped := new System.IO.StreamWriter(GetFullPathRTE($'{nick}.skipped.log'), false, enc);
+        
+        foreach var q in all_skipped.Values do
+          foreach var c in q do
+          match c with
+            
+            CommentableType(var ct):
+            if skipped_types.Add(ct.FullName) then
+              skipped.WriteLine(ct.FullName);
+            
+            CommentableTypeMember(var cm):
+            if not skipped_types.Contains(cm.Type.FullName) then
+              skipped.WriteLine(cm.FullName);
+            
           end;
-        end else
-          skiped.WriteLine(c);
-      end
-    );
-    res.Write(last_line);
-    
-    res.Close;
-    skiped.Close;
-    System.IO.File.Delete(fname);
-    System.IO.File.Move($'{fname}.docres', fname);
+        
+        skipped.Close;
+      end)
+    *
+      fls.Select(fname->ProcTask(()->
+      begin
+        var res := new System.IO.StreamWriter($'{fname}.docres', false, enc);
+        var skipped := all_skipped[fname];
+        
+        var last_line: string := nil;
+        foreach var c in CommentableBase.FindAllCommentalbes(ReadLines(fname), l->
+        begin
+          if last_line<>nil then res.WriteLine(last_line);
+          last_line := CommentData.Apply(l);
+          Result := true; //not l.TrimStart(' ').StartsWith('///');
+        end) do
+        begin
+          var key := c.FullName;
+          
+          if CommentData.all.ContainsKey(key) then
+          begin
+            var spaces := last_line.TakeWhile(ch->ch=' ').Count;
+            foreach var l in CommentData.ApplyToKey(key).Split(#10) do
+            begin
+              res.Write(' ' * spaces);
+              res.Write('///');
+              res.WriteLine(l);
+            end;
+          end else
+            skipped.Enq(c);
+          
+        end;
+        if last_line<>nil then res.Write(last_line);
+        
+        res.Close;
+        skipped.Finish;
+        
+        if is_secondary_proc then
+        begin
+          System.IO.File.Delete(fname);
+          System.IO.File.Move($'{fname}.docres', fname);
+        end;
+        
+      end)).CombineAsyncTask
+    ).SyncExec;
     
     foreach var key in CommentData.all.Keys do
       if not CommentData.all[key].used then

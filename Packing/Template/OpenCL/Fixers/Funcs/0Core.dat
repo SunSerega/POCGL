@@ -7,7 +7,7 @@
 
 # clGetPlatformInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var UInt64  +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +IntPtr +var UInt64 +pointer	| -array of UIntPtr	|
 
 # clGetDeviceIDs
 !possible_par_types
@@ -47,11 +47,11 @@
 !possible_par_types
  *	| *	| *	| *	| -IntPtr +var cl_buffer_region +IntPtr	| *	|
 
-# clEnqueue[Read,Write]Buffer
+# clEnqueue[%Read,Write%]Buffer
 !possible_par_types
  *	| *	| *	| *	| *	| *	| -IntPtr +array of T +var T +IntPtr	| *	| *	| -array of cl_event	|
 
-# clEnqueue[Read,Write]BufferRect
+# clEnqueue[%Read,Write%]BufferRect
 !possible_par_types
  *	| *	| *	| *	| *				| *				| *				| *	| *	| *	| *	| -IntPtr +var T +IntPtr	| *	| -array of cl_event	| -array of cl_event	|
 !limit_ovrs
@@ -80,7 +80,7 @@
 !possible_par_types
  *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| -IntPtr +array of T +var T +IntPtr	| *	|
 
-# clEnqueue[Read,Write]Image
+# clEnqueue[%Read,Write%]Image
 !possible_par_types
  *	| *	| *	| *	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| -IntPtr +var T +IntPtr	| *	| -array of cl_event	| -array of cl_event	|
 

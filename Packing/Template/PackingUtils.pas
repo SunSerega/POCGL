@@ -1,39 +1,26 @@
 ﻿unit PackingUtils;
 
-uses System.Diagnostics;
-uses System.Threading;
-uses System.Threading.Tasks;
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+interface
 
-{$region MiscUtils calls}
+function pas_keywords: HashSet<string>;
 
-procedure Otp(line: string) :=
-MiscUtils.Otp(line);
+implementation
 
-procedure ErrOtp(e: Exception) :=
-MiscUtils.ErrOtp(e);
+uses MiscUtils in '..\..\Utils\MiscUtils';
 
-function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string :=
-MiscUtils.GetFullPath(fname, base_folder);
+var _pas_keywords: HashSet<string>;
+function pas_keywords := _pas_keywords;
 
-function is_secondary_proc := MiscUtils.is_secondary_proc;
-
-{$endregion MiscUtils calls}
-
-procedure RunInSTA(a: Action0);
+procedure Init;
 begin
-  try
-    var thr := new Thread(()->
-    try
-      a;
-    except
-      on e: Exception do ErrOtp(e);
-    end);
-    thr.ApartmentState := ApartmentState.STA;
-    thr.Start;
-  except
-    on e: Exception do ErrOtp(e);
-  end;
+  
+  _pas_keywords := ReadLines('Packing\Template\Utils\pas_keywords.dat')
+  .Where(l->not string.IsNullOrWhiteSpace(l))
+  .Select(l->l.Trim.ToLower)
+  .ToHashSet;
+  
 end;
 
+begin
+  Init;
 end.

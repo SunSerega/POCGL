@@ -738,6 +738,8 @@
  ErrorCode	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetPlatformInfo
+ ErrorCode	| cl_platform_id	| PlatformInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_platform_id	| PlatformInfo	| UIntPtr	| IntPtr	| IntPtr	|
  ErrorCode	| cl_platform_id	| PlatformInfo	| UIntPtr	| var UInt64	| var UIntPtr	|
  ErrorCode	| cl_platform_id	| PlatformInfo	| UIntPtr	| var UInt64	| IntPtr	|
  ErrorCode	| cl_platform_id	| PlatformInfo	| UIntPtr	| pointer	| var UIntPtr	|

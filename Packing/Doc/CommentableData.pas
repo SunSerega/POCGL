@@ -3,34 +3,180 @@
 
 interface
 
-procedure FindCommentable(lns: sequence of string; on_line: string->boolean; on_commentable: string->());
-
+type
+  CommentableBase = abstract class
+    private _name: string;
+    public property Name: string read _name;
+    
+    public constructor(name: string) := self._name := name;
+    private constructor := raise new System.NotSupportedException;
+    
+    public property FullName: string read; abstract;
+    
+    public static function FindAllCommentalbes(lns: sequence of string; on_line: string->boolean): sequence of CommentableBase;
+    
+  end;
+  
+  CommentableType = sealed class(CommentableBase)
+    private re_def: string;
+    private is_sealed: boolean;
+    public property ReDef: string read re_def;
+    
+    public constructor(name: string; re_def: string; is_sealed: boolean);
+    begin
+      inherited Create(name);
+      self.re_def := re_def;
+      self.is_sealed := is_sealed;
+    end;
+    
+    public property FullName: string read self.Name; override;
+    
+    public static function Parse(l: string): CommentableType;
+    
+  end;
+  CommentableTypeMember = abstract class(CommentableBase)
+    private t: CommentableType;
+    public property &Type: CommentableType read t;
+    
+    private function GetFullName: string;
+    begin
+      var res := new StringBuilder;
+      
+      if self.Type<>nil then
+      begin
+        res += self.Type.FullName;
+        res += '.';
+      end;
+      
+      if self.Name<>nil then
+        res += self.Name;
+      
+      Result := res.ToString;
+    end;
+    public property FullName: string read GetFullName; override;
+    
+    public constructor(t: CommentableType; name: string);
+    begin
+      inherited Create(name);
+      self.t := t;
+    end;
+    
+  end;
+  
+  CommentableMethod = class(CommentableTypeMember)
+    private _args: array of string;
+    public property Args: array of string read _args;
+    
+    public constructor(t: CommentableType; name: string; args: array of string);
+    begin
+      inherited Create(t, name);
+      self._args := args;
+    end;
+    
+    private function GetFullName: string;
+    begin
+      var res := new StringBuilder(inherited GetFullName);
+      
+      if self.Args<>nil then
+      begin
+        res += '(';
+        res += Args.JoinToString(', ');
+        res += ')';
+      end;
+      
+      Result := res.ToString;
+    end;
+    public property FullName: string read GetFullName; override;
+    
+    public static function Parse(l: string; t: CommentableType): CommentableMethod;
+    
+  end;
+  CommentableConstructor = sealed class(CommentableMethod)
+    
+    public constructor(t: CommentableType; args: array of string) :=
+    inherited Create(t, nil, args);
+    
+    public static function Parse(l: string; t: CommentableType): CommentableConstructor;
+    
+  end;
+  
+  CommentableProp = sealed class(CommentableTypeMember)
+    private args: array of string;
+    
+    public constructor(t: CommentableType; name: string; args: array of string);
+    begin
+      inherited Create(t, name);
+      self.args := args;
+    end;
+    
+    private function GetFullName: string;
+    begin
+      var res := new StringBuilder(inherited GetFullName);
+      
+      if self.Args<>nil then
+      begin
+        res += '[';
+        res += Args.JoinToString(', ');
+        res += ']';
+      end;
+      
+      Result := res.ToString;
+    end;
+    public property FullName: string read GetFullName; override;
+    
+    public static function Parse(l: string; t: CommentableType): CommentableProp;
+    
+  end;
+  
+  CommentableEvent = sealed class(CommentableTypeMember)
+    
+    public static function Parse(l: string; t: CommentableType): CommentableEvent;
+    
+  end;
+  
 implementation
 
 {$region Utils}
 
-const block_open_kvds: array of string = ('begin','case','match','try');
-
-function GetFuncEndInd(l: string): integer;
+function IndexOfAny(self: string; start_ind: integer; params strs: array of string): integer; extensionmethod;
 begin
-  Result := l.LastIndexOf(':=');
-  if Result=-1 then exit;
-  var ind := l.LastIndexOf(')');
-  if ind>Result then
-  Result := l.LastIndexOf(':=', l.LastIndexOf('('));
+  Result := -1;
+  
+  foreach var s in strs do
+  begin
+    var ind := self.IndexOf(s, start_ind);
+    if ind=-1 then continue;
+    if (Result=-1) or (ind < Result) then
+      Result := ind;
+  end;
+  
 end;
+function IndexOfAny(self: string; params strs: array of string): integer; extensionmethod :=
+self.IndexOfAny(0, strs);
 
-function GetParams(l: string): string := l.Split(';')
-.SelectMany(par->
+function SmartIndexOf(self: string; ch: char; ind: integer): integer; extensionmethod;
 begin
-  var ind1 := par.IndexOf(']')+1;
-  var ind2 := par.IndexOf(':');
-  var res := par.SubString(ind2+1);
-  if res.Contains(':=') then
-    res := res.Remove(res.IndexOf(':='));
-  Result := Arr(res.Trim).Cycle.Take( par.Skip(ind1).Take(ind2-ind1).Count(ch->ch=',') + 1 );
-end)
-.JoinIntoString(', ');
+  
+  var br_lvl := 0;
+  while (self[ind]<>ch) or (br_lvl<>0) do
+  begin
+    
+    case self[ind] of
+      '(': br_lvl += 1;
+      ')': br_lvl -= 1;
+    end;
+    
+    ind += 1;
+    if ind=self.Length then
+    begin
+      Result := -1;
+      exit;
+    end;
+    
+  end;
+  
+  Result := ind;
+end;
 
 function RemoveBlock(self: string; f,t: string): string; extensionmethod;
 begin
@@ -39,198 +185,227 @@ begin
   begin
     var ind1 := self.IndexOf(f);
     if ind1=-1 then break;
-    var ind2 := self.IndexOf(t,ind1+f.Length)+t.Length;
-    self := self.Remove(ind1,ind2-ind1);
+    var ind2 := self.IndexOf(t, ind1+f.Length);
+    if ind2=-1 then break;
+    ind2 += t.Length;
+    self := self.Remove(ind1, ind2-ind1);
   end;
   
   Result := self;
 end;
 
+function GetArgs(l: string; ind1: integer; start_sym, end_sym: char): array of string;
+begin
+  if l[ind1] <> start_sym then exit;
+  
+  ind1 += 1;
+  
+  var ind2 := l.SmartIndexOf(end_sym, ind1);
+  if ind2=-1 then raise new System.InvalidOperationException(l);
+  
+  Result := l.Substring(ind1, ind2-ind1).Split(',').ConvertAll(arg->
+  begin
+    
+    var ind := arg.IndexOf(':=');
+    if ind<>-1 then arg := arg.Remove(ind);
+    
+    ind := arg.IndexOf(':');
+    Result := arg.Substring(ind+1).Trim;
+    
+  end);
+  
+end;
+
 {$endregion Utils}
 
-{$region MemberParsers}
+{$region Member parser's}
 
-function ParseType(l: string; ind: integer; var block_lvl: integer; var last_type: string): string;
+static function CommentableType.Parse(l: string): CommentableType;
+const type_keywords: array of string = ('record', 'class', 'interface');
 begin
-  var ind2 := l.LastIndexOf('=',ind)-1;
-  while l[ind2-1]=' ' do ind2 -= 1;
-  var ind1 := l.LastIndexOf(' ',ind2-1)+1;
+  var ind := l.IndexOf(' = ');
+  if ind=-1 then exit;
+  if type_keywords.Any(kw->l.Contains(kw+';')) then exit;
   
-  last_type := l.Substring(ind1,ind2-ind1).TrimEnd(' ');
-  Result := last_type;
+  var def := l.Substring(ind+' = '.Length);
+  var ind2 := def.IndexOf('(');
+  if ind2<>-1 then def := def.Remove(ind2);
+  var def_wds := def.ToWords;
   
-  block_lvl += 1;
-end;
-
-function ParseMethod(last_type, l: string; ind, h_ind1: integer): string;
-begin
-  var ind1 := l.IndexOf(' ',ind);
-  var ind2 := l.IndexOf('(',ind);
-  if ind2>h_ind1 then ind2 := -1;
-  
-  var ind3 := ind2;
-  if ind3=-1 then ind3 := l.IndexOf(':',ind1);
-  if ind3=-1 then ind3 := l.IndexOf(';',ind1);
-  if ind3=-1 then ind3 := l.Length;
-  var m_name := l.Substring(ind1, ind3-ind1).Trim(' ', ':');
-  if m_name.StartsWith('operator') then exit;
-  
-  var pars := ind2=-1 ? '' : GetParams(
-    l.Substring(ind2+1,l.Substring(0,h_ind1).LastIndexOf(')',h_ind1-1,h_ind1-ind2)-ind2-1)
+  Result := new CommentableType(
+    l.Remove(ind).Trim,
+    def_wds.Last in type_keywords ? nil : def,
+    'sealed' in def_wds
   );
   
-  Result := $'{last_type}.{m_name}({pars})';
 end;
 
-function ParseConstructor(last_type, l: string; ind, h_ind1: integer): string;
+static function CommentableMethod.Parse(l: string; t: CommentableType): CommentableMethod;
+const method_keywords: array of string = (' function ', ' procedure ');
 begin
-  var ind2 := l.IndexOf('(',ind);
-  if ind2>h_ind1 then ind2 := -1;
+  var ind := l.IndexOfAny(method_keywords);
+  if ind=-1 then exit;
   
-  var pars := ind2=-1 ? '' : GetParams(
-    l.Substring(ind2+1,l.Substring(0,h_ind1).LastIndexOf(')',h_ind1-1,h_ind1-ind2)-ind2-1)
+  ind := l.IndexOf(' ', ind+1) + 1;
+  var ind2 := l.IndexOfAny(ind, '(', ':', ':=', ';');
+  if ind2=-1 then raise new System.InvalidOperationException(l);
+  
+  Result := new CommentableMethod(t,
+    l.Substring(ind, ind2-ind).Trim,
+    GetArgs(l, ind2, '(', ')')
   );
   
-  Result := $'{last_type}.({pars})';
 end;
 
-function ParseProp(last_type, l,_l: string; ind, h_ind1: integer): string;
+static function CommentableConstructor.Parse(l: string; t: CommentableType): CommentableConstructor;
+const constructor_keywords: array of string = (' constructor ');
 begin
-  var ind1 := l.IndexOf(' ',ind);
-  var ind2 := l.IndexOf('[',ind);
-  if ind2>h_ind1 then ind2 := -1;
+  var ind := l.IndexOfAny(constructor_keywords);
+  if ind=-1 then exit;
   
-  var io_ind := Arr('read','write').Select(s->l.IndexOf(s)).Where(ind-> ind<>-1 ).DefaultIfEmpty(l.Length).First;
+  ind := l.IndexOfAny(ind, '(', ':=', ';');
+  if ind=-1 then raise new System.InvalidOperationException(l);
   
-  var ind3 := ind2;
-  if ind3=-1 then ind3 := l.IndexOf(':',ind1);
-  if ind3=-1 then raise new System.InvalidOperationException(_l);
-  var p_name := l.Substring(ind1, ind3-ind1).Trim(' ', ':');
+  Result := new CommentableConstructor(t,
+    GetArgs(l, ind, '(', ')')
+  );
   
-  if ind2=-1 then
-    Result := $'{last_type}.{p_name}' else
+end;
+
+static function CommentableProp.Parse(l: string; t: CommentableType): CommentableProp;
+const prop_keywords: array of string = (' property ');
+begin
+  var ind := l.IndexOfAny(prop_keywords);
+  if ind=-1 then exit;
+  
+  ind := l.IndexOf(' ', ind+1) + 1;
+  var ind2 := l.IndexOfAny(ind, '[', ':');
+  if ind2=-1 then raise new System.InvalidOperationException(l);
+  
+  Result := new CommentableProp(t,
+    l.Substring(ind, ind2-ind).Trim,
+    GetArgs(l, ind2, '[', ']')
+  );
+  
+end;
+
+static function CommentableEvent.Parse(l: string; t: CommentableType): CommentableEvent;
+const event_keywords: array of string = (' event ');
+begin
+  var ind := l.IndexOfAny(event_keywords);
+  if ind=-1 then exit;
+  
+  ind := l.IndexOf(' ', ind+1) + 1;
+  var ind2 := l.IndexOf(':', ind);
+  if ind2=-1 then raise new System.InvalidOperationException(l);
+  
+  Result := new CommentableEvent(t,
+    l.Substring(ind, ind2-ind).Trim
+  );
+  
+end;
+
+{$endregion Member parser's}
+
+{$region File parser's}
+
+function SkipCodeBlock(l: string; enmr: IEnumerator<string>): boolean;
+const block_open_kvds: array of string = ('begin', 'case', 'match', 'try');
+begin
+  if not block_open_kvds.Any(kw->l.Contains(kw)) then exit;
+  var bl_lvl := 1;
+  
+  while true do
   begin
-    var pars := GetParams(
-      l.Substring(ind2+1,l.Substring(0,io_ind).LastIndexOf(']',io_ind-1,io_ind-ind2)-ind2-1)
-    );
-    Result := $'{last_type}.{p_name}[{pars}]';
+    
+    if l.Contains('end') then
+    begin
+      bl_lvl -= 1;
+      if bl_lvl=0 then break;
+    end;
+    
+    if not enmr.MoveNext then raise new System.InvalidOperationException;
+    l := enmr.Current;
+    
+    if block_open_kvds.Any(kw->l.Contains(kw)) then
+      bl_lvl += 1;
+    
   end;
   
+  Result := true;
 end;
 
-function ParseEvent(last_type, l: string; ind: integer): string;
+static function CommentableBase.FindAllCommentalbes(lns: sequence of string; on_line: string->boolean): sequence of CommentableBase;
 begin
-  ind += 'event'.Length+1;
-  var ind2 := l.IndexOf(':', ind);
-  
-  var e_name := l.SubString(ind,ind2-ind).Trim(' ');
-  
-  Result := $'{last_type}.{e_name}';
-end;
-
-{$endregion MemberParsers}
-
-procedure FindCommentable(lns: sequence of string; on_line: string->boolean; on_commentable: string->());
-begin
-  
-  var last_type := '';
-  var block_lvl := 0; // 1 = class, 2+ = method body
-  
-  var start_checking := false;
-  var end_checking := false;
-  
-  foreach var _l in lns do
+  var enmr: IEnumerator<string> := lns.Where(on_line).Select(l->
   begin
-    var l := _l;
     
-    if not on_line(l) then continue;
-    
-    var ind := l.Replace('///','---').IndexOf('//');
+    var ind := l.IndexOf('//');
     if ind<>-1 then l := l.Remove(ind);
     
     l := l.RemoveBlock('{','}').RemoveBlock('''','''').Trim(' ');
     
-    if not start_checking and l.Contains('interface') then
+    Result := l;
+  end).GetEnumerator;
+  
+  var start_checking := false;
+  var end_checking := false;
+  
+  while enmr.MoveNext do
+  begin
+    var l := enmr.Current;
+    
+    if not start_checking and l.Contains('interface') then start_checking := true;
+    if not start_checking then continue;
+    
+    if not end_checking and l.Contains('implementation') then end_checking := true;
+    if end_checking then continue;
+    
+    if CommentableType.Parse(l) is CommentableType(var _t) then
     begin
-      start_checking := true;
-      continue;
-    end;
-    if l.Contains('implementation') then end_checking := true;
-    if not start_checking or end_checking then continue;
-    
-//    $'{block_lvl,5}: {l}'.Println;
-    
-    var bl_p := block_open_kvds.Any(kvd->l.Contains(kvd));
-    var bl_m := l.Contains('end');
-    
-    if bl_p then block_lvl += 1;
-    if bl_m then block_lvl -= 1;
-    if block_lvl=0 then last_type := '' else
-    if block_lvl<0 then raise new Exception($'Лишний "end" на строчке "{l}"');
-    if bl_p or bl_m then continue;
-    
-    case block_lvl of
+      var t := _t; //ToDo #2265
+      yield t;
+      if t.ReDef<>nil then continue;
       
-      0:
+      while true do
       begin
+        if not enmr.MoveNext then raise new System.InvalidOperationException;
+        l := enmr.Current;
         
-        ind := Max(Max( l.IndexOf('record'), l.Replace('class;','cvass;').IndexOf('class') ), l.Replace('interface;','underface;').IndexOf('interface') );
-        if ind<>-1 then
-        begin
-          on_commentable(ParseType(l,ind, block_lvl,last_type));
-          continue;
-        end;
+        if t.is_sealed and l.Contains(' protected ') then continue;
+        if l.Contains(' private ') then continue;
         
-        ind := Max( l.IndexOf('procedure'), l.IndexOf('function') );
-        if ind<>-1 then
-        begin
-          var comm := ParseMethod(last_type,l, ind,l.Length);
-          if not string.IsNullOrEmpty(comm) then on_commentable(comm);
-          continue;
-        end;
+        if CommentableProp.Parse(l, t) is CommentableProp(var p) then
+          yield p else
+        if CommentableEvent.Parse(l, t) is CommentableEvent(var e) then
+          yield e else
+          
+        if CommentableMethod.Parse(l, t) is CommentableMethod(var m) then
+          yield m else
+        if CommentableConstructor.Parse(l, t) is CommentableConstructor(var c) then
+          yield c else
+          
+        if SkipCodeBlock(l, enmr) then
+          else
+        if l.Contains('end') then
+          break;
         
       end;
       
-      1:
-      begin
-        var h_ind1 := GetFuncEndInd(l);
-        if h_ind1=-1 then h_ind1 := l.Length;
-        
-        ind := Max( l.IndexOf('procedure'), l.IndexOf('function') );
-        if ind<>-1 then
-        begin
-          var comm := ParseMethod(last_type,l, ind,h_ind1);
-          if not string.IsNullOrEmpty(comm) then on_commentable(comm);
-          continue;
-        end;
-        
-        ind := l.IndexOf('constructor');
-        if ind<>-1 then
-        begin
-          on_commentable(ParseConstructor(last_type,l, ind,h_ind1));
-          continue;
-        end;
-        
-        ind := l.IndexOf('property');
-        if ind<>-1 then
-        begin
-          on_commentable(ParseProp(last_type,l,_l, ind,h_ind1));
-          continue;
-        end;
-        
-        ind := l.IndexOf(' event ');
-        if ind<>-1 then
-        begin
-          on_commentable(ParseEvent(last_type,l, ind));
-          continue;
-        end;
-        
-      end;
+    end else
+    begin
       
+      if CommentableMethod.Parse(l, nil) is CommentableMethod(var m) then
+        yield m else
+      if CommentableConstructor.Parse(l, nil) is CommentableConstructor(var c) then
+        yield c else
+        
     end;
     
   end;
   
 end;
+
+{$endregion File parser's}
 
 end.

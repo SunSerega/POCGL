@@ -4265,22 +4265,30 @@
     z_GetPlatformIDs_ovr_3(num_entries, platforms, num_platforms);
     
     // added in cl1.0
-    private static function z_GetPlatformInfo_ovr_0(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetPlatformInfo_ovr_0(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetPlatformInfo';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetPlatformInfo_ovr_0(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_1(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetPlatformInfo';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetPlatformInfo_ovr_1(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_2(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_0(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetPlatformInfo_ovr_1(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
+    z_GetPlatformInfo_ovr_2(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_3(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_1(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetPlatformInfo_ovr_2(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    z_GetPlatformInfo_ovr_3(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_4(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_2(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetPlatformInfo_ovr_3(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    z_GetPlatformInfo_ovr_4(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetPlatformInfo_ovr_5(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetPlatformInfo_ovr_3(platform, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetPlatformInfo_ovr_5(platform, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
     private static function z_GetProgramBuildInfo_ovr_0(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode;

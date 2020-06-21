@@ -1,0 +1,7 @@
+  
+  
+  
+  Result := new ConvAsyncQueueArray2<IntPtr, UIntPtr, KernelArg>(ptr_q, sz_q, (ptr, sz, c)->new KernelArgPtr(ptr, sz) as KernelArg);
+  
+  
+  

@@ -102,6 +102,11 @@ begin
   
   Result := res.ToString;
 end;
+function GetRelativePathRTE(fname: string) := GetRelativePath(fname, System.IO.Path.GetDirectoryName(GetEXEFileName));
+
+function GetArgs(key: string) := CommandLineArgs
+.Where(arg->arg.StartsWith(key+'='))
+.Select(arg->arg.SubString(key.Length+1));
 
 {$endregion Misc}
 
@@ -274,10 +279,86 @@ end;
 {$region Otp type's}
 
 type
+  __AsyncQueueBase = abstract class(System.Collections.IEnumerable, System.Collections.IEnumerator)
+    
+    public function GetEnumerator: System.Collections.IEnumerator := self;
+    
+    protected function GetCurrentBase: object; abstract;
+    public property IEnumerator.Current: object read GetCurrentBase;
+    
+    public function MoveNext: boolean; abstract;
+    
+    public procedure Reset := raise new System.NotSupportedException;
+    
+  end;
+  AsyncQueue<T> = sealed class(__AsyncQueueBase, IEnumerable<T>, IEnumerator<T>)
+    private q := new Queue<T>;
+    private done := false;
+    private ev := new ManualResetEvent(false);
+    
+    public procedure Enq(o: T) :=
+    lock q do
+    begin
+      if done then raise new MessageException($'ERROR: Попытка писать в завершенную {self.GetType}');
+      q.Enqueue(o);
+      ev.Set;
+    end;
+    public procedure EnqRange(sq: sequence of T) :=
+    foreach var o in sq do Enq(o);
+    
+    public procedure Finish;
+    begin
+      lock q do
+      begin
+        if done then raise new MessageException($'ERROR: Двойная попытка завершить {self.GetType}');
+        done := true;
+        ev.Set;
+      end;
+    end;
+    
+    public function GetEnumerator: IEnumerator<T> := self;
+    
+    private last_item: T;
+    public property Current: T read last_item;
+    protected function GetCurrentBase: object; override := last_item;
+    public function MoveNext: boolean; override;
+    begin
+      last_item := default(T);
+      
+      lock q do
+        if q.Count=0 then
+        begin
+          if done then
+            exit else
+            ev.Reset;
+        end else
+        begin
+          last_item := q.Dequeue;
+          Result := true;
+          exit;
+        end;
+      
+      ev.WaitOne;
+      
+      if (q.Count=0) and done then exit;
+      
+      lock q do last_item := q.Dequeue;
+      Result := true;
+    end;
+    
+    public procedure Dispose := exit;
+    
+  end;
+  
+  OtpLine = class;
+  ThrProcOtp = AsyncQueue<OtpLine>;
+  
   OtpLine = sealed class
     s: string;
     t: int64;
     bg_colors := System.Linq.Enumerable.Empty&<(integer,System.ConsoleColor)>;
+    
+    [System.ThreadStatic] static curr: ThrProcOtp;
     
     constructor(s: string; t: int64);
     begin
@@ -309,67 +390,6 @@ type
       end;
       Console.BackgroundColor := System.ConsoleColor.Black;
       Console.WriteLine( s.Substring(i) );
-    end;
-    
-  end;
-  
-  ThrProcOtp = sealed class
-    q := new Queue<OtpLine>;
-    done := false;
-    ev := new ManualResetEvent(false);
-    
-    [System.ThreadStatic] static curr: ThrProcOtp;
-    
-    procedure Enq(l: OtpLine) :=
-    lock q do
-    begin
-      q.Enqueue(l);
-      ev.Set;
-    end;
-    
-    procedure EnqSub(o: ThrProcOtp) :=
-    foreach var l in o.Enmr do Enq(l);
-    
-    procedure Finish;
-    begin
-      lock q do
-      begin
-        if done then raise new MessageException('Двойная попытка завершить вывод потока');
-        done := true;
-        ev.Set;
-      end;
-    end;
-    
-    function Deq: OtpLine;
-    begin
-      Result := nil;
-      
-      lock q do
-        if q.Count=0 then
-        begin
-          if done then
-          begin
-            exit;
-          end else
-            ev.Reset;
-        end else
-        begin
-          Result := q.Dequeue;
-          exit;
-        end;
-      
-      ev.WaitOne;
-      lock q do Result := (q.Count=0) and done ? nil : q.Dequeue;
-    end;
-    
-    function Enmr: sequence of OtpLine;
-    begin
-      while true do
-      begin
-        var l := Deq;
-        if l=nil then exit;
-        yield l;
-      end;
     end;
     
   end;
@@ -444,11 +464,7 @@ type
     
     private constructor;
     begin
-      var hnd_strs := CommandLineArgs
-        .First(arg->arg.StartsWith(StrConsts.OutputPipeId))
-        .Substring(StrConsts.OutputPipeId.Length+1)
-        .ToWords
-      ;
+      var hnd_strs := GetArgs(StrConsts.OutputPipeId).Single.ToWords;
       
       var str := new System.IO.Pipes.AnonymousPipeClientStream(
         System.IO.Pipes.PipeDirection.Out,
@@ -534,8 +550,8 @@ type
 {$region Otp}
 
 procedure Otp(line: OtpLine) :=
-if ThrProcOtp.curr<>nil then
-  ThrProcOtp.curr.Enq(line) else
+if OtpLine.curr<>nil then
+  OtpLine.curr.Enq(line) else
 lock Logger.main_log do
   Logger.main_log.Otp(line);
 
@@ -580,10 +596,10 @@ begin
   
   try
     
-    if ThrProcOtp.curr<>nil then
+    if OtpLine.curr<>nil then
     begin
-      var q := ThrProcOtp.curr.q;
-      ThrProcOtp.curr := nil;
+      var q := OtpLine.curr.q;
+      OtpLine.curr := nil;
       lock q do foreach var l in q do Otp(l);
     end;
     
@@ -688,7 +704,7 @@ begin
             break;
           end;
           
-          else raise new MessageException($'Invalid bin otp type: [{otp_type}]');
+          else raise new MessageException($'ERROR: Invalid bin otp type: [{otp_type}]');
         end;
         
       end;
@@ -712,12 +728,17 @@ begin
   curr_timer.MeasureTime(()->
   begin
     start_time_mark := pack_timer.ElapsedTicks;
-    p.Start;
+    try
+      p.Start;
+    except
+      on e: Exception do
+        raise new Exception($'Failed to start [{fname}]', e);
+    end;
     
     try
       
       p.BeginOutputReadLine;
-      foreach var l in thr_otp.Enmr do l_otp(l);
+      foreach var l in thr_otp do l_otp(l);
       p.WaitForExit;
       
       if p.ExitCode<>0 then
@@ -742,6 +763,9 @@ end;
 procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->());
 begin
   fname := GetFullPath(fname);
+  if not System.IO.File.Exists(fname) then
+    raise new System.IO.FileNotFoundException($'Файл "{GetRelativePath(fname)}" не найден');
+  
   var nick := System.IO.Path.GetFileNameWithoutExtension(fname);
   
   foreach var p in Process.GetProcessesByName(nick) do
@@ -751,7 +775,7 @@ begin
   end;
   
   if l_otp=nil then l_otp := MiscUtils.Otp;
-  if err=nil then err := s->raise new MessageException($'Error compiling "{fname}": {s}');
+  if err=nil then err := s->raise new MessageException($'Error compiling "{GetRelativePath(fname)}": {s}');
   
   l_otp($'Compiling "{GetRelativePath(fname)}"');
   
@@ -796,9 +820,9 @@ begin
       
       '.exe': ;
       
-      else raise new MessageException($'Unknown file extention: "{fname}"');
+      else raise new MessageException($'ERROR: Unknown file extention: "{fname}"');
     end else
-      raise new MessageException($'file without extention: "{fname}"');
+      raise new MessageException($'ERROR: File without extention: "{fname}"');
   
   RunFile(fname, nick, l_otp, pars);
 end;
@@ -828,7 +852,7 @@ type
     private function CreateThread := new Thread(()->
     try
       RegisterThr;
-      ThrProcOtp.curr := self.own_otp;
+      OtpLine.curr := self.own_otp;
       SyncExecImpl;
       self.own_otp.Finish;
     except
@@ -908,8 +932,8 @@ type
       p1.StartExecImpl;
       p2.StartExecImpl;
       
-      foreach var l in p1.own_otp.Enmr do Otp(l);
-      foreach var l in p2.own_otp.Enmr do Otp(l);
+      foreach var l in p1.own_otp do Otp(l);
+      foreach var l in p2.own_otp do Otp(l);
     end;
     
   end;
@@ -953,7 +977,7 @@ type
     
     private procedure SyncExecImpl; override;
     begin
-      if prep_otp<>nil then foreach var l in prep_otp.Enmr do Otp(l);
+      if prep_otp<>nil then foreach var l in prep_otp do Otp(l);
       if ev<>nil then ev.WaitOne;
       ExecuteFile(fname, nick, pars);
     end;
@@ -990,11 +1014,11 @@ begin
   foreach var t in self do
   begin
     var ev := new ManualResetEvent(false);
-    evs += ev;
     
     var T_Wait: SecThrProc := EmptyTask;
     foreach var pev in evs.SkipLast(System.Environment.ProcessorCount+1) do T_Wait:=T_Wait + EventTask(pev);
     
+    evs += ev;
     var T_ver :=
       T_Wait + t +
       SetEvTask(ev)
@@ -1007,113 +1031,6 @@ end;
 
 {$endregion Task operations}
 
-{$region Fixers}
-
-type
-  INamed = interface
-    function GetName: string;
-  end;
-  
-  Fixer<TFixer,TFixable> = abstract class
-  where TFixable: INamed, constructor;
-//  where TFixer: Fixer<TFixer,TFixalbe>; //ToDo #2191
-    protected name: string;
-    protected used: boolean;
-    
-    private static all := new Dictionary<string, List<TFixer>>;
-    private static function GetItem(name: string): List<TFixer>;
-    begin
-      if not all.TryGetValue(name, Result) then
-      begin
-        Result := new List<TFixer>;
-        all[name] := Result;
-      end;
-    end;
-    public static property Item[name: string]: List<TFixer> read GetItem; default;
-    
-    private static adders := new List<TFixer>;
-    public procedure RegisterAsAdder := adders.Add(TFixer(self as object)); //ToDo #2191, но TFixer() нужно
-    
-    protected constructor(name: string);
-    begin
-      self.name := name;
-      if name=nil then exit; // внутренний фиксер, то есть или empty, или содержащийся в контейнере
-      Item[name].Add( TFixer(self as object) ); //ToDo #2191, но TFixer() нужно
-    end;
-    
-    private static function DetemplateName(name: string; lns: array of string; templ_ind: integer): sequence of (string, array of string);
-    begin
-      Result := Seq((name,lns));
-      var ind1 := name.IndexOf('[');
-      if ind1=-1 then exit;
-      var ind2 := name.IndexOf(']',ind1+1);
-      if ind2=-1 then exit;
-      
-      var s1 := name.Remove(ind1);
-      var s2 := name.Substring(ind2+1);
-      
-      Result := name.Substring(ind1+1,ind2-ind1-1)
-        .Split(',').Select(s->s.Trim)
-        .Select(s->( Concat(s1,s,s2), lns.ConvertAll(l->l.Replace($'%{templ_ind}%',s)) ))
-        .SelectMany(t->DetemplateName(t[0],t[1],templ_ind+1));
-    end;
-    protected static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (string, array of string);
-    begin
-      var res := new List<string>;
-      var names := new List<string>;
-      
-      foreach var l in lines do
-        if l.StartsWith(power_sign) then
-        begin
-          if (res.Count<>0) or not concat_blocks then
-          begin
-            yield sequence names.SelectMany(name->Fixer&<TFixer,TFixable>.DetemplateName(name, res.ToArray, 0));
-            res.Clear;
-            names.Clear;
-          end;
-          names += l.Substring(power_sign.Length).Trim;
-        end else
-          res += l;
-      
-      yield sequence names.SelectMany(name->Fixer&<TFixer,TFixable>.DetemplateName(name, res.ToArray, 0));
-    end;
-    protected static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
-    
-    protected function ApplyOrder; virtual := 0;
-    /// Return "True" if "o" needs to be deleted
-    protected function Apply(o: TFixable): boolean; abstract;
-    public static procedure ApplyAll(lst: List<TFixable>);
-    begin
-      lst.Capacity := lst.Count + adders.Count;
-      
-      foreach var a in adders do
-      begin
-        var o := new TFixable;
-        (a as object as Fixer<TFixer, TFixable>).Apply(o); //ToDo #2191
-        lst += o;
-      end;
-      
-      for var i := lst.Count-1 downto 0 do
-      begin
-        var o := lst[i];
-        foreach var f in Item[o.GetName].OrderBy(f->(f as object as Fixer<TFixer, TFixable>).ApplyOrder) do //ToDo #2191
-          if (f as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
-            lst.RemoveAt(i);
-      end;
-      
-      lst.TrimExcess;
-    end;
-    
-    protected procedure WarnUnused; abstract;
-    public static procedure WarnAllUnused :=
-    foreach var l in all.Values do
-      if l.Any(f->not (f as object as Fixer<TFixer, TFixable>).used) then //ToDo #2191
-        (l[0] as object as Fixer<TFixer, TFixable>).WarnUnused; //ToDo #2191
-    
-  end;
-  
-{$endregion Fixers}
-
 // потому что лямбды не работают в initialization
 ///--
 procedure InitMiscUtils :=
@@ -1123,7 +1040,7 @@ try
   
   RegisterThr;
   DefaultEncoding := enc;
-  is_secondary_proc := CommandLineArgs.Any(arg->arg.StartsWith(StrConsts.OutputPipeId));
+  is_secondary_proc := GetArgs(StrConsts.OutputPipeId).Any;
   Timer.main := new ExeTimer;
   
   if is_secondary_proc then
