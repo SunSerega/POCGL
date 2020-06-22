@@ -992,6 +992,16 @@ type
     
     {$region 3#Copy}
     
+    ///- function CopyTo(b: Buffer): Buffer;
+    ///Копирует память из текущего буфера в b
+    public function CopyTo(b: CommandQueue<Buffer>): Buffer;
+    
+    public function CopyForm(b: CommandQueue<Buffer>): Buffer;
+    
+    public function CopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer;
+    
+    public function CopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer;
+    
     {$endregion 3#Copy}
     
     {$region}
@@ -3427,6 +3437,16 @@ type
     
     {$region 3#Copy}
     
+    ///- function AddCopyTo(b: Buffer): BufferCommandQueue;
+    ///Копирует память из текущего буфера в b
+    public function AddCopyTo(b: CommandQueue<Buffer>): BufferCommandQueue;
+    
+    public function AddCopyForm(b: CommandQueue<Buffer>): BufferCommandQueue;
+    
+    public function AddCopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): BufferCommandQueue;
+    
+    public function AddCopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): BufferCommandQueue;
+    
     {$endregion 3#Copy}
     
     {$region}
@@ -5825,6 +5845,220 @@ AddCommand(new BufferCommandFillValueQ<TRecord>(val, offset, len));
 
 {$region 3#Copy}
 
+{$region CopyToAutoSize}
+
+type
+  BufferCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
+    private b: CommandQueue<Buffer>;
+    
+    public constructor(b: CommandQueue<Buffer>);
+    begin
+      self.b := b;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += b_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var b := b_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueCopyBuffer(
+          cq, o.ntv,b.ntv,
+          UIntPtr.Zero, UIntPtr.Zero,
+          o.Size64<b.Size64 ? o.Size : b.Size,
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      b.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion CopyToAutoSize}
+
+function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>): BufferCommandQueue :=
+AddCommand(new BufferCommandCopyToAutoSize(b));
+
+{$region CopyFormAutoSize}
+
+type
+  BufferCommandCopyFormAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
+    private b: CommandQueue<Buffer>;
+    
+    public constructor(b: CommandQueue<Buffer>);
+    begin
+      self.b := b;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += b_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var b := b_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueCopyBuffer(
+          cq, b.ntv,o.ntv,
+          UIntPtr.Zero, UIntPtr.Zero,
+          o.Size64<b.Size64 ? o.Size : b.Size,
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      b.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion CopyFormAutoSize}
+
+function BufferCommandQueue.AddCopyForm(b: CommandQueue<Buffer>): BufferCommandQueue :=
+AddCommand(new BufferCommandCopyFormAutoSize(b));
+
+{$region CopyTo}
+
+type
+  BufferCommandCopyTo = sealed class(EnqueueableGPUCommand<Buffer>)
+    private        b: CommandQueue<Buffer>;
+    private from_pos: CommandQueue<integer>;
+    private   to_pos: CommandQueue<integer>;
+    private      len: CommandQueue<integer>;
+    
+    public constructor(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>);
+    begin
+      self.       b :=        b;
+      self.from_pos := from_pos;
+      self.  to_pos :=   to_pos;
+      self.     len :=      len;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        b_qr.ev;
+      var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += from_pos_qr.ev;
+      var   to_pos_qr :=   to_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   to_pos_qr.ev;
+      var      len_qr :=      len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      len_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var        b :=        b_qr.GetRes;
+        var from_pos := from_pos_qr.GetRes;
+        var   to_pos :=   to_pos_qr.GetRes;
+        var      len :=      len_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueCopyBuffer(
+          cq, o.ntv,b.ntv,
+          new UIntPtr(from_pos), new UIntPtr(to_pos),
+          new UIntPtr(len),
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+             b.RegisterWaitables(tsk, prev_hubs);
+      from_pos.RegisterWaitables(tsk, prev_hubs);
+        to_pos.RegisterWaitables(tsk, prev_hubs);
+           len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion CopyTo}
+
+function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandCopyTo(b, from_pos, to_pos, len));
+
+{$region CopyForm}
+
+type
+  BufferCommandCopyForm = sealed class(EnqueueableGPUCommand<Buffer>)
+    private        b: CommandQueue<Buffer>;
+    private from_pos: CommandQueue<integer>;
+    private   to_pos: CommandQueue<integer>;
+    private      len: CommandQueue<integer>;
+    
+    public constructor(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>);
+    begin
+      self.       b :=        b;
+      self.from_pos := from_pos;
+      self.  to_pos :=   to_pos;
+      self.     len :=      len;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        b_qr.ev;
+      var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += from_pos_qr.ev;
+      var   to_pos_qr :=   to_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   to_pos_qr.ev;
+      var      len_qr :=      len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      len_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var        b :=        b_qr.GetRes;
+        var from_pos := from_pos_qr.GetRes;
+        var   to_pos :=   to_pos_qr.GetRes;
+        var      len :=      len_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueCopyBuffer(
+          cq, b.ntv,o.ntv,
+          new UIntPtr(from_pos), new UIntPtr(to_pos),
+          new UIntPtr(len),
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+             b.RegisterWaitables(tsk, prev_hubs);
+      from_pos.RegisterWaitables(tsk, prev_hubs);
+        to_pos.RegisterWaitables(tsk, prev_hubs);
+           len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion CopyForm}
+
+function BufferCommandQueue.AddCopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandCopyForm(b, from_pos, to_pos, len));
+
 {$endregion 3#Copy}
 
 (**
@@ -6587,6 +6821,18 @@ Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, offset, len) as Comma
 {$endregion 2#Fill}
 
 {$region 3#Copy}
+
+function Buffer.CopyTo(b: CommandQueue<Buffer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(b) as CommandQueue<Buffer>);
+
+function Buffer.CopyForm(b: CommandQueue<Buffer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyForm(b) as CommandQueue<Buffer>);
+
+function Buffer.CopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(b, from_pos, to_pos, len) as CommandQueue<Buffer>);
+
+function Buffer.CopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyForm(b, from_pos, to_pos, len) as CommandQueue<Buffer>);
 
 {$endregion 3#Copy}
 

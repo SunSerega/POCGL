@@ -119,6 +119,18 @@ Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, offset, len) as Comma
 
 {$region 3#Copy}
 
+function Buffer.CopyTo(b: CommandQueue<Buffer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(b) as CommandQueue<Buffer>);
+
+function Buffer.CopyForm(b: CommandQueue<Buffer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyForm(b) as CommandQueue<Buffer>);
+
+function Buffer.CopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(b, from_pos, to_pos, len) as CommandQueue<Buffer>);
+
+function Buffer.CopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyForm(b, from_pos, to_pos, len) as CommandQueue<Buffer>);
+
 {$endregion 3#Copy}
 
 

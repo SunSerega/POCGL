@@ -83,6 +83,14 @@
     
     {$region 3#Copy}
     
+    public function CopyTo(b: CommandQueue<Buffer>): Buffer;
+    
+    public function CopyForm(b: CommandQueue<Buffer>): Buffer;
+    
+    public function CopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer;
+    
+    public function CopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer;
+    
     {$endregion 3#Copy}
     
     

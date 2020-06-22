@@ -1,6 +1,26 @@
 
 
 
+# Copy[%direction:To,Form%]!AutoSize
+b: CommandQueue<Buffer>
+!Enqueue
+cl.EnqueueCopyBuffer(
+  cq, {%direction? o.ntv,!b!.ntv : !b!.ntv,o.ntv %},
+  UIntPtr.Zero, UIntPtr.Zero,
+  o.Size64<!b!.Size64 ? o.Size : !b!.Size,
+  !evs!
+).RaiseIfError;
 
+
+
+# Copy[%direction:To,Form%]
+b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>
+!Enqueue
+cl.EnqueueCopyBuffer(
+  cq, {%direction? o.ntv,!b!.ntv : !b!.ntv,o.ntv %},
+  new UIntPtr(!from_pos!), new UIntPtr(!to_pos!),
+  new UIntPtr(!len!),
+  !evs!
+).RaiseIfError;
 
 
