@@ -220,13 +220,13 @@ begin
 //      otp_fname := 'Modules\OpenCL.pas';
 //      nick := 'OpenCL';
       
-//      inp_fname := 'Modules\Internal\OpenCLABCBase.pas';
-//      otp_fname := 'Modules.Packed\Internal\OpenCLABCBase.pas';
-//      nick := 'OpenCLABC';
-      
-      inp_fname := 'Modules\OpenCLABC.pas';
-      otp_fname := 'Modules.Packed\OpenCLABC.pas';
+      inp_fname := 'Modules\Internal\OpenCLABCBase.pas';
+      otp_fname := 'Modules.Packed\Internal\OpenCLABCBase.pas';
       nick := 'OpenCLABC';
+      
+//      inp_fname := 'Modules\OpenCLABC.pas';
+//      otp_fname := 'Modules.Packed\OpenCLABC.pas';
+//      nick := 'OpenCLABC';
       
     end;
     

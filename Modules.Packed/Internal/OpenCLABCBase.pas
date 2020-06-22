@@ -48,6 +48,8 @@ unit OpenCLABCBase;
 //===================================
 // Запланированное:
 
+//ToDo Использовать BlittableHelper чтоб выводить хорошие ошибки
+
 //ToDo SubDevice из cl_device_id
 
 //ToDo Потоко-безопастность интерфейса модуля
@@ -891,46 +893,83 @@ type
     
     {$endregion operator's}
     
-    {$region Write}
+    {$region 1#Write&Read}
     
     ///- function WriteData(ptr: IntPtr): Buffer;
     ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function WriteData(ptr: CommandQueue<IntPtr>): Buffer; 
+    public function WriteData(ptr: CommandQueue<IntPtr>): Buffer;
     
-    public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer; 
+    ///- function ReadData(ptr: IntPtr): Buffer;
+    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    public function ReadData(ptr: CommandQueue<IntPtr>): Buffer;
+    
+    public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
+    
+    public function ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
     
     ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function WriteData(ptr: pointer): Buffer; 
+    public function WriteData(ptr: pointer): Buffer;
     
-    public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer; 
+    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    public function ReadData(ptr: pointer): Buffer;
     
-    public function WriteValue<TRecord>(val: TRecord): Buffer; where TRecord: record;
+    public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer;
     
-    public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer;
     
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: TRecord): Buffer;where TRecord: record;
     
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): Buffer;where TRecord: record;
     
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): Buffer;where TRecord: record;
     
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer; where TRecord: record;
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
     
-    {$endregion Write}
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    {$endregion 1#Write&Read}
+    
+    {$region 2#Fill}
+    
+    {$endregion 2#Fill}
+    
+    {$region 3#Copy}
+    
+    {$endregion 3#Copy}
     
     {$region}
     (**
@@ -1229,7 +1268,9 @@ type
     
     {$endregion UseExclusiveNative}
     
+    {$region 1#Exec}
     
+    {$endregion 1#Exec}
     
     {$region}
     (**
@@ -3271,46 +3312,83 @@ type
     
     {$endregion Non-command add's}
     
-    {$region Write}
+    {$region 1#Write&Read}
     
     ///- function AddWriteData(ptr: IntPtr): BufferCommandQueue;
     ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue; 
+    public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
     
-    public function AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue; 
+    ///- function AddReadData(ptr: IntPtr): BufferCommandQueue;
+    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    public function AddReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
+    
+    public function AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
+    
+    public function AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
     ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function AddWriteData(ptr: pointer): BufferCommandQueue; 
+    public function AddWriteData(ptr: pointer): BufferCommandQueue;
     
-    public function AddWriteData(ptr: pointer; offset, len: CommandQueue<integer>): BufferCommandQueue; 
+    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    public function AddReadData(ptr: pointer): BufferCommandQueue;
     
-    public function AddWriteValue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
+    public function AddWriteData(ptr: pointer; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
-    public function AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddReadData(ptr: pointer; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
-    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteValue<TRecord>(val: TRecord): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): BufferCommandQueue;where TRecord: record;
     
-    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
     
-    {$endregion Write}
+    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): BufferCommandQueue;where TRecord: record;
+    
+    {$endregion 1#Write&Read}
+    
+    {$region 2#Fill}
+    
+    {$endregion 2#Fill}
+    
+    {$region 3#Copy}
+    
+    {$endregion 3#Copy}
     
     {$region}
     (**
@@ -3483,7 +3561,9 @@ type
     
     {$endregion Non-command add's}
     
+    {$region 1#Exec}
     
+    {$endregion 1#Exec}
     
     {$region}
     (**
@@ -4257,7 +4337,7 @@ end;
 
 {$region BufferCQ}
 
-{$region Write}
+{$region 1#Write&Read}
 
 {$region WriteDataAutoSize}
 
@@ -4303,6 +4383,51 @@ type
 
 function BufferCommandQueue.AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue :=
 AddCommand(new BufferCommandWriteDataAutoSize(ptr));
+
+{$region ReadDataAutoSize}
+
+type
+  BufferCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
+    private ptr: CommandQueue<IntPtr>;
+    
+    public constructor(ptr: CommandQueue<IntPtr>);
+    begin
+      self.ptr := ptr;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += ptr_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var ptr := ptr_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          UIntPtr.Zero, o.Size,
+          ptr,
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      ptr.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadDataAutoSize}
+
+function BufferCommandQueue.AddReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadDataAutoSize(ptr));
 
 {$region WriteData}
 
@@ -4359,11 +4484,72 @@ type
 function BufferCommandQueue.AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue :=
 AddCommand(new BufferCommandWriteData(ptr, offset, len));
 
+{$region ReadData}
+
+type
+  BufferCommandReadData = sealed class(EnqueueableGPUCommand<Buffer>)
+    private    ptr: CommandQueue<IntPtr>;
+    private offset: CommandQueue<integer>;
+    private    len: CommandQueue<integer>;
+    
+    public constructor(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
+    begin
+      self.   ptr :=    ptr;
+      self.offset := offset;
+      self.   len :=    len;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var    ptr_qr :=    ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=    ptr_qr.ev;
+      var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
+      var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var    ptr :=    ptr_qr.GetRes;
+        var offset := offset_qr.GetRes;
+        var    len :=    len_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(offset), new UIntPtr(len),
+          ptr,
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+         ptr.RegisterWaitables(tsk, prev_hubs);
+      offset.RegisterWaitables(tsk, prev_hubs);
+         len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadData}
+
+function BufferCommandQueue.AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadData(ptr, offset, len));
+
 function BufferCommandQueue.AddWriteData(ptr: pointer): BufferCommandQueue :=
 AddWriteData(IntPtr(ptr));
 
+function BufferCommandQueue.AddReadData(ptr: pointer): BufferCommandQueue :=
+AddReadData(IntPtr(ptr));
+
 function BufferCommandQueue.AddWriteData(ptr: pointer; offset, len: CommandQueue<integer>): BufferCommandQueue :=
 AddWriteData(IntPtr(ptr), offset, len);
+
+function BufferCommandQueue.AddReadData(ptr: pointer; offset, len: CommandQueue<integer>): BufferCommandQueue :=
+AddReadData(IntPtr(ptr), offset, len);
 
 function BufferCommandQueue.AddWriteValue<TRecord>(val: TRecord): BufferCommandQueue :=
 AddWriteValue(val, 0);
@@ -4490,6 +4676,15 @@ AddWriteArray2(a, 0,0, 0);
 
 function BufferCommandQueue.AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): BufferCommandQueue :=
 AddWriteArray3(a, 0,0,0, 0);
+
+function BufferCommandQueue.AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>): BufferCommandQueue :=
+AddReadArray1(a, 0, 0);
+
+function BufferCommandQueue.AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): BufferCommandQueue :=
+AddReadArray2(a, 0,0, 0);
+
+function BufferCommandQueue.AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): BufferCommandQueue :=
+AddReadArray3(a, 0,0,0, 0);
 
 {$region WriteArray1AutoSize}
 
@@ -4679,6 +4874,195 @@ type
 
 function BufferCommandQueue.AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): BufferCommandQueue :=
 AddCommand(new BufferCommandWriteArray3AutoSize<TRecord>(a, a_offset1, a_offset2, a_offset3, buff_offset));
+
+{$region ReadArray1AutoSize}
+
+type
+  BufferCommandReadArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<Buffer>)
+  where TRecord: record;
+    private           a: CommandQueue<array of TRecord>;
+    private    a_offset: CommandQueue<integer>;
+    private buff_offset: CommandQueue<integer>;
+    
+    protected function NeedThread: boolean; override := true;
+    
+    public constructor(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>);
+    begin
+      self.          a :=           a;
+      self.   a_offset :=    a_offset;
+      self.buff_offset := buff_offset;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
+      var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    a_offset_qr.ev;
+      var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var           a :=           a_qr.GetRes;
+        var    a_offset :=    a_offset_qr.GetRes;
+        var buff_offset := buff_offset_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[a_offset],
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+                a.RegisterWaitables(tsk, prev_hubs);
+         a_offset.RegisterWaitables(tsk, prev_hubs);
+      buff_offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadArray1AutoSize}
+
+function BufferCommandQueue.AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadArray1AutoSize<TRecord>(a, a_offset, buff_offset));
+
+{$region ReadArray2AutoSize}
+
+type
+  BufferCommandReadArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<Buffer>)
+  where TRecord: record;
+    private           a: CommandQueue<array[,] of TRecord>;
+    private   a_offset1: CommandQueue<integer>;
+    private   a_offset2: CommandQueue<integer>;
+    private buff_offset: CommandQueue<integer>;
+    
+    protected function NeedThread: boolean; override := true;
+    
+    public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>);
+    begin
+      self.          a :=           a;
+      self.  a_offset1 :=   a_offset1;
+      self.  a_offset2 :=   a_offset2;
+      self.buff_offset := buff_offset;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
+      var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
+      var   a_offset2_qr :=   a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset2_qr.ev;
+      var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var           a :=           a_qr.GetRes;
+        var   a_offset1 :=   a_offset1_qr.GetRes;
+        var   a_offset2 :=   a_offset2_qr.GetRes;
+        var buff_offset := buff_offset_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2],
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+                a.RegisterWaitables(tsk, prev_hubs);
+        a_offset1.RegisterWaitables(tsk, prev_hubs);
+        a_offset2.RegisterWaitables(tsk, prev_hubs);
+      buff_offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadArray2AutoSize}
+
+function BufferCommandQueue.AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadArray2AutoSize<TRecord>(a, a_offset1, a_offset2, buff_offset));
+
+{$region ReadArray3AutoSize}
+
+type
+  BufferCommandReadArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<Buffer>)
+  where TRecord: record;
+    private           a: CommandQueue<array[,,] of TRecord>;
+    private   a_offset1: CommandQueue<integer>;
+    private   a_offset2: CommandQueue<integer>;
+    private   a_offset3: CommandQueue<integer>;
+    private buff_offset: CommandQueue<integer>;
+    
+    protected function NeedThread: boolean; override := true;
+    
+    public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>);
+    begin
+      self.          a :=           a;
+      self.  a_offset1 :=   a_offset1;
+      self.  a_offset2 :=   a_offset2;
+      self.  a_offset3 :=   a_offset3;
+      self.buff_offset := buff_offset;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
+      var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
+      var   a_offset2_qr :=   a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset2_qr.ev;
+      var   a_offset3_qr :=   a_offset3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset3_qr.ev;
+      var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var           a :=           a_qr.GetRes;
+        var   a_offset1 :=   a_offset1_qr.GetRes;
+        var   a_offset2 :=   a_offset2_qr.GetRes;
+        var   a_offset3 :=   a_offset3_qr.GetRes;
+        var buff_offset := buff_offset_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2,a_offset3],
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+                a.RegisterWaitables(tsk, prev_hubs);
+        a_offset1.RegisterWaitables(tsk, prev_hubs);
+        a_offset2.RegisterWaitables(tsk, prev_hubs);
+        a_offset3.RegisterWaitables(tsk, prev_hubs);
+      buff_offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadArray3AutoSize}
+
+function BufferCommandQueue.AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadArray3AutoSize<TRecord>(a, a_offset1, a_offset2, a_offset3, buff_offset));
 
 {$region WriteArray1}
 
@@ -4884,7 +5268,219 @@ type
 function BufferCommandQueue.AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): BufferCommandQueue :=
 AddCommand(new BufferCommandWriteArray3<TRecord>(a, a_offset1, a_offset2, a_offset3, buff_offset, len));
 
-{$endregion Write}
+{$region ReadArray1}
+
+type
+  BufferCommandReadArray1<TRecord> = sealed class(EnqueueableGPUCommand<Buffer>)
+  where TRecord: record;
+    private           a: CommandQueue<array of TRecord>;
+    private    a_offset: CommandQueue<integer>;
+    private buff_offset: CommandQueue<integer>;
+    private         len: CommandQueue<integer>;
+    
+    protected function NeedThread: boolean; override := true;
+    
+    public constructor(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>);
+    begin
+      self.          a :=           a;
+      self.   a_offset :=    a_offset;
+      self.buff_offset := buff_offset;
+      self.        len :=         len;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
+      var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    a_offset_qr.ev;
+      var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
+      var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var           a :=           a_qr.GetRes;
+        var    a_offset :=    a_offset_qr.GetRes;
+        var buff_offset := buff_offset_qr.GetRes;
+        var         len :=         len_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset],
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+                a.RegisterWaitables(tsk, prev_hubs);
+         a_offset.RegisterWaitables(tsk, prev_hubs);
+      buff_offset.RegisterWaitables(tsk, prev_hubs);
+              len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadArray1}
+
+function BufferCommandQueue.AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadArray1<TRecord>(a, a_offset, buff_offset, len));
+
+{$region ReadArray2}
+
+type
+  BufferCommandReadArray2<TRecord> = sealed class(EnqueueableGPUCommand<Buffer>)
+  where TRecord: record;
+    private           a: CommandQueue<array[,] of TRecord>;
+    private   a_offset1: CommandQueue<integer>;
+    private   a_offset2: CommandQueue<integer>;
+    private buff_offset: CommandQueue<integer>;
+    private         len: CommandQueue<integer>;
+    
+    protected function NeedThread: boolean; override := true;
+    
+    public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>);
+    begin
+      self.          a :=           a;
+      self.  a_offset1 :=   a_offset1;
+      self.  a_offset2 :=   a_offset2;
+      self.buff_offset := buff_offset;
+      self.        len :=         len;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
+      var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
+      var   a_offset2_qr :=   a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset2_qr.ev;
+      var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
+      var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var           a :=           a_qr.GetRes;
+        var   a_offset1 :=   a_offset1_qr.GetRes;
+        var   a_offset2 :=   a_offset2_qr.GetRes;
+        var buff_offset := buff_offset_qr.GetRes;
+        var         len :=         len_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2],
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+                a.RegisterWaitables(tsk, prev_hubs);
+        a_offset1.RegisterWaitables(tsk, prev_hubs);
+        a_offset2.RegisterWaitables(tsk, prev_hubs);
+      buff_offset.RegisterWaitables(tsk, prev_hubs);
+              len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadArray2}
+
+function BufferCommandQueue.AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadArray2<TRecord>(a, a_offset1, a_offset2, buff_offset, len));
+
+{$region ReadArray3}
+
+type
+  BufferCommandReadArray3<TRecord> = sealed class(EnqueueableGPUCommand<Buffer>)
+  where TRecord: record;
+    private           a: CommandQueue<array[,,] of TRecord>;
+    private   a_offset1: CommandQueue<integer>;
+    private   a_offset2: CommandQueue<integer>;
+    private   a_offset3: CommandQueue<integer>;
+    private buff_offset: CommandQueue<integer>;
+    private         len: CommandQueue<integer>;
+    
+    protected function NeedThread: boolean; override := true;
+    
+    public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>);
+    begin
+      self.          a :=           a;
+      self.  a_offset1 :=   a_offset1;
+      self.  a_offset2 :=   a_offset2;
+      self.  a_offset3 :=   a_offset3;
+      self.buff_offset := buff_offset;
+      self.        len :=         len;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    begin
+      var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
+      var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
+      var   a_offset2_qr :=   a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset2_qr.ev;
+      var   a_offset3_qr :=   a_offset3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset3_qr.ev;
+      var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
+      var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
+      
+      Result := (o, cq, tsk, evs)->
+      begin
+        var           a :=           a_qr.GetRes;
+        var   a_offset1 :=   a_offset1_qr.GetRes;
+        var   a_offset2 :=   a_offset2_qr.GetRes;
+        var   a_offset3 :=   a_offset3_qr.GetRes;
+        var buff_offset := buff_offset_qr.GetRes;
+        var         len :=         len_qr.GetRes;
+        
+        var res: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2,a_offset3],
+          evs.count, evs.evs, res
+        ).RaiseIfError;
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+                a.RegisterWaitables(tsk, prev_hubs);
+        a_offset1.RegisterWaitables(tsk, prev_hubs);
+        a_offset2.RegisterWaitables(tsk, prev_hubs);
+        a_offset3.RegisterWaitables(tsk, prev_hubs);
+      buff_offset.RegisterWaitables(tsk, prev_hubs);
+              len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion ReadArray3}
+
+function BufferCommandQueue.AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandReadArray3<TRecord>(a, a_offset1, a_offset2, a_offset3, buff_offset, len));
+
+{$endregion 1#Write&Read}
+
+{$region 2#Fill}
+
+{$endregion 2#Fill}
+
+{$region 3#Copy}
+
+{$endregion 3#Copy}
 
 (**
 {$region Write}
@@ -5529,19 +6125,31 @@ AddCommand(new BufferCommandCopyTo(b, &to,from, len));
 
 {$region Buffer}
 
-{$region Write}
+{$region 1#Write&Read}
 
 function Buffer.WriteData(ptr: CommandQueue<IntPtr>): Buffer :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr) as CommandQueue<Buffer>);
 
+function Buffer.ReadData(ptr: CommandQueue<IntPtr>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr) as CommandQueue<Buffer>);
+
 function Buffer.WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, offset, len) as CommandQueue<Buffer>);
+
+function Buffer.ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, offset, len) as CommandQueue<Buffer>);
 
 function Buffer.WriteData(ptr: pointer): Buffer :=
 WriteData(IntPtr(ptr));
 
+function Buffer.ReadData(ptr: pointer): Buffer :=
+ReadData(IntPtr(ptr));
+
 function Buffer.WriteData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer :=
 WriteData(IntPtr(ptr), offset, len);
+
+function Buffer.ReadData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer :=
+ReadData(IntPtr(ptr), offset, len);
 
 function Buffer.WriteValue<TRecord>(val: TRecord): Buffer :=
 WriteValue(val, 0);
@@ -5564,6 +6172,15 @@ WriteArray2(a, 0,0, 0);
 function Buffer.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer :=
 WriteArray3(a, 0,0,0, 0);
 
+function Buffer.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer :=
+ReadArray1(a, 0, 0);
+
+function Buffer.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer :=
+ReadArray2(a, 0,0, 0);
+
+function Buffer.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer :=
+ReadArray3(a, 0,0,0, 0);
+
 function Buffer.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1(a, a_offset, buff_offset) as CommandQueue<Buffer>);
 
@@ -5572,6 +6189,15 @@ Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2(a, a_offset1, a_offset2,
 
 function Buffer.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3(a, a_offset1, a_offset2, a_offset3, buff_offset) as CommandQueue<Buffer>);
+
+function Buffer.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray1(a, a_offset, buff_offset) as CommandQueue<Buffer>);
+
+function Buffer.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray2(a, a_offset1, a_offset2, buff_offset) as CommandQueue<Buffer>);
+
+function Buffer.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray3(a, a_offset1, a_offset2, a_offset3, buff_offset) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1(a, a_offset, buff_offset, len) as CommandQueue<Buffer>);
@@ -5582,7 +6208,24 @@ Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2(a, a_offset1, a_offset2,
 function Buffer.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3(a, a_offset1, a_offset2, a_offset3, buff_offset, len) as CommandQueue<Buffer>);
 
-{$endregion Write}
+function Buffer.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray1(a, a_offset, buff_offset, len) as CommandQueue<Buffer>);
+
+function Buffer.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray2(a, a_offset1, a_offset2, buff_offset, len) as CommandQueue<Buffer>);
+
+function Buffer.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray3(a, a_offset1, a_offset2, a_offset3, buff_offset, len) as CommandQueue<Buffer>);
+
+{$endregion 1#Write&Read}
+
+{$region 2#Fill}
+
+{$endregion 2#Fill}
+
+{$region 3#Copy}
+
+{$endregion 3#Copy}
 
 (**
 {$region Get}
@@ -5673,13 +6316,17 @@ end;
 
 {$region KernelCQ}
 
+{$region 1#Exec}
 
+{$endregion 1#Exec}
 
 {$endregion KernelCQ}
 
 {$region Kernel}
 
+{$region 1#Exec}
 
+{$endregion 1#Exec}
 
 {$endregion Kernel}
 

@@ -31,11 +31,11 @@ type
     
     // Syntax:
     //# abc[%arg1:1,2,3%]
-    //def%arg1?4:5:6%gh
+    //def{%arg1?4:5:6%}gh
     // 
     // ShortSyntax:
     //# abc[%1,2,3%]
-    //def%0%gh
+    //def{%0%}gh
     // 
     private static function DeTemplateName(name: string; lns: array of string): sequence of (string, array of string);
     begin
@@ -58,20 +58,20 @@ type
           res := res.SelectMany(bl->t[1].Replace('\,',#0).Split(',').Select(arg_def->arg_def.Replace(#0,',').Trim).Select((arg_def,arg_i)->(bl[0]+arg_def, bl[1].ConvertAll(l->
           begin
             var sb := new StringBuilder;
-            foreach var st in FindTemplateInsertions(l, '%', '%') do
+            foreach var st in FindTemplateInsertions(l, '{%', '%}') do
               if not st[0] then
                 sb += st[1] else
               if not template_ids.Any(template_id->(st[1]=template_id) or st[1].StartsWith(template_id+'?')) then
               begin
-                sb += '%';
+                sb += '{%';
                 sb += st[1];
-                sb += '%';
+                sb += '%}';
               end else
               begin
                 var ind := st[1].IndexOf('?');
                 if ind=-1 then
                   sb += arg_def else
-                  sb += st[1].Remove(0,ind+1).Split(':')[arg_i].Trim;
+                  sb += st[1].Remove(0,ind+1).Replace('\:',#0).Split(':')[arg_i].Replace(#0,':').Trim;
               end;
             Result := sb.ToString;
           end))));

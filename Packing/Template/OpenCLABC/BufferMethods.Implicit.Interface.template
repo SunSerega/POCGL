@@ -1,43 +1,77 @@
 ﻿    
     
     
-    {$region Write}
+    {$region 1#Write&Read}
     
-    public function WriteData(ptr: CommandQueue<IntPtr>): Buffer; 
+    public function WriteData(ptr: CommandQueue<IntPtr>): Buffer;
     
-    public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer; 
+    public function ReadData(ptr: CommandQueue<IntPtr>): Buffer;
     
-    public function WriteData(ptr: pointer): Buffer; 
+    public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
     
-    public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer; 
+    public function ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
     
-    public function WriteValue<TRecord>(val: TRecord): Buffer; where TRecord: record;
+    public function WriteData(ptr: pointer): Buffer;
     
-    public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadData(ptr: pointer): Buffer;
     
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): Buffer; where TRecord: record;
+    public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer;
     
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer;
     
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: TRecord): Buffer;where TRecord: record;
     
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): Buffer;where TRecord: record;
     
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): Buffer;where TRecord: record;
     
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer;where TRecord: record;
     
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer;where TRecord: record;
     
-    {$endregion Write}
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer;where TRecord: record;
+    
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer;where TRecord: record;
+    
+    {$endregion 1#Write&Read}
+    
+    {$region 2#Fill}
+    
+    {$endregion 2#Fill}
+    
+    {$region 3#Copy}
+    
+    {$endregion 3#Copy}
     
     
     

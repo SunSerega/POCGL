@@ -1,5 +1,5 @@
 ﻿
-{%..\LicenseHeader!!Stub=}{$title 'test title'}{%}
+{%..\LicenseHeader!!StubForKotov=}{$title 'test title'}{%}
 
 /// Модуль для внутренних типов модуля OpenCLABC
 unit OpenCLABCBase;

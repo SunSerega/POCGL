@@ -52,6 +52,11 @@ type
     foreach var wr in base do wr.Close;
     
   end;
+  WriterEmpty = sealed class(Writer)
+    constructor := exit;
+    procedure Write(l: string); override := exit;
+    procedure Close; override := exit;
+  end;
   
 begin
   try
@@ -61,18 +66,18 @@ begin
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(dir);
       
-      var res_IIn := new FileWriter(GetFullPathRTE($'{t}Methods.Implicit.Interface.template'));
-      var res_IIm := new FileWriter(GetFullPathRTE($'{t}Methods.Implicit.Implementation.template'));
-      var res_EIn := new FileWriter(GetFullPathRTE($'{t}Methods.Explicit.Interface.template'));
-      var res_EIm := new FileWriter(GetFullPathRTE($'{t}Methods.Explicit.Implementation.template'));
+      var res_IIn: Writer := new FileWriter(GetFullPathRTE($'{t}Methods.Implicit.Interface.template'));
+      var res_IIm: Writer := new FileWriter(GetFullPathRTE($'{t}Methods.Implicit.Implementation.template'));
+      var res_EIn: Writer := new FileWriter(GetFullPathRTE($'{t}Methods.Explicit.Interface.template'));
+      var res_EIm: Writer := new FileWriter(GetFullPathRTE($'{t}Methods.Explicit.Implementation.template'));
       
-      var res_In := new WriterArr(res_IIn, res_EIn);
-      var res_Im := new WriterArr(res_IIm, res_EIm);
+      var res_In: Writer := new WriterArr(res_IIn, res_EIn);
+      var res_Im: Writer := new WriterArr(res_IIm, res_EIm);
       
-      var res_I := new WriterArr(res_IIn, res_IIm);
-      var res_E := new WriterArr(res_EIn, res_EIm);
+      var res_I: Writer := new WriterArr(res_IIn, res_IIm);
+      var res_E: Writer := new WriterArr(res_EIn, res_EIm);
       
-      var res := new WriterArr(res_I, res_E);
+      var res: Writer := new WriterArr(res_I, res_E);
       
       loop 3 do
       begin
@@ -100,6 +105,7 @@ begin
           var is_short_def: boolean;
           
           var need_thread := false;
+          var implicit_only := false;
           foreach var setting in FixerUtils.ReadBlocks(bl[1], '!', false) do
             if setting[0] = nil then
               args_str := setting[1].Single else
@@ -120,12 +126,16 @@ begin
               end;
               
               'NeedThread': need_thread := true;
+              'ImplicitOnly': implicit_only := true;
               
               else raise new System.InvalidOperationException(setting[0]);
             end;
           
           if args_str=nil then raise new System.NullReferenceException($'{tn}({args_str})');
           if def=nil then raise new System.InvalidOperationException($'{tn}({args_str})');
+          
+          if implicit_only and need_thread then raise new System.NotSupportedException($'{tn}({args_str})');
+          if implicit_only and not is_short_def then raise new System.NotSupportedException($'{tn}({args_str})');
           
           var generics := new HashSet<string>;
           var where_record := new HashSet<string>;
@@ -136,6 +146,7 @@ begin
             var ind := arg_str.IndexOf(':=');
             if ind<>-1 then arg_str := arg_str.Remove(ind);
             ind := arg_str.IndexOf(':');
+            if ind=-1 then raise new System.InvalidOperationException(arg_str);
             var arg_type := arg_str.SubString(ind+1).Trim;
             
             Result := arg_str.Remove(ind).Split(',').ConvertAll(arg_name->(arg_name.Trim, arg_type));
@@ -237,25 +248,26 @@ begin
             
             var ptr_args := new HashSet<string>;
             foreach var arg in args do
-            begin
-              var is_ptr := (arg_usage[arg[0]]='ptr') and not arg[1].Contains('CommandQueue<');
-              if is_ptr then ptr_args += arg[0];
-              
-              res_EIm += '    private ';
-              res_EIm += arg[0].PadLeft(max_arg_w);
-              res_EIm += ': ';
-              if is_ptr then
+              if arg_usage.ContainsKey(arg[0]) then
               begin
-                res_EIm += '^';
-                res_EIm += arg[1];
-                res_EIm += ' := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<';
-                res_EIm += arg[1];
-                res_EIm += '>))';
-              end else
-                res_EIm += arg[1];
-              res_EIm += ';'#10;
-              
-            end;
+                var is_ptr := (arg_usage[arg[0]]='ptr') and not arg[1].Contains('CommandQueue<');
+                if is_ptr then ptr_args += arg[0];
+                
+                res_EIm += '    private ';
+                res_EIm += arg[0].PadLeft(max_arg_w);
+                res_EIm += ': ';
+                if is_ptr then
+                begin
+                  res_EIm += '^';
+                  res_EIm += arg[1];
+                  res_EIm += ' := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<';
+                  res_EIm += arg[1];
+                  res_EIm += '>))';
+                end else
+                  res_EIm += arg[1];
+                res_EIm += ';'#10;
+                
+              end;
             
             res_EIm += '    '#10;
             
@@ -496,30 +508,46 @@ begin
           
           {$endregion CommandType}
           
-          res_In += '    public ';
-          res += 'function ';
-          res_Im += t;
-          res_EIm += 'CommandQueue';
-          res_Im += '.';
-          res_E += 'Add';
-          res += fn;
-          res += generics_str;
-          res += '(';
-          res += args_str;
-          res += '): ';
-          res += t;
-          res_E += 'CommandQueue';
-          res_In += '; ';
-          res_Im += ' :=';
-          if where_record.Count<>0 then
-            res_In += where_record_str;
-          res += #10;
+          begin
+            var l_res_EIm := implicit_only ? new WriterEmpty  : res_EIm;
+            
+            var l_res_In  := implicit_only ? res_IIn          : res_In;
+            var l_res_Im  := implicit_only ? res_IIm          : res_Im;
+            
+            var l_res_E   := implicit_only ? new WriterEmpty  : res_E;
+            
+            var l_res     := implicit_only ? res_I            : res;
+            
+            l_res_In += '    public ';
+            l_res += 'function ';
+            l_res_Im += t;
+            l_res_EIm += 'CommandQueue';
+            l_res_Im += '.';
+            l_res_E += 'Add';
+            l_res += fn;
+            l_res += generics_str;
+            l_res += '(';
+            l_res += args_str;
+            l_res += '): ';
+            l_res += t;
+            l_res_E += 'CommandQueue';
+            l_res_In += ';';
+            if where_record.Count<>0 then
+              l_res_In += where_record_str;
+            l_res_Im += ' :=';
+            l_res += #10;
+            
+          end;
           
           if is_short_def then
           begin
-            res_EIm += 'Add';
-            res_Im += def.Single;
-            res_Im += #10;
+            var l_res_Im  := implicit_only ? res_IIm          : res_Im;
+            var l_res_EIm := implicit_only ? new WriterEmpty  : res_EIm;
+            
+            l_res_EIm += 'Add';
+            l_res_Im += def.Single;
+            l_res_Im += #10;
+            
           end else
           begin
             

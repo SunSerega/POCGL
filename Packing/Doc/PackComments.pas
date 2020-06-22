@@ -151,7 +151,7 @@ begin
         res.Close;
         skipped.Finish;
         
-        if is_secondary_proc then
+//        if is_secondary_proc then
         begin
           System.IO.File.Delete(fname);
           System.IO.File.Move($'{fname}.docres', fname);
