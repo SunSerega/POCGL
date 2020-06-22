@@ -14,11 +14,11 @@ type
       self.ptr := ptr;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += ptr_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var ptr := ptr_qr.GetRes;
         
@@ -59,11 +59,11 @@ type
       self.ptr := ptr;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += ptr_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var ptr := ptr_qr.GetRes;
         
@@ -108,13 +108,13 @@ type
       self.   len :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    ptr_qr :=    ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=    ptr_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    ptr :=    ptr_qr.GetRes;
         var offset := offset_qr.GetRes;
@@ -163,13 +163,13 @@ type
       self.   len :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    ptr_qr :=    ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=    ptr_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    ptr :=    ptr_qr.GetRes;
         var offset := offset_qr.GetRes;
@@ -237,11 +237,11 @@ type
       self.offset  := offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var offset_qr := offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var offset := offset_qr.GetRes;
         
@@ -288,12 +288,12 @@ type
       self.offset := offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    val_qr :=    val.Invoke    (tsk, c, main_dvc,  True, cq, nil); evs_l2 +=    val_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    val :=    val_qr.ToPtr;
         var offset := offset_qr.GetRes;
@@ -366,12 +366,12 @@ type
       self.a_offset := a_offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        a_qr :=        a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        a_qr.ev;
       var a_offset_qr := a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        a :=        a_qr.GetRes;
         var a_offset := a_offset_qr.GetRes;
@@ -421,13 +421,13 @@ type
       self.a_offset2 := a_offset2;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -481,14 +481,14 @@ type
       self.a_offset3 := a_offset3;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       var a_offset3_qr := a_offset3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset3_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -540,12 +540,12 @@ type
       self.a_offset := a_offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        a_qr :=        a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        a_qr.ev;
       var a_offset_qr := a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        a :=        a_qr.GetRes;
         var a_offset := a_offset_qr.GetRes;
@@ -595,13 +595,13 @@ type
       self.a_offset2 := a_offset2;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -655,14 +655,14 @@ type
       self.a_offset3 := a_offset3;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       var a_offset3_qr := a_offset3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset3_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -718,14 +718,14 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    a_offset_qr.ev;
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var    a_offset :=    a_offset_qr.GetRes;
@@ -783,7 +783,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -791,7 +791,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -853,7 +853,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -862,7 +862,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -922,14 +922,14 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    a_offset_qr.ev;
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var    a_offset :=    a_offset_qr.GetRes;
@@ -987,7 +987,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -995,7 +995,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -1057,7 +1057,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -1066,7 +1066,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -1123,12 +1123,12 @@ type
       self.pattern_len := pattern_len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         ptr_qr.ev;
       var pattern_len_qr := pattern_len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += pattern_len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         ptr :=         ptr_qr.GetRes;
         var pattern_len := pattern_len_qr.GetRes;
@@ -1177,14 +1177,14 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         ptr_qr.ev;
       var pattern_len_qr := pattern_len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += pattern_len_qr.ev;
       var      offset_qr :=      offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         ptr :=         ptr_qr.GetRes;
         var pattern_len := pattern_len_qr.GetRes;
@@ -1237,10 +1237,10 @@ type
       self.val^ := val;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         
         var res: cl_event;
@@ -1289,12 +1289,12 @@ type
       self.   len  :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var offset_qr := offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var offset := offset_qr.GetRes;
         var    len :=    len_qr.GetRes;
@@ -1338,11 +1338,11 @@ type
       self.val := val;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var val_qr := val.Invoke    (tsk, c, main_dvc,  True, cq, nil); evs_l2 += val_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var val := val_qr.ToPtr;
         
@@ -1397,13 +1397,13 @@ type
       self.   len :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    val_qr :=    val.Invoke    (tsk, c, main_dvc,  True, cq, nil); evs_l2 +=    val_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    val :=    val_qr.ToPtr;
         var offset := offset_qr.GetRes;
@@ -1461,11 +1461,11 @@ type
       self.b := b;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += b_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var b := b_qr.GetRes;
         
@@ -1506,11 +1506,11 @@ type
       self.b := b;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += b_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var b := b_qr.GetRes;
         
@@ -1557,14 +1557,14 @@ type
       self.     len :=      len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        b_qr.ev;
       var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += from_pos_qr.ev;
       var   to_pos_qr :=   to_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   to_pos_qr.ev;
       var      len_qr :=      len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        b :=        b_qr.GetRes;
         var from_pos := from_pos_qr.GetRes;
@@ -1619,14 +1619,14 @@ type
       self.     len :=      len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        b_qr.ev;
       var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += from_pos_qr.ev;
       var   to_pos_qr :=   to_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   to_pos_qr.ev;
       var      len_qr :=      len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        b :=        b_qr.GetRes;
         var from_pos := from_pos_qr.GetRes;

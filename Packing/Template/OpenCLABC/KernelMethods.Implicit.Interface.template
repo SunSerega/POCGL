@@ -3,6 +3,14 @@
     
     {$region 1#Exec}
     
+    public function Exec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
+    public function Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
+    public function Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
+    public function Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
     {$endregion 1#Exec}
     
     

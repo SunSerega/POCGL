@@ -1004,167 +1004,6 @@ type
     
     {$endregion 3#Copy}
     
-    {$region}
-    (**
-    
-    {$region Write}
-    
-    ///- function WriteData(ptr: IntPtr): Buffer;
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function WriteData(ptr: CommandQueue<IntPtr>): Buffer;
-    public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
-    
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function WriteData(ptr: pointer) := WriteData(IntPtr(ptr));
-    public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>) := WriteData(IntPtr(ptr), offset, len);
-    
-    
-    ///- function WriteArray(a: Array): Buffer;
-    ///Копирует данные из содержимого массива в память буфера
-    public function WriteArray(a: CommandQueue<&Array>): Buffer;
-    public function WriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
-    
-    ///- function WriteArray(a: Array): Buffer;
-    ///Копирует данные из содержимого массива в память буфера
-    public function WriteArray(a: &Array) := WriteArray(CommandQueue&<&Array>(a));
-    public function WriteArray(a: &Array; offset, len: CommandQueue<integer>) := WriteArray(CommandQueue&<&Array>(a), offset, len);
-    
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
-    begin Result := WriteData(@val, offset, Marshal.SizeOf&<TRecord>); end;
-    
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
-    
-    {$endregion Write}
-    
-    {$region Read}
-    
-    ///- function ReadData(ptr: IntPtr): Buffer;
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
-    public function ReadData(ptr: CommandQueue<IntPtr>): Buffer;
-    public function ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
-    
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
-    public function ReadData(ptr: pointer) := ReadData(IntPtr(ptr));
-    public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>) := ReadData(IntPtr(ptr), offset, len);
-    
-    ///- function ReadArray(a: Array): Buffer;
-    ///Копирует данные из памяти буфера в содержимое массива
-    public function ReadArray(a: CommandQueue<&Array>): Buffer;
-    public function ReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
-    
-    ///- function ReadArray(a: Array): Buffer;
-    ///Копирует данные из памяти буфера в содержимое массива
-    public function ReadArray(a: &Array) := ReadArray(CommandQueue&<&Array>(a));
-    public function ReadArray(a: &Array; offset, len: CommandQueue<integer>) := ReadArray(CommandQueue&<&Array>(a), offset, len);
-    
-    public function ReadValue<TRecord>(var val: TRecord; offset: CommandQueue<integer> := 0): Buffer; where TRecord: record;
-    begin
-      Result := ReadData(@val, offset, Marshal.SizeOf&<TRecord>);
-    end;
-    
-    {$endregion Read}
-    
-    {$region Fill}
-    
-    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): Buffer;
-    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): Buffer;
-    
-    public function FillData(ptr: pointer; pattern_len: CommandQueue<integer>) := FillData(IntPtr(ptr), pattern_len);
-    public function FillData(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := FillData(IntPtr(ptr), pattern_len, offset, len);
-    
-    ///- function ReadArray(a: Array): Buffer;
-    ///Заполняет буфер копиями содержимого массива
-    public function FillArray(a: CommandQueue<&Array>): Buffer;
-    public function FillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): Buffer;
-    
-    ///- function ReadArray(a: Array): Buffer;
-    ///Заполняет буфер копиями содержимого массива
-    public function FillArray(a: &Array) := FillArray(CommandQueue&<&Array>(a));
-    public function FillArray(a: &Array; offset, len: CommandQueue<integer>) := FillArray(CommandQueue&<&Array>(a), offset, len);
-    
-    ///- function FillValue(val: TRecord): Buffer;
-    ///Заполняет буфер копиями значения val
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FillValue<TRecord>(val: TRecord): Buffer; where TRecord: record;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
-    
-    ///- function FillValue(val: TRecord): Buffer;
-    ///Заполняет буфер копиями значения val
-    public function FillValue<TRecord>(val: CommandQueue<TRecord>): Buffer; where TRecord: record;
-    public function FillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
-    
-    {$endregion Fill}
-    
-    {$region Copy}
-    
-    public function CopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): Buffer;
-    public function CopyTo  (b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): Buffer;
-    
-    ///- function CopyFrom(b: Buffer): Buffer;
-    ///Копирует память из буфера b в текущий
-    public function CopyFrom(b: CommandQueue<Buffer>): Buffer;
-    ///- function CopyTo(b: Buffer): Buffer;
-    ///Копирует память из текущего буфера в b
-    public function CopyTo  (b: CommandQueue<Buffer>): Buffer;
-    
-    {$endregion Copy}
-    
-    {$region Get}
-    
-    public function GetData(offset, len: CommandQueue<integer>): IntPtr;
-    public function GetData := GetData(0,integer(self.Size32));
-    
-    
-    
-    public function GetArrayAt<TArray>(offset: CommandQueue<integer>; szs: CommandQueue<array of integer>): TArray; where TArray: &Array;
-    ///- function GetArray(szs: array of integer): TArray;
-    ///Создаёт новый массив указанного типа с размерами (исчисляемых в элементах, НЕ байтах) szs и копирует в него содержимое буфера
-    public function GetArray<TArray>(szs: CommandQueue<array of integer>): TArray; where TArray: &Array;
-    begin Result := GetArrayAt&<TArray>(0, szs); end;
-    
-    public function GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of CommandQueue<integer>): TArray; where TArray: &Array;
-    ///- function GetArray(szs: array of integer): TArray;
-    ///Создаёт новый массив указанного типа с размерами (исчисляемых в элементах, НЕ байтах) szs и копирует в него содержимое буфера
-    public function GetArray<TArray>(params szs: array of integer): TArray; where TArray: &Array;
-    begin Result := GetArrayAt&<TArray>(0, CommandQueue&<array of integer>(szs)); end;
-    
-    
-    public function GetArray1At<TRecord>(offset, length: CommandQueue<integer>): array of TRecord; where TRecord: record;
-    begin Result := GetArrayAt&<array of TRecord>(offset, length); end;
-    ///- function GetArray1(length: integer): array of TRecord;
-    ///Создаёт новый массив длиной в length элементов и копирует в него содержимое буфера
-    public function GetArray1<TRecord>(length: CommandQueue<integer>): array of TRecord; where TRecord: record;
-    begin Result := GetArrayAt&<array of TRecord>(0,length); end;
-    
-    public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
-    begin Result := GetArrayAt&<array of TRecord>(0, integer(sz.ToUInt32) div Marshal.SizeOf&<TRecord>); end;
-    
-    
-    public function GetArray2At<TRecord>(offset, length1, length2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
-    begin Result := GetArrayAt&<array[,] of TRecord>(offset, length1, length2); end;
-    public function GetArray2<TRecord>(length1, length2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
-    begin Result := GetArrayAt&<array[,] of TRecord>(0, length1, length2); end;
-    
-    
-    public function GetArray3At<TRecord>(offset, length1, length2, length3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
-    begin Result := GetArrayAt&<array[,,] of TRecord>(offset, length1, length2, length3); end;
-    public function GetArray3<TRecord>(length1, length2, length3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
-    begin Result := GetArrayAt&<array[,,] of TRecord>(0, length1, length2, length3); end;
-    
-    
-    
-    ///- function GetValueAt(offset: integer): TRecord;
-    ///Читает из буфера значение указанного размерного типа
-    ///offset указывает отступ в буфере в байтах
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord; where TRecord: record;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetValue<TRecord>: TRecord; where TRecord: record;
-    begin Result := GetValueAt&<TRecord>(0); end;
-    
-    {$endregion Get}
-    
-    (**)
-    {$endregion}
-    
   end;
   SubBuffer = sealed class(Buffer)
     private _parent: Buffer;
@@ -1303,48 +1142,15 @@ type
     
     {$region 1#Exec}
     
+    public function Exec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
+    public function Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
+    public function Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
+    public function Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): Kernel;
+    
     {$endregion 1#Exec}
-    
-    {$region}
-    (**
-    
-    {$region Exec}
-    
-    public function Exec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>): Kernel;
-    public function Exec(work_szs: array of integer; params args: array of CommandQueue<Buffer>) :=
-    Exec(work_szs.ConvertAll(sz->new UIntPtr(sz)), args);
-    
-    public function Exec1(work_sz1: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1), args);
-    public function Exec1(work_sz1: integer; params args: array of CommandQueue<Buffer>) := Exec1(new UIntPtr(work_sz1), args);
-    
-    public function Exec2(work_sz1, work_sz2: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1, work_sz2), args);
-    public function Exec2(work_sz1, work_sz2: integer; params args: array of CommandQueue<Buffer>) := Exec2(new UIntPtr(work_sz1), new UIntPtr(work_sz2), args);
-    
-    public function Exec3(work_sz1, work_sz2, work_sz3: UIntPtr; params args: array of CommandQueue<Buffer>) := Exec(new UIntPtr[](work_sz1, work_sz2, work_sz3), args);
-    public function Exec3(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<Buffer>) := Exec3(new UIntPtr(work_sz1), new UIntPtr(work_sz2), new UIntPtr(work_sz3), args);
-    
-    
-    public function Exec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>): Kernel;
-    public function Exec(work_szs: array of CommandQueue<integer>; params args: array of CommandQueue<Buffer>) :=
-    Exec(work_szs.ConvertAll(sz_q->sz_q.ThenConvert(sz->new UIntPtr(sz))), args);
-    
-    public function Exec1(work_sz1: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1), args);
-    public function Exec1(work_sz1: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec1(work_sz1.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    public function Exec2(work_sz1, work_sz2: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2), args);
-    public function Exec2(work_sz1, work_sz2: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec2(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    public function Exec3(work_sz1, work_sz2, work_sz3: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := Exec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2, work_sz3), args);
-    public function Exec3(work_sz1, work_sz2, work_sz3: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := Exec3(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), work_sz3.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    
-    public function Exec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>): Kernel;
-    public function Exec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>): Kernel;
-    
-    {$endregion Exec}
-    (**)
-    
-    {$endregion}
     
   end;
   
@@ -3151,7 +2957,7 @@ type
     // Иначе останется ивент, который никто не удалил
     protected function NeedThread: boolean; virtual := false;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (T, cl_command_queue, CLTaskBase, EventList)->cl_event; abstract;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (T, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; abstract;
     
     private function MakeEvList(start_ev: EventList): List<EventList>;
     begin
@@ -3171,7 +2977,7 @@ type
       var ev_l2 := EventList.Combine(evs_l2, tsk, c.Native, main_dvc, cq);
       
       if not need_thread and (ev_l1=nil) then
-        Result := enq_f(prev_qr.GetRes, cq, tsk, ev_l2) else
+        Result := enq_f(prev_qr.GetRes, cq, tsk, c, ev_l2) else
       begin
         NativeUtils.FixCQ(c.Native, main_dvc, cq);
         
@@ -3182,7 +2988,7 @@ type
         var res: UserEvent;
         
         if need_thread then
-          res := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, ev_l2), c.Native, tsk) else
+          res := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, c, ev_l2), c.Native, tsk) else
         begin
           res := tsk.MakeUserEvent(c.Native);
           
@@ -3190,7 +2996,7 @@ type
           ev_l1.AttachCallback(()->
           begin
             ev_l1.Release;
-            var enq_ev := enq_f(prev_qr.GetRes, lcq, tsk, ev_l2);
+            var enq_ev := enq_f(prev_qr.GetRes, lcq, tsk, c, ev_l2);
             EventList.AttachCallback(enq_ev, ()->res.SetStatus(CommandExecutionStatus.COMPLETE), tsk);
           end, tsk, c.Native, main_dvc, lcq);
           
@@ -3449,115 +3255,6 @@ type
     
     {$endregion 3#Copy}
     
-    {$region}
-    (**
-    
-    {$region Write}
-    
-    ///- function AddWriteData(ptr: IntPtr): BufferCommandQueue;
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue := AddWriteData(ptr, 0,GetSizeQ);
-    public function AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
-    
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
-    public function AddWriteData(ptr: pointer) := AddWriteData(IntPtr(ptr));
-    public function AddWriteData(ptr: pointer; offset, len: CommandQueue<integer>) := AddWriteData(IntPtr(ptr), offset, len);
-    
-    
-    ///- function AddWriteArray(a: Array): BufferCommandQueue;
-    ///Копирует данные из содержимого массива в память буфера
-    public function AddWriteArray(a: CommandQueue<&Array>): BufferCommandQueue := AddWriteArray(a, 0,GetSizeQ);
-    public function AddWriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
-    
-    ///- function AddWriteArray(a: Array): BufferCommandQueue;
-    ///Копирует данные из содержимого массива в память буфера
-    public function AddWriteArray(a: &Array) := AddWriteArray(CommandQueue&<&Array>(a));
-    public function AddWriteArray(a: &Array; offset, len: CommandQueue<integer>) := AddWriteArray(CommandQueue&<&Array>(a), offset, len);
-    
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
-    
-    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
-    
-    {$endregion Write}
-    
-    {$region Read}
-    
-    ///- function AddReadData(ptr: IntPtr): BufferCommandQueue;
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
-    public function AddReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue := AddReadData(ptr, 0,GetSizeQ);
-    public function AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
-    
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
-    public function AddReadData(ptr: pointer) := AddReadData(IntPtr(ptr));
-    public function AddReadData(ptr: pointer; offset, len: CommandQueue<integer>) := AddReadData(IntPtr(ptr), offset, len);
-    
-    ///- function AddReadArray(a: Array): BufferCommandQueue;
-    ///Копирует данные из памяти буфера в содержимое массива
-    public function AddReadArray(a: CommandQueue<&Array>): BufferCommandQueue := AddReadArray(a, 0,GetSizeQ);
-    public function AddReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
-    
-    ///- function AddReadArray(a: Array): BufferCommandQueue;
-    ///Копирует данные из памяти буфера в содержимое массива
-    public function AddReadArray(a: &Array) := AddReadArray(CommandQueue&<&Array>(a));
-    public function AddReadArray(a: &Array; offset, len: CommandQueue<integer>) := AddReadArray(CommandQueue&<&Array>(a), offset, len);
-    
-    public function AddReadValue<TRecord>(var val: TRecord; offset: CommandQueue<integer> := 0): BufferCommandQueue; where TRecord: record;
-    begin
-      Result := AddReadData(@val, offset, Marshal.SizeOf&<TRecord>);
-    end;
-    
-    {$endregion Read}
-    
-    {$region Fill}
-    
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue := AddFillData(ptr,pattern_len, 0,GetSizeQ);
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): BufferCommandQueue;
-    
-    public function AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>) := AddFillData(IntPtr(ptr), pattern_len);
-    public function AddFillData(ptr: pointer; pattern_len, offset, len: CommandQueue<integer>) := AddFillData(IntPtr(ptr), pattern_len, offset, len);
-    
-    ///- function AddReadArray(a: Array): BufferCommandQueue;
-    ///Заполняет буфер копиями содержимого массива
-    public function AddFillArray(a: CommandQueue<&Array>): BufferCommandQueue := AddFillArray(a, 0,GetSizeQ);
-    public function AddFillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>): BufferCommandQueue;
-    
-    ///- function AddReadArray(a: Array): BufferCommandQueue;
-    ///Заполняет буфер копиями содержимого массива
-    public function AddFillArray(a: &Array) := AddFillArray(CommandQueue&<&Array>(a));
-    public function AddFillArray(a: &Array; offset, len: CommandQueue<integer>) := AddFillArray(CommandQueue&<&Array>(a), offset, len);
-    
-    ///- function AddFillValue(val: TRecord): BufferCommandQueue;
-    ///Заполняет буфер копиями значения val
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddFillValue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
-    begin Result := AddFillValue(val, 0,GetSizeQ); end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function AddFillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
-    
-    ///- function AddFillValue(val: TRecord): BufferCommandQueue;
-    ///Заполняет буфер копиями значения val
-    public function AddFillValue<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
-    begin Result := AddFillValue(val, 0,GetSizeQ); end;
-    public function AddFillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
-    
-    {$endregion Fill}
-    
-    {$region Copy}
-    
-    public function AddCopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): BufferCommandQueue;
-    public function AddCopyTo  (b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>): BufferCommandQueue;
-    
-    ///- function AddCopyFrom(b: Buffer): BufferCommandQueue;
-    ///Копирует память из буфера b в текущий
-    public function AddCopyFrom(b: CommandQueue<Buffer>) := AddCopyFrom(b, 0,0, GetSizeQ);
-    ///- function AddCopyTo(b: Buffer): BufferCommandQueue;
-    ///Копирует память из текущего буфера в b
-    public function AddCopyTo  (b: CommandQueue<Buffer>) := AddCopyTo  (b, 0,0, GetSizeQ);
-    
-    {$endregion Copy}
-    
-    (**)
-    {$endregion}
-    
   end;
   
   {$endregion BufferCommandQueue}
@@ -3622,48 +3319,15 @@ type
     
     {$region 1#Exec}
     
+    public function AddExec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
+    
+    public function AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
+    
+    public function AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
+    
+    public function AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
+    
     {$endregion 1#Exec}
-    
-    {$region}
-    (**
-    
-    {$region Exec}
-    
-    public function AddExec(work_szs: array of UIntPtr; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
-    public function AddExec(work_szs: array of integer; params args: array of CommandQueue<Buffer>) :=
-    AddExec(work_szs.ConvertAll(sz->new UIntPtr(sz)), args);
-    
-    public function AddExec1(work_sz1: UIntPtr; params args: array of CommandQueue<Buffer>) := AddExec(new UIntPtr[](work_sz1), args);
-    public function AddExec1(work_sz1: integer; params args: array of CommandQueue<Buffer>) := AddExec1(new UIntPtr(work_sz1), args);
-    
-    public function AddExec2(work_sz1, work_sz2: UIntPtr; params args: array of CommandQueue<Buffer>) := AddExec(new UIntPtr[](work_sz1, work_sz2), args);
-    public function AddExec2(work_sz1, work_sz2: integer; params args: array of CommandQueue<Buffer>) := AddExec2(new UIntPtr(work_sz1), new UIntPtr(work_sz2), args);
-    
-    public function AddExec3(work_sz1, work_sz2, work_sz3: UIntPtr; params args: array of CommandQueue<Buffer>) := AddExec(new UIntPtr[](work_sz1, work_sz2, work_sz3), args);
-    public function AddExec3(work_sz1, work_sz2, work_sz3: integer; params args: array of CommandQueue<Buffer>) := AddExec3(new UIntPtr(work_sz1), new UIntPtr(work_sz2), new UIntPtr(work_sz3), args);
-    
-    
-    public function AddExec(work_szs: array of CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
-    public function AddExec(work_szs: array of CommandQueue<integer>; params args: array of CommandQueue<Buffer>) :=
-    AddExec(work_szs.ConvertAll(sz_q->sz_q.ThenConvert(sz->new UIntPtr(sz))), args);
-    
-    public function AddExec1(work_sz1: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := AddExec(new CommandQueue<UIntPtr>[](work_sz1), args);
-    public function AddExec1(work_sz1: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := AddExec1(work_sz1.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    public function AddExec2(work_sz1, work_sz2: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := AddExec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2), args);
-    public function AddExec2(work_sz1, work_sz2: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := AddExec2(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    public function AddExec3(work_sz1, work_sz2, work_sz3: CommandQueue<UIntPtr>; params args: array of CommandQueue<Buffer>) := AddExec(new CommandQueue<UIntPtr>[](work_sz1, work_sz2, work_sz3), args);
-    public function AddExec3(work_sz1, work_sz2, work_sz3: CommandQueue<integer>; params args: array of CommandQueue<Buffer>) := AddExec3(work_sz1.ThenConvert(sz->new UIntPtr(sz)), work_sz2.ThenConvert(sz->new UIntPtr(sz)), work_sz3.ThenConvert(sz->new UIntPtr(sz)), args);
-    
-    
-    public function AddExec(work_szs: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
-    public function AddExec(work_szs: CommandQueue<array of integer>; params args: array of CommandQueue<Buffer>): KernelCommandQueue;
-    
-    {$endregion Exec}
-    
-    (**)
-    {$endregion}
     
   end;
   
@@ -4409,11 +4073,11 @@ type
       self.ptr := ptr;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += ptr_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var ptr := ptr_qr.GetRes;
         
@@ -4454,11 +4118,11 @@ type
       self.ptr := ptr;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += ptr_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var ptr := ptr_qr.GetRes;
         
@@ -4503,13 +4167,13 @@ type
       self.   len :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    ptr_qr :=    ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=    ptr_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    ptr :=    ptr_qr.GetRes;
         var offset := offset_qr.GetRes;
@@ -4558,13 +4222,13 @@ type
       self.   len :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    ptr_qr :=    ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=    ptr_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    ptr :=    ptr_qr.GetRes;
         var offset := offset_qr.GetRes;
@@ -4632,11 +4296,11 @@ type
       self.offset  := offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var offset_qr := offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var offset := offset_qr.GetRes;
         
@@ -4683,12 +4347,12 @@ type
       self.offset := offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    val_qr :=    val.Invoke    (tsk, c, main_dvc,  True, cq, nil); evs_l2 +=    val_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    val :=    val_qr.ToPtr;
         var offset := offset_qr.GetRes;
@@ -4761,12 +4425,12 @@ type
       self.a_offset := a_offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        a_qr :=        a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        a_qr.ev;
       var a_offset_qr := a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        a :=        a_qr.GetRes;
         var a_offset := a_offset_qr.GetRes;
@@ -4816,13 +4480,13 @@ type
       self.a_offset2 := a_offset2;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -4876,14 +4540,14 @@ type
       self.a_offset3 := a_offset3;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       var a_offset3_qr := a_offset3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset3_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -4935,12 +4599,12 @@ type
       self.a_offset := a_offset;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        a_qr :=        a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        a_qr.ev;
       var a_offset_qr := a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        a :=        a_qr.GetRes;
         var a_offset := a_offset_qr.GetRes;
@@ -4990,13 +4654,13 @@ type
       self.a_offset2 := a_offset2;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -5050,14 +4714,14 @@ type
       self.a_offset3 := a_offset3;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         a_qr :=         a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         a_qr.ev;
       var a_offset1_qr := a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset1_qr.ev;
       var a_offset2_qr := a_offset2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset2_qr.ev;
       var a_offset3_qr := a_offset3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += a_offset3_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         a :=         a_qr.GetRes;
         var a_offset1 := a_offset1_qr.GetRes;
@@ -5113,14 +4777,14 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    a_offset_qr.ev;
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var    a_offset :=    a_offset_qr.GetRes;
@@ -5178,7 +4842,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -5186,7 +4850,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -5248,7 +4912,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -5257,7 +4921,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -5317,14 +4981,14 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    a_offset_qr.ev;
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var    a_offset :=    a_offset_qr.GetRes;
@@ -5382,7 +5046,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -5390,7 +5054,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -5452,7 +5116,7 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=           a_qr.ev;
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   a_offset1_qr.ev;
@@ -5461,7 +5125,7 @@ type
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += buff_offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var           a :=           a_qr.GetRes;
         var   a_offset1 :=   a_offset1_qr.GetRes;
@@ -5518,12 +5182,12 @@ type
       self.pattern_len := pattern_len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         ptr_qr.ev;
       var pattern_len_qr := pattern_len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += pattern_len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         ptr :=         ptr_qr.GetRes;
         var pattern_len := pattern_len_qr.GetRes;
@@ -5572,14 +5236,14 @@ type
       self.        len :=         len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=         ptr_qr.ev;
       var pattern_len_qr := pattern_len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += pattern_len_qr.ev;
       var      offset_qr :=      offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      offset_qr.ev;
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=         len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var         ptr :=         ptr_qr.GetRes;
         var pattern_len := pattern_len_qr.GetRes;
@@ -5632,10 +5296,10 @@ type
       self.val^ := val;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         
         var res: cl_event;
@@ -5684,12 +5348,12 @@ type
       self.   len  :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var offset_qr := offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var offset := offset_qr.GetRes;
         var    len :=    len_qr.GetRes;
@@ -5733,11 +5397,11 @@ type
       self.val := val;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var val_qr := val.Invoke    (tsk, c, main_dvc,  True, cq, nil); evs_l2 += val_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var val := val_qr.ToPtr;
         
@@ -5792,13 +5456,13 @@ type
       self.   len :=    len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var    val_qr :=    val.Invoke    (tsk, c, main_dvc,  True, cq, nil); evs_l2 +=    val_qr.ev;
       var offset_qr := offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += offset_qr.ev;
       var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var    val :=    val_qr.ToPtr;
         var offset := offset_qr.GetRes;
@@ -5856,11 +5520,11 @@ type
       self.b := b;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += b_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var b := b_qr.GetRes;
         
@@ -5901,11 +5565,11 @@ type
       self.b := b;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += b_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var b := b_qr.GetRes;
         
@@ -5952,14 +5616,14 @@ type
       self.     len :=      len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        b_qr.ev;
       var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += from_pos_qr.ev;
       var   to_pos_qr :=   to_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   to_pos_qr.ev;
       var      len_qr :=      len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        b :=        b_qr.GetRes;
         var from_pos := from_pos_qr.GetRes;
@@ -6014,14 +5678,14 @@ type
       self.     len :=      len;
     end;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList)->cl_event; override;
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=        b_qr.ev;
       var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 += from_pos_qr.ev;
       var   to_pos_qr :=   to_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   to_pos_qr.ev;
       var      len_qr :=      len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=      len_qr.ev;
       
-      Result := (o, cq, tsk, evs)->
+      Result := (o, cq, tsk, c, evs)->
       begin
         var        b :=        b_qr.GetRes;
         var from_pos := from_pos_qr.GetRes;
@@ -6060,645 +5724,6 @@ function BufferCommandQueue.AddCopyForm(b: CommandQueue<Buffer>; from_pos, to_po
 AddCommand(new BufferCommandCopyForm(b, from_pos, to_pos, len));
 
 {$endregion 3#Copy}
-
-(**
-{$region Write}
-
-type
-  BufferCommandWriteData = sealed class(EnqueueableGPUCommand<Buffer>)
-    public ptr_q: CommandQueue<IntPtr>;
-    public offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(ptr_q: CommandQueue<IntPtr>; offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.ptr_q    := ptr_q;
-      self.offset_q := offset_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var ptr     := ptr_q    .Invoke(tsk, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, ptr.ev, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        
-        cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, Bool.NON_BLOCKING,
-          new UIntPtr(offset.Get), new UIntPtr(len.Get),
-          ptr.Get,
-          prev_ev.count,prev_ev.evs,res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      ptr_q   .RegisterWaitables(tsk, prev_hubs);
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  BufferCommandWriteArray = sealed class(EnqueueableGPUCommand<Buffer>)
-    public a_q: CommandQueue<&Array>;
-    public offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(a_q: CommandQueue<&Array>; offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.allow_sync_enq := false;
-      self.a_q      := a_q;
-      self.offset_q := offset_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var a       := a_q      .Invoke(tsk, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, a.ev, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        
-        cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, Bool.BLOCKING,
-          new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
-          Marshal.UnsafeAddrOfPinnedArrayElement(a.WaitAndGet,0),
-          0,IntPtr.Zero,IntPtr.Zero
-        ).RaiseIfError;
-        
-        Result := cl_event.Zero;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      a_q     .RegisterWaitables(tsk, prev_hubs);
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  BufferCommandWriteValue<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
-    public val: IntPtr;
-    public offset_q: CommandQueue<integer>;
-    
-    public constructor(val: T; offset_q: CommandQueue<integer>);
-    begin
-      self.val      := __NativeUtils.CopyToUnm(val);
-      self.offset_q := offset_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, offset.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        
-        cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, Bool.NON_BLOCKING,
-          new UIntPtr(offset.Get), new UIntPtr(Marshal.SizeOf&<T>),
-          self.val,
-          prev_ev.count,prev_ev.evs,res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    protected procedure Finalize; override :=
-    Marshal.FreeHGlobal(self.val);
-    
-  end;
-  BufferCommandWriteValueQ<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
-    public val_q: CommandQueue<T>;
-    public offset_q: CommandQueue<integer>;
-    
-    public constructor(val_q: CommandQueue<T>; offset_q: CommandQueue<integer>);
-    begin
-      self.val_q    := val_q;
-      self.offset_q := offset_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var val     := val_q    .Invoke(tsk, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, val.ev, offset.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        var val_ptr := __NativeUtils.CopyToUnm(val.Get());
-        
-        cl.EnqueueWriteBuffer(
-          l_cq, b.memobj, Bool.NON_BLOCKING,
-          new UIntPtr(offset.Get), new UIntPtr(Marshal.SizeOf&<T>),
-          val_ptr,
-          prev_ev.count,prev_ev.evs,res_ev
-        ).RaiseIfError;
-        
-        __EventList.AttachCallback(res_ev, (ev,st,data)->
-        begin
-          tsk.AddErr(st);
-          Marshal.FreeHGlobal(val_ptr);
-          __NativeUtils.GCHndFree(data);
-        end);
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      val_q   .RegisterWaitables(tsk, prev_hubs);
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  
-function BufferCommandQueue.AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandWriteData(ptr, offset, len));
-
-
-function BufferCommandQueue.AddWriteArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandWriteArray(a, offset, len));
-
-
-function BufferCommandQueue.AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>) :=
-AddCommand(new BufferCommandWriteValue<TRecord>(val, offset));
-
-function BufferCommandQueue.AddWriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>) :=
-AddCommand(new BufferCommandWriteValueQ<TRecord>(val, offset));
-
-{$endregion Write}
-
-{$region Read}
-
-type
-  BufferCommandReadData = sealed class(EnqueueableGPUCommand<Buffer>)
-    public ptr_q: CommandQueue<IntPtr>;
-    public offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(ptr_q: CommandQueue<IntPtr>; offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.ptr_q    := ptr_q;
-      self.offset_q := offset_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var ptr     := ptr_q    .Invoke(tsk, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, ptr.ev, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        
-        cl.EnqueueReadBuffer(
-          l_cq, b.memobj, Bool.NON_BLOCKING,
-          new UIntPtr(offset.Get), new UIntPtr(len.Get),
-          ptr.Get,
-          prev_ev.count,prev_ev.evs,res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      ptr_q   .RegisterWaitables(tsk, prev_hubs);
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  BufferCommandReadArray = sealed class(EnqueueableGPUCommand<Buffer>)
-    public a_q: CommandQueue<&Array>;
-    public offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(a_q: CommandQueue<&Array>; offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.allow_sync_enq := false;
-      self.a_q      := a_q;
-      self.offset_q := offset_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var a       := a_q      .Invoke(tsk, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, a.ev, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        
-        cl.EnqueueReadBuffer(
-          l_cq, b.memobj, Bool.BLOCKING,
-          new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
-          Marshal.UnsafeAddrOfPinnedArrayElement(a.WaitAndGet,0),
-          0,IntPtr.Zero,IntPtr.Zero
-        ).RaiseIfError;
-        
-        Result := cl_event.Zero;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      a_q     .RegisterWaitables(tsk, prev_hubs);
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  
-function BufferCommandQueue.AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandReadData(ptr, offset, len));
-
-
-function BufferCommandQueue.AddReadArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandReadArray(a, offset, len));
-
-{$endregion Read}
-
-{$region Fill}
-
-type
-  BufferCommandDataFill = sealed class(EnqueueableGPUCommand<Buffer>)
-    public ptr_q: CommandQueue<IntPtr>;
-    public pattern_len_q, offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(ptr: CommandQueue<IntPtr>; pattern_len_q, offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.ptr_q          := ptr_q;
-      self.pattern_len_q  := pattern_len_q;
-      self.offset_q       := offset_q;
-      self.len_q          := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var ptr         := ptr_q        .Invoke(tsk, c, cq, new __EventList);
-      var pattern_len := pattern_len_q.Invoke(tsk, c, cq, new __EventList);
-      var offset      := offset_q     .Invoke(tsk, c, cq, new __EventList);
-      var len         := len_q        .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, ptr.ev, pattern_len.ev, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        
-        cl.EnqueueFillBuffer(
-          l_cq, b.memobj,
-          ptr.Get, new UIntPtr(pattern_len.Get),
-          new UIntPtr(offset.Get), new UIntPtr(len.Get),
-          prev_ev.count, prev_ev.evs, res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      ptr_q         .RegisterWaitables(tsk, prev_hubs);
-      pattern_len_q .RegisterWaitables(tsk, prev_hubs);
-      offset_q      .RegisterWaitables(tsk, prev_hubs);
-      len_q         .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  BufferCommandArrayFill = sealed class(EnqueueableGPUCommand<Buffer>)
-    public a_q: CommandQueue<&Array>;
-    public offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(a_q: CommandQueue<&Array>; offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.allow_sync_enq := false;
-      self.a_q      := a_q;
-      self.offset_q := offset_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var a       := a_q      .Invoke(tsk, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, a.ev, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        var la := a.WaitAndGet;
-        
-        // Синхронного Fill нету, поэтому между cl.Enqueue и cl.WaitForEvents сборщик мусора может сломать указатель
-        // Остаётся только закреплять, хоть так и не любой тип массива пропустит
-        var a_hnd := GCHandle.Alloc(la, GCHandleType.Pinned);
-        
-        cl.EnqueueFillBuffer(
-          l_cq, b.memobj,
-          a_hnd.AddrOfPinnedObject, new UIntPtr(System.Buffer.ByteLength(la)),
-          new UIntPtr(offset.WaitAndGet), new UIntPtr(len.WaitAndGet),
-          prev_ev.count,prev_ev.evs,res_ev
-        ).RaiseIfError;
-        cl.WaitForEvents(1,res_ev).RaiseIfError;
-        cl.ReleaseEvent(res_ev).RaiseIfError;
-        
-        a_hnd.Free;
-        Result := cl_event.Zero;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      a_q     .RegisterWaitables(tsk, prev_hubs);
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  BufferCommandValueFill<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
-    public val: IntPtr;
-    public offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(val: T; offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.val      := __NativeUtils.CopyToUnm(val);
-      self.offset_q := offset_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        
-        cl.EnqueueFillBuffer(
-          l_cq, b.memobj,
-          val, new UIntPtr(Marshal.SizeOf&<T>),
-          new UIntPtr(offset.Get), new UIntPtr(len.Get),
-          prev_ev.count,prev_ev.evs,res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    protected procedure Finalize; override :=
-    Marshal.FreeHGlobal(self.val);
-    
-  end;
-  BufferCommandValueFillQ<T> = sealed class(EnqueueableGPUCommand<Buffer>) where T: record;
-    public val_q: CommandQueue<T>;
-    public offset_q, len_q: CommandQueue<integer>;
-    
-    public constructor(val_q: CommandQueue<T>; offset_q, len_q: CommandQueue<integer>);
-    begin
-      self.val_q    := val_q;
-      self.offset_q := offset_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var val     := val_q    .Invoke(tsk, c, cq, new __EventList);
-      var offset  := offset_q .Invoke(tsk, c, cq, new __EventList);
-      var len     := len_q    .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, val.ev, offset.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        var val_ptr := __NativeUtils.CopyToUnm(val.Get());
-        
-        cl.EnqueueFillBuffer(
-          l_cq, b.memobj,
-          val_ptr, new UIntPtr(Marshal.SizeOf&<T>),
-          new UIntPtr(offset.Get), new UIntPtr(len.Get),
-          prev_ev.count,prev_ev.evs,res_ev
-        ).RaiseIfError;
-        
-        __EventList.AttachCallback(res_ev, (ev,st,data)->
-        begin
-          tsk.AddErr(st);
-          Marshal.FreeHGlobal(val_ptr);
-          __NativeUtils.GCHndFree(data);
-        end);
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      val_q   .RegisterWaitables(tsk, prev_hubs);
-      offset_q.RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-  
-function BufferCommandQueue.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandDataFill(ptr,pattern_len, offset,len));
-
-
-function BufferCommandQueue.AddFillArray(a: CommandQueue<&Array>; offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandArrayFill(a, offset,len));
-
-
-function BufferCommandQueue.AddFillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandValueFill<TRecord>(val, offset, len));
-
-function BufferCommandQueue.AddFillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandValueFillQ<TRecord>(val, offset, len));
-
-{$endregion Fill}
-
-{$region Copy}
-
-type
-  BufferCommandCopyFrom = sealed class(EnqueueableGPUCommand<Buffer>)
-    public buf_q: CommandQueue<Buffer>;
-    public f_pos_q, t_pos_q, len_q: CommandQueue<integer>;
-    
-    public constructor(buf_q: CommandQueue<Buffer>; f_pos_q, t_pos_q, len_q: CommandQueue<integer>);
-    begin
-      self.buf_q    := buf_q;
-      self.f_pos_q  := f_pos_q;
-      self.t_pos_q  := t_pos_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var buf   := buf_q  .Invoke(tsk, c, cq, new __EventList);
-      var f_pos := f_pos_q.Invoke(tsk, c, cq, new __EventList);
-      var t_pos := t_pos_q.Invoke(tsk, c, cq, new __EventList);
-      var len   := len_q  .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, buf.ev, f_pos.ev, t_pos.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        
-        var b2 := buf.Get;
-        if b2.memobj=cl_mem.Zero then b2.Init(l_c);
-        
-        cl.EnqueueCopyBuffer(
-          l_cq, b2.memobj,b.memobj,
-          new UIntPtr(f_pos.Get), new UIntPtr(t_pos.Get),
-          new UIntPtr(len.Get),
-          prev_ev.count,prev_ev.evs, res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      buf_q   .RegisterWaitables(tsk, prev_hubs);
-      f_pos_q .RegisterWaitables(tsk, prev_hubs);
-      t_pos_q .RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  BufferCommandCopyTo = sealed class(EnqueueableGPUCommand<Buffer>)
-    public buf_q: CommandQueue<Buffer>;
-    public f_pos_q, t_pos_q, len_q: CommandQueue<integer>;
-    
-    public constructor(buf_q: CommandQueue<Buffer>; f_pos_q, t_pos_q, len_q: CommandQueue<integer>);
-    begin
-      self.buf_q    := buf_q;
-      self.f_pos_q  := f_pos_q;
-      self.t_pos_q  := t_pos_q;
-      self.len_q    := len_q;
-    end;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; var cq: cl_command_queue; var ev_res: __EventList): (Buffer, Context, cl_command_queue, __EventList)->cl_event; override;
-    begin
-      var buf   := buf_q  .Invoke(tsk, c, cq, new __EventList);
-      var f_pos := f_pos_q.Invoke(tsk, c, cq, new __EventList);
-      var t_pos := t_pos_q.Invoke(tsk, c, cq, new __EventList);
-      var len   := len_q  .Invoke(tsk, c, cq, new __EventList);
-      ev_res := __EventList.Combine(ev_res, buf.ev, f_pos.ev, t_pos.ev, len.ev);
-      
-      FixCQ(c, cq);
-      
-      Result := (b, l_c, l_cq, prev_ev)->
-      begin
-        var res_ev: cl_event;
-        
-        var b2 := buf.Get;
-        if b2.memobj=cl_mem.Zero then b2.Init(l_c);
-        
-        cl.EnqueueCopyBuffer(
-          l_cq, b.memobj,b2.memobj,
-          new UIntPtr(f_pos.Get), new UIntPtr(t_pos.Get),
-          new UIntPtr(len.Get),
-          prev_ev.count,prev_ev.evs, res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<object>); override;
-    begin
-      buf_q   .RegisterWaitables(tsk, prev_hubs);
-      f_pos_q .RegisterWaitables(tsk, prev_hubs);
-      t_pos_q .RegisterWaitables(tsk, prev_hubs);
-      len_q   .RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-  end;
-  
-function BufferCommandQueue.AddCopyFrom(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandCopyFrom(b, from,&to, len));
-
-function BufferCommandQueue.AddCopyTo(b: CommandQueue<Buffer>; from, &to, len: CommandQueue<integer>) :=
-AddCommand(new BufferCommandCopyTo(b, &to,from, len));
-
-{$endregion Copy}
-(**)
 
 {$endregion BufferCQ}
 
@@ -6836,96 +5861,270 @@ Context.Default.SyncInvoke(self.NewQueue.AddCopyForm(b, from_pos, to_pos, len) a
 
 {$endregion 3#Copy}
 
-(**
-{$region Get}
-
-function Buffer.GetData(offset, len: CommandQueue<integer>): IntPtr;
-begin
-  var res: IntPtr;
-  
-  var Qs_len: ()->CommandQueue<integer>;
-  if len is ConstQueue<integer> then
-    Qs_len := ()->len else
-  if len is MultiusableCommandQueueNode<integer>(var mcqn) then
-    Qs_len := mcqn.hub.MakeNode else
-    Qs_len := len.Multiusable;
-  
-  var Q_res := Qs_len().ThenConvert(len_val->
-  begin
-    Result := Marshal.AllocHGlobal(len_val);
-    res := Result;
-  end);
-  
-  Context.Default.SyncInvoke(
-    self.NewQueue.AddReadData(Q_res, offset,Qs_len()) as CommandQueue<Buffer>
-  );
-  
-  Result := res;
-end;
-
-function Buffer.GetArrayAt<TArray>(offset: CommandQueue<integer>; szs: CommandQueue<array of integer>): TArray;
-begin
-  var el_t := typeof(TArray).GetElementType;
-  
-  if szs is ConstQueue<array of integer>(var const_szs) then
-  begin
-    var res := System.Array.CreateInstance(
-      el_t,
-      const_szs.res
-    );
-    
-    self.ReadArray(res, 0,Marshal.SizeOf(el_t)*res.Length);
-    
-    Result := TArray(res);
-  end else
-  begin
-    var Qs_szs: ()->CommandQueue<array of integer>;
-    if szs is ConstQueue<array of integer> then
-      Qs_szs := ()->szs else
-    if szs is MultiusableCommandQueueNode<array of integer>(var mcqn) then
-      Qs_szs := mcqn.hub.MakeNode else
-      Qs_szs := szs.Multiusable;
-    
-    var Qs_a := Qs_szs().ThenConvert(szs_val->
-    System.Array.CreateInstance(
-      el_t,
-      szs_val
-    )).Multiusable;
-    
-    var Q_a := Qs_a();
-    var Q_a_len := Qs_szs().ThenConvert( szs_val -> Marshal.SizeOf(el_t)*szs_val.Aggregate((i1,i2)->i1*i2) );
-    var Q_res := Qs_a().Cast&<TArray>;
-    
-    Result := Context.Default.SyncInvoke(
-      self.NewQueue.AddReadArray(Q_a, offset, Q_a_len)
-      as CommandQueue<Buffer> +
-      Q_res
-    );
-  end;
-  
-end;
-
-function Buffer.GetArrayAt<TArray>(offset: CommandQueue<integer>; params szs: array of CommandQueue<integer>) :=
-szs.All(q->q is ConstQueue<integer>) ?
-GetArrayAt&<TArray>(offset, CommandQueue&<array of integer>( szs.ConvertAll(q->ConstQueue&<integer>(q).res) )) :
-GetArrayAt&<TArray>(offset, CombineAsyncQueue(a->a, szs));
-
-function Buffer.GetValueAt<TRecord>(offset: CommandQueue<integer>): TRecord;
-begin
-  Context.Default.SyncInvoke(
-    self.NewQueue
-    .AddReadValue(Result, offset) as CommandQueue<Buffer>
-  );
-end;
-
-{$endregion Get}
-(**)
-
 {$endregion Buffer}
 
 {$region KernelCQ}
 
 {$region 1#Exec}
+
+{$region Exec1}
+
+type
+  KernelCommandExec1 = sealed class(EnqueueableGPUCommand<Kernel>)
+    private  sz1: CommandQueue<integer>;
+    private args: array of CommandQueue<KernelArg>;
+    
+    public constructor(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>);
+    begin
+      self. sz1 :=  sz1;
+      self.args := args;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetRes;
+        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        
+        var res: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, o.ntv, 1,
+            nil,
+            new UIntPtr[](new UIntPtr(sz1)),
+            nil,
+            evs.count, evs.evs, res
+          );
+        end);
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+       sz1.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion Exec1}
+
+function KernelCommandQueue.AddExec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+AddCommand(new KernelCommandExec1(sz1, args));
+
+{$region Exec2}
+
+type
+  KernelCommandExec2 = sealed class(EnqueueableGPUCommand<Kernel>)
+    private  sz1: CommandQueue<integer>;
+    private  sz2: CommandQueue<integer>;
+    private args: array of CommandQueue<KernelArg>;
+    
+    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>);
+    begin
+      self. sz1 :=  sz1;
+      self. sz2 :=  sz2;
+      self.args := args;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
+      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz2_qr.ev;
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetRes;
+        var  sz2 :=  sz2_qr.GetRes;
+        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        
+        var res: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, o.ntv, 2,
+            nil,
+            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
+            nil,
+            evs.count, evs.evs, res
+          );
+        end);
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+       sz1.RegisterWaitables(tsk, prev_hubs);
+       sz2.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion Exec2}
+
+function KernelCommandQueue.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+AddCommand(new KernelCommandExec2(sz1, sz2, args));
+
+{$region Exec3}
+
+type
+  KernelCommandExec3 = sealed class(EnqueueableGPUCommand<Kernel>)
+    private  sz1: CommandQueue<integer>;
+    private  sz2: CommandQueue<integer>;
+    private  sz3: CommandQueue<integer>;
+    private args: array of CommandQueue<KernelArg>;
+    
+    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>);
+    begin
+      self. sz1 :=  sz1;
+      self. sz2 :=  sz2;
+      self. sz3 :=  sz3;
+      self.args := args;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
+      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz2_qr.ev;
+      var  sz3_qr :=  sz3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz3_qr.ev;
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetRes;
+        var  sz2 :=  sz2_qr.GetRes;
+        var  sz3 :=  sz3_qr.GetRes;
+        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        
+        var res: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, o.ntv, 3,
+            nil,
+            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
+            nil,
+            evs.count, evs.evs, res
+          );
+        end);
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+       sz1.RegisterWaitables(tsk, prev_hubs);
+       sz2.RegisterWaitables(tsk, prev_hubs);
+       sz3.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion Exec3}
+
+function KernelCommandQueue.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+AddCommand(new KernelCommandExec3(sz1, sz2, sz3, args));
+
+{$region Exec}
+
+type
+  KernelCommandExec = sealed class(EnqueueableGPUCommand<Kernel>)
+    private global_work_offset: CommandQueue<array of UIntPtr>;
+    private   global_work_size: CommandQueue<array of UIntPtr>;
+    private    local_work_size: CommandQueue<array of UIntPtr>;
+    private               args: array of CommandQueue<KernelArg>;
+    
+    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>);
+    begin
+      self.global_work_offset := global_work_offset;
+      self.  global_work_size :=   global_work_size;
+      self.   local_work_size :=    local_work_size;
+      self.              args :=               args;
+    end;
+    
+    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var global_work_offset_qr := global_work_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += global_work_offset_qr.ev;
+      var   global_work_size_qr :=   global_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   global_work_size_qr.ev;
+      var    local_work_size_qr :=    local_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    local_work_size_qr.ev;
+      var               args_qr :=               args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var global_work_offset := global_work_offset_qr.GetRes;
+        var   global_work_size :=   global_work_size_qr.GetRes;
+        var    local_work_size :=    local_work_size_qr.GetRes;
+        var               args :=               args_qr.ConvertAll(temp1->temp1.GetRes);
+        
+        var res: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, ntv, global_work_size.Length,
+            global_work_offset,
+            global_work_size,
+            local_work_size,
+            evs.count, evs.evs, res
+          );
+        end);
+        
+        
+        
+        Result := res;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      global_work_offset.RegisterWaitables(tsk, prev_hubs);
+        global_work_size.RegisterWaitables(tsk, prev_hubs);
+         local_work_size.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion Exec}
+
+function KernelCommandQueue.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+AddCommand(new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
 
 {$endregion 1#Exec}
 
@@ -6934,6 +6133,18 @@ end;
 {$region Kernel}
 
 {$region 1#Exec}
+
+function Kernel.Exec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec1(sz1, args) as CommandQueue<Kernel>);
+
+function Kernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec2(sz1, sz2, args) as CommandQueue<Kernel>);
+
+function Kernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec3(sz1, sz2, sz3, args) as CommandQueue<Kernel>);
+
+function Kernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec(global_work_offset, global_work_size, local_work_size, args) as CommandQueue<Kernel>);
 
 {$endregion 1#Exec}
 

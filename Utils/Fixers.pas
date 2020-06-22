@@ -61,7 +61,7 @@ type
             foreach var st in FindTemplateInsertions(l, '{%', '%}') do
               if not st[0] then
                 sb += st[1] else
-              if not template_ids.Any(template_id->(st[1]=template_id) or st[1].StartsWith(template_id+'?')) then
+              if not template_ids.Any(template_id->(st[1]=template_id) or (st[1].StartsWith(template_id) and st[1].Contains('?'))) then
               begin
                 sb += '{%';
                 sb += st[1];

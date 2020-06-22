@@ -143,6 +143,9 @@ begin
           // array of (name, type)
           var args := args_str.Split(';').SelectMany(arg_str->
           begin
+            arg_str := arg_str.Trim;
+            if arg_str.StartsWith('params ') then arg_str := arg_str.Remove(0, 'params '.Length);
+            
             var ind := arg_str.IndexOf(':=');
             if ind<>-1 then arg_str := arg_str.Remove(ind);
             ind := arg_str.IndexOf(':');
@@ -316,7 +319,7 @@ begin
             
             res_EIm += '    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (';
             res_EIm += t;
-            res_EIm += ', cl_command_queue, CLTaskBase, EventList)->cl_event; override;'#10;
+            res_EIm += ', cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;'#10;
             res_EIm += '    begin'#10;
             
             var first_arg := true;
@@ -332,37 +335,50 @@ begin
                   tname := tname.SubString('array of '.Length);
                 end;
                 
-                if arg[1].StartsWith('CommandQueue<') then
+                if tname.StartsWith('CommandQueue<') then
                 begin
                   res_EIm += '      var ';
                   res_EIm += arg[0].PadLeft(max_arg_w);
                   res_EIm += '_qr := ';
-                  res_EIm += arg[0].PadLeft(max_arg_w);
                   
+                  var arg_name := arg[0].PadLeft(max_arg_w);
                   for var i := 1 to arr_c do
                   begin
-                    res_EIm += '.ConvertAll(temp';
-                    res_EIm += i.ToString;
-                    res_EIm += '->temp';
-                    res_EIm += i.ToString;
+                    var n_arg_name := $'temp{i}';
+                    
+                    res_EIm += arg_name;
+                    res_EIm += '.ConvertAll(';
+                    res_EIm += n_arg_name;
+                    res_EIm += '->';
+                    
+                    arg_name := n_arg_name;
                   end;
                   
+                  if arr_c<>0 then res_EIm += 'begin Result := ';
+                  
+                  res_EIm += arg_name;
                   res_EIm += '.Invoke';
                   res_EIm += first_arg ? '    ' : 'NewQ';
                   res_EIm += '(tsk, c, main_dvc, ';
                   res_EIm += (arg_usage[arg[0]]='ptr').ToString.PadLeft(5);
                   res_EIm += ', ';
-                  res_EIm += first_arg ? 'cq, ' : '    ';
-                  res_EIm += 'nil)';
-                  
-                  loop arr_c do res_EIm += ')';
-                  res_EIm += '; ';
+                  res_EIm += first_arg ? 'cq, ' : arr_c=0 ? '    ' : nil;
+                  res_EIm += 'nil); ';
                   
                   res_EIm += 'evs_l';
                   res_EIm += arg_usage[arg[0]]='ptr' ? '2' : '1';
                   res_EIm += ' += ';
-                  res_EIm += arg[0].PadLeft(max_arg_w);
-                  res_EIm += '_qr.ev;'#10;
+                  if arr_c=0 then
+                  begin
+                    res_EIm += arg[0].PadLeft(max_arg_w);
+                    res_EIm += '_qr';
+                  end else
+                    res_EIm += 'Result';
+                  res_EIm += '.ev';
+                  
+                  if arr_c<>0 then res_EIm += '; end';
+                  loop arr_c do res_EIm += ')';
+                  res_EIm += ';'#10;
                   
                   first_arg := false;
                 end;
@@ -371,7 +387,7 @@ begin
             
             res_EIm += '      '#10;
             
-            res_EIm += '      Result := (o, cq, tsk, evs)->'#10;
+            res_EIm += '      Result := (o, cq, tsk, c, evs)->'#10;
             res_EIm += '      begin'#10;
             
             var args_with_GCHandle := new List<string>;
@@ -390,26 +406,34 @@ begin
                 
                 res_EIm += '        var ';
                 res_EIm += arg[0].PadLeft(max_arg_w);
+                res_EIm += ' := ';
+                res_EIm += arg[0].PadLeft(max_arg_w);
+                res_EIm += '_qr';
+                
+                for var i := 1 to arr_c do
+                begin
+                  res_EIm += '.ConvertAll(temp';
+                  res_EIm += i.ToString;
+                  res_EIm += '->temp';
+                  res_EIm += i.ToString;
+                end;
                 
                 var usage := arg_usage[arg[0]];
                 if usage=nil then
-                begin
-                  res_EIm += ' := ';
-                  res_EIm += arg[0].PadLeft(max_arg_w);
-                  res_EIm += '_qr.GetRes;'#10;
-                end else
+                  res_EIm += '.GetRes' else
                 case usage of
                   
                   'ptr':
                   begin
-                    res_EIm += ' := ';
-                    res_EIm += arg[0].PadLeft(max_arg_w);
-                    res_EIm += '_qr.ToPtr;'#10;
+                    res_EIm += '.ToPtr';
                     if not need_thread then args_with_GCHandle += arg[0];
                   end;
                   
                   else raise new System.NotImplementedException;
                 end;
+                
+                loop arr_c do res_EIm += ')';
+                res_EIm += ';'#10;
                 
               end;
             res_EIm += '        '#10;

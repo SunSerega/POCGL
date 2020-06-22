@@ -1,6 +1,42 @@
 
 
 
+# Exec[%dims:1,2,3%]
+{%dims? sz1 : sz1,sz2 : sz1,sz2,sz3 %}: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>
+!Enqueue
+o.UseExclusiveNative(ntv->
+begin
+  
+  for var i := 0 to !args!.Length-1 do
+    !args![i].SetArg(ntv, i, c);
+  
+  cl.EnqueueNDRangeKernel(
+    cq, o.ntv, {%dims%},
+    nil,
+    new UIntPtr[]({%dims? new UIntPtr(!sz1!) : new UIntPtr(!sz1!),new UIntPtr(!sz2!) : new UIntPtr(!sz1!),new UIntPtr(!sz2!),new UIntPtr(!sz3!) %}),
+    nil,
+    !evs!
+  );
+end);
 
+
+
+# Exec
+global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>
+!Enqueue
+o.UseExclusiveNative(ntv->
+begin
+  
+  for var i := 0 to !args!.Length-1 do
+    !args![i].SetArg(ntv, i, c);
+  
+  cl.EnqueueNDRangeKernel(
+    cq, ntv, !global_work_size!.Length,
+    !global_work_offset!,
+    !global_work_size!,
+    !local_work_size!,
+    !evs!
+  );
+end);
 
 
