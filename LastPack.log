@@ -119,12 +119,16 @@ Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.(Buffer)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.(CommandQueue<Buffer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(CommandQueue<&Array>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(CommandQueue<&Array>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
@@ -132,10 +136,13 @@ Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(pointer, Comma
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(CommandQueue<&Array>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddCopyFrom(CommandQueue<Buffer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddCopyFrom(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddCopyTo(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.(Kernel)% wasn't used!
@@ -170,12 +177,16 @@ Comments[OpenCLABC]: WARNING: key %Buffer.NewQueue()% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.Dispose()% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.WriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(CommandQueue<&Array>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.WriteValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.WriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(CommandQueue<&Array>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.ReadValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
@@ -183,23 +194,30 @@ Comments[OpenCLABC]: WARNING: key %Buffer.FillData(pointer, CommandQueue<integer
 Comments[OpenCLABC]: WARNING: key %Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.FillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(CommandQueue<&Array>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.FillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.FillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.CopyFrom(CommandQueue<Buffer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.CopyFrom(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.CopyTo(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetData()% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetData(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray<TArray>(array of integer)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray<TArray>(CommandQueue<array of integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArrayAt<TArray>(CommandQueue<integer>, array of CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArrayAt<TArray>(CommandQueue<integer>, CommandQueue<array of integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1<TRecord>()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1<TRecord>(CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1At<TRecord>(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray2At<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray3At<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetValue<TRecord>()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetValueAt<TRecord>(CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Kernel.(ProgramCode, string)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Kernel.NewQueue()% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Kernel.Exec(array of integer, array of CommandQueue<Buffer>)% wasn't used!
@@ -294,6 +312,7 @@ Comments[OpenCLABC]: WARNING: key %bcq.ctor% wasn't used!
 Comments[OpenCLABC]: WARNING: key %bcq.ctorQ% wasn't used!
 Comments[OpenCLABC]: WARNING: key %kcq.ctor% wasn't used!
 Comments[OpenCLABC]: WARNING: key %kcq.ctorQ% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b:offset_def% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b:pos_len_def% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.ctor% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.ctorC% wasn't used!
@@ -301,15 +320,22 @@ Comments[OpenCLABC]: WARNING: key %b.Dispose% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.SubBuff% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.Parent% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.NewQueue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.WriteArray% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.WriteValue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.ReadArray% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.ReadValue% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.FillData% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.FillArray% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.CopyFrom% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.CopyFromL% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.CopyToL% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetData% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetArray% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetArray1A% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetArray1% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetArray2% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetArray3% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetValue% wasn't used!
 Comments[OpenCLABC]: WARNING: key %k.ctor% wasn't used!
 Comments[OpenCLABC]: WARNING: key %k.NewQueue% wasn't used!
 Comments[OpenCLABC]: WARNING: key %k.Exec% wasn't used!

@@ -19,7 +19,16 @@ unit OpenCLABCBase;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo примеры разных KernelArg
+{$region Текстеровщик}
+
+//ToDo Исправить
+
+{$endregion Текстеровщик}
+
+{$region Справка}
+
+//ToDo Враперы
+//ToDo KernelArg в справку
 
 //ToDo Подробнее написать в справке про "BCQ.Add*":
 // - WriteArray2 НЕ_интуитивно обрабатывает offset'ы
@@ -28,14 +37,22 @@ unit OpenCLABCBase;
 
 //ToDo Удостоверится что в справке сказано про то, что Context.Default только для простого кода. Для профессионального - надо создавать свой контекст
 
-//ToDo Ловить ThreadAbortException всюду перед Exception
-// - Даже в колбеках ивентов - их может вызвать синхронно из потока UserEvent.StartBackgroundWork
-// - И написать в справке, что любые лямбды пользователя, переданные в этот модуль, могут получить ThreadAbortException
-
 //ToDo Wait очереди:
 // - Пока сделал так: если ожидающая очередь абортится - она перестаёт ожидать.
 // - Это может создать неопределённое поведение. Но, по моему, это правильней всего.
 // - Если так и останется - не забыть добавить в справку
+
+{$endregion Справка}
+
+{$region PackDoc}
+
+//ToDo Исправить
+
+{$endregion PackDoc}
+
+//ToDo Ловить ThreadAbortException всюду перед Exception
+// - Даже в колбеках ивентов - их может вызвать синхронно из потока UserEvent.StartBackgroundWork
+// - И написать в справке, что любые лямбды пользователя, переданные в этот модуль, могут получить ThreadAbortException
 
 //ToDo Тесты всех фич модуля
 //ToDo И в каждом сделать по несколько выполнений, на случай плавающий ошибок
@@ -48,19 +65,15 @@ unit OpenCLABCBase;
 // - А вообще лучше разрешить выполнять Wait внутри другого Wait
 // - И заодно проверить чтоб Abort работало на Wait-ы
 
-//ToDo Сделать человеческую связь с OpenCL.pas
-// - Типы Device и Platform
-// - Создание Buffer/Kernel/Context из нативных, с вызовом "cl.Retain*"
-
 //===================================
 // Запланированное:
 
+//ToDo Вернуть Buffer.Get методы
+// - И сразу добавить в BCQ
+
 //ToDo Использовать BlittableHelper чтоб выводить хорошие ошибки
 
-//ToDo SubDevice из cl_device_id
-
-//ToDo Потоко-безопастность интерфейса модуля
-// - Buffer.Dispose стоит таки за-lock-ать
+//ToDo Создание SubDevice из cl_device_id
 
 //ToDo Очереди-маркеры для Wait-очередей
 // - чтоб не приходилось использовать константные для этого
@@ -72,14 +85,12 @@ unit OpenCLABCBase;
 //ToDo Раздел справки про обработку ошибок
 // - Написать что аналог try-finally стоит использовать на Wait-маркерах для потоко-безопастности
 
-//ToDo cl.SetKernelArg из нескольких потоков одновременно - предусмотреть
-// - то есть его надо клонировать
-
-//ToDo Синхронные (с припиской Fast) варианты всего работающего по принципу HostQueue
+//ToDo Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
 //ToDo И асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
 // - Может даже можно синхронно выполнить "HPQ(...)+HPQ(...)", в некоторых случаях? 
 
 //ToDo Исправить десериализацию ProgramCode
+// - Пока что закомментировал и поставил raise
 
 //ToDo CommmandQueueBase.ToString для дебага
 // - так же дублирующий protected метод (tabs: integer; index: Dictionary<CommandQueueBase,integer>)
@@ -88,30 +99,15 @@ unit OpenCLABCBase;
 //ToDo ICommandQueue.Cycle // бесконечность циклов
 //ToDo ICommandQueue.CycleWhile(***->boolean)
 // - Возможность передать свой обработчик ошибок как Exception->Exception
-
 //ToDo В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
 
-//ToDo Read/Write для массивов - надо бы иметь возможность указывать отступ в массиве
-
-//ToDo Сделать методы BufferCommandQueue.AddGet
-// - они особенные, потому что возвращают не BufferCommandQueue, а каждый свою очередь
-// - полезно, потому что SyncInvoke такой очереди будет возвращать полученное значение
-
 //ToDo Интегрировать профайлинг очередей
-
-//ToDo Запись/чтение безтиповых массивов - всё же стоит удалить NeedThread отовсюду
-// - вместо этого надо создавать динамичные методы для каждой размерности массива
 
 //===================================
 // Сделать когда-нибуть:
 
-//ToDo У всего, у чего есть .Finalize - проверить чтобы было и .Dispose, если надо
-// - и добавить в справку, про то что этот объект можно удалять
-// - из .Dispose можно блокировать .Finalize
-
 //ToDo Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
-// - у Kernel.Exec несколько параметров не используются. Стоит использовать
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
 
 //===================================
@@ -1248,6 +1244,7 @@ type
     
     public function Serialize: array of byte;
     begin
+      raise new NotImplementedException;
 //      var bytes_count: UIntPtr;
 //      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_BINARY_SIZES, new UIntPtr(UIntPtr.Size),bytes_count, IntPtr.Zero).RaiseIfError;
 //      
@@ -1277,6 +1274,7 @@ type
     
     public static function Deserialize(c: Context; bin: array of byte): ProgramCode;
     begin
+      raise new NotImplementedException;
 //      Result := new ProgramCode;
 //      var bin_len := new UIntPtr(bin.Length);
 //      
