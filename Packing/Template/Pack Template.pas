@@ -147,6 +147,7 @@ type
         ProcTask(()->
         begin
 //          MiscUtils.Otp($'Reading');
+//          Writeln(inp_fname);
           var text := ReadAllText(inp_fname, enc).Trim.Remove(#13);
           
           var ind1 := 0;

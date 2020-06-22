@@ -11,6 +11,11 @@ unit OpenCLABCBase;
 
 //ToDo примеры разных KernelArg
 
+//ToDo Подробнее написать в справке про "BCQ.Add*":
+// - WriteArray2 НЕ_интуитивно обрабатывает offset'ы
+// - ReadValue отсутствует
+// - FillArray отсутствует
+
 //ToDo Удостоверится что в справке сказано про то, что Context.Default только для простого кода. Для профессионального - надо создавать свой контекст
 
 //ToDo Ловить ThreadAbortException всюду перед Exception
@@ -30,6 +35,8 @@ unit OpenCLABCBase;
 // - Что случится с WaitAll если aborter будет первым?
 // - Очереди переданные в Wait - вообще не запускаются так
 // - Поэтому я и думал про что то типа CancelWait
+// - А вообще лучше разрешить выполнять Wait внутри другого Wait
+// - И заодно проверить чтоб Abort работало на Wait-ы
 
 //ToDo Сделать человеческую связь с OpenCL.pas
 // - Типы Device и Platform

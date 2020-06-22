@@ -146,7 +146,7 @@ begin
             var ind := arg_str.IndexOf(':=');
             if ind<>-1 then arg_str := arg_str.Remove(ind);
             ind := arg_str.IndexOf(':');
-            if ind=-1 then raise new System.InvalidOperationException(arg_str);
+            if ind=-1 then raise new System.InvalidOperationException($'"{arg_str}" in {tn}({args_str})');
             var arg_type := arg_str.SubString(ind+1).Trim;
             
             Result := arg_str.Remove(ind).Split(',').ConvertAll(arg_name->(arg_name.Trim, arg_type));
@@ -533,7 +533,10 @@ begin
             l_res_E += 'CommandQueue';
             l_res_In += ';';
             if where_record.Count<>0 then
+            begin
+              l_res_In += ' ';
               l_res_In += where_record_str;
+            end;
             l_res_Im += ' :=';
             l_res += #10;
             

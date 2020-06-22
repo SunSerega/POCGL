@@ -68,14 +68,14 @@ cl.EnqueueWriteBuffer(
 # [%mode:Write,Read%]Array[%rank:1,2,3%]
 a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
 !ShortDef
-{%mode%}Array{%rank%}(a, {%rank? 0 : 0,0 : 0,0,0 %}, 0);
+{%mode%}Array{%rank%}(a, {%rank? 0 : 0,0 : 0,0,0 %});
 
 # [%mode:Write,Read%]Array[%rank:1,2,3%]!AutoSize
-a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_offset : a_offset1,a_offset2 : a_offset1,a_offset2,a_offset3 %}, buff_offset: CommandQueue<integer>
+a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_offset : a_offset1,a_offset2 : a_offset1,a_offset2,a_offset3 %}: CommandQueue<integer>
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.BLOCKING,
-  new UIntPtr(!buff_offset!), new UIntPtr(!a!.Length*Marshal.SizeOf&<TRecord>),
+  UIntPtr.Zero, new UIntPtr(!a!.Length*Marshal.SizeOf&<TRecord>),
   !a![{%rank? !a_offset! : !a_offset1!,!a_offset2! : !a_offset1!,!a_offset2!,!a_offset3! %}],
   !evs!
 ).RaiseIfError;

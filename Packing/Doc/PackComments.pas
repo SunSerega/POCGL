@@ -110,7 +110,7 @@ begin
               skipped.WriteLine(ct.FullName);
             
             CommentableTypeMember(var cm):
-            if not skipped_types.Contains(cm.Type.FullName) then
+            if (cm.Type=nil) or not skipped_types.Contains(cm.Type.FullName) then
               skipped.WriteLine(cm.FullName);
             
           end;
@@ -124,16 +124,20 @@ begin
         var skipped := all_skipped[fname];
         
         var last_line: string := nil;
+        var already_commented := false;
         foreach var c in CommentableBase.FindAllCommentalbes(ReadLines(fname), l->
         begin
+          already_commented := (last_line<>nil) and last_line.TrimStart(' ').StartsWith('///');
           if last_line<>nil then res.WriteLine(last_line);
           last_line := CommentData.Apply(l);
-          Result := true; //not l.TrimStart(' ').StartsWith('///');
+          Result := true;
         end) do
         begin
           var key := c.FullName;
           
-          if CommentData.all.ContainsKey(key) then
+          if not CommentData.all.ContainsKey(key) then
+            skipped.Enq(c) else
+          if not already_commented then
           begin
             var spaces := last_line.TakeWhile(ch->ch=' ').Count;
             foreach var l in CommentData.ApplyToKey(key).Split(#10) do
@@ -142,8 +146,7 @@ begin
               res.Write('///');
               res.WriteLine(l);
             end;
-          end else
-            skipped.Enq(c);
+          end;
           
         end;
         if last_line<>nil then res.Write(last_line);
