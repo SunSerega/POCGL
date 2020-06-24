@@ -376,16 +376,15 @@ type
         var        a :=        a_qr.GetRes;
         var a_offset := a_offset_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[a_offset],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -433,16 +432,15 @@ type
         var a_offset1 := a_offset1_qr.GetRes;
         var a_offset2 := a_offset2_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -495,16 +493,15 @@ type
         var a_offset2 := a_offset2_qr.GetRes;
         var a_offset3 := a_offset3_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -550,16 +547,15 @@ type
         var        a :=        a_qr.GetRes;
         var a_offset := a_offset_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[a_offset],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -607,16 +603,15 @@ type
         var a_offset1 := a_offset1_qr.GetRes;
         var a_offset2 := a_offset2_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -669,16 +664,15 @@ type
         var a_offset2 := a_offset2_qr.GetRes;
         var a_offset3 := a_offset3_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -732,16 +726,15 @@ type
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -799,16 +792,15 @@ type
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -871,16 +863,15 @@ type
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -936,16 +927,15 @@ type
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -1003,16 +993,15 @@ type
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;
@@ -1075,16 +1064,15 @@ type
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
         
-        var res: cl_event;
         
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, res
+          evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
         
-        Result := res;
+        Result := cl_event.Zero;
       end;
       
     end;

@@ -31,6 +31,7 @@ Buffer.Properties
 Buffer.NewQueue
 Buffer.GetBuffSize(cl_mem)
 Buffer.
+Buffer.InitIfNeed(Context)
 Buffer.Dispose
 Buffer.Finalize
 Buffer.operator=(b1, Buffer)
@@ -110,12 +111,12 @@ QueueResBase
 QueueRes<T>
 IQueueResConst
 QueueResConst<T>
+IQueueResFunc
+QueueResFunc<T>
 IQueueResDelayed
 QueueResDelayedBase<T>
 QueueResDelayedObj<T>
 QueueResDelayedPtr<T>
-IQueueResFunc
-QueueResFunc<T>
 MWEventContainer
 MultiusableCommandQueueHubBase
 CLTaskBase.OrgQueueBase
@@ -152,8 +153,8 @@ CommandQueueBase.AddMWHandler(CLTaskBase; handler: ()->boolean)
 CommandQueueBase.ExecuteMWHandlers
 CommandQueueBase.operator implicit(object)
 CommandQueueBase.Cast<T>
-CommandQueueBase.ThenConvert<TOtp>(object->TOtp)
-CommandQueueBase.ThenConvert<TOtp>((object, Context)->TOtp)
+CommandQueueBase.ThenConvertBase<TOtp>(object->TOtp)
+CommandQueueBase.ThenConvertBase<TOtp>((object, Context)->TOtp)
 CommandQueueBase.AfterQueueSyncBase(CommandQueueBase)
 CommandQueueBase.AfterQueueAsyncBase(CommandQueueBase)
 CommandQueueBase.operator+(q1, CommandQueueBase)
@@ -161,15 +162,17 @@ CommandQueueBase.operator*(q1, CommandQueueBase)
 CommandQueueBase.operator+=(CommandQueueBase; q2: CommandQueueBase)
 CommandQueueBase.operator*=(CommandQueueBase; q2: CommandQueueBase)
 CommandQueueBase.MultiusableBase
-CommandQueueBase.Multiusable
 CommandQueueBase.ThenWaitForAllBase(sequence of CommandQueueBase)
 CommandQueueBase.ThenWaitForAnyBase(sequence of CommandQueueBase)
+CommandQueueBase.ThenWaitForAllBase(array of CommandQueueBase)
+CommandQueueBase.ThenWaitForAnyBase(array of CommandQueueBase)
+CommandQueueBase.ThenWaitForBase(CommandQueueBase)
 CommandQueue<T>.Invoke(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
 CommandQueue<T>.InvokeBase(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
 CommandQueue<T>.InvokeNewQ(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList)
 CommandQueue<T>.operator implicit(T)
-CommandQueue<T>.ThenConvert<TInp,TOtp>(TInp->TOtp)
-CommandQueue<T>.ThenConvert<TInp,TOtp>((TInp, Context)->TOtp)
+CommandQueue<T>.ThenConvert<TOtp>(T->TOtp)
+CommandQueue<T>.ThenConvert<TOtp>((T, Context)->TOtp)
 CommandQueue<T>.operator+(CommandQueueBase; q2: CommandQueue<T>)
 CommandQueue<T>.operator*(CommandQueueBase; q2: CommandQueue<T>)
 CommandQueue<T>.AfterQueueSyncBase(CommandQueueBase)

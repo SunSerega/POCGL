@@ -110,9 +110,7 @@ begin
       res.Write('>(()->ValueTuple.Create(qr1.GetRes()');
       for var i := 2 to c do
         res.Write($', qr{i}.GetRes()');
-      res.WriteLine('));');
-      
-      res.WriteLine('      Result.ev := prev_ev;');
+      res.WriteLine('), prev_ev);');
       
       res.WriteLine('    end;');
       
@@ -147,12 +145,12 @@ begin
       res.Write('>(()->ValueTuple.Create(qr1.GetRes()');
       for var i := 2 to c do
         res.Write($', qr{i}.GetRes()');
-      res.WriteLine('));');
+      res.Write('), ');
       
-      res.Write('      Result.ev := EventList.Combine(new EventList[](qr1.ev');
+      res.Write('EventList.Combine(new EventList[](qr1.ev');
       for var i := 2 to c do
         res.Write($', qr{i}.ev');
-      res.WriteLine('), tsk, c.Native, main_dvc, cq);');
+      res.WriteLine('), tsk, c.Native, main_dvc, cq));');
       
       res.WriteLine('    end;');
       

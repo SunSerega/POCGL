@@ -57,7 +57,7 @@ begin
     begin
       thr.Abort;
       dom.SetData('exec_time', MaxExecTime*System.TimeSpan.TicksPerMillisecond);
-      Otp($'ERROR: Execution took too long for "{fname}"');
+      dom.SetData('fatal_err', $'ERROR: Execution took too long for "{GetFullPathRTE(fname)}"');
     end else
       dom.SetData('Result', res.ToString);
     
@@ -79,7 +79,7 @@ begin
   StartBgThread(()->
   try
     var du_otp := new ThrProcOtp;
-    domain_unload_otps += du_otp;
+    lock domain_unload_otps do domain_unload_otps += du_otp;
     try
       System.AppDomain.Unload(dom);
     except
@@ -226,7 +226,11 @@ type
       begin
         test_folders += dir;
         foreach var mn in allowed_modules do
+        begin
           System.IO.File.Copy($'Modules.Packed\{mn}.pcu', $'{dir}\{mn}.pcu', true);
+          if mn.EndsWith('ABC') then
+            System.IO.File.Copy($'Modules.Packed\Internal\{mn}Base.pcu', $'{dir}\{mn}Base.pcu', true);
+        end;
       end;
       
       foreach var pas_fname in System.IO.Directory.EnumerateFiles(path, '*.pas', System.IO.SearchOption.AllDirectories) do
@@ -491,7 +495,11 @@ type
       
       foreach var dir in test_folders do
         foreach var mn in allowed_modules do
+        begin
           System.IO.File.Delete($'{dir}\{mn}.pcu');
+          if mn.EndsWith('ABC') then
+            System.IO.File.Delete($'{dir}\{mn}Base.pcu');
+        end;
       
       foreach var du_otp in domain_unload_otps do
         foreach var l in du_otp do

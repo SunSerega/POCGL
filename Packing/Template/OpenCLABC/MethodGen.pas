@@ -4,6 +4,8 @@ uses Fixers     in '..\..\..\Utils\Fixers';
 
 uses System.IO;
 
+{$region Writer's}
+
 type
   Writer = abstract class
     
@@ -58,6 +60,8 @@ type
     procedure Close; override := exit;
   end;
   
+{$endregion Writer's}
+
 begin
   try
     
@@ -196,7 +200,11 @@ begin
                 end;
                 case arg of
                   
-                  'evs': sb += 'evs.count, evs.evs, res';
+                  'evs':
+                  begin
+                    sb += 'evs.count, evs.evs, ';
+                    sb += need_thread ? 'IntPtr.Zero' : 'res';
+                  end;
                   
                   else
                   begin
@@ -438,7 +446,8 @@ begin
               end;
             res_EIm += '        '#10;
             
-            res_EIm += '        var res: cl_event;'#10;
+            if not need_thread then
+              res_EIm += '        var res: cl_event;'#10;
             res_EIm += '        '#10;
             
             foreach var l in def do
@@ -476,7 +485,9 @@ begin
               res_EIm += '        '#10;
             end;
             
-            res_EIm += '        Result := res;'#10;
+            res_EIm += '        Result := ';
+            res_EIm += need_thread ? 'cl_event.Zero' : 'res';
+            res_EIm += ';'#10;
             res_EIm += '      end;'#10;
             
             res_EIm += '      '#10;

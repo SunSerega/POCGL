@@ -38,8 +38,7 @@
       var qr2 := q2.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr2.ev;
       var qr3 := q3.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr3.ev;
       var qr4 := q4.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr4.ev;
-      Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes()));
-      Result.ev := prev_ev;
+      Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes()), prev_ev);
     end;
     
   end;
@@ -51,8 +50,7 @@
       var qr2 := q2.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
       var qr3 := q3.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
       var qr4 := q4.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
-      Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes()));
-      Result.ev := EventList.Combine(new EventList[](qr1.ev, qr2.ev, qr3.ev, qr4.ev), tsk, c.Native, main_dvc, cq);
+      Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes()), EventList.Combine(new EventList[](qr1.ev, qr2.ev, qr3.ev, qr4.ev), tsk, c.Native, main_dvc, cq));
     end;
     
   end;

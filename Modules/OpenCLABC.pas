@@ -93,11 +93,8 @@ type
     public constructor(f: TFunc) := self.f := f;
     private constructor := raise new NotSupportedException;
     
-    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
-    begin
-      Result := new QueueResConst<Object>(nil);
-      Result.ev := prev_ev ?? new EventList;
-    end;
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override :=
+    new QueueResConst<Object>(nil, prev_ev ?? new EventList);
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
     
@@ -142,10 +139,8 @@ type
     protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
     begin
       if need_ptr_qr then new System.InvalidOperationException;
-      Result := new QueueResConst<object>(nil);
-      if prev_ev=nil then
-        Result.ev := waiter.GetWaitEv(tsk, c) else
-        Result.ev := prev_ev+waiter.GetWaitEv(tsk, c);
+      var wait_ev := waiter.GetWaitEv(tsk, c);
+      Result := new QueueResConst<object>(nil, prev_ev=nil ? wait_ev : prev_ev+wait_ev);
     end;
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
