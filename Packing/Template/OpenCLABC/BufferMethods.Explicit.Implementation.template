@@ -9,10 +9,14 @@ type
   BufferCommandWriteDataAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private ptr: CommandQueue<IntPtr>;
     
+    protected function ParamCountL1: integer; override := 1;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
       self.ptr := ptr;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -54,10 +58,14 @@ type
   BufferCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private ptr: CommandQueue<IntPtr>;
     
+    protected function ParamCountL1: integer; override := 1;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
       self.ptr := ptr;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -101,12 +109,16 @@ type
     private offset: CommandQueue<integer>;
     private    len: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 3;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
     begin
       self.   ptr :=    ptr;
       self.offset := offset;
       self.   len :=    len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -156,12 +168,16 @@ type
     private offset: CommandQueue<integer>;
     private    len: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 3;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>);
     begin
       self.   ptr :=    ptr;
       self.offset := offset;
       self.   len :=    len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -231,11 +247,15 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
+    protected function ParamCountL1: integer; override := 1;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(val: TRecord; offset: CommandQueue<integer>);
     begin
       self.   val^ :=    val;
       self.offset  := offset;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -282,11 +302,15 @@ type
     private    val: CommandQueue<TRecord>;
     private offset: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 1;
+    protected function ParamCountL2: integer; override := 1;
+    
     public constructor(val: CommandQueue<TRecord>; offset: CommandQueue<integer>);
     begin
       self.   val :=    val;
       self.offset := offset;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -360,11 +384,15 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 2;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>);
     begin
       self.       a :=        a;
       self.a_offset := a_offset;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -413,12 +441,16 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 3;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>);
     begin
       self.        a :=         a;
       self.a_offset1 := a_offset1;
       self.a_offset2 := a_offset2;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -471,6 +503,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 4;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>);
     begin
       self.        a :=         a;
@@ -478,6 +513,7 @@ type
       self.a_offset2 := a_offset2;
       self.a_offset3 := a_offset3;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -531,11 +567,15 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 2;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>);
     begin
       self.       a :=        a;
       self.a_offset := a_offset;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -584,12 +624,16 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 3;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>);
     begin
       self.        a :=         a;
       self.a_offset1 := a_offset1;
       self.a_offset2 := a_offset2;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -642,6 +686,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 4;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>);
     begin
       self.        a :=         a;
@@ -649,6 +696,7 @@ type
       self.a_offset2 := a_offset2;
       self.a_offset3 := a_offset3;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -704,6 +752,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 4;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>);
     begin
       self.          a :=           a;
@@ -711,6 +762,7 @@ type
       self.buff_offset := buff_offset;
       self.        len :=         len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -767,6 +819,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 5;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>);
     begin
       self.          a :=           a;
@@ -775,6 +830,7 @@ type
       self.buff_offset := buff_offset;
       self.        len :=         len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -835,6 +891,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 6;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>);
     begin
       self.          a :=           a;
@@ -844,6 +903,7 @@ type
       self.buff_offset := buff_offset;
       self.        len :=         len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -905,6 +965,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 4;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>);
     begin
       self.          a :=           a;
@@ -912,6 +975,7 @@ type
       self.buff_offset := buff_offset;
       self.        len :=         len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -968,6 +1032,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 5;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>);
     begin
       self.          a :=           a;
@@ -976,6 +1043,7 @@ type
       self.buff_offset := buff_offset;
       self.        len :=         len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1036,6 +1104,9 @@ type
     
     protected function NeedThread: boolean; override := true;
     
+    protected function ParamCountL1: integer; override := 6;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>);
     begin
       self.          a :=           a;
@@ -1045,6 +1116,7 @@ type
       self.buff_offset := buff_offset;
       self.        len :=         len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1105,11 +1177,15 @@ type
     private         ptr: CommandQueue<IntPtr>;
     private pattern_len: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 2;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>);
     begin
       self.        ptr :=         ptr;
       self.pattern_len := pattern_len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1157,6 +1233,9 @@ type
     private      offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 4;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>);
     begin
       self.        ptr :=         ptr;
@@ -1164,6 +1243,7 @@ type
       self.     offset :=      offset;
       self.        len :=         len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1220,10 +1300,14 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
+    protected function ParamCountL1: integer; override := 0;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(val: TRecord);
     begin
       self.val^ := val;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1270,12 +1354,16 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
+    protected function ParamCountL1: integer; override := 2;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(val: TRecord; offset, len: CommandQueue<integer>);
     begin
       self.   val^ :=    val;
       self.offset  := offset;
       self.   len  :=    len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1321,10 +1409,14 @@ type
   where TRecord: record;
     private val: CommandQueue<TRecord>;
     
+    protected function ParamCountL1: integer; override := 0;
+    protected function ParamCountL2: integer; override := 1;
+    
     public constructor(val: CommandQueue<TRecord>);
     begin
       self.val := val;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1378,12 +1470,16 @@ type
     private offset: CommandQueue<integer>;
     private    len: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 2;
+    protected function ParamCountL2: integer; override := 1;
+    
     public constructor(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>);
     begin
       self.   val :=    val;
       self.offset := offset;
       self.   len :=    len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1444,10 +1540,14 @@ type
   BufferCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private b: CommandQueue<Buffer>;
     
+    protected function ParamCountL1: integer; override := 1;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(b: CommandQueue<Buffer>);
     begin
       self.b := b;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1489,10 +1589,14 @@ type
   BufferCommandCopyFormAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private b: CommandQueue<Buffer>;
     
+    protected function ParamCountL1: integer; override := 1;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(b: CommandQueue<Buffer>);
     begin
       self.b := b;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1537,6 +1641,9 @@ type
     private   to_pos: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 4;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>);
     begin
       self.       b :=        b;
@@ -1544,6 +1651,7 @@ type
       self.  to_pos :=   to_pos;
       self.     len :=      len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
@@ -1599,6 +1707,9 @@ type
     private   to_pos: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
+    protected function ParamCountL1: integer; override := 4;
+    protected function ParamCountL2: integer; override := 0;
+    
     public constructor(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>);
     begin
       self.       b :=        b;
@@ -1606,6 +1717,7 @@ type
       self.  to_pos :=   to_pos;
       self.     len :=      len;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin

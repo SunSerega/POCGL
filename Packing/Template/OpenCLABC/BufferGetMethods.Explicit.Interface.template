@@ -1,0 +1,17 @@
+﻿    
+    
+    
+    {$region Get}
+    
+    public function AddGetData: BufferCommandQueue;
+    
+    public function AddGetData(offset, len: CommandQueue<integer>): BufferCommandQueue;
+    
+    public function AddGetValue<TRecord>: BufferCommandQueue; where TRecord: record;
+    
+    public function AddGetValue<TRecord>(offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    
+    {$endregion Get}
+    
+    
+    

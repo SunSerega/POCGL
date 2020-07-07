@@ -1,0 +1,20 @@
+﻿
+
+
+{$region Get}
+
+function Buffer.GetData: Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetData as CommandQueue<Buffer>);
+
+function Buffer.GetData(offset, len: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetData(offset, len) as CommandQueue<Buffer>);
+
+function Buffer.GetValue<TRecord>: Buffer :=
+GetValue&<TRecord>(0);
+
+function Buffer.GetValue<TRecord>(offset: CommandQueue<integer>): Buffer :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetValue(offset) as CommandQueue<Buffer>);
+
+{$endregion Get}
+
+

@@ -1,0 +1,91 @@
+﻿
+
+
+{$region Get}
+
+{$region GetDataAutoSize}
+
+type
+  BufferCommandGetDataAutoSize = sealed class(EnqueueableGetCommand<Buffer, IntPtr>)
+    
+    protected function ParamCountL1: integer; override := 0;
+    protected function ParamCountL2: integer; override := 0;
+    
+    public constructor := exit;
+    
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+  end;
+  
+{$endregion GetDataAutoSize}
+
+function BufferCommandQueue.AddGetData: BufferCommandQueue :=
+AddCommand(new BufferCommandGetDataAutoSize);
+
+{$region GetData}
+
+type
+  BufferCommandGetData = sealed class(EnqueueableGetCommand<Buffer, IntPtr>)
+    private offset: CommandQueue<integer>;
+    private    len: CommandQueue<integer>;
+    
+    protected function ParamCountL1: integer; override := 2;
+    protected function ParamCountL2: integer; override := 0;
+    
+    public constructor(offset, len: CommandQueue<integer>);
+    begin
+      self.offset := offset;
+      self.   len :=    len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      offset.RegisterWaitables(tsk, prev_hubs);
+         len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion GetData}
+
+function BufferCommandQueue.AddGetData(offset, len: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandGetData(offset, len));
+
+function BufferCommandQueue.AddGetValue<TRecord>: BufferCommandQueue :=
+AddGetValue&<TRecord>(0);
+
+{$region GetValue}
+
+type
+  BufferCommandGetValue<TRecord> = sealed class(EnqueueableGetCommand<Buffer, TRecord>)
+  where TRecord: record;
+    private offset: CommandQueue<integer>;
+    
+    protected function ParamCountL1: integer; override := 1;
+    protected function ParamCountL2: integer; override := 0;
+    
+    public constructor(offset: CommandQueue<integer>);
+    begin
+      self.offset := offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+{$endregion GetValue}
+
+function BufferCommandQueue.AddGetValue<TRecord>(offset: CommandQueue<integer>): BufferCommandQueue :=
+AddCommand(new BufferCommandGetValue<TRecord>(offset));
+
+{$endregion Get}
+
+
